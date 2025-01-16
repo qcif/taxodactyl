@@ -1,0 +1,142 @@
+repository_type: pipeline
+
+nf_core_version: 3.1.1
+
+lint:
+  files_unchanged:
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - assets/email_template.txt
+    - docs/README.md
+    - .github/CONTRIBUTING.md
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - .prettierignore
+    - .prettierignore
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - assets/email_template.txt
+    - docs/README.md
+    - .github/CONTRIBUTING.md
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - .prettierignore
+    - .prettierignore
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - assets/email_template.txt
+    - docs/README.md
+  nextflow_config:
+    - manifest.name
+    - manifest.homePage
+    - validation.help.beforeText
+    - validation.help.afterText
+    - validation.summary.beforeText
+    - validation.summary.afterText
+    - manifest.name
+    - manifest.homePage
+    - validation.help.beforeText
+    - validation.help.afterText
+    - validation.summary.beforeText
+    - validation.summary.afterText
+    - manifest.name
+    - manifest.homePage
+    - validation.help.beforeText
+    - validation.help.afterText
+    - validation.summary.beforeText
+    - validation.summary.afterText
+  multiqc_config: false
+  files_exist:
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - assets/multiqc_config.yml
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - assets/multiqc_config.yml
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_light.png
+    - docs/images/nf-core-taxassignwf_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+  readme:
+    - nextflow_badge
+    - nextflow_badge
+
+template:
+  org: daff
+  name: taxassignwf
+  description: Taxonomic Assignment Nextflow Workflow for DAFF
+  author: Magdalena Antczak, Cameron Hyde, Daisy Li
+  version: 0.1.0dev
+  force: true
+  outdir: .
+  skip_features:
+    - github
+    - igenomes
+    - is_nfcore
+    - codespaces
+    - multiqc
+    - fastqc
+    - adaptivecard
+    - slackreport
+    - vscode
+  is_nfcore: false
