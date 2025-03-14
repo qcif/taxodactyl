@@ -7,27 +7,32 @@
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
+            "sample_id": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "locus": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "Locus name must be provided"
             },
-            "fastq_2": {
+            "preliminary_id": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "PMI must be provided"
+            },
+            "taxa_of_interest": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string",
+                "errorMessage": "Country code must be provided"
+            },
+            "host": {
+                "type": "string",
+                "errorMessage": "Host must be provided"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample_id", "locus", "preliminary_id"]
     }
 }

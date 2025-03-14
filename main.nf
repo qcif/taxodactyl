@@ -27,16 +27,16 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxa
 //
 workflow DAFF_TAXASSIGNWF {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
+    // take:
 
+  
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
     TAXASSIGNWF (
-        samplesheet
+
     )
 }
 /*
@@ -57,14 +57,15 @@ workflow {
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.metadata
     )
 
     //
     // WORKFLOW: Run main workflow
     //
     DAFF_TAXASSIGNWF (
-        PIPELINE_INITIALISATION.out.samplesheet
+        // PIPELINE_INITIALISATION.out.samplesheet,
+        // PIPELINE_INITIALISATION.out.fastaformsa
     )
     //
     // SUBWORKFLOW: Run completion tasks

@@ -10,17 +10,15 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["metadata", "outdir", "sequences", "blastdb", "taxdb"],
             "properties": {
-                "input": {
+                "metadata": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
-                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -35,6 +33,119 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                },
+                "blastdb": {
+                    "type": "string",
+                    "description": "Path to blastdb database files, e.g. /path/to/blastdb/core_nt",
+                    "fa_icon": "fas fa-database"
+                },
+                "sequences": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to the FASTA file containing sequences to process.",
+                    "help_text": "Specify the location of the FASTA file that contains the sequences you want to analyze.",
+                    "fa_icon": "fas fa-file-alt",
+                    "pattern": "^\\S+\\.fasta$"
+                },
+                "taxdb": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the taxonomic database folder, e.g. /path/to/taxdb",
+                    "fa_icon": "fas fa-folder",
+                    "exists": true
+                },
+                "accessions_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain BLAST accessions."
+                },
+                "taxonomy_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain taxonomy information."
+                },
+                "query_title_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain query titles."
+                },
+                "hits_json_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain hits in JSON format."
+                },
+                "hits_fasta_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain hits in FASTA format."
+                },
+                "flags_csv_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain flags in CSV format."
+                },
+                "taxonomy_id_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain taxonomy IDs."
+                },
+                "candidates_fasta_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain candidate sequences in FASTA format."
+                },
+                "candidates_csv_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain candidate sequences in CSV format."
+                },
+                "candidates_json_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain candidate sequences in JSON format."
+                },
+                "toi_detected_csv_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain detected TOIs in CSV format."
+                },
+                "timestamp_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain the timestamp."
+                },
+                "pmi_match_csv_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain PMI match results in CSV format."
+                },
+                "min_nt": {
+                    "type": "integer",
+                    "description": "Minimum number of nucleotides."
+                },
+                "min_q_coverage": {
+                    "type": "number",
+                    "description": "Minimum query coverage."
+                },
+                "min_identity": {
+                    "type": "number",
+                    "description": "Minimum identity percentage."
+                },
+                "min_identity_strict": {
+                    "type": "number",
+                    "description": "Minimum strict identity percentage."
+                },
+                "candidates_sources_json_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain candidates sources in JSON format."
+                },
+                "db_coverage_json_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain database coverage in JSON format."
+                },
+                "gbif_accepted_status": {
+                    "type": "string",
+                    "description": "GBIF accepted status."
+                },
+                "gbif_limit_records": {
+                    "type": "integer",
+                    "description": "GBIF limit records."
+                },
+                "ncbi_api_key": {
+                    "type": "string",
+                    "description": "NCBI API key."
+                },
+                "user_email": {
+                    "type": "string",
+                    "description": "User email."
                 }
             }
         },
