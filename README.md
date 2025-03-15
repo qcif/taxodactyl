@@ -108,13 +108,21 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
 -->
-
+## Run
 Now, you can run the pipeline using:
 
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run ../../daff-taxassignwf/main.nf --metadata metadata_bacteria.csv --sequences queries_bacteria.fasta --blastdb ../../../blastdbs/core_nt --outdir output150301 -profile singularity --taxdb ../../../.taxonkit/ -c ../nextflow.config -resume
+nextflow run /path/to/pipeline/main.nf \\
+    --metadata metadata_bacteria.csv \\
+    --sequences queries_bacteria.fasta \\
+    --blastdb /path/to/blastdbs/core_nt \\
+    --outdir output \\
+    -profile singularity \\
+    --taxdb /path/to/.taxonkit/ \\
+    -c /path/to/nextflow.config \\
+    -resume
 ```
 <!-- TODO 
 > [!WARNING]
