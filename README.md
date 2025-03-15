@@ -63,7 +63,29 @@ The mandatory input includes the following parameters:
 
 --taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit.
 
-These parameters are essential for the pipeline to run correctly and produce the desired outputs.
+### sequences
+
+### Metadata file (`metadata.csv`)
+
+The `metadata.csv` file should adhere to the following structure
+
+#### Required Columns
+1. **sample_id**
+2. **locus**
+3. **preliminary_id**
+
+#### Optional Columns
+1. **taxa_of_interest** - if multiple, they should be separated by |
+2. **country**
+3. **host**
+
+#### Example
+```csv
+sample_id,locus,preliminary_id,taxa_of_interest,country,host
+sample1,locus1,PMI1,taxa1,USA,host1
+sample2,locus2,PMI2,taxa2,CAN,host2
+sample3,locus3,PMI3,taxa3|taxa4,UK,host3
+```
 
 <!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
      Explain what rows and columns represent. For instance (please edit as appropriate):
