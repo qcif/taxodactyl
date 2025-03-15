@@ -114,14 +114,14 @@ Now, you can run the pipeline using:
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run /path/to/pipeline/main.nf \\
-    --metadata metadata_bacteria.csv \\
-    --sequences queries_bacteria.fasta \\
-    --blastdb /path/to/blastdbs/core_nt \\
-    --outdir output \\
-    -profile singularity \\
-    --taxdb /path/to/.taxonkit/ \\
-    -c /path/to/nextflow.config \\
+nextflow run /path/to/pipeline/main.nf \
+    --metadata metadata_bacteria.csv \
+    --sequences queries_bacteria.fasta \
+    --blastdb /path/to/blastdbs/core_nt \
+    --outdir output \
+    -profile singularity \
+    --taxdb /path/to/.taxonkit/ \
+    -c /path/to/nextflow.config \
     -resume
 ```
 <!-- TODO 
