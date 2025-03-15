@@ -2,7 +2,7 @@ process MAFFT_ALIGN {
     tag "$query_folder"
 
     input:
-    tuple val(query_folder), path(candididate_fasta_file)
+    tuple val(query_id), val(query_folder), path(candidate_fasta_file), val(query_sequence)
 
     output:
     tuple val(query_folder), path("$query_folder/candidates.msa"), emit: aligned_sequences
@@ -19,11 +19,14 @@ process MAFFT_ALIGN {
     def args         = task.ext.args   ?: ''
     """
     mkdir -p $query_folder
-    mv $candididate_fasta_file $query_folder/
+    mv $candidate_fasta_file $query_folder/
+    echo ">$query_id" > $query_folder/temp.fasta
+    echo $query_sequence >> $query_folder/temp.fasta
+    cat $query_folder/$candidate_fasta_file >> $query_folder/temp.fasta
     mafft \\
         --thread ${task.cpus} \\
         --phylipout \\
-        $query_folder/$params.candidates_fasta_filename \\
+        $query_folder/temp.fasta \\
         > $query_folder/candidates.msa
 
     cat <<-END_VERSIONS > versions.yml

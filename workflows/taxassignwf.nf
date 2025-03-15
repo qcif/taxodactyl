@@ -87,54 +87,65 @@ workflow TAXASSIGNWF {
         ch_candidates_for_source_diversity_filtered
     )
 
-    EVALUATE_DATABASE_COVERAGE (
-        EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-        file(params.metadata)
-    )
+    // EVALUATE_DATABASE_COVERAGE (
+    //     EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+    //     file(params.metadata)
+    // )
+
+    Channel.fromPath(file(params.sequences))
+        .splitFasta(record: [id: true, sequence: true])
+        .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
+        .set { ch_queryfasta }
+
+    EXTRACT_CANDIDATES.out.candidates_for_alignment
+        .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+        .combine(ch_queryfasta, by: 0)
+        .set { ch_seqs_for_alignment }
 
     MAFFT_ALIGN (
-        EXTRACT_CANDIDATES.out.candidates_for_alignment
+        ch_seqs_for_alignment
     )
 
     FASTME (
         MAFFT_ALIGN.out.aligned_sequences
     )
 
-    EXTRACT_HITS.out.hits
-        .flatten()
-        .map { file-> [file.parent.name, file.parent] }
-        .groupTuple()
-        .map { folder, files -> [folder, files[0] ]}
-        .set { ch_hits_for_alternative_report }
+    // EXTRACT_HITS.out.hits
+    //     .flatten()
+    //     .map { file-> [file.parent.name, file.parent] }
+    //     .groupTuple()
+    //     .map { folder, files -> [folder, files[0] ]}
+    //     .set { ch_hits_for_alternative_report }
 
     // ch_hits_for_alternative_report.view()
 
-    EXTRACT_CANDIDATES.out.candidates_for_db_coverage
-        .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-        .set { ch_candidates_for_alternative_report }
+    // EXTRACT_CANDIDATES.out.candidates_for_db_coverage
+    //     .map { folderVal, filePath -> [folderVal, filePath.parent] }  
+    //     .set { ch_candidates_for_alternative_report }
 
-    ch_hits_for_alternative_report
-        .combine(FASTME.out.nwk, by: 0)
-        .combine(ch_candidates_for_alternative_report, by: 0)
-        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-        .toList()
-        .map { it.transpose() }
-        .set { ch_files_for_report }
+    // ch_hits_for_alternative_report
+    //     .combine(FASTME.out.nwk, by: 0)
+    //     .combine(ch_candidates_for_alternative_report, by: 0)
+    //     .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
+    //     .toList()
+    //     .map { it.transpose() }
+    //     .set { ch_files_for_report }
 
-    EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
-        .ifEmpty (["NO_QUERY", "${projectDir}/assets/NO_FILE"])
-        .toList()
-        .map { it.transpose() }
-        .set { ch_candidates_sources_for_report }
+    // EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+    //     .ifEmpty (["NO_QUERY", "${projectDir}/assets/NO_FILE"])
+    //     .toList()
+    //     .map { it.transpose() }
+    //     .set { ch_candidates_sources_for_report }
 
 
     // ch_candidates_sources_for_report.view()
 
-    REPORT (
-        ch_files_for_report,
-        ch_candidates_sources_for_report,
-        EXTRACT_TAXONOMY.out
-    )
+    // REPORT (
+    //     ch_files_for_report,
+    //     ch_candidates_sources_for_report,
+    //     EXTRACT_TAXONOMY.out,
+    //     file(params.metadata)
+    // )
 
     ch_versions = Channel.empty()
 

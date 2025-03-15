@@ -1,4 +1,5 @@
 process REPORT {
+    containerOptions "--bind ${workDir} --bind ${file(params.sequences).parent}"
       
     input:
     tuple val(common_files_query_list),  
@@ -9,6 +10,7 @@ process REPORT {
     tuple val(source_diversity_query_list), 
         path(source_diversity_json_file_list, stageAs: 'source_diversity*.json')
     path(taxonomy_file)
+    path(metadata_file)
 
     script:
     def common_files_size = common_files_query_list.size()

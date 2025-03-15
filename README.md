@@ -50,6 +50,16 @@ The following versions of the programs were used to test this pipeline:
 ### Nextflow
 If you are new to Nextflow, please refer to [this page](https://www.nextflow.io/docs/latest/install.html#installation) on how to set-up Nextflow.
 
+## Input
+The mandatory input includes the following parameters:
+
+--metadata /path/to/metadata.csv: The metadata file containing information about the sequences.
+--sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).
+--blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching.
+--outdir /path/to/output: The output directory where the results will be stored.
+--taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit.
+These parameters are essential for the pipeline to run correctly and produce the desired outputs.
+
 <!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
      Explain what rows and columns represent. For instance (please edit as appropriate):
 
@@ -71,10 +81,7 @@ Now, you can run the pipeline using:
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run daff/taxassignwf \
-   -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+nextflow run ../../daff-taxassignwf/main.nf --metadata metadata_bacteria.csv --sequences queries_bacteria.fasta --blastdb ../../../blastdbs/core_nt --outdir output150301 -profile singularity --taxdb ../../../.taxonkit/ -c ../nextflow.config -resume
 ```
 <!-- TODO 
 > [!WARNING]
