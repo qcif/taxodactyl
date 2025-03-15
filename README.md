@@ -26,6 +26,11 @@
 
 ## Prerequisites
 
+### Software
+
+1. Instructions on how to set up Nextflow and a compatible version of Java on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
+2. To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
+
 The following versions of the programs were used to test this pipeline:
 
 <table border="1" style="border-collapse: collapse;">
@@ -35,20 +40,22 @@ The following versions of the programs were used to test this pipeline:
     </tr>
     <tr>
         <td style="border: 1px solid;">Singularity</td>
-        <td style="border: 1px solid;">3.10.2-1</td>
+        <td style="border: 1px solid;">3.7.0</td>
     </tr>
     <tr>
         <td style="border: 1px solid;">Java</td>
-        <td style="border: 1px solid;">11.0.15.1</td>
+        <td style="border: 1px solid;">17.0.13</td>
     </tr>
     <tr>
         <td style="border: 1px solid;">Nextflow</td>
-        <td style="border: 1px solid;">24.10.2</td>
+        <td style="border: 1px solid;">24.10.3</td>
     </tr>
 </table>
 
-### Nextflow
-If you are new to Nextflow, please refer to [this page](https://www.nextflow.io/docs/latest/install.html#installation) on how to set-up Nextflow.
+### Databases
+1. Download a preformatted NCBI BLAST database `core_nt` database by running the update_blastdb.pl program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). 
+2. [Install](https://bioinf.shenwei.me/taxonkit/#installation) TaxonKit - NCBI Taxonomy Toolkit
+
 
 ## Input
 The mandatory input includes the following parameters:
@@ -57,7 +64,10 @@ The mandatory input includes the following parameters:
 
 --sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).
 
---blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching.
+--blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching. Your `/path/to/blastdbs` folder should contain the following files:
+- core_nt with extensions `.nal`, `.ndb`, `.njs`, `.nos`, `.not`, `.ntf` and `.nto`
+- multiple volumes of core_nt, named core_nt.`NUM` with extensions `.nhr`, `.nin`, `.nnd`, `.nni`, `.nog`, `.nsq`
+- taxdb.btd and taxdb.bti files
 
 --outdir /path/to/output: The output directory where the results will be stored.
 
@@ -108,13 +118,13 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
 -->
-## Run
+## Running the pipeline
 Now, you can run the pipeline using:
 
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run /path/to/pipeline/main.nf \
+nextflow run qcif/nf-daff-biosecurity-wf2 \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/queries.fasta \
     --blastdb /path/to/blastdbs/core_nt \
