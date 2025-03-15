@@ -53,11 +53,11 @@ If you are new to Nextflow, please refer to [this page](https://www.nextflow.io/
 ## Input
 The mandatory input includes the following parameters:
 
---metadata /path/to/metadata.csv: The metadata file containing information about the sequences.
---sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).
---blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching.
---outdir /path/to/output: The output directory where the results will be stored.
---taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit.
+--metadata /path/to/metadata.csv: The metadata file containing information about the sequences.\\
+--sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).\\
+--blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching.\\
+--outdir /path/to/output: The output directory where the results will be stored.\\
+--taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit.\\
 These parameters are essential for the pipeline to run correctly and produce the desired outputs.
 
 <!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
