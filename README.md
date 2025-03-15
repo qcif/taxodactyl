@@ -115,10 +115,10 @@ Now, you can run the pipeline using:
 
 ```bash
 nextflow run /path/to/pipeline/main.nf \
-    --metadata metadata_bacteria.csv \
-    --sequences queries_bacteria.fasta \
+    --metadata /path/to/metadata.csv \
+    --sequences /path/to/queries.fasta \
     --blastdb /path/to/blastdbs/core_nt \
-    --outdir output \
+    --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
     -c /path/to/nextflow.config \
