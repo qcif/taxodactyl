@@ -53,7 +53,7 @@ The following versions of the programs were used to test this pipeline:
 </table>
 
 ### Databases
-1. Download a preformatted NCBI BLAST database `core_nt` database by running the update_blastdb.pl program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). 
+1. Download a preformatted NCBI BLAST database `core_nt` database by running the update_blastdb.pl program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
 2. [Install](https://bioinf.shenwei.me/taxonkit/#installation) TaxonKit - NCBI Taxonomy Toolkit
 
 
@@ -71,7 +71,7 @@ The mandatory input includes the following parameters:
 
 --outdir /path/to/output: The output directory where the results will be stored.
 
---taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit.
+--taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit. Following files should be available in that folder: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt
 
 ### Sequences file (`queries.fasta`)
 #### Example
@@ -119,7 +119,7 @@ Each row represents a fastq file (single-end) or a pair of fastq files (paired e
 
 -->
 ## Running the pipeline
-Now, you can run the pipeline using:
+You can run the pipeline using:
 
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
@@ -131,9 +131,36 @@ nextflow run qcif/nf-daff-biosecurity-wf2 \
     --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
-    -c /path/to/nextflow.config \
     -resume
 ```
+
+## Results folder structure
+```
+output
+├── blast_result.xml
+├── pipeline_info
+│   ├── execution_report_2025-03-15_03-16-36.html
+│   ├── execution_timeline_2025-03-15_03-16-36.html
+│   ├── execution_trace_2025-03-15_03-16-36.txt
+│   ├── params_2025-03-15_03-16-43.json
+│   ├── pipeline_dag_2025-03-15_03-16-36.html
+│   ├── taxassignwf_software_versions.yml
+│   └── versions.yml
+├── query_001_VE24-1075_COI
+│   ├── blast_hits.fasta
+│   ├── candidates.csv
+│   ├── candidates.fasta
+│   ├── candidates.msa
+│   ├── candidates.msa.nwk
+│   └── identity-boxplot.png
+└── query_002_VE24-1079_COI
+    ├── blast_hits.fasta
+    ├── candidates.csv
+    ├── candidates.fasta
+    ├── candidates.msa
+    └── candidates.msa.nwk
+```
+
 <!-- TODO 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files). -->
