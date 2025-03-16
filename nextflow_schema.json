@@ -142,10 +142,18 @@
                 "ncbi_api_key": {
                     "type": "string",
                     "description": "NCBI API key."
-                },
+               },
                 "user_email": {
                     "type": "string",
                     "description": "User email."
+                },
+                "tree_nwk_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain the tree in Newick format."
+                },
+                "boxplot_img_filename": {
+                    "type": "string",
+                    "description": "Name of the file that will contain the boxplot image."
                 }
             }
         },

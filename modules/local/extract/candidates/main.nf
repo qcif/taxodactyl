@@ -15,7 +15,7 @@ process EXTRACT_CANDIDATES {
     path("$query_folder/1.flag")
     path("$query_folder/2.flag"), optional: true
     path("$query_folder/$params.candidates_csv_filename")
-    path("$query_folder/identity-boxplot.png"), optional: true
+    path("$query_folder/$params.boxplot_img_filename"), optional: true
     // tuple val(query_folder), 
     //     path("$query_folder/$params.candidates_json_filename"), 
     //     path("$query_folder/$params.candidates_fasta_filename"), 
@@ -30,7 +30,7 @@ process EXTRACT_CANDIDATES {
     publishDir "${params.outdir}", mode: 'copy', 
         pattern:    "$query_folder/$params.candidates_csv_filename"
     publishDir "${params.outdir}", mode: 'copy', 
-        pattern:    "$query_folder/identity-boxplot.png"
+        pattern:    "$query_folder/$params.boxplot_img_filename"
 
     script:
     """

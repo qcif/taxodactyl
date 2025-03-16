@@ -58,20 +58,22 @@ The following versions of the programs were used to test this pipeline:
 
 
 ## Input
+### Required
 The mandatory input includes the following parameters:
-
---metadata /path/to/metadata.csv: The metadata file containing information about the sequences.
-
---sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).
-
---blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching. Your `/path/to/blastdbs` folder should contain the following files:
+- metadata /path/to/metadata.csv: The metadata file containing information about the sequences.
+- sequences /path/to/queries.fasta: The FASTA file containing the query sequences (up to 100).
+- blastdb /path/to/blastdbs/core_nt: The BLAST database to be used for query searching. Your `/path/to/blastdbs` folder should contain the following files:
 - core_nt with extensions `.nal`, `.ndb`, `.njs`, `.nos`, `.not`, `.ntf` and `.nto`
 - multiple volumes of core_nt, named core_nt.`NUM` with extensions `.nhr`, `.nin`, `.nnd`, `.nni`, `.nog`, `.nsq`
 - taxdb.btd and taxdb.bti files
+- outdir /path/to/output: The output directory where the results will be stored.
+- taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit. Following files should be available in that folder: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt
 
---outdir /path/to/output: The output directory where the results will be stored.
+### Recommended
+You can [generate an NCBI API key](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317) to eliminate restrictions on Entrez queries and make the database coverage evaluation process faster. Parse it using the following parameters:
+- ncbi_api_key your_ncbi_api_key 
+- user_email your_email_address
 
---taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit. Following files should be available in that folder: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt
 
 ### Sequences file (`queries.fasta`)
 #### Example
@@ -131,6 +133,8 @@ nextflow run qcif/nf-daff-biosecurity-wf2 \
     --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
+    -- ncbi_api_key your_ncbi_api_key \
+    -- user_email your_email_address \
     -resume
 ```
 

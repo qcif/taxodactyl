@@ -11,7 +11,7 @@ process FASTME {
     tuple val(query_folder), path("*.bootstrap") , emit: bootstrap , optional: true
     path "versions.yml" , emit: versions
 
-    publishDir "${params.outdir}/$query_folder", mode: 'copy', pattern:    "${infile}.nwk"
+    publishDir "${params.outdir}/$query_folder", mode: 'copy', pattern:    "$params.tree_nwk_filename"
 
     script:
     """
@@ -19,7 +19,7 @@ process FASTME {
         -i $infile \\
         -d \\
         -O ${infile}.matrix.phy \\
-        -o ${infile}.nwk \\
+        -o $params.tree_nwk_filename \\
         -T $task.cpus
 
 

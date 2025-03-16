@@ -1,4 +1,4 @@
-process SET_ENVIRONMENT {
+process CONFIGURE_ENVIRONMENT {
     output:
     file 'env_vars.sh'
 
@@ -28,10 +28,16 @@ process SET_ENVIRONMENT {
     echo 'export DB_COVERAGE_JSON_FILENAME=${params.db_coverage_json_filename}' >> env_vars.sh
     echo 'export GBIF_ACCEPTED_STATUS=${params.gbif_accepted_status}' >> env_vars.sh
     echo 'export GBIF_LIMIT_RECORDS=${params.gbif_limit_records}' >> env_vars.sh
-    echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
-    echo 'export USER_EMAIL=${params.user_email}' >> env_vars.sh
     echo 'export MPLCONFIGDIR=.matplotlib' >> env_vars.sh
     echo 'export LOGGING_DEBUG=1' >> env_vars.sh
     echo 'export TAXONKIT_DATA=${file(params.taxdb)}' >> env_vars.sh
+    echo 'export TREE_NWK_FILENAME=${params.tree_nwk_filename}' >> env_vars.sh
+    if [ "${params.user_email}" != "none" ]; then
+        echo 'export USER_EMAIL=${params.user_email}' >> env_vars.sh
+    fi
+    if [ "${params.ncbi_api_key}" != "none" ]; then
+        echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
+    fi
+    echo 'export BOXPLOT_IMG_FILENAME=${params.boxplot_img_filename}' >> env_vars.sh
     """
 }

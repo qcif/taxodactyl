@@ -11,7 +11,7 @@ include { MAFFT_ALIGN } from '../modules/local/mafft/align/main'
 include { EXTRACT_HITS } from '../modules/local/extract/hits/main'
 include { BLAST_BLASTDBCMD } from '../modules/local/blast/blastdbcmd/main'
 include { EXTRACT_TAXONOMY } from '../modules/local/extract/taxonomy/main'
-include { SET_ENVIRONMENT } from '../modules/local/utils/setenvironment/main'
+include { CONFIGURE_ENVIRONMENT } from '../modules/local/configure/environment/main'
 include { EXTRACT_CANDIDATES } from '../modules/local/extract/candidates/main'
 include { EVALUATE_SOURCE_DIVERSITY } from '../modules/local/evaluate/sourcediversity/main'
 include { EVALUATE_DATABASE_COVERAGE } from '../modules/local/evaluate/databasecoverage/main'
@@ -32,7 +32,7 @@ workflow TAXASSIGNWF {
 
     main:
 
-    SET_ENVIRONMENT (
+    CONFIGURE_ENVIRONMENT (
     )
 
     BLAST_BLASTN (
@@ -58,16 +58,6 @@ workflow TAXASSIGNWF {
         .map { folder, files -> [folder, files[0], files[1] ]}
         .set { ch_hits }  
 
-    // EXTRACT_HITS.out.hits_folders_for_alternative_report
-    //     .flatten()
-    //     .map { folder-> [folder.name, folder] }
-    //     .groupTuple()
-    //     .map { folderVal, folderPath -> [folderVal, folderPath[0]] }
-    //     .set { ch_hits_for_alternative_report }
-    // ch_hits_for_alternative_report.view()  
-    
-    // ch_hits.view() 
-    // EXTRACT_HITS.out.extract_hits_log.view()
 
     EXTRACT_CANDIDATES (
        ch_hits,
@@ -87,10 +77,10 @@ workflow TAXASSIGNWF {
         ch_candidates_for_source_diversity_filtered
     )
 
-    // EVALUATE_DATABASE_COVERAGE (
-    //     EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-    //     file(params.metadata)
-    // )
+    EVALUATE_DATABASE_COVERAGE (
+        EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+        file(params.metadata)
+    )
 
     Channel.fromPath(file(params.sequences))
         .splitFasta(record: [id: true, sequence: true])
@@ -110,42 +100,38 @@ workflow TAXASSIGNWF {
         MAFFT_ALIGN.out.aligned_sequences
     )
 
-    // EXTRACT_HITS.out.hits
-    //     .flatten()
-    //     .map { file-> [file.parent.name, file.parent] }
-    //     .groupTuple()
-    //     .map { folder, files -> [folder, files[0] ]}
-    //     .set { ch_hits_for_alternative_report }
+    EXTRACT_HITS.out.hits
+        .flatten()
+        .map { file-> [file.parent.name, file.parent] }
+        .groupTuple()
+        .map { folder, files -> [folder, files[0] ]}
+        .set { ch_hits_for_alternative_report }
 
-    // ch_hits_for_alternative_report.view()
+    EXTRACT_CANDIDATES.out.candidates_for_db_coverage
+        .map { folderVal, filePath -> [folderVal, filePath.parent] }  
+        .set { ch_candidates_for_alternative_report }
 
-    // EXTRACT_CANDIDATES.out.candidates_for_db_coverage
-    //     .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-    //     .set { ch_candidates_for_alternative_report }
+    ch_hits_for_alternative_report
+        .combine(FASTME.out.nwk, by: 0)
+        .combine(ch_candidates_for_alternative_report, by: 0)
+        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
+        .toList()
+        .map { it.transpose() }
+        .set { ch_files_for_report }
 
-    // ch_hits_for_alternative_report
-    //     .combine(FASTME.out.nwk, by: 0)
-    //     .combine(ch_candidates_for_alternative_report, by: 0)
-    //     .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-    //     .toList()
-    //     .map { it.transpose() }
-    //     .set { ch_files_for_report }
+    EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
+        .ifEmpty (["QUERY_FOLDER", "${projectDir}/assets/QUERY_FOLDER"])
+        .toList()
+        .map { it.transpose() }
+        .set { ch_candidates_sources_for_report }
 
-    // EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
-    //     .ifEmpty (["NO_QUERY", "${projectDir}/assets/NO_FILE"])
-    //     .toList()
-    //     .map { it.transpose() }
-    //     .set { ch_candidates_sources_for_report }
-
-
-    // ch_candidates_sources_for_report.view()
-
-    // REPORT (
-    //     ch_files_for_report,
-    //     ch_candidates_sources_for_report,
-    //     EXTRACT_TAXONOMY.out,
-    //     file(params.metadata)
-    // )
+    REPORT (
+        ch_files_for_report,
+        ch_candidates_sources_for_report,
+        EXTRACT_TAXONOMY.out,
+        file(params.metadata)
+    )
 
     ch_versions = Channel.empty()
 
