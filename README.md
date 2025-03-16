@@ -54,7 +54,7 @@ The following versions of the programs were used to test this pipeline:
 
 ### Databases
 1. Download a preformatted NCBI BLAST database `core_nt` database by running the update_blastdb.pl program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
-2. [Install](https://bioinf.shenwei.me/taxonkit/#installation) TaxonKit - NCBI Taxonomy Toolkit
+2. Download the NCBI TaxDB files from https://ftp.ncbi.nlm.nih.gov/blast/db/taxdb.tar.gz and extract them to `~/.taxonkit`.
 
 
 ## Input
@@ -70,9 +70,9 @@ The mandatory input includes the following parameters:
 - taxdb /path/to/.taxonkit/: The path to the taxonomic database NCBI Taxonomy Toolkit. Following files should be available in that folder: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt
 
 ### Recommended
-You can [generate an NCBI API key](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317) to eliminate restrictions on Entrez queries and make the database coverage evaluation process faster. Parse it using the following parameters:
-- ncbi_api_key your_ncbi_api_key 
-- user_email your_email_address
+You can [generate an NCBI API key](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317) to eliminate restrictions on Entrez queries and make the database coverage evaluation process faster. Pass it with the following parameters:
+- ncbi_api_key <your_key_123>
+- user_email <me@example.com>
 
 
 ### Sequences file (`queries.fasta`)
@@ -94,16 +94,42 @@ The `metadata.csv` file should adhere to the following structure
 3. **preliminary_id**
 
 #### Optional Columns
-1. **taxa_of_interest** - if multiple, they should be separated by |
+1. **taxa_of_interest** - if multiple, they should be separated by a `|` character
 2. **host**
 3. **country**
 
 #### Example
-```csv
-sample_id,locus,preliminary_id,taxa_of_interest,host,country
-VE24-1075_COI,COI,Aphididae,Myzus persicae|Aphididae,Cut flower Rosa,Ecuador
-VE24-1079_COI,COI,Miridae,Lygus pratensis,Cut flower Paenonia,Netherlands
-```
+
+<table>
+    <thead>
+        <tr>
+            <th>Sample ID</th>
+            <th>Locus</th>
+            <th>Preliminary ID</th>
+            <th>Taxa of Interest</th>
+            <th>Host</th>
+            <th>Country</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>VE24-1075_COI</td>
+            <td>COI</td>
+            <td>Aphididae</td>
+            <td>Myzus persicae | Aphididae</td>
+            <td>Cut flower Rosa</td>
+            <td>Ecuador</td>
+        </tr>
+        <tr>
+            <td>VE24-1079_COI</td>
+            <td>COI</td>
+            <td>Miridae</td>
+            <td>Lygus pratensis</td>
+            <td>Cut flower Paenonia</td>
+            <td>Netherlands</td>
+        </tr>
+    </tbody>
+</table>
 
 <!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
      Explain what rows and columns represent. For instance (please edit as appropriate):
@@ -133,8 +159,8 @@ nextflow run qcif/nf-daff-biosecurity-wf2 \
     --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
-    -- ncbi_api_key your_ncbi_api_key \
-    -- user_email your_email_address \
+    -- ncbi_api_key API_KEY \
+    -- user_email EMAIL \
     -resume
 ```
 
