@@ -159,36 +159,38 @@ nextflow run qcif/nf-daff-biosecurity-wf2 \
     --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
-    -- ncbi_api_key API_KEY \
-    -- user_email EMAIL \
+    --ncbi_api_key API_KEY \
+    --user_email EMAIL \
     -resume
 ```
 
 ## Results folder structure
 ```
-output
+output/
 ├── blast_result.xml
 ├── pipeline_info
-│   ├── execution_report_2025-03-15_03-16-36.html
-│   ├── execution_timeline_2025-03-15_03-16-36.html
-│   ├── execution_trace_2025-03-15_03-16-36.txt
-│   ├── params_2025-03-15_03-16-43.json
-│   ├── pipeline_dag_2025-03-15_03-16-36.html
+│   ├── execution_report_2025-03-16_20-39-21.html
+│   ├── execution_timeline_2025-03-16_20-39-21.html
+│   ├── execution_trace_2025-03-16_20-39-21.txt
+│   ├── params_2025-03-16_20-39-27.json
+│   ├── pipeline_dag_2025-03-16_20-39-21.html
 │   ├── taxassignwf_software_versions.yml
 │   └── versions.yml
 ├── query_001_VE24-1075_COI
-│   ├── blast_hits.fasta
+│   ├── all_blast_hits.fasta
 │   ├── candidates.csv
 │   ├── candidates.fasta
+│   ├── candidates_identity_boxplot.png
 │   ├── candidates.msa
-│   ├── candidates.msa.nwk
-│   └── identity-boxplot.png
+│   ├── candidates.nwk
+│   └── report_VE24-1075_COI_NOW.html
 └── query_002_VE24-1079_COI
-    ├── blast_hits.fasta
+    ├── all_blast_hits.fasta
     ├── candidates.csv
     ├── candidates.fasta
     ├── candidates.msa
-    └── candidates.msa.nwk
+    ├── candidates.nwk
+    └── report_VE24-1079_COI_NOW.html
 ```
 
 <!-- TODO 
