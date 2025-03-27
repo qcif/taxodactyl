@@ -89,7 +89,7 @@ AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGAC
 The `metadata.csv` file should adhere to the following structure
 
 #### Required Columns
-1. **sample_id**
+1. **sample_id** - needs to match the sequence id from the `queries.fasta` file
 2. **locus**
 3. **preliminary_id**
 
@@ -103,12 +103,12 @@ The `metadata.csv` file should adhere to the following structure
 <table>
     <thead>
         <tr>
-            <th>Sample ID</th>
-            <th>Locus</th>
-            <th>Preliminary ID</th>
-            <th>Taxa of Interest</th>
-            <th>Host</th>
-            <th>Country</th>
+            <th>sample_id</th>
+            <th>locus</th>
+            <th>preliminary_id</th>
+            <th>taxa_of_interest</th>
+            <th>host</th>
+            <th>country</th>
         </tr>
     </thead>
     <tbody>
