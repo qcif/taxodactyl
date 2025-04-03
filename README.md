@@ -54,7 +54,9 @@ The following versions of the programs were used to test this pipeline:
 
 ### Databases
 1. Download a preformatted NCBI BLAST database `core_nt` database by running the update_blastdb.pl program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
-2. Download the NCBI TaxDB files from https://ftp.ncbi.nlm.nih.gov/blast/db/taxdb.tar.gz and extract them to `~/.taxonkit`.
+The command should look like this:
+`perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
+2. Download the NCBI taxonomy data files from https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz and extract them to `~/.taxonkit`. Similarly, download the taxonkit tool from https://github.com/shenwei356/taxonkit/releases and move into the same folder.
 
 
 ## Input
