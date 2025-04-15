@@ -17,6 +17,7 @@ include { EVALUATE_SOURCE_DIVERSITY } from '../modules/local/evaluate/sourcedive
 include { EVALUATE_DATABASE_COVERAGE } from '../modules/local/evaluate/databasecoverage/main'
 include { FASTME } from '../modules/local/fastme/main'
 include { REPORT } from '../modules/local/report/main'
+include { VALIDATE_INPUT } from '../modules/local/validate/input/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,8 +36,12 @@ workflow TAXASSIGNWF {
     CONFIGURE_ENVIRONMENT (
     )
 
+    VALIDATE_INPUT (
+    )
+
     BLAST_BLASTN (
-        file(params.sequences)
+        file(params.sequences),
+        VALIDATE_INPUT.out
     )
 
     EXTRACT_HITS (
@@ -73,9 +78,22 @@ workflow TAXASSIGNWF {
         }
        .map { tuple -> [tuple[0], tuple[2]] }
 
+
+    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+        .filter { tuple -> 
+            def (folder, countFile, candidateJsonFile) = tuple
+            def count = countFile.text.trim().toInteger()
+            return count == 0 || count > 3
+        }
+       .map { tuple -> [tuple[0], [file("${projectDir}/assets/QUERY_FOLDER/QUERY_FILE")]] }
+
     EVALUATE_SOURCE_DIVERSITY (
         ch_candidates_for_source_diversity_filtered
     )
+
+    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+        .concat(ch_mock_source_diversity)
+        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
     EVALUATE_DATABASE_COVERAGE (
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
@@ -115,20 +133,11 @@ workflow TAXASSIGNWF {
         .combine(FASTME.out.nwk, by: 0)
         .combine(ch_candidates_for_alternative_report, by: 0)
         .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-        .toList()
-        .map { it.transpose() }
+        .combine(ch_source_diversity_for_report, by: 0)
         .set { ch_files_for_report }
-
-    EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
-        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
-        .ifEmpty (["QUERY_FOLDER", "${projectDir}/assets/QUERY_FOLDER"])
-        .toList()
-        .map { it.transpose() }
-        .set { ch_candidates_sources_for_report }
 
     REPORT (
         ch_files_for_report,
-        ch_candidates_sources_for_report,
         EXTRACT_TAXONOMY.out,
         file(params.metadata)
     )

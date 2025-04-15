@@ -3,6 +3,7 @@ process BLAST_BLASTN {
 
     input:
     path(fasta)
+    val ready
 
     output:
     path('blast_result.xml'), emit: blast_output
