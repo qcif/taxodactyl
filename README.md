@@ -58,6 +58,15 @@ The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 2. Download the NCBI taxonomy data files from https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz and extract them to `~/.taxonkit`. Similarly, download the taxonkit tool from https://github.com/shenwei356/taxonkit/releases and move into the same folder.
 
+### Download pipeline
+Enter the folder where you want the pipeline to be and run the following:
+```
+git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git
+```
+If you want to run a specific version, add a branch to the command (see tags for available versions), e.g.
+```
+git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git --branch v0.1.0
+```
 
 ## Input
 ### Required
@@ -149,7 +158,7 @@ Each row represents a fastq file (single-end) or a pair of fastq files (paired e
 
 -->
 
-## Configuration file
+### Configuration file
 The error strategy for the workflow is set to `ignore`. It means that even if a process encounters an error, Nextflow will continue executing subsequent processes rather than terminating the workflow. This is to avoid interrupting the entire workflow with multiple queries when only one of them fails. To overwrite, create a file named nextflow.config, if it does not already exist, in the execution folder. Add or modify the following block in nextflow.config to specify the error strategy 
 ```
 process {
@@ -164,7 +173,7 @@ You can run the pipeline using:
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run qcif/nf-daff-biosecurity-wf2 \
+nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/queries.fasta \
     --blastdb /path/to/blastdbs/core_nt \
