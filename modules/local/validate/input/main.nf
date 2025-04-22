@@ -1,5 +1,7 @@
 process VALIDATE_INPUT {
 
+    containerOptions "--bind ${file(params.metadata).parent} --bind ${file(params.taxdb)} --bind ${file(params.sequences).parent}"
+
     output:
     val true
 
@@ -7,7 +9,7 @@ process VALIDATE_INPUT {
     """
     python /app/scripts/p0_validation.py \
     --taxdb_dir ${file(params.taxdb)} \
-    --query_fasta ${file(params.sequences)} \
+    ---query_fasta ${file(params.sequences)} \
     --metadata_csv ${file(params.metadata)}
     """
 }
