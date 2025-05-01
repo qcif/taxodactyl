@@ -29,7 +29,13 @@ process BLAST_BLASTN {
         -db ${file(params.blastdb)} \\
         -query ${fasta_name} \\
         -outfmt 5 \\
-        -out blast_result.xml
+        -out blast_result.xml \\
+        -task megablast \\
+        -max_target_seqs 500 \\
+        -evalue 0.05 \\
+        -reward 1 \\
+        -penalty -3
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -37,3 +43,4 @@ process BLAST_BLASTN {
     END_VERSIONS
     """
 }
+
