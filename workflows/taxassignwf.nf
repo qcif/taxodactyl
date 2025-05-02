@@ -108,6 +108,7 @@ workflow TAXASSIGNWF {
     EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
         .combine(ch_queryfasta, by: 0)
+        .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
         .set { ch_seqs_for_alignment }
 
     MAFFT_ALIGN (

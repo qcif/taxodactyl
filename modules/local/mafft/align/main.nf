@@ -2,7 +2,7 @@ process MAFFT_ALIGN {
     tag "$query_folder"
 
     input:
-    tuple val(query_id), val(query_folder), path(candidate_fasta_file), val(query_sequence)
+    tuple val(query_folder), path(candidate_fasta_file), val(query_sequence)
 
     output:
     tuple val(query_folder), path("$query_folder/candidates.msa"), emit: aligned_sequences
@@ -20,7 +20,7 @@ process MAFFT_ALIGN {
     """
     mkdir -p $query_folder
     mv $candidate_fasta_file $query_folder/
-    echo ">$query_id" > $query_folder/temp.fasta
+    echo ">QUERY" > $query_folder/temp.fasta
     echo $query_sequence >> $query_folder/temp.fasta
     cat $query_folder/$candidate_fasta_file >> $query_folder/temp.fasta
     mafft \\
