@@ -1,0 +1,501 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Macrosiphum sp. BOLD-2016,1889697,KR577906,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.981,0.96,573,0.0,1078.84
+Macrosiphum sp. BOLD-2016,1889697,KR561551,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-B06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.98,0.988,590,0.0,1104.61
+Macrosiphum euphorbiae,13131,KF639474,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1129/chasses1129-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.978,1.0,597,0.0,1110.56
+Macrosiphum cholodkovskyi,994498,KF639471,"Macrosiphum cholodkovskyi voucher INRA CBGP ACOE410/chasses410-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,1.0,597,0.0,1102.63
+Macrosiphum sp. BOLD-2016,1889697,KR561411,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.961,574,0.0,1068.93
+Macrosiphum sp. BIOUG09180-F06,2473015,MG508729,"Macrosiphum sp. BIOUG09180-F06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.961,574,0.0,1066.95
+Macrosiphum sp. BOLD-2016,1889697,KR568678,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-H05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.961,574,0.0,1064.97
+Macrosiphum sp. BOLD-2016,1889697,KR571940,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.961,574,0.0,1064.97
+Macrosiphum sp. BOLD-2016,1889697,KR583887,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-C05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.961,574,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR567106,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-D02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.977,0.886,529,0.0,987.659
+Macrosiphum sp. BOLD-2016,1889697,KR564232,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-H04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.992,592,0.0,1094.7
+Macrosiphum sp. BIOUG09174-G05,2473059,MG512740,"Macrosiphum sp. BIOUG09174-G05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.961,574,0.0,1059.02
+Macrosiphum sp. BOLD-2016,1889697,KR582949,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.961,574,0.0,1059.02
+Macrosiphum sp. BOLD-2016,1889697,KR563625,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-E10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.961,574,0.0,1057.04
+Macrosiphum sp. BIOUG26722-F12,2180648,MF833630,"Macrosiphum sp. BIOUG26722-F12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.903,539,0.0,993.606
+Macrosiphum sp. BOLD-2016,1889697,KR567662,"Macrosiphum sp. BOLD-2016 voucher BIOUG09079-G11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.976,0.903,539,0.0,993.606
+Macrosiphum hellebori,384672,ON929000,"Macrosiphum hellebori cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MF140509,"Macrosiphum euphorbiae voucher GTB156DN1535 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,EU701729,"Macrosiphum euphorbiae voucher CNC#HEM051851 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320246,"Macrosiphum euphorbiae voucher NIBGE APH-00555 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,GU668719,"Macrosiphum euphorbiae voucher CNC#HEM059982 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN319903,"Macrosiphum euphorbiae voucher NIBGE APH-00554 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320058,"Macrosiphum euphorbiae voucher NIBGE APH-00525 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MK547613,"Macrosiphum euphorbiae isolate OAI721 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MT516422,"Macrosiphum euphorbiae voucher GTB416DN3023 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KY323033,"Macrosiphum euphorbiae voucher MeKm5 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MZ486436,"Macrosiphum euphorbiae isolate AJ2 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320052,"Macrosiphum euphorbiae voucher NIBGE APH-00524 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KF639482,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1650/chasses1650-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN319872,"Macrosiphum euphorbiae voucher NIBGE APH-00560 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum daphnidis,527747,EU701724,"Macrosiphum daphnidis voucher CNC#HEM054303 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KJ090564,"Macrosiphum euphorbiae voucher BIOUG03250-C05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KF639472,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1029/chasses1029-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KF639479,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1248/chasses1248-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320310,"Macrosiphum euphorbiae voucher NIBGE APH-00561 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MT651328,"Macrosiphum euphorbiae isolate IND01DL cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum hellebori,384672,DQ499037,"Macrosiphum hellebori isolate 1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320016,"Macrosiphum euphorbiae voucher NIBGE APH-00562 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN319878,"Macrosiphum euphorbiae voucher NIBGE APH-00558 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum sp. C1774,486035,EU189671,"Macrosiphum sp. C1774 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MT821481,"Macrosiphum euphorbiae isolate Shimla cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KY323034,"Macrosiphum euphorbiae voucher MeKm3 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,MN320040,"Macrosiphum euphorbiae voucher NIBGE APH-00556 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KF639478,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1232/chasses1232-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum euphorbiae,13131,KR032429,"Macrosiphum euphorbiae voucher CNC#HEM071402 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,1.0,597,0.0,1094.7
+Macrosiphum hellebori,384672,KX631509,"Macrosiphum hellebori cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.975,0.998,596,0.0,1092.72
+Macrosiphum sp. BOLD-2016,1889697,KR574730,"Macrosiphum sp. BOLD-2016 voucher BIOUG09236-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.993,593,0.0,1090.74
+Macrosiphum euphorbiae,13131,MN320256,"Macrosiphum euphorbiae voucher NIBGE APH-00208 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.992,592,0.0,1084.79
+Macrosiphum euphorbiae,13131,PV007200,"Macrosiphum euphorbiae isolate J6P2PL3P cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,0.953,569,0.0,1045.14
+Macrosiphum sp.,2962259,ON929002,"Macrosiphum sp. cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.975,0.95,567,0.0,1043.16
+Macrosiphum sp. BOLD-2016,1889697,KR582542,"Macrosiphum sp. BOLD-2016 voucher BIOUG16018-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.95,567,0.0,1041.18
+Macrosiphum sp. BOLD-2016,1889697,KR560079,"Macrosiphum sp. BOLD-2016 voucher BIOUG08498-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.928,554,0.0,1015.41
+Macrosiphum sp. BOLD-2016,1889697,KR560519,"Macrosiphum sp. BOLD-2016 voucher BIOUG05090-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.923,551,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR578840,"Macrosiphum sp. BOLD-2016 voucher BIOUG05111-G09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.923,551,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR583697,"Macrosiphum sp. BOLD-2016 voucher BIOUG05111-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.923,551,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR563823,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.886,529,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR575793,"Macrosiphum sp. BOLD-2016 voucher BIOUG05405-G05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.873,521,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR571053,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-F03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.975,0.868,518,0.0,953.961
+Macrosiphum sp. BOLD-2016,1889697,KR574090,"Macrosiphum sp. BOLD-2016 voucher BIOUG09237-E11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR566505,"Macrosiphum sp. BOLD-2016 voucher BIOUG05961-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR573985,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.96,573,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR565793,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-C09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR571108,"Macrosiphum sp. BOLD-2016 voucher BIOUG05152-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR582416,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-A10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR561590,"Macrosiphum sp. BOLD-2016 voucher BIOUG05152-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.961,574,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR576529,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-F09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.96,573,0.0,1045.14
+Macrosiphum sp. BOLD-2016,1889697,KR583968,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-D03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.96,573,0.0,1045.14
+Macrosiphum sp. BOLD-2016,1889697,KR562228,"Macrosiphum sp. BOLD-2016 voucher BIOUG05152-A03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.95,567,0.0,1033.25
+Macrosiphum sp. BOLD-2016,1889697,KR579600,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.913,545,0.0,1003.52
+Macrosiphum sp. BOLD-2016,1889697,KR565822,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.913,545,0.0,1003.52
+Macrosiphum gei,994499,KR029964,"Macrosiphum gei cytochrome c oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.974,0.913,545,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR571323,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.91,543,0.0,997.57
+Macrosiphum sp. BIOUG20372-E06,2180614,MF831153,"Macrosiphum sp. BIOUG20372-E06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.903,539,0.0,989.641
+Macrosiphum sp. BOLD-2016,1889697,KR561132,"Macrosiphum sp. BOLD-2016 voucher BIOUG16010-F06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.896,535,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR572567,"Macrosiphum sp. BOLD-2016 voucher BIOUG09237-A03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.886,529,0.0,971.801
+Macrosiphum sp. BOLD-2016,1889697,KR566183,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-A11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.974,0.886,529,0.0,969.819
+Macrosiphum euphorbiae,13131,JF883839,"Macrosiphum euphorbiae voucher CNC#HEM070715 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum euphorbiae,13131,KF639476,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1195/chasses1195-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum sp. BOLD-2016,1889697,KR572605,"Macrosiphum sp. BOLD-2016 voucher 10BBCHEM-0260 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum zionense,1863059,MF831135,"Macrosiphum zionense voucher 10BBCHEM-0395 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum sp. BOLD-2016,1889697,KR581782,"Macrosiphum sp. BOLD-2016 voucher 10BBCHEM-0587 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum euphorbiae,13131,KR033248,"Macrosiphum euphorbiae voucher CNC#HEM056697 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum euphorbiae,13131,KF639473,"Macrosiphum euphorbiae voucher INRA CBGP ACOE1080/chasses1080-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,1.0,597,0.0,1086.77
+Macrosiphum euphorbiae,13131,MN319882,"Macrosiphum euphorbiae voucher NIBGE APH-00559 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.995,594,0.0,1082.81
+Macrosiphum sp. BOLD-2016,1889697,KR562935,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-G10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.975,582,0.0,1061.0
+Macrosiphum sp. BOLD-2016,1889697,KR574378,"Macrosiphum sp. BOLD-2016 voucher BIOUG05100-A02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.948,566,0.0,1031.27
+Macrosiphum zionense,1863059,KR568068,"Macrosiphum zionense voucher BIOUG09237-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.945,564,0.0,1027.3
+Macrosiphum sp. BOLD-2016,1889697,KR573184,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-A08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.943,563,0.0,1025.32
+Macrosiphum euphorbiae,13131,MH821971,"Macrosiphum euphorbiae voucher HL287 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.973,0.938,560,0.0,1021.36
+Macrosiphum euphorbiae,13131,MH821975,"Macrosiphum euphorbiae voucher HLshujia489 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.973,0.938,560,0.0,1021.36
+Macrosiphum euphorbiae,13131,MH821976,"Macrosiphum euphorbiae voucher HLshujia6 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.973,0.938,560,0.0,1021.36
+Macrosiphum sp. BIOUG21027-C01,2180616,MF836451,"Macrosiphum sp. BIOUG21027-C01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.938,560,0.0,1019.38
+Macrosiphum zionense,1863059,KR566048,"Macrosiphum zionense voucher BIOUG09237-D11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.935,558,0.0,1015.41
+Macrosiphum sp. BOLD-2016,1889697,KR562135,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-F02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.935,558,0.0,1015.41
+Macrosiphum sp. BOLD-2016,1889697,KR562213,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.931,556,0.0,1011.45
+Macrosiphum sp. BOLD-2016,1889697,KR578367,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-F12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR560921,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-C07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR573332,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-E03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR564435,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-F12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR568358,"Macrosiphum sp. BOLD-2016 voucher BIOUG08862-H07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR578519,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-A11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR560199,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-H03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR564592,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-F04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.93,555,0.0,1009.46
+Macrosiphum sp. BOLD-2016,1889697,KR566668,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-B06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR570813,"Macrosiphum sp. BOLD-2016 voucher BIOUG09161-C06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR582841,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR570790,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR570039,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-F11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR569912,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR564300,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-H01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum valerianae,1304392,KU567711,"Macrosiphum valerianae voucher BIOUG07986-E09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR566041,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-G03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR564512,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR578432,"Macrosiphum sp. BOLD-2016 voucher BIOUG16021-A02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR582934,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR572463,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-C06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum zionense,1863059,KR564912,"Macrosiphum zionense voucher BIOUG09237-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR569533,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR568666,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-G06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR584355,"Macrosiphum sp. BOLD-2016 voucher BIOUG09237-E09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum zionense,1863059,KR568925,"Macrosiphum zionense voucher BIOUG09237-D06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR574776,"Macrosiphum sp. BOLD-2016 voucher BIOUG08862-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR562309,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-F07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.926,553,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR566372,"Macrosiphum sp. BOLD-2016 voucher BIOUG09461-H09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.928,554,0.0,1005.5
+Macrosiphum sp. BOLD-2016,1889697,KR569287,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-B05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.925,552,0.0,1003.52
+Macrosiphum sp. BOLD-2016,1889697,KR577997,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR578351,"Macrosiphum sp. BOLD-2016 voucher BIOUG05090-E11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR560996,"Macrosiphum sp. BOLD-2016 voucher BIOUG16056-F03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR563591,"Macrosiphum sp. BOLD-2016 voucher BIOUG05116-E08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR567396,"Macrosiphum sp. BOLD-2016 voucher BIOUG05116-D11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR569921,"Macrosiphum sp. BOLD-2016 voucher BIOUG08791-H07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR570294,"Macrosiphum sp. BOLD-2016 voucher BIOUG08884-D09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR565363,"Macrosiphum sp. BOLD-2016 voucher BIOUG08734-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR565579,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-F02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR572109,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR566432,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR566822,"Macrosiphum sp. BOLD-2016 voucher BIOUG05090-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR565913,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-A08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR568570,"Macrosiphum sp. BOLD-2016 voucher BIOUG16025-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR576963,"Macrosiphum sp. BOLD-2016 voucher BIOUG09127-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR581999,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-F03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.923,551,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR563083,"Macrosiphum sp. BOLD-2016 voucher BIOUG05152-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.92,549,0.0,997.57
+Macrosiphum sp. BOLD-2016,1889697,KR583060,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.92,549,0.0,997.57
+Macrosiphum valerianae,1304392,KU567850,"Macrosiphum valerianae voucher BIOUG07984-E10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.918,548,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR577762,"Macrosiphum sp. BOLD-2016 voucher BIOUG05100-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.918,548,0.0,995.588
+Macrosiphum cholodkovskyi,994498,KR029965,"Macrosiphum cholodkovskyi cytochrome c oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.973,0.913,545,0.0,991.624
+Macrosiphum hellebori,384672,KR029962,"Macrosiphum hellebori cytochrome c oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.973,0.913,545,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR571082,"Macrosiphum sp. BOLD-2016 voucher BIOUG05111-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.884,528,0.0,963.872
+Macrosiphum sp. BOLD-2016,1889697,KR576603,"Macrosiphum sp. BOLD-2016 voucher BIOUG08392-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.883,527,0.0,961.89
+Macrosiphum sp. BOLD-2016,1889697,KR578640,"Macrosiphum sp. BOLD-2016 voucher BIOUG15929-C12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.883,527,0.0,961.89
+Macrosiphum sp. BOLD-2016,1889697,KR584383,"Macrosiphum sp. BOLD-2016 voucher BIOUG08284-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.878,524,0.0,959.907
+Macrosiphum sp. BOLD-2016,1889697,KR561313,"Macrosiphum sp. BOLD-2016 voucher BIOUG16010-G06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.973,0.876,523,0.0,953.961
+Macrosiphum albifrons,330458,NC_063971,"Macrosiphum albifrons mitochondrion, complete genome",0.972,1.0,597,0.0,1078.84
+Macrosiphum euphorbiae,13131,JF883800,"Macrosiphum euphorbiae voucher CNC#HEM070271 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum valerianae,1304392,HQ961729,Macrosiphum valerianae voucher BIOUG<CAN,0.972,1.0,597,0.0,1078.84
+Macrosiphum impatientis,527750,EU701731,"Macrosiphum impatientis voucher CNC#HEM049306 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum albifrons,330458,HM416712,"Macrosiphum albifrons voucher CNC#HEM064255 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum valerianae,1304392,KR031566,"Macrosiphum valerianae voucher 07PROBE-06673 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum zionense,1863059,KR567786,"Macrosiphum zionense voucher 10BBCHEM-0396 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum valerianae,1304392,KC502581,"Macrosiphum valerianae voucher CCDB-08110-E07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum sp. BOLD-2016,1889697,KR572374,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-B05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum valerianae,1304392,KR031932,"Macrosiphum valerianae voucher CNC#HEM057350 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum sp. BIOUG26722-H06,2180653,MF829503,"Macrosiphum sp. BIOUG26722-H06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum sp. RFBAE016-09,2553822,GU668156,"Macrosiphum sp. RFBAE016-09 voucher CNC#HEM062561 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum euphorbiae,13131,JF883548,"Macrosiphum euphorbiae voucher CNC#HEM070251 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum albifrons,330458,EU701721,"Macrosiphum albifrons voucher CNC#HEM015401 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum euphorbiae,13131,KF639487,"Macrosiphum euphorbiae voucher INRA CBGP ACOE838/chasses838-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum valerianae,1304392,KR043726,"Macrosiphum valerianae voucher 07PROBE-06672 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum sp. RFBAE447-09,2553824,GU668347,"Macrosiphum sp. RFBAE447-09 voucher CNC#HEM063457 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,1.0,597,0.0,1078.84
+Macrosiphum albifrons,330458,KX631510,"Macrosiphum albifrons cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.972,0.998,596,0.0,1076.86
+Macrosiphum sp. BIOUG26183-E01,2180643,MF835506,"Macrosiphum sp. BIOUG26183-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.961,574,0.0,1039.2
+Macrosiphum sp. BOLD-2016,1889697,KR564398,"Macrosiphum sp. BOLD-2016 voucher BIOUG07501-H05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.961,574,0.0,1039.2
+Macrosiphum sp. BOLD-2016,1889697,KR567953,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.961,574,0.0,1037.22
+Macrosiphum sp. BOLD-2016,1889697,KR574427,"Macrosiphum sp. BOLD-2016 voucher BIOUG04445-A04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.958,572,0.0,1033.25
+Macrosiphum sp. BOLD-2016,1889697,KR564158,"Macrosiphum sp. BOLD-2016 voucher BIOUG07601-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.953,569,0.0,1029.29
+Macrosiphum sp. BOLD-2016,1889697,KR578767,"Macrosiphum sp. BOLD-2016 voucher BIOUG05445-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.953,569,0.0,1029.29
+Macrosiphum sp. BOLD-2016,1889697,KR576967,"Macrosiphum sp. BOLD-2016 voucher BIOUG06688-C01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.951,568,0.0,1025.32
+Macrosiphum sp. BOLD-2016,1889697,KR562925,"Macrosiphum sp. BOLD-2016 voucher BIOUG05821-F09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.943,563,0.0,1017.39
+Macrosiphum euphorbiae,13131,KU567769,"Macrosiphum euphorbiae voucher BIOUG07985-D09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.943,563,0.0,1017.39
+Macrosiphum sp. BOLD-2016,1889697,KR567424,"Macrosiphum sp. BOLD-2016 voucher BIOUG04445-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.943,563,0.0,1015.41
+Macrosiphum sp. BOLD-2016,1889697,KR568798,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.943,563,0.0,1015.41
+Macrosiphum zionense,1863059,KR562006,"Macrosiphum zionense voucher BIOUG09237-A06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.913,545,0.0,989.641
+Macrosiphum sp. BOLD-2016,1889697,KR575582,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.911,544,0.0,987.659
+Macrosiphum sp. BOLD-2016,1889697,KR569966,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,983.695
+Macrosiphum sp. BOLD-2016,1889697,KR574362,"Macrosiphum sp. BOLD-2016 voucher BIOUG09174-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.906,541,0.0,981.712
+Macrosiphum zionense,1863059,KR562656,"Macrosiphum zionense voucher BIOUG09237-D08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.906,541,0.0,981.712
+Macrosiphum euphorbiae,13131,KU567701,"Macrosiphum euphorbiae voucher BIOUG07983-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,981.712
+Macrosiphum sp. BOLD-2016,1889697,KR570335,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-A09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.906,541,0.0,981.712
+Macrosiphum sp. BIOUG26183-C12,2180641,MF828765,"Macrosiphum sp. BIOUG26183-C12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum euphorbiae,13131,KU567726,"Macrosiphum euphorbiae voucher BIOUG07985-H03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR576831,"Macrosiphum sp. BOLD-2016 voucher BIOUG09208-D03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR570457,"Macrosiphum sp. BOLD-2016 voucher BIOUG16068-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BIOUG23640-C03,2180631,MF833312,"Macrosiphum sp. BIOUG23640-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BIOUG21576-E06,2180618,MF834126,"Macrosiphum sp. BIOUG21576-E06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR576511,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-G07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR566097,"Macrosiphum sp. BOLD-2016 voucher BIOUG05091-D11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,977.748
+Macrosiphum zionense,1863059,KR570437,"Macrosiphum zionense voucher BIOUG09681-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR567958,"Macrosiphum sp. BOLD-2016 voucher BIOUG04445-H04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR577005,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-H09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.901,538,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR571956,"Macrosiphum sp. BOLD-2016 voucher BIOUG09300-D05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.903,539,0.0,975.765
+Macrosiphum zionense,1863059,KR564917,"Macrosiphum zionense voucher BIOUG09237-B02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.901,538,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR564380,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-D08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.901,538,0.0,973.783
+Macrosiphum sp. BOLD-2016,1889697,KR560641,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-G03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.899,537,0.0,973.783
+Macrosiphum sp. BIOUG07321-D12,2180602,MF829091,"Macrosiphum sp. BIOUG07321-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.898,536,0.0,971.801
+Macrosiphum sp. BOLD-2016,1889697,KR561091,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-E02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.899,537,0.0,971.801
+Macrosiphum sp. BOLD-2016,1889697,KR572669,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-C01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.898,536,0.0,969.819
+Macrosiphum sp. BOLD-2016,1889697,KR574248,"Macrosiphum sp. BOLD-2016 voucher BIOUG06311-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.893,533,0.0,967.836
+Macrosiphum sp. BOLD-2016,1889697,KR563226,"Macrosiphum sp. BOLD-2016 voucher BIOUG06688-E09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.894,534,0.0,967.836
+Macrosiphum sp. BOLD-2016,1889697,KR580744,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-C10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,963.872
+Macrosiphum sp. BOLD-2016,1889697,KR566818,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.884,528,0.0,959.907
+Macrosiphum sp. BOLD-2016,1889697,KR582811,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-E12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR577711,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-F05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR576877,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-C07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR570163,"Macrosiphum sp. BOLD-2016 voucher BIOUG06155-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.888,530,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR566946,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-F02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,957.925
+Macrosiphum sp. BOLD-2016,1889697,KR581971,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-C12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.886,529,0.0,955.943
+Macrosiphum sp. BOLD-2016,1889697,KR918267,"Macrosiphum sp. BOLD-2016 voucher BIOUG17697-B03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,955.943
+Macrosiphum sp. BOLD-2016,1889697,KR577052,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-H06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.884,528,0.0,955.943
+Macrosiphum sp. BOLD-2016,1889697,KR576477,"Macrosiphum sp. BOLD-2016 voucher BIOUG05956-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.884,528,0.0,955.943
+Macrosiphum sp. BOLD-2016,1889697,KR574556,"Macrosiphum sp. BOLD-2016 voucher BIOUG08284-G02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,955.943
+Macrosiphum sp. BOLD-2016,1889697,KR560253,"Macrosiphum sp. BOLD-2016 voucher BIOUG16129-C05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum sp. BOLD-2016,1889697,KR578244,"Macrosiphum sp. BOLD-2016 voucher BIOUG07937-F05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum euphorbiae,13131,KU567697,"Macrosiphum euphorbiae voucher BIOUG07985-E03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum sp. BOLD-2016,1889697,KR571552,"Macrosiphum sp. BOLD-2016 voucher BIOUG08388-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum sp. BOLD-2016,1889697,KR571739,"Macrosiphum sp. BOLD-2016 voucher BIOUG07932-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum euphorbiae,13131,KU567845,"Macrosiphum euphorbiae voucher BIOUG07983-G02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,953.961
+Macrosiphum sp. BOLD-2016,1889697,KR567829,"Macrosiphum sp. BOLD-2016 voucher BIOUG09623-A11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.972,0.883,527,0.0,951.978
+Macrosiphum sp. BIOUG09236-G08,2473004,MG507968,"Macrosiphum sp. BIOUG09236-G08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.993,593,0.0,1078.84
+Macrosiphum sp. BOLD-2016,1889697,KR571451,"Macrosiphum sp. BOLD-2016 voucher BIOUG07501-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.997,595,0.0,1074.88
+Macrosiphum valerianae,1304392,HQ961731,Macrosiphum valerianae voucher BIOUG<CAN,0.971,0.997,595,0.0,1074.88
+Macrosiphum sp. BOLD-2016,1889697,KR560243,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.993,593,0.0,1070.91
+Macrosiphum valerianae,1304392,KR037709,"Macrosiphum valerianae voucher CNC#HEM057312 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.993,593,0.0,1070.91
+Macrosiphum sp. BOLD-2016,1889697,KR583134,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-A08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.987,589,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR581005,"Macrosiphum sp. BOLD-2016 voucher BIOUG08884-B09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.983,587,0.0,1059.02
+Macrosiphum albifrons,330458,ON928999,"Macrosiphum albifrons cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.971,0.982,586,0.0,1057.04
+Macrosiphum euphorbiae,13131,MH821973,"Macrosiphum euphorbiae voucher HLshujia446 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.971,0.938,560,0.0,1013.43
+Macrosiphum euphorbiae,13131,KR036947,"Macrosiphum euphorbiae voucher BIOUG09237-E10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.931,556,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR562019,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-G09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.935,558,0.0,1007.48
+Macrosiphum sp. BOLD-2016,1889697,KR572280,"Macrosiphum sp. BOLD-2016 voucher BIOUG09236-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.93,555,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR571952,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-B10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.93,555,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR568558,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.93,555,0.0,1001.53
+Macrosiphum sp. BOLD-2016,1889697,KR565489,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.93,555,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR564291,"Macrosiphum sp. BOLD-2016 voucher BIOUG09175-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.926,553,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR570416,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-F02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,999.553
+Macrosiphum sp. BIOUG26183-F03,2180646,MF836978,"Macrosiphum sp. BIOUG26183-F03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,999.553
+Macrosiphum sp. BIOUG26722-F10,2180647,MF828933,"Macrosiphum sp. BIOUG26722-F10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR568581,"Macrosiphum sp. BOLD-2016 voucher BIOUG18091-D05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR562864,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-C05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR572276,"Macrosiphum sp. BOLD-2016 voucher BIOUG05834-G09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,997.57
+Macrosiphum sp. BOLD-2016,1889697,KR560943,"Macrosiphum sp. BOLD-2016 voucher BIOUG06641-B09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.926,553,0.0,997.57
+Macrosiphum zionense,1863059,KR571203,"Macrosiphum zionense voucher BIOUG09681-A09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,997.57
+Macrosiphum zionense,1863059,KR572005,"Macrosiphum zionense voucher BIOUG09237-F07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.926,553,0.0,997.57
+Macrosiphum sp. BOLD-2016,1889697,KR577237,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.928,554,0.0,997.57
+Macrosiphum sp. BOLD-2016,1889697,KR583342,"Macrosiphum sp. BOLD-2016 voucher BIOUG08862-H01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR571434,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-G09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR561943,"Macrosiphum sp. BOLD-2016 voucher BIOUG08388-G03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,993.606
+Macrosiphum sp. BOLD-2016,1889697,KR578586,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-H10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,993.606
+Macrosiphum sp. BIOUG26183-C09,2180640,MF837961,"Macrosiphum sp. BIOUG26183-C09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,993.606
+Macrosiphum sp. BOLD-2016,1889697,KR562775,"Macrosiphum sp. BOLD-2016 voucher BIOUG09177-D05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,993.606
+Macrosiphum sp. BOLD-2016,1889697,KR564032,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-H01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR570367,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-A11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR561390,"Macrosiphum sp. BOLD-2016 voucher BIOUG04446-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR581824,"Macrosiphum sp. BOLD-2016 voucher BIOUG06251-C12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR571560,"Macrosiphum sp. BOLD-2016 voucher BIOUG06245-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR570106,"Macrosiphum sp. BOLD-2016 voucher BIOUG09461-D07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.923,551,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR581507,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-D11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.921,550,0.0,989.641
+Macrosiphum sp. BOLD-2016,1889697,KR561968,"Macrosiphum sp. BOLD-2016 voucher BIOUG06251-B01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.92,549,0.0,987.659
+Macrosiphum sp. BOLD-2016,1889697,KR570926,"Macrosiphum sp. BOLD-2016 voucher BIOUG06391-A07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.915,546,0.0,985.677
+Macrosiphum sp. BOLD-2016,1889697,KR561445,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-C06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.915,546,0.0,983.695
+Macrosiphum sp. BOLD-2016,1889697,KR567736,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-C12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.971,0.915,546,0.0,983.695
+Macrosiphum euphorbiae,13131,HQ971295,"Macrosiphum euphorbiae voucher CNC#HEM068385 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1076.86
+Macrosiphum euphorbiae,13131,JF883652,"Macrosiphum euphorbiae voucher CNC#HEM070400 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1072.9
+Macrosiphum euphorbiae,13131,KC008068,"Macrosiphum euphorbiae cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. BIOUG21830-D09,2180620,MF838504,"Macrosiphum sp. BIOUG21830-D09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum valerianae,1304392,KR041292,"Macrosiphum valerianae voucher CNC#HEM057644 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. BOLD-2016,1889697,KR577761,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,GU978930,"Macrosiphum euphorbiae isolate 030625S34 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Catamergus fulvae,1655893,KR038728,"Catamergus fulvae voucher CNC#HEM072441 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,GU668394,"Macrosiphum euphorbiae voucher CNC#HEM063886 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. BOLD-2016,1889697,KR583033,"Macrosiphum sp. BOLD-2016 voucher 10BBCHEM-0342 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum valerianae,1304392,HQ971305,"Macrosiphum valerianae voucher CNC#HEM068396 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,ON929001,"Macrosiphum euphorbiae cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum valerianae,1304392,KR036935,"Macrosiphum valerianae voucher CNC#HEM057642 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. BIOUG21830-C08,2180619,MF835822,"Macrosiphum sp. BIOUG21830-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,OP373188,"Macrosiphum euphorbiae isolate ME-IARI-DL-1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,KY613938,"Macrosiphum euphorbiae isolate Shimla A7 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,KC502575,"Macrosiphum euphorbiae voucher CCDB-08110-C04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. BOLD-2016,1889697,KR574967,"Macrosiphum sp. BOLD-2016 voucher BIOUG07601-B11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,EU701726,"Macrosiphum euphorbiae voucher CNC#HEM055861 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum gaurae,527749,KR031540,"Macrosiphum gaurae voucher CNC#HEM061500 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,DQ499036,"Macrosiphum euphorbiae cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum euphorbiae,13131,KR036656,"Macrosiphum euphorbiae voucher CNC#HEM071356 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum sp. RFBAE652-09,2553826,GU668535,"Macrosiphum sp. RFBAE652-09 voucher CNC#HEM063634 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum valerianae,1304392,KR041412,"Macrosiphum valerianae voucher CNC#HEM062501 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1070.91
+Macrosiphum zionense,1863059,KR561705,"Macrosiphum zionense voucher 10BBCHEM-0589 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,1.0,597,0.0,1068.93
+Macrosiphum euphorbiae,13131,KX631511,"Macrosiphum euphorbiae cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.97,0.998,596,0.0,1068.93
+Macrosiphum sp. BOLD-2016,1889697,KR581425,"Macrosiphum sp. BOLD-2016 voucher BIOUG09300-D04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.998,596,0.0,1068.93
+Macrosiphum valerianae,1304392,KR036352,"Macrosiphum valerianae voucher CNC#HEM057286 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.993,593,0.0,1066.95
+Macrosiphum euphorbiae,13131,KR041386,"Macrosiphum euphorbiae voucher CNC#HEM057646 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.993,593,0.0,1062.99
+Catamergus fulvae,1655893,HM416713,"Catamergus fulvae voucher CNC#HEM064256 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.993,593,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR570213,"Macrosiphum sp. BOLD-2016 voucher BIOUG07601-B07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.993,593,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR568024,"Macrosiphum sp. BOLD-2016 voucher BIOUG04396-H01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.993,593,0.0,1061.0
+Macrosiphum sp. BIOUG26722-G03,2180650,MF834117,"Macrosiphum sp. BIOUG26722-G03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.992,592,0.0,1061.0
+Macrosiphum euphorbiae,13131,OL711736,"Macrosiphum euphorbiae isolate A21 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.97,0.988,590,0.0,1057.04
+Macrosiphum sp. BOLD-2016,1889697,KR566590,"Macrosiphum sp. BOLD-2016 voucher BIOUG07601-C06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.988,590,0.0,1057.04
+Macrosiphum sp. BOLD-2016,1889697,KR567128,"Macrosiphum sp. BOLD-2016 voucher BIOUG09178-F01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.961,574,0.0,1037.22
+Macrosiphum sp. BIOUG26183-D01,2180642,MF831037,"Macrosiphum sp. BIOUG26183-D01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.958,572,0.0,1033.25
+Macrosiphum euphorbiae,13131,KR037372,"Macrosiphum euphorbiae voucher BIOUG09237-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.96,573,0.0,1031.27
+Macrosiphum sp. BOLD-2016,1889697,KR582544,"Macrosiphum sp. BOLD-2016 voucher BIOUG09300-G02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.961,574,0.0,1031.27
+Macrosiphum sp. BOLD-2016,1889697,KR572540,"Macrosiphum sp. BOLD-2016 voucher BIOUG06641-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.961,574,0.0,1031.27
+Macrosiphum sp. BOLD-2016,1889697,KR577881,"Macrosiphum sp. BOLD-2016 voucher BIOUG03160-F09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.961,574,0.0,1031.27
+Macrosiphum sp. BOLD-2016,1889697,KR579331,"Macrosiphum sp. BOLD-2016 voucher BIOUG06688-F05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.96,573,0.0,1029.29
+Macrosiphum sp. BOLD-2016,1889697,KR582807,"Macrosiphum sp. BOLD-2016 voucher BIOUG06688-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.955,570,0.0,1023.34
+Macrosiphum sp. BIOUG25565-A05,2062399,MG167777,"Macrosiphum sp. BIOUG25565-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.953,569,0.0,1021.36
+Macrosiphum sp. BIOUG25045-B08,2062392,MG166847,"Macrosiphum sp. BIOUG25045-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.95,567,0.0,1019.38
+Macrosiphum sp. BOLD-2016,1889697,KR576961,"Macrosiphum sp. BOLD-2016 voucher BIOUG04745-D03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.943,563,0.0,1009.46
+Macrosiphum euphorbiae,13131,KU567773,"Macrosiphum euphorbiae voucher BIOUG07984-G09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.938,560,0.0,1003.52
+Macrosiphum sp. BOLD-2016,1889697,KR581469,"Macrosiphum sp. BOLD-2016 voucher BIOUG05116-H03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.938,560,0.0,1003.52
+Macrosiphum sp. BOLD-2016,1889697,KR566213,"Macrosiphum sp. BOLD-2016 voucher BIOUG06311-A12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.903,539,0.0,971.801
+Macrosiphum sp. BOLD-2016,1889697,KR574058,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-D04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.903,539,0.0,969.819
+Macrosiphum sp. BIOUG22539-D10,2180622,MF837851,"Macrosiphum sp. BIOUG22539-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.903,539,0.0,969.819
+Macrosiphum sp. BOLD-2016,1889697,KR584476,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.903,539,0.0,969.819
+Macrosiphum sp. BOLD-2016,1889697,KR582468,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-D07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.899,537,0.0,965.854
+Macrosiphum sp. BOLD-2016,1889697,KR560352,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-D02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.899,537,0.0,965.854
+Macrosiphum sp. BOLD-2016,1889697,KR580845,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-G12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.97,0.884,528,0.0,953.961
+Macrosiphum sp. BIOUG20896-B12,2180615,MF836645,"Macrosiphum sp. BIOUG20896-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.987,589,0.0,1061.0
+Macrosiphum euphorbiae,13131,OL711738,"Macrosiphum euphorbiae isolate A24 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.969,0.985,588,0.0,1053.07
+Macrosiphum sp. BOLD-2016,1889697,KR571708,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-D08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.978,584,0.0,1047.13
+Macrosiphum euphorbiae,13131,OL711737,"Macrosiphum euphorbiae isolate A23 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.969,0.98,585,0.0,1047.13
+Macrosiphum sp. BOLD-2016,1889697,KR565747,"Macrosiphum sp. BOLD-2016 voucher BIOUG09179-E10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.975,582,0.0,1041.18
+Macrosiphum sp. BOLD-2016,1889697,KR584550,"Macrosiphum sp. BOLD-2016 voucher BIOUG04572-G03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.961,574,0.0,1025.32
+Macrosiphum sp. BOLD-2016,1889697,KR564349,"Macrosiphum sp. BOLD-2016 voucher BIOUG05956-G11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.931,556,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR579690,"Macrosiphum sp. BOLD-2016 voucher BIOUG08403-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.931,556,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR568573,"Macrosiphum sp. BOLD-2016 voucher BIOUG09173-B03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.926,553,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR563551,"Macrosiphum sp. BOLD-2016 voucher BIOUG09461-C06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR573371,"Macrosiphum sp. BOLD-2016 voucher BIOUG06422-F06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum euphorbiae,13131,KU567969,"Macrosiphum euphorbiae voucher BIOUG07984-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum euphorbiae,13131,KU567855,"Macrosiphum euphorbiae voucher BIOUG07984-G12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum euphorbiae,13131,KU567723,"Macrosiphum euphorbiae voucher BIOUG07985-E08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum sp. BIOUG24347-A08,2180638,MF837430,"Macrosiphum sp. BIOUG24347-A08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR575864,"Macrosiphum sp. BOLD-2016 voucher BIOUG06641-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum sp. BIOUG25563-G06,2062397,MG165891,"Macrosiphum sp. BIOUG25563-G06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.928,554,0.0,991.624
+Macrosiphum sp. BOLD-2016,1889697,KR573905,"Macrosiphum sp. BOLD-2016 voucher BIOUG05090-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,989.641
+Macrosiphum sp. BOLD-2016,1889697,KR582845,"Macrosiphum sp. BOLD-2016 voucher BIOUG06640-C09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.926,553,0.0,989.641
+Macrosiphum euphorbiae,13131,KU567939,"Macrosiphum euphorbiae voucher BIOUG07984-A08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,987.659
+Macrosiphum sp. BOLD-2016,1889697,KR568823,"Macrosiphum sp. BOLD-2016 voucher BIOUG09208-E04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum sp. BOLD-2016,1889697,KR571002,"Macrosiphum sp. BOLD-2016 voucher BIOUG16130-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum euphorbiae,13131,KU567717,"Macrosiphum euphorbiae voucher BIOUG07986-C09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum sp. BOLD-2016,1889697,KR566870,"Macrosiphum sp. BOLD-2016 voucher BIOUG06641-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum euphorbiae,13131,KU567745,"Macrosiphum euphorbiae voucher BIOUG07985-E01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum sp. BIOUG22056-D10,2062387,MG170881,"Macrosiphum sp. BIOUG22056-D10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum sp. BOLD-2016,1889697,KR577674,"Macrosiphum sp. BOLD-2016 voucher BIOUG05092-D07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.923,551,0.0,985.677
+Macrosiphum sp. BOLD-2016,1889697,KR576891,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-A04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.92,549,0.0,981.712
+Macrosiphum sp. BIOUG25563-G01,2062395,MG167251,"Macrosiphum sp. BIOUG25563-G01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.918,548,0.0,979.73
+Macrosiphum sp. BOLD-2016,1889697,KR567719,"Macrosiphum sp. BOLD-2016 voucher BIOUG06010-B02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.915,546,0.0,975.765
+Macrosiphum albifrons,330458,KR029961,"Macrosiphum albifrons cytochrome c oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.969,0.913,545,0.0,975.765
+Macrosiphum euphorbiae,13131,KR029963,"Macrosiphum euphorbiae cytochrome c oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.969,0.913,545,0.0,975.765
+Macrosiphum sp. BOLD-2016,1889697,KR584254,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-D02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.969,0.913,545,0.0,973.783
+Macrosiphum sp. C RGF-2008,527754,EU701739,"Macrosiphum sp. C RGF-2008 voucher CNC#HEM012147 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1066.95
+Macrosiphum euphorbiae,13131,GU668716,"Macrosiphum euphorbiae voucher CNC#HEM063723 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR574746,"Macrosiphum sp. BOLD-2016 voucher BIOUG09176-E11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum euphorbiae,13131,KR037439,"Macrosiphum euphorbiae voucher 10BBCHEM-0973 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum valerianae,1304392,KR039959,"Macrosiphum valerianae voucher BIOUG02022-F08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum euphorbiae,13131,KR034753,"Macrosiphum euphorbiae voucher CNC#HEM057223 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum sp. AK-2010,767423,FN868602,Macrosiphum sp. AK-2010 partial COI gene for cytochrome oxidase subunit 1,0.968,1.0,597,0.0,1062.99
+Macrosiphum valerianae,1304392,GU668714,"Macrosiphum valerianae voucher CNC#HEM063727 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum euphorbiae,13131,JQ070055,"Macrosiphum euphorbiae cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1062.99
+Macrosiphum sp. BOLD-2016,1889697,KR576248,"Macrosiphum sp. BOLD-2016 voucher 10BBCHEM-0970 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,1.0,597,0.0,1061.0
+Macrosiphum sp. BIOUG23681-E02,2062390,MG169126,"Macrosiphum sp. BIOUG23681-E02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.992,592,0.0,1053.07
+Macrosiphum euphorbiae,13131,GU668217,"Macrosiphum euphorbiae voucher CNC#HEM064078 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.988,590,0.0,1049.11
+Macrosiphum sp. BOLD-2016,1889697,KR564782,"Macrosiphum sp. BOLD-2016 voucher BIOUG06422-H08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.953,569,0.0,1015.41
+Macrosiphum sp. BOLD-2016,1889697,KR572151,"Macrosiphum sp. BOLD-2016 voucher BIOUG06637-A07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.94,561,0.0,1001.53
+Macrosiphum euphorbiae,13131,KR032005,"Macrosiphum euphorbiae voucher CNC#HEM057310 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.943,563,0.0,1001.53
+Macrosiphum euphorbiae,13131,MH821972,"Macrosiphum euphorbiae voucher HLshujia405 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.968,0.936,559,0.0,995.588
+Macrosiphum sp. BOLD-2016,1889697,KR564626,"Macrosiphum sp. BOLD-2016 voucher BIOUG04984-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.933,557,0.0,989.641
+Macrosiphum sp. BIOUG25563-G04,2062396,MG168831,"Macrosiphum sp. BIOUG25563-G04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.928,554,0.0,985.677
+Aphidinae sp. BIOUG31055-B08,2061231,MG164143,"Aphidinae sp. BIOUG31055-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.928,554,0.0,983.695
+Macrosiphum sp. BOLD-2016,1889697,KR580260,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.928,554,0.0,983.695
+Macrosiphum sp. BOLD-2016,1889697,KR566902,"Macrosiphum sp. BOLD-2016 voucher BIOUG09180-H10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.899,537,0.0,961.89
+Macrosiphum sp. BIOUG22851-B10,2180627,MF834116,"Macrosiphum sp. BIOUG22851-B10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.901,538,0.0,959.907
+Macrosiphum sp. BOLD-2016,1889697,KR565722,"Macrosiphum sp. BOLD-2016 voucher BIOUG05956-H02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.968,0.896,535,0.0,953.961
+Macrosiphum euphorbiae,13131,JF883831,"Macrosiphum euphorbiae voucher CNC#HEM070691 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,1.0,597,0.0,1055.06
+Macrosiphum valerianae,1304392,JF883537,"Macrosiphum valerianae voucher CNC#HEM070236 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,1.0,597,0.0,1055.06
+Macrosiphum gaurae,527749,KR035269,"Macrosiphum gaurae voucher CNC#HEM071420 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,1.0,597,0.0,1055.06
+Macrosiphum sp. RDBAB1065-10,2553817,HQ970686,"Macrosiphum sp. RDBAB1065-10 voucher CNC#HEM070222 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,1.0,597,0.0,1055.06
+Macrosiphum euphorbiae,13131,EU701727,"Macrosiphum euphorbiae voucher CNC#HEM113479 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,1.0,597,0.0,1055.06
+Macrosiphum sp. BOLD-2016,1889697,KR568504,"Macrosiphum sp. BOLD-2016 voucher BIOUG06358-B08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,0.923,551,0.0,977.748
+Macrosiphum sp. BOLD-2016,1889697,KR561585,"Macrosiphum sp. BOLD-2016 voucher BIOUG16097-B05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,0.918,548,0.0,971.801
+Macrosiphum sp. RFQC120-09,2553828,GU667491,"Macrosiphum sp. RFQC120-09 voucher CNC#HEM064315 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.967,0.916,547,0.0,969.819
+Macrosiphum sp. BOLD-2016,1889697,KR561015,"Macrosiphum sp. BOLD-2016 voucher BIOUG06422-H04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.965,0.951,568,0.0,999.553
+Macrosiphum sp. BIOUG07985-F01,1924533,KU567929,"Macrosiphum sp. BIOUG07985-F01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.964,0.933,557,0.0,973.783
+Macrosiphum sp. BOLD-2016,1889697,KR562525,"Macrosiphum sp. BOLD-2016 voucher BIOUG06688-F06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.964,0.926,553,0.0,971.801
+Hemiptera sp. BIOUG07985-E05,1924503,KU567882,"Hemiptera sp. BIOUG07985-E05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.964,0.923,551,0.0,961.89
+Macrosiphum sp. BOLD-2016,1889697,KR574880,"Macrosiphum sp. BOLD-2016 voucher BIOUG06252-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.964,0.918,548,0.0,961.89
+Macrosiphum funestum,1345135,KF639491,"Macrosiphum funestum voucher INRA CBGP ACOE2049/chasses2049-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum mordvilkoi,325363,GU978952,"Macrosiphum mordvilkoi isolate 030625S09 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Sitobion rosivorum,1248173,KM115469,"Sitobion rosivorum voucher ZMIOZ LY102 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum rosae,44659,KJ502205,"Macrosiphum rosae voucher 110921WH12 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum funestum,1345135,JX507424,"Macrosiphum funestum voucher A10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum funestum,1345135,KF639490,"Macrosiphum funestum voucher INRA CBGP ACOE2011/chasses2011-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum rosae,44659,NC_064372,"Macrosiphum rosae mitochondrion, complete genome",0.956,0.995,594,0.0,1001.53
+Macrosiphum rosae,44659,ON928998,"Macrosiphum rosae cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.956,0.995,594,0.0,1001.53
+Macrosiphum funestum,1345135,ON928997,"Macrosiphum funestum cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.956,0.993,593,0.0,999.553
+Macrosiphum sp. BOLD-2016,1889697,KR570763,"Macrosiphum sp. BOLD-2016 voucher 10BBCHEM-0749 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.955,1.0,597,0.0,1003.52
+Macrosiphum sp. BOLD-2016,1889697,KR571305,"Macrosiphum sp. BOLD-2016 voucher BIOUG07700-A09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.955,1.0,597,0.0,999.553
+Macrosiphum rosae,44659,OP164555,"Macrosiphum rosae isolate Aphid6 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,DQ499035,"Macrosiphum rosae cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,KT875239,"Macrosiphum rosae cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,EU701734,"Macrosiphum rosae voucher CNC#HEM056001 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,OR858844,"Macrosiphum rosae voucher mr13 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,MN319988,"Macrosiphum rosae voucher NIBGE APH-00516 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,EU701733,"Macrosiphum rosae voucher CNC#HEM049346 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Sitobion rosivorum,1248173,KM115470,"Sitobion rosivorum voucher ZMIOZ LY099 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum pachysiphon,2971206,OP179318,"Macrosiphum pachysiphon isolate AphidRose6 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum rosae,44659,MT302339,"Macrosiphum rosae voucher r1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.955,0.995,594,0.0,993.606
+Macrosiphum mordvilkoi,325363,GU978874,"Macrosiphum mordvilkoi isolate 030625S64 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.955,0.972,580,0.0,973.783
+Macrosiphum rosae,44659,MH407727,"Macrosiphum rosae isolate MR9_F cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.954,0.992,592,0.0,989.641
+Macrosiphum rosae,44659,MH407728,"Macrosiphum rosae isolate MR8_F cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.954,0.992,592,0.0,989.641
+Macrosiphum rosae,44659,PP446714,"Macrosiphum rosae isolate 23MM2B cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.954,0.972,580,0.0,965.854
+Macrosiphum ptericolens,1345125,JX507423,"Macrosiphum ptericolens voucher A18 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,983.695
+Acyrthosiphon sp. 1 HKW-2016,1790229,KU374293,"Acyrthosiphon sp. 1 HKW-2016 voucher ZA2011-30329 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,983.695
+,,PQ998256,"Sitobion calvulum voucher CS1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,983.695
+Macrosiphum ptericolens,1345125,KR035873,"Macrosiphum ptericolens voucher BIOUG02608-C08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,981.712
+Macrosiphum ptericolens,1345125,HM416694,"Macrosiphum ptericolens voucher CNC#HEM064236 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,981.712
+Macrosiphum woodsiae,1656655,KR042847,"Macrosiphum woodsiae voucher CNC#HEM062497 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,1.0,597,0.0,979.73
+Macrosiphum rosae,44659,HQ112192,"Macrosiphum rosae voucher ORP-2010-57 cytochrome oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.951,0.995,594,0.0,977.748
+,,PQ998255,"Sitobion calvulum voucher CS2 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.95,1.0,597,0.0,975.765
+Acyrthosiphon malvae,527516,EU701276,"Acyrthosiphon malvae voucher CNC#HEM011135 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.95,1.0,597,0.0,975.765
+Illinoia paqueti,1304804,KR036808,"Illinoia paqueti voucher CNC#HEM057226 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.95,1.0,597,0.0,975.765
+Macrosiphum sp. RFBAE448-09,2553825,HM432520,"Macrosiphum sp. RFBAE448-09 voucher CNC#HEM063458 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.95,1.0,597,0.0,975.765
+Acyrthosiphon malvae,527516,KJ093147,"Acyrthosiphon malvae voucher BIOUG02980-D03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.95,0.995,594,0.0,969.819
+Aulacorthum ligularicola,685723,FJ752013,"Aulacorthum ligularicola cytochrome c oxidase subunit I gene, partial cds; mitochondrial",0.95,0.995,594,0.0,965.854
+Acyrthosiphon malvae,527516,MF837512,"Acyrthosiphon malvae voucher BIOUG22539-C10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.949,0.992,592,0.0,965.854
+Acyrthosiphon assiniboinense,1655837,GU668337,"Acyrthosiphon assiniboinense voucher CNC#HEM063385 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Acyrthosiphon malvae,527516,HQ578909,"Acyrthosiphon malvae voucher CNC#HEM049357 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Acyrthosiphon assiniboinense,1655837,GU668343,"Acyrthosiphon assiniboinense voucher CNC#HEM063469 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Metopolophium sp. BOLD-2016,1889701,KR575358,"Metopolophium sp. BOLD-2016 voucher 10BBCHEM-0532 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Macrosiphum osmaroniae,1656649,KR037807,"Macrosiphum osmaroniae voucher CNC#HEM061895 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Illinoia sp. BOLD:AAD8584,1304467,KC502488,"Illinoia sp. BOLD:AAD8584 voucher CCDB-08110-D08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Macrosiphum clematifoliae,796237,GU978951,"Macrosiphum clematifoliae isolate 031009S29 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Acyrthosiphon purshiae,527517,HQ970792,"Acyrthosiphon purshiae voucher CNC#HEM069913 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Illinoia paqueti,1304804,KC502489,"Illinoia paqueti voucher CCDB-08110-D05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,1.0,597,0.0,967.836
+Acyrthosiphon assiniboinense,1655837,KR042146,"Acyrthosiphon assiniboinense voucher BIOUG03331-F03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.997,595,0.0,963.872
+Aulacorthum albimagnoliae,685721,GU978914,"Aulacorthum albimagnoliae isolate 040603S01 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.948,0.995,594,0.0,961.89
+Aulacorthum albimagnoliae,685721,FJ982384,"Aulacorthum albimagnoliae cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.948,0.995,594,0.0,961.89
+Macrosiphum pseudocoryli,1656650,KR032530,"Macrosiphum pseudocoryli voucher BIOUG07501-H03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.99,591,0.0,959.907
+Macrosiphum pseudocoryli,1656650,KR036668,"Macrosiphum pseudocoryli voucher BIOUG07501-E03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.993,593,0.0,959.907
+Aulacorthum albimagnoliae,685721,GU978915,"Aulacorthum albimagnoliae isolate 041006S01 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.948,0.993,593,0.0,959.907
+Aulacorthum albimagnoliae,685721,FJ752005,"Aulacorthum albimagnoliae cytochrome c oxidase subunit I gene, partial cds; mitochondrial",0.948,0.993,593,0.0,959.907
+Acyrthosiphon purshiae,527517,KR035387,"Acyrthosiphon purshiae voucher CNC#HEM028645 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.992,592,0.0,957.925
+Macrosiphum pseudocoryli,1656650,KR035080,"Macrosiphum pseudocoryli voucher BIOUG09176-C02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.99,591,0.0,955.943
+Macrosiphum pseudocoryli,1656650,KR032153,"Macrosiphum pseudocoryli voucher BIOUG07501-H08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.948,0.99,591,0.0,955.943
+Illinoia sp. BOLD-2016,1889686,KR569639,"Illinoia sp. BOLD-2016 voucher BIOUG09300-D08 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon malvae,527516,MN320275,"Acyrthosiphon malvae voucher NIBGE APH-00448 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Amphorophora nr. geranii BOLD:AAC4602,527520,EU701289,"Amphorophora nr. geranii BOLD:AAC4602 voucher CNC#HEM028840 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Macrosiphum pseudocoryli,1656650,KR035956,"Macrosiphum pseudocoryli voucher CNC#HEM061335 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon malvae,527516,MN320268,"Acyrthosiphon malvae voucher NIBGE APH-00483 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon malvae,527516,MN319864,"Acyrthosiphon malvae voucher NIBGE APH-00474 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Illinoia menziesiae,1656545,KR038570,"Illinoia menziesiae voucher CNC#HEM072176 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Illinoia paqueti,1304804,KR038757,"Illinoia paqueti voucher BIOUG02055-C11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Illinoia richardsi,1656546,KR032810,"Illinoia richardsi voucher 10BBCHEM-0201 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon lambersi,1425378,KF638721,"Acyrthosiphon lambersi voucher INRA CBGP ACOE1056/chasses1056-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon purshiae,527517,EU701285,"Acyrthosiphon purshiae voucher CNC#HEM028871 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Illinoia richardsi,1656546,KR044214,"Illinoia richardsi voucher 10BBCHEM-0202 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Macrosiphum osmaroniae,1656649,KR040402,"Macrosiphum osmaroniae voucher 10BBCHEM-0930 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Aphidinae sp. BIOUG25623-H03,2061206,MG165135,"Aphidinae sp. BIOUG25623-H03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Metopolophium sp. BOLD-2016,1889701,KR579419,"Metopolophium sp. BOLD-2016 voucher 10BBCHEM-0780 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Aphidinae sp. BIOUG27106-H02,2179474,MF837207,"Aphidinae sp. BIOUG27106-H02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Metopolophium sp. BOLD-2016,1889701,KR570878,"Metopolophium sp. BOLD-2016 voucher 10BBCHEM-0870 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Amphorophora nr. geranii BOLD:AAC4602,527520,EU701290,"Amphorophora nr. geranii BOLD:AAC4602 voucher CNC#HEM032928 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Macrosiphum pseudocoryli,1656650,KR033284,"Macrosiphum pseudocoryli voucher 10BBCHEM-0125 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Macrosiphum pseudocoryli,1656650,GU667451,"Macrosiphum pseudocoryli voucher CNC#HEM063177 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Cryptomyzus galeopsidis,1045803,KR040012,"Cryptomyzus galeopsidis voucher BIOUG00806-B12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon malvae,527516,MN320176,"Acyrthosiphon malvae voucher NIBGE APH-00479 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Acyrthosiphon malvae,527516,MN319844,"Acyrthosiphon malvae voucher NIBGE APH-00314 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Cryptomyzus galeopsidis,1045803,HQ970634,"Cryptomyzus galeopsidis voucher CNC#HEM070087 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,1.0,597,0.0,959.907
+Macrosiphum pseudocoryli,1656650,KR037957,"Macrosiphum pseudocoryli voucher BIOUG09208-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.99,591,0.0,955.943
+Macrosiphum pseudocoryli,1656650,KR044834,"Macrosiphum pseudocoryli voucher BIOUG07601-A07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.99,591,0.0,955.943
+Corylobium avellanae,527634,KF639335,"Corylobium avellanae voucher INRA CBGP ACOE762/chasses762-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.995,594,0.0,953.961
+Macrosiphum pseudocoryli,1656650,KR039643,"Macrosiphum pseudocoryli voucher BIOUG06901-B04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.988,590,0.0,953.961
+Macrosiphum pseudocoryli,1656650,KR036302,"Macrosiphum pseudocoryli voucher BIOUG09300-A11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.99,591,0.0,953.961
+Macrosiphum pseudocoryli,1656650,KR042786,"Macrosiphum pseudocoryli voucher BIOUG07601-A02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.99,591,0.0,953.961
+Acyrthosiphon assiniboinense,1655837,KR033051,"Acyrthosiphon assiniboinense voucher BIOUG03941-B07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.946,0.993,593,0.0,951.978
+Acyrthosiphon purshiae,527517,HQ970768,"Acyrthosiphon purshiae voucher CNC#HEM069885 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,955.943
+Metopolophium sp. BOLD-2016,1889701,KR578857,"Metopolophium sp. BOLD-2016 voucher 10BBCHEM-0531 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,953.961
+Illinoia sp. BOLD-2016,1889686,KR560827,"Illinoia sp. BOLD-2016 voucher BIOUG09300-G12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia menziesiae,1656545,KR035887,"Illinoia menziesiae voucher CNC#HEM072159 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia spiraecola,527710,KR032529,"Illinoia spiraecola voucher 10BBCHEM-0935 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum californicum,527745,KR036185,"Macrosiphum californicum voucher CNC#HEM057574 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia goldamaryae,1053740,KR030887,"Illinoia goldamaryae voucher CNC#HEM062503 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum stanleyi,527755,EU701741,"Macrosiphum stanleyi voucher CNC#HEM051392 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum californicum,527745,KR034565,"Macrosiphum californicum voucher CNC#HEM028981 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Metopolophium sp. BOLD-2016,1889701,KR561930,"Metopolophium sp. BOLD-2016 voucher 10BBCHEM-0867 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia richardsi,1656546,KR041411,"Illinoia richardsi voucher CNC#HEM056859 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia goldamaryae,1053740,KR031384,"Illinoia goldamaryae voucher BIOUG09681-A01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum stanleyi,527755,JF883610,"Macrosiphum stanleyi voucher CNC#HEM070338 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia goldamaryae,1053740,GU668720,"Illinoia goldamaryae voucher CNC#HEM061252 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Illinoia goldamaryae,1053740,EU701706,"Illinoia goldamaryae voucher CNC#HEM113458 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum californicum,527745,HQ971317,"Macrosiphum californicum voucher CNC#HEM068410 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.945,1.0,597,0.0,951.978
+Macrosiphum hamiltoni,1656647,KR037710,"Macrosiphum hamiltoni voucher CNC#HEM070721 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.943,1.0,597,0.0,953.961

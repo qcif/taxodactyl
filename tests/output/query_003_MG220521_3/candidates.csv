@@ -1,0 +1,36 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Pseudococcus longispinus,13233,MG866190,"Pseudococcus longispinus clone 13-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.977,0.7,476,0.0,856.83
+Pseudococcus longispinus,13233,MG866189,"Pseudococcus longispinus clone 12-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.975,0.7,476,0.0,848.901
+Pseudococcus longispinus,13233,MG866187,"Pseudococcus longispinus clone 10-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.973,0.7,476,0.0,840.972
+Pseudococcus longispinus,13233,MG866188,"Pseudococcus longispinus clone 11-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.973,0.7,476,0.0,840.972
+Pseudococcus longispinus,13233,JQ085552,"Pseudococcus longispinus voucher 1002185 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.967,0.751,511,0.0,878.635
+Pseudococcus longispinus,13233,HM474381,"Pseudococcus longispinus voucher P1184 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.965,0.954,649,0.0,1104.61
+Pseudococcus longispinus,13233,KY372546,"Pseudococcus longispinus voucher HM474381 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.965,0.954,649,0.0,1104.61
+Pseudococcus longispinus,13233,KY372759,"Pseudococcus longispinus voucher MJMB-00069 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.954,649,0.0,1096.68
+Pseudococcus longispinus,13233,KY372558,"Pseudococcus longispinus voucher HM474383 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.946,643,0.0,1084.79
+Pseudococcus longispinus,13233,KY372470,"Pseudococcus longispinus voucher HM474382 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.946,643,0.0,1084.79
+Pseudococcus longispinus,13233,HM474382,"Pseudococcus longispinus voucher P1165-3 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.946,643,0.0,1084.79
+Pseudococcus longispinus,13233,KY372464,"Pseudococcus longispinus voucher HM474385 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.921,626,0.0,1059.02
+Pseudococcus longispinus,13233,HM474385,"Pseudococcus longispinus voucher P1165 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.963,0.921,626,0.0,1059.02
+Pseudococcus longispinus,13233,HM474384,"Pseudococcus longispinus voucher P1165-1 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.961,0.868,590,0.0,991.624
+Pseudococcus longispinus,13233,KY372782,"Pseudococcus longispinus voucher HM474384 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.961,0.868,590,0.0,991.624
+Pseudococcus longispinus,13233,KY373111,"Pseudococcus longispinus voucher MJMB-00663 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.96,0.954,649,0.0,1080.83
+Pseudococcus longispinus,13233,KY372973,"Pseudococcus longispinus voucher HM474375 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,KY373106,"Pseudococcus longispinus voucher HM474377 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,HM474374,"Pseudococcus longispinus voucher P1061 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,KY372448,"Pseudococcus longispinus voucher HM474386 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,KY372774,"Pseudococcus longispinus voucher HM474376 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,KY372655,"Pseudococcus longispinus voucher HM474378 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,KY373078,"Pseudococcus longispinus voucher HM474374 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.954,649,0.0,1072.9
+Pseudococcus longispinus,13233,HM474380,"Pseudococcus longispinus voucher P1178-1 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.951,647,0.0,1068.93
+Pseudococcus longispinus,13233,KY372854,"Pseudococcus longispinus voucher HM474380 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.951,647,0.0,1068.93
+Pseudococcus longispinus,13233,KY372512,"Pseudococcus longispinus voucher HM474379 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.95,646,0.0,1066.95
+Pseudococcus longispinus,13233,HM474379,"Pseudococcus longispinus voucher P1178-3 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.958,0.95,646,0.0,1066.95
+Pseudococcus longispinus,13233,KY372611,"Pseudococcus longispinus voucher MJMB-p1061 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.957,0.932,634,0.0,1043.16
+Pseudococcus longispinus,13233,KU296036,"Pseudococcus longispinus voucher NBAIR/MB/PSL/05 cytochrome c oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.954,0.954,649,0.0,1049.11
+Pseudococcus longispinus,13233,KP692680,"Pseudococcus longispinus isolate S3-800a cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,0.987,671,0.0,1076.86
+Pseudococcus nr. longispinus DSPKJ168-09,861355,HM474390,"Pseudococcus nr. longispinus DSPKJ168-09 voucher P1105 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.952,0.954,649,0.0,1041.18
+Pseudococcus sp. MJMB-00146,2015987,KY372505,"Pseudococcus sp. MJMB-00146 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.95,0.935,636,0.0,1007.48
+Pseudococcus nr. longispinus DSPKJ169-09,861356,HM474389,"Pseudococcus nr. longispinus DSPKJ169-09 voucher P1105-1 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.949,0.978,665,0.0,1049.11
+Pseudococcus nr. longispinus DSPKJ140-09,861354,HM474391,"Pseudococcus nr. longispinus DSPKJ140-09 voucher P1132 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.949,0.954,649,0.0,1025.32
+Delottococcus aberiae,1112575,KP771950,"Delottococcus aberiae voucher 12385 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",0.937,0.997,678,0.0,1007.48

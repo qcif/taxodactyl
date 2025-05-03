@@ -1,0 +1,460 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Aphis gossypii,80765,KY679353,"Aphis gossypii clone hbs10 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930152,"Aphis gossypii strain Cot-Aus-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319724,"Aphis gossypii voucher NIBGE APH-00656 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320298,"Aphis gossypii voucher NIBGE APH-00657 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215171,"Aphis gossypii voucher RGF3167A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679362,"Aphis gossypii clone hbs19 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH632726,"Aphis gossypii isolate AgCITR cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679310,"Aphis gossypii clone grd7 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215156,"Aphis gossypii voucher RGF3209A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320238,"Aphis gossypii voucher NIBGE APH-00137 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215201,"Aphis gossypii voucher RGF3210A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679387,"Aphis gossypii clone okr4 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319934,"Aphis gossypii voucher NIBGE APH-00724 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,AB506727,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos2",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215155,"Aphis gossypii voucher RGF3220A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320139,"Aphis gossypii voucher NIBGE APH-00576 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679305,"Aphis gossypii clone grd2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679354,"Aphis gossypii clone hbs11 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679425,"Aphis gossypii clone wtm2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085026,"Aphis gossypii voucher Ag12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319973,"Aphis gossypii voucher NIBGE APH-00701 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320044,"Aphis gossypii voucher NIBGE APH-00043 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315432,"Aphis gossypii voucher A27 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215166,"Aphis gossypii voucher RGF3224A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215187,"Aphis gossypii voucher RGF3208A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319902,"Aphis gossypii voucher NIBGE APH-00058 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215196,"Aphis gossypii voucher RGF2752A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085032,"Aphis gossypii voucher Ag18 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319805,"Aphis gossypii voucher NIBGE APH-00313 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679347,"Aphis gossypii clone hbs4 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085025,"Aphis gossypii voucher Ag11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH395847,"Aphis gossypii voucher GTB269DN1831 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,ON430541,"Aphis gossypii voucher CUAG-AR01 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319838,"Aphis gossypii voucher NIBGE APH-00189 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679308,"Aphis gossypii clone grd5 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315418,"Aphis gossypii voucher A13 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320033,"Aphis gossypii voucher NIBGE APH-00341 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OR449278,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320071,"Aphis gossypii voucher NIBGE APH-00595 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320299,"Aphis gossypii voucher NIBGE APH-00597 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320349,"Aphis gossypii voucher NIBGE APH-00435 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320344,"Aphis gossypii voucher NIBGE APH-00704 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085028,"Aphis gossypii voucher Ag14 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930156,"Aphis gossypii strain Pep-2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320195,"Aphis gossypii voucher NIBGE APH-00588 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320336,"Aphis gossypii voucher NIBGE APH-00589 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320010,"Aphis gossypii voucher NIBGE APH-00591 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH395846,"Aphis gossypii voucher GTB265DN1829 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320322,"Aphis gossypii voucher NIBGE APH-00055 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679329,"Aphis gossypii clone cmb6 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215165,"Aphis gossypii voucher RGF3164A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319994,"Aphis gossypii voucher NIBGE APH-00611 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085029,"Aphis gossypii voucher Ag15 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,PQ039735,"Aphis gossypii isolate ag19 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315433,"Aphis gossypii voucher A28 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679360,"Aphis gossypii clone hbs17 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319874,"Aphis gossypii voucher NIBGE APH-00619 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320084,"Aphis gossypii voucher NIBGE APH-00652 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320035,"Aphis gossypii voucher NIBGE APH-00042 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319938,"Aphis gossypii voucher NIBGE APH-00590 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215162,"Aphis gossypii voucher RGF3158A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679358,"Aphis gossypii clone hbs15 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085027,"Aphis gossypii voucher Ag13 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315420,"Aphis gossypii voucher A15 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319924,"Aphis gossypii voucher NIBGE APH-00414 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319942,"Aphis gossypii voucher NIBGE APH-00709 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432001,"Aphis gossypii isolate wusu505 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679351,"Aphis gossypii clone hbs8 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MZ662894,"Aphis gossypii isolate YamAphid-1A-YWA-2020 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432004,"Aphis gossypii isolate bole790 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319895,"Aphis gossypii voucher NIBGE APH-00620 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU701339,"Aphis gossypii voucher CNC#HEM054618 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930155,"Aphis gossypii strain Pep-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319887,"Aphis gossypii voucher NIBGE APH-00612 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320153,"Aphis gossypii voucher NIBGE APH-00596 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319888,"Aphis gossypii voucher NIBGE APH-00368 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930153,"Aphis gossypii strain Cot-Aus-2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320055,"Aphis gossypii voucher NIBGE APH-00723 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930154,"Aphis gossypii strain Cuc-Fra cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215172,"Aphis gossypii voucher RGF3203A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320146,"Aphis gossypii voucher NIBGE APH-00644 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320000,"Aphis gossypii voucher NIBGE APH-00622 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319999,"Aphis gossypii voucher NIBGE APH-00621 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215176,"Aphis gossypii voucher RGF3213A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320327,"Aphis gossypii voucher NIBGE APH-00715 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215157,"Aphis gossypii voucher RGF2666A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215203,"Aphis gossypii voucher RGF3175A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320252,"Aphis gossypii voucher NIBGE APH-00617 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320286,"Aphis gossypii voucher NIBGE APH-00447 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,AB506728,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos3",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930150,"Aphis gossypii strain Cot-Cam-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,PP349796,"Aphis gossypii isolate Ag16 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320051,"Aphis gossypii voucher NIBGE APH-00592 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MK994521,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OP002053,"Aphis gossypii isolate klp2 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679371,"Aphis gossypii clone pmk8 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR017751,"Aphis gossypii voucher DOGR 1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320031,"Aphis gossypii voucher NIBGE APH-00434 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319913,"Aphis gossypii voucher NIBGE APH-00154 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MF322542,"Aphis gossypii cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320150,"Aphis gossypii voucher NIBGE APH-00705 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215181,"Aphis gossypii voucher RGF2756A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215158,"Aphis gossypii voucher RGF2765A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215197,"Aphis gossypii voucher RGF2761A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085017,"Aphis gossypii voucher Ag3 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930151,"Aphis gossypii strain Cot-Sen cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679426,"Aphis gossypii clone wtm3 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319927,"Aphis gossypii voucher NIBGE APH-00567 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679443,"Aphis gossypii clone wtm20 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320288,"Aphis gossypii voucher NIBGE APH-00714 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OP002049,"Aphis gossypii isolate kmd2 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215178,"Aphis gossypii voucher RGF2758A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679348,"Aphis gossypii clone hbs5 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432003,"Aphis gossypii isolate shache779 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319741,"Aphis gossypii voucher NIBGE APH-00700 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320356,"Aphis gossypii voucher NIBGE APH-00062 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH407718,"Aphis gossypii isolate AG32_F cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319740,"Aphis gossypii voucher NIBGE APH-00122 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679379,"Aphis gossypii clone pmk16 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320230,"Aphis gossypii voucher NIBGE APH-00679 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MK766467,"Aphis gossypii voucher T1A2 haplotype Ag1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320325,"Aphis gossypii voucher NIBGE APH-00616 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,NC_024581,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319989,"Aphis gossypii voucher NIBGE APH-00056 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319885,"Aphis gossypii voucher NIBGE APH-00568 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320157,"Aphis gossypii voucher NIBGE APH-00711 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679424,"Aphis gossypii clone wtm1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432005,"Aphis gossypii isolate shache804 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320213,"Aphis gossypii voucher NIBGE APH-00618 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432000,"Aphis gossypii isolate akesu633 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679435,"Aphis gossypii clone wtm12 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215190,"Aphis gossypii voucher RGF3176A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215175,"Aphis gossypii voucher RGF3206A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320049,"Aphis gossypii voucher NIBGE APH-00624 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MZ662889,"Aphis gossypii isolate YamAphid-4AR-YWA-2019 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319721,"Aphis gossypii voucher NIBGE APH-00267 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432002,"Aphis gossypii isolate shihezi773 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215170,"Aphis gossypii voucher RGF2760A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320334,"Aphis gossypii voucher NIBGE APH-00658 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320072,"Aphis gossypii voucher NIBGE APH-00585 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215205,"Aphis gossypii voucher RGF3165A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320345,"Aphis gossypii voucher NIBGE APH-00149 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG431998,"Aphis gossypii isolate zepu106 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320106,"Aphis gossypii voucher NIBGE APH-00358 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MZ662886,"Aphis gossypii isolate YamAphid-11AR-YWA-2018 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085022,"Aphis gossypii voucher Ag8 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320127,"Aphis gossypii voucher NIBGE APH-00050 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG431999,"Aphis gossypii isolate kuerle242 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319830,"Aphis gossypii voucher NIBGE APH-00060 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG954460,"Aphis gossypii isolate Y13 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215148,"Aphis gossypii voucher RGF3229A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY835677,"Aphis gossypii voucher BIOUG02532-B03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320133,"Aphis gossypii voucher NIBGE APH-00544 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085024,"Aphis gossypii voucher Ag10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930163,"Aphis gossypii strain Pot-8 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320296,"Aphis gossypii voucher NIBGE APH-00148 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215182,"Aphis gossypii voucher RGF3168A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319754,"Aphis gossypii voucher NIBGE APH-00594 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MG432006,"Aphis gossypii isolate shihezi795 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085033,"Aphis gossypii voucher Ag19 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320130,"Aphis gossypii voucher NIBGE APH-00061 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930160,"Aphis gossypii strain Aub-Guad cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319771,"Aphis gossypii voucher NIBGE APH-00680 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215183,"Aphis gossypii voucher RGF3162A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215168,"Aphis gossypii voucher RGF2665A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MT430940,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OK181865,"Aphis gossypii isolate CRM3_CB cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320089,"Aphis gossypii voucher NIBGE APH-00703 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085018,"Aphis gossypii voucher Ag2 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215160,"Aphis gossypii voucher RGF3172A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319920,"Aphis gossypii voucher NIBGE APH-00546 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315414,"Aphis gossypii voucher A08 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW048625,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215200,"Aphis gossypii voucher RGF3221A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MK766466,"Aphis gossypii voucher RL2A1 haplotype Ag1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY831799,"Aphis gossypii voucher BIOUG02439-C03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320093,"Aphis gossypii voucher NIBGE APH-00662 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215180,"Aphis gossypii voucher RGF2759A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH203408,"Aphis gossypii cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679369,"Aphis gossypii clone pmk6 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320164,"Aphis gossypii voucher NIBGE APH-00712 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320333,"Aphis gossypii voucher NIBGE APH-00579 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KT899438,"Aphis gossypii from muskmelon cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215191,"Aphis gossypii voucher RGF3159A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215145,"Aphis gossypii voucher RGF3211A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OP364845,"Aphis gossypii isolate ypo210517A01 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215204,"Aphis gossypii voucher RGF2757A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319769,"Aphis gossypii voucher NIBGE APH-00713 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR017753,"Aphis gossypii voucher DOGR 3 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215188,"Aphis gossypii voucher RGF3212A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215186,"Aphis gossypii voucher RGF3180A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679344,"Aphis gossypii clone hbs1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,PP917991,"Aphis gossypii voucher ZGMB HJAg cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319725,"Aphis gossypii voucher NIBGE APH-00581 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085023,"Aphis gossypii voucher Ag9 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320206,"Aphis gossypii voucher NIBGE APH-00094 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN320262,"Aphis gossypii voucher NIBGE APH-00160 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MF462147,"Aphis gossypii isolate OAI375 cytochrome oxidase subunit I gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,EU930157,"Aphis gossypii strain Pep-3 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319742,"Aphis gossypii voucher NIBGE APH-00623 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,AB506730,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos5",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319744,"Aphis gossypii voucher NIBGE APH-00166 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679306,"Aphis gossypii clone grd3 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679436,"Aphis gossypii clone wtm13 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH215153,"Aphis gossypii voucher RGF2668A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN102349,"Aphis gossypii mitochondrion, complete genome",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,OP364846,"Aphis gossypii isolate gpo210517C01 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KY679349,"Aphis gossypii clone hbs6 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MH632729,"Aphis gossypii isolate AgCOUR cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MW315447,"Aphis gossypii voucher A43 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319772,"Aphis gossypii voucher NIBGE APH-00545 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,MN319850,"Aphis gossypii voucher NIBGE APH-00139 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphis gossypii,80765,KR085021,"Aphis gossypii voucher Ag7 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,KR085030,"Aphis gossypii voucher Ag16 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,KJ702457,"Aphis gossypii voucher ROAgAp4-14 cytochrome c oxidase subunit 1 (cox1) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,KR085020,"Aphis gossypii voucher Ag6 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,KR085031,"Aphis gossypii voucher Ag17 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,MW315442,"Aphis gossypii voucher A38 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.998,657,0.0,1302.84
+Aphis gossypii,80765,EU701355,"Aphis gossypii voucher CNC#HEM113405 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.997,656,0.0,1300.86
+Aphis gossypii,80765,KR085015,"Aphis gossypii voucher Ag5 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.994,654,0.0,1296.89
+Aphis gossypii,80765,DQ499026,"Aphis gossypii cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.994,654,0.0,1296.89
+Aphis gossypii,80765,OK656717,"Aphis gossypii isolate AG264 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.994,654,0.0,1296.89
+Aphis gossypii,80765,EU701353,"Aphis gossypii voucher CNC#HEM113410 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.989,651,0.0,1290.95
+Aphis gossypii,80765,KM115481,"Aphis gossypii voucher ZMIOZ WZC027 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.986,649,0.0,1286.98
+Aphis gossypii,80765,KY586076,"Aphis gossypii isolate Modipuram_A32 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.986,649,0.0,1286.98
+Aphis gossypii,80765,KT852943,"Aphis gossypii cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.986,649,0.0,1286.98
+Aphis gossypii,80765,KU238088,"Aphis gossypii cytochrome c oxidase subunit I gene, partial cds; mitochondrial",1.0,0.986,649,0.0,1286.98
+Aphis gossypii,80765,MW315435,"Aphis gossypii voucher A30 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.986,649,0.0,1286.98
+Aphis gossypii,80765,KM115477,"Aphis gossypii voucher ZMIOZ LY103 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.983,647,0.0,1283.02
+Aphis gossypii,80765,KU296069,"Aphis gossypii isolate Z3 cytochrome c oxidase subunit I gene, partial cds; mitochondrial",1.0,0.98,645,0.0,1279.05
+Aphis gossypii,80765,KU296073,"Aphis gossypii isolate X2 cytochrome c oxidase subunit I gene, partial cds; mitochondrial",1.0,0.98,645,0.0,1279.05
+Aphis gossypii,80765,KU296068,"Aphis gossypii isolate Z2 cytochrome c oxidase subunit I gene, partial cds; mitochondrial",1.0,0.979,644,0.0,1277.07
+Aphis gossypii,80765,KM115480,"Aphis gossypii voucher ZMIOZ LY122 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.977,643,0.0,1275.09
+Aphis gossypii,80765,OR077674,"Aphis gossypii isolate UBKV strawberry cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.977,643,0.0,1275.09
+Aphis gossypii,80765,MH500231,"Aphis gossypii cytochrome oxidase subunit I gene, partial cds; mitochondrial",1.0,0.974,641,0.0,1271.12
+Aphis gossypii,80765,MG847522,"Aphis gossypii voucher UNIPG AG 03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.974,641,0.0,1271.12
+Aphis gossypii,80765,MG847523,"Aphis gossypii voucher UNIPG AG 04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.974,641,0.0,1271.12
+Aphis gossypii,80765,KM115478,"Aphis gossypii voucher ZMIOZ LY120 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.974,641,0.0,1271.12
+Aphis gossypii,80765,PQ637208,"Aphis gossypii isolate SKUAST -K cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.973,640,0.0,1269.14
+Aphis gossypii,80765,OK655837,"Aphis gossypii isolate AG263 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.971,639,0.0,1267.16
+Aphis gossypii,80765,MN320008,"Aphis gossypii voucher NIBGE APH-00547 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.968,637,0.0,1263.19
+Aphis gossypii,80765,KJ502186,"Aphis gossypii voucher 110921WH17 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.967,636,0.0,1261.21
+Aphis gossypii,80765,KJ502182,"Aphis gossypii voucher 110422HJ1-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.967,636,0.0,1261.21
+Aphis gossypii,80765,GU591547,"Aphis gossypii voucher USNM:396854 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.964,634,0.0,1257.25
+Aphis gossypii,80765,OP002099,"Aphis gossypii isolate vkt2 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.964,634,0.0,1257.25
+Aphis gossypii,80765,MH469607,"Aphis gossypii isolate SMH24 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.954,628,0.0,1245.35
+Aphis gossypii,80765,MH469608,"Aphis gossypii isolate SMH25 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.954,628,0.0,1245.35
+Aphis gossypii,80765,MH469609,"Aphis gossypii isolate SMH26 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.954,628,0.0,1245.35
+Aphis gossypii,80765,MN319706,"Aphis gossypii voucher NIBGE APH-00746 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.953,627,0.0,1243.37
+Aphis gossypii,80765,KJ863360,"Aphis gossypii voucher 110517-YR-4-1 cytochrome oxidase subunit I gene, partial cds; mitochondrial",1.0,0.95,625,0.0,1239.41
+Aphis nivalis,1656056,KR042793,"Aphis nivalis voucher CNC#HEM057313 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.95,625,0.0,1239.41
+Aphis gossypii,80765,OR050337,"Aphis gossypii voucher 186 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.942,620,0.0,1229.5
+Aphis gossypii,80765,MH407731,"Aphis gossypii isolate AG1_F cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.938,617,0.0,1223.55
+Aphis gossypii,80765,MN320074,"Aphis gossypii voucher NIBGE APH-00195 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.933,614,0.0,1217.6
+Aphis gossypii,80765,MN319831,"Aphis gossypii voucher NIBGE APH-00196 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.933,614,0.0,1217.6
+Aphis gossypii,80765,MN320290,"Aphis gossypii voucher NIBGE APH-00197 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.933,614,0.0,1217.6
+Aphis gossypii,80765,KF286902,"Aphis gossypii voucher ZMIOZ WZC046 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.932,613,0.0,1215.62
+Aphis gossypii,80765,KJ195542,"Aphis gossypii isolate 030513-JJ-SH4-AGO2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.913,601,0.0,1191.83
+Aphis gossypii,80765,MN320280,"Aphis gossypii voucher NIBGE APH-00373 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.912,600,0.0,1189.85
+Aphis gossypii,80765,MK241553,"Aphis gossypii voucher AP0Z11 cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",1.0,0.912,600,0.0,1189.85
+Aphis gossypii,80765,ON986123,"Aphis gossypii isolate kp1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.91,599,0.0,1187.87
+Aphis gossypii,80765,KJ195544,"Aphis gossypii isolate 030513-JJ-SH4-AGO4 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.909,598,0.0,1185.89
+Aphis gossypii,80765,MN320255,"Aphis gossypii voucher NIBGE APH-00307 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1298.87
+Aphis gossypii,80765,MN320144,"Aphis gossypii voucher NIBGE APH-00057 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1298.87
+Aphis gossypii,80765,EU701352,"Aphis gossypii voucher CNC#HEM113412 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268016,"Aphis gossypii voucher ORP SP-LK40 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MW315445,"Aphis gossypii voucher A41 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215146,"Aphis gossypii voucher RGF3174A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,PP349795,"Aphis gossypii isolate Ag12 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215159,"Aphis gossypii voucher RGF3169A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MW315431,"Aphis gossypii voucher A26 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,AB506731,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos6",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MN319936,"Aphis gossypii voucher NIBGE APH-00386 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis chloris,345547,KF638752,"Aphis chloris voucher INRA CBGP ACOE1485/chasses1485-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MN319738,"Aphis gossypii voucher NIBGE APH-00350 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701347,"Aphis gossypii voucher CNC#HEM113430 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KT899439,"Aphis gossypii from potato cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701401,"Aphis gossypii voucher CNC#HEM050517 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215154,"Aphis gossypii voucher RGF3177A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701371,"Aphis gossypii voucher CNC#HEM050531 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701350,"Aphis gossypii voucher CNC#HEM113415 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268011,"Aphis gossypii voucher ORP SP-LK35 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MN320005,"Aphis gossypii voucher NIBGE APH-00388 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,PP349798,"Aphis gossypii isolate Ag23 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215207,"Aphis gossypii voucher RGF3160A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152428,"Aphis gossypii voucher ORP SP-LK79 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MW315444,"Aphis gossypii voucher A40 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268015,"Aphis gossypii voucher ORP SP-LK39 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152479,"Aphis gossypii voucher ORP SP-LK130 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KF446154,"Aphis gossypii voucher ORP SP-LK13 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KY679304,"Aphis gossypii clone grd1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215193,"Aphis gossypii voucher RGF2672A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis clerodendri,511029,EU701407,"Aphis clerodendri voucher CNC#HEM050872 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152396,"Aphis gossypii voucher ORP SP-LK47 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,AB506726,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos1",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215177,"Aphis gossypii voucher RGF3161A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701377,"Aphis gossypii voucher CNC#HEM050471 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268000,"Aphis gossypii voucher ORP SP-LK24 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701344,"Aphis gossypii voucher CNC#HEM113449 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152417,"Aphis gossypii voucher ORP SP-LK68 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis confusa,1425453,KF638758,"Aphis confusa voucher INRA CBGP ACOE1619/chasses1619-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MW013764,"Aphis gossypii mitochondrion, complete genome",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KF446156,"Aphis gossypii voucher ORP SP-LK15 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis confusa,1425453,KF638761,"Aphis confusa voucher INRA CBGP ACOE700/chasses700-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152398,"Aphis gossypii voucher ORP SP-LK49 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,JQ690334,"Aphis gossypii voucher KBRIIHR-41 from India cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152451,"Aphis gossypii voucher ORP SP-LK102 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215198,"Aphis gossypii voucher RGF2754A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152481,"Aphis gossypii voucher ORP SP-LK132 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152464,"Aphis gossypii voucher ORP SP-LK115 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis sp. BOLD:AAA3070,1723313,KR344320,"Aphis sp. BOLD:AAA3070 voucher BIOUG10070-E06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,JX051430,"Aphis gossypii voucher KBRIIHR-194 cytochrome oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152455,"Aphis gossypii voucher ORP SP-LK106 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268002,"Aphis gossypii voucher ORP SP-LK26 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MN319801,"Aphis gossypii voucher NIBGE APH-00179 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis sedi,680342,GQ904112,"Aphis sedi isolate 030511HJ1 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH632727,"Aphis gossypii isolate AgHIBI cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis taraxacicola,345564,KF639079,"Aphis taraxacicola voucher INRA CBGP ACOE2149/chasses2149-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152468,"Aphis gossypii voucher ORP SP-LK119 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,EU701382,"Aphis gossypii voucher CNC#HEM050543 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215169,"Aphis gossypii voucher RGF3178A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152418,"Aphis gossypii voucher ORP SP-LK69 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215152,"Aphis gossypii voucher RGF2764A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MN320194,"Aphis gossypii voucher NIBGE APH-00387 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,MH215192,"Aphis gossypii voucher RGF3219A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152465,"Aphis gossypii voucher ORP SP-LK116 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KF446144,"Aphis gossypii voucher ORP SP-LK3 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM268005,"Aphis gossypii voucher ORP SP-LK29 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KP152459,"Aphis gossypii voucher ORP SP-LK110 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,GU667247,"Aphis gossypii voucher CNC#HEM064124 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Aphis gossypii,80765,KM115519,"Aphis gossypii voucher ZMIOZ ZZM061 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KM115492,"Aphis gossypii voucher ZMIOZ XJY105-2 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KY586072,"Aphis gossypii isolate Modipuram_CA1 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KM115494,"Aphis gossypii voucher ZMIOZ XJY105 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KY586075,"Aphis gossypii isolate Modipuram_BA2 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KM115487,"Aphis gossypii voucher ZMIOZ XJY034 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.986,649,0.0,1279.05
+Aphis gossypii,80765,KY586074,"Aphis gossypii isolate Modipuram_CA3 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.985,648,0.0,1277.07
+Aphis gossypii,80765,MG847521,"Aphis gossypii voucher UNIPG AG 02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.983,647,0.0,1275.09
+Aphis gossypii,80765,MG847520,"Aphis gossypii voucher UNIPG AG 01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.983,647,0.0,1275.09
+Aphis gossypii,80765,KT356160,"Aphis gossypii voucher AGB001 cytochrome oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,0.979,644,0.0,1269.14
+Aphis gossypii,80765,KM115474,"Aphis gossypii voucher ZMIOZ LY079 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.971,639,0.0,1259.23
+Aphis gossypii,80765,KM115476,"Aphis gossypii voucher ZMIOZ LY092 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.97,638,0.0,1257.25
+Aphis gossypii,80765,KJ502183,"Aphis gossypii voucher 110519HJ5-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.967,636,0.0,1253.28
+Aphis gossypii,80765,OR835804,"Aphis gossypii voucher Is cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.998,0.953,627,0.0,1235.44
+Aphis gossypii,80765,EU701360,"Aphis gossypii voucher CNC#HEM054977 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.953,627,0.0,1235.44
+Aphis gossypii,80765,EU701348,"Aphis gossypii voucher CNC#HEM113419 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.951,626,0.0,1233.46
+Aphis gossypii,80765,KJ863373,"Aphis gossypii voucher 110520-YR-6-1 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.998,0.95,625,0.0,1231.48
+Aphis gossypii,80765,EU701394,"Aphis gossypii voucher CNC#HEM050618 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.933,614,0.0,1211.65
+Aphis gossypii,80765,KF286928,"Aphis gossypii voucher ZMIOZ WZC078 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.932,613,0.0,1207.69
+Aphis gossypii,80765,KF286903,"Aphis gossypii voucher ZMIOZ WZC047 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.932,613,0.0,1207.69
+Aphis gossypii,80765,MK214289,"Aphis gossypii voucher AP0Y11 cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.998,0.921,606,0.0,1193.81
+Aphis gossypii,80765,KJ195635,"Aphis gossypii isolate 110526-SW-HJ7-AGO-1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.913,601,0.0,1183.9
+Aphis gossypii,80765,MK241552,"Aphis gossypii voucher AP0L12 cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.998,0.912,600,0.0,1181.92
+Aphis gossypii,80765,MK241554,"Aphis gossypii voucher AP0E12 cytochrome oxidase subunit 1 (CO1) gene, partial cds; mitochondrial",0.998,0.912,600,0.0,1181.92
+Aphis gossypii,80765,MN319919,"Aphis gossypii voucher NIBGE APH-00155 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1292.93
+Aphis gossypii,80765,MH215149,"Aphis gossypii voucher RGF2671A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1292.93
+Aphis gossypii,80765,MH632728,"Aphis gossypii isolate AgPOIV cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1292.93
+Aphis gossypii,80765,EU701388,"Aphis gossypii voucher CNC#HEM050533 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1290.95
+Aphis taraxacicola,345564,GQ904115,"Aphis taraxacicola isolate 050513HJ11 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KF446145,"Aphis gossypii voucher ORP SP-LK4 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152412,"Aphis gossypii voucher ORP SP-LK63 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MW315429,"Aphis gossypii voucher A24 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215199,"Aphis gossypii voucher RGF3196A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215174,"Aphis gossypii voucher RGF3191A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KF446152,"Aphis gossypii voucher ORP SP-LK11 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,JQ690332,"Aphis gossypii voucher KBRIIHR-39 from India cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152450,"Aphis gossypii voucher ORP SP-LK101 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215164,"Aphis gossypii voucher RGF2751A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis clerodendri,511029,GQ904081,"Aphis clerodendri isolate 031009SH32 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis confusa,1425453,KF638759,"Aphis confusa voucher INRA CBGP ACOE2280/chasses2280-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215189,"Aphis gossypii voucher RGF3189A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215195,"Aphis gossypii voucher RGF3200A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,HM237329,"Aphis gossypii cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215206,"Aphis gossypii voucher RGF3190A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KF638915,"Aphis gossypii voucher INRA CBGP ACOE1212/chasses1212-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152409,"Aphis gossypii voucher ORP SP-LK60 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215173,"Aphis gossypii voucher RGF2755A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,PQ146890,"Aphis gossypii isolate CITHAg 1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215150,"Aphis gossypii voucher RGF3185A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KF638916,"Aphis gossypii voucher INRA CBGP ACOE1408/chasses1408-ACDA cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152444,"Aphis gossypii voucher ORP SP-LK95 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,EU701359,"Aphis gossypii voucher CNC#HEM054984 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KM268009,"Aphis gossypii voucher ORP SP-LK33 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MN319734,"Aphis gossypii voucher NIBGE APH-00572 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KY679364,"Aphis gossypii clone pmk1 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,EU701370,"Aphis gossypii voucher CNC#HEM050438 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MW315428,"Aphis gossypii voucher A23 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215147,"Aphis gossypii voucher RGF3199A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152429,"Aphis gossypii voucher ORP SP-LK80 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215185,"Aphis gossypii voucher RGF3195A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152458,"Aphis gossypii voucher ORP SP-LK109 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215184,"Aphis gossypii voucher RGF2670A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215167,"Aphis gossypii voucher RGF2753A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,PQ037178,"Aphis gossypii isolate ag17 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KP152469,"Aphis gossypii voucher ORP SP-LK120 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215163,"Aphis gossypii voucher RGF3188A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215151,"Aphis gossypii voucher RGF3204A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,EU701380,"Aphis gossypii voucher CNC#HEM050599 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215161,"Aphis gossypii voucher RGF3201A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,MH215202,"Aphis gossypii voucher RGF3186A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,KY679381,"Aphis gossypii clone pmk18 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,JQ690329,"Aphis gossypii voucher KBRIIHR-37 from India cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,AB506729,"Aphis gossypii mitochondrial COI gene for cytochrome oxidase subunit I, partial cds, isolate: Agos4",0.997,1.0,658,0.0,1288.96
+Aphis gossypii,80765,EU701390,"Aphis gossypii voucher CNC#HEM050563 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.998,657,0.0,1286.98
+Aphis gossypii,80765,KR032414,"Aphis gossypii voucher CNC#HEM057966 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.998,657,0.0,1286.98
+Aphis gossypii,80765,MW315436,"Aphis gossypii voucher A31 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,0.997,656,0.0,1285.0
+Aphis gossypii,80765,MT710951,"Aphis gossypii isolate Shivamogga cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.997,0.988,650,0.0,1273.1
+Aphis gossypii,80765,KM115527,"Aphis gossypii voucher ZMIOZ ZZM087 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KY586073,"Aphis gossypii isolate Modipuram_CA2 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KY586071,"Aphis gossypii isolate Hisar_A86 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KY586077,"Aphis gossypii isolate Modipuram_BA3 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KY586070,"Aphis gossypii isolate Hisar_A88 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KM115526,"Aphis gossypii voucher ZMIOZ ZZM081 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KM115497,"Aphis gossypii voucher ZMIOZ XJY1131 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,KM115479,"Aphis gossypii voucher ZMIOZ LY121 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.986,649,0.0,1271.12
+Aphis gossypii,80765,MH407723,"Aphis gossypii isolate AG21_F cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.96,632,0.0,1237.42
+Aphis gossypii,80765,MN320136,"Aphis gossypii voucher NIBGE APH-00464 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.939,618,0.0,1211.65
+Aphis gossypii,80765,KF286907,"Aphis gossypii voucher ZMIOZ WZC052 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.997,0.922,607,0.0,1187.87
+Aphis gossypii,80765,EU701387,"Aphis gossypii voucher CNC#HEM050602 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1285.0
+Aphis gossypii,80765,KP152416,"Aphis gossypii voucher ORP SP-LK67 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,KP152413,"Aphis gossypii voucher ORP SP-LK64 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,KP152430,"Aphis gossypii voucher ORP SP-LK81 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,MH215194,"Aphis gossypii voucher RGF3187A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis hypericiphaga,511043,GQ904103,"Aphis hypericiphaga isolate 050616SH29 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,JQ916093,"Aphis gossypii voucher ZMIOZ 13532 cytochrome oxidase subunit 1 gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,EU701341,"Aphis gossypii voucher CNC#HEM113492 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,JX051429,"Aphis gossypii voucher KBRIIHR-193 cytochrome oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,MH215179,"Aphis gossypii voucher RGF3223A cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,KP152422,"Aphis gossypii voucher ORP SP-LK73 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,1.0,658,0.0,1281.03
+Aphis gossypii,80765,KM115475,"Aphis gossypii voucher ZMIOZ LY088 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",0.995,0.986,649,0.0,1263.19
+Aphis gossypii,80765,KF286942,"Aphis gossypii voucher ZMIOZ WZC091 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.995,0.932,613,0.0,1191.83
+Aphis gossypii,80765,MN320076,"Aphis gossypii voucher NIBGE APH-00051 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1275.09
+Aphis gossypii,80765,JQ690333,"Aphis gossypii voucher KBRIIHR-40 from India cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KM267998,"Aphis gossypii voucher ORP SP-LK22 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,MN319819,"Aphis gossypii voucher NIBGE APH-00370 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KY679405,"Aphis gossypii clone msm2 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,JQ067097,"Aphis gossypii voucher KBRIIHR-03 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KP152395,"Aphis gossypii voucher ORP SP-LK46 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KP152456,"Aphis gossypii voucher ORP SP-LK107 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,OR685285,"Aphis gossypii voucher SCR1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KP152463,"Aphis gossypii voucher ORP SP-LK114 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,KY679421,"Aphis gossypii clone msm18 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,JQ067095,"Aphis gossypii voucher KBRIIHR-01 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Aphis gossypii,80765,MZ091376,"Aphis gossypii voucher Aphis-gossypii-KSA-Taif cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.994,0.939,618,0.0,1193.81
+Aphis gossypii,80765,MN320355,"Aphis gossypii voucher NIBGE APH-00059 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1275.09
+Aphis gossypii,80765,MN319883,"Aphis gossypii voucher NIBGE APH-00018 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1271.12
+Aphis egomae,511031,GQ904084,"Aphis egomae isolate 050809HJ1 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1265.18
+Aphis argrimoniae,680341,GQ904080,"Aphis argrimoniae isolate 080925HJ29 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1265.18
+Aphis sp. K-4 no.1,680336,GQ904148,"Aphis sp. K-4 no.1 cytochrome c oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1265.18
+Aphis gossypii,80765,KY679368,"Aphis gossypii clone pmk5 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.992,1.0,658,0.0,1265.18
+Aphis gossypii,80765,MN319812,"Aphis gossypii voucher NIBGE APH-00158 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.991,1.0,658,0.0,1267.16
+Aphis gossypii,80765,KY679409,"Aphis gossypii clone msm6 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.991,1.0,658,0.0,1257.25
+Aphis gossypii,80765,MN319729,"Aphis gossypii voucher NIBGE APH-00734 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.991,1.0,658,0.0,1257.25
+Aphis gossypii,80765,PQ860815,"Aphis gossypii isolate SKUAST -K cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.99,0.941,619,0.0,1179.94
+Aphis gossypii,80765,JQ690335,"Aphis gossypii voucher KBRIIHR-42 from India cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.988,1.0,658,0.0,1241.39
+Aphis gossypii,80765,KM268006,"Aphis gossypii voucher ORP SP-LK30 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.986,1.0,658,0.0,1233.46
+Aphis oestlundi,527581,EU701473,"Aphis oestlundi voucher CNC#HEM006239 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,1.0,658,0.0,1225.53
+Aphis sp. RFBAE765-09,2553562,GU668711,"Aphis sp. RFBAE765-09 voucher CNC#HEM063709 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,1.0,658,0.0,1225.53
+Aphis sp. RFBAE389-09,2553559,GU668325,"Aphis sp. RFBAE389-09 voucher CNC#HEM063334 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.989,651,0.0,1211.65

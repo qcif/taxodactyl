@@ -1,0 +1,7 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Tetranychus marianae,2723048,MW326470,"Tetranychus marianae voucher FSCA2019_1653 (2F) cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.989,0.655,446,0.0,846.918
+Tetranychus marianae,2723048,MW326471,"Tetranychus marianae voucher FSCA2019_1653 (3F) cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.989,0.655,446,0.0,846.918
+Tetranychus marianae,2723048,MW326472,"Tetranychus marianae voucher FSCA2019_1653 (4F) cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.989,0.655,446,0.0,846.918
+Tetranychus marianae,2723048,OP703558,"Tetranychus marianae isolate Cma1Kdl1 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.989,0.646,440,0.0,835.025
+Tetranychus marianae,2723048,MW326473,"Tetranychus marianae voucher FSCA2019_1653 (5F) cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.988,0.611,416,0.0,787.45
+Tetranychus marianae,2723048,MW672202,"Tetranychus marianae voucher FSCA2019_1653 (6F) cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.988,0.602,410,0.0,775.557
