@@ -1,0 +1,37 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Wahlgreniella nervata,527896,KF285590,"Wahlgreniella nervata voucher ORP SP-LK1 cytochrome oxidase subunit 1 (COX1) gene, partial cds; mitochondrial",1.0,1.0,658,0.0,1304.82
+Aphidinae sp. BOLD-2016,1889624,KR918182,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-C07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.926,609,0.0,1207.69
+Rhodobium porosum,869315,KR035607,"Rhodobium porosum voucher CNC#HEM059754 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.894,588,0.0,1166.06
+Aphidinae sp. BOLD-2016,1889624,KR917707,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-G12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.884,582,0.0,1154.17
+Aphidinae sp. BOLD-2016,1889624,KR917324,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-F09 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.884,582,0.0,1154.17
+Aphidinae sp. BOLD-2016,1889624,KR917443,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-A05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.88,579,0.0,1148.22
+Aphidinae sp. BOLD-2016,1889624,KR917983,"Aphidinae sp. BOLD-2016 voucher BIOUG18858-H11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.857,564,0.0,1118.49
+Rhodobium porosum,869315,MH820769,"Rhodobium porosum voucher HL668 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.851,560,0.0,1110.56
+Aphidinae sp. BOLD-2016,1889624,KR917419,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-G11 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.83,546,0.0,1082.81
+Aphidinae sp. BOLD-2016,1889624,KR917199,"Aphidinae sp. BOLD-2016 voucher BIOUG19490-H01 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.802,528,0.0,1047.13
+Rhodobium porosum,869315,KY831459,"Rhodobium porosum voucher BIOUG02439-D12 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Rhodobium porosum,869315,JX844363,"Rhodobium porosum voucher ZMIOZ 14236 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Rhodobium porosum,869315,MN319889,"Rhodobium porosum voucher CCDB-23161-H10 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Rhodobium porosum,869315,KY837014,"Rhodobium porosum voucher BIOUG02439-G07 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Rhodobium porosum,869315,KY832088,"Rhodobium porosum voucher BIOUG02527-D06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,1.0,658,0.0,1296.89
+Rhodobium porosum,869315,MH820770,"Rhodobium porosum voucher HLZ225 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.851,560,0.0,1102.63
+Rhodobium porosum,869315,MH820771,"Rhodobium porosum voucher HLZ229 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.851,560,0.0,1102.63
+Rhodobium porosum,869315,EU701649,"Rhodobium porosum voucher CNC#HEM051817 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.995,0.831,547,0.0,1066.95
+Ericaphis scammelli,527678,EU701647,"Ericaphis scammelli voucher CNC#HEM055876 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,1.0,658,0.0,1273.1
+Rhodobium porosum,869315,MZ091382,"Rhodobium porosum voucher Rhodobium-porosum-KSA-Taif cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.994,0.939,618,0.0,1193.81
+Ericaphis scammelli,527678,EU701648,"Ericaphis scammelli voucher CNC#HEM113518 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,0.998,657,0.0,1263.19
+Ericaphis fimbriata,527675,EU701642,"Ericaphis fimbriata voucher CNC#HEM051670 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.988,1.0,658,0.0,1241.39
+Wahlgreniella nervata,527896,KR032227,"Wahlgreniella nervata voucher CHAN-2006-0309 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.987,0.91,599,0.0,1124.44
+Wahlgreniella nervata,527896,EU701959,"Wahlgreniella nervata voucher CNC#HEM054223 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.986,0.998,657,0.0,1235.44
+Ericaphis fimbriata,527675,EU701639,"Ericaphis fimbriata voucher CNC#HEM055945 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.986,1.0,658,0.0,1233.46
+Wahlgreniella nervata,527896,EU701958,"Wahlgreniella nervata voucher CNC#HEM054195 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.986,0.998,657,0.0,1231.48
+Wahlgreniella nervata,527896,KR032015,"Wahlgreniella nervata voucher CNC#HEM057594 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.986,0.95,625,0.0,1168.04
+Ericaphis fimbriata,527675,KR038132,"Ericaphis fimbriata voucher CNC#HEM056382 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,1.0,658,0.0,1225.53
+Ericaphis fimbriata,527675,KR035217,"Ericaphis fimbriata voucher CNC#HEM051816 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,1.0,658,0.0,1225.53
+Ericaphis sp. RFBAE098-09,2550138,GU667405,"Ericaphis sp. RFBAE098-09 voucher CNC#HEM063302 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,1.0,658,0.0,1225.53
+Wahlgreniella nervata,527896,KC502857,"Wahlgreniella nervata voucher CCDB-08107-E02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.998,657,0.0,1223.55
+Ericaphis fimbriata,527675,EU701643,"Ericaphis fimbriata voucher CNC#HEM051750 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.998,657,0.0,1223.55
+Wahlgreniella sp. BOLD:AAB6874,1304448,KC502856,"Wahlgreniella sp. BOLD:AAB6874 voucher CCDB-08110-E02 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.998,657,0.0,1223.55
+Wahlgreniella nervata,527896,KR034136,"Wahlgreniella nervata voucher CHAN-2006-0310 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.998,657,0.0,1223.55
+Aphidinae sp. BOLD-2016,1889624,KR584489,"Aphidinae sp. BOLD-2016 voucher BIOUG16130-G05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.926,609,0.0,1140.29
+Aphidinae sp. BOLD-2016,1889624,KR583178,"Aphidinae sp. BOLD-2016 voucher BIOUG06659-E05 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.884,582,0.0,1082.81

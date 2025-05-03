@@ -1,0 +1,280 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Paracidovorax citrulli,80869,CP029373,"Paracidovorax citrulli strain M6 chromosome, complete genome",0.999,0.999,1442,0.0,8552.97
+Paracidovorax citrulli,80869,CP127364,"Paracidovorax citrulli strain KACC 17001 chromosome, complete genome",0.999,0.999,1442,0.0,8552.97
+Paracidovorax citrulli,80869,CP086060,"Paracidovorax citrulli strain HPP21-9-4B chromosome, complete genome",0.999,0.999,1442,0.0,8552.97
+Paracidovorax citrulli,80869,NR_041758,"Paracidovorax citrulli strain ICMP 7500 16S ribosomal RNA, partial sequence",0.999,0.999,1442,0.0,2850.99
+Paracidovorax citrulli,80869,MW788378,"Paracidovorax citrulli strain HPP21-3-3B 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2850.99
+Paracidovorax citrulli,80869,CP042303,"Paracidovorax citrulli strain NWB SC107 chromosome, complete genome",0.999,0.999,1442,0.0,8545.039999999999
+Paracidovorax citrulli,80869,OR770515,"Paracidovorax citrulli strain 140 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2850.99
+Paracidovorax citrulli,80869,MW788377,"Paracidovorax citrulli strain HPP21-9-4B 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2850.99
+Paracidovorax citrulli,80869,CP042323,"Paracidovorax citrulli strain NWB SC196 chromosome, complete genome",0.999,0.999,1442,0.0,8552.97
+Paracidovorax citrulli,80869,CP086023,"Paracidovorax citrulli strain HPP21-3-3B chromosome, complete genome",0.999,0.999,1442,0.0,8552.97
+Paracidovorax citrulli,80869,KP862624,"Acidovorax citrulli strain xjgb-wy6 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2850.99
+Paracidovorax citrulli,80869,CP127363,"Paracidovorax citrulli strain KACC 17005 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,CP127362,"Paracidovorax citrulli strain KACC 17913 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,CP133289,"Paracidovorax citrulli strain YDAC2 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,CP023687,"Paracidovorax citrulli strain KACC17005 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,397945,CP000512,"Acidovorax citrulli AAC00-1, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,CP127360,"Paracidovorax citrulli strain KACC 18784 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax cattleyae,80868,CP028290,Paracidovorax cattleyae strain CAT98_1 chromosome,0.999,0.999,1442,0.0,2843.06
+Paracidovorax avenae,80867,CP156079,"Paracidovorax avenae strain CNGX08 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax cattleyae,80868,NR_117497,"Paracidovorax cattleyae strain ICMP 2826 16S ribosomal RNA, partial sequence",0.999,0.999,1442,0.0,2843.06
+Paracidovorax citrulli,80869,JX875533,"Acidovorax citrulli strain A1 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2843.06
+Paracidovorax cattleyae,80868,NR_041756,"Paracidovorax cattleyae strain ICMP 2826 16S ribosomal RNA, partial sequence",0.999,0.999,1442,0.0,2843.06
+Paracidovorax avenae,80867,MT192602,"Paracidovorax avenae strain CsNT01 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2843.06
+Paracidovorax citrulli,80869,CP127361,"Paracidovorax citrulli strain KACC 18782 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,JQ901493,"Acidovorax citrulli strain AACHN-1 16S ribosomal RNA gene, partial sequence",0.999,0.999,1442,0.0,2843.06
+Paracidovorax citrulli,80869,CP042302,"Paracidovorax citrulli strain NWB SC074 chromosome, complete genome",0.999,0.999,1442,0.0,8529.18
+Paracidovorax citrulli,80869,NR_118397,"Paracidovorax citrulli strain BC525 16S ribosomal RNA, partial sequence",0.999,0.988,1425,0.0,2817.29
+Paracidovorax citrulli,80869,KF769125,"Acidovorax citrulli strain JXZS6 16S ribosomal RNA gene, partial sequence",0.999,0.985,1421,0.0,2801.43
+Paracidovorax citrulli,80869,KF769122,"Acidovorax citrulli strain JXZS3 16S ribosomal RNA gene, partial sequence",0.999,0.984,1420,0.0,2799.45
+Paracidovorax citrulli,80869,KF769124,"Acidovorax citrulli strain JXZS5 16S ribosomal RNA gene, partial sequence",0.999,0.983,1419,0.0,2797.47
+Paracidovorax citrulli,80869,KF769120,"Acidovorax citrulli strain JXZS1 16S ribosomal RNA gene, partial sequence",0.999,0.969,1398,0.0,2755.84
+Paracidovorax citrulli,80869,OR233591,"Paracidovorax citrulli strain CIAD_66 16S ribosomal RNA gene, partial sequence",0.999,0.957,1381,0.0,2730.07
+Paracidovorax citrulli,80869,PP103245,"Paracidovorax citrulli strain ICMP 6521 16S ribosomal RNA gene, partial sequence",0.999,0.951,1373,0.0,2714.21
+Paracidovorax citrulli,80869,KU758900,"Paracidovorax citrulli strain WM0922-3 16S ribosomal RNA gene, partial sequence",0.999,0.948,1368,0.0,2704.3
+Paracidovorax citrulli,80869,KU865320,"Paracidovorax citrulli strain XD0611-7 16S ribosomal RNA gene, partial sequence",0.999,0.947,1367,0.0,2702.32
+Paracidovorax citrulli,80869,KP410333,"Acidovorax citrulli strain RKFB 793 16S ribosomal RNA gene, partial sequence",0.999,0.947,1366,0.0,2692.41
+Paracidovorax citrulli,80869,MH753671,"Paracidovorax citrulli strain JZX2 16S ribosomal RNA gene, partial sequence",0.999,0.94,1357,0.0,2682.49
+Paracidovorax citrulli,80869,KF728234,"Acidovorax citrulli strain KACC 17002 16S ribosomal RNA gene, partial sequence",0.999,0.94,1357,0.0,2682.49
+Paracidovorax cattleyae,80868,MT758036,"Paracidovorax cattleyae strain ICMP 2826 16S ribosomal RNA gene, partial sequence",0.999,0.94,1357,0.0,2674.56
+Paracidovorax citrulli,80869,KF728232,"Acidovorax citrulli strain KACC 17000 16S ribosomal RNA gene, partial sequence",0.999,0.94,1357,0.0,2674.56
+Paracidovorax citrulli,80869,MH542625,"Paracidovorax citrulli strain 15-280 16S ribosomal RNA gene, partial sequence",0.999,0.934,1348,0.0,2664.65
+Paracidovorax citrulli,80869,FJ447558,"Acidovorax avenae subsp. citrulli strain AW0601 16S ribosomal RNA gene, partial sequence",0.999,0.936,1351,0.0,2662.67
+Paracidovorax citrulli,80869,KP776444,"Acidovorax citrulli strain 11248 16S ribosomal RNA gene, partial sequence",0.999,0.91,1313,0.0,2595.27
+Paracidovorax avenae,80867,CP028288,Paracidovorax avenae strain AA81_1 chromosome,0.998,0.999,1442,0.0,8513.32
+Paracidovorax avenae,80867,KU948660,"Paracidovorax avenae isolate C4-2 16S ribosomal RNA gene, partial sequence",0.998,0.999,1442,0.0,2835.13
+Acidovorax sp. MAFF 311311,3230736,LC797516,"Acidovorax sacchari HC-19 gene for 16S ribosomal RNA, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax oryzae,1408420,NR_043752,"Paracidovorax oryzae ATCC 19882 strain FC-143 16S ribosomal RNA, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028302,Paracidovorax avenae isolate SF12 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,MG818948,"Paracidovorax avenae strain OS01 16S ribosomal RNA gene, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028299,Paracidovorax avenae strain QH1 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028289,Paracidovorax avenae strain AA99_2 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax citrulli,80869,JX875534,"Acidovorax citrulli strain A2 16S ribosomal RNA gene, partial sequence",0.998,0.999,1442,0.0,2835.13
+Acidovorax sp. MAFF 311311,3230736,AP035783,"Acidovorax sacchari HC-19 DNA, complete genome",0.998,0.999,1442,0.0,8505.39
+Acidovorax sp. NCPPB 3859,2940489,CP097266,"Acidovorax sp. NCPPB 3859 chromosome, complete genome",0.998,0.999,1442,0.0,8505.39
+Paracidovorax avenae,80867,CP028287,Paracidovorax avenae strain AA78_5 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028292,Paracidovorax avenae strain INDB2 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax citrulli,80869,NR_117498,"Paracidovorax citrulli strain ICMP 7500 16S ribosomal RNA, partial sequence",0.998,0.999,1442,0.0,2835.13
+Acidovorax sp. GBBC 712,2940491,CP097265,"Acidovorax sp. GBBC 712 chromosome, complete genome",0.998,0.999,1442,0.0,8505.39
+Acidovorax sp. MAFF 311311,3230736,AP035784,"Acidovorax sacchari HC-21 DNA, complete genome",0.998,0.999,1442,0.0,8505.39
+Paracidovorax avenae,80867,CP028291,Paracidovorax avenae strain COLB1 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,EF418616,"Acidovorax avenae subsp. avenae 16S ribosomal RNA gene, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax citrulli,80869,GU108498,"Acidovorax citrulli strain 3b 16S ribosomal RNA gene, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028297,Paracidovorax avenae strain MOR chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,CP028295,Paracidovorax avenae strain MD5 chromosome,0.998,0.999,1442,0.0,8503.41
+Paracidovorax avenae,80867,CP028303,Paracidovorax avenae strain SH7 chromosome,0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,NR_041757,"Paracidovorax avenae strain ICMP 3183 16S ribosomal RNA, partial sequence",0.998,0.999,1442,0.0,2835.13
+Paracidovorax avenae,80867,MT367817,"Paracidovorax avenae strain OsEp_Plm_30P1 16S ribosomal RNA gene, partial sequence",0.998,0.992,1432,0.0,2815.31
+Paracidovorax avenae,80867,NR_118396,"Paracidovorax avenae strain BC523 16S ribosomal RNA, partial sequence",0.998,0.988,1425,0.0,2801.43
+Paracidovorax avenae,80867,MH244343,"Paracidovorax avenae strain G3 16S ribosomal RNA gene, partial sequence",0.998,0.987,1424,0.0,2799.45
+Paracidovorax citrulli,80869,KF769123,"Acidovorax citrulli strain JXZS4 16S ribosomal RNA gene, partial sequence",0.998,0.984,1420,0.0,2791.52
+Paracidovorax avenae,80867,LC015534,"Paracidovorax avenae gene for 16S ribosomal RNA, partial sequence, strain: AF132",0.998,0.983,1418,0.0,2787.55
+Paracidovorax oryzae,862720,LC015532,"Paracidovorax oryzae gene for 16S ribosomal RNA, partial sequence, strain: AF48",0.998,0.983,1418,0.0,2787.55
+Paracidovorax avenae,80867,MH244342,"Paracidovorax avenae strain G1 16S ribosomal RNA gene, partial sequence",0.998,0.982,1417,0.0,2785.57
+Acidovorax sp. KBT029,720627,AB547152,"Acidovorax sp. KBT029 gene for 16S rRNA, partial sequence",0.998,0.98,1414,0.0,2779.62
+Paracidovorax citrulli,80869,KF769121,"Acidovorax citrulli strain JXZS2 16S ribosomal RNA gene, partial sequence",0.998,0.98,1414,0.0,2779.62
+Paracidovorax citrulli,80869,KJ210350,"Acidovorax citrulli strain pslb-25 16S ribosomal RNA gene, partial sequence",0.998,0.979,1413,0.0,2775.66
+Paracidovorax oryzae,862720,LC015530,"Paracidovorax oryzae gene for 16S ribosomal RNA, partial sequence, strain: AF113",0.998,0.979,1412,0.0,2775.66
+Paracidovorax citrulli,80869,MH753672,"Paracidovorax citrulli strain JZT8 16S ribosomal RNA gene, partial sequence",0.998,0.976,1408,0.0,2765.75
+Paracidovorax citrulli,80869,KJ210344,"Acidovorax citrulli strain XJ-6 16S ribosomal RNA gene, partial sequence",0.998,0.975,1407,0.0,2763.77
+Acidovorax sp. KBT196,720629,AB547154,"Acidovorax sp. KBT196 gene for 16S rRNA, partial sequence",0.998,0.974,1405,0.0,2761.78
+Paracidovorax avenae,80867,KF498647,"Acidovorax avenae subsp. avenae strain t1 16S ribosomal RNA gene, partial sequence",0.998,0.968,1397,0.0,2745.93
+Paracidovorax avenae,80867,ON130590,"Acidovorax avenae strain BBNKTAKP01 16S ribosomal RNA gene, partial sequence",0.998,0.968,1397,0.0,2745.93
+Paracidovorax avenae,80867,JQ904302,"Acidovorax avenae strain GDHN02 16S ribosomal RNA gene, complete sequence",0.998,0.967,1395,0.0,2741.96
+Paracidovorax oryzae,862720,KP010340,"Acidovorax oryzae strain A2 16S ribosomal RNA gene, partial sequence",0.998,0.963,1390,0.0,2732.05
+Paracidovorax avenae,80867,MT367820,"Paracidovorax avenae strain OsEp_Plm_30P6 16S ribosomal RNA gene, partial sequence",0.998,0.958,1383,0.0,2718.17
+Acidovorax sp.,1872122,OR945772,"Acidovorax sp. strain SCLB 16S ribosomal RNA gene, partial sequence",0.998,0.956,1379,0.0,2710.25
+Paracidovorax oryzae,862720,KP010339,"Acidovorax oryzae strain 35 16S ribosomal RNA gene, partial sequence",0.998,0.952,1374,0.0,2700.33
+uncultured Acidovorax sp.,158751,LC317332,"Uncultured Acidovorax sp. gene for 16S ribosomal RNA, partial sequence, clone: Tw215",0.998,0.933,1347,0.0,2646.81
+Paracidovorax cattleyae,80868,NR_116134,"Paracidovorax cattleyae strain CIP 106435 16S ribosomal RNA, partial sequence",0.998,0.91,1313,0.0,2587.35
+Paracidovorax citrulli,80869,KP776447,"Acidovorax citrulli strain 13034 16S ribosomal RNA gene, partial sequence",0.998,0.91,1313,0.0,2587.35
+Paracidovorax citrulli,80869,AM850114,"Acidovorax avenae subsp. citrulli partial 16S rRNA gene, isolate Med-H",0.998,0.909,1311,0.0,2583.38
+Paracidovorax avenae,80867,NR_116133,"Paracidovorax avenae strain CIP 106500 16S ribosomal RNA, partial sequence",0.998,0.91,1313,0.0,2579.42
+Paracidovorax cattleyae,80868,FJ418768,"Acidovorax avenae subsp. cattleyae strain 7 16S ribosomal RNA gene, partial sequence",0.998,0.896,1293,0.0,2547.7
+Paracidovorax avenae,643561,CP002521,"Acidovorax avenae subsp. avenae ATCC 19860, complete genome",0.997,0.999,1442,0.0,8489.529999999999
+Paracidovorax citrulli,80869,GU339089,"Acidovorax citrulli strain A3 16S ribosomal RNA gene, partial sequence",0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,CP028298,Paracidovorax avenae strain NCT3 chromosome,0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,CP028296,Paracidovorax avenae strain MDB1 chromosome,0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,KU948659,"Paracidovorax avenae isolate C3-1 16S ribosomal RNA gene, partial sequence",0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,643561,NR_102856,"Paracidovorax avenae ATCC 19860 16S ribosomal RNA, partial sequence",0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,CP028294,Paracidovorax avenae strain KL3 chromosome,0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,CP028300,Paracidovorax avenae strain QHB1 chromosome,0.997,0.999,1442,0.0,2827.2
+Paracidovorax avenae,80867,CP028293,Paracidovorax avenae strain INV chromosome,0.997,0.999,1442,0.0,2827.2
+uncultured microorganism,358574,KP336725,"Uncultured microorganism clone cha-94 16S ribosomal RNA gene, partial sequence",0.997,0.999,1442,0.0,2821.25
+Paracidovorax avenae,80867,KU948658,"Paracidovorax avenae isolate C2-6 16S ribosomal RNA gene, partial sequence",0.997,0.999,1442,0.0,2819.27
+Paracidovorax avenae,80867,KU948661,"Paracidovorax avenae isolate C5-12 16S ribosomal RNA gene, partial sequence",0.997,0.999,1442,0.0,2819.27
+Paracidovorax citrulli,80869,NR_114464,"Paracidovorax citrulli strain ATCC 29625 16S ribosomal RNA, partial sequence",0.997,0.999,1442,0.0,2819.27
+Paracidovorax avenae,643561,NR_114462,"Paracidovorax avenae ATCC 19860 16S ribosomal RNA, partial sequence",0.997,0.999,1442,0.0,2819.27
+Paracidovorax avenae,80867,LC015533,"Paracidovorax avenae gene for 16S ribosomal RNA, partial sequence, strain: AF17",0.997,0.983,1418,0.0,2779.62
+Paracidovorax citrulli,80869,KJ210342,"Acidovorax citrulli strain XJ-4 16S ribosomal RNA gene, partial sequence",0.997,0.982,1417,0.0,2775.66
+Paracidovorax citrulli,80869,KJ210340,"Acidovorax citrulli strain FC520 16S ribosomal RNA gene, partial sequence",0.997,0.978,1411,0.0,2763.77
+Paracidovorax citrulli,80869,KJ210348,"Acidovorax citrulli strain SY-3 16S ribosomal RNA gene, partial sequence",0.997,0.977,1410,0.0,2761.78
+Paracidovorax citrulli,80869,KJ210351,"Acidovorax citrulli strain FC455 16S ribosomal RNA gene, partial sequence",0.997,0.977,1410,0.0,2761.78
+Paracidovorax citrulli,80869,KJ210335,"Acidovorax citrulli strain FC247 16S ribosomal RNA gene, partial sequence",0.997,0.976,1409,0.0,2759.8
+Paracidovorax citrulli,80869,KJ210338,"Acidovorax citrulli strain FC376 16S ribosomal RNA gene, partial sequence",0.997,0.976,1409,0.0,2759.8
+Paracidovorax citrulli,80869,KJ210349,"Acidovorax citrulli strain ZZ-1 16S ribosomal RNA gene, partial sequence",0.997,0.976,1409,0.0,2759.8
+Paracidovorax citrulli,80869,KJ210341,"Acidovorax citrulli strain XJ-1 16S ribosomal RNA gene, partial sequence",0.997,0.976,1409,0.0,2759.8
+Acidovorax sp. KBT156,720628,AB547153,"Acidovorax sp. KBT156 gene for 16S rRNA, partial sequence",0.997,0.975,1407,0.0,2757.82
+Paracidovorax citrulli,80869,MH753658,"Paracidovorax citrulli strain JZ17 16S ribosomal RNA gene, partial sequence",0.997,0.976,1408,0.0,2757.82
+Paracidovorax citrulli,80869,KJ210346,"Acidovorax citrulli strain LS-5 16S ribosomal RNA gene, partial sequence",0.997,0.972,1402,0.0,2747.91
+Paracidovorax citrulli,80869,KJ210343,"Acidovorax citrulli strain XJ-5 16S ribosomal RNA gene, partial sequence",0.997,0.972,1402,0.0,2745.93
+Paracidovorax avenae,80867,MN480564,"Paracidovorax avenae strain DLJ2 16S ribosomal RNA gene, partial sequence",0.997,0.968,1397,0.0,2738.0
+Paracidovorax avenae,80867,MN480563,"Paracidovorax avenae strain DLJ1 16S ribosomal RNA gene, partial sequence",0.997,0.968,1397,0.0,2738.0
+Paracidovorax avenae,80867,MN480568,"Paracidovorax avenae strain WCY3 16S ribosomal RNA gene, partial sequence",0.997,0.968,1397,0.0,2738.0
+Paracidovorax avenae,80867,MT367779,"Paracidovorax avenae strain OsEp_Plm_15B4 16S ribosomal RNA gene, partial sequence",0.997,0.968,1397,0.0,2738.0
+Paracidovorax avenae,80867,JQ904301,"Acidovorax avenae strain GDHN01 16S ribosomal RNA gene, complete sequence",0.997,0.967,1395,0.0,2734.03
+Paracidovorax cattleyae,80868,MN889286,"Paracidovorax cattleyae strain OsEnb_PLM_L69 16S ribosomal RNA gene, partial sequence",0.997,0.966,1394,0.0,2732.05
+Paracidovorax avenae,80867,LC702348,"Acidovorax avenae MBCB032 gene for 16S rRNA, partial sequence",0.997,0.963,1390,0.0,2724.12
+Paracidovorax avenae,80867,MT367833,"Paracidovorax avenae strain OsEp_Plm_30P23 16S ribosomal RNA gene, partial sequence",0.997,0.955,1378,0.0,2700.33
+Paracidovorax citrulli,80869,FJ447559,"Acidovorax avenae subsp. citrulli strain HW080926 16S ribosomal RNA gene, partial sequence",0.997,0.947,1367,0.0,2678.53
+Paracidovorax cattleyae,80868,NR_114465,"Paracidovorax cattleyae strain NCPPB 961 16S ribosomal RNA, partial sequence",0.996,0.999,1442,0.0,2811.34
+Paracidovorax avenae,80867,KU948657,"Paracidovorax avenae isolate C1-4 16S ribosomal RNA gene, partial sequence",0.996,0.999,1442,0.0,2811.34
+Paracidovorax citrulli,80869,KJ210347,"Acidovorax citrulli strain LS-10 16S ribosomal RNA gene, partial sequence",0.996,0.981,1415,0.0,2763.77
+Paracidovorax citrulli,80869,KJ210336,"Acidovorax citrulli strain FC248 16S ribosomal RNA gene, partial sequence",0.996,0.983,1419,0.0,2761.78
+Paracidovorax citrulli,80869,KJ210339,"Acidovorax citrulli strain FC380 16S ribosomal RNA gene, partial sequence",0.996,0.982,1417,0.0,2757.82
+Paracidovorax cattleyae,80868,KJ210355,"Acidovorax cattleyae strain FC362 16S ribosomal RNA gene, partial sequence",0.996,0.979,1412,0.0,2757.82
+Paracidovorax citrulli,80869,KJ210337,"Acidovorax citrulli strain FC374 16S ribosomal RNA gene, partial sequence",0.996,0.978,1411,0.0,2753.86
+Paracidovorax citrulli,80869,KJ210345,"Acidovorax citrulli strain LS-3 16S ribosomal RNA gene, partial sequence",0.996,0.98,1414,0.0,2753.86
+Paracidovorax citrulli,80869,KJ210353,"Acidovorax citrulli strain LS-2 16S ribosomal RNA gene, partial sequence",0.996,0.976,1409,0.0,2751.87
+Paracidovorax citrulli,80869,KJ210352,"Acidovorax citrulli strain FC512 16S ribosomal RNA gene, partial sequence",0.996,0.976,1408,0.0,2749.89
+Paracidovorax avenae,80867,MK818492,"Paracidovorax avenae 16S ribosomal RNA gene, partial sequence",0.996,0.972,1403,0.0,2739.98
+Paracidovorax avenae,80867,KJ210333,"Acidovorax avenae subsp. avenae strain FC371 16S ribosomal RNA gene, partial sequence",0.996,0.973,1404,0.0,2734.03
+Acidovorax facilis,12917,MN889265,"Acidovorax facilis strain OsEnb_PLM_L27 16S ribosomal RNA gene, partial sequence",0.996,0.97,1400,0.0,2734.03
+Acidovorax sp.,1872122,MZ490661,"Acidovorax sp. strain AC1-8 F8NE 16S ribosomal RNA gene, partial sequence",0.996,0.967,1396,0.0,2722.14
+Paracidovorax oryzae,862720,PQ465223,"Paracidovorax oryzae strain JX258 16S ribosomal RNA gene, partial sequence",0.996,0.958,1383,0.0,2704.3
+Paracidovorax citrulli,80869,PQ461200,"Paracidovorax citrulli strain GXM1 16S ribosomal RNA gene, partial sequence",0.996,0.949,1369,0.0,2678.53
+Paracidovorax citrulli,80869,PP837828,"Paracidovorax citrulli strain SylBD-4 16S ribosomal RNA gene, partial sequence",0.996,0.947,1366,0.0,2660.69
+uncultured bacterium,77133,HM277455,"Uncultured bacterium clone ncd539f11c1 16S ribosomal RNA gene, partial sequence",0.996,0.932,1345,0.0,2626.99
+uncultured bacterium,77133,HM274033,"Uncultured bacterium clone ncd537e08c1 16S ribosomal RNA gene, partial sequence",0.996,0.932,1345,0.0,2619.06
+Paracidovorax avenae,80867,KJ210334,"Acidovorax avenae subsp. avenae strain FC369 16S ribosomal RNA gene, partial sequence",0.995,0.981,1416,0.0,2749.89
+Paracidovorax cattleyae,80868,KJ210356,"Acidovorax cattleyae strain ATCC 10200 16S ribosomal RNA gene, partial sequence",0.995,0.977,1410,0.0,2738.0
+Paracidovorax avenae,80867,KY851782,"Paracidovorax avenae strain MZ121101 16S ribosomal RNA gene, partial sequence",0.995,0.978,1411,0.0,2738.0
+uncultured bacterium,77133,KJ548888,"Uncultured bacterium clone Bac3B41 small subunit ribosomal RNA gene, partial sequence",0.994,0.999,1442,0.0,2787.55
+Paracidovorax avenae,80867,KY797315,"Acidovorax avenae strain MZ121103 16S ribosomal RNA gene, partial sequence",0.994,0.983,1418,0.0,2743.94
+Paracidovorax avenae,80867,KY797314,"Acidovorax avenae strain MZ121102 16S ribosomal RNA gene, partial sequence",0.994,0.983,1418,0.0,2743.94
+Acidovorax sp. KBT017,720631,AB547156,"Acidovorax sp. KBT017 gene for 16S rRNA, partial sequence",0.994,0.98,1414,0.0,2732.05
+Acidovorax facilis,12917,KJ210358,"Acidovorax facilis strain FC208 16S ribosomal RNA gene, partial sequence",0.994,0.979,1412,0.0,2732.05
+Paracidovorax citrulli,80869,MT760004,"Paracidovorax citrulli strain ICMP 7500 16S ribosomal RNA gene, partial sequence",0.994,0.935,1349,0.0,2621.04
+uncultured bacterium,77133,KX509370,"Uncultured bacterium clone MTWL201307-51 16S ribosomal RNA gene, partial sequence",0.993,0.999,1442,0.0,2779.62
+Paracidovorax avenae,80867,MF993324,"Paracidovorax avenae strain 170340 16S ribosomal RNA gene, partial sequence",0.993,0.94,1357,0.0,2621.04
+Paracidovorax citrulli,80869,MT758047,"Paracidovorax citrulli strain ICMP 7500 16S ribosomal RNA gene, partial sequence",0.993,0.935,1349,0.0,2609.15
+Paracidovorax oryzae,862720,JF505947,"Acidovorax oryzae strain KNUC9013 16S ribosomal RNA gene, partial sequence",0.992,0.999,1442,0.0,2761.78
+Acidovorax sp. KBT209,720632,AB547157,"Acidovorax sp. KBT209 gene for 16S rRNA, partial sequence",0.992,0.979,1413,0.0,2718.17
+Acidovorax sp. KBT005,720630,AB547155,"Acidovorax sp. KBT005 gene for 16S rRNA, partial sequence",0.992,0.98,1414,0.0,2716.19
+Paracidovorax avenae,80867,JN601517,"Acidovorax avenae subsp. avenae strain RS-1 16S ribosomal RNA gene, partial sequence",0.992,0.983,1419,0.0,2716.19
+Paracidovorax oryzae,862720,KP010338,"Acidovorax oryzae strain A7 16S ribosomal RNA gene, partial sequence",0.992,0.974,1406,0.0,2696.37
+Paracidovorax oryzae,862720,KC245143,"Acidovorax oryzae strain HME8439 16S ribosomal RNA gene, partial sequence",0.992,0.968,1397,0.0,2682.49
+Paracidovorax oryzae,862720,MZ501325,"Paracidovorax oryzae strain SIEpH19 16S ribosomal RNA gene, partial sequence",0.992,0.963,1390,0.0,2668.62
+Acidovorax sp.,1872122,MW369802,"Acidovorax sp. strain AS68 16S ribosomal RNA gene, partial sequence",0.992,0.963,1390,0.0,2668.62
+Acidovorax sp.,1872122,OL604253,"Acidovorax sp. strain AS-222 16S ribosomal RNA gene, partial sequence",0.992,0.951,1372,0.0,2632.94
+Acidovorax sp.,1872122,OL670799,"Acidovorax sp. strain AS-60 16S ribosomal RNA gene, partial sequence",0.992,0.941,1358,0.0,2605.19
+uncultured bacterium,77133,JF219085,"Uncultured bacterium clone ncd2573f12c1 16S ribosomal RNA gene, partial sequence",0.992,0.932,1345,0.0,2579.42
+Acidovorax sp.,1872122,MT785313,"Acidovorax sp. strain MS1-2_R2A 16S ribosomal RNA gene, partial sequence",0.992,0.922,1331,0.0,2555.63
+Paracidovorax avenae,80867,AB021421,"Paracidovorax avenae gene for 16S rRNA, strain: ATCC 19307",0.991,0.988,1425,0.0,2739.98
+Paracidovorax avenae,80867,MH087471,"Paracidovorax avenae isolate MZ01 16S ribosomal RNA gene, partial sequence",0.991,0.994,1434,0.0,2732.05
+Paracidovorax cattleyae,80868,MH209630,"Paracidovorax cattleyae strain NY-15 16S ribosomal RNA gene, partial sequence",0.991,0.963,1390,0.0,2660.69
+Acidovorax sp.,1872122,ON920669,"Acidovorax sp. strain PRC11 16S ribosomal RNA gene, partial sequence",0.991,0.963,1390,0.0,2650.78
+Acidovorax sp.,1872122,MW369924,"Acidovorax sp. strain AS222 16S ribosomal RNA gene, partial sequence",0.991,0.951,1372,0.0,2626.99
+Acidovorax sp.,1872122,OL604276,"Acidovorax sp. strain AS-29 16S ribosomal RNA gene, partial sequence",0.991,0.951,1372,0.0,2626.99
+Paracidovorax citrulli,80869,MH542626,"Paracidovorax citrulli strain 16-088 16S ribosomal RNA gene, partial sequence",0.991,0.947,1367,0.0,2623.03
+Acidovorax sp.,1872122,MW369790,"Acidovorax sp. strain AS51 16S ribosomal RNA gene, partial sequence",0.991,0.951,1372,0.0,2621.04
+Paracidovorax oryzae,862720,JF505945,"Acidovorax oryzae strain KNUC9011 16S ribosomal RNA gene, partial sequence",0.991,0.951,1373,0.0,2617.08
+uncultured Acidovorax sp.,158751,FJ192659,"Uncultured Acidovorax sp. clone GI5-004-F11 16S ribosomal RNA gene, partial sequence",0.99,0.999,1442,0.0,2751.87
+Paracidovorax cattleyae,80868,MF989443,"Paracidovorax cattleyae strain GWC1 16S ribosomal RNA gene, partial sequence",0.99,0.999,1442,0.0,2749.89
+Paracidovorax cattleyae,80868,MW164962,"Paracidovorax cattleyae strain PS9 16S ribosomal RNA gene, partial sequence",0.99,0.999,1442,0.0,2739.98
+Acidovorax sp. UYFA23,1605317,KP704414,"Acidovorax sp. UYFA23 16S ribosomal RNA gene, partial sequence",0.99,0.982,1417,0.0,2704.3
+uncultured bacterium,77133,JF226246,"Uncultured bacterium clone ncd2575h11c1 16S ribosomal RNA gene, partial sequence",0.99,0.932,1345,0.0,2563.56
+Acidovorax sp.,1872122,MW369868,"Acidovorax sp. strain AS154 16S ribosomal RNA gene, partial sequence",0.99,0.93,1342,0.0,2561.58
+uncultured bacterium,77133,AB487337,"Uncultured bacterium gene for 16S ribosomal RNA, partial sequence, clone: TSNIR002_P22",0.99,0.932,1345,0.0,2555.63
+Acidovorax sp. KSP2,182694,AB076843,"Acidovorax sp. KSP2 gene for 16S rRNA, partial sequence",0.989,0.999,1442,0.0,2732.05
+Acidovorax sp. enrichment culture clone ECC3-16,685344,GU056303,"Acidovorax sp. enrichment culture clone ECC3-16 16S ribosomal RNA gene, partial sequence",0.989,0.959,1384,0.0,2625.01
+Acidovorax sp. enrichment culture clone AOCRB-EC-13,743821,GU557154,"Acidovorax sp. enrichment culture clone AOCRB-EC-13 16S ribosomal RNA gene, partial sequence",0.988,0.999,1442,0.0,2716.19
+Acidovorax sp.,1872122,MW369774,"Acidovorax sp. strain AS29 16S ribosomal RNA gene, partial sequence",0.988,0.963,1390,0.0,2630.96
+uncultured bacterium,77133,EF515230,"Uncultured bacterium clone 21f07 16S ribosomal RNA gene, partial sequence",0.988,0.945,1363,0.0,2567.52
+uncultured bacterium,77133,KX443749,"Uncultured bacterium clone BJ201108-31 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443733,"Uncultured bacterium clone BJ201108-15 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443772,"Uncultured bacterium clone BJ201108-54 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443736,"Uncultured bacterium clone BJ201108-18 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443743,"Uncultured bacterium clone BJ201108-25 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443744,"Uncultured bacterium clone BJ201108-26 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443726,"Uncultured bacterium clone BJ201108-8 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443737,"Uncultured bacterium clone BJ201108-19 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+Acidovorax sp. S20,310695,AY741158,"Acidovorax sp. S20 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443729,"Uncultured bacterium clone BJ201108-11 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443722,"Uncultured bacterium clone BJ201108-4 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443721,"Uncultured bacterium clone BJ201108-3 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,FJ623311,"Uncultured bacterium clone 48 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+Acidovorax sp. N13,659884,GU086421,"Acidovorax sp. N13 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+Paracidovorax wautersii,1177982,JQ782388,"Acidovorax wautersii strain NF 1715 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+Paracidovorax wautersii,1177982,NR_109656,"Paracidovorax wautersii strain NF 1078 16S ribosomal RNA, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443727,"Uncultured bacterium clone BJ201108-9 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443745,"Uncultured bacterium clone BJ201108-27 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443775,"Uncultured bacterium clone BJ201108-57 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+uncultured bacterium,77133,KX443725,"Uncultured bacterium clone BJ201108-7 16S ribosomal RNA gene, partial sequence",0.987,0.999,1442,0.0,2708.26
+Acidovorax sp. WPCB134,556065,FJ006899,"Acidovorax sp. WPCB134 16S ribosomal RNA gene, partial sequence",0.987,0.992,1431,0.0,2686.46
+uncultured bacterium,77133,DQ327697,"Uncultured bacterium clone BF192 16S ribosomal RNA gene, partial sequence",0.987,0.978,1411,0.0,2654.74
+Paracidovorax avenae,80867,PP792813,"Paracidovorax avenae strain DJD4-1 16S ribosomal RNA gene, partial sequence",0.987,0.98,1414,0.0,2652.76
+Acidovorax temperans,80878,PP911408,"Acidovorax temperans strain LK1 16S ribosomal RNA gene, partial sequence",0.987,0.978,1411,0.0,2646.81
+uncultured bacterium,77133,EU982463,"Uncultured bacterium clone DYB25 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+Acidovorax sp. N13,659884,GQ303257,"Acidovorax sp. N13 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443762,"Uncultured bacterium clone BJ201108-44 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443756,"Uncultured bacterium clone BJ201108-38 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443724,"Uncultured bacterium clone BJ201108-6 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443731,"Uncultured bacterium clone BJ201108-13 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KF010743,"Uncultured bacterium clone b18-2 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443720,"Uncultured bacterium clone BJ201108-2 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+uncultured bacterium,77133,KX443730,"Uncultured bacterium clone BJ201108-12 16S ribosomal RNA gene, partial sequence",0.986,0.999,1442,0.0,2700.33
+Paracidovorax avenae,80867,MG011590,"Paracidovorax avenae strain MnW2201007 16S ribosomal RNA gene, partial sequence",0.986,0.988,1426,0.0,2668.62
+Paracidovorax wautersii,1177982,JQ782386,"Acidovorax wautersii strain NF 1598 16S ribosomal RNA gene, partial sequence",0.986,0.974,1406,0.0,2636.9
+Paracidovorax avenae,80867,MN889363,"Paracidovorax avenae strain OsEnb_ALM_D19 16S ribosomal RNA gene, partial sequence",0.986,0.973,1404,0.0,2625.01
+Paracidovorax wautersii,1177982,PQ395857,"Paracidovorax wautersii strain V1759 16S ribosomal RNA gene, partial sequence",0.986,0.968,1397,0.0,2619.06
+Paracidovorax avenae,80867,MN889350,"Paracidovorax avenae strain OsEnb_ALM_C26 16S ribosomal RNA gene, partial sequence",0.986,0.97,1400,0.0,2617.08
+Paracidovorax wautersii,1177982,PQ395868,"Paracidovorax wautersii strain V8365 16S ribosomal RNA gene, partial sequence",0.986,0.966,1394,0.0,2613.11
+Paracidovorax wautersii,1177982,PQ395859,"Paracidovorax wautersii strain V4024 16S ribosomal RNA gene, partial sequence",0.986,0.965,1393,0.0,2611.13
+Acidovorax sp.,1872122,MZ490616,"Acidovorax sp. strain AC4-10 F46 16S ribosomal RNA gene, partial sequence",0.986,0.965,1392,0.0,2609.15
+Paracidovorax wautersii,1177982,PQ397120,"Paracidovorax wautersii strain V8384 16S ribosomal RNA gene, partial sequence",0.986,0.965,1392,0.0,2609.15
+Paracidovorax wautersii,1177982,PP514645,"Paracidovorax wautersii strain XQYZ-1-2 16S ribosomal RNA gene, partial sequence",0.986,0.967,1396,0.0,2609.15
+Paracidovorax wautersii,1177982,KY980685,"Paracidovorax wautersii strain PDS_PXH_20 16S ribosomal RNA gene, partial sequence",0.986,0.965,1393,0.0,2603.2
+Paracidovorax wautersii,1177982,PQ395864,"Paracidovorax wautersii strain V4640 16S ribosomal RNA gene, partial sequence",0.986,0.963,1389,0.0,2603.2
+Paracidovorax wautersii,1177982,PQ395861,"Paracidovorax wautersii strain V4369 16S ribosomal RNA gene, partial sequence",0.986,0.963,1389,0.0,2603.2
+Paracidovorax wautersii,1177982,PQ396819,"Paracidovorax wautersii strain V7972 16S ribosomal RNA gene, partial sequence",0.986,0.964,1391,0.0,2599.24
+Acidovorax sp.,1872122,MW370129,"Acidovorax sp. strain AS532 16S ribosomal RNA gene, partial sequence",0.986,0.963,1390,0.0,2599.24
+Paracidovorax wautersii,1177982,PQ395867,"Paracidovorax wautersii strain V8328 16S ribosomal RNA gene, partial sequence",0.986,0.96,1385,0.0,2595.27
+Paracidovorax wautersii,1177982,PQ397016,"Paracidovorax wautersii strain V8272 16S ribosomal RNA gene, partial sequence",0.986,0.958,1382,0.0,2589.33
+Paracidovorax wautersii,1177982,LT883472,"Acidovorax wautersii partial 16S rRNA gene, strain TCP2011036",0.986,0.95,1371,0.0,2567.52
+Acidovorax sp.,1872122,OL670774,"Acidovorax sp. strain AS-315 16S ribosomal RNA gene, partial sequence",0.986,0.945,1363,0.0,2551.66
+Acidovorax sp. KSP1,182693,AB076842,"Acidovorax sp. KSP1 gene for 16S rRNA, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443751,"Uncultured bacterium clone BJ201108-33 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443732,"Uncultured bacterium clone BJ201108-14 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443759,"Uncultured bacterium clone BJ201108-41 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443755,"Uncultured bacterium clone BJ201108-37 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KF010752,"Uncultured bacterium clone b18-67 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443770,"Uncultured bacterium clone BJ201108-52 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443757,"Uncultured bacterium clone BJ201108-39 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443746,"Uncultured bacterium clone BJ201108-28 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443758,"Uncultured bacterium clone BJ201108-40 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured bacterium,77133,KX443734,"Uncultured bacterium clone BJ201108-16 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2692.41
+uncultured Acidovorax sp.,158751,LC140825,"Uncultured Acidovorax sp. gene for 16S ribosomal RNA, partial sequence, clone: 7d143",0.985,0.999,1442,0.0,2686.46
+uncultured bacterium,77133,FJ623349,"Uncultured bacterium clone 90 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443754,"Uncultured bacterium clone BJ201108-36 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+Acidovorax sp.,1872122,OP985073,"Acidovorax sp. strain ES_53 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443752,"Uncultured bacterium clone BJ201108-34 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443776,"Uncultured bacterium clone BJ201108-58 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KF010753,"Uncultured bacterium clone b18-75 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443763,"Uncultured bacterium clone BJ201108-45 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443771,"Uncultured bacterium clone BJ201108-53 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443735,"Uncultured bacterium clone BJ201108-17 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443750,"Uncultured bacterium clone BJ201108-32 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443753,"Uncultured bacterium clone BJ201108-35 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443748,"Uncultured bacterium clone BJ201108-30 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KF010750,"Uncultured bacterium clone b18-59 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+uncultured bacterium,77133,KX443773,"Uncultured bacterium clone BJ201108-55 16S ribosomal RNA gene, partial sequence",0.985,0.999,1442,0.0,2684.48
+Paracidovorax avenae,80867,MG011579,"Paracidovorax avenae strain MnW3200909 16S ribosomal RNA gene, partial sequence",0.985,0.992,1432,0.0,2670.6
+Paracidovorax wautersii,1177982,MN889355,"Paracidovorax wautersii strain OsEnb_ALM_C36 16S ribosomal RNA gene, partial sequence",0.985,0.976,1409,0.0,2625.01
+Paracidovorax avenae,80867,MN889358,"Paracidovorax avenae strain OsEnb_ALM_D4 16S ribosomal RNA gene, partial sequence",0.985,0.972,1402,0.0,2613.11
+Acidovorax sp. bk_57,933405,HQ538657,"Acidovorax sp. bk_57 16S ribosomal RNA gene, partial sequence",0.985,0.962,1388,0.0,2585.36
+Acidovorax sp.,1872122,MW370173,"Acidovorax sp. strain AS315 16S ribosomal RNA gene, partial sequence",0.985,0.949,1370,0.0,2553.65
+Acidovorax sp.,1872122,OL670787,"Acidovorax sp. strain AS-508 16S ribosomal RNA gene, partial sequence",0.985,0.949,1370,0.0,2553.65
+Acidovorax sp.,1872122,OL670777,"Acidovorax sp. strain AS-324 16S ribosomal RNA gene, partial sequence",0.985,0.946,1365,0.0,2549.68
+uncultured bacterium,77133,EF515183,"Uncultured bacterium clone 21a08 16S ribosomal RNA gene, partial sequence",0.985,0.945,1363,0.0,2545.72

@@ -1,0 +1,25 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Luthrodes pandava,689490,GU372585,"Chilades pandava cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.982,667,0.0,1322.66
+Luthrodes pandava,689490,HQ962268,"Chilades pandava voucher YB-KHC6794 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",1.0,0.969,658,0.0,1304.82
+Luthrodes pandava,689490,MW796551,"Luthrodes pandava voucher TC037 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",1.0,0.916,622,0.0,1233.46
+Luthrodes pandava,689490,KF668149,"Luthrodes pandava voucher JM-38 cytochrome c oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.913,620,0.0,1229.5
+Luthrodes pandava,689490,GU076254,"Chilades pandava voucher L1-5265 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",1.0,0.9,611,0.0,1211.65
+Luthrodes pandava,689490,OQ872281,"Luthrodes pandava voucher SCBP0226 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.998,0.969,658,0.0,1296.89
+Luthrodes pandava,689490,GU076257,"Chilades pandava voucher L1-5270 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.9,611,0.0,1203.73
+Luthrodes pandava,689490,GU076346,"Chilades pandava voucher L1-8495 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.998,0.9,611,0.0,1203.73
+Luthrodes pandava,689490,KT236346,"Luthrodes pandava cytochrome c oxidase subunit I gene, partial cds; mitochondrial",0.997,1.0,679,0.0,1330.59
+Luthrodes pandava,689490,GQ128951,"Luthrodes pandava voucher MCZ:MWT93A009 cytochrome c oxidase I (COI) gene, partial cds; tRNA-Leu gene, complete sequence; and cytochrome c oxidase II (COII) gene, complete cds; mitochondrial",0.997,0.981,666,0.0,1304.82
+Luthrodes pandava,689490,OQ872255,"Luthrodes pandava voucher Balint2023-04 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.997,0.969,658,0.0,1288.96
+Luthrodes pandava,689490,GU076195,"Chilades pandava voucher Tai35 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.995,0.9,611,0.0,1187.87
+Luthrodes pandava,689490,KJ131016,"Luthrodes pandava voucher ILL_171 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.995,0.825,560,0.0,1086.77
+Luthrodes pandava,689490,OQ872256,"Luthrodes pandava voucher Cp L1-119 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,0.969,658,0.0,1273.1
+Luthrodes pandava,689490,OQ872295,"Luthrodes pandava voucher Balint2023-03 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.994,0.969,658,0.0,1273.1
+Luthrodes pandava,689490,KJ402171,"Luthrodes pandava isolate N306 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.994,0.919,624,0.0,1205.71
+Luthrodes pandava,689490,GU076194,"Chilades pandava voucher Tai24 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.993,0.9,611,0.0,1179.94
+Luthrodes pandava,689490,KT880664,"Luthrodes pandava voucher CUJ33 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.993,0.888,603,0.0,1164.08
+Luthrodes pandava,689490,OQ872294,"Luthrodes pandava voucher USNM ENT 01373259 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.992,0.969,658,0.0,1265.18
+Luthrodes pandava,689490,KJ402247,"Luthrodes pandava isolate N304 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.992,0.901,612,0.0,1173.99
+Luthrodes pandava,689490,GU076213,"Chilades pandava voucher L1-3106 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.992,0.9,611,0.0,1172.01
+Luthrodes pandava,689490,KJ402235,"Luthrodes pandava isolate N280 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.992,0.897,609,0.0,1168.04
+Luthrodes pandava,2929119,ON067494,"Luthrodes pandava pandava voucher A13 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.989,0.951,646,0.0,1225.53
+Luthrodes pandava,689490,KJ402237,"Luthrodes pandava isolate N277 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.985,0.906,615,0.0,1148.22

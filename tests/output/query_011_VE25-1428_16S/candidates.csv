@@ -1,0 +1,15 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Trogoderma granarium,591392,MZ571637,"Trogoderma granarium voucher DA336226 large subunit ribosomal RNA gene, partial sequence; mitochondrial",1.0,1.0,427,0.0,846.918
+Trogoderma granarium,591392,KJ930431,"Trogoderma granarium isolate der33 16S ribosomal RNA gene, partial sequence; mitochondrial",1.0,0.977,417,0.0,827.096
+Trogoderma granarium,591392,MZ571636,"Trogoderma granarium voucher DA335997 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.998,1.0,427,0.0,838.989
+Trogoderma granarium,591392,KJ930432,"Trogoderma granarium isolate der38 16S ribosomal RNA gene, partial sequence; mitochondrial",0.998,0.977,417,0.0,819.167
+Trogoderma granarium,591392,OM388538,"Trogoderma granarium isolate NNM37 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.997,0.92,393,0.0,771.592
+Trogoderma granarium,591392,LC386208,"Trogoderma granarium mitochondrial DNA, contig: 140401 T. granarium Contig1",0.995,1.0,427,0.0,831.06
+Trogoderma granarium,591392,ON725093,"Trogoderma granarium isolate 1RC large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.995,1.0,427,0.0,831.06
+Trogoderma granarium,591392,NC_053875,"Trogoderma granarium mitochondrion, complete genome",0.995,1.0,427,0.0,831.06
+Trogoderma granarium,591392,KJ930452,"Trogoderma granarium isolate der88 16S ribosomal RNA gene, partial sequence; mitochondrial",0.995,0.977,417,0.0,811.238
+Trogoderma granarium,591392,KJ930433,"Trogoderma granarium isolate der39 16S ribosomal RNA gene, partial sequence; mitochondrial",0.995,0.977,417,0.0,811.238
+Trogoderma granarium,591392,OM389182,"Trogoderma granarium isolate NNM57 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.995,0.918,392,0.0,761.681
+Trogoderma granarium,591392,OM388512,"Trogoderma granarium isolate nnm6 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.995,0.897,383,0.0,743.841
+Trogoderma granarium,591392,OM388567,"Trogoderma granarium isolate partial 46 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.992,0.92,393,0.0,755.734
+Trogoderma granarium,591392,OM389131,"Trogoderma granarium isolate partial 14 large subunit ribosomal RNA gene, partial sequence; mitochondrial",0.992,0.918,392,0.0,753.752

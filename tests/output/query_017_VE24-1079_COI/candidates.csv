@@ -1,0 +1,23 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Orius laevigatus,82742,MG007857,"Orius laevigatus isolate JSTR00435_0601 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.991,0.987,658,0.0,1257.25
+Orius laevigatus,82742,MG007859,"Orius laevigatus isolate JSTR00284_0401 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.991,0.987,658,0.0,1257.25
+Orius laevigatus,82742,PQ764849,"Orius laevigatus isolate MW-3 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.991,0.987,658,0.0,1257.25
+Orius laevigatus,82742,FM210187,"Orius laevigatus mitochondrial partial coi gene for cytochrome oxidase sub-unit 1, exon 1, allele H5",0.99,0.916,611,0.0,1164.08
+Orius laevigatus,82742,MG007858,"Orius laevigatus isolate JSTR00295_0701 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.988,0.987,658,0.0,1241.39
+Orius laevigatus,82742,MG007856,"Orius laevigatus isolate JSTR00297_0503 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.988,0.987,658,0.0,1241.39
+Orius laevigatus,82742,KJ467500,"Orius laevigatus cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial",0.988,0.91,607,0.0,1148.22
+Orius laevigatus,82742,GQ292148,"Orius laevigatus voucher SNU HEM646 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.988,0.895,597,0.0,1128.4
+Orius horvathi,452393,MG452387,"Orius horvathi isolate G08_80 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.988,0.604,403,0.0,759.699
+Orius laevigatus,82742,FM210184,"Orius laevigatus mitochondrial partial coi gene for cytochrome oxidase sub-unit 1, exon 1, allele H2",0.987,0.922,615,0.0,1156.15
+Orius laevigatus,82742,GQ292147,"Orius laevigatus voucher SNU HEM151 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.987,0.9,600,0.0,1126.42
+Orius laevigatus,82742,PQ764848,"Orius laevigatus isolate MW-5 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.986,0.987,658,0.0,1233.46
+Orius laevigatus,82742,MW357548,"Orius laevigatus voucher BB31 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.986,0.961,641,0.0,1199.76
+Orius laevigatus,82742,MW357547,"Orius laevigatus voucher BB30 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.986,0.961,641,0.0,1199.76
+Orius laevigatus,82742,MW357550,"Orius laevigatus voucher BB33 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.986,0.961,641,0.0,1199.76
+Orius laevigatus,82742,PQ764850,"Orius laevigatus isolate MW-4 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.985,0.987,658,0.0,1225.53
+Orius laevigatus,82742,MW357549,"Orius laevigatus voucher BB32 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial",0.985,0.972,648,0.0,1203.73
+Orius laevigatus,82742,FM210183,"Orius laevigatus mitochondrial partial coi gene for cytochrome oxidase sub-unit 1, exon 1, allele H1",0.985,0.916,611,0.0,1140.29
+Orius laevigatus,82742,FM210186,"Orius laevigatus mitochondrial partial coi gene for cytochrome oxidase sub-unit 1, exon 1, allele H4",0.985,0.916,611,0.0,1140.29
+Orius laevigatus,82742,FM210185,"Orius laevigatus mitochondrial partial coi gene for cytochrome oxidase sub-unit 1, exon 1, allele H3",0.985,0.916,611,0.0,1140.29
+Orius laevigatus,82742,GQ292149,"Orius laevigatus voucher SNU HEM15 cytochrome oxidase subunit I gene, partial cds; mitochondrial",0.985,0.895,597,0.0,1112.54
+Orius laevigatus,82742,MG452375,"Orius laevigatus isolate F07_67 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial",0.985,0.604,403,0.0,751.77

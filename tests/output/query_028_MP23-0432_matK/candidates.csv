@@ -1,0 +1,23 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Xanthosoma mafaffa,73008,DQ401357,"Xanthosoma mafaffa maturase K (matK) gene, partial cds; chloroplast",1.0,1.0,738,0.0,1463.4
+Caladium praetermissum,2969583,NC_068799,"Caladium praetermissum isolate XLMRHYY chloroplast, complete genome",1.0,1.0,738,0.0,1463.4
+Xanthosoma sagittifolium,28478,MW628970,"Xanthosoma sagittifolium chloroplast, complete genome",1.0,1.0,738,0.0,1463.4
+Xanthosoma sagittifolium,28478,GU135019,"Xanthosoma sagittifolium voucher J.R. Abbott 24707 (FLAS) maturase K (matK) gene, partial cds; chloroplast",1.0,1.0,738,0.0,1463.4
+Xanthosoma brasiliense,513163,EU542591,"Xanthosoma brasiliense maturase K (matK) gene, complete cds; chloroplast",1.0,1.0,738,0.0,1463.4
+Xanthosoma sagittifolium,28478,PP913817,"Xanthosoma sagittifolium isolate QNY2 maturase K (matK) gene, partial cds; chloroplast",1.0,0.981,724,0.0,1435.65
+Colocasia esculenta,4460,JQ586607,"Colocasia esculenta voucher BioBot05993 maturase K (matK) gene, partial cds; chloroplast",1.0,0.973,718,0.0,1423.76
+Colocasia esculenta,4460,JQ586608,"Colocasia esculenta voucher BioBot05994 maturase K (matK) gene, partial cds; chloroplast",1.0,0.973,718,0.0,1423.76
+Colocasia esculenta,4460,JQ586606,"Colocasia esculenta voucher BioBot05992 maturase K (matK) gene, partial cds; chloroplast",1.0,0.97,716,0.0,1419.79
+Xanthosoma robustum,3046141,OQ290129,"Xanthosoma robustum voucher Anastasio Sotero 20963 (MEXU, US) maturase K (matK) gene, partial cds; chloroplast",1.0,0.961,709,0.0,1405.92
+Xanthosoma sagittifolium,28478,EU886500,"Xanthosoma sagittifolium tRNA-Lys (trnK) gene, partial sequence; and maturase K-like (matK) gene, complete sequence; chloroplast",0.999,1.0,738,0.0,1455.47
+Alocasia cucullata,227242,NC_060696,"Alocasia cucullata chloroplast, complete genome",0.999,1.0,738,0.0,1455.47
+Xanthosoma mexicanum,1130870,JQ586655,"Xanthosoma mexicanum voucher BioBot02172 maturase K (matK) gene, partial cds; chloroplast",0.997,0.973,718,0.0,1407.9
+Xanthosoma mexicanum,1130870,JQ586654,"Xanthosoma mexicanum voucher BioBot02171 maturase K (matK) gene, partial cds; chloroplast",0.997,0.973,718,0.0,1407.9
+Chlorospatha sp. Chase 11912,487118,AM920613,Chlorospatha sp. Chase 11912 plastid partial trnK gene intron and matK gene for maturase K,0.992,1.0,738,0.0,1415.83
+Xanthosoma helleborifolium,487142,NC_051873,"Xanthosoma helleborifolium voucher MO:103054 chloroplast, complete genome",0.991,1.0,738,0.0,1407.9
+Zomicarpa steigeriana,513164,EU542592,"Zomicarpa steigeriana maturase K (matK) gene, complete cds; chloroplast",0.989,1.0,738,0.0,1403.93
+Xanthosoma helleborifolium,487142,AM920612,Xanthosoma helleborifolium plastid partial trnK gene intron and matK gene for maturase K,0.989,1.0,738,0.0,1399.97
+Xanthosoma wendlandii,1130871,JQ586657,"Xanthosoma wendlandii voucher BioBot00148 maturase K (matK) gene, partial cds; chloroplast",0.989,0.973,718,0.0,1360.32
+Xanthosoma wendlandii,1130871,JQ586658,"Xanthosoma wendlandii voucher BioBot00149 maturase K (matK) gene, partial cds; chloroplast",0.989,0.972,717,0.0,1358.34
+Chlorospatha atropurpurea,513161,EU542584,"Chlorospatha atropurpurea maturase K (matK) gene, complete cds; chloroplast",0.986,1.0,738,0.0,1396.01
+Syngonium podophyllum,267621,MN006729,"Syngonium podophyllum voucher CCMB-29-124-SV5 maturase K (matK) gene, partial cds; chloroplast",0.985,0.976,720,0.0,1340.5

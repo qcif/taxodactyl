@@ -1,0 +1,217 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Neofusicoccum australe,240362,GU251879,"Neofusicoccum australe strain PD253 beta tubulin gene, partial cds",1.0,0.752,489,0.0,969.819
+Neofusicoccum australe,240362,KX505927,"Neofusicoccum australe strain CAA434 beta-tubulin gene, partial cds",1.0,0.678,441,0.0,874.67
+Neofusicoccum australe,240362,KX464937,"Neofusicoccum australe culture CBS:110865 beta-tubulin (TUB2) gene, partial cds",1.0,0.658,428,0.0,848.901
+Neofusicoccum australe,240362,MT592668,"Neofusicoccum australe culture CPC:29004 beta-tubulin (tub2) gene, partial cds",1.0,0.646,420,0.0,833.043
+Neofusicoccum australe,240362,JN595816,"Neofusicoccum australe isolate 10720 beta-tubulin gene, partial sequence",1.0,0.645,419,0.0,831.06
+Neofusicoccum australe,240362,OQ181384,"Neofusicoccum australe isolate B018 beta-tubulin (TUB2) gene, partial cds",1.0,0.632,411,0.0,815.202
+Neofusicoccum australe,240362,DQ008346,"Botryosphaeria australis strain UCD1314So beta-tubulin gene, partial sequence",1.0,0.629,409,0.0,811.238
+Neofusicoccum australe,240362,MT592674,"Neofusicoccum australe culture CPC:32013 beta-tubulin (tub2) gene, partial cds",0.998,0.777,505,0.0,993.606
+Neofusicoccum australe,240362,KX871745,"Neofusicoccum australe strain CAA648 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871724,"Neofusicoccum australe strain CAA344 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871753,"Neofusicoccum australe strain CAA751 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871713,"Neofusicoccum australe strain CAA197 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871729,"Neofusicoccum australe strain CAA398 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871720,"Neofusicoccum australe strain CAA326 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871733,"Neofusicoccum australe strain CAA420 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871722,"Neofusicoccum australe strain CAA332 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871717,"Neofusicoccum australe strain CAA242 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871742,"Neofusicoccum australe strain CAA550 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871732,"Neofusicoccum australe strain CAA406 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871728,"Neofusicoccum australe strain CAA392 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871748,"Neofusicoccum australe strain CAA741 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871749,"Neofusicoccum australe strain CAA743 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871750,"Neofusicoccum australe strain CAA747 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871747,"Neofusicoccum australe strain CAA723 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871721,"Neofusicoccum australe strain CAA327 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871727,"Neofusicoccum australe strain CAA359 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871741,"Neofusicoccum australe strain CAA549 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871714,"Neofusicoccum australe strain CAA202 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871718,"Neofusicoccum australe strain CAA319 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871726,"Neofusicoccum australe strain CAA357 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871740,"Neofusicoccum australe strain CAA546 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871738,"Neofusicoccum australe strain CAA468 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871736,"Neofusicoccum australe strain CAA464 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871710,"Neofusicoccum australe strain CAA184 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871730,"Neofusicoccum australe strain CAA400 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871723,"Neofusicoccum australe strain CAA341 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871709,"Neofusicoccum australe strain CAA178 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871739,"Neofusicoccum australe strain CAA475 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871735,"Neofusicoccum australe strain CAA441 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871716,"Neofusicoccum australe strain CAA233 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871743,"Neofusicoccum australe strain CAA571 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871744,"Neofusicoccum australe strain CAA647 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871711,"Neofusicoccum australe strain CAA191 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871731,"Neofusicoccum australe strain CAA401 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871751,"Neofusicoccum australe strain CAA749 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871746,"Neofusicoccum australe strain CAA649 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,MT592653,"Neofusicoccum australe culture CBS:110851 beta-tubulin (tub2) gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871715,"Neofusicoccum australe strain CAA231 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871752,"Neofusicoccum australe strain CAA750 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871737,"Neofusicoccum australe strain CAA466 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871712,"Neofusicoccum australe strain CAA195 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871734,"Neofusicoccum australe strain CAA427 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871725,"Neofusicoccum australe strain CAA351 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,KX871719,"Neofusicoccum australe strain CAA320 beta-tubulin gene, partial cds",0.998,0.678,441,0.0,866.741
+Neofusicoccum australe,240362,MT592673,"Neofusicoccum australe culture CPC:31418 beta-tubulin (tub2) gene, partial cds",0.998,0.672,437,0.0,858.812
+Neofusicoccum australe,240362,MT592659,"Neofusicoccum australe culture CBS:115502 beta-tubulin (tub2) gene, partial cds",0.998,0.671,436,0.0,856.83
+Neofusicoccum australe,240362,OL901311,"Neofusicoccum australe strain ICMP 17597 beta-tubulin (btub) gene, partial cds",0.998,0.662,430,0.0,844.936
+Neofusicoccum australe,240362,AY339252,"Botryosphaeria australis CMW9072 beta tubulin gene, exons 3 through 6 and partial cds",0.998,0.662,430,0.0,844.936
+Neofusicoccum australe,240362,HM176498,"Neofusicoccum australe strain CMW822 beta-tubulin (BT) gene, partial cds",0.998,0.66,429,0.0,842.954
+Neofusicoccum australe,240362,HM176497,"Neofusicoccum australe strain CMW821 beta-tubulin (BT) gene, partial cds",0.998,0.66,429,0.0,842.954
+Neofusicoccum australe,240362,KF955889,"Neofusicoccum australe strain 6B39 beta-tubulin gene, exons 3 through 6 and partial cds",0.998,0.658,428,0.0,840.972
+Neofusicoccum australe,240362,KX464931,"Neofusicoccum australe culture CBS:110490 beta-tubulin (TUB2) gene, partial cds",0.998,0.658,428,0.0,840.972
+Neofusicoccum australe,240362,KX464929,"Neofusicoccum australe culture CBS:110485 beta-tubulin (TUB2) gene, partial cds",0.998,0.658,428,0.0,840.972
+Neofusicoccum australe,240362,MT592654,"Neofusicoccum australe culture CBS:112877 beta-tubulin (tub2) gene, partial cds",0.998,0.657,427,0.0,838.989
+Neofusicoccum australe,240362,MH118934,"Neofusicoccum australe isolate EFA 437 beta-tubulin (tub2) gene, partial cds",0.998,0.657,427,0.0,838.989
+Neofusicoccum australe,240362,MT592662,"Neofusicoccum australe culture CBS:125786 beta-tubulin (tub2) gene, partial cds",0.998,0.657,427,0.0,838.989
+Neofusicoccum australe,240362,MT592660,"Neofusicoccum australe culture CBS:119132 beta-tubulin (tub2) gene, partial cds",0.998,0.655,426,0.0,837.007
+Neofusicoccum australe,240362,AY339255,"Botryosphaeria australis CMW6853 beta tubulin gene, exons 3 through 6 and partial cds",0.998,0.652,424,0.0,833.043
+Neofusicoccum australe,240362,MT592669,"Neofusicoccum australe culture CPC:29026 beta-tubulin (tub2) gene, partial cds",0.998,0.652,424,0.0,833.043
+Neofusicoccum australe,240362,DQ093210,"Botryosphaeria australis strain CMW15954 beta-tubulin gene, partial cds",0.998,0.651,423,0.0,831.06
+Neofusicoccum australe,240362,AY615150,"Botryosphaeria australis isolate CMW1110 beta-tubulin gene, exons 3 through 6 and partial cds",0.998,0.648,421,0.0,827.096
+Neofusicoccum australe,240362,DQ093209,"Botryosphaeria australis strain WAC12399 beta-tubulin gene, partial cds",0.998,0.646,420,0.0,825.113
+Neofusicoccum australe,240362,EF591945,"Neofusicoccum australe strain MUCC479 beta-tubulin gene, partial sequence",0.998,0.643,418,0.0,821.149
+Neofusicoccum stellenboschiana,1873946,MT592734,"Neofusicoccum stellenboschiana culture CBS:110866 beta-tubulin (tub2) gene, partial cds",0.996,0.763,496,0.0,967.836
+Neofusicoccum stellenboschiana,1873946,MT592740,"Neofusicoccum stellenboschiana culture CPC:29767 beta-tubulin (tub2) gene, partial cds",0.995,1.0,650,0.0,1265.18
+Neofusicoccum stellenboschiana,1873946,OQ091956,"Neofusicoccum stellenboschiana CREA-DC TPR OL.60 beta-tubulin 2 (TUB2) gene, partial cds",0.995,0.978,636,0.0,1237.42
+Neofusicoccum stellenboschiana,1873946,OQ091957,"Neofusicoccum stellenboschiana CREA-DC TPR OL.431 beta-tubulin 2 (TUB2) gene, partial cds",0.995,0.977,635,0.0,1235.44
+Neofusicoccum stellenboschiana,1873946,OQ091959,"Neofusicoccum stellenboschiana CREA-DC TPR OL.453 beta-tubulin 2 (TUB2) gene, partial cds",0.995,0.977,635,0.0,1235.44
+Neofusicoccum stellenboschiana,1873946,OQ091958,"Neofusicoccum stellenboschiana CREA-DC TPR OL.438 beta-tubulin 2 (TUB2) gene, partial cds",0.995,0.977,635,0.0,1235.44
+Neofusicoccum cryptoaustrale,627159,KX505930,"Neofusicoccum cryptoaustrale strain LM03 beta-tubulin gene, partial cds",0.995,0.678,441,0.0,858.812
+Neofusicoccum australe,240362,KY775302,"Neofusicoccum australe strain STEU8044 beta-tubulin gene, exons 2 through 4 and partial cds",0.995,0.666,433,0.0,842.954
+Neofusicoccum australe,240362,ON086294,"Neofusicoccum australe strain ICMP 18453 beta-tubulin (btub) gene, partial cds",0.995,0.665,432,0.0,840.972
+Neofusicoccum australe,240362,OL901365,"Neofusicoccum australe strain ICMP 15810 beta-tubulin (btub) gene, partial cds",0.995,0.662,430,0.0,837.007
+Neofusicoccum stellenboschiana,1873946,KX465050,"Neofusicoccum stellenboschiana culture CBS:121561 beta-tubulin (TUB2) gene, partial cds",0.995,0.658,428,0.0,833.043
+Neofusicoccum australe,240362,KX464942,"Neofusicoccum australe culture CBS:112662 beta-tubulin (TUB2) gene, partial cds",0.995,0.658,428,0.0,833.043
+Neofusicoccum australe,240362,MT592672,"Neofusicoccum australe culture CPC:31414 beta-tubulin (tub2) gene, partial cds",0.995,0.658,428,0.0,833.043
+Neofusicoccum australe,240362,MT592677,"Neofusicoccum australe culture CPC:32263 beta-tubulin (tub2) gene, partial cds",0.995,0.657,427,0.0,831.06
+Neofusicoccum australe,240362,JQ918159,"Neofusicoccum australe isolate 11219_1 beta-tubulin gene, partial cds",0.995,0.645,419,0.0,819.167
+Neofusicoccum australe,240362,JQ918160,"Neofusicoccum australe isolate NZFS 3554 beta-tubulin gene, partial cds",0.995,0.645,419,0.0,815.202
+Neofusicoccum cryptoaustrale,627159,OQ181394,"Neofusicoccum cryptoaustrale isolate B055 beta-tubulin (TUB2) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum cryptoaustrale,627159,OQ401620,"Neofusicoccum cryptoaustrale isolate B043 beta-tubulin (TUB2) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum luteum,120395,JX515686,"Neofusicoccum luteum strain UCD360-Oe beta-tubulin (BT) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum cryptoaustrale,627159,OQ181393,"Neofusicoccum cryptoaustrale isolate B041 beta-tubulin (TUB2) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum cryptoaustrale,627159,OQ401621,"Neofusicoccum cryptoaustrale isolate B029 beta-tubulin (TUB2) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum cryptoaustrale,627159,OQ181395,"Neofusicoccum cryptoaustrale isolate B012 beta-tubulin (TUB2) gene, partial cds",0.995,0.632,411,0.0,799.344
+Neofusicoccum stellenboschiana,1873946,MT592739,"Neofusicoccum stellenboschiana culture CPC:28950 beta-tubulin (tub2) gene, partial cds",0.994,0.989,643,0.0,1243.37
+Neofusicoccum luteum,120395,GU251881,"Neofusicoccum luteum strain PD285 beta tubulin gene, partial cds",0.994,0.752,489,0.0,946.032
+Neofusicoccum australe,240362,KU836639,"Neofusicoccum australe isolate CUZF10AV1 beta-tubulin gene, partial cds",0.993,0.942,612,0.0,1179.94
+Neofusicoccum australe,240362,EU375520,"Neofusicoccum australe isolate JL619 beta-tubulin gene, exons 3 through 6 and partial cds",0.993,0.678,441,0.0,850.883
+Neofusicoccum cryptoaustrale,627159,KY000205,"Neofusicoccum cryptoaustrale isolate PEL05 beta-tubulin (BT) gene, partial cds",0.993,0.678,441,0.0,850.883
+Neofusicoccum stellenboschiana,1873946,MT592736,"Neofusicoccum stellenboschiana culture CBS:133326 beta-tubulin (tub2) gene, partial cds",0.993,0.678,441,0.0,850.883
+Neofusicoccum australe,240362,JN191293,"Neofusicoccum australe isolate Nau-1 beta-tubulin gene, partial cds",0.993,0.678,441,0.0,850.883
+Neofusicoccum cryptoaustrale,627159,KY000212,"Neofusicoccum cryptoaustrale isolate PEL19 beta-tubulin (BT) gene, partial cds",0.993,0.678,441,0.0,850.883
+Neofusicoccum australe,240362,GQ857668,"Neofusicoccum australe strain UCR739 beta-tubulin gene, partial sequence",0.993,0.677,440,0.0,846.918
+Neofusicoccum stellenboschiana,1873946,MT592737,"Neofusicoccum stellenboschiana culture CBS:139666 beta-tubulin (tub2) gene, partial cds",0.993,0.672,437,0.0,842.954
+Neofusicoccum luteum,120395,MT592689,"Neofusicoccum luteum culture CBS:133502 beta-tubulin (tub2) gene, partial cds",0.993,0.668,434,0.0,837.007
+Neofusicoccum stellenboschiana,1873946,MT592741,"Neofusicoccum stellenboschiana culture CPC:35286 beta-tubulin (tub2) gene, partial cds",0.993,0.666,433,0.0,835.025
+Neofusicoccum cryptoaustrale,627159,KY000208,"Neofusicoccum cryptoaustrale isolate PEL09 beta-tubulin (BT) gene, partial cds",0.993,0.665,432,0.0,833.043
+Neofusicoccum luteum,120395,HQ392762,"Neofusicoccum luteum isolate HH197-1 beta-tubulin gene, partial sequence",0.993,0.665,432,0.0,833.043
+Neofusicoccum cryptoaustrale,627159,KY000211,"Neofusicoccum cryptoaustrale isolate PEL17 beta-tubulin (BT) gene, partial cds",0.993,0.665,432,0.0,833.043
+Neofusicoccum cryptoaustrale,627159,KY000186,"Neofusicoccum cryptoaustrale isolate EL14 beta-tubulin (BT) gene, partial cds",0.993,0.663,431,0.0,831.06
+Neofusicoccum cryptoaustrale,627159,MZ520703,"Neofusicoccum cryptoaustrale isolate Nc.LIB07 beta-tubulin gene, partial cds",0.993,0.663,431,0.0,831.06
+Neofusicoccum cryptoaustrale,627159,MZ520704,"Neofusicoccum cryptoaustrale isolate Nc.LIB09 beta-tubulin gene, partial cds",0.993,0.663,431,0.0,831.06
+Neofusicoccum cryptoaustrale,627159,KY000210,"Neofusicoccum cryptoaustrale isolate PEL16 beta-tubulin (BT) gene, partial cds",0.993,0.663,431,0.0,831.06
+Neofusicoccum cryptoaustrale,627159,KY000207,"Neofusicoccum cryptoaustrale isolate PEL07 beta-tubulin (BT) gene, partial cds",0.993,0.662,430,0.0,829.078
+Neofusicoccum cryptoaustrale,627159,KY000209,"Neofusicoccum cryptoaustrale isolate PEL10 beta-tubulin (BT) gene, partial cds",0.993,0.662,430,0.0,829.078
+Neofusicoccum cryptoaustrale,627159,KY000206,"Neofusicoccum cryptoaustrale isolate PEL06 beta-tubulin (BT) gene, partial cds",0.993,0.662,430,0.0,829.078
+Neofusicoccum cryptoaustrale,627159,KY000171,"Neofusicoccum cryptoaustrale isolate PED04 beta-tubulin (BT) gene, partial cds",0.993,0.662,430,0.0,829.078
+Neofusicoccum stellenboschiana,1873946,PP393547,"Neofusicoccum stellenboschiana isolate UCD10840 beta-tubulin (tub2) gene, partial cds",0.993,0.66,429,0.0,827.096
+Neofusicoccum stellenboschiana,1873946,PP393546,"Neofusicoccum stellenboschiana isolate UCD10568 beta-tubulin (tub2) gene, partial cds",0.993,0.66,429,0.0,827.096
+Neofusicoccum cryptoaustrale,627159,KY000203,"Neofusicoccum cryptoaustrale isolate PEL01 beta-tubulin (BT) gene, partial cds",0.993,0.66,429,0.0,827.096
+Neofusicoccum cryptoaustrale,627159,KX464959,"Neofusicoccum cryptoaustrale culture CBS:121559 beta-tubulin (TUB2) gene, partial cds",0.993,0.658,428,0.0,825.113
+Neofusicoccum stellenboschiana,1873946,MT592738,"Neofusicoccum stellenboschiana culture CBS:189.28 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OP764457,"Neofusicoccum cryptoaustrale isolate AVORAM4 beta-tubulin gene beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OP764456,"Neofusicoccum cryptoaustrale isolate AVORAM3 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OP764458,"Neofusicoccum cryptoaustrale isolate AVORAM5 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum stellenboschiana,1873946,MT592735,"Neofusicoccum stellenboschiana culture CBS:118839 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OP764454,"Neofusicoccum cryptoaustrale isolate AVORAM1 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OP764455,"Neofusicoccum cryptoaustrale isolate AVORAM2 beta-tubulin (tub2) gene, partial cds",0.993,0.657,427,0.0,823.131
+Neofusicoccum cryptoaustrale,627159,OM222705,"Neofusicoccum cryptoaustrale isolate Wn-4 beta-tubulin gene, partial cds",0.993,0.649,422,0.0,813.22
+Neofusicoccum australe,240362,AY615149,"Botryosphaeria australis isolate CMW3386 beta-tubulin gene, exons 3 through 6 and partial cds",0.993,0.646,420,0.0,809.255
+Neofusicoccum cryptoaustrale,627159,KM103186,"Neofusicoccum cryptoaustrale strain CMW35461 beta-tubulin gene, partial cds",0.993,0.646,420,0.0,809.255
+Neofusicoccum cryptoaustrale,627159,KM103198,"Neofusicoccum cryptoaustrale strain CMW35509 beta-tubulin gene, partial cds",0.993,0.645,419,0.0,807.273
+Neofusicoccum luteum,120395,JN017909,"Neofusicoccum luteum isolate NZFS3232 beta-tubulin gene, partial sequence",0.993,0.645,419,0.0,807.273
+Neofusicoccum luteum,120395,MW419253,"Neofusicoccum luteum strain CPC27961 beta-tubulin gene, partial cds",0.993,0.635,413,0.0,795.38
+Neofusicoccum luteum,120395,AY339251,"Botryosphaeria lutea CMW10310 beta tubulin gene, exons 3 through 6 and partial cds",0.993,0.634,412,0.0,793.397
+Neofusicoccum luteum,120395,OQ181387,"Neofusicoccum luteum isolate B024 beta-tubulin (TUB2) gene, partial cds",0.993,0.632,411,0.0,791.415
+Neofusicoccum luteum,120395,MZ476039,"Neofusicoccum luteum isolate F34K-HB beta-tubulin (tub2) gene, partial cds",0.993,0.632,411,0.0,791.415
+Neofusicoccum luteum,120395,OQ181386,"Neofusicoccum luteum isolate B003 beta-tubulin (TUB2) gene, partial cds",0.993,0.632,411,0.0,791.415
+Neofusicoccum luteum,120395,MZ476038,"Neofusicoccum luteum isolate F34K-LF beta-tubulin (tub2) gene, partial cds",0.993,0.631,410,0.0,789.433
+Neofusicoccum luteum,120395,DQ233625,"Botryosphaeria lutea strain UCD2057Te beta-tubulin gene, partial cds",0.993,0.629,409,0.0,787.45
+Neofusicoccum luteum,120395,JF271781,"Neofusicoccum luteum strain UCR1177 beta-tubulin gene, partial sequence",0.993,0.62,403,0.0,775.557
+Neofusicoccum laricinum,121618,MZ073936,"Neofusicoccum laricinum strain MAFF 410183 beta-tubulin (tub2) gene, partial cds",0.991,1.0,650,0.0,1241.39
+Neofusicoccum laricinum,121618,MZ073937,"Neofusicoccum laricinum strain MAFF 410188 beta-tubulin (tub2) gene, partial cds",0.991,1.0,650,0.0,1241.39
+Neofusicoccum luteum,120395,KX871763,"Neofusicoccum luteum strain CAA720 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871759,"Neofusicoccum luteum strain CAA365 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871760,"Neofusicoccum luteum strain CAA379 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,HQ392761,"Neofusicoccum luteum isolate HH119-1 beta-tubulin gene, partial sequence",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871756,"Neofusicoccum luteum strain CAA352 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KY000204,"Neofusicoccum luteum isolate PEL04 beta-tubulin (BT) gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871758,"Neofusicoccum luteum strain CAA362 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,DQ458848,"Botryosphaeria lutea strain CBS110299 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,HQ392751,"Neofusicoccum luteum isolate FF23-1 beta-tubulin gene, partial sequence",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,HQ392741,"Neofusicoccum luteum isolate BB127-1 beta-tubulin gene, partial sequence",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871761,"Neofusicoccum luteum strain CAA412 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871755,"Neofusicoccum luteum strain CAA203 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KY436375,"Neofusicoccum luteum isolate Nl37 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX505929,"Neofusicoccum luteum strain CAA628 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871754,"Neofusicoccum luteum strain CAA200 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum australe,240362,JF271777,"Neofusicoccum australe strain UCR1111 beta-tubulin gene, partial sequence",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871757,"Neofusicoccum luteum strain CAA360 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,KX871762,"Neofusicoccum luteum strain CAA505 beta-tubulin gene, partial cds",0.991,0.678,441,0.0,842.954
+Neofusicoccum luteum,120395,MH118938,"Neofusicoccum luteum isolate EFA 469 beta-tubulin (tub2) gene, partial cds",0.991,0.674,438,0.0,837.007
+Neofusicoccum luteum,120395,MT592696,"Neofusicoccum luteum culture CPC:35437 beta-tubulin (tub2) gene, partial cds",0.991,0.674,438,0.0,837.007
+Neofusicoccum luteum,120395,KY000177,"Neofusicoccum luteum isolate PED16 beta-tubulin (BT) gene, partial cds",0.991,0.665,432,0.0,825.113
+Neofusicoccum australe,240362,ON086293,"Neofusicoccum australe strain ICMP 18452 beta-tubulin (btub) gene, partial cds",0.991,0.665,432,0.0,825.113
+Neofusicoccum luteum,120395,HQ392737,"Neofusicoccum luteum isolate BB29-1 beta-tubulin gene, partial sequence",0.991,0.665,432,0.0,825.113
+Neofusicoccum luteum,120395,KY000200,"Neofusicoccum luteum isolate EL56 beta-tubulin (BT) gene, partial cds",0.991,0.665,432,0.0,825.113
+Neofusicoccum luteum,120395,KY000215,"Neofusicoccum luteum isolate PEL27 beta-tubulin (BT) gene, partial cds",0.991,0.665,432,0.0,825.113
+Neofusicoccum luteum,120395,KY000185,"Neofusicoccum luteum isolate EL12 beta-tubulin (BT) gene, partial cds",0.991,0.663,431,0.0,823.131
+Neofusicoccum luteum,120395,KY000142,"Neofusicoccum luteum isolate RB13 beta-tubulin (BT) gene, partial cds",0.991,0.663,431,0.0,823.131
+Neofusicoccum luteum,120395,KY000175,"Neofusicoccum luteum isolate PED12 beta-tubulin (BT) gene, partial cds",0.991,0.662,430,0.0,821.149
+Neofusicoccum luteum,120395,AY339249,"Botryosphaeria lutea CMW9076 beta tubulin gene, exons 3 through 6 and partial cds",0.991,0.662,430,0.0,821.149
+Neofusicoccum luteum,120395,HQ392746,"Neofusicoccum luteum isolate BB161-2 beta-tubulin gene, partial sequence",0.991,0.662,430,0.0,821.149
+Neofusicoccum luteum,120395,KY000179,"Neofusicoccum luteum isolate PED27 beta-tubulin (BT) gene, partial cds",0.991,0.662,430,0.0,821.149
+Neofusicoccum luteum,120395,JX898982,"Neofusicoccum luteum isolate UCR1273 beta-tubulin gene, partial cds",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,HQ392752,"Neofusicoccum luteum isolate H12-1 beta-tubulin gene, partial sequence",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,JX898980,"Neofusicoccum luteum isolate UCR1211 beta-tubulin gene, partial cds",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,PP393544,"Neofusicoccum luteum isolate UCD9262 beta-tubulin (tub2) gene, partial cds",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,HQ392750,"Neofusicoccum luteum isolate BB192-1 beta-tubulin gene, partial sequence",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,PP393545,"Neofusicoccum luteum isolate UCD9279 beta-tubulin (tub2) gene, partial cds",0.991,0.66,429,0.0,819.167
+Neofusicoccum luteum,120395,KX464966,"Neofusicoccum luteum culture CBS:110487 beta-tubulin (TUB2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,OP764453,"Neofusicoccum luteum isolate AVF8 beta-tubulin (tub2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,OP764449,"Neofusicoccum luteum isolate AVF3 beta-tubulin (tub2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,JX898985,"Neofusicoccum luteum isolate UCR1340 beta-tubulin gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,KX464956,"Neofusicoccum luteum culture CBS:655.77 beta-tubulin (TUB2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,OP764450,"Neofusicoccum luteum isolate AVF5 beta-tubulin (tub2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,OP764451,"Neofusicoccum luteum isolate AVF6 beta-tubulin (tub2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,OP764452,"Neofusicoccum luteum isolate AVF7 beta-tubulin (tub2) gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,JX898983,"Neofusicoccum luteum isolate UCR1275 beta-tubulin gene, partial cds",0.991,0.658,428,0.0,817.184
+Neofusicoccum luteum,120395,MT592693,"Neofusicoccum luteum culture CPC:32388 beta-tubulin (tub2) gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum luteum,120395,KY000217,"Neofusicoccum luteum isolate PEL42 beta-tubulin (BT) gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum luteum,120395,MT592694,"Neofusicoccum luteum culture CPC:32641 beta-tubulin (tub2) gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum luteum,120395,JX898981,"Neofusicoccum luteum isolate UCR1214 beta-tubulin gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum luteum,120395,MH006968,"Neofusicoccum luteum isolate palb2022 beta-tubulin gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum australe,240362,OP209981,"Neofusicoccum australe isolate SS1 beta-tubulin (BT) gene, partial cds",0.991,0.658,428,0.0,815.202
+Neofusicoccum luteum,120395,MH006967,"Neofusicoccum luteum isolate palb2018 beta-tubulin gene, partial cds",0.991,0.657,427,0.0,815.202
+Neofusicoccum luteum,120395,JX898979,"Neofusicoccum luteum isolate UCR1359 beta-tubulin gene, partial cds",0.991,0.655,426,0.0,813.22
+Neofusicoccum luteum,120395,OQ714614,"Neofusicoccum luteum isolate C9 beta-tubulin (tub2) gene, partial cds",0.991,0.654,425,0.0,811.238
+Neofusicoccum luteum,120395,JX898984,"Neofusicoccum luteum isolate UCR1336 beta-tubulin gene, partial cds",0.991,0.651,423,0.0,807.273
+Neofusicoccum mangroviorum,1812288,MT592699,"Neofusicoccum mangroviorum culture CBS:140739 beta-tubulin (tub2) gene, partial cds",0.99,0.758,493,0.0,938.102
+Neofusicoccum luteum,120395,AY339250,"Botryosphaeria lutea CMW10309 beta tubulin gene, exons 3 through 6 and partial cds",0.99,0.646,420,0.0,801.326
+Neofusicoccum luteum,120395,PP105773,"Neofusicoccum luteum strain BOT1 beta-tubulin (tub2) gene, partial cds",0.99,0.646,420,0.0,801.326
+Neofusicoccum stellenboschiana,1873946,PQ665326,"Neofusicoccum stellenboschiana isolate SuRDC2371 beta-tubulin (tub2) gene, partial cds",0.989,0.674,438,0.0,837.007
+Neofusicoccum australe,240362,GQ857665,"Neofusicoccum australe strain UCR509 beta-tubulin gene, partial sequence",0.989,0.678,441,0.0,835.025
+Neofusicoccum luteum,120395,MH006966,"Neofusicoccum luteum isolate palb2017 beta-tubulin gene, partial cds",0.988,0.657,427,0.0,811.238
+Neofusicoccum australe,240362,OP209978,"Neofusicoccum australe isolate SS2 beta-tubulin (BT) gene, partial cds",0.988,0.654,425,0.0,803.309
+Neofusicoccum luteum,120395,HQ529730,"Neofusicoccum luteum isolate UCR654 beta-tubulin gene, partial sequence",0.986,0.678,441,0.0,829.078
+Neofusicoccum luteum,120395,MT592687,"Neofusicoccum luteum culture CBS:110862 beta-tubulin (tub2) gene, partial cds",0.986,0.678,441,0.0,827.096
+Neofusicoccum mangroviorum,1812288,MT592698,"Neofusicoccum mangroviorum culture CBS:140738 beta-tubulin (tub2) gene, partial cds",0.986,0.674,438,0.0,821.149
+Neofusicoccum mangroviorum,1812288,MT592700,"Neofusicoccum mangroviorum culture CBS:140740 beta-tubulin (tub2) gene, partial cds",0.986,0.669,435,0.0,815.202
+Neofusicoccum luteum,120395,KY000174,"Neofusicoccum luteum isolate PED11 beta-tubulin (BT) gene, partial cds",0.986,0.663,431,0.0,807.273
+Neofusicoccum lumnitzerae,1812287,MT592685,"Neofusicoccum lumnitzerae culture CBS:139675 beta-tubulin (tub2) gene, partial cds",0.986,0.657,427,0.0,799.344
+Neofusicoccum mangroviorum,1812288,MT592701,"Neofusicoccum mangroviorum culture CPC:32482 beta-tubulin (tub2) gene, partial cds",0.986,0.657,427,0.0,799.344
+Neofusicoccum mangroviorum,1812288,MT592697,"Neofusicoccum mangroviorum culture CBS:111492 beta-tubulin (tub2) gene, partial cds",0.986,0.655,426,0.0,797.362
+Neofusicoccum mangroviorum,1812288,MT592702,"Neofusicoccum mangroviorum culture CPC:32580 beta-tubulin (tub2) gene, partial cds",0.986,0.655,426,0.0,797.362

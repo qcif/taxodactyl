@@ -1,0 +1,8 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Pseudococcus longispinus,13233,KT199048,"Pseudococcus longispinus 28S ribosomal RNA gene, partial sequence",1.0,0.934,716,0.0,1419.79
+Pseudococcus longispinus,13233,JQ651177,"Pseudococcus longispinus voucher ARCPPRI SB54_2 28S ribosomal RNA gene, partial sequence",1.0,0.909,697,0.0,1382.13
+Pseudococcus longispinus,13233,JQ651179,"Pseudococcus longispinus voucher ARCPPRI SB54_4 28S ribosomal RNA gene, partial sequence",1.0,0.888,681,0.0,1350.41
+Pseudococcus longispinus,13233,JQ651176,"Pseudococcus longispinus voucher ARCPPRI SB54_1 28S ribosomal RNA gene, partial sequence",1.0,0.879,674,0.0,1336.54
+Pseudococcus longispinus,13233,KY565034,"Pseudococcus longispinus haplotype 9 28S ribosomal RNA gene, partial sequence",1.0,0.737,565,0.0,1120.47
+Pseudococcus longispinus,13233,JQ651178,"Pseudococcus longispinus voucher ARCPPRI SB54_3 28S ribosomal RNA gene, partial sequence",1.0,0.731,561,0.0,1112.54
+Pseudococcus longispinus,13233,KP692428,"Pseudococcus longispinus isolate S3-800a 28S ribosomal RNA gene, partial sequence",0.995,0.957,734,0.0,1423.76

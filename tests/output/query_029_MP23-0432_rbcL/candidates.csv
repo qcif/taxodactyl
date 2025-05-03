@@ -1,0 +1,36 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Xanthosoma mafaffa,73008,AJ007543,"Xanthosoma mafaffa rbcL gene, partial",1.0,1.0,950,0.0,1883.64
+Caladium praetermissum,2969583,NC_068799,"Caladium praetermissum isolate XLMRHYY chloroplast, complete genome",1.0,1.0,950,0.0,1883.64
+Xanthosoma sagittifolium,28478,L10246,"Xanthosoma sagittifolium ribulose 1,5-bisphosphate carboxylase large subunit (rbcL) gene, partial cds; chloroplast gene for chloroplast product",1.0,1.0,950,0.0,1883.64
+Xanthosoma sagittifolium,28478,MW628970,"Xanthosoma sagittifolium chloroplast, complete genome",1.0,1.0,950,0.0,1883.64
+Alocasia cucullata,227242,NC_060696,"Alocasia cucullata chloroplast, complete genome",1.0,1.0,950,0.0,1883.64
+Xanthosoma violaceum,201275,EU193180,"Xanthosoma violaceum isolate A42 ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast",0.999,0.952,904,0.0,1784.53
+Xanthosoma helleborifolium,487142,AM905790,Xanthosoma helleborifolium plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.997,0.995,945,0.0,1849.94
+Xanthosoma helleborifolium,487142,NC_051873,"Xanthosoma helleborifolium voucher MO:103054 chloroplast, complete genome",0.995,1.0,950,0.0,1844.0
+Zomicarpella amazonica,487143,NC_051874,"Zomicarpella amazonica voucher MO:71763b chloroplast, complete genome",0.994,1.0,950,0.0,1836.07
+Caladium lindenii,201266,NC_068801,"Caladium lindenii isolate RMQNY chloroplast, complete genome",0.994,1.0,950,0.0,1836.07
+Caladium lindenii,201266,AM905788,Caladium lindenii plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.994,0.995,945,0.0,1826.16
+Zomicarpella amazonica,487143,AM905796,Zomicarpella amazonica plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.994,0.995,945,0.0,1826.16
+Caladium humboldtii,2969582,NC_068800,"Caladium humboldtii isolate MNBHYY chloroplast, complete genome",0.993,1.0,950,0.0,1828.14
+Caladium bicolor,174190,ON707031,"Caladium bicolor isolate ESHYY chloroplast, complete genome",0.993,1.0,950,0.0,1828.14
+Caladium bicolor,174190,NC_060474,"Caladium bicolor chloroplast, complete sequence",0.993,1.0,950,0.0,1828.14
+Scaphispatha gracilis,201272,AM905793,Scaphispatha gracilis plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.993,0.995,945,0.0,1818.23
+Filarum manserichense,175761,AF497110,"Filarum manserichense ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast gene for chloroplast product",0.992,1.0,950,0.0,1820.21
+Syngonium angustatum,513162,MN046894,"Syngonium angustatum chloroplast, complete genome",0.992,1.0,950,0.0,1820.21
+Filarum manserichense,175761,AM905795,Filarum manserichense plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.992,0.995,945,0.0,1810.3
+Syngonium podophyllum,267621,NC_070391,"Syngonium podophyllum plastid, complete genome",0.991,1.0,950,0.0,1812.28
+Hapaline sp. HAR 056,176695,AF497112,"Hapaline sp. HAR 056 ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast gene for chloroplast product",0.991,1.0,950,0.0,1812.28
+Caladium bicolor,174190,EU193181,"Caladium bicolor isolate A149 ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast",0.991,0.952,904,0.0,1729.03
+Syngonium auritum,201274,AM905789,Syngonium auritum plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.99,0.995,945,0.0,1802.37
+Hapaline benthamiana,487125,AM905787,Hapaline benthamiana plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.989,0.995,945,0.0,1794.44
+Chlorospatha sp. Chase 11912,487118,AM905791,Chlorospatha sp. Chase 11912 plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.989,0.995,945,0.0,1794.44
+Peltandra virginica,78376,AJ005628,Peltandra virginica chloroplast rbcL gene,0.988,1.0,950,0.0,1796.42
+Peltandra virginica,78376,AM905815,Peltandra virginica plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.988,0.995,945,0.0,1786.51
+Arophyton buchetii,201265,AM905820,Arophyton buchetii plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.987,0.995,945,0.0,1778.58
+Jasarum steyermarkii,201270,AM905792,Jasarum steyermarkii plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.987,0.995,945,0.0,1778.58
+Peltandra virginica,78376,EU193187,"Peltandra virginica isolate A108 ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast",0.987,0.952,904,0.0,1697.31
+Typhonodorum lindleyanum,227487,AM905814,Typhonodorum lindleyanum plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.986,0.995,945,0.0,1770.65
+Peltandra sagittifolia,1620158,KJ773731,"Peltandra sagittifolia ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast",0.986,0.967,919,0.0,1719.11
+Typhonodorum lindleyanum,227487,EU193188,"Typhonodorum lindleyanum isolate A153 ribulose-1,5-bisphosphate carboxylase/oxygenase large subunit (rbcL) gene, partial cds; chloroplast",0.986,0.952,904,0.0,1689.38
+Carlephyton glaucophyllum,487117,NC_051871,"Carlephyton glaucophyllum voucher MO:101527 chloroplast, complete genome",0.985,1.0,950,0.0,1772.64
+Carlephyton glaucophyllum,487117,AM905821,Carlephyton glaucophyllum plastid partial rbcL gene for ribulose-biphosphate carboxylase,0.985,0.963,915,0.0,1703.26
