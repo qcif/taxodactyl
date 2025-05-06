@@ -39,5 +39,7 @@ process CONFIGURE_ENVIRONMENT {
         echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
     fi
     echo 'export BOXPLOT_IMG_FILENAME=${params.boxplot_img_filename}' >> env_vars.sh
+    echo 'export ANALYST_NAME="${params.analyst_name}"' >> env_vars.sh
+    echo 'export FACILITY_NAME="${params.facility_name}"' >> env_vars.sh
     """
 }
