@@ -1,4 +1,7 @@
 process EXTRACT_CANDIDATES {
+
+    label 'daff_tax_assign'
+
     tag "$query_folder"
 
     input:

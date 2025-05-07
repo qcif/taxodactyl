@@ -1,4 +1,7 @@
 process EVALUATE_DATABASE_COVERAGE {
+
+    label 'daff_tax_assign'
+
     tag "$query_folder"
 
     containerOptions "--bind ${file(params.taxdb)}"

@@ -1,4 +1,7 @@
 process EVALUATE_SOURCE_DIVERSITY {
+
+    label 'daff_tax_assign'
+
     tag "$query_folder"
     
     input:
