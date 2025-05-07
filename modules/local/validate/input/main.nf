@@ -1,5 +1,7 @@
 process VALIDATE_INPUT {
 
+    label 'daff_tax_assign'
+
     containerOptions "--bind ${file(params.metadata).parent} --bind ${file(params.taxdb)} --bind ${file(params.sequences).parent}"
 
     output:

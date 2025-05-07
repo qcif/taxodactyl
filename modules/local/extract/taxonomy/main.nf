@@ -1,4 +1,7 @@
 process EXTRACT_TAXONOMY {
+
+    label 'daff_tax_assign'
+
     containerOptions "--bind ${file(params.taxdb)}"
 
     input:

@@ -1,4 +1,7 @@
 process BLAST_BLASTN {
+
+    label 'blast'
+
     containerOptions "--bind ${file(params.blastdb).parent}"
 
     input:
