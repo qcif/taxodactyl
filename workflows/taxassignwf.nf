@@ -36,6 +36,8 @@ workflow TAXASSIGNWF {
     CONFIGURE_ENVIRONMENT (
     )
 
+    env_var_file_ch = CONFIGURE_ENVIRONMENT.out
+
     VALIDATE_INPUT (
     )
 
@@ -45,6 +47,7 @@ workflow TAXASSIGNWF {
     )
 
     EXTRACT_HITS (
+        env_var_file_ch,
         BLAST_BLASTN.out.blast_output
     )
 
@@ -53,6 +56,7 @@ workflow TAXASSIGNWF {
     )
 
     EXTRACT_TAXONOMY (
+        env_var_file_ch,
         BLAST_BLASTDBCMD.out.taxids
     )
 
@@ -65,9 +69,10 @@ workflow TAXASSIGNWF {
 
 
     EXTRACT_CANDIDATES (
-       ch_hits,
-       EXTRACT_TAXONOMY.out,
-       file(params.metadata)
+        env_var_file_ch,
+        ch_hits,
+        EXTRACT_TAXONOMY.out,
+        file(params.metadata)
     )
 
     ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
@@ -88,6 +93,7 @@ workflow TAXASSIGNWF {
        .map { tuple -> [tuple[0], [file("${projectDir}/assets/QUERY_FOLDER/QUERY_FILE")]] }
 
     EVALUATE_SOURCE_DIVERSITY (
+        env_var_file_ch,
         ch_candidates_for_source_diversity_filtered
     )
 
@@ -96,6 +102,7 @@ workflow TAXASSIGNWF {
         .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
     EVALUATE_DATABASE_COVERAGE (
+        env_var_file_ch,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
         file(params.metadata)
     )
@@ -138,6 +145,7 @@ workflow TAXASSIGNWF {
         .set { ch_files_for_report }
 
     REPORT (
+        env_var_file_ch,
         ch_files_for_report,
         EXTRACT_TAXONOMY.out,
         file(params.metadata)

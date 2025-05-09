@@ -7,6 +7,7 @@ process REPORT {
     containerOptions "--bind ${file(params.sequences).parent}"
     
     input:
+    path(env_var_file)
     tuple val(query_folder),  
         path(hits_query_folder, stageAs: 'hits_query_folder'),
         path(nwk_file, stageAs: 'tree.nwk'),
@@ -23,7 +24,7 @@ process REPORT {
   
     script:
     """
-    source ${workDir}/env_vars.sh
+    source ${env_var_file}
     mkdir -p ${query_folder}
     mv tree.nwk ${query_folder}/$params.tree_nwk_filename
     mv candidates_query_folder/* ${query_folder}

@@ -5,6 +5,7 @@ process EXTRACT_CANDIDATES {
     tag "$query_folder"
 
     input:
+    path(env_var_file)
     tuple val(query_folder), path(hits_json_file), path(hits_fasta_file)
     path(taxonomy_file)
     path(metadata)
@@ -37,7 +38,7 @@ process EXTRACT_CANDIDATES {
 
     script:
     """
-    source ${workDir}/env_vars.sh
+    source ${env_var_file}
     mkdir -p $query_folder
     mv $hits_json_file $query_folder/
     mv $hits_fasta_file $query_folder/
