@@ -5,6 +5,7 @@ process EXTRACT_TAXONOMY {
     containerOptions "--bind ${file(params.taxdb)}"
 
     input:
+    path(env_var_file)
     path(taxids_csv)
 
     output:
@@ -12,7 +13,7 @@ process EXTRACT_TAXONOMY {
 
     script:
     """
-    source ${workDir}/env_vars.sh
+    source ${env_var_file}
     python /app/scripts/p2_extract_taxonomy.py \
         --output_dir ./ \
         ${taxids_csv} 

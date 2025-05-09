@@ -7,6 +7,7 @@ process EXTRACT_HITS {
     debug true
 
     input:
+    path(env_var_file)
     path(blast_xml)
 
     output:
@@ -20,7 +21,7 @@ process EXTRACT_HITS {
     
     script:
     """
-    source ${workDir}/env_vars.sh
+    source ${env_var_file}
     python /app/scripts/p1_parse_blast.py ${blast_xml} --output_dir ./
     """
 }

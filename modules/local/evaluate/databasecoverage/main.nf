@@ -7,6 +7,7 @@ process EVALUATE_DATABASE_COVERAGE {
     containerOptions "--bind ${file(params.taxdb)}"
     
     input:
+    path(env_var_file)
     tuple val(query_folder), path(candidate_json_file)
     path(metadata)
 
@@ -34,7 +35,7 @@ process EVALUATE_DATABASE_COVERAGE {
     
     script:
     """
-    source ${workDir}/env_vars.sh
+    source ${env_var_file}
     mkdir -p $query_folder
     mv $candidate_json_file $query_folder
     python /app/scripts/p5_db_coverage.py \
