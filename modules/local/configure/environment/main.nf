@@ -41,5 +41,6 @@ process CONFIGURE_ENVIRONMENT {
     echo 'export BOXPLOT_IMG_FILENAME=${params.boxplot_img_filename}' >> env_vars.sh
     echo 'export ANALYST_NAME="${params.analyst_name}"' >> env_vars.sh
     echo 'export FACILITY_NAME="${params.facility_name}"' >> env_vars.sh
+    echo 'export ALLOWED_LOCI_FILE="${file(params.allowed_loci_file)}"' >> env_vars.sh
     """
 }

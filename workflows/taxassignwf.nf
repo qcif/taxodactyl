@@ -35,10 +35,10 @@ workflow TAXASSIGNWF {
 
     CONFIGURE_ENVIRONMENT (
     )
-
     env_var_file_ch = CONFIGURE_ENVIRONMENT.out
 
     VALIDATE_INPUT (
+        env_var_file_ch,
     )
 
     BLAST_BLASTN (
