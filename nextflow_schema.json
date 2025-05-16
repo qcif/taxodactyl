@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["metadata", "outdir", "sequences", "blastdb", "taxdb", "analyst_name", "facility_name"],
+            "required": ["metadata", "outdir", "sequences", "blastdb", "taxdb", "analyst_name", "facility_name", "allowed_loci_file"],
             "properties": {
                 "metadata": {
                     "type": "string",
@@ -162,6 +162,13 @@
                 "facility_name": {
                     "type": "string",
                     "description": "Name of the facility where the analysis was performed."
+                },
+                "allowed_loci_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.json$",
+                    "description": "Path to a file containing a list of allowed loci."
                 }
                 
             }
