@@ -13,8 +13,7 @@ process BLAST_BLASTN {
     path "versions.yml"           , emit: versions
 
     publishDir "${params.outdir}", mode: 'copy', pattern:    "blast_result.xml" 
-    publishDir "${params.outdir}/pipeline_info", mode: 'copy', pattern:    "versions.yml"  
-
+    
     when:
     task.ext.when == null || task.ext.when
 
