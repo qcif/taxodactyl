@@ -151,7 +151,10 @@ workflow TAXASSIGNWF {
         file(params.metadata)
     )
 
-    ch_versions = Channel.empty()
+    ch_versions = BLAST_BLASTN.out.versions
+        .mix(BLAST_BLASTDBCMD.out.versions)
+        .mix(MAFFT_ALIGN.out.versions)
+        .mix(FASTME.out.versions)
 
     //
     // Collate and save software versions
