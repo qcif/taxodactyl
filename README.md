@@ -10,9 +10,11 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/daff/taxassignwf) -->
 
-<!-- TODO ## Introduction -->
+## Introduction
 
-<!-- TODO **daff/taxassignwf** is a bioinformatics pipeline that ... -->
+This workflow analyses  DNA barcode sequences, attempting to annotate each with a taxonomic identity.
+
+Much of the code for this analysis is written in Python and lives in https://github.com/qcif/daff-biosecurity-wf2/.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -24,7 +26,7 @@
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-## Prerequisites
+## Setup
 
 ### Software
 
