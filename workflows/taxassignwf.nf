@@ -6,6 +6,7 @@
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_taxassignwf_pipeline'
+include { dumpParametersToJSON } from '../subworkflows/nf-core/utils_nextflow_pipeline'
 include { BLAST_BLASTN } from '../modules/local/blast/blastn/main' 
 include { MAFFT_ALIGN } from '../modules/local/mafft/align/main'
 include { EXTRACT_HITS } from '../modules/local/extract/hits/main'
@@ -137,12 +138,35 @@ workflow TAXASSIGNWF {
         .map { folderVal, filePath -> [folderVal, filePath.parent] }  
         .set { ch_candidates_for_alternative_report }
 
+      //
+    // Collate and save software versions
+    //
+
+    ch_versions = BLAST_BLASTN.out.versions
+        .mix(BLAST_BLASTDBCMD.out.versions)
+        .mix(MAFFT_ALIGN.out.versions)
+        .mix(FASTME.out.versions)
+
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            name:  'software_versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
+
+
+    ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
+
     ch_hits_for_alternative_report
         .combine(FASTME.out.nwk, by: 0)
         .combine(ch_candidates_for_alternative_report, by: 0)
         .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
         .combine(ch_source_diversity_for_report, by: 0)
+        .combine(ch_collated_versions)
+        .combine(ch_params_json)
         .set { ch_files_for_report }
+    
+  
 
     REPORT (
         env_var_file_ch,
@@ -150,25 +174,6 @@ workflow TAXASSIGNWF {
         EXTRACT_TAXONOMY.out,
         file(params.metadata)
     )
-
-    ch_versions = BLAST_BLASTN.out.versions
-        .mix(BLAST_BLASTDBCMD.out.versions)
-        .mix(MAFFT_ALIGN.out.versions)
-        .mix(FASTME.out.versions)
-
-    //
-    // Collate and save software versions
-    //
-    softwareVersionsToYAML(ch_versions)
-        .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
-            name:  'taxassignwf_software_'  + 'versions.yml',
-            sort: true,
-            newLine: true
-        ).set { ch_collated_versions }
-
-    emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
 

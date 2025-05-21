@@ -13,7 +13,9 @@ process REPORT {
         path(nwk_file, stageAs: 'tree.nwk'),
         path(candidates_query_folder, stageAs: 'candidates_query_folder'),
         path(db_coverage_query_folder, stageAs: 'db_coverage_query_folder'),
-        path(source_diversity_query_folder, stageAs: 'source_diversity_query_folder')
+        path(source_diversity_query_folder, stageAs: 'source_diversity_query_folder'),
+        path(versions_file),
+        path(params_file)
     path(taxonomy_file)
     path(metadata_file)
 
@@ -24,6 +26,7 @@ process REPORT {
   
     script:
     """
+    echo $versions_file
     source ${env_var_file}
     mkdir -p ${query_folder}
     mv tree.nwk ${query_folder}/$params.tree_nwk_filename
