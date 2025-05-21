@@ -25,12 +25,12 @@ workflow UTILS_NEXTFLOW_PIPELINE {
         System.exit(0)
     }
 
-    //
-    // Dump pipeline parameters to a JSON file
-    //
-    if (dump_parameters && outdir) {
-        dumpParametersToJSON(outdir)
-    }
+    // //
+    // // Dump pipeline parameters to a JSON file
+    // //
+    // if (dump_parameters && outdir) {
+    //     dumpParametersToJSON(outdir)
+    // }
 
     //
     // When running with Conda, warn if channels have not been set-up appropriately
@@ -79,6 +79,7 @@ def dumpParametersToJSON(outdir) {
 
     nextflow.extension.FilesEx.copyTo(temp_pf.toPath(), "${outdir}/pipeline_info/params_${timestamp}.json")
     temp_pf.delete()
+    return "${outdir}/pipeline_info/params_${timestamp}.json"
 }
 
 //
