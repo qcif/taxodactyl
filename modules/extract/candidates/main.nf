@@ -37,6 +37,7 @@ process EXTRACT_CANDIDATES {
         pattern:    "$query_folder/$params.boxplot_img_filename"
 
     script:
+    def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     """
     source ${env_var_file}
     mkdir -p $query_folder
@@ -44,7 +45,8 @@ process EXTRACT_CANDIDATES {
     mv $hits_fasta_file $query_folder/
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
-    --output_dir ./
+    --output_dir ./ \
+    ${bold_flag} 
     """
     
 
