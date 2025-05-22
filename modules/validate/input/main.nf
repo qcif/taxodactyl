@@ -11,11 +11,13 @@ process VALIDATE_INPUT {
     val true
 
     script:
+    def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     """
     source ${env_var_file}
     python /app/scripts/p0_validation.py \
     --taxdb_dir ${file(params.taxdb)} \
     --query_fasta ${file(params.sequences)} \
-    --metadata_csv ${file(params.metadata)}
+    --metadata_csv ${file(params.metadata)} \
+    ${bold_flag} 
     """
 }
