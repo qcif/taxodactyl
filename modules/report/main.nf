@@ -4,7 +4,7 @@ process REPORT {
 
     tag "$query_folder"
 
-    containerOptions "--bind ${file(params.sequences).parent}"
+    containerOptions "--bind ${file(params.sequences).parent}  --bind ${file(params.allowed_loci_file).parent}"
     
     input:
     path(env_var_file)

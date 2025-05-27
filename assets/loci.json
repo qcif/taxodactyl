@@ -1,125 +1,244 @@
-[
-    [
-        "coi",
-        "CO1",
-        "COX",
-        "COX1",
-        "cytochrome oxidase subunit 1"
+{
+  "16s": {
+    "ambiguous_synonyms": [
+      "16s"
     ],
-    [
-        "act",
-        "actin"
-    ],
-    [
-        "16s",
-        "16s rrna",
-        "16s ribosomal rna"
-    ],
-    [
-        "alt-a1",
-        "alt a1"
-    ],
-    [
-        "dnax",
-        "dna polymerase iii subunit gamma/tau"
-    ],
-    [
-        "28s",
-        "28s rrna",
-        "28s ribosomal rna"
-    ],
-    [
-        "cmda",
-        "cinnamoyl-coa reductase"
-    ],
-    [
-        "fusa",
-        "elongation factor g"
-    ],
-    [
-        "ef1a",
-        "ef-1a",
-        "elongation factor 1-alpha"
-    ],
-    [
-        "gapa",
-        "g3pdh",
-        "gapdh",
-        "glyceraldehyde-3-phosphate dehydrogenase"
-    ],
-    [
-        "co2",
-        "coii",
-        "cytochrome oxidase subunit 2"
-    ],
-    [
-        "gyrb",
-        "dna gyrase subunit b"
-    ],
-    [
-        "cytb",
-        "cytochrome b"
-    ],
-    [
-        "leus",
-        "leucyl-trna synthetase"
-    ],
-    [
-        "hsp60",
-        "heat shock protein 60"
-    ],
-    [
-        "reca",
-        "recombinase a"
-    ],
-    [
-        "its",
-        "internal transcribed spacer"
-    ],
-    [
-        "recn",
-        "dna repair protein recn"
-    ],
-    [
-        "its1",
-        "internal transcribed spacer 1"
-    ],
-    [
-        "lsu",
-        "large subunit ribosomal rna"
-    ],
-    [
-        "rpob",
-        "rna polymerase subunit beta"
-    ],
-    [
-        "its2",
-        "internal transcribed spacer 2"
-    ],
-    [
-        "rpb2",
-        "rna polymerase ii subunit b"
-    ],
-    [
-        "rpod",
-        "rna polymerase sigma factor"
-    ],
-    [
-        "ß-tub",
-        "beta-tubulin",
-        "β-tubulin"
-    ],
-    [
-        "rplb",
-        "ribosomal protein l2"
-    ],
-    [
-        "matK"
-    ],
-    [
-        "rbcL"
-    ],
-    [
-        "16S mitochondrial rRNA"
+    "non_ambiguous_synonyms": [
+      "16s rrna",
+      "16s mitochondrial rrna",
+      "16s ribosomal rna"
     ]
-]
+  },
+  "28s": {
+    "ambiguous_synonyms": [
+      "28s"
+    ],
+    "non_ambiguous_synonyms": [
+      "28s rrna",
+      "28s ribosomal rna"
+    ]
+  },
+  "act": {
+    "ambiguous_synonyms": [
+      "act"
+    ],
+    "non_ambiguous_synonyms": [
+      "actin"
+    ]
+  },
+  "alt-a1": {
+    "ambiguous_synonyms": [
+      "alt-a1"
+    ],
+    "non_ambiguous_synonyms": [
+      "alt a1"
+    ]
+  },
+  "ß-tub": {
+    "ambiguous_synonyms": [
+      "ß-tub"
+    ],
+    "non_ambiguous_synonyms": [
+      "beta-tubulin",
+      "β-tubulin"
+    ]
+  },
+  "cmda": {
+    "ambiguous_synonyms": [
+      "cmda"
+    ],
+    "non_ambiguous_synonyms": [
+      "cinnamoyl-coa reductase"
+    ]
+  },
+  "co2": {
+    "ambiguous_synonyms": [
+      "co2",
+      "coii"
+    ],
+    "non_ambiguous_synonyms": [
+      "cytochrome oxidase subunit 2"
+    ]
+  },
+  "coi": {
+    "ambiguous_synonyms": [
+      "coi",
+      "co1",
+      "cox",
+      "cox1"
+    ],
+    "non_ambiguous_synonyms": [
+      "cytochrome oxidase subunit 1"
+    ]
+  },
+  "cytb": {
+    "ambiguous_synonyms": [
+      "cytb"
+    ],
+    "non_ambiguous_synonyms": [
+      "cytochrome b"
+    ]
+  },
+  "dnax": {
+    "ambiguous_synonyms": [
+      "dnax"
+    ],
+    "non_ambiguous_synonyms": [
+      "dna polymerase iii subunit tau",
+      "dna polymerase iii subunit gamma"
+    ]
+  },
+  "ef1a": {
+    "ambiguous_synonyms": [
+      "ef1a",
+      "ef-1a"
+    ],
+    "non_ambiguous_synonyms": [
+      "elongation factor 1-alpha"
+    ]
+  },
+  "fusa": {
+    "ambiguous_synonyms": [
+      "ef-g",
+      "fusa"
+    ],
+    "non_ambiguous_synonyms": [
+      "elongation factor g"
+    ]
+  },
+  "gapa": {
+    "ambiguous_synonyms": [
+      "gapa"
+    ],
+    "non_ambiguous_synonyms": [
+      "g3pdh",
+      "gapdh",
+      "glyceraldehyde-3-phosphate dehydrogenase"
+    ]
+  },
+  "gyrb": {
+    "ambiguous_synonyms": [
+      "gyrb"
+    ],
+    "non_ambiguous_synonyms": [
+      "gyrase b"
+    ]
+  },
+  "hsp60": {
+    "ambiguous_synonyms": [
+      "hsp60"
+    ],
+    "non_ambiguous_synonyms": [
+      "heat shock protein 60"
+    ]
+  },
+  "its": {
+    "ambiguous_synonyms": [
+      "its"
+    ],
+    "non_ambiguous_synonyms": [
+      "internal transcribed spacer"
+    ]
+  },
+  "its1": {
+    "ambiguous_synonyms": [
+      "its1"
+    ],
+    "non_ambiguous_synonyms": [
+      "internal transcribed spacer 1"
+    ]
+  },
+  "its2": {
+    "ambiguous_synonyms": [
+      "its2"
+    ],
+    "non_ambiguous_synonyms": [
+      "internal transcribed spacer 2"
+    ]
+  },
+  "leus": {
+    "ambiguous_synonyms": [
+      "leus"
+    ],
+    "non_ambiguous_synonyms": [
+      "leucyl-trna synthetase"
+    ]
+  },
+  "lsu": {
+    "ambiguous_synonyms": [
+      "lsu"
+    ],
+    "non_ambiguous_synonyms": [
+      "lsu rrna",
+      "large subunit ribosomal rna",
+      "rrna large subunit 28s",
+      "rrna large subunit 23s"
+    ]
+  },
+  "matk": {
+    "ambiguous_synonyms": [
+      "matk"
+    ],
+    "non_ambiguous_synonyms": [
+      "maturase k"
+    ]
+  },
+  "rbcl": {
+    "ambiguous_synonyms": [
+      "rbcl"
+    ],
+    "non_ambiguous_synonyms": [
+      "rubisco",
+      "ribulose-1,5-bisphosphate carboxylase/oxygenase"
+    ]
+  },
+  "recn": {
+    "ambiguous_synonyms": [
+      "recn"
+    ],
+    "non_ambiguous_synonyms": [
+      "dna repair protein recn"
+    ]
+  },
+  "reca": {
+    "ambiguous_synonyms": [
+      "reca"
+    ],
+    "non_ambiguous_synonyms": [
+      "recombinase a"
+    ]
+  },
+  "rpob": {
+    "ambiguous_synonyms": [
+      "rpob"
+    ],
+    "non_ambiguous_synonyms": [
+      "rna polymerase subunit ß",
+      "rna polymerase subunit beta"
+    ]
+  },
+  "rplb": {
+    "ambiguous_synonyms": [
+      "rplb"
+    ],
+    "non_ambiguous_synonyms": [
+      "ribosomal protein l2"
+    ]
+  },
+  "rpod": {
+    "ambiguous_synonyms": [
+      "rpod"
+    ],
+    "non_ambiguous_synonyms": [
+      "rna polymerase sigma factor"
+    ]
+  },
+  "rpb2": {
+    "ambiguous_synonyms": [
+      "rpb2"
+    ],
+    "non_ambiguous_synonyms": [
+      "rna polymerase ii subunit b"
+    ]
+  }
+}

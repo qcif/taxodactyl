@@ -4,7 +4,7 @@ process EVALUATE_DATABASE_COVERAGE {
 
     tag "$query_folder"
 
-    containerOptions "--bind ${file(params.taxdb)}"
+    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent}"
     
     input:
     path(env_var_file)
