@@ -15,7 +15,7 @@
             },
             "locus": {
                 "type": "string",
-                "errorMessage": "Locus name must be provided"
+                "errorMessage": "A value is required for column 'locus'. For samples with no locus (viruses and BOLD runs), please enter 'NA'."
             },
             "preliminary_id": {
                 "type": "string",
