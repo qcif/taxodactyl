@@ -29,10 +29,6 @@ include { BOLD_SEARCH } from '../modules/bold/search/main'
 
 workflow TAXASSIGNWF {
 
-    // take:
-    // // ch_samplesheet // channel: samplesheet read in from --input
-    // ch_fastaformsa
-
     main:
 
     CONFIGURE_ENVIRONMENT (
@@ -50,6 +46,8 @@ workflow TAXASSIGNWF {
             VALIDATE_INPUT.out
         )
         ch_hits = BOLD_SEARCH.out.hits
+
+        ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
         BLAST_BLASTN (
             file(params.sequences),
@@ -71,6 +69,8 @@ workflow TAXASSIGNWF {
             BLAST_BLASTDBCMD.out.taxids
         )
 
+        ch_taxonomy_file = EXTRACT_TAXONOMY.out
+
     }
 
      ch_hits
@@ -80,125 +80,114 @@ workflow TAXASSIGNWF {
         .map { folder, files -> [folder, files[0], files[1] ]}
         .set { ch_hits_to_filter }  
 
+    EXTRACT_CANDIDATES (
+        env_var_file_ch,
+        ch_hits_to_filter,
+        ch_taxonomy_file,
+        file(params.metadata)
+    )
 
-    if (params.db_type == 'bold') {
-        EXTRACT_CANDIDATES (
-            env_var_file_ch,
-            ch_hits_to_filter,
-            BOLD_SEARCH.out.taxonomy,
-            file(params.metadata)
-        )
-    } else {
-        EXTRACT_CANDIDATES (
-            env_var_file_ch,
-            ch_hits_to_filter,
-            EXTRACT_TAXONOMY.out,
-            file(params.metadata)
-        )
+    Channel.fromPath(file(params.sequences))
+        .splitFasta(record: [id: true, sequence: true])
+        .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
+        .set { ch_queryfasta }
 
-        ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+    EXTRACT_CANDIDATES.out.candidates_for_alignment
+        .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+        .combine(ch_queryfasta, by: 0)
+        .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
+        .set { ch_seqs_for_alignment }
+
+    MAFFT_ALIGN (
+        ch_seqs_for_alignment
+    )
+
+    FASTME (
+        MAFFT_ALIGN.out.aligned_sequences
+    )
+
+    ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
         .filter { tuple -> 
             def (folder, countFile, candidateJsonFile) = tuple
             def count = countFile.text.trim().toInteger()
             return count >= 1 && count <= 3
         }
-       .map { tuple -> [tuple[0], tuple[2]] }
+        .map { tuple -> [tuple[0], tuple[2]] }
+    
+    EVALUATE_SOURCE_DIVERSITY (
+        env_var_file_ch,
+        ch_candidates_for_source_diversity_filtered
+    )
+
+    EVALUATE_DATABASE_COVERAGE (
+        env_var_file_ch,
+        EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+        file(params.metadata)
+    )
+
+    ch_hits.flatten()
+        .map { file-> [file.parent.name, file.parent] }
+        .groupTuple()
+        .map { folder, files -> [folder, files[0] ]}
+        .set { ch_hits_for_alternative_report }
+
+    EXTRACT_CANDIDATES.out.candidates_for_db_coverage
+        .map { folderVal, filePath -> [folderVal, filePath.parent] }  
+        .set { ch_candidates_for_alternative_report }
 
 
-        ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
-            .filter { tuple -> 
-                def (folder, countFile, candidateJsonFile) = tuple
-                def count = countFile.text.trim().toInteger()
-                return count == 0 || count > 3
-            }
-        .map { tuple -> [tuple[0], [file("${projectDir}/assets/QUERY_FOLDER/QUERY_FILE")]] }
+    ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
 
-        EVALUATE_SOURCE_DIVERSITY (
-            env_var_file_ch,
-            ch_candidates_for_source_diversity_filtered
-        )
+    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+        .filter { tuple -> 
+            def (folder, countFile, candidateJsonFile) = tuple
+            def count = countFile.text.trim().toInteger()
+            return count == 0 || count > 3
+        }
+    .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
-        ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
-            .concat(ch_mock_source_diversity)
-            .map { folderVal, filePath -> [folderVal, filePath.parent] } 
+    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+        .concat(ch_mock_source_diversity)
+        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
-        EVALUATE_DATABASE_COVERAGE (
-            env_var_file_ch,
-            EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-            file(params.metadata)
-        )
 
-        Channel.fromPath(file(params.sequences))
-            .splitFasta(record: [id: true, sequence: true])
-            .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
-            .set { ch_queryfasta }
+    if (params.db_type == 'bold') {
 
-        EXTRACT_CANDIDATES.out.candidates_for_alignment
-            .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
-            .combine(ch_queryfasta, by: 0)
-            .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
-            .set { ch_seqs_for_alignment }
+        ch_versions = MAFFT_ALIGN.out.versions
+            .mix(FASTME.out.versions)
 
-        MAFFT_ALIGN (
-            ch_seqs_for_alignment
-        )
-
-        FASTME (
-            MAFFT_ALIGN.out.aligned_sequences
-        )
-
-        EXTRACT_HITS.out.hits
-            .flatten()
-            .map { file-> [file.parent.name, file.parent] }
-            .groupTuple()
-            .map { folder, files -> [folder, files[0] ]}
-            .set { ch_hits_for_alternative_report }
-
-        EXTRACT_CANDIDATES.out.candidates_for_db_coverage
-            .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-            .set { ch_candidates_for_alternative_report }
-
-        //
-        // Collate and save software versions
-        //
+    } else {
 
         ch_versions = BLAST_BLASTN.out.versions
             .mix(BLAST_BLASTDBCMD.out.versions)
             .mix(MAFFT_ALIGN.out.versions)
             .mix(FASTME.out.versions)
 
-        softwareVersionsToYAML(ch_versions)
-            .collectFile(
-                name:  'software_versions.yml',
-                sort: true,
-                newLine: true
-            ).set { ch_collated_versions }
-
-
-        ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
-
-        ch_hits_for_alternative_report
-            .combine(FASTME.out.nwk, by: 0)
-            .combine(ch_candidates_for_alternative_report, by: 0)
-            .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-            .combine(ch_source_diversity_for_report, by: 0)
-            .combine(ch_collated_versions)
-            .combine(ch_params_json)
-            .set { ch_files_for_report }
-        
-
-
-        REPORT (
-            env_var_file_ch,
-            ch_files_for_report,
-            EXTRACT_TAXONOMY.out,
-            file(params.metadata)
-        )
-
     }
 
+    softwareVersionsToYAML(ch_versions)
+    .collectFile(
+        name:  'software_versions.yml',
+        sort: true,
+        newLine: true
+    ).set { ch_collated_versions }
+        
 
-
+    ch_hits_for_alternative_report
+        .combine(FASTME.out.nwk, by: 0)
+        .combine(ch_candidates_for_alternative_report, by: 0) 
+        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
+        .combine(ch_source_diversity_for_report, by: 0)
+        .combine(ch_collated_versions)
+        .combine(ch_params_json)
+        .set { ch_files_for_report }
+         
+    REPORT (
+        env_var_file_ch,
+        ch_files_for_report,
+        ch_taxonomy_file,
+        file(params.metadata)
+    )
 
 }
 

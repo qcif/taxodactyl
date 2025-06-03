@@ -25,6 +25,7 @@ process REPORT {
     publishDir "${params.outdir}", mode: 'copy', pattern:    "$query_folder/*.html"
   
     script:
+    def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     """
     echo $versions_file
     source ${env_var_file}
@@ -40,6 +41,7 @@ process REPORT {
     rm -rf source_diversity_query_folder
     python /app/scripts/p6_report.py \
             ${query_folder} \
-            --output_dir ./
+            --output_dir ./ \
+            ${bold_flag} 
     """
 }
