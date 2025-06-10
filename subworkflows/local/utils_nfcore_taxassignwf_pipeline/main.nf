@@ -63,26 +63,11 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Create channel from input file provided through params.input
+    // Custom validation for pipeline parameters
     //
-
-    Channel
-        // .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
-        .fromList(samplesheetToList(params.metadata, "${projectDir}/assets/schema_input.json"))
-        // .map {
-        //     meta, locus, pmi, toi_file, country ->
-        //         return [ meta, params.sequences ]
-        // }
-        // .map { samplesheet ->
-        //     validateInputSamplesheet(samplesheet)
-        // }
-        .set { ch_samplesheet }
-
-        // ch_samplesheet.view()
-
+    validateInputParameters()
     
     emit:
-    // samplesheet = ch_samplesheet
     versions    = ch_versions
 }
 
@@ -134,23 +119,30 @@ workflow PIPELINE_COMPLETION {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+def validateInputParameters() {
+
+    if (params.db_type == "blast_core_nt" && !params.blastdb) {
+        error("'blastdb' parameter must be set when using blast_core_nt database type. 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq.")
+    }
+
+}
 //
 // Validate channels from metadata samplesheet
 //
-def validateInputSamplesheet(input) {
-    def (metas, fastqs) = metadata[0..1]
+// def validateInputSamplesheet(input) {
+//     def (metas, fastqs) = metadata[0..1]
 
-    // // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    // def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    // if (!endedness_ok) {
-    //     error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    // }
+//     // // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
+//     // def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
+//     // if (!endedness_ok) {
+//     //     error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
+//     // }
 
-    // TO DO
-    // VALIDATE
+//     // TO DO
+//     // VALIDATE
 
-    return [ metas, fastqs ]
-}
+//     return [ metas, fastqs ]
+// }
 //
 // Generate methods description for MultiQC
 //

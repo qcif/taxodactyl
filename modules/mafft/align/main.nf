@@ -5,12 +5,12 @@ process MAFFT_ALIGN {
     tuple val(query_folder), path(candidate_fasta_file), val(query_sequence)
 
     output:
-    tuple val(query_folder), path("$query_folder/candidates.msa"), emit: aligned_sequences
+    tuple val(query_folder), path("$query_folder/$params.candidates_msa_filename"), emit: aligned_sequences
     path "versions.yml"                 , emit: versions
 
     
     publishDir "${params.outdir}", mode: 'copy',
-        pattern:    "$query_folder/candidates.msa"
+        pattern:    "$query_folder/$params.candidates_msa_filename"
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,7 +27,7 @@ process MAFFT_ALIGN {
         --thread ${task.cpus} \\
         --phylipout \\
         $query_folder/temp.fasta \\
-        > $query_folder/candidates.msa
+        > $query_folder/$params.candidates_msa_filename
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
