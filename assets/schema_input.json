@@ -10,27 +10,33 @@
             "sample_id": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": ["id"]
+                "description": "Unique identifier for the sample.",
+                "errorMessage": "Parameter 'sample_id' must be a string and cannot contain spaces."
             },
             "locus": {
                 "type": "string",
-                "errorMessage": "A value is required for column 'locus'. For samples with no locus (viruses and BOLD runs), please enter 'NA'."
+                "description": "Name of the genetic locus for the sample.",
+                "errorMessage": "Parameter 'locus' must be a string. Check available loci in ‘assets/loci.json’. You can override it by setting the ‘allowed_loci_file’ parameter. For samples with no locus (viruses and BOLD runs), please enter 'NA'."
             },
             "preliminary_id": {
                 "type": "string",
-                "errorMessage": "PMI must be provided"
+                "description": "Preliminary morphology id of the sample.",
+                "errorMessage": "Parameter 'preliminary_id' must be a string."
             },
             "taxa_of_interest": {
-                "type": "string"
+                "type": "string",
+                "description": "Taxa of interest for the sample.",
+                "errorMessage": "Parameter 'taxa_of_interest' must be a string."
             },
             "country": {
                 "type": "string",
-                "errorMessage": "Country code must be provided"
+                "description": "Country of origin for the sample.",
+                "errorMessage": "Parameter 'country' must be a string."
             },
             "host": {
                 "type": "string",
-                "errorMessage": "Host must be provided"
+                "description": "Host organism for the sample.",
+                "errorMessage": "Parameter 'host' must be a string."
             }
         },
         "required": ["sample_id", "locus", "preliminary_id"]

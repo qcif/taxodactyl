@@ -10,186 +10,243 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["metadata", "outdir", "sequences", "db_type", "taxdb", "analyst_name", "facility_name", "allowed_loci_file"],
+            "required": ["metadata", "outdir", "sequences", "db_type", "taxdb", "analyst_name", "facility_name"],
             "properties": {
-                "metadata": {
+                "analyst_name": {
                     "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "fa_icon": "fas fa-file-csv"
-                },
-                "outdir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "description": "Name of the analyst running the workflow.",
+                    "errorMessage": "Parameter 'analyst_name' must be a string."
                 },
                 "db_type": {
                     "type": "string",
-                    "description": "Choose the type of database to use for sequence searches, either 'blast_core_nt' or 'bold'" ,
-                    "fa_icon": "fas fa-database",
-                    "enum": ["blast_core_nt", "bold"]
+                    "default": "blast_core_nt",
+                    "enum": ["blast_core_nt", "bold"],
+                    "description": "Type of reference database to use for taxonomic assignment.",
+                    "errorMessage": "Parameter 'db_type' must be one of [blast_core_nt, bold]. Default: 'blast_core_nt'."
                 },
-                "blastdb": {
+                "facility_name": {
                     "type": "string",
-                    "description": "Path to blastdb database files, e.g. /path/to/blastdb/core_nt",
-                    "fa_icon": "fas fa-database"
+                    "description": "Name of the facility where the workflow is executed.",
+                    "errorMessage": "Parameter 'facility_name' must be a string."
+                },
+                "metadata": {
+                    "type": "string",
+                    "default": "metadata.csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "format": "file-path",
+                    "exists": "true",
+                    "mimeType": "text/csv",
+                    "schema": "assets/schema_input.json",
+                    "description": "CSV file containing sample metadata.",
+                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension. Default: a file 'metadata.csv' placed in the execution directory."
+                },
+                "outdir": {
+                    "type": "string",
+                    "default": "output",
+                    "format": "directory-path",
+                    "description": "Directory where output files will be saved.",
+                    "errorMessage": "Parameter 'outdir' must be a valid directory path. Default: 'output'."
                 },
                 "sequences": {
                     "type": "string",
+                    "default": "sequences.fasta",
+                    "pattern": "^\\S+\\.fn?a(sta)?$",
                     "format": "file-path",
-                    "exists": true,
-                    "description": "Path to the FASTA file containing sequences to process.",
-                    "help_text": "Specify the location of the FASTA file that contains the sequences you want to analyze.",
-                    "fa_icon": "fas fa-file-alt",
-                    "pattern": "^\\S+\\.fasta$"
+                    "exists": "true",
+                    "mimeType": "text/plain",
+                    "description": "FASTA file containing input sequences for analysis.",
+                    "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: a file 'sequences.fasta' placed in the execution directory."
+                },
+                "blastdb": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": ".*core_nt",
+                    "description": "Path to the BLAST database files.",
+                    "errorMessage": "Parameter 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
+                },
+                "min_identity": {
+                    "type": "number",
+                    "default": 0.935,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum identity for a BLAST hit to be considered for candidate screening.",
+                    "errorMessage": "Parameter 'min_identity' must be a number between 0 and 1. Default: 0.935."
+                },
+                "min_identity_strict": {
+                    "type": "number",
+                    "default": 0.985,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum hit identity to be considered a STRONG candidate.",
+                    "errorMessage": "Parameter 'min_identity_strict' must be a number between 0 and 1. Default: 0.985."
+                },
+                "min_nt": {
+                    "type": "integer",
+                    "default": 300,
+                    "minimum": 0,
+                    "description": "Minimum alignment length for a BLAST hit to be considered for candidate screening.",
+                    "errorMessage": "Parameter 'min_nt' must be an integer greater than or equal to 0. Default: 300."
+                },
+                "min_q_coverage": {
+                    "type": "number",
+                    "default": 0.85,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum query coverage for a BLAST hit to be considered for candidate screening.",
+                    "errorMessage": "Parameter 'min_q_coverage' must be a number between 0 and 1. Default: 0.85."
                 },
                 "taxdb": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Path to the taxonomic database folder, e.g. /path/to/taxdb",
-                    "fa_icon": "fas fa-folder",
-                    "exists": true
-                },
-                "accessions_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain BLAST accessions."
-                },
-                "taxonomy_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain taxonomy information."
-                },
-                "query_title_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain query titles."
-                },
-                "hits_json_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain hits in JSON format."
-                },
-                "hits_fasta_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain hits in FASTA format."
-                },
-                "flags_csv_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain flags in CSV format."
-                },
-                "taxonomy_id_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain taxonomy IDs."
-                },
-                "candidates_fasta_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain candidate sequences in FASTA format."
-                },
-                "candidates_csv_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain candidate sequences in CSV format."
-                },
-                "candidates_json_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain candidate sequences in JSON format."
-                },
-                "toi_detected_csv_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain detected TOIs in CSV format."
-                },
-                "timestamp_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain the timestamp."
-                },
-                "pmi_match_csv_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain PMI match results in CSV format."
-                },
-                "min_nt": {
-                    "type": "integer",
-                    "description": "Minimum number of nucleotides."
-                },
-                "min_q_coverage": {
-                    "type": "number",
-                    "description": "Minimum query coverage."
-                },
-                "min_identity": {
-                    "type": "number",
-                    "description": "Minimum identity percentage."
-                },
-                "min_identity_strict": {
-                    "type": "number",
-                    "description": "Minimum strict identity percentage."
-                },
-                "candidates_sources_json_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain candidates sources in JSON format."
-                },
-                "db_coverage_json_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain database coverage in JSON format."
-                },
-                "gbif_accepted_status": {
-                    "type": "string",
-                    "description": "GBIF accepted status."
-                },
-                "gbif_limit_records": {
-                    "type": "integer",
-                    "description": "GBIF limit records."
-                },
-                "ncbi_api_key": {
-                    "type": "string",
-                    "description": "NCBI API key."
-               },
-                "user_email": {
-                    "type": "string",
-                    "description": "User email."
-                },
-                "tree_nwk_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain the tree in Newick format."
-                },
-                "boxplot_img_filename": {
-                    "type": "string",
-                    "description": "Name of the file that will contain the boxplot image."
-                },
-                "analyst_name": {
-                    "type": "string",
-                    "description": "Name of the analyst who performed the analysis."
-                },
-                "facility_name": {
-                    "type": "string",
-                    "description": "Name of the facility where the analysis was performed."
+                    "exists": true,
+                    "description": "The directory where NCBI's taxdump files can be found.",
+                    "errorMessage": "Parameter 'taxdb' must be a valid directory path."
                 },
                 "allowed_loci_file": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "pattern": "^\\S+\\.json$",
-                    "description": "Path to a file containing a list of allowed loci."
+                    "description": "A JSON file which describes permitted loci (barcoding regions) and their synonyms. The default can be overridden with a file in the same format. The ambiguous_synonyms listed in this file are locus synonyms which may be ambiguous in a GenBank query.",
+                    "errorMessage": "Parameter 'allowed_loci_file' must be a valid file path and file name cannot contain spaces and must have a .json extension."
                 },
-                "bold_taxon_count_json": {
+                "gbif_accepted_status": {
                     "type": "string",
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Name of the file that will contain BOLD taxon count in JSON format."
+                    "default": "accepted,doubtful",
+                    "hidden": true,
+                    "pattern": "^(\\S+,)*\\S+$",
+                    "description": "Comma-separated list of GBIF taxonomic statuses to be considered.",
+                    "errorMessage": "Parameter 'gbif_accepted_status' must be a comma-separated list with no spaces. Default: 'accepted,doubtful'."
                 },
-                "bold_taxon_collectors_json": {
+                "gbif_limit_records": {
+                    "type": "integer",
+                    "default": 500,
+                    "hidden": true,
+                    "minimum": 0,
+                    "description": "The maximum number of records per-request to the GBIF API. More records than this will be fetched in batches.",
+                    "errorMessage": "Parameter 'gbif_limit_records' must be an integer greater than or equal to 0. Default: 500."
+                },
+                "ncbi_api_key": {
                     "type": "string",
+                    "pattern": "^\\S+$",
+                    "description": "Used to authenticate with NCBI Entrez API for an increased rate limit on requests.",
+                    "errorMessage": "Parameter 'ncbi_api_key' must not contain spaces."
+                },
+                "ncbi_user_email": {
+                    "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "description": "Used to authenticate with NCBI Entrez API if NCBI_API_KEY not provided. Also used to rate limit requests from different users on the same system.",
+                    "errorMessage": "Parameter 'ncbi_user_email' must be a valid email address."
+                },
+                "email": {
+                    "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "description": "Email address for notifications and reports.",
+                    "errorMessage": "Parameter 'email' must be a valid email address."
+                },
+                "blast_xml_filename": {
+                    "type": "string",
+                    "default": "blast_results.xml",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.xml$",
+                    "description": "Filename for the BLAST XML results file.",
+                    "errorMessage": "Parameter 'blast_xml_filename' file name cannot contain spaces and must have a .xml extension. Default: 'blast_results.xml'."
+                },
+                "accessions_filename": {
+                    "type": "string",
+                    "default": "accessions.txt",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.txt$",
+                    "description": "Filename for the file containing BLAST accession numbers.",
+                    "errorMessage": "Parameter 'accessions_filename' file name cannot contain spaces and must have a .txt extension. Default: 'accessions.txt'."
+                },
+                "hits_fasta_filename": {
+                    "type": "string",
+                    "default": "all_hits.fasta",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "description": "Filename for the FASTA file containing all BLAST hits.",
+                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: 'all_hits.fasta'."
+                },
+                "hits_json_filename": {
+                    "type": "string",
+                    "default": "all_hits.json",
+                    "hidden": true,
                     "pattern": "^\\S+\\.json$",
-                    "description": "Name of the file that will contain BOLD taxon collectors in JSON format."
+                    "description": "Filename for the JSON file containing all BLAST hits.",
+                    "errorMessage": "Parameter 'hits_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'all_hits.json'."
+                },
+                "boxplot_img_filename": {
+                    "type": "string",
+                    "default": "candidates_identity_boxplot.png",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.png$",
+                    "description": "Filename for the PNG image of candidate identity boxplot.",
+                    "errorMessage": "Parameter 'boxplot_img_filename' file name cannot contain spaces and must have a .png extension. Default: 'candidates_identity_boxplot.png'."
+                },
+                "candidates_csv_filename": {
+                    "type": "string",
+                    "default": "candidates.csv",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Filename for the CSV file listing candidate hits.",
+                    "errorMessage": "Parameter 'candidates_csv_filename' file name cannot contain spaces and must have a .csv extension. Default: 'candidates.csv'."
+                },
+                "candidates_fasta_filename": {
+                    "type": "string",
+                    "default": "candidates.fasta",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "description": "Filename for the FASTA file of candidate sequences.",
+                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: 'candidates.fasta'."
+                },
+                "candidates_json_filename": {
+                    "type": "string",
+                    "default": "candidates.json",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.json$",
+                    "description": "Filename for the JSON file of candidate hits.",
+                    "errorMessage": "Parameter 'candidates_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates.json'."
+                },
+                "candidates_sources_json_filename": {
+                    "type": "string",
+                    "default": "candidates_sources.json",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.json$",
+                    "description": "Filename for the JSON file listing sources of candidate species.",
+                    "errorMessage": "Parameter 'candidates_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates_sources_json'."
                 },
                 "bold_taxonomy_json": {
                     "type": "string",
+                    "default": "bold_taxonomy.json",
+                    "hidden": true,
                     "pattern": "^\\S+\\.json$",
-                    "description": "Name of the file that will contain BOLD taxonomy in JSON format."
+                    "description": "Filename for the JSON file containing BOLD taxonomy data.",
+                    "errorMessage": "Parameter 'bold_taxonomy_json' file name cannot contain spaces and must have a .json extension. Default: 'bold_taxonomy.json'."
+                },
+                "taxonomy_filename": {
+                    "type": "string",
+                    "default": "taxonomy.csv",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Filename for the CSV file containing BLAST taxonomy assignments.",
+                    "errorMessage": "Parameter 'taxonomy_filename' file name cannot contain spaces and must have a .csv extension. Default: 'taxonomy.csv'."
+                },
+                "candidates_msa_filename": {
+                    "type": "string",
+                    "default": "candidates.msa",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.msa$",
+                    "description": "Filename for the multiple sequence alignment file of candidate sequences.",
+                    "errorMessage": "Parameter 'candidates_msa_filename' file name cannot contain spaces and must have a .msa extension. Default: 'candidates.msa'."
+                },
+                "tree_nwk_filename": {
+                    "type": "string",
+                    "default": "candidates.nwk",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.nwk$",
+                    "description": "Filename for the Newick tree file of candidate sequences.",
+                    "errorMessage": "Parameter 'tree_nwk_filename' file name cannot contain spaces and must have a .nwk extension. Default: 'candidates.nwk'."
                 }
             }
         },

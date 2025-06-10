@@ -9,10 +9,10 @@ process BLAST_BLASTN {
     val ready
 
     output:
-    path('blast_result.xml'), emit: blast_output
+    path("$params.blast_xml_filename"), emit: blast_output
     path "versions.yml"           , emit: versions
 
-    publishDir "${params.outdir}", mode: 'copy', pattern:    "blast_result.xml" 
+    publishDir "${params.outdir}", mode: 'copy', pattern:    "$params.blast_xml_filename" 
     
     when:
     task.ext.when == null || task.ext.when
@@ -31,7 +31,7 @@ process BLAST_BLASTN {
         -db ${file(params.blastdb)} \\
         -query ${fasta_name} \\
         -outfmt 5 \\
-        -out blast_result.xml \\
+        -out $params.blast_xml_filename \\
         -task megablast \\
         -max_target_seqs 500 \\
         -evalue 0.05 \\
