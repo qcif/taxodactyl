@@ -38,7 +38,7 @@
                     "mimeType": "text/csv",
                     "schema": "assets/schema_input.json",
                     "description": "CSV file containing sample metadata.",
-                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension. Default: a file 'metadata.csv' placed in the execution directory."
+                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension. Default: 'metadata.csv'."
                 },
                 "outdir": {
                     "type": "string",
@@ -55,7 +55,14 @@
                     "exists": "true",
                     "mimeType": "text/plain",
                     "description": "FASTA file containing input sequences for analysis.",
-                    "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: a file 'sequences.fasta' placed in the execution directory."
+                    "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fna, .fasta, or .fnasta extension. Default: 'sequences.fasta'."
+                },
+                "taxdb": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "description": "The directory where NCBI's taxdump files can be found.",
+                    "errorMessage": "Parameter 'taxdb' must be a valid directory path."
                 },
                 "blastdb": {
                     "type": "string",
@@ -63,6 +70,31 @@
                     "pattern": ".*core_nt",
                     "description": "Path to the BLAST database files.",
                     "errorMessage": "Parameter 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
+                },
+                "bold_skip_orientation": {
+                    "type": "integer",
+                    "default": 0,
+                    "enum": [0, 1],
+                    "description": "If SKIP_ORIENTATION=1 then BOLD runs will skip orientation of query sequences and submit both forward and reverse sequences to the ID Engine API (for developers, this removes the need for local installation of Hmmsearch).",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'bold_skip_orientation' must be one of [0, 1]. Default: 0."
+                },
+                "max_candidates_for_analysis": {
+                    "type": "integer",
+                    "default": 3,
+                    "minimum": 1,
+                    "description": "The maximum number of candidate species that will proceed to further analysis.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'max_candidates_for_analysis' must be an integer >= 1. Default: 3."
+                },
+                "median_identity_warning_factor": {
+                    "type": "number",
+                    "default": 0.95,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum proportion of candidate identity threshold for a median identity to receive WARNING level instead of DANGER level. e.g. if the median identity is >95% of the candidate identity threshold, then it will be marked as WARNING instead of DANGER.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'median_identity_warning_factor' must be a number between 0 and 1. Default: 0.95."
                 },
                 "min_identity": {
                     "type": "number",
@@ -85,7 +117,7 @@
                     "default": 300,
                     "minimum": 0,
                     "description": "Minimum alignment length for a BLAST hit to be considered for candidate screening.",
-                    "errorMessage": "Parameter 'min_nt' must be an integer greater than or equal to 0. Default: 300."
+                    "errorMessage": "Parameter 'min_nt' must be an integer >= 0. Default: 300."
                 },
                 "min_q_coverage": {
                     "type": "number",
@@ -95,13 +127,6 @@
                     "description": "Minimum query coverage for a BLAST hit to be considered for candidate screening.",
                     "errorMessage": "Parameter 'min_q_coverage' must be a number between 0 and 1. Default: 0.85."
                 },
-                "taxdb": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "exists": true,
-                    "description": "The directory where NCBI's taxdump files can be found.",
-                    "errorMessage": "Parameter 'taxdb' must be a valid directory path."
-                },
                 "allowed_loci_file": {
                     "type": "string",
                     "format": "file-path",
@@ -109,6 +134,56 @@
                     "pattern": "^\\S+\\.json$",
                     "description": "A JSON file which describes permitted loci (barcoding regions) and their synonyms. The default can be overridden with a file in the same format. The ambiguous_synonyms listed in this file are locus synonyms which may be ambiguous in a GenBank query.",
                     "errorMessage": "Parameter 'allowed_loci_file' must be a valid file path and file name cannot contain spaces and must have a .json extension."
+                },
+                "db_cov_country_missing_a": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 0,
+                    "description": "Flag 5.3B is raised when at least this many species in country of origin have no GenBank records.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_cov_country_missing_a' must be an integer >= 0. Default: 1."
+                },
+                "db_cov_min_a": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "description": "Minimum number of GenBank records to receive Flag 5.1A.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_cov_min_a' must be an integer >= 1. Default: 5."
+                },
+                "db_cov_min_b": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Minimum number of GenBank records to receive Flag 5.1B.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_cov_min_b' must be an integer >= 1. Default: 1."
+                },
+                "db_cov_related_min_a": {
+                    "type": "integer",
+                    "default": 90,
+                    "minimum": 1,
+                    "maximum": 100,
+                    "description": "Minimum percent species coverage of GenBank records to receive Flag 5.2A.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_cov_related_min_a' must be an integer between 1 and 100. Default: 90."
+                },
+                "db_cov_related_min_b": {
+                    "type": "integer",
+                    "default": 10,
+                    "minimum": 1,
+                    "maximum": 100,
+                    "description": "Minimum percent species coverage of GenBank records to receive Flag 5.2B.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_cov_related_min_b' must be an integer between 1 and 100. Default: 10."
+                },
+                "db_coverage_toi_limit": {
+                    "type": "integer",
+                    "default": 10,
+                    "minimum": 0,
+                    "description": "The maximum number of taxa of interest that will be analysed by database coverage.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'db_coverage_toi_limit' must be an integer >= 0. Default: 10."
                 },
                 "gbif_accepted_status": {
                     "type": "string",
@@ -121,10 +196,18 @@
                 "gbif_limit_records": {
                     "type": "integer",
                     "default": 500,
+                    "minimum": 1,
                     "hidden": true,
-                    "minimum": 0,
                     "description": "The maximum number of records per-request to the GBIF API. More records than this will be fetched in batches.",
-                    "errorMessage": "Parameter 'gbif_limit_records' must be an integer greater than or equal to 0. Default: 500."
+                    "errorMessage": "Parameter 'gbif_limit_records' must be an integer >= 1. Default: 500."
+                },
+                "gbif_max_occurrence_records": {
+                    "type": "integer",
+                    "default": 5000,
+                    "minimum": 1,
+                    "description": "The maximum number of GBIF records that will be fetched for plotting the occurrence distribution map.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'gbif_max_occurrence_records' must be an integer >= 1. Default: 5000."
                 },
                 "ncbi_api_key": {
                     "type": "string",
@@ -138,19 +221,50 @@
                     "description": "Used to authenticate with NCBI Entrez API if NCBI_API_KEY not provided. Also used to rate limit requests from different users on the same system.",
                     "errorMessage": "Parameter 'ncbi_user_email' must be a valid email address."
                 },
+                "min_source_count": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "description": "Minimum number of independent publications required for a candidate species to receive Flag 4A.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'min_source_count' must be an integer >= 1. Default: 5."
+                },
+                "blast_database_name_for_report": {
+                    "type": "string",
+                    "default": "NCBI Core Nt'",
+                    "description": "For showing in the report.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'blast_database_name_for_report' must be a string. Default: NCBI Core Nt'."
+                },
+                "blast_max_target_seqs_for_report": {
+                    "type": "integer",
+                    "default": 2000,
+                    "minimum": 1,
+                    "description": "The maximum number of hits collected for each query sequence in the BLAST search. Not used for analysis but rendered in the report.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'blast_max_target_seqs_for_report' must be an integer >= 1. Default: 2000."
+                },
+                "report_debug": {
+                    "type": "integer",
+                    "default": 0,
+                    "enum": [0, 1],
+                    "description": "If REPORT_DEBUG=1 this replaces the timestamp in the report file name with DEBUG so that it can be easily reloaded in the browser after re-rendering.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'report_debug' must be one of [0, 1]. Default: 0."
+                },
                 "email": {
                     "type": "string",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "description": "Email address for notifications and reports.",
                     "errorMessage": "Parameter 'email' must be a valid email address."
                 },
-                "blast_xml_filename": {
-                    "type": "string",
-                    "default": "blast_results.xml",
+                "logging_debug": {
+                    "type": "integer",
+                    "default": 0,
+                    "enum": [0, 1],
+                    "description": "If LOGGING_DEBUG=1 then verbose log statements will be emitted to help diagnose issues.",
                     "hidden": true,
-                    "pattern": "^\\S+\\.xml$",
-                    "description": "Filename for the BLAST XML results file.",
-                    "errorMessage": "Parameter 'blast_xml_filename' file name cannot contain spaces and must have a .xml extension. Default: 'blast_results.xml'."
+                    "errorMessage": "Parameter 'logging_debug' must be one of [0, 1]. Default: 0."
                 },
                 "accessions_filename": {
                     "type": "string",
@@ -160,13 +274,21 @@
                     "description": "Filename for the file containing BLAST accession numbers.",
                     "errorMessage": "Parameter 'accessions_filename' file name cannot contain spaces and must have a .txt extension. Default: 'accessions.txt'."
                 },
+                "blast_xml_filename": {
+                    "type": "string",
+                    "default": "blast_results.xml",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.xml$",
+                    "description": "Filename for the BLAST XML results file.",
+                    "errorMessage": "Parameter 'blast_xml_filename' file name cannot contain spaces and must have a .xml extension. Default: 'blast_results.xml'."
+                },
                 "hits_fasta_filename": {
                     "type": "string",
                     "default": "all_hits.fasta",
                     "hidden": true,
                     "pattern": "^\\S+\\.fn?a(sta)?$",
                     "description": "Filename for the FASTA file containing all BLAST hits.",
-                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: 'all_hits.fasta'."
+                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fna, .fasta, or .fnasta extension. Default: 'all_hits.fasta'."
                 },
                 "hits_json_filename": {
                     "type": "string",
@@ -198,7 +320,7 @@
                     "hidden": true,
                     "pattern": "^\\S+\\.fn?a(sta)?$",
                     "description": "Filename for the FASTA file of candidate sequences.",
-                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fna or .fasta extension. Default: 'candidates.fasta'."
+                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fna, .fasta, or .fnasta extension. Default: 'candidates.fasta'."
                 },
                 "candidates_json_filename": {
                     "type": "string",
@@ -214,7 +336,7 @@
                     "hidden": true,
                     "pattern": "^\\S+\\.json$",
                     "description": "Filename for the JSON file listing sources of candidate species.",
-                    "errorMessage": "Parameter 'candidates_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates_sources_json'."
+                    "errorMessage": "Parameter 'candidates_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates_sources.json'."
                 },
                 "bold_taxonomy_json": {
                     "type": "string",

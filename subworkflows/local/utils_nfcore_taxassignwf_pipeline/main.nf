@@ -125,27 +125,16 @@ def validateInputParameters() {
         error("'blastdb' parameter must be set when using blast_core_nt database type. 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq.")
     }
 
+    if (params.db_cov_min_a <= params.db_cov_min_b) {
+        error("'db_cov_min_a' parameter must be greater than 'db_cov_min_b'. Please check your parameters.")
+    }
+
+    if (params.db_cov_related_min_a <= params.db_cov_related_min_b) {
+        error("'db_cov_related_min_a' parameter must be greater than 'db_cov_related_min_b'. Please check your parameters.")
+    }
+
 }
-//
-// Validate channels from metadata samplesheet
-//
-// def validateInputSamplesheet(input) {
-//     def (metas, fastqs) = metadata[0..1]
 
-//     // // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-//     // def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-//     // if (!endedness_ok) {
-//     //     error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-//     // }
-
-//     // TO DO
-//     // VALIDATE
-
-//     return [ metas, fastqs ]
-// }
-//
-// Generate methods description for MultiQC
-//
 def toolCitationText() {
     // TODO nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
