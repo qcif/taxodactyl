@@ -39,155 +39,155 @@ workflow TAXASSIGNWF {
         env_var_file_ch,
     )
 
-    if (params.db_type == 'bold') {
-        BOLD_SEARCH (
-            env_var_file_ch,
-            file(params.sequences),
-            VALIDATE_INPUT.out
-        )
-        ch_hits = BOLD_SEARCH.out.hits
+    // if (params.db_type == 'bold') {
+    //     BOLD_SEARCH (
+    //         env_var_file_ch,
+    //         file(params.sequences),
+    //         VALIDATE_INPUT.out
+    //     )
+    //     ch_hits = BOLD_SEARCH.out.hits
 
-        ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
-    } else {
-        BLAST_BLASTN (
-            file(params.sequences),
-            VALIDATE_INPUT.out
-        )
+    //     ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
+    // } else {
+    //     BLAST_BLASTN (
+    //         file(params.sequences),
+    //         VALIDATE_INPUT.out
+    //     )
 
-        EXTRACT_HITS (
-            env_var_file_ch,
-            BLAST_BLASTN.out.blast_output
-        )
-        ch_hits = EXTRACT_HITS.out.hits
+    //     EXTRACT_HITS (
+    //         env_var_file_ch,
+    //         BLAST_BLASTN.out.blast_output
+    //     )
+    //     ch_hits = EXTRACT_HITS.out.hits
 
-        BLAST_BLASTDBCMD (
-            EXTRACT_HITS.out.accessions
-        )
+    //     BLAST_BLASTDBCMD (
+    //         EXTRACT_HITS.out.accessions
+    //     )
 
-        EXTRACT_TAXONOMY (
-            env_var_file_ch,
-            BLAST_BLASTDBCMD.out.taxids
-        )
+    //     EXTRACT_TAXONOMY (
+    //         env_var_file_ch,
+    //         BLAST_BLASTDBCMD.out.taxids
+    //     )
 
-        ch_taxonomy_file = EXTRACT_TAXONOMY.out
+    //     ch_taxonomy_file = EXTRACT_TAXONOMY.out
 
-    }
+    // }
 
-     ch_hits
-        .flatten()
-        .map { file-> [file.parent.name, file] }
-        .groupTuple()
-        .map { folder, files -> [folder, files[0], files[1] ]}
-        .set { ch_hits_to_filter }  
+    //  ch_hits
+    //     .flatten()
+    //     .map { file-> [file.parent.name, file] }
+    //     .groupTuple()
+    //     .map { folder, files -> [folder, files[0], files[1] ]}
+    //     .set { ch_hits_to_filter }  
 
-    EXTRACT_CANDIDATES (
-        env_var_file_ch,
-        ch_hits_to_filter,
-        ch_taxonomy_file,
-        file(params.metadata)
-    )
+    // EXTRACT_CANDIDATES (
+    //     env_var_file_ch,
+    //     ch_hits_to_filter,
+    //     ch_taxonomy_file,
+    //     file(params.metadata)
+    // )
 
-    Channel.fromPath(file(params.sequences))
-        .splitFasta(record: [id: true, sequence: true])
-        .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
-        .set { ch_queryfasta }
+    // Channel.fromPath(file(params.sequences))
+    //     .splitFasta(record: [id: true, sequence: true])
+    //     .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
+    //     .set { ch_queryfasta }
 
-    EXTRACT_CANDIDATES.out.candidates_for_alignment
-        .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
-        .combine(ch_queryfasta, by: 0)
-        .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
-        .set { ch_seqs_for_alignment }
+    // EXTRACT_CANDIDATES.out.candidates_for_alignment
+    //     .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+    //     .combine(ch_queryfasta, by: 0)
+    //     .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
+    //     .set { ch_seqs_for_alignment }
 
-    MAFFT_ALIGN (
-        ch_seqs_for_alignment
-    )
+    // MAFFT_ALIGN (
+    //     ch_seqs_for_alignment
+    // )
 
-    FASTME (
-        MAFFT_ALIGN.out.aligned_sequences
-    )
+    // FASTME (
+    //     MAFFT_ALIGN.out.aligned_sequences
+    // )
 
-    ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
-        .filter { tuple -> 
-            def (folder, countFile, candidateJsonFile) = tuple
-            def count = countFile.text.trim().toInteger()
-            return count >= 1 && count <= 3
-        }
-        .map { tuple -> [tuple[0], tuple[2]] }
+    // ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+    //     .filter { tuple -> 
+    //         def (folder, countFile, candidateJsonFile) = tuple
+    //         def count = countFile.text.trim().toInteger()
+    //         return count >= 1 && count <= 3
+    //     }
+    //     .map { tuple -> [tuple[0], tuple[2]] }
     
-    EVALUATE_SOURCE_DIVERSITY (
-        env_var_file_ch,
-        ch_candidates_for_source_diversity_filtered
-    )
+    // EVALUATE_SOURCE_DIVERSITY (
+    //     env_var_file_ch,
+    //     ch_candidates_for_source_diversity_filtered
+    // )
 
-    EVALUATE_DATABASE_COVERAGE (
-        env_var_file_ch,
-        EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-        file(params.metadata)
-    )
+    // EVALUATE_DATABASE_COVERAGE (
+    //     env_var_file_ch,
+    //     EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+    //     file(params.metadata)
+    // )
 
-    ch_hits.flatten()
-        .map { file-> [file.parent.name, file.parent] }
-        .groupTuple()
-        .map { folder, files -> [folder, files[0] ]}
-        .set { ch_hits_for_alternative_report }
+    // ch_hits.flatten()
+    //     .map { file-> [file.parent.name, file.parent] }
+    //     .groupTuple()
+    //     .map { folder, files -> [folder, files[0] ]}
+    //     .set { ch_hits_for_alternative_report }
 
-    EXTRACT_CANDIDATES.out.candidates_for_db_coverage
-        .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-        .set { ch_candidates_for_alternative_report }
-
-
-    ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
-
-    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
-        .filter { tuple -> 
-            def (folder, countFile, candidateJsonFile) = tuple
-            def count = countFile.text.trim().toInteger()
-            return count == 0 || count > 3
-        }
-    .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
-
-    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
-        .concat(ch_mock_source_diversity)
-        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
+    // EXTRACT_CANDIDATES.out.candidates_for_db_coverage
+    //     .map { folderVal, filePath -> [folderVal, filePath.parent] }  
+    //     .set { ch_candidates_for_alternative_report }
 
 
-    if (params.db_type == 'bold') {
+    // ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
 
-        ch_versions = MAFFT_ALIGN.out.versions
-            .mix(FASTME.out.versions)
+    // ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+    //     .filter { tuple -> 
+    //         def (folder, countFile, candidateJsonFile) = tuple
+    //         def count = countFile.text.trim().toInteger()
+    //         return count == 0 || count > 3
+    //     }
+    // .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
-    } else {
+    // ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+    //     .concat(ch_mock_source_diversity)
+    //     .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
-        ch_versions = BLAST_BLASTN.out.versions
-            .mix(BLAST_BLASTDBCMD.out.versions)
-            .mix(MAFFT_ALIGN.out.versions)
-            .mix(FASTME.out.versions)
 
-    }
+    // if (params.db_type == 'bold') {
 
-    softwareVersionsToYAML(ch_versions)
-    .collectFile(
-        name:  'software_versions.yml',
-        sort: true,
-        newLine: true
-    ).set { ch_collated_versions }
+    //     ch_versions = MAFFT_ALIGN.out.versions
+    //         .mix(FASTME.out.versions)
+
+    // } else {
+
+    //     ch_versions = BLAST_BLASTN.out.versions
+    //         .mix(BLAST_BLASTDBCMD.out.versions)
+    //         .mix(MAFFT_ALIGN.out.versions)
+    //         .mix(FASTME.out.versions)
+
+    // }
+
+    // softwareVersionsToYAML(ch_versions)
+    // .collectFile(
+    //     name:  'software_versions.yml',
+    //     sort: true,
+    //     newLine: true
+    // ).set { ch_collated_versions }
         
 
-    ch_hits_for_alternative_report
-        .combine(FASTME.out.nwk, by: 0)
-        .combine(ch_candidates_for_alternative_report, by: 0) 
-        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-        .combine(ch_source_diversity_for_report, by: 0)
-        .combine(ch_collated_versions)
-        .combine(ch_params_json)
-        .set { ch_files_for_report }
+    // ch_hits_for_alternative_report
+    //     .combine(FASTME.out.nwk, by: 0)
+    //     .combine(ch_candidates_for_alternative_report, by: 0) 
+    //     .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
+    //     .combine(ch_source_diversity_for_report, by: 0)
+    //     .combine(ch_collated_versions)
+    //     .combine(ch_params_json)
+    //     .set { ch_files_for_report }
          
-    REPORT (
-        env_var_file_ch,
-        ch_files_for_report,
-        ch_taxonomy_file,
-        file(params.metadata)
-    )
+    // REPORT (
+    //     env_var_file_ch,
+    //     ch_files_for_report,
+    //     ch_taxonomy_file,
+    //     file(params.metadata)
+    // )
 
 }
 
