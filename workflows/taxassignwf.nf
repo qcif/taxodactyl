@@ -146,7 +146,7 @@ workflow TAXASSIGNWF {
         }
     .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
-    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.candidates_sources
+    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources
         .concat(ch_mock_source_diversity)
         .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
