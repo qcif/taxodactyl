@@ -9,10 +9,8 @@ process EVALUATE_SOURCE_DIVERSITY {
     tuple val(query_folder), path(candididate_json_file)
 
     output:
-    tuple val(query_folder), path("$query_folder/$params.candidates_sources_json_filename"), emit: candidates_sources
-
-    // publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/$params.candidates_sources_json_filename"
-
+    // tuple val(query_folder), path("$query_folder/$params.candidates_sources_json_filename"), emit: candidates_sources
+    tuple val(query_folder), path("$query_folder/$params.independent_sources_json_filename"), emit: independent_sources
     
     script:
     """

@@ -338,6 +338,14 @@
                     "description": "Filename for the JSON file listing sources of candidate species.",
                     "errorMessage": "Parameter 'candidates_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates_sources.json'."
                 },
+                "independent_sources_json_filename": {
+                    "type": "string",
+                    "default": "aggregated_sources.json",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.json$",
+                    "description": "Filename for the JSON file listing aggregated publications supporting taxonomic associations.",
+                    "errorMessage": "Parameter 'independent_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'independent_sources.json'."
+                },
                 "bold_taxonomy_json": {
                     "type": "string",
                     "default": "bold_taxonomy.json",

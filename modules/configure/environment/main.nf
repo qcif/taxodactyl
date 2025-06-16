@@ -29,6 +29,7 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.gbif_max_occurrence_records} != null ]; then echo 'export GBIF_MAX_OCCURRENCE_RECORDS=${params.gbif_max_occurrence_records}' >> env_vars.sh; fi
     if [ ${params.hits_fasta_filename} != null ]; then echo 'export HITS_FASTA_FILENAME=${params.hits_fasta_filename}' >> env_vars.sh; fi
     if [ ${params.hits_json_filename} != null ]; then echo 'export HITS_JSON_FILENAME=${params.hits_json_filename}' >> env_vars.sh; fi
+    if [ ${params.independent_sources_json_filename} != null ]; then echo 'export INDEPENDENT_SOURCES_JSON_FILENAME=${params.independent_sources_json_filename}' >> env_vars.sh; fi
     if [ ${params.sequences} != null ]; then echo 'export INPUT_FASTA_FILEPATH=${file(params.sequences)}' >> env_vars.sh; fi
     if [ ${params.metadata} != null ]; then echo 'export INPUT_METADATA_CSV_FILEPATH=${file(params.metadata)}' >> env_vars.sh; fi
     if [ ${params.logging_debug} != null ]; then echo 'export LOGGING_DEBUG=${params.logging_debug}' >> env_vars.sh; fi
