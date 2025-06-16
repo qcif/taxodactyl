@@ -27,7 +27,6 @@ process REPORT {
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     """
-    echo $versions_file
     source ${env_var_file}
     mkdir -p ${query_folder}
     mv tree.nwk ${query_folder}/$params.tree_nwk_filename
@@ -42,6 +41,8 @@ process REPORT {
     python /app/scripts/p6_report.py \
             ${query_folder} \
             --output_dir ./ \
+            --versions_yml ${versions_file} \
+            --params_json ${params_file} \
             ${bold_flag} 
     """
 }
