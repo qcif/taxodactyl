@@ -15,7 +15,8 @@ process REPORT {
         path(db_coverage_query_folder, stageAs: 'db_coverage_query_folder'),
         path(source_diversity_query_folder, stageAs: 'source_diversity_query_folder'),
         path(versions_file),
-        path(params_file)
+        path(params_file),
+        path(timestamp_file)
     path(taxonomy_file)
     path(metadata_file)
 

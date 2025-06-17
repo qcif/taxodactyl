@@ -31,6 +31,11 @@ workflow TAXASSIGNWF {
 
     main:
 
+    def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd HHmmss").withZone(java.time.ZoneId.systemDefault())
+    channel.of(formatter.format(workflow.start))
+        .collectFile(name: 'timestamp.txt', newLine: true)
+        .set { ch_workflow_timestamp }
+
     CONFIGURE_ENVIRONMENT (
     )
     env_var_file_ch = CONFIGURE_ENVIRONMENT.out
@@ -180,6 +185,7 @@ workflow TAXASSIGNWF {
         .combine(ch_source_diversity_for_report, by: 0)
         .combine(ch_collated_versions)
         .combine(ch_params_json)
+        .combine(ch_workflow_timestamp)
         .set { ch_files_for_report }
          
     REPORT (
