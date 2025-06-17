@@ -35,8 +35,16 @@
             },
             "host": {
                 "type": "string",
-                "description": "Host organism for the sample.",
+                "description": "Host organism of the sample.",
                 "errorMessage": "Parameter 'host' must be a string."
+            },
+            "sequencing_platform": {
+                "type": "string",
+                "description": "Sequencing platform used for the sample.",
+                "errorMessage": "Parameter 'sequencing_platform' must be a string."
+            },
+            "sequencing_read_coverage": {
+                "description": "Sequencing read coverage for the sample."
             }
         },
         "required": ["sample_id", "locus", "preliminary_id"]
