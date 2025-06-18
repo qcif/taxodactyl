@@ -13,24 +13,19 @@ process EXTRACT_CANDIDATES {
     output:
     tuple val(query_folder), path("$query_folder/candidates_count.txt"), 
         path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_source_diversity_all
-    tuple val(query_folder), path("$query_folder/$params.candidates_fasta_filename"), 
+    tuple val(query_folder), path("$query_folder/$params.candidates_phylogeny_fasta_filename"), 
         emit: candidates_for_alignment
     tuple val(query_folder), path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_db_coverage
     path("$query_folder/1.flag")
     path("$query_folder/2.flag"), optional: true
     path("$query_folder/$params.candidates_csv_filename")
+    path("$query_folder/$params.candidates_fasta_filename")
     path("$query_folder/$params.boxplot_img_filename"), optional: true
-    // tuple val(query_folder), 
-    //     path("$query_folder/$params.candidates_json_filename"), 
-    //     path("$query_folder/$params.candidates_fasta_filename"), 
-    //     path("$query_folder/1.flag"), 
-    //     path("$query_folder/2.flag"),
-    //     path("$query_folder/$params.toi_detected_csv_filename"), emit: candidates_for_report
-    // tuple val(query_folder), 
-    //     path("$query_folder"), emit: candidates_for_alternative_report
 
     publishDir "${params.outdir}", mode: 'copy', 
-        pattern:    "$query_folder/$params.candidates_fasta_filename"         
+        pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename"
+    publishDir "${params.outdir}", mode: 'copy', 
+        pattern:    "$query_folder/$params.candidates_fasta_filename"              
     publishDir "${params.outdir}", mode: 'copy', 
         pattern:    "$query_folder/$params.candidates_csv_filename"
     publishDir "${params.outdir}", mode: 'copy', 

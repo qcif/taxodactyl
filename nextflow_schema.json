@@ -322,6 +322,14 @@
                     "description": "Filename for the FASTA file of candidate sequences.",
                     "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fna, .fasta, or .fnasta extension. Default: 'candidates.fasta'."
                 },
+                "candidates_phylogeny_fasta_filename": {
+                    "type": "string",
+                    "default": "candidates_phylogeny.fasta",
+                    "hidden": true,
+                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "description": "Filename for the FASTA file of candidate sequences that will be used to generate the phylogenetic tree.",
+                    "errorMessage": "Parameter 'candidates_phylogeny_fasta_filename' file name cannot contain spaces and must have .fa, .fna, .fasta, or .fnasta extension. Default: 'candidates.fasta'."
+                },
                 "candidates_json_filename": {
                     "type": "string",
                     "default": "candidates.json",
@@ -364,19 +372,19 @@
                 },
                 "candidates_msa_filename": {
                     "type": "string",
-                    "default": "candidates.msa",
+                    "default": "candidates_phylogeny.msa",
                     "hidden": true,
                     "pattern": "^\\S+\\.msa$",
                     "description": "Filename for the multiple sequence alignment file of candidate sequences.",
-                    "errorMessage": "Parameter 'candidates_msa_filename' file name cannot contain spaces and must have a .msa extension. Default: 'candidates.msa'."
+                    "errorMessage": "Parameter 'candidates_msa_filename' file name cannot contain spaces and must have a .msa extension. Default: 'candidates_phylogeny.msa'."
                 },
                 "tree_nwk_filename": {
                     "type": "string",
-                    "default": "candidates.nwk",
+                    "default": "candidates_phylogeny.nwk",
                     "hidden": true,
                     "pattern": "^\\S+\\.nwk$",
                     "description": "Filename for the Newick tree file of candidate sequences.",
-                    "errorMessage": "Parameter 'tree_nwk_filename' file name cannot contain spaces and must have a .nwk extension. Default: 'candidates.nwk'."
+                    "errorMessage": "Parameter 'tree_nwk_filename' file name cannot contain spaces and must have a .nwk extension. Default: 'candidates_phylogeny.nwk'."
                 }
             }
         },
