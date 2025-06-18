@@ -142,11 +142,6 @@
             "description": "Configuration files"
         },
         {
-            "@id": "docs/",
-            "@type": "Dataset",
-            "description": "Markdown files for documenting the pipeline"
-        },
-        {
             "@id": "workflows/",
             "@type": "Dataset",
             "description": "Main pipeline workflows to be executed in main.nf"
@@ -172,11 +167,6 @@
             "description": "JSON schema for pipeline parameter specification"
         },
         {
-            "@id": "CHANGELOG.md",
-            "@type": "File",
-            "description": "Information on changes made to the pipeline"
-        },
-        {
             "@id": "LICENSE",
             "@type": "File",
             "description": "The license - should be MIT"
@@ -191,17 +181,7 @@
             "@type": "File",
             "description": "Version information for modules from nf-core/modules"
         },
-        {
-            "@id": "docs/usage.md",
-            "@type": "File",
-            "description": "Usage documentation"
-        },
-        {
-            "@id": "docs/output.md",
-            "@type": "File",
-            "description": "Output documentation"
-        },
-        {
+         {
             "@id": ".nf-core.yml",
             "@type": "File",
             "description": "nf-core configuration file, configuring template features and linting rules"
