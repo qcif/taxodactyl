@@ -15,6 +15,7 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.boxplot_img_filename} != null ]; then echo 'export BOXPLOT_IMG_FILENAME=${params.boxplot_img_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_csv_filename} != null ]; then echo 'export CANDIDATES_CSV_FILENAME=${params.candidates_csv_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_fasta_filename} != null ]; then echo 'export CANDIDATES_FASTA_FILENAME=${params.candidates_fasta_filename}' >> env_vars.sh; fi
+    if [ ${params.candidates_phylogeny_fasta_filename} != null ]; then echo 'export PHYLOGENY_FASTA_FILENAME=${params.candidates_phylogeny_fasta_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_json_filename} != null ]; then echo 'export CANDIDATES_JSON_FILENAME=${params.candidates_json_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_sources_json_filename} != null ]; then echo 'export CANDIDATES_SOURCES_JSON_FILENAME=${params.candidates_sources_json_filename}' >> env_vars.sh; fi
     if [ ${params.db_coverage_toi_limit} != null ]; then echo 'export DB_COVERAGE_TOI_LIMIT=${params.db_coverage_toi_limit}' >> env_vars.sh; fi
