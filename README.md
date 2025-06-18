@@ -6,7 +6,9 @@ This workflow analyses  DNA barcode sequences, attempting to annotate each with 
 
 Much of the code for this analysis is written in Python and lives in https://github.com/qcif/daff-biosecurity-wf2/.
 
-![daff-tax-assignment-wf2-diagram](images/daff-wf2.png)
+<p align="center">
+    <img src="images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" />
+</p>
 
 ## Setup
 
