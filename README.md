@@ -2,13 +2,32 @@
 
 ## Introduction
 
-This workflow analyses  DNA barcode sequences, attempting to annotate each with a taxonomic identity.
+This workflow analyses DNA barcode sequences, attempting to annotate each with a taxonomic identity.
 
 Much of the code for this analysis is written in Python and lives in https://github.com/qcif/daff-biosecurity-wf2/.
 
 <p align="center">
     <img src="images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" />
 </p>
+
+1. Configure environment
+2. Validate input
+3. Search sequence against database
+    1. NCBI core nt (blastn)
+    2. BOLD (BOLD API)
+4. Extract hits
+5. Extract taxonomic ids
+    1. NCBI core nt (blastdbcmd)
+    2. BOLD (BOLD API)
+6. Extract taxonomic lineage
+7. Extract candidates
+8. Evaluate supporting publications (NCBI Entrez)
+9. Multiple sequence alignment (mafft)
+10. Build phylogenetic tree (fastme)
+11. Evaluate database coverage
+    1. NCBI core nt (GBIF API + NCBI Entrez) 
+    2. BOLD (GBIF API + BOLD API)
+12. Generate report
 
 ## Setup
 
