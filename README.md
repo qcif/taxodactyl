@@ -137,4 +137,47 @@ The metadata file provides essential information about each sequence and must fo
 > - Optional columns can be left blank if not applicable.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 
-
+You can run the pipeline using:
+```bash
+nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
+    --metadata /path/to/metadata.csv \
+    --sequences /path/to/queries.fasta \
+    --blastdb /path/to/blastdbs/core_nt \
+    --outdir /path/to/output \
+    -profile singularity \
+    --taxdb /path/to/.taxonkit/ \
+    --ncbi_api_key API_KEY \
+    --user_email EMAIL \
+    -resume
+```
+## Pipeline output
+**Results folder structure**
+```
+output/
+├── blast_result.xml
+├── pipeline_info
+│   ├── execution_report_2025-03-16_20-39-21.html
+│   ├── execution_timeline_2025-03-16_20-39-21.html
+│   ├── execution_trace_2025-03-16_20-39-21.txt
+│   ├── params_2025-03-16_20-39-27.json
+│   ├── pipeline_dag_2025-03-16_20-39-21.html
+│   ├── taxassignwf_software_versions.yml
+│   └── versions.yml
+├── query_001_VE24-1075_COI
+│   ├── all_blast_hits.fasta
+│   ├── candidates.csv
+│   ├── candidates.fasta
+│   ├── candidates_identity_boxplot.png
+│   ├── candidates.msa
+│   ├── candidates.nwk
+│   └── report_VE24-1075_COI_NOW.html
+└── query_002_VE24-1079_COI
+    ├── all_blast_hits.fasta
+    ├── candidates.csv
+    ├── candidates.fasta
+    ├── candidates.msa
+    ├── candidates.nwk
+    └── report_VE24-1079_COI_NOW.html
+```
+## Credits
+daff/taxassignwf was originally written by Magdalena Antczak, Cameron Hyde, Daisy Li.
