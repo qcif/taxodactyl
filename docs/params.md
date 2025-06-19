@@ -97,9 +97,9 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-## Output filenames
+### Output filenames
 
-### Search BLAST database filenames
+#### Search BLAST database filenames
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -108,7 +108,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-### General database search filenames
+#### General database search filenames
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -117,7 +117,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-### Extract candidates filenames
+#### Extract candidates filenames
 
 | Name                             | Type    | Default                        | Description                                                                                      | Requirements                        |
 |----------------------------------|---------|--------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -131,7 +131,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-### Taxonomy filenames
+#### Taxonomy filenames
 
 | Name                   | Type    | Default               | Description                                                                                      | Requirements                        |
 |------------------------|---------|-----------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -140,7 +140,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-### Multiple sequence alignment filename
+#### Multiple sequence alignment filename
 
 | Name                    | Type    | Default                    | Description                                                                                      | Requirements                        |
 |-------------------------|---------|----------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -148,7 +148,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 ---
 
-### Phylogenetic tree filename
+#### Phylogenetic tree filename
 
 | Name                | Type    | Default                    | Description                                                                                      | Requirements                        |
 |---------------------|---------|----------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
