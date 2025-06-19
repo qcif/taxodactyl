@@ -1,10 +1,8 @@
-# Pipeline Parameters
+## Pipeline specific parameters
 
 This document describes the parameters available for the **daff/taxassignwf** Nextflow pipeline.
 
 ---
-
-## Pipeline specific parameters
 
 ### General input
 
