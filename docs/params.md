@@ -23,8 +23,7 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 ### Search NCBI core nt database with blastn
 | Name           | Type    | Default           | Description                                                                                      | Requirements                                                                                   |
 |----------------|---------|-------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt`, e.g. '/folder_path/blast_db/202505/core_nt'. Required if `db_type` set to 'blast_core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
-                |
+| `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt`, e.g. '/folder_path/blast_db/202505/core_nt'. Required if `db_type` set to 'blast_core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq." |
 
 ---
 
