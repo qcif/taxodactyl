@@ -67,7 +67,7 @@ To search sequences against the NCBI core nt database, you must download the BLA
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
-**Sequences file (`queries.fasta`)**
+**Sequences file (`sequences.fasta`)**
 
 You will need a FASTA file containing the query sequences (up to 100), e.g.
 ```
@@ -82,7 +82,7 @@ AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGAC
 The metadata file provides essential information about each sequence and must follow the structure below. Each row corresponds to a sample and should include required and, optionally, additional columns.
 
 #### Required Columns
-1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `queries.fasta` file. Cannot contain spaces.
+1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
 2. **locus** - Name of the genetic locus for the sample. Check available loci in `assets/loci.json`. You can override allowed loci by setting the `allowed_loci_file` parameter. For samples with no locus (e.g., viruses or BOLD runs), enter `NA`.
 3. **preliminary_id** - Preliminary morphology ID of the sample.
 
@@ -137,11 +137,11 @@ The metadata file provides essential information about each sequence and must fo
 > - Optional columns can be left blank if not applicable.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 
-You can run the pipeline using:
+You can run the pipeline using NCBI core nt database:
 ```bash
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     --metadata /path/to/metadata.csv \
-    --sequences /path/to/queries.fasta \
+    --sequences /path/to/sequences.fasta \
     --blastdb /path/to/blastdbs/core_nt \
     --outdir /path/to/output \
     -profile singularity \
@@ -150,6 +150,29 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     --user_email EMAIL \
     -resume
 ```
+
+You can run the pipeline using the BOLD database with the following command:
+
+```bash
+nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
+    --metadata /path/to/metadata.csv \
+    --sequences /path/to/sequences.fasta \
+    --db_type bold \
+    --outdir /path/to/output \
+    -profile singularity \
+    --taxdb /path/to/.taxonkit/ \
+    --ncbi_api_key API_KEY \
+    --user_email EMAIL \
+    -resume
+```
+
+> [!NOTE]
+> - Set `--db_type bold` to use the BOLD (Barcode of Life Data) database for taxonomic assignment.
+> - The rest of the parameters and input files are the same as for the NCBI core nt workflow.
+> - The output structure will be similar, but results will be based on BOLD
+
+For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
+
 ## Pipeline output
 **Results folder structure**
 ```
