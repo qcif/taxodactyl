@@ -43,6 +43,8 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.min_source_count} != null ]; then echo 'export MIN_SOURCE_COUNT=${params.min_source_count}' >> env_vars.sh; fi
     if [ ${params.ncbi_api_key} != null ]; then echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh; fi
     if [ ${params.outdir} != null ]; then echo 'export OUTPUT_DIR=${params.outdir}' >> env_vars.sh; fi
+    if [ ${params.phylogeny_min_hit_identity} != null ]; then echo 'export PHYLOGENY_MIN_HIT_IDENTITY=${params.phylogeny_min_hit_identity}' >> env_vars.sh; fi
+    if [ ${params.phylogeny_min_hit_sequences} != null ]; then echo 'export PHYLOGENY_MIN_HIT_SEQUENCES=${params.phylogeny_min_hit_sequences}' >> env_vars.sh; fi
     if [ ${params.report_debug} != null ]; then echo 'export REPORT_DEBUG=${params.report_debug}' >> env_vars.sh; fi
     if [ ${params.taxdb} != null ]; then echo 'export TAXONKIT_DATA=${file(params.taxdb)}' >> env_vars.sh; fi
     if [ ${params.taxonomy_filename} != null ]; then echo 'export TAXONOMY_FILENAME=${params.taxonomy_filename}' >> env_vars.sh; fi

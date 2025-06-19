@@ -127,6 +127,21 @@
                     "description": "Minimum query coverage for a BLAST hit to be considered for candidate screening.",
                     "errorMessage": "Parameter 'min_q_coverage' must be a number between 0 and 1. Default: 0.85."
                 },
+                "phylogeny_min_hit_identity": {
+                    "type": "number",
+                    "default": 0.95,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum hit identity to be included into phylogenetic tree.",
+                    "errorMessage": "Parameter 'phylogeny_min_hit_identity' must be a number between 0 and 1. Default: 0.95."
+                },
+                "phylogeny_min_hit_sequences": {
+                    "type": "integer",
+                    "default": 10,
+                    "minimum": 1,
+                    "description": "The minimum number of sequences to be included (non-candidate sequences will be included until this limit is reached).",
+                    "errorMessage": "Parameter 'phylogeny_min_hit_sequences' must be an integer >= 1. Default: 10."
+                },
                 "allowed_loci_file": {
                     "type": "string",
                     "format": "file-path",
