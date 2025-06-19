@@ -58,7 +58,6 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 
 | Name                      | Type    | Default                                   | Description                                                                                      | Requirements                        |
 |---------------------------|---------|-------------------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-																																													  
 | `db_cov_country_missing_a`| int     | 1                                         | Flag 5.3B is raised when at least this many species in country of origin have no GenBank records.| Integer ≥ 0. Default: 1.             |
 | `db_cov_min_a`            | int     | 5                                         | Minimum number of GenBank records to receive Flag 5.1A.                                          | Integer ≥ 1. Default: 5.             |
 | `db_cov_min_b`            | int     | 1                                         | Minimum number of GenBank records to receive Flag 5.1B.                                          | Integer ≥ 1. Default: 1.             |
