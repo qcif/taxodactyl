@@ -58,14 +58,17 @@ To run the **daff/taxassignwf** pipeline, you will need the following software i
 > If you are new to these programs, more details are available [here](docs/software.md).
 
 **TaxonKit**
+
 Download the NCBI taxonomy data files from https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz and extract them to `~/.taxonkit`. Similarly, download the taxonkit tool from https://github.com/shenwei356/taxonkit/releases and move into the same folder.
 
 **NCBI core nt database**
+
 To search sequences against the NCBI core nt database, you must download the BLAST-formatted core nt database from NCBI. We recommend running the `update_blastdb.pl` program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
 **Sequences file (`queries.fasta`)**
+
 You will need a FASTA file containing the query sequences (up to 100), e.g.
 ```
 >VE24-1075_COI
