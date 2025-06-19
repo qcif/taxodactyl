@@ -2,32 +2,40 @@
 
 ## Introduction
 
-This workflow analyses DNA barcode sequences, attempting to annotate each with a taxonomic identity.
-
-Much of the code for this analysis is written in Python and lives in https://github.com/qcif/daff-biosecurity-wf2/.
-
-<p align="center">
-    <img src="images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" />
+**daff/taxassignwf** is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
+<p align="center" style="max-width:400px; margin:auto;">
+    <img src="images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" width="350"/>
 </p>
 
-1. Configure environment
-2. Validate input
-3. Search sequence against database
-    1. NCBI core nt (blastn)
-    2. BOLD (BOLD API)
-4. Extract hits
-5. Extract taxonomic ids
-    1. NCBI core nt (blastdbcmd)
-    2. BOLD (BOLD API)
-6. Extract taxonomic lineage
-7. Extract candidates
-8. Evaluate supporting publications (NCBI Entrez)
-9. Multiple sequence alignment (mafft)
-10. Build phylogenetic tree (fastme)
-11. Evaluate database coverage
-    1. NCBI core nt (GBIF API + NCBI Entrez) 
-    2. BOLD (GBIF API + BOLD API)
-12. Generate report
+### Workflow Overview
+
+The pipeline orchestrates a series of analytical steps, each encapsulated in a dedicated module or subworkflow. The main stages are:
+
+1. **Environment Configuration** Sets up environment variables and paths required for downstream processes, ensuring reproducibility and portability.
+
+2. **Input Validation** Checks the integrity and compatibility of input files (FASTA sequences, metadata, databases), preventing downstream errors.
+
+3. **Sequence Search**  
+   - **NCBI core nt (BLASTN):** Queries input sequences against the NCBI nucleotide database using BLASTN.
+   - **BOLD (API):** Queries input sequences against the Barcode of Life Data. Taxonomic lineage included in the results.
+
+4. **Hit Extraction** Parses BLAST results to extract relevant hits for each query.
+
+5. **Taxonomic ID Extraction** Retrieves taxonomic IDs for BLAST hits.
+
+6. **Taxonomic Lineage Extraction** Maps taxonomic IDs to full lineages, enabling downstream filtering and reporting.
+
+7. **Candidate Extraction** Identifies candidate species for each query, applying user-defined thresholds for identity and coverage.
+
+8. **Supporting Evidence Evaluation**  
+   - **Publications Diversity:** Assesses the diversity of data sources supporting each candidate.
+   - **Database Coverage:** Evaluates the representation of candidates in global databases (GBIF, NCBI, BOLD).
+
+9. **Multiple Sequence Alignment (MAFFT)** Aligns candidate and query sequences to prepare for phylogenetic analysis.
+
+10. **Phylogenetic Tree Construction (FASTME)** Builds a phylogenetic tree to visualise relationships among candidates and queries.
+
+11. **Comprehensive Reporting** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and all supporting evidence for each assignment.
 
 ## Setup
 
@@ -147,22 +155,6 @@ The `metadata.csv` file should adhere to the following structure
     </tbody>
 </table>
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
-First, prepare a samplesheet with your input data that looks as follows:
-
-`samplesheet.csv`:
-
-```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-```
-
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
-
 ### Configuration file
 The error strategy for the workflow is set to `ignore`. It means that even if a process encounters an error, Nextflow will continue executing subsequent processes rather than terminating the workflow. This is to avoid interrupting the entire workflow with multiple queries when only one of them fails. To overwrite, create a file named nextflow.config, if it does not already exist, in the execution folder. Add or modify the following block in nextflow.config to specify the error strategy 
 ```
@@ -174,8 +166,6 @@ Replace `ignore` with the desired error handling strategy, such as `terminate`, 
 
 ## Running the pipeline
 You can run the pipeline using:
-
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
@@ -219,43 +209,7 @@ output/
     └── report_VE24-1079_COI_NOW.html
 ```
 
-<!-- TODO 
-> [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files). -->
-
 ## Credits
 
 daff/taxassignwf was originally written by Magdalena Antczak, Cameron Hyde, Daisy Li.
 
-<!-- TODO 
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
--->
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-<!-- TODO 
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-## Citations
--->
-
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use daff/taxassignwf for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
-
-<!-- TODO 
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
-
-This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
-
-> **The nf-core framework for community-curated bioinformatics pipelines.**
->
-> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
->
-> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
--->
