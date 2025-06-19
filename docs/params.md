@@ -16,15 +16,15 @@ This document describes the parameters available for the **daff/taxassignwf** Ne
 | `ncbi_user_email` | string | null             | Email for NCBI Entrez API if API key not provided.                                               | Must be a valid email address.                                                                |
 | `analyst_name` | string  |                   | Name of the analyst running the workflow.                                                        | Must be a string.                                                                             |
 | `facility_name`| string  |                   | Name of the facility where the workflow is executed.                                             | Must be a string.                                                                             |
-| `taxdb`        | string  |                   | Directory where NCBI's taxdump files can be found.                                               | Must be a valid directory path.                                                               |
-| `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt` and required BLAST files present.                  |
+| `taxdb`        | string  |                   | Directory where NCBI's taxdump files can be found.                                               | Must be a valid directory path. Following files should be present: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt                                                               |
 
 ---
 
 ### Search NCBI core nt database with blastn
 | Name           | Type    | Default           | Description                                                                                      | Requirements                                                                                   |
 |----------------|---------|-------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt`. Required if `db_type` set to 'blast_core_nt'.                 |
+| `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt`, e.g. '/folder_path/blast_db/202505/core_nt'. Required if `db_type` set to 'blast_core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
+                |
 
 ---
 
