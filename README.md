@@ -173,13 +173,15 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 ```
 
 > [!NOTE]
-> - `ncbi_user_email` and `ncbi_user_email` are not compulsory, but they are recommended.
+> - `ncbi_api_key` and `ncbi_user_email` are not compulsory, but they are recommended.
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 
 
 ## Pipeline output
 After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). 
+
 **blastn against core_nt**
+
 ```
 .
 ├── blast_result.xml
