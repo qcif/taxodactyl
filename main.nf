@@ -64,8 +64,7 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     DAFF_TAXASSIGNWF (
-        // PIPELINE_INITIALISATION.out.samplesheet,
-        // PIPELINE_INITIALISATION.out.fastaformsa
+
     )
     //
     // SUBWORKFLOW: Run completion tasks

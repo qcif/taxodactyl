@@ -31,22 +31,27 @@ workflow TAXASSIGNWF {
 
     main:
 
+    // Format workflow start timestamp and save to file
     def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd HHmmss").withZone(java.time.ZoneId.systemDefault())
-    channel.of(formatter.format(workflow.start))
+	
+    ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true)
-        .set { ch_workflow_timestamp }
 
-    CONFIGURE_ENVIRONMENT (
-    )
-    env_var_file_ch = CONFIGURE_ENVIRONMENT.out
+    // Set up environment variables
+    CONFIGURE_ENVIRONMENT ()
+	 
+    ch_env_var_file = CONFIGURE_ENVIRONMENT.out
 
+    // Validate input files and parameters
     VALIDATE_INPUT (
-        env_var_file_ch,
+        ch_env_var_file,
     )
 
+    // Run BOLD or BLAST search depending on db_type
     if (params.db_type == 'bold') {
+        // BOLD search branch
         BOLD_SEARCH (
-            env_var_file_ch,
+            ch_env_var_file,
             file(params.sequences),
             VALIDATE_INPUT.out
         )
@@ -54,13 +59,14 @@ workflow TAXASSIGNWF {
 
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
+        // BLAST search branch
         BLAST_BLASTN (
             file(params.sequences),
             VALIDATE_INPUT.out
         )
 
         EXTRACT_HITS (
-            env_var_file_ch,
+            ch_env_var_file,
             BLAST_BLASTN.out.blast_output
         )
         ch_hits = EXTRACT_HITS.out.hits
@@ -70,7 +76,7 @@ workflow TAXASSIGNWF {
         )
 
         EXTRACT_TAXONOMY (
-            env_var_file_ch,
+            ch_env_var_file,
             BLAST_BLASTDBCMD.out.taxids
         )
 
@@ -78,84 +84,94 @@ workflow TAXASSIGNWF {
 
     }
 
-     ch_hits
+    // Prepare hits for candidate extraction
+    ch_hits_to_filter = ch_hits
         .flatten()
         .map { file-> [file.parent.name, file] }
         .groupTuple()
-        .map { folder, files -> [folder, files[0], files[1] ]}
-        .set { ch_hits_to_filter }  
+        .map { folder, files -> [folder, files[0], files[1] ]} 
 
+    // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
-        env_var_file_ch,
+        ch_env_var_file,
         ch_hits_to_filter,
         ch_taxonomy_file,
         file(params.metadata)
     )
 
-    Channel.fromPath(file(params.sequences))
+    // Prepare query sequences for alignment
+    ch_query_fasta = Channel.fromPath(file(params.sequences))
         .splitFasta(record: [id: true, sequence: true])
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
-        .set { ch_queryfasta }
 
-    EXTRACT_CANDIDATES.out.candidates_for_alignment
+    // Combine candidate and query sequences for alignment
+    ch_seqs_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
-        .combine(ch_queryfasta, by: 0)
+        .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
-        .set { ch_seqs_for_alignment }
 
+    // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
         ch_seqs_for_alignment
     )
 
+    // Build phylogenetic tree with FASTME
     FASTME (
         MAFFT_ALIGN.out.aligned_sequences
     )
 
+    // Filter candidates for source diversity evaluation 
     ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
         .filter { tuple -> 
             def (folder, countFile, candidateJsonFile) = tuple
             def count = countFile.text.trim().toInteger()
-            return count >= 1 && count <= 3
+            return count >= 1 && count <= params.max_candidates_for_analysis
         }
         .map { tuple -> [tuple[0], tuple[2]] }
     
+    // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
-        env_var_file_ch,
+        ch_env_var_file,
         ch_candidates_for_source_diversity_filtered
     )
 
+    // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
-        env_var_file_ch,
+        ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
         file(params.metadata)
     )
 
-    ch_hits.flatten()
+    // Prepare hits for report
+    ch_hits_for_report = ch_hits.flatten()
         .map { file-> [file.parent.name, file.parent] }
         .groupTuple()
         .map { folder, files -> [folder, files[0] ]}
-        .set { ch_hits_for_alternative_report }
 
-    EXTRACT_CANDIDATES.out.candidates_for_db_coverage
+    // Prepare candidates for report
+    ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_for_db_coverage
         .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-        .set { ch_candidates_for_alternative_report }
 
-
+    // Dump pipeline parameters to JSON for report
     ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
 
+    // Prepare mock source diversity for cases with 0 or >3 candidates
     ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
-        .filter { tuple -> 
+        .filter { 
+            tuple -> 
             def (folder, countFile, candidateJsonFile) = tuple
             def count = countFile.text.trim().toInteger()
-            return count == 0 || count > 3
-        }
-    .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
+            return count == 0 || count > 3 
+            }
+        .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
+    // Combine real and mock source diversity for report
     ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources
         .concat(ch_mock_source_diversity)
         .map { folderVal, filePath -> [folderVal, filePath.parent] } 
 
 
+    // Collect software version information for report
     if (params.db_type == 'bold') {
 
         ch_versions = MAFFT_ALIGN.out.versions
@@ -170,26 +186,26 @@ workflow TAXASSIGNWF {
 
     }
 
-    softwareVersionsToYAML(ch_versions)
-    .collectFile(
-        name:  'software_versions.yml',
-        sort: true,
-        newLine: true
-    ).set { ch_collated_versions }
+    ch_collated_versions = softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            name:  'software_versions.yml',
+            sort: true,
+            newLine: true
+        )
         
-
-    ch_hits_for_alternative_report
+    // Combine all files needed for the final report
+    ch_files_for_report = ch_hits_for_report
         .combine(FASTME.out.nwk, by: 0)
-        .combine(ch_candidates_for_alternative_report, by: 0) 
+        .combine(ch_candidates_for_report, by: 0) 
         .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
         .combine(ch_source_diversity_for_report, by: 0)
         .combine(ch_collated_versions)
         .combine(ch_params_json)
         .combine(ch_workflow_timestamp)
-        .set { ch_files_for_report }
          
+    // Generate the final report
     REPORT (
-        env_var_file_ch,
+        ch_env_var_file,
         ch_files_for_report,
         ch_taxonomy_file,
         file(params.metadata)
@@ -201,4 +217,4 @@ workflow TAXASSIGNWF {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+*/  
