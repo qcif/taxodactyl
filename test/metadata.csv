@@ -1,0 +1,2 @@
+sample_id,locus,preliminary_id,taxa_of_interest,host,country,sequencing_platform,sequencing_read_coverage
+VE24-1079_COI,COI,Miridae,Lygus pratensis,Cut flower Paenonia,Netherlands,Nanopore,30x
