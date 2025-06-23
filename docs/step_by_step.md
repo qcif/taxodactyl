@@ -1,4 +1,4 @@
-**Download pipeline**
+### Download pipeline
 Enter the folder where you want the pipeline to be and run the following:
 ```
 git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git
@@ -8,7 +8,7 @@ If you want to run a specific version, add a branch to the command (see tags for
 git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git --branch v0.1.0
 ```
 
-**Display help**
+### Display help
 ```
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help
 ```
@@ -17,7 +17,7 @@ Include hidden parameters
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help --show_hidden
 ```
 
-**Step by step bash commands**
+### Step by step bash commands
 If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time using a test profile. 
 
 
