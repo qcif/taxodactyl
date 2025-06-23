@@ -55,9 +55,9 @@ To run the **daff/taxassignwf** pipeline, you will need the following software i
   *Tested version: 3.7.0*  
 
 > [!NOTE]
-> If you are new to these programs, more details are available [here](docs/software.md).
-> We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
-
+> - If you are new to these programs, more details are available [here](docs/software.md).
+> - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
+> - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and commands in the [step-by-step guide](docs/step_by_step.md). 
 
 **TaxonKit**
 
@@ -173,12 +173,9 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 ```
 
 > [!NOTE]
-> - Set `--db_type bold` to use the BOLD (Barcode of Life Data) database for taxonomic assignment.
-> - The rest of the parameters and input files are the same as for the NCBI core nt workflow.
-> - The output structure will be similar, but results will be based on BOLD
 > - `ncbi_user_email` and `ncbi_user_email` are not compulsory, but they are recommended.
+> - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 
-For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 
 ## Pipeline output
 After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). 
