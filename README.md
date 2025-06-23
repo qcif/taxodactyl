@@ -56,6 +56,8 @@ To run the **daff/taxassignwf** pipeline, you will need the following software i
 
 > [!NOTE]
 > If you are new to these programs, more details are available [here](docs/software.md).
+> We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
+
 
 **TaxonKit**
 
@@ -113,11 +115,11 @@ The metadata file provides essential information about each sequence and must fo
             <td>VE24-1075_COI</td>
             <td>COI</td>
             <td>Aphididae</td>
-            <td>Myzus persicae | Aphididae</td>
+            <td>Myzus persicae|Aphididae</td>
             <td>Cut flower Rosa</td>
             <td>Ecuador</td>
-            <td>Illumina</td>
-            <td>100x</td>
+            <td>Nanopore</td>
+            <td>30x</td>
         </tr>
         <tr>
             <td>VE24-1079_COI</td>
@@ -127,7 +129,7 @@ The metadata file provides essential information about each sequence and must fo
             <td>Cut flower Paenonia</td>
             <td>Netherlands</td>
             <td>Nanopore</td>
-            <td>50x</td>
+            <td>30x</td>
         </tr>
     </tbody>
 </table>
@@ -147,7 +149,9 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
     --ncbi_api_key API_KEY \
-    --user_email EMAIL \
+    --ncbi_user_email EMAIL \
+    --analyst_name "Magdalena Antczak" \
+    --facility_name "QCIF" \
     -resume
 ```
 
@@ -162,7 +166,9 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
     --ncbi_api_key API_KEY \
-    --user_email EMAIL \
+    --ncbi_user_email EMAIL \
+    --analyst_name "Magdalena Antczak" \
+    --facility_name "QCIF" \
     -resume
 ```
 
@@ -170,37 +176,66 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 > - Set `--db_type bold` to use the BOLD (Barcode of Life Data) database for taxonomic assignment.
 > - The rest of the parameters and input files are the same as for the NCBI core nt workflow.
 > - The output structure will be similar, but results will be based on BOLD
+> - `ncbi_user_email` and `ncbi_user_email` are not compulsory, but they are recommended.
 
 For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 
 ## Pipeline output
-**Results folder structure**
+After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). 
+**blastn against core_nt**
 ```
-output/
+.
 ├── blast_result.xml
 ├── pipeline_info
-│   ├── execution_report_2025-03-16_20-39-21.html
-│   ├── execution_timeline_2025-03-16_20-39-21.html
-│   ├── execution_trace_2025-03-16_20-39-21.txt
-│   ├── params_2025-03-16_20-39-27.json
-│   ├── pipeline_dag_2025-03-16_20-39-21.html
-│   ├── taxassignwf_software_versions.yml
-│   └── versions.yml
+│   ├── execution_report_2025-06-22_22-53-15.html
+│   ├── execution_timeline_2025-06-22_22-53-15.html
+│   ├── execution_trace_2025-06-22_22-53-15.txt
+│   ├── params_2025-06-22_22-53-29.json
+│   └── pipeline_dag_2025-06-22_22-53-15.html
 ├── query_001_VE24-1075_COI
-│   ├── all_blast_hits.fasta
+│   ├── all_hits.fasta
 │   ├── candidates.csv
 │   ├── candidates.fasta
 │   ├── candidates_identity_boxplot.png
-│   ├── candidates.msa
-│   ├── candidates.nwk
-│   └── report_VE24-1075_COI_NOW.html
+│   ├── candidates_phylogeny.fasta
+│   ├── candidates_phylogeny.msa
+│   ├── candidates_phylogeny.nwk
+│   └── report_VE24-1075_COI_20250622_225319.html
 └── query_002_VE24-1079_COI
-    ├── all_blast_hits.fasta
+    ├── all_hits.fasta
     ├── candidates.csv
     ├── candidates.fasta
-    ├── candidates.msa
-    ├── candidates.nwk
-    └── report_VE24-1079_COI_NOW.html
+    ├── candidates_phylogeny.fasta
+    ├── candidates_phylogeny.msa
+    ├── candidates_phylogeny.nwk
+    └── report_VE24-1079_COI_20250622_225319.html
+```
+**BOLD**
+```
+.
+├── pipeline_info
+│   ├── execution_report_2025-06-22_22-53-22.html
+│   ├── execution_timeline_2025-06-22_22-53-22.html
+│   ├── execution_trace_2025-06-22_22-53-22.txt
+│   ├── params_2025-06-22_22-53-34.json
+│   └── pipeline_dag_2025-06-22_22-53-22.html
+├── query_001_VE24-1075_COI
+│   ├── all_hits.fasta
+│   ├── candidates.csv
+│   ├── candidates.fasta
+│   ├── candidates_phylogeny.fasta
+│   ├── candidates_phylogeny.msa
+│   ├── candidates_phylogeny.nwk
+│   └── report_BOLD_VE24-1075_COI_20250622_225326.html
+└── query_002_VE24-1079_COI
+    ├── all_hits.fasta
+    ├── candidates.csv
+    ├── candidates.fasta
+    ├── candidates_identity_boxplot.png
+    ├── candidates_phylogeny.fasta
+    ├── candidates_phylogeny.msa
+    ├── candidates_phylogeny.nwk
+    └── report_BOLD_VE24-1079_COI_20250622_225326.html
 ```
 ## Credits
 daff/taxassignwf was originally written by Magdalena Antczak, Cameron Hyde, Daisy Li.

@@ -8,12 +8,25 @@ If you want to run a specific version, add a branch to the command (see tags for
 git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git --branch v0.1.0
 ```
 
+**Display help**
+```
+nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help
+```
+Include hidden parameters
+```
+nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help --show_hidden
+```
+
+**Step by step bash commands**
+If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time. 
+
+
 ```bash
 # Define the version of the pipeline to use
-version="v0.2.4-patch"
+version="v1.0.0"
 
 # Define the main folder where all operations will take place
-main_folder=/home/shaun
+main_folder=/home/ubuntu
 
 # Define the pipeline folder and tests folder paths
 pipeline_folder=${main_folder}/daff-biosecurity-wf2
@@ -51,28 +64,6 @@ cat <<EOF > conf/${version}.config
 singularity {
     cacheDir = '$pipeline_folder/sig_images/'
 }
-process {    
-withName: BLAST_BLASTN {
-        cpus = 12
-        memory = '30GB'
-        time = '4h'
-        
-}}
-
-process {
-    withName: EVALUATE_DATABASE_COVERAGE {
-        cpus = 14
-        memory = '30GB'
-        time = '1h'
-        
-}}
-
-process {
-    withName: EVALUATE_SOURCE_DIVERSITY {
-        time = '1h'
-        
-}}
-
 cleanup = true
 EOF
 
