@@ -18,7 +18,7 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help --show_hid
 ```
 
 **Step by step bash commands**
-If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time. 
+If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time using a test profile. 
 
 
 ```bash
@@ -47,6 +47,14 @@ git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git --branch ${version
 # Rename the cloned repository folder to match the version
 mv nf-daff-biosecurity-wf2 $version
 
+# Download and prepare the NCBI taxonomy files and the TaxonKit tool
+wget -c https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz 
+tar -zxvf taxdump.tar.gz
+mkdir -p .taxonkit
+mv names.dmp nodes.dmp delnodes.dmp merged.dmp .taxonkit
+wget -c https://github.com/shenwei356/taxonkit/releases/download/v0.20.0/taxonkit_linux_amd64.tar.gz
+mv taxonkit .taxonkit
+
 # Create the tests folder if it doesn't exist
 mkdir -p $tests_folder
 
@@ -67,21 +75,6 @@ singularity {
 cleanup = true
 EOF
 
-# Create an input folder inside the tests folder
-mkdir -p input
-
-# Create a sample sequence file in the input folder
-cat <<EOF > input/barcode84_seq.fasta
->barcode84_contig1_PE250203-B_REP1_KAPA
-ACACTATATTTTATTTTTGGTATTTGAGCAGGAATATTAGGAACATCATTAAGTATTTTAATTCGTATAGAATTGGGAACTCCTGGATCTTTAATCGGGGATGATCAAATCTATAATACTATTGTTACAGCTCATGCTTTTATTATAATTTTTTTTATAGTAATACCTATTATAATTGGAGGGTTTGGAAATTGATTAATTCCTCTAATATTAGGAGCACCTGACATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTACCCCCATCACTAATATTACTAATTTCAAGAAGAATTGTAGAAAATGGAGCAGGAACTGGATGAACAGTGTACCCCCCTCTGTCATCTAATATTGCTCATAGTGGATCTTCCGTTGATCTAGCAATCTTCTCTCTTCATTTAGCAGGAATTTCATCAATTTTAGGAGCCATTAACTTTATCACAACTATTATTAATATAAAAGTAAATAATTTATCTTTTGATCAAATATCATTATTTATTTGAGCTGTTGGTATTACTGCATTATTATTATTATTATCTTTACCAGTATTAGCTGGAGCTATTACAATATTATTAACAGATCGTAATTTAAACACATCATTTTTTGACCCCGCTGGAGGAGGAGACCCAATTCTTTATCAACATTTATTTTGATTTTT
-EOF
-
-# Create a metadata file in the input folder
-cat <<EOF > input/barcode84_metadata.csv
-sample_id,locus,preliminary_id,taxa_of_interest,host,country
-barcode84_contig1_PE250203-B_REP1_KAPA,CO1,Lycaenidae,Chilades pandava,NA,Australia
-EOF
-
 # Create a launch folder for the current version and date
 mkdir -p launch/${version}_${today}
 
@@ -89,17 +82,9 @@ mkdir -p launch/${version}_${today}
 cat <<EOF > launch/${version}_${today}/run.sh
 #!/bin/bash 
 nextflow run $pipeline_folder/$version/main.nf \\
-    --metadata $tests_folder/input/barcode84_metadata.csv \\
-    --sequences $tests_folder/input/barcode84_seq.fasta \\
-    --blastdb $main_folder/Database_BLAST_20231204/core_nt_20250220/2025-02-11-01-05-02/core_nt \\
-    --outdir $tests_folder/results/${version}_${today} \\
-    -profile singularity \\
-    --taxdb $pipeline_folder/taxdump/ \\
-    --ncbi_api_key 426055072298f36c9d1b95c2327df4d8c808 \\
-    --user_email shaun.bochow@aff.gov.au \\
-    --analyst_name "Shaun Bochow" \\
-    --facility_name "DAFF Biosecurity, Cairns" \\
-    -c $tests_folder/conf/v0.2.4-patch.config \\
+    -profile singularity,test \\
+    --taxdb $pipeline_folder/.taxonkit/ \\
+    -c $tests_folder/conf/$version.config \\
     -resume
 EOF
 
