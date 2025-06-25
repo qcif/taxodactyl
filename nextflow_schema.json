@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["metadata", "outdir", "sequences", "db_type", "taxdb", "analyst_name", "facility_name"],
+            "required": ["metadata", "sequences", "outdir", "db_type", "taxdb", "analyst_name", "facility_name", "ncbi_api_key", "ncbi_user_email"],
             "properties": {
                 "analyst_name": {
                     "type": "string",

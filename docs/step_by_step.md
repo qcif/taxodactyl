@@ -18,15 +18,28 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf --help --show_hid
 ```
 
 ### Step by step bash commands
-If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time using a test profile. 
+If you have never downloaded or run a Nextflow pipeline, these bash commands can help you set it up and run it for the first time using a test profile (you do need to generate [the NCBI API Key](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317) first).
 
 
 ```bash
-# Define the version of the pipeline to use
+######
+### The following commands require your attention.
+######
+
+# Define the version of the pipeline to use, e.g.
 version="v1.0.0"
 
-# Define the main folder where all operations will take place
+# Set your NCBI API key and user email
+# Replace the example values below with your own credentials
+ncbi_api_key=1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r
+ncbi_user_email=magdalena.antczak@qcif.edu.au
+
+# Define the main folder where all operations will take place, e.g.
 main_folder=/home/ubuntu
+
+######
+### The following commands can be copied and pasted as they are.
+######
 
 # Define the pipeline folder and tests folder paths
 pipeline_folder=${main_folder}/daff-biosecurity-wf2
@@ -84,6 +97,8 @@ cat <<EOF > launch/${version}_${today}/run.sh
 nextflow run $pipeline_folder/$version/main.nf \\
     -profile singularity,test \\
     --taxdb $pipeline_folder/.taxonkit/ \\
+    --ncbi_api_key ${ncbi_api_key} \\
+    --ncbi_user_email ${ncbi_user_email} \\
     -c $tests_folder/conf/$version.config \\
     -resume
 EOF

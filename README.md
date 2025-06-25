@@ -59,6 +59,10 @@ To run the **daff/taxassignwf** pipeline, you will need the following software i
 > - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
 > - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and commands in the [step-by-step guide](docs/step_by_step.md). 
 
+**NCBI API Key**
+
+API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
+
 **TaxonKit**
 
 Download the NCBI taxonomy data files from https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz and extract them to `~/.taxonkit`. Similarly, download the taxonkit tool from https://github.com/shenwei356/taxonkit/releases and move into the same folder.
@@ -173,7 +177,6 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 ```
 
 > [!NOTE]
-> - `ncbi_api_key` and `ncbi_user_email` are not compulsory, but they are recommended.
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 
 
