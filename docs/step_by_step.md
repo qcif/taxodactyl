@@ -61,12 +61,12 @@ git clone https://github.com/qcif/nf-daff-biosecurity-wf2.git --branch ${version
 mv nf-daff-biosecurity-wf2 $version
 
 # Download and prepare the NCBI taxonomy files and the TaxonKit tool
+mkdir -p .taxonkit
+cd .taxonkit
 wget -c https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz 
 tar -zxvf taxdump.tar.gz
-mkdir -p .taxonkit
-mv names.dmp nodes.dmp delnodes.dmp merged.dmp .taxonkit
 wget -c https://github.com/shenwei356/taxonkit/releases/download/v0.20.0/taxonkit_linux_amd64.tar.gz
-mv taxonkit .taxonkit
+tar -zxvf taxonkit_linux_amd64.tar.gz
 
 # Create the tests folder if it doesn't exist
 mkdir -p $tests_folder
