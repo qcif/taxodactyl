@@ -16,8 +16,8 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 2. **Input Validation** Checks the integrity and compatibility of input files (FASTA sequences, metadata, databases), preventing downstream errors.
 
 3. **Sequence Search**  
-   - **NCBI core nt (BLASTN):** Queries input sequences against the NCBI nucleotide database using BLASTN.
-   - **BOLD (API):** Queries input sequences against the Barcode of Life Data. Taxonomic lineage included in the results.
+   - **[BLAST Core Nucleotide Database](https://ncbiinsights.ncbi.nlm.nih.gov/2024/07/18/new-blast-core-nucleotide-database/) ([BLASTN](https://blast.ncbi.nlm.nih.gov/Blast.cgi)):** Queries input sequences against the NCBI nucleotide database using BLASTN.
+   - **[BOLD v4](https://v4.boldsystems.org/) ([API](https://v4.boldsystems.org/index.php/api_home)):** Queries input sequences against the Barcode of Life Data Systems. Taxonomic lineage included in the results.
 
 4. **Hit Extraction** Parses BLAST results to extract relevant hits for each query.
 
@@ -29,11 +29,11 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 8. **Supporting Evidence Evaluation**  
    - **Publications Diversity:** Assesses the diversity of data sources supporting each candidate.
-   - **Database Coverage:** Evaluates the representation of candidates in global databases (GBIF, NCBI, BOLD).
+   - **Database Coverage:** Evaluates the representation of candidates in global databases ([GBIF](https://www.gbif.org/), [GenBank](https://www.ncbi.nlm.nih.gov/genbank/), [BOLD](https://v4.boldsystems.org/)).
 
-9. **Multiple Sequence Alignment (MAFFT)** Aligns candidate and query sequences to prepare for phylogenetic analysis.
+9. **Multiple Sequence Alignment ([MAFFT](https://mafft.cbrc.jp/alignment/server/index.html))** Aligns candidate and query sequences to prepare for phylogenetic analysis.
 
-10. **Phylogenetic Tree Construction (FASTME)** Builds a phylogenetic tree to visualise relationships among candidates and queries.
+10. **Phylogenetic Tree Construction ([FastMe](http://www.atgc-montpellier.fr/fastme/))** Builds a phylogenetic tree to visualise relationships among candidates and queries.
 
 11. **Comprehensive Reporting** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and all supporting evidence for each assignment.
 
@@ -43,21 +43,22 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 To run the **daff/taxassignwf** pipeline, you will need the following software installed:
 
-- **Nextflow**  
+- **[Nextflow](https://www.nextflow.io/)**  
   *Tested versions: 24.10.3, 24.10.6*  
 
-- **Java**  
+- **[Java](https://www.java.com/en/)**  
   Required by Nextflow.  
   *Tested version: 17.0.13*  
 
-- **Singularity**  
+- **[Singularity](https://docs.sylabs.io/guides/3.7/admin-guide/)**  
   Used for containerised execution of all bioinformatics tools, ensuring reproducibility.  
   *Tested version: 3.7.0*  
 
 > [!NOTE]
 > - If you are new to these programs, more details are available [here](docs/software.md).
 > - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
-> - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and commands in the [step-by-step guide](docs/step_by_step.md). 
+> - The pipeline was tested only on a Linux-based operating system—specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
+> - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md). 
 
 **NCBI API Key**
 
@@ -65,11 +66,11 @@ API Key is used to authenticate with the NCBI Entrez API for an increased rate l
 
 **TaxonKit**
 
-Download the NCBI taxonomy data files from https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz and extract them to `~/.taxonkit`. Similarly, download the taxonkit tool from https://github.com/shenwei356/taxonkit/releases and move into the same folder.
+[Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder.
 
-**NCBI core nt database**
+**BLAST Core Nucleotide Database**
 
-To search sequences against the NCBI core nt database, you must download the BLAST-formatted core nt database from NCBI. We recommend running the `update_blastdb.pl` program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
+To search sequences against the BLAST Core Nucleotide Database, you must download it first. We recommend running the `update_blastdb.pl` program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
@@ -82,6 +83,9 @@ TGGATCATCTCTTAGAATTTTAATTCGATTAGAATTAAGACAAATTAATTCTATTATTWATAATAATCAATTATATAATG
 >VE24-1079_COI
 AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGACAACCAGGATCATTTATTGGAGATGATCAAATTTATAATGTAGTAGTTACCGCACACGCATTTATTATAATTTTCTTTATAGTTATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTACCTCTAATAATTGGAGCACCAGATATAGCATTCCCACGGATAAATAATATAAGATTTTGATTATTACCACCCTCAATTACACTTCTTATTATAAGATCTATAGTAGAAAGAGGAGCAGGAACTGGATGAACAGTATATCCCCCACTATCATCAAATATTGCACATAGTGGAGCATCAGTAGACCTAGCAATTTTTTCACTACATTTAGCAGGTGTATCTTCAATTTTAGGAGCAATTAATTTCATCTCAACAATTATTAATATACGACCTGAAGGCATATCTCCAGAACGAATTCCATTATTTGTATGATCAGTAGGTATTACAGCATTACTATTATTATTATCATTACCAGTTCTAGCTGGAGCTATTACAATATTATTAACAGATCGAAACTTTAATACCTCATTCTTTGACCCAGTAGGAGGAGGAGATCCTATCTTATATCAACATTTATTTTGATTTTTT
 ```
+> [!NOTE]
+> - Example can be downloaded from [`test/query.fasta`](test/query.fasta).
+
 
 **Metadata file (`metadata.csv`)**
 
@@ -142,8 +146,9 @@ The metadata file provides essential information about each sequence and must fo
 > - All required columns must be present for every sample.
 > - Optional columns can be left blank if not applicable.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
+> - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 
-You can run the pipeline using NCBI core nt database:
+You can run the pipeline using the BLAST Core Nucleotide Database:
 ```bash
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     --metadata /path/to/metadata.csv \
@@ -159,7 +164,7 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
     -resume
 ```
 
-You can run the pipeline using the BOLD database with the following command:
+You can also run the pipeline using the BOLD database with the following command:
 
 ```bash
 nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
@@ -178,12 +183,13 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 
 > [!NOTE]
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
+> - We recommend avoiding spaces in file and folder names to prevent issues in command-line operations.
 
 
 ## Pipeline output
 After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). 
 
-**blastn against core_nt**
+**BLAST Core Nucleotide Database**
 
 ```
 .
