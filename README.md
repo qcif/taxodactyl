@@ -241,22 +241,14 @@ After running the pipeline, the output directory will contain a separate folder 
 ```
 ## Credits
 <p align="center">
-  <a href="https://www.agriculture.gov.au/">
     <img src="docs/images/DAFF-inline-black.png" alt="Department of Agriculture, Fisheries and Forestry" height="60"/>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.qcif.edu.au/">
+    &nbsp;&nbsp;&nbsp;&nbsp;
     <img src="docs/images/qcif-1.jpg" alt="QCIF" height="60"/>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.biocommons.org.au/">
+    &nbsp;&nbsp;&nbsp;&nbsp;
     <img src="docs/images/Australian-Biocommons-Logo-Horizontal-RGB.png" alt="Australian BioCommons" height="60"/>
-  </a>
 </p>
 
-daff/taxassignwf was originally written by Magdalena Antczak, Cameron Hyde, Daisy Li from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
-
-
+daff/taxassignwf was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
