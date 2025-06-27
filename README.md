@@ -55,7 +55,8 @@ To run the **daff/taxassignwf** pipeline, you will need the following software i
   *Tested version: 3.7.0*  
 
 > [!NOTE]
-> - If you are new to these programs, more details are available [here](docs/software.md).
+> - Instructions on how to set up Nextflow and a compatible version of Java on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
+> - To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
 > - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
 > - The pipeline was tested only on a Linux-based operating system—specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
 > - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md). 
@@ -144,7 +145,7 @@ The metadata file provides essential information about each sequence and must fo
 
 > [!NOTE]
 > - All required columns must be present for every sample.
-> - Optional columns can be left blank if not applicable.
+> - Optional columns can be left blank or completely omitted if not applicable.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 > - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 
