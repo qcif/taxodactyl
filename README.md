@@ -184,6 +184,7 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 > [!NOTE]
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 > - We recommend avoiding spaces in file and folder names to prevent issues in command-line operations.
+> - You can find detailed instructions and practical examples for customising the pipeline configuration in the [docs/customise.md](docs/customise.md) file. This guide covers how to set parameters, adjust resources, change error strategies, and modify the Singularity cache directory for your Nextflow runs.
 
 
 ## Pipeline output
