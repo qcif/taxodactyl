@@ -1,5 +1,40 @@
 > STILL IN PROGRESS
 
+
+
+# [main.nf](../main.nf)
+
+This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxassignwf.nf](../workflows/taxassignwf.nf) and finalises the pipeline run (notification emails, reports, etc.). 
+
+---
+
+# workflows
+## [taxassignwf.nf](../workflows/taxassignwf.nf)
+
+This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata, performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
+
+---
+
+# subworkflows
+
+These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/guidelines/) and have been adapted for use in this pipeline. 
+
+## [local/utils_nfcore_taxassignwf_pipeline/main.nf](../subworkflows/local/utils_nfcore_taxassignwf_pipeline/main.nf)
+
+It defines two subworkflows for pipeline initialisation and completion, adapted from nf-core. Additionally, it includes utility functions for parameter validation, citation text, and methods description formatting for reporting. 
+
+Unlike the original nf-core implementation, the metadata samplesheet is no longer processed or validated within the Nextflow workflow itself. Instead, parsing and validation of metadata—as well as more comprehensive parameter validation—are handled externally by a [Python container](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs). The `validateInputParameters()` function within the workflow still checks for the presence of all required parameters and performs basic logical consistency checks (such as ensuring `blastdb` is set when using `blast_core_nt`, and that certain threshold values are in the correct order), but the main responsibility for input validation has been shifted outside the workflow.
+
+---
+
+##[nf-core/utils_nextflow_pipeline/main.nf](../subworkflows/nf-core/utils_nextflow_pipeline/main.nf)
+
+This subworkflow provides general utility functions for any Nextflow pipeline. The only introduced change is that the functionality for dumping pipeline parameters to a JSON file has been moved to the [main workflow](../workflows/taxassignwf.nf). This adjustment ensures that the JSON file with parameters is generated in a way that makes it easy to parse and include in the final HTML report.
+
+## [nf-core/utils_nfcore_pipeline/main.nf](../subworkflows/nf-core/utils_nfcore_pipeline/main.nf)
+
+This file provides utility functions for nf-core pipelines, including configuration checks, workflow version reporting, terminal log colouring, and sending summary emails or notifications (e.g., on completion or failure). It helps ensure users are informed about pipeline status and results, and supports standardised reporting and notifications. No changes were introduced to this file.
+
 # Pipeline Module Details
 
 Below is a description of each module in the pipeline, including which parameters are used as inputs.
@@ -248,23 +283,7 @@ This JSON schema describes the required structure and columns for the metadata C
 
 ---
 
-# SUBWORKFLOWS - what we've changed & default nf-core
 
-This section is intended to document any modifications made to the default nf-core subworkflows, as well as any custom subworkflows added for this pipeline. It helps users and developers understand how the pipeline diverges from or extends nf-core standards.
-
----
-
-# [WORKFLOWS - main workflow](../workflows/taxassignwf.nf)
-
-This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow.
-
----
-
-# [main.nf](../main.nf)
-
-This is the pipeline entry point script. It typically handles parameter parsing, initial setup, and calls the main workflow defined in `workflows/taxassignwf.nf`.
-
----
 
 # [nextflow_schema.json](../nextflow_schema.json)
 
