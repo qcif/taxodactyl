@@ -25,13 +25,6 @@ workflow UTILS_NEXTFLOW_PIPELINE {
         System.exit(0)
     }
 
-    // //
-    // // Dump pipeline parameters to a JSON file
-    // //
-    // if (dump_parameters && outdir) {
-    //     dumpParametersToJSON(outdir)
-    // }
-
     //
     // When running with Conda, warn if channels have not been set-up appropriately
     //
