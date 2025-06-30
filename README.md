@@ -189,7 +189,7 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 
 
 ## Pipeline output
-After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). 
+After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/daff-biosecurity-wf2/understanding-the-analysis.html) for tips on understanding the analysis and interpreting the final HTML report.
 
 **BLAST Core Nucleotide Database**
 
@@ -258,7 +258,18 @@ After running the pipeline, the output directory will contain a separate folder 
 
 daff/taxassignwf was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
 
-This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
+The workflow was designed by:
+- Cameron Hyde
+- Magdalena Antczak
+- Lanxi (Daisy) Li
+- Valentine Murigneux
+- Sarah Williams
+- Michael Thang
+- Bradley Pease
+- Shaun Bochow
+- Grace Sun
+
+It uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
 >

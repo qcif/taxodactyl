@@ -4,9 +4,9 @@ Nextflow automatically loads `nextflow.config` from the current directory, the p
 
 Any settings in your local or custom config file will override the defaults set in the pipeline. In these config files, you can set parameters, profiles, resource requirements, or error strategies.
 
-The pipeline’s default configuration files are located in the `conf` folder. For example, [conf/process.config](conf/process.config) contains the default resource settings (such as CPUs, memory, and time) and container images for each process in the pipeline.
+The pipeline’s default configuration files are located in the `conf` folder. For example, [conf/process.config](../conf/process.config) contains the default resource settings (such as CPUs, memory, and time) and container images for each process in the pipeline.
 
-For more details, see the [technical documentation for this pipeline](docs/detailled_tech.md) and the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html).
+For more details, see the [technical documentation for this pipeline](detailled_tech.md) and the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html).
 
 The following sections provide practical examples of how to customise your pipeline configuration:
 
@@ -43,7 +43,7 @@ process {
     errorStrategy = 'ignore'
 }
 ```
-Replace `ignore` with the desired error handling strategy, such as `terminate`, `retry`, or `finish`, depending on the desired behavior. See https://www.nextflow.io/docs/latest/reference/process.html#process-error-strategy for details. 
+Replace `ignore` with the desired error handling strategy, such as `terminate`, `retry`, or `finish`, depending on the desired behavior. See [Nextflow documentation](https://www.nextflow.io/docs/latest/reference/process.html#process-error-strategy) for details. 
 
 ### Parameters
 

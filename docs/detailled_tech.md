@@ -39,9 +39,6 @@ This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate
 
 # Modules
 
-> [!NOTE]
-> The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
-
 ## [configure/environment](../modules/configure/environment/main.nf)
 
 This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/daff-biosecurity-wf2). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#environment-variables).
@@ -106,6 +103,11 @@ The `FASTME` module performs phylogenetic tree construction using the FastME too
 ## [report](../modules/report/main.nf)
 
 The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps—including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) to produce the report.
+
+> [!NOTE]
+> The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
+> To publish a file to the output directory, use the `publishDir` directive within your process definition. This directive specifies where output files should be copied or moved after the process completes, e.g. `publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename"`. More information in the [Nextflow documentation]( https://www.nextflow.io/docs/latest/process.html). 
+> Some input parameters are not parsed to the scripts executed in the modules as arguments, but rather using the environment variables. In those cases, we need to ensure they are available within the module’s container, e.g. `containerOptions "--bind ${file(params.sequences).parent}"`.
 
 ---
 
