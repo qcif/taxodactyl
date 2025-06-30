@@ -8,14 +8,14 @@ This is the pipeline entry point script. It handles parameter parsing and valida
 
 ---
 
-# workflows
+# Workflows
 ## [taxassignwf.nf](../workflows/taxassignwf.nf)
 
 This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata, performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
 
 ---
 
-# subworkflows
+# Subworkflows
 
 These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/guidelines/) and have been adapted for use in this pipeline. 
 
@@ -27,7 +27,7 @@ Unlike the original nf-core implementation, the metadata samplesheet is no longe
 
 ---
 
-##[nf-core/utils_nextflow_pipeline/main.nf](../subworkflows/nf-core/utils_nextflow_pipeline/main.nf)
+## [nf-core/utils_nextflow_pipeline/main.nf](../subworkflows/nf-core/utils_nextflow_pipeline/main.nf)
 
 This subworkflow provides general utility functions for any Nextflow pipeline. The only introduced change is that the functionality for dumping pipeline parameters to a JSON file has been moved to the [main workflow](../workflows/taxassignwf.nf). This adjustment ensures that the JSON file with parameters is generated in a way that makes it easy to parse and include in the final HTML report.
 
@@ -35,206 +35,111 @@ This subworkflow provides general utility functions for any Nextflow pipeline. T
 
 This file provides utility functions for nf-core pipelines, including configuration checks, workflow version reporting, terminal log colouring, and sending summary emails or notifications (e.g., on completion or failure). It helps ensure users are informed about pipeline status and results, and supports standardised reporting and notifications. No changes were introduced to this file.
 
-# Pipeline Module Details
+## [nf-core/utils_nfschema_plugin/main.nf](../subworkflows/nf-core/utils_nfschema_plugin/main.nf)
 
-Below is a description of each module in the pipeline, including which parameters are used as inputs.
-
----
-
-## blast/blastdbcmd
-
-**Purpose:**  
-Extracts taxonomic IDs from a BLAST database using an entry batch file.
-
-**Inputs:**  
-- `entry_batch` (from parameter: `params.accessions_filename`)
-- BLAST database path (from parameter: `params.blastdb`)
-- Output directory (from parameter: `params.outdir`)
-
-**Outputs:**  
-- `taxids.csv` (accession and taxid mapping)
-- `versions.yml` (tool version info)
+This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate pipeline parameters and print a summary of parameters that differ from the defaults defined in the JSON schema. It can optionally validate parameters against a specified schema file and outputs a summary to the log. No changes were introduced to this file.
 
 ---
 
-## blast/blastn
+# Modules
 
-**Purpose:**  
-Runs `blastn` to search nucleotide sequences against a BLAST database.
+---
 
-**Inputs:**  
-- Query FASTA file (from parameter: `params.sequences`)
-- BLAST database path (from parameter: `params.blastdb`)
-- Output directory (from parameter: `params.outdir`)
-- Additional BLAST options (from parameters: `params.blast_max_target_seqs_for_report`, `params.min_identity`, `params.min_nt`, `params.min_q_coverage`)
+## [configure/environment](../modules/configure/environment/main.nf)
 
-**Outputs:**  
-- BLAST XML results
-- `versions.yml` (tool version info)
+This module generates an environment variable file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/daff-biosecurity-wf2). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#environment-variables).
+
+## [validate/input](../modules/validate/input/main.nf)
+
+This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variable file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA, and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs).
+
+## [blast/blastn](../modules/blast/blastn/main.nf)
+
+The `BLAST_BLASTN` process runs a BLASTN search on input FASTA sequences against a specified BLAST database. It supports both uncompressed and gzipped FASTA files, decompressing them if needed. The process uses parameters for the database path, output XML filename, and output directory, and runs BLASTN with the following options:
+
+- `-num_threads ${task.cpus}`: Number of CPU threads to use.
+- `-db ${file(params.blastdb)}`: Path to the BLAST database.
+- `-query ${fasta_name}`: Input FASTA file with query sequences.
+- `-outfmt 5`: Output format set to XML.
+- `-out $params.blast_xml_filename`: Output XML filename.
+- `-task megablast`: Uses the megablast algorithm for highly similar sequences.
+- `-max_target_seqs 500`: Reports up to 500 hits per query.
+- `-evalue 0.05`: E-value threshold for reporting matches.
+- `-reward 1`: Match reward score.
+- `-penalty -3`: Mismatch penalty score.
+
+The results are saved as an XML file, and a `versions.yml` file is generated to record the BLAST version used. The process is containerised and binds the BLAST database directory for access.
+
+## [extract/hits](../modules/extract/hits/main.nf)
+
+The `EXTRACT_HITS` process parses BLAST XML results to extract hit information and accession numbers. It takes the environment variable file and the BLAST XML output as input, then runs a Python script (`p1_parse_blast.py`) to generate files listing accessions, hit details in JSON format, and hit sequences in FASTA format. This process is used in the BLAST branch of the workflow, immediately after running BLASTN, to prepare hit data for downstream candidate extraction and analysis. More information about the `p1_parse_blast.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p1-blast-parser).
+
+## [blast/blastdbcmd](../modules/blast/blastdbcmd/main.nf)
+
+The `BLAST_BLASTDBCMD` module uses the `blastdbcmd` tool to extract taxonomic IDs for a list of accessions from a BLAST database. It takes a batch file of accession numbers as input and outputs a CSV file mapping accessions to taxids (`taxids.csv`). This module is used in the BLAST branch of the workflow, after extracting hits from BLASTN results, to retrieve taxonomic information needed for downstream taxonomy extraction and analysis.
+
+## [extract/taxonomy](../modules/extract/taxonomy/main.nf)
+
+The `EXTRACT_TAXONOMY` module runs a Python script (`p2_extract_taxonomy.py`) to extract taxonomy information for a list of taxids using the NCBI taxonomy database. It takes an environment variable file and a CSV of taxids as input, and outputs a taxonomy file. This module is used after retrieving taxids from BLAST hits, providing detailed taxonomy data needed for downstream candidate extraction and reporting. More information about the `p2_extract_taxonomy.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p2-ncbi-taxonomy-extractor).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
 ## bold/search
 
-**Purpose:**  
-Performs a BOLD (Barcode of Life Data System) search for taxonomic assignment.
-
-**Inputs:**  
-- Query FASTA file (from parameter: `params.sequences`)
-- Output directory (from parameter: `params.outdir`)
-- BOLD-specific options (from parameters: `params.bold_skip_orientation`, `params.bold_taxonomy_json`)
-
-**Outputs:**  
-- BOLD taxonomy JSON
-- BLAST hits (JSON and FASTA)
-
----
-
-## configure/environment
-
-**Purpose:**  
-Generates an environment variable file (`env_vars.sh`) with all relevant parameters for downstream processes.
-
-**Inputs:**  
-- All pipeline parameters (e.g., `params.metadata`, `params.sequences`, `params.db_type`, `params.analyst_name`, `params.facility_name`, etc.)
-
-**Outputs:**  
-- `env_vars.sh` (environment variables for the workflow)
 
 ---
 
 ## evaluate/databasecoverage
 
-**Purpose:**  
-Evaluates database coverage for candidate sequences.
-
-**Inputs:**  
-- Candidate JSON (from parameter: `params.candidates_json_filename`)
-- Metadata (from parameter: `params.metadata`)
-- Output directory (from parameter: `params.outdir`)
-- Coverage thresholds (from parameters: `params.db_cov_min_a`, `params.db_cov_min_b`, `params.db_cov_related_min_a`, `params.db_cov_related_min_b`, `params.db_cov_country_missing_a`, `params.db_coverage_toi_limit`)
-
-**Outputs:**  
-- Coverage results in the query folder
-
 ---
 
 ## evaluate/sourcediversity
 
-**Purpose:**  
-Assesses the diversity of sources supporting candidate taxonomic assignments.
-
-**Inputs:**  
-- Candidate JSON (from parameter: `params.candidates_json_filename`)
-- Output directory (from parameter: `params.outdir`)
-- Source thresholds (from parameter: `params.min_source_count`)
-
-**Outputs:**  
-- Aggregated sources JSON in the query folder
 
 ---
 
 ## extract/candidates
 
-**Purpose:**  
-Extracts candidate sequences and related information from BLAST/BOLD hits.
 
-**Inputs:**  
-- Hits JSON (from parameter: `params.hits_json_filename`)
-- Hits FASTA (from parameter: `params.hits_fasta_filename`)
-- Taxonomy file (from parameter: `params.taxonomy_filename`)
-- Metadata (from parameter: `params.metadata`)
-- Output directory (from parameter: `params.outdir`)
-- Candidate thresholds (from parameters: `params.max_candidates_for_analysis`, `params.min_identity_strict`, `params.median_identity_warning_factor`)
-
-**Outputs:**  
-- Candidate count, JSON, FASTA, CSV, boxplot image, and flags in the query folder
 
 ---
 
-## extract/hits
-
-**Purpose:**  
-Parses BLAST XML results to extract hit information and accession numbers.
-
-**Inputs:**  
-- BLAST XML (from parameter: `params.blast_xml_filename`)
-- Output directory (from parameter: `params.outdir`)
-- Minimum identity and coverage (from parameters: `params.min_identity`, `params.min_nt`, `params.min_q_coverage`)
-
-**Outputs:**  
-- Accessions file
-- Hits JSON and FASTA
-- Log file
-
 ---
 
-## extract/taxonomy
 
-**Purpose:**  
-Extracts taxonomy information for given taxids using the NCBI taxonomy dump.
 
-**Inputs:**  
-- Taxids CSV (from parameter: `params.accessions_filename`)
-- Taxonomy database directory (from parameter: `params.taxdb`)
-- Output directory (from parameter: `params.outdir`)
 
-**Outputs:**  
-- Taxonomy CSV
-
----
 
 ## fastme
 
-**Purpose:**  
-Builds phylogenetic trees from sequence alignments using FastME.
 
-**Inputs:**  
-- Alignment file (from parameter: `params.candidates_msa_filename`)
-- Output directory (from parameter: `params.outdir`)
-
-**Outputs:**  
-- Newick tree file
-- Statistics
-- Optional matrix and bootstrap files
-- `versions.yml` (tool version info)
-
----
 
 ## mafft/align
 
-**Purpose:**  
-Performs multiple sequence alignment using MAFFT.
-
-**Inputs:**  
-- Candidate FASTA (from parameter: `params.candidates_phylogeny_fasta_filename`)
-- Query sequence (from parameter: `params.sequences`)
-- Output directory (from parameter: `params.outdir`)
-
-**Outputs:**  
-- MSA file
-- `versions.yml` (tool version info)
-
----
 
 ## report
 
-**Purpose:**  
-Generates the final HTML report for each query.
-
-**Inputs:**  
-- Various result files and folders (from parameters: `params.outdir`, `params.candidates_json_filename`, `params.candidates_csv_filename`, `params.boxplot_img_filename`, etc.)
-- Environment variable file (from `configure/environment`)
-
-**Outputs:**  
-- HTML report in the output directory
-
----
-
-## validate/input
-
-**Purpose:**  
-Validates input files and parameters
 
 
 ---
