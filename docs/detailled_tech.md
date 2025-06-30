@@ -43,6 +43,9 @@ This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate
 
 # Modules
 
+> [!NOTE]
+> The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
+
 ## [configure/environment](../modules/configure/environment/main.nf)
 
 This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/daff-biosecurity-wf2). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#environment-variables).
@@ -146,9 +149,6 @@ The following table summarises which pipeline parameters are used by each module
 | `independent_sources_json_filename` | `EVALUATE_SOURCE_DIVERSITY`, `REPORT`                                                                             |
 | `bold_taxonomy_json`                | `BOLD_SEARCH`, `REPORT`                                                                                           |
 | `report_debug`                      | `REPORT`                                                                                                          |
-
-> [!NOTE]
-> The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
 
 ---
 
