@@ -1,10 +1,13 @@
 process CONFIGURE_ENVIRONMENT {
     output:
-    file 'env_vars.sh'
+    file 'env_vars.sh' // Output: environment variables file for downstream modules
 
     script:
     """
+    # Set matplotlib config directory to avoid warnings
     echo 'export MPLCONFIGDIR=.matplotlib' > env_vars.sh
+
+    # Export pipeline parameters as environment variables if they are set
     if [ ${params.accessions_filename} != null ]; then echo 'export ACCESSIONS_FILENAME=${params.accessions_filename}' >> env_vars.sh; fi
     if [ ${params.allowed_loci_file} != null ]; then echo 'export ALLOWED_LOCI_FILE=${file(params.allowed_loci_file)}' >> env_vars.sh; fi
     if [ "${params.analyst_name}" != null ]; then echo 'export ANALYST_NAME="${params.analyst_name}"' >> env_vars.sh; fi
