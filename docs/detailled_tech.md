@@ -111,78 +111,43 @@ The `FASTME` module performs phylogenetic tree construction using the FastME too
 
 The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps—including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) to produce the report.
 
-
-## Parameters
-
-The following table summarises which pipeline parameters are used by each module. This helps clarify how configuration options flow through the workflow and which steps depend on specific parameters.
-
-| Parameter Name                      | Used in Module(s)                                                                                                 |
-|--------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| `metadata`                          | `VALIDATE_INPUT`, `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`           |
-| `sequences`                         | `VALIDATE_INPUT`, `CONFIGURE_ENVIRONMENT`, `BLAST_BLASTN`, `BOLD_SEARCH`, `EXTRACT_HITS`, `REPORT`                |
-| `db_type`                           | `VALIDATE_INPUT`, `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`           |
-| `taxdb`                             | `VALIDATE_INPUT`, `CONFIGURE_ENVIRONMENT`, `EXTRACT_TAXONOMY`, `EVALUATE_DATABASE_COVERAGE`                       |
-| `analyst_name`                      | `CONFIGURE_ENVIRONMENT`                                                                                           |
-| `facility_name`                     | `CONFIGURE_ENVIRONMENT`                                                                                           |
-| `ncbi_api_key`                      | `CONFIGURE_ENVIRONMENT`                                                                                           |
-| `ncbi_user_email`                   | `CONFIGURE_ENVIRONMENT`                                                                                           |
-| `blastdb`                           | `BLAST_BLASTN`, `BLAST_BLASTDBCMD`                                                                                |
-| `allowed_loci_file`                 | `CONFIGURE_ENVIRONMENT`, `VALIDATE_INPUT`, `REPORT`                                                               |
-| `max_candidates_for_analysis`        | `EXTRACT_CANDIDATES`, `EVALUATE_SOURCE_DIVERSITY`                                                                 |
-| `min_identity`                      | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `min_identity_strict`               | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `min_nt`                            | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `min_q_coverage`                    | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `phylogeny_min_hit_identity`        | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `phylogeny_min_hit_sequences`       | `CONFIGURE_ENVIRONMENT`, `EXTRACT_CANDIDATES`                                                                     |
-| `candidates_json_filename`          | `EXTRACT_CANDIDATES`, `EVALUATE_DATABASE_COVERAGE`, `EVALUATE_SOURCE_DIVERSITY`, `REPORT`                         |
-| `candidates_fasta_filename`         | `EXTRACT_CANDIDATES`, `REPORT`                                                                                    |
-| `candidates_phylogeny_fasta_filename`| `EXTRACT_CANDIDATES`, `MAFFT_ALIGN`                                                                              |
-| `candidates_msa_filename`           | `MAFFT_ALIGN`, `FASTME`                                                                                           |
-| `tree_nwk_filename`                 | `FASTME`, `REPORT`                                                                                                |
-| `taxonomy_filename`                 | `EXTRACT_TAXONOMY`, `EXTRACT_CANDIDATES`, `REPORT`                                                                |
-| `hits_json_filename`                | `EXTRACT_HITS`, `EXTRACT_CANDIDATES`, `REPORT`                                                                    |
-| `hits_fasta_filename`               | `EXTRACT_HITS`, `EXTRACT_CANDIDATES`, `REPORT`                                                                    |
-| `blast_xml_filename`                | `BLAST_BLASTN`, `EXTRACT_HITS`                                                                                    |
-| `accessions_filename`               | `EXTRACT_HITS`, `BLAST_BLASTDBCMD`                                                                                |
-| `boxplot_img_filename`              | `EXTRACT_CANDIDATES`, `REPORT`                                                                                    |
-| `independent_sources_json_filename` | `EVALUATE_SOURCE_DIVERSITY`, `REPORT`                                                                             |
-| `bold_taxonomy_json`                | `BOLD_SEARCH`, `REPORT`                                                                                           |
-| `report_debug`                      | `REPORT`                                                                                                          |
-
 ---
 
-# Configuration Files Overview
+# Configuration
 
-The pipeline uses several configuration files located in the [`conf/`](../conf/) directory to control its behaviour:
+The pipeline uses several configuration files located in the [`conf/`](../conf/). They are all linked to the pipeline using [nextflow.config](../nextflow.config) file placed in the main project directory. See the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html) for more details.
 
-- **`params.config`**  
-  Defines all pipeline parameters and their default values, such as input file names, thresholds, and output file names. These parameters can be overridden by user-supplied config files or command-line options.  
-  See: [`conf/params.config`](../conf/params.config)
+## [`conf/params.config`](../conf/params.config) 
+Defines all pipeline parameters and their default values, such as input file names, thresholds, and output file names. These parameters can be overridden by user-supplied config files, command-line options or directly in this file. See the [customisation document](customise.md) for examples.
 
-- **`process.config`**  
-  Sets default resource requirements (CPUs, memory, time) and container images for each process or process label. It also defines the default error strategy and bash options for process execution.  
-  See: [`conf/process.config`](../conf/process.config)
+## [`conf/process.config`](../conf/process.config)
+Sets default resource requirements (CPUs, memory, time) and container images for each process or process label. It also defines the default error strategy and bash options for process execution. You can override these settings as required. See the [customisation document](customise.md) for examples of assigning different resources or error strategies to the processes. 
 
-- **`profiles.config`**  
-  Contains execution profiles for different environments (e.g., `singularity`, `docker`, `conda`, `apptainer`, `test`). Profiles can enable or disable container engines and set other environment-specific options.  
-  See: [`conf/profiles.config`](../conf/profiles.config)
+You can also change the container for a process but we cannot guarantee the compatibility in downstream analysis. Currently, the following containers are used by each process or process label:
 
-- **`test.config`**  
-  Provides a minimal test dataset and settings for quick pipeline validation. Used with the `-profile test` option.  
-  See: [`conf/test.config`](../conf/test.config)
+| Process / Label         | Container Image                                                                                   |
+|------------------------ |--------------------------------------------------------------------------------------------------|
+| `daff_tax_assign` label (`EXTRACT_HITS`, `EXTRACT_TAXONOMY`, `BOLD_SEARCH`, `EXTRACT_CANDIDATES`, `EVALUATE_SOURCE_DIVERSITY`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`) | `docker://neoformit/daff-taxonomic-assignment:v1.0.0`                                            |
+| `blast` label (`BLAST_BLASTN`, `BLAST_BLASTDBCMD`)          | `docker://ncbi/blast:2.16.0`                                                                     |
+| `MAFFT_ALIGN`           | `quay.io/biocontainers/mulled-v2-12eba4a074f913c639117640936668f5a6a01da6:425707898cf4f85051b77848be253b88f1d2298a-0` |
+| `FASTME`                | `quay.io/biocontainers/fastme:2.1.6.3--h7b50bb2_1`                                               |
 
-- **`validation.config`**  
-  Controls parameter validation and help behaviour, including which parameters are required and how help is displayed.  
-  See: [`conf/validation.config`](../conf/validation.config)
+Use `withLabel` or `withName` selectors to specify a container. If a process matches both a `withLabel` and a `withName` rule, the most specific rule (usually `withName`) takes precedence for the container.
 
-- **`manifest.config`**  
-  Contains pipeline metadata such as name, author, contributors, description, and version.  
-  See: [`conf/manifest.config`](../conf/manifest.config)
+## [`conf/profiles.config`](../conf/profiles.config)
+Contains execution profiles for different environments (e.g., `singularity`, `docker`, `conda`, `apptainer`, `test`). Profiles can enable or disable container engines and set other environment-specific options.
 
-- **`misc.config`**  
-  Sets miscellaneous environment variables, disables process selector warnings by default, and enables Nextflow reporting plugins (timeline, report, trace, dag).  
-  See: [`conf/misc.config`](../conf/misc.config)
+## [`conf/test.config`](../conf/test.config)
+Provides a minimal test dataset and settings for quick pipeline validation. Used with the `-profile test` option.
+
+## [`conf/validation.config`](../conf/validation.config)
+Controls parameter validation and help behaviour, including which parameters are required and how help is displayed.
+
+## [`conf/manifest.config`](../conf/manifest.config)  
+Contains pipeline metadata such as name, author, contributors, description, and version.
+
+## [`conf/misc.config`](../conf/misc.config)
+Sets miscellaneous environment variables, disables process selector warnings by default, and enables Nextflow reporting plugins (timeline, report, trace, dag).
 
 # [Loci](../assets/loci.json)
 
