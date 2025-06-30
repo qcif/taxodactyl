@@ -7,8 +7,7 @@ process FASTME {
     output:
     tuple val(query_folder), path("*.nwk")       , emit: nwk
     tuple val(query_folder), path("*_stat.txt")  , emit: stats
-    tuple val(query_folder), path("*.matrix.phy"), emit: matrix    , optional: true
-    tuple val(query_folder), path("*.bootstrap") , emit: bootstrap , optional: true
+    tuple val(query_folder), path("*.matrix.phy"), emit: matrix
     path "versions.yml" , emit: versions
 
     publishDir "${params.outdir}/$query_folder", mode: 'copy', pattern:    "$params.tree_nwk_filename"
