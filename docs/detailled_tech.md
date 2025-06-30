@@ -1,7 +1,3 @@
-> STILL IN PROGRESS
-
-
-
 # [main.nf](../main.nf)
 
 This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxassignwf.nf](../workflows/taxassignwf.nf) and finalises the pipeline run (notification emails, reports, etc.). 
