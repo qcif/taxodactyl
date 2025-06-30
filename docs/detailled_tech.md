@@ -149,20 +149,37 @@ Contains pipeline metadata such as name, author, contributors, description, and 
 ## [`conf/misc.config`](../conf/misc.config)
 Sets miscellaneous environment variables, disables process selector warnings by default, and enables Nextflow reporting plugins (timeline, report, trace, dag).
 
-# [Loci](../assets/loci.json)
-
-This file defines the permitted loci (barcoding regions) and their synonyms used in the pipeline. It helps standardise locus names and supports synonym resolution for GenBank queries. For more details on how loci are used and formatted, see the [sample locus section in the pipeline README](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#sample-locus).
-
 ---
-
-# [SCHEMA_INPUT.JSON](../assets/schema_input.json)
-
-This JSON schema describes the required structure and columns for the metadata CSV file used as input to the pipeline. If you need to add columns or change the metadata format, update this schema accordingly to ensure proper validation and compatibility.
-
----
-
-
 
 # [nextflow_schema.json](../nextflow_schema.json)
 
-This file defines the Nextflow schema for pipeline parameters. It is used for parameter validation, help text generation, and integration with tools like nf-core Launch and Nextflow
+This file defines the Nextflow schema for pipeline parameters. It is used for parameter validation and help text generation. If you add a parameter here, remember to initialise its value in [params.config](../conf/params.config). For more information about the Nextflow schema specification and how to use or customise pipeline parameter schemas, see the [Nextflow Schema Specification](https://nextflow-io.github.io/nf-validation/nextflow_schema/nextflow_schema_specification/) or [nf-core Tools: Pipeline Schema Documentation](https://nf-co.re/docs/nf-core-tools/pipelines/schema).
+
+---
+
+# [schema_input.json](../assets/schema_input.json)
+
+This JSON schema describes the required structure and columns for the metadata CSV file used as input to the pipeline. If you need to add columns or change the metadata format, update this schema accordingly to ensure proper validation and compatibility. The [Python P6 module](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) will handle the additional columns and put the metadata in the report.
+
+---
+
+# [loci.json](../assets/loci.json)
+
+This file defines the permitted loci (genes) and their synonyms used in the pipeline. It helps standardise locus names and supports synonym resolution for GenBank queries. For more details on how loci are used and formatted, see the [sample locus section in the Python modules README](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#sample-locus). 
+
+You can overwrite the contents of `loci.json` to customise which loci (genes) and synonyms are recognised by the pipeline. To do this:
+
+1. **Edit the File:**  
+   Open [`assets/loci.json`](../assets/loci.json) and modify, add, or remove loci and their synonyms as needed for your use case. Make sure the JSON structure matches the expected format described in the [Python modules README](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#sample-locus).
+
+2. **Provide a Custom File:**  
+   If you want to keep the original file unchanged, you can create your own custom `loci.json` and specify its path using the appropriate pipeline parameter (e.g., `--allowed_loci_file my_loci.json` on the command line or by setting `allowed_loci_file` in your config).
+
+3. **Using a Config File:**  
+   You can also set the path to your custom loci file in a Nextflow config file (such as `params.config` or a custom config), for example:
+   ```nextflow
+   params {
+     allowed_loci_file = '/path/to/my_loci.json'
+   }
+
+
