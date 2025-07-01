@@ -1,6 +1,6 @@
 {
-    "name": "daff/taxassignwf",
-    "homePage": "https://github.com/daff/taxassignwf",
+    "name": "qcif/taxaplus",
+    "homePage": "https://github.com/qcif/taxaplus",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

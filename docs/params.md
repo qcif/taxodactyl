@@ -1,6 +1,6 @@
 ## Pipeline specific parameters
 
-This document describes the parameters available for the **daff/taxassignwf** Nextflow pipeline.
+This document describes the parameters available for the **qcif/taxaplus** Nextflow pipeline.
 
 ---
 

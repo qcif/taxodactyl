@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    daff/taxassignwf
+    qcif/taxaplus
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/daff/taxassignwf
+    Github : https://github.com/qcif/taxaplus
 ----------------------------------------------------------------------------------------
 */
 
@@ -13,9 +13,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TAXASSIGNWF  } from './workflows/taxassignwf'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxassignwf_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxassignwf_pipeline'
+include { TAXAPUS  } from './workflows/taxapus'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxapus_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxapus_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxa
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow DAFF_TAXASSIGNWF {
+workflow QCIF_TAXAPUS {
 
     // take:
 
@@ -35,7 +35,7 @@ workflow DAFF_TAXASSIGNWF {
     //
     // WORKFLOW: Run pipeline
     //
-    TAXASSIGNWF (
+    TAXAPUS (
 
     )
 }
@@ -63,7 +63,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    DAFF_TAXASSIGNWF (
+    QCIF_TAXAPUS (
 
     )
     //
