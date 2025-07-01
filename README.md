@@ -10,17 +10,6 @@
   </tr>
 </table>
 
-
-<div style="display: flex; align-items: flex-start; gap: 2em;">
-  <div style="flex: 1; min-width: 220px;">
-    <img src="docs/images/taxapus_logo.png" alt="taxapus-logo" width="100%"/>
-  </div>
-  <div style="flex: 2;">
-      <strong>qcif/taxapus</strong> is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
-  </div>
-</div>
-
-
 <p align="center" style="max-width:400px; margin:auto;">
     <img src="docs/images/taxapus_diagram.png" alt="taxapus_diagram" width="350"/>
 </p>
