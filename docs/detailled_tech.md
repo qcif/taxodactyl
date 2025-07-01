@@ -1,11 +1,11 @@
 # [main.nf](../main.nf)
 
-This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxassignwf.nf](../workflows/taxassignwf.nf) and finalises the pipeline run (notification emails, reports, etc.). 
+This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxapus.nf](../workflows/taxapus.nf) and finalises the pipeline run (notification emails, reports, etc.). 
 
 ---
 
 # Workflows
-## [taxassignwf.nf](../workflows/taxassignwf.nf)
+## [taxapus.nf](../workflows/taxapus.nf)
 
 This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata, performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
 
@@ -15,7 +15,7 @@ This is the main Nextflow workflow script for the pipeline. It orchestrates the 
 
 These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/guidelines/) and have been adapted for use in this pipeline. 
 
-## [local/utils_nfcore_taxassignwf_pipeline/main.nf](../subworkflows/local/utils_nfcore_taxassignwf_pipeline/main.nf)
+## [local/utils_nfcore_taxapus_pipeline/main.nf](../subworkflows/local/utils_nfcore_taxapus_pipeline/main.nf)
 
 It defines two subworkflows for pipeline initialisation and completion, adapted from nf-core. Additionally, it includes utility functions for parameter validation, citation text, and methods description formatting for reporting. 
 
@@ -25,7 +25,7 @@ Unlike the original nf-core implementation, the metadata samplesheet is no longe
 
 ## [nf-core/utils_nextflow_pipeline/main.nf](../subworkflows/nf-core/utils_nextflow_pipeline/main.nf)
 
-This subworkflow provides general utility functions for any Nextflow pipeline. The only introduced change is that the functionality for dumping pipeline parameters to a JSON file has been moved to the [main workflow](../workflows/taxassignwf.nf). This adjustment ensures that the JSON file with parameters is generated in a way that makes it easy to parse and include in the final HTML report.
+This subworkflow provides general utility functions for any Nextflow pipeline. The only introduced change is that the functionality for dumping pipeline parameters to a JSON file has been moved to the [main workflow](../workflows/taxapus.nf). This adjustment ensures that the JSON file with parameters is generated in a way that makes it easy to parse and include in the final HTML report.
 
 ## [nf-core/utils_nfcore_pipeline/main.nf](../subworkflows/nf-core/utils_nfcore_pipeline/main.nf)
 

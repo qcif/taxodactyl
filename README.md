@@ -1,12 +1,17 @@
-<p align="center" style="max-width:400px; margin:auto;">
-    <img src="docs/images/taxapus_logo.png" alt="taxapus-logo" width="200"/>
-    <br>
-    <em>Meet TAXAPUS - your eight-armed taxonomy assistant!</em>
-</p>
+# Meet TAXAPUS - your eight-armed taxonomy assistant!
+<table>
+  <tr>
+    <td style="vertical-align:top; width:220px;">
+      <img src="docs/images/taxapus_logo.png" alt="taxapus-logo" width="200"/>
+    </td>
+    <td style="vertical-align:top;">
+      <strong>qcif/taxapus</strong> is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
+    </td>
+  </tr>
+</table>
 
-**qcif/taxapus** is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
 <p align="center" style="max-width:400px; margin:auto;">
-    <img src="docs/images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" width="350"/>
+    <img src="docs/images/taxapus_diagram.png" alt="taxapus_diagram" width="350"/>
 </p>
 
 ### Workflow Overview
@@ -153,7 +158,7 @@ The metadata file provides essential information about each sequence and must fo
 
 You can run the pipeline using the BLAST Core Nucleotide Database:
 ```bash
-nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
+nextflow run /path/to/pipeline/taxapus/main.nf \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/sequences.fasta \
     --blastdb /path/to/blastdbs/core_nt \
@@ -170,7 +175,7 @@ nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
 You can also run the pipeline using the BOLD database with the following command:
 
 ```bash
-nextflow run /path/to/pipeline/nf-daff-biosecurity-wf2/main.nf \
+nextflow run /path/to/pipeline/taxapus/main.nf \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/sequences.fasta \
     --db_type bold \

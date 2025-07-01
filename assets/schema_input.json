@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/daff/taxassignwf/master/assets/schema_input.json",
-    "title": "daff/taxassignwf pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/qcif/taxaplus/master/assets/schema_input.json",
+    "title": "qcif/taxaplus pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
