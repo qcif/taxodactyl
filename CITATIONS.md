@@ -10,7 +10,21 @@
 
 ## Pipeline tools
 
+- [BLAST+](https://pubmed.ncbi.nlm.nih.gov/20003500/)
+  
+  > Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, Madden TL. BLAST+: architecture and applications. BMC Bioinformatics. 2009 Dec 15;10:421. doi: 10.1186/1471-2105-10-421. PMID: 20003500; PMCID: PMC2803857.
 
+- [MAFFT](https://pubmed.ncbi.nlm.nih.gov/23329690/)
+  
+  > Katoh K, Standley DM. MAFFT multiple sequence alignment software version 7: improvements in performance and usability. Mol Biol Evol. 2013 Apr;30(4):772-80. doi: 10.1093/molbev/mst010. Epub 2013 Jan 16. PMID: 23329690; PMCID: PMC3603318.
+
+- [FastME]( https://pmc.ncbi.nlm.nih.gov/articles/PMC4576710/)
+  
+  > Lefort V, Desper R, Gascuel O. FastME 2.0: A Comprehensive, Accurate, and Fast Distance-Based Phylogeny Inference Program. Mol Biol Evol. 2015 Oct;32(10):2798-800. doi: 10.1093/molbev/msv150. Epub 2015 Jun 30. PMID: 26130081; PMCID: PMC4576710.
+
+- [TaxonKit]( https://pubmed.ncbi.nlm.nih.gov/34001434/)
+  
+  > Shen W, Ren H. TaxonKit: A practical and efficient NCBI taxonomy toolkit. J Genet Genomics. 2021 Sep 20;48(9):844-850. doi: 10.1016/j.jgg.2021.03.006. Epub 2021 Apr 15. PMID: 34001434.
 
 ## Software packaging/containerisation tools
 
