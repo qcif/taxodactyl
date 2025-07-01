@@ -1,3 +1,6 @@
+
+This document provides a comprehensive technical overview of the `qcif/taxapus` workflow. It describes the structure and function of the main pipeline scripts, subworkflows, and modules, as well as the configuration files and schemas that control pipeline behaviour. You will find detailed explanations of each process, how data flows through the workflow, and guidance on customisation, container usage, and parameter management. This guide is intended for users and developers who want to understand, modify, or extend the pipeline for their own for their own bioinformatics applications.
+
 # [main.nf](../main.nf)
 
 This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxapus.nf](../workflows/taxapus.nf) and finalises the pipeline run (notification emails, reports, etc.). 
@@ -19,7 +22,7 @@ These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/
 
 It defines two subworkflows for pipeline initialisation and completion, adapted from nf-core. Additionally, it includes utility functions for parameter validation, citation text, and methods description formatting for reporting. 
 
-Unlike the original nf-core implementation, the metadata samplesheet is no longer processed or validated within the Nextflow workflow itself. Instead, parsing and validation of metadata—as well as more comprehensive parameter validation—are handled externally by a [Python container](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs). The `validateInputParameters()` function within the workflow still checks for the presence of all required parameters and performs basic logical consistency checks (such as ensuring `blastdb` is set when using `blast_core_nt`, and that certain threshold values are in the correct order), but the main responsibility for input validation has been shifted outside the workflow.
+Unlike the original nf-core implementation, the metadata samplesheet is no longer processed or validated within the Nextflow workflow itself. Instead, parsing and validation of metadata - as well as more comprehensive parameter validation - are handled externally by a [Python container](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs). The `validateInputParameters()` function within the workflow still checks for the presence of all required parameters and performs basic logical consistency checks (such as ensuring `blastdb` is set when using `blast_core_nt`, and that certain threshold values are in the correct order), but the main responsibility for input validation has been shifted outside the workflow.
 
 ---
 
@@ -29,7 +32,7 @@ This subworkflow provides general utility functions for any Nextflow pipeline. T
 
 ## [nf-core/utils_nfcore_pipeline/main.nf](../subworkflows/nf-core/utils_nfcore_pipeline/main.nf)
 
-This file provides utility functions for nf-core pipelines, including configuration checks, workflow version reporting, terminal log colouring, and sending summary emails or notifications (e.g., on completion or failure). It helps ensure users are informed about pipeline status and results, and supports standardised reporting and notifications. No changes were introduced to this file.
+This file provides utility functions for nf-core pipelines, including configuration checks, workflow version reporting, terminal log colouring, and sending summary emails or notifications (e.g. on completion or failure). It helps ensure users are informed about pipeline status and results, and supports standardised reporting and notifications. No changes were introduced to this file.
 
 ## [nf-core/utils_nfschema_plugin/main.nf](../subworkflows/nf-core/utils_nfschema_plugin/main.nf)
 
@@ -102,18 +105,18 @@ The `FASTME` module performs phylogenetic tree construction using the FastME too
 
 ## [report](../modules/report/main.nf)
 
-The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps—including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) to produce the report.
+The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps - including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) to produce the report.
 
 > [!NOTE]
-> The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
-> To publish a file to the output directory, use the `publishDir` directive within your process definition. This directive specifies where output files should be copied or moved after the process completes, e.g. `publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename"`. More information in the [Nextflow documentation]( https://www.nextflow.io/docs/latest/process.html). 
-> Some input parameters are not parsed to the scripts executed in the modules as arguments, but rather using the environment variables. In those cases, we need to ensure they are available within the module’s container, e.g. `containerOptions "--bind ${file(params.sequences).parent}"`.
+> - The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
+> - To publish a file to the output directory, use the `publishDir` directive within your process definition. This directive specifies where output files should be copied or moved after the process completes, e.g. `publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename"`. More information in the [Nextflow documentation]( https://www.nextflow.io/docs/latest/process.html). 
+> - Some input parameters are not parsed to the scripts executed in the modules as arguments, but rather using the environment variables. In those cases, we need to ensure they are available within the module’s container, e.g. `containerOptions "--bind ${file(params.sequences).parent}"`.
 
 ---
 
 # Configuration
 
-The pipeline uses several configuration files located in the [`conf/`](../conf/). They are all linked to the pipeline using [nextflow.config](../nextflow.config) file placed in the main project directory. See the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html) for more details.
+The pipeline uses several configuration files located in the [`conf/` folder](../conf/). They are all linked to the pipeline using [nextflow.config](../nextflow.config) file placed in the main project directory. See the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html) for more details.
 
 ## [`conf/params.config`](../conf/params.config) 
 Defines all pipeline parameters and their default values, such as input file names, thresholds, and output file names. These parameters can be overridden by user-supplied config files, command-line options or directly in this file. See the [customisation document](customise.md) for examples.
@@ -133,7 +136,7 @@ You can also change the container for a process but we cannot guarantee the comp
 Use `withLabel` or `withName` selectors to specify a container. If a process matches both a `withLabel` and a `withName` rule, the most specific rule (usually `withName`) takes precedence for the container.
 
 ## [`conf/profiles.config`](../conf/profiles.config)
-Contains execution profiles for different environments (e.g., `singularity`, `docker`, `conda`, `apptainer`, `test`). Profiles can enable or disable container engines and set other environment-specific options.
+Contains execution profiles for different environments (e.g., `singularity`, `docker`, `conda`, `apptainer`, `test`). Profiles can enable or disable container engines and set other environment-specific options. This pipeline was only tested with the `singularity` and `test` profiles.
 
 ## [`conf/test.config`](../conf/test.config)
 Provides a minimal test dataset and settings for quick pipeline validation. Used with the `-profile test` option.

@@ -1,6 +1,6 @@
 {
-    "name": "qcif/taxaplus",
-    "homePage": "https://github.com/qcif/taxaplus",
+    "name": "qcif/taxapus",
+    "homePage": "https://github.com/qcif/taxapus",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
