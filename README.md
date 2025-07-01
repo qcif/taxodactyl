@@ -276,7 +276,14 @@ The workflow was designed by:
 - Shaun Bochow
 - Grace Sun
 
-It uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
+## Citations
+
+If you use **qcif/taxapus** for your analysis, please cite it using the following
+> Antczak, M., Hyde, C., Li, Lanxi (Daisy), Murigneux, V., Williams, S., Thang, M., Pease, B., Bochow, S., & Sun, G. (2025). TAXAPUS - your eight-armed taxonomy assistant. WorkflowHub. https://doi.org/10.48546/WORKFLOWHUB.WORKFLOW.1782.1
+
+An extensive list of references for the tools used by the pipeline can be found in the [CITATIONS.md](CITATIONS.md) file.
+
+**qcif/taxaplus** uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
 >
