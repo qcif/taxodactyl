@@ -99,6 +99,7 @@ nextflow run $pipeline_folder/$version/main.nf \\
     --taxdb $pipeline_folder/.taxonkit/ \\
     --ncbi_api_key ${ncbi_api_key} \\
     --ncbi_user_email ${ncbi_user_email} \\
+    --outdir $tests_folder/results/${version}_${today} \\
     -c $tests_folder/conf/$version.config \\
     -resume
 EOF
