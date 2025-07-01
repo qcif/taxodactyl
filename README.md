@@ -46,7 +46,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 ## Usage
 
-**Software**
+### Software
 
 To run the **qcif/taxapus** pipeline, you will need the following software installed:
 
@@ -62,27 +62,27 @@ To run the **qcif/taxapus** pipeline, you will need the following software insta
   *Tested version: 3.7.0*  
 
 > [!NOTE]
-> - Instructions on how to set up Nextflow and a compatible version of Java on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
+> - Instructions on how to set up Nextflow and a compatible version of Java can be found on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
 > - To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
 > - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
-> - The pipeline was tested only on a Linux-based operating system—specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
+> - The pipeline was tested only on a Linux-based operating system - specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
 > - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md). 
 
-**NCBI API Key**
+### NCBI API Key
 
 API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
 
-**TaxonKit**
+### TaxonKit
 
 [Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder.
 
-**BLAST Core Nucleotide Database**
+### BLAST Core Nucleotide Database
 
 To search sequences against the BLAST Core Nucleotide Database, you must download it first. We recommend running the `update_blastdb.pl` program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
-**Sequences file (`sequences.fasta`)**
+### Sequences file (`sequences.fasta`)
 
 You will need a FASTA file containing the query sequences (up to 100), e.g.
 ```
@@ -95,7 +95,7 @@ AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGAC
 > - Example can be downloaded from [`test/query.fasta`](test/query.fasta).
 
 
-**Metadata file (`metadata.csv`)**
+### Metadata file (`metadata.csv`)
 
 The metadata file provides essential information about each sequence and must follow the structure below. Each row corresponds to a sample and should include required and, optionally, additional columns.
 

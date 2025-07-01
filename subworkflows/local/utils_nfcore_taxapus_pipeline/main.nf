@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the qcif/taxaplus pipeline
+// Subworkflow with functionality specific to the qcif/taxapus pipeline
 //
 
 /*

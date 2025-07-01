@@ -1,10 +1,10 @@
 Run Name: $runName
 
 <% if (success){
-    out << "## qcif/taxaplus execution completed successfully! ##"
+    out << "## qcif/taxapus execution completed successfully! ##"
 } else {
     out << """####################################################
-## qcif/taxaplus execution completed unsuccessfully! ##
+## qcif/taxapus execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -27,5 +27,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-qcif/taxaplus
-https://github.com/qcif/taxaplus
+qcif/taxapus
+https://github.com/qcif/taxapus

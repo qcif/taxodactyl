@@ -1,6 +1,6 @@
 ## Pipeline specific parameters
 
-This document describes the parameters available for the **qcif/taxaplus** Nextflow pipeline.
+This document describes the parameters available for the **qcif/taxapus** Nextflow pipeline.
 
 ---
 
@@ -11,7 +11,7 @@ This document describes the parameters available for the **qcif/taxaplus** Nextf
 | `db_type`      | string  | 'blast_core_nt'   | Type of reference database to use for taxonomic assignment. Allowed: `blast_core_nt`, `bold`.     | Must be one of `blast_core_nt`, `bold`. Default: `blast_core_nt`.                             |
 | `metadata`     | string  | 'metadata.csv'    | CSV file containing sample metadata. Must have columns: `sample_id`, `locus`, `preliminary_id`.  | Must be a valid CSV file path, no spaces, `.csv` extension, required columns.                 |
 | `outdir`       | string  | 'output'          | Directory where output files will be saved.                                                      | Must be a valid directory path. Default: `output`.                                            |
-| `sequences`    | string  | 'sequences.fasta' | FASTA file containing input sequences for analysis.                                              | Must be a valid file path, no spaces, `.fa`, `.fna`, `.fasta`, or `.fnasta` extension.        |
+| `sequences`    | string  | 'sequences.fasta' | FASTA file containing input sequences for analysis.                                              | Must be a valid file path, no spaces, `.fa`, `.fna`, , or `.fasta` extension.        |
 | `analyst_name` | string  |                   | Name of the analyst running the workflow.                                                        | Must be a string.                                                                             |
 | `facility_name`| string  |                   | Name of the facility where the workflow is executed.                                             | Must be a string.                                                                             |
 | `taxdb`        | string  |                   | Directory where NCBI's taxdump files can be found.                                               | Must be a valid directory path. Following files should be present: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt                                                               |
@@ -62,7 +62,7 @@ This document describes the parameters available for the **qcif/taxaplus** Nextf
 | `gbif_accepted_status`    | string  | 'accepted,doubtful'                       | Comma-separated list of GBIF taxonomic statuses to be considered.                                | Comma-separated, no spaces.          |
 | `gbif_limit_records`      | int     | 500                                       | Maximum number of records per request to the GBIF API.                                           | Integer ≥ 1. Default: 500.           |
 | `gbif_max_occurrence_records` | int | 5000                                      | Maximum number of GBIF records fetched for plotting occurrence distribution map.                 | Integer ≥ 1. Default: 5000.          |
-| `ncbi_api_key` | string  | null              | Used to authenticate with NCBI Entrez API for increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317)                              | Must not contain spaces.                                                                      |
+| `ncbi_api_key` | string  | null              | Used to authenticate with NCBI Entrez API for increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).                              | Must not contain spaces.                                                                      |
 | `ncbi_user_email` | string | null             | Email for NCBI Entrez API if API key not provided.                                               | Must be a valid email address.                                                                |
 
 ---
@@ -109,7 +109,7 @@ This document describes the parameters available for the **qcif/taxaplus** Nextf
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing all BLAST hits.                                           | No spaces, `.fa`, `.fna`, `.fasta`, or `.fnasta` extension. |
+| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing all BLAST hits.                                           | No spaces, `.fa`, `.fna`, , or `.fasta` extension. |
 | `hits_json_filename` | string | 'all_hits.json'   | Filename for the JSON file containing all BLAST hits.                                            | No spaces, `.json` extension.        |
 
 ---
@@ -120,8 +120,8 @@ This document describes the parameters available for the **qcif/taxaplus** Nextf
 |----------------------------------|---------|--------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
 | `boxplot_img_filename`           | string  | 'candidates_identity_boxplot.png' | Filename for the PNG image of candidate identity boxplot.                                     | No spaces, `.png` extension.         |
 | `candidates_csv_filename`        | string  | 'candidates.csv'               | Filename for the CSV file listing candidate hits.                                                | No spaces, `.csv` extension.         |
-| `candidates_fasta_filename`      | string  | 'candidates.fasta'             | Filename for the FASTA file of candidate sequences.                                              | No spaces, `.fa`, `.fna`, `.fasta`, or `.fnasta` extension. |
-| `candidates_phylogeny_fasta_filename` | string | 'candidates_phylogeny.fasta'  | Filename for the FASTA file of candidate sequences for the phylogenetic tree.                    | No spaces, `.fa`, `.fna`, `.fasta`, or `.fnasta` extension. |
+| `candidates_fasta_filename`      | string  | 'candidates.fasta'             | Filename for the FASTA file of candidate sequences.                                              | No spaces, `.fa`, `.fna`, , or `.fasta` extension. |
+| `candidates_phylogeny_fasta_filename` | string | 'candidates_phylogeny.fasta'  | Filename for the FASTA file of candidate sequences for the phylogenetic tree.                    | No spaces, `.fa`, `.fna`, , or `.fasta` extension. |
 | `candidates_json_filename`       | string  | 'candidates.json'              | Filename for the JSON file of candidate hits.                                                    | No spaces, `.json` extension.        |
 | `candidates_sources_json_filename`| string | 'candidates_sources.json'      | Filename for the JSON file listing sources of candidate species.                                 | No spaces, `.json` extension.        |
 | `independent_sources_json_filename`| string | 'aggregated_sources.json'      | Filename for the JSON file listing aggregated publications supporting taxonomic associations.     | No spaces, `.json` extension.        |
