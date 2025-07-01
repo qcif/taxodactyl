@@ -1,5 +1,5 @@
 <p align="center" style="max-width:400px; margin:auto;">
-    <img src="docs/images/taxapus_logo.png.png" alt="taxapus-logo" width="350"/>
+    <img src="docs/images/taxapus_logo.png" alt="taxapus-logo" width="350"/>
 </p>
 
 **Meet TAXAPUS - your eight-armed taxonomy assistant!**
