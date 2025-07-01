@@ -1,10 +1,12 @@
-# daff/taxassignwf
+<p align="center" style="max-width:400px; margin:auto;">
+    <img src="docs/images/taxapus_logo.png.png" alt="taxapus-logo" width="350"/>
+</p>
 
-Meet TAXAPUS - your eight-armed taxonomy assistant!
+**Meet TAXAPUS - your eight-armed taxonomy assistant!**
 
 ## Introduction
 
-**daff/taxassignwf** is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
+**qcif/taxapus** is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
 <p align="center" style="max-width:400px; margin:auto;">
     <img src="docs/images/daff-wf2.png" alt="daff-tax-assignment-wf2-diagram" width="350"/>
 </p>
@@ -43,7 +45,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 **Software**
 
-To run the **daff/taxassignwf** pipeline, you will need the following software installed:
+To run the **qcif/taxapus** pipeline, you will need the following software installed:
 
 - **[Nextflow](https://www.nextflow.io/)**  
   *Tested versions: 24.10.3, 24.10.6*  
@@ -258,7 +260,7 @@ After running the pipeline, the output directory will contain a separate folder 
     <img src="docs/images/Australian-Biocommons-Logo-Horizontal-RGB.png" alt="Australian BioCommons" height="60"/>
 </p>
 
-daff/taxassignwf was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
+qcif/taxapus was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
 
 The workflow was designed by:
 - Cameron Hyde
