@@ -101,7 +101,39 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Required Columns
 1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
-2. **locus** - Name of the genetic locus for the sample. Check available loci in `assets/loci.json`. You can override allowed loci by setting the `allowed_loci_file` parameter. For samples with no locus (e.g., viruses or BOLD runs), enter `NA`.
+2. **locus** - Name of the genetic locus for the sample. Choose from the following:
+- NA (for samples with no locus, e.g. viruses or BOLD runs)
+- 16s
+- 28s
+- act
+- alt-a1
+- ß-tub
+- cmda
+- co2
+- coi
+- cytb
+- dnax
+- ef1a
+- fusa
+- gapa
+- gyrb
+- hsp60
+- its
+- its1
+- its2
+- leus
+- lsu
+- matk
+- rbcl
+- recn
+- reca
+- rpob
+- rplb
+- rpod
+- rpb2
+> [!NOTE]
+> - Loci synonyms will be checked as well (see [`assets/loci.json`](assets/loci.json)). 
+> - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
 3. **preliminary_id** - Preliminary morphology ID of the sample.
 
 #### Optional Columns
