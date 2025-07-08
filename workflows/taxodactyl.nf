@@ -5,7 +5,7 @@
 */
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_taxapus_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { dumpParametersToJSON } from '../subworkflows/nf-core/utils_nextflow_pipeline'
 include { BLAST_BLASTN } from '../modules/blast/blastn/main' 
 include { MAFFT_ALIGN } from '../modules/mafft/align/main'
@@ -27,7 +27,7 @@ include { BOLD_SEARCH } from '../modules/bold/search/main'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow TAXAPUS {
+workflow TAXODACTYL {
 
     main:
 

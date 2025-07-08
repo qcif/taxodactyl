@@ -1,6 +1,6 @@
 {
-    "name": "qcif/taxapus",
-    "homePage": "https://github.com/qcif/taxapus",
+    "name": "qcif/taxodactyl",
+    "homePage": "https://github.com/qcif/taxodactyl",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

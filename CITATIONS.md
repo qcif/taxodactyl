@@ -1,4 +1,4 @@
-# qcif/taxapus: Citations
+# qcif/taxodactyl: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
