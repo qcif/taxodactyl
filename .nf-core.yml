@@ -14,9 +14,9 @@ lint:
     - .github/CONTRIBUTING.md
     - .github/.dockstore.yml
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
@@ -37,9 +37,9 @@ lint:
     - .github/CONTRIBUTING.md
     - .github/.dockstore.yml
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
@@ -51,9 +51,9 @@ lint:
     - .prettierignore
     - .prettierignore
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
@@ -88,9 +88,9 @@ lint:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
@@ -103,17 +103,17 @@ lint:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
     - assets/multiqc_config.yml
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_light.png
-    - docs/images/nf-core-taxapus_logo_dark.png
+    - assets/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_light.png
+    - docs/images/nf-core-taxodactyl_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
@@ -123,8 +123,8 @@ lint:
 
 template:
   org: daff
-  name: taxapus
-  description: TAXAPUS - your eight-armed taxonomy assistant!
+  name: taxodactyl
+  description: TAXODACTYL - High-confidence, evidence-based taxonomic assignment of DNA sequences
   author: Magdalena Antczak, Cameron Hyde, Daisy Li
   version: 0.1.0dev
   force: true

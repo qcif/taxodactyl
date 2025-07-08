@@ -1,6 +1,6 @@
 ## Pipeline specific parameters
 
-This document describes the parameters available for the **qcif/taxapus** Nextflow pipeline.
+This document describes the parameters available for the **qcif/taxodactyl** Nextflow pipeline.
 
 ---
 

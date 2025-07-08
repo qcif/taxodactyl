@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    qcif/taxapus
+    qcif/taxodactyl
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/qcif/taxapus
+    Github : https://github.com/qcif/taxodactyl
 ----------------------------------------------------------------------------------------
 */
 
@@ -13,9 +13,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TAXAPUS  } from './workflows/taxapus'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxapus_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxapus_pipeline'
+include { TAXODACTYL  } from './workflows/taxodactyl'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxa
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow QCIF_TAXAPUS {
+workflow QCIF_TAXODACTYL {
 
     // take:
 
@@ -35,7 +35,7 @@ workflow QCIF_TAXAPUS {
     //
     // WORKFLOW: Run pipeline
     //
-    TAXAPUS (
+    TAXODACTYL (
 
     )
 }
@@ -63,7 +63,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    QCIF_TAXAPUS (
+    QCIF_TAXODACTYL (
 
     )
     //

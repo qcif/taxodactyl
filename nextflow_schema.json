@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/qcif/taxapus/master/nextflow_schema.json",
-    "title": "qcif/taxapus pipeline parameters",
-    "description": "TAXAPUS - your eight-armed taxonomy assistant!",
+    "$id": "https://raw.githubusercontent.com/qcif/taxodactyl/master/nextflow_schema.json",
+    "title": "qcif/taxodactyl pipeline parameters",
+    "description": "TAXODACTYL - High-confidence, evidence-based taxonomic assignment of DNA sequences",
     "type": "object",
     "$defs": {
         "input_output_options": {

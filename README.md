@@ -1,17 +1,17 @@
-# Meet TAXAPUS - your eight-armed taxonomy assistant!
+# TAXODACTYL - High-confidence, evidence-based taxonomic assignment of DNA sequences
 <table>
   <tr>
     <td style="vertical-align:top; width:50%;">
-      <img src="docs/images/taxapus_logo.png" alt="taxapus-logo" width="100%"/>
+      <img src="docs/images/taxodactyl_logo.png" alt="taxodactyl-logo" width="100%"/>
     </td>
     <td style="vertical-align:top; width:50%;">
-      <strong>qcif/taxapus</strong> is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
+      <strong>qcif/taxodactyl</strong> is a modular, reproducible Nextflow workflow for the conservative taxonomy assignment to DNA sequences, designed for high-confidence, auditable results in biosecurity and biodiversity contexts. The workflow integrates multiple bioinformatics tools and databases, automates best-practice analysis steps, and produces detailed reports with supporting evidence for each taxonomic assignment.
     </td>
   </tr>
 </table>
 
 <p align="center" style="max-width:400px; margin:auto;">
-    <img src="docs/images/taxapus_diagram.png" alt="taxapus_diagram" width="350"/>
+    <img src="docs/images/taxodactyl_diagram.png" alt="taxodactyl_diagram" width="350"/>
 </p>
 
 ### Workflow Overview
@@ -48,7 +48,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 ### Software
 
-To run the **qcif/taxapus** pipeline, you will need the following software installed:
+To run the **qcif/taxodactyl** pipeline, you will need the following software installed:
 
 - **[Nextflow](https://www.nextflow.io/)**  
   *Tested versions: 24.10.3, 24.10.6*  
@@ -190,7 +190,7 @@ The metadata file provides essential information about each sequence and must fo
 
 You can run the pipeline using the BLAST Core Nucleotide Database:
 ```bash
-nextflow run /path/to/pipeline/taxapus/main.nf \
+nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/sequences.fasta \
     --blastdb /path/to/blastdbs/core_nt \
@@ -207,7 +207,7 @@ nextflow run /path/to/pipeline/taxapus/main.nf \
 You can also run the pipeline using the BOLD database with the following command:
 
 ```bash
-nextflow run /path/to/pipeline/taxapus/main.nf \
+nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --metadata /path/to/metadata.csv \
     --sequences /path/to/sequences.fasta \
     --db_type bold \
@@ -295,7 +295,7 @@ After running the pipeline, the output directory will contain a separate folder 
     <img src="docs/images/Australian-Biocommons-Logo-Horizontal-RGB.png" alt="Australian BioCommons" height="60"/>
 </p>
 
-qcif/taxapus was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
+qcif/taxodactyl was originally written by [Magdalena Antczak](https://github.com/mantczakaus/), [Cameron Hyde](https://github.com/neoformit), [Daisy Li](https://github.com/daisyli-qcif) from [QCIF Ltd](https://www.qcif.edu.au/). The project was funded by the [Department of Agriculture, Fisheries and Forestry](https://www.agriculture.gov.au/) and the [Australian BioCommons](https://www.biocommons.org.au/).
 
 The workflow was designed by:
 - Cameron Hyde
@@ -310,8 +310,8 @@ The workflow was designed by:
 
 ## Citations
 
-If you use **qcif/taxapus** for your analysis, please cite it using the following
-> Antczak, M., Hyde, C., Li, Lanxi (Daisy), Murigneux, V., Williams, S., Thang, M., Pease, B., Bochow, S., & Sun, G. (2025). TAXAPUS - your eight-armed taxonomy assistant. WorkflowHub. https://doi.org/10.48546/WORKFLOWHUB.WORKFLOW.1782.1
+If you use **qcif/taxodactyl** for your analysis, please cite it using the following
+> Antczak, M., Hyde, C., Li, Lanxi (Daisy), Murigneux, V., Williams, S., Thang, M., Pease, B., Bochow, S., & Sun, G. (2025). TAXODACTYL - High-confidence, evidence-based taxonomic assignment of DNA sequences. WorkflowHub. https://doi.org/10.48546/WORKFLOWHUB.WORKFLOW.1782.1
 
 An extensive list of references for the tools used by the pipeline can be found in the [CITATIONS.md](CITATIONS.md) file.
 
