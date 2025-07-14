@@ -142,6 +142,13 @@
                     "description": "The minimum number of sequences to be included (non-candidate sequences will be included until this limit is reached).",
                     "errorMessage": "Parameter 'phylogeny_min_hit_sequences' must be an integer >= 1. Default: 10."
                 },
+                "phylogeny_max_hits_per_species": {
+                    "type": "integer",
+                    "default": 30,
+                    "minimum": 1,
+                    "description": "The maximum number of hits per species to be included into phylogenetic tree.",
+                    "errorMessage": "Parameter 'phylogeny_max_hits_per_species' must be an integer >= 1. Default: 30."
+                },
                 "allowed_loci_file": {
                     "type": "string",
                     "format": "file-path",

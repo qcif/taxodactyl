@@ -48,6 +48,7 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.outdir} != null ]; then echo 'export OUTPUT_DIR=${params.outdir}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_identity} != null ]; then echo 'export PHYLOGENY_MIN_HIT_IDENTITY=${params.phylogeny_min_hit_identity}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_sequences} != null ]; then echo 'export PHYLOGENY_MIN_HIT_SEQUENCES=${params.phylogeny_min_hit_sequences}' >> env_vars.sh; fi
+    if [ ${params.phylogeny_max_hits_per_species} != null ]; then echo 'export PHYLOGENY_MAX_HITS_PER_SPECIES=${params.phylogeny_max_hits_per_species}' >> env_vars.sh; fi
     if [ ${params.report_debug} != null ]; then echo 'export REPORT_DEBUG=${params.report_debug}' >> env_vars.sh; fi
     if [ ${params.taxdb} != null ]; then echo 'export TAXONKIT_DATA=${file(params.taxdb)}' >> env_vars.sh; fi
     if [ ${params.taxonomy_filename} != null ]; then echo 'export TAXONOMY_FILENAME=${params.taxonomy_filename}' >> env_vars.sh; fi
