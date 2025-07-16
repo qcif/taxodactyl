@@ -44,8 +44,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `min_nt`                       | int     | 300     | Minimum alignment length for a BLAST hit to be considered.                                       | Integer ≥ 0. Default: 300.           |
 | `min_q_coverage`               | float   | 0.85    | Minimum query coverage for a BLAST hit to be considered.                                         | Number 0–1. Default: 0.85.           |
 | `phylogeny_min_hit_identity`   | float   | 0.95    | Minimum hit identity (0-1) to be included in the phylogenetic tree.                              | Number 0–1. Default: 0.95.           |
-| `phylogeny_min_hit_sequences`  | int     | 30      | Minimum number of sequences to be included in the phylogenetic tree.                             | Integer ≥ 1. Default: 10.            |
-| `phylogeny_max_hits_per_species`  | int     | 10      | Maximum number of hits per species to be included into phylogenetic tree.                             | Integer ≥ 1. Default: 30.            |
+| `phylogeny_min_hit_sequences`  | int     | 10      | Minimum number of sequences to be included in the phylogenetic tree.                             | Integer ≥ 1. Default: 10.            |
+| `phylogeny_max_hits_per_species`  | int     | 30      | Maximum number of hits per species to be included into phylogenetic tree.                             | Integer ≥ 1. Default: 30.            |
 | `allowed_loci_file`            | string  |         | JSON file describing permitted loci and their synonyms.                                          | Valid file path, no spaces, `.json`. |
 
 ---
