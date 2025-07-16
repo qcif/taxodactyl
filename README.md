@@ -132,6 +132,7 @@ The metadata file provides essential information about each sequence and must fo
     - rpod
     - rpb2
 > [!NOTE]
+> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
 > - Loci synonyms will be checked as well (see [`assets/loci.json`](assets/loci.json)). 
 > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
 3. **preliminary_id** - Preliminary morphology ID of the sample.
