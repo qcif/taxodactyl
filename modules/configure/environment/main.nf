@@ -15,6 +15,7 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.blast_max_target_seqs_for_report} != null ]; then echo 'export BLAST_MAX_TARGET_SEQS=${params.blast_max_target_seqs_for_report}' >> env_vars.sh; fi
     if [ ${params.bold_skip_orientation} != null ]; then echo 'export BOLD_SKIP_ORIENTATION=${params.bold_skip_orientation}' >> env_vars.sh; fi
     if [ ${params.bold_taxonomy_json} != null ]; then echo 'export BOLD_TAXONOMY_JSON=${params.bold_taxonomy_json}' >> env_vars.sh; fi
+    if [ ${params.bold_database_name} != null ]; then echo 'export BOLD_DATABASE=${params.bold_database_name}' >> env_vars.sh; fi
     if [ ${params.boxplot_img_filename} != null ]; then echo 'export BOXPLOT_IMG_FILENAME=${params.boxplot_img_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_csv_filename} != null ]; then echo 'export CANDIDATES_CSV_FILENAME=${params.candidates_csv_filename}' >> env_vars.sh; fi
     if [ ${params.candidates_fasta_filename} != null ]; then echo 'export CANDIDATES_FASTA_FILENAME=${params.candidates_fasta_filename}' >> env_vars.sh; fi

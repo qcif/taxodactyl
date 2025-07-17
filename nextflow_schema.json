@@ -79,6 +79,12 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'bold_skip_orientation' must be one of [0, 1]. Default: 0."
                 },
+                "bold_database_name": {
+                    "type": "string",
+                    "default": "COX1_SPECIES_PUBLIC",
+                    "description": "Name of the BOLD database to use for taxonomic assignment.",
+                    "errorMessage": "Parameter 'bold_database_name' must be a string."
+                },
                 "max_candidates_for_analysis": {
                     "type": "integer",
                     "default": 3,

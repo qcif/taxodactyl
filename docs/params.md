@@ -30,6 +30,7 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | Name                  | Type    | Default | Description                                                                                      | Requirements                        |
 |-----------------------|---------|---------|--------------------------------------------------------------------------------------------------|--------------------------------------|
 | `bold_skip_orientation` | int   | 0       | If 1, BOLD runs skip orientation and submit both forward and reverse sequences to the API.        | Must be 0 or 1. Default: 0.          |
+| `bold_database_name` | string   | 'COX1_SPECIES_PUBLIC'       | Name of the BOLD database to use for taxonomic assignment.        | Must be a string.          |
 
 ---
 
