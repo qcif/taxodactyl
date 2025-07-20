@@ -1,0 +1,33 @@
+name: Build and Push Docker Image on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION_TAG: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Check that VERSION file is up-to-date
+        run: |
+          if [ ! -f VERSION ]; then
+            echo "VERSION file not found in repository"
+            exit 1
+          fi
+          if [ "v$(cat VERSION)" != "${{ env.VERSION_TAG }}" ]; then
+            echo "VERSION file does not match the release tag. Release tag: ${{ env.VERSION_TAG }}, VERSION file: $(cat VERSION)"
+            exit 1
+          fi
+
+      - name: Build and push Docker image
+        run: cd scripts && ./docker_build.sh -p -t "$VERSION_TAG"

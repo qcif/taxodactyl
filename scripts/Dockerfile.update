@@ -1,0 +1,3 @@
+FROM neoformit/daff-taxonomic-assignment:latest
+
+COPY . /app/scripts

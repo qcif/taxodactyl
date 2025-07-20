@@ -1,0 +1,171 @@
+{
+  "offset": 0,
+  "limit": 1,
+  "endOfRecords": false,
+  "count": 89,
+  "results": [
+    {
+      "key": 4596782515,
+      "datasetKey": "50c9509d-22c7-4a22-a47d-8c48425ef4a7",
+      "publishingOrgKey": "28eb1a3f-1c15-4a95-931a-4af90ecb574d",
+      "installationKey": "997448a8-f762-11e1-a439-00145eb45e9a",
+      "hostingOrganizationKey": "28eb1a3f-1c15-4a95-931a-4af90ecb574d",
+      "publishingCountry": "AU",
+      "protocol": "DWC_ARCHIVE",
+      "lastCrawled": "2025-01-20T20:21:10.296+00:00",
+      "lastParsed": "2025-01-22T01:16:29.422+00:00",
+      "crawlId": 516,
+      "projectId": "https://www.inaturalist.org/projects/environment-recovery-project",
+      "extensions": {
+        "http://rs.gbif.org/terms/1.0/Multimedia": [
+          {
+            "http://rs.tdwg.org/dwc/terms/catalogNumber": "113141935",
+            "http://purl.org/dc/terms/identifier": "https://inaturalist-open-data.s3.amazonaws.com/photos/113141935/original.jpg",
+            "http://purl.org/dc/terms/publisher": "iNaturalist",
+            "http://purl.org/dc/terms/creator": "geoffboyes",
+            "http://purl.org/dc/terms/created": "2021-02-09T13:12:55-08:00",
+            "http://purl.org/dc/terms/references": "https://www.inaturalist.org/photos/113141935",
+            "http://purl.org/dc/terms/type": "StillImage",
+            "http://purl.org/dc/terms/rightsHolder": "geoffboyes",
+            "http://purl.org/dc/terms/license": "http://creativecommons.org/licenses/by-nc/4.0/",
+            "http://purl.org/dc/terms/format": "image/jpeg"
+          }
+        ]
+      },
+      "basisOfRecord": "HUMAN_OBSERVATION",
+      "occurrenceStatus": "PRESENT",
+      "taxonKey": 4732786,
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732786,
+      "acceptedTaxonKey": 4732786,
+      "scientificName": "Cheiloxena westwoodii Baly Elytra, 1860",
+      "acceptedScientificName": "Cheiloxena westwoodii Baly Elytra, 1860",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena westwoodii",
+      "genericName": "Cheiloxena",
+      "specificEpithet": "westwoodii",
+      "taxonRank": "SPECIES",
+      "taxonomicStatus": "ACCEPTED",
+      "iucnRedListCategory": "NE",
+      "dateIdentified": "2024-03-02T17:48:55",
+      "decimalLatitude": -37.39422,
+      "decimalLongitude": 148.771557,
+      "coordinateUncertaintyInMeters": 565.0,
+      "continent": "OCEANIA",
+      "stateProvince": "Victoria",
+      "gadm": {
+        "level0": {
+          "gid": "AUS",
+          "name": "Australia"
+        },
+        "level1": {
+          "gid": "AUS.10_1",
+          "name": "Victoria"
+        },
+        "level2": {
+          "gid": "AUS.10.19_1",
+          "name": "East Gippsland"
+        }
+      },
+      "year": 2021,
+      "month": 2,
+      "day": 9,
+      "eventDate": "2021-02-09T13:12",
+      "startDayOfYear": 40,
+      "endDayOfYear": 40,
+      "issues": [
+        "COORDINATE_ROUNDED",
+        "CONTINENT_DERIVED_FROM_COORDINATES",
+        "TAXON_MATCH_TAXON_ID_IGNORED"
+      ],
+      "modified": "2024-03-09T05:12:56.000+00:00",
+      "lastInterpreted": "2025-01-22T01:16:29.422+00:00",
+      "references": "https://www.inaturalist.org/observations/69694592",
+      "license": "http://creativecommons.org/licenses/by-nc/4.0/legalcode",
+      "isSequenced": false,
+      "identifiers": [
+        {
+          "identifier": "69694592"
+        }
+      ],
+      "media": [
+        {
+          "type": "StillImage",
+          "format": "image/jpeg",
+          "references": "https://www.inaturalist.org/photos/113141935",
+          "created": "2021-02-09T21:12:55.000+00:00",
+          "creator": "geoffboyes",
+          "publisher": "iNaturalist",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "rightsHolder": "geoffboyes",
+          "identifier": "https://inaturalist-open-data.s3.amazonaws.com/photos/113141935/original.jpg"
+        }
+      ],
+      "facts": [],
+      "relations": [],
+      "isInCluster": false,
+      "datasetName": "iNaturalist research-grade observations",
+      "recordedBy": "geoffboyes",
+      "identifiedBy": "borisb",
+      "geodeticDatum": "WGS84",
+      "class": "Insecta",
+      "countryCode": "AU",
+      "recordedByIDs": [],
+      "identifiedByIDs": [],
+      "country": "Australia",
+      "gbifRegion": "OCEANIA",
+      "publishedByGbifRegion": "OCEANIA",
+      "rightsHolder": "geoffboyes",
+      "identifier": "69694592",
+      "http://unknown.org/nick": "geoffboyes",
+      "verbatimEventDate": "2021/02/09 1:12 PM AEDT",
+      "verbatimLocality": "Mt Ellery Track, Goongerah VIC 3888, Australia",
+      "collectionCode": "Observations",
+      "gbifID": "4596782515",
+      "occurrenceID": "https://www.inaturalist.org/observations/69694592",
+      "taxonID": "905029",
+      "catalogNumber": "69694592",
+      "institutionCode": "iNaturalist",
+      "eventTime": "13:12:00+11:00",
+      "identificationRemarks": "[keyed](https://museumsvictoria.com.au/media/4923/jmmv19925304.pdf).",
+      "http://unknown.org/captive": "wild",
+      "identificationID": "456221824"
+    }
+  ],
+  "facets": [
+    {
+      "field": "SPECIES_KEY",
+      "counts": [
+        {
+          "name": "4732786",
+          "count": 40
+        },
+        {
+          "name": "4732784",
+          "count": 31
+        },
+        {
+          "name": "4732787",
+          "count": 9
+        },
+        {
+          "name": "4732788",
+          "count": 5
+        },
+        {
+          "name": "4732785",
+          "count": 4
+        }
+      ]
+    }
+  ]
+}

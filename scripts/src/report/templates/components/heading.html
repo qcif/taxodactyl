@@ -1,0 +1,25 @@
+<div class="container heading mb-3">
+  <div class="row mt-5 mb-2 align-items-center">
+    <div class="col-9 mr-3">
+      <h1>{{ title }}</h1>
+      <p class="lead">
+        Sample ID: <code>{{ metadata.sample_id }}</code>
+        <br>
+        Reference database: <code>{% if bold %}BOLD{% else %}BLAST{% endif %}</code>
+      </p>
+    </div>
+    <div class="col-3">
+      <img
+        class="img-fluid"
+        src="{{ static['img']['daff-logo.png'] }}"
+        alt="Department of Agriculture, Fisheries and Forestry logo"
+      />
+    </div>
+  </div>
+  <p>
+    Report generated from the
+    <a href="https://github.com/qcif/taxodactyl/tree/main" target="_blank">
+      Taxonomic Identification Nextflow workflow
+    </a>
+  </p>
+</div>

@@ -1,0 +1,12 @@
+{% macro render_subjective_input(identifier) %}
+<div class="form-group my-3">
+  <h3>Analyst evaluation</h3>
+  <textarea
+    class="form-control"
+    name="subjective-{{ identifier }}"
+    id="subjective-{{ identifier }}"
+    rows="4"
+    placeholder="Your subjective review"
+  ></textarea>
+</div>
+{% endmacro %}

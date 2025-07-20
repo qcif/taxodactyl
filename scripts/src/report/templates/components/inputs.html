@@ -1,0 +1,178 @@
+{% from "macros/info-badge.html" import info_badge %}
+
+<h3>
+  Sample metadata
+  {{ info_badge("These details are derived from your metadata.csv input file.") }}
+</h3>
+
+<table class="table table-striped my-3">
+  <tbody>
+    {% for key, value in metadata.items() %}
+    <tr>
+      <td class="fw-bold">{{ key | replace('_', ' ') | capitalize | replace(' id', ' ID') }}</td>
+      <td>
+        {% if 'interest' in key %}
+        {% for val in value %}
+        {{ val }}<br>
+        {% endfor %}
+        {% else %}
+        {{ value }}
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td class="fw-bold">
+        Query DNA sequence
+      </td>
+      <td>
+        <button
+          class="btn btn-primary btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#inputFastaModal"
+        >View</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+{% if workflow_params or workflow_versions %}
+<div class="my-3">
+  <p class="text-center">
+    {% if workflow_params %}
+    <button
+      class="btn btn-primary btn-sm mx-2"
+      data-bs-toggle="modal"
+      data-bs-target="#inputParamsModal"
+    >
+      Workflow params
+    </button>
+    {% endif %}
+    {% if workflow_versions %}
+    <button
+      class="btn btn-primary btn-sm mx-2"
+      data-bs-toggle="modal"
+      data-bs-target="#versionsModal"
+    >
+      Program versions
+    </button>
+    {% endif %}
+  </p>
+</div>
+{% endif %}
+
+<div class="modal fade" id="inputFastaModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Input DNA sequence</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <pre>{{ input_fasta }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if workflow_params %}
+<div class="modal fade" id="inputParamsModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Workflow parameters</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped tight">
+          <tbody>
+            {% for key, value in workflow_params.items() %}
+            <tr>
+              <td class="fw-bold">
+                <code class="text-dark">
+                  {{ key }}
+                </code>
+              </td>
+              <td>
+                <code class="text-dark">
+                  {{ value }}
+                </code>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if workflow_versions %}
+<div class="modal fade" id="versionsModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Workflow program versions</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped tight">
+          <tbody>
+            {% for key, value in workflow_versions.items() %}
+            <tr>
+              <td class="fw-bold">
+                <code class="text-dark">
+                  {{ key }}
+                </code>
+              </td>
+              <td>
+                <code class="text-dark">
+                  {{ value }}
+                </code>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE GBSet PUBLIC "-//NCBI//NCBI GBSeq/EN" "https://www.ncbi.nlm.nih.gov/dtd/NCBI_GBSeq.dtd">
+<GBSet>
+  <GBSeq>
+
+    <GBSeq_locus>XM_006890677</GBSeq_locus>
+    <GBSeq_length>1554</GBSeq_length>
+    <GBSeq_strandedness>single</GBSeq_strandedness>
+    <GBSeq_moltype>mRNA</GBSeq_moltype>
+    <GBSeq_topology>linear</GBSeq_topology>
+    <GBSeq_division>MAM</GBSeq_division>
+    <GBSeq_update-date>18-FEB-2014</GBSeq_update-date>
+    <GBSeq_create-date>18-FEB-2014</GBSeq_create-date>
+    <GBSeq_definition>PREDICTED: Elephantulus edwardii prostaglandin-endoperoxide synthase 1 (prostaglandin G/H synthase and cyclooxygenase) (PTGS1), transcript variant X3, mRNA</GBSeq_definition>
+    <GBSeq_primary-accession>XM_006890677</GBSeq_primary-accession>
+    <GBSeq_accession-version>XM_006890677.1</GBSeq_accession-version>
+    <GBSeq_other-seqids>
+      <GBSeqid>ref|XM_006890677.1|</GBSeqid>
+      <GBSeqid>gi|585676795</GBSeqid>
+    </GBSeq_other-seqids>
+    <GBSeq_project>PRJNA221636</GBSeq_project>
+    <GBSeq_keywords>
+      <GBKeyword>RefSeq</GBKeyword>
+    </GBSeq_keywords>
+    <GBSeq_source>Elephantulus edwardii (Cape elephant shrew)</GBSeq_source>
+    <GBSeq_organism>Elephantulus edwardii</GBSeq_organism>
+    <GBSeq_taxonomy>Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi; Mammalia; Eutheria; Afrotheria; Macroscelidea; Macroscelididae; Elephantulus</GBSeq_taxonomy>
+    <GBSeq_comment>MODEL REFSEQ: This record is predicted by automated computational analysis. This record is derived from a genomic sequence (NW_006399842.1) annotated using gene prediction method: Gnomon.~Also see:~ Documentation of NCBI&apos;s Annotation Process; ##Genome-Annotation-Data-START## ; Annotation Provider :: NCBI ; Annotation Status :: Full annotation ; Annotation Version :: Elephantulus edwardii Annotation Release 100 ; Annotation Pipeline :: NCBI eukaryotic genome annotation pipeline ; Annotation Software Version :: 5.2 ; Annotation Method :: Best-placed RefSeq; Gnomon ; Features Annotated :: Gene; mRNA; CDS; ncRNA ; ##Genome-Annotation-Data-END##</GBSeq_comment>
+    <GBSeq_feature-table>
+      <GBFeature>
+        <GBFeature_key>source</GBFeature_key>
+        <GBFeature_location>1..1554</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>1</GBInterval_from>
+            <GBInterval_to>1554</GBInterval_to>
+            <GBInterval_accession>XM_006890677.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>organism</GBQualifier_name>
+            <GBQualifier_value>Elephantulus edwardii</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>mol_type</GBQualifier_name>
+            <GBQualifier_value>mRNA</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>isolate</GBQualifier_name>
+            <GBQualifier_value>Elephantulus edwardi_28Jun2011</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>db_xref</GBQualifier_name>
+            <GBQualifier_value>taxon:28737</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>chromosome</GBQualifier_name>
+            <GBQualifier_value>Unknown</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>sex</GBQualifier_name>
+            <GBQualifier_value>female</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>geo_loc_name</GBQualifier_name>
+            <GBQualifier_value>South Africa</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+      <GBFeature>
+        <GBFeature_key>gene</GBFeature_key>
+        <GBFeature_location>1..1554</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>1</GBInterval_from>
+            <GBInterval_to>1554</GBInterval_to>
+            <GBInterval_accession>XM_006890677.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>gene</GBQualifier_name>
+            <GBQualifier_value>PTGS1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>note</GBQualifier_name>
+            <GBQualifier_value>Derived by automated computational analysis using gene prediction method: Gnomon. Supporting evidence includes similarity to: 1 Protein</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>db_xref</GBQualifier_name>
+            <GBQualifier_value>GeneID:102851293</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+      <GBFeature>
+        <GBFeature_key>CDS</GBFeature_key>
+        <GBFeature_location>226..1554</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>226</GBInterval_from>
+            <GBInterval_to>1554</GBInterval_to>
+            <GBInterval_accession>XM_006890677.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>gene</GBQualifier_name>
+            <GBQualifier_value>PTGS1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>codon_start</GBQualifier_name>
+            <GBQualifier_value>1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>transl_table</GBQualifier_name>
+            <GBQualifier_value>1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>product</GBQualifier_name>
+            <GBQualifier_value>prostaglandin G/H synthase 1-like isoform X3</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>protein_id</GBQualifier_name>
+            <GBQualifier_value>XP_006890739.1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>db_xref</GBQualifier_name>
+            <GBQualifier_value>GeneID:102851293</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>translation</GBQualifier_name>
+            <GBQualifier_value>MLMRMVLTGKKLLPDAQLLAHRFLLRRKFIPDPQGTNLMFAFFAQHFTHQFFKTAGKMGPGFTKALGHGVDLGHIYGDNLERQYQLRLFKDGKLKYQVLDGEVYPPSVEEARVLMHYPRNVLPRNQMAVGQEMFGLLPGLMLYATIWLREHNRVCDLLKAEHPTWDDEQLFQTTRLILIGETIKIVIEEYVQQLSGYFLQLKFDPELLFGVQFQYSNRIALEFNHLYHWHPLMPDSFKVGSQEYSYEQFLFNTSLLVDYGVEALVDAFSRQVAGRIGGGRNMDQHVLHVAVEVIKESRELNLQPFNEYRKRFGMRPYTSFEELTGDKEMAAELEELYGDIDAMEFYPGLLLEKCLPNSIFGESMIEFGAPFSLKGLLGNPICSPEYWKPSTFGGEIGFNIVKTATLKKLVCLNTKTCPYVSFQAPDLIQDDQSSAKRPSTEL</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+    </GBSeq_feature-table>
+    <GBSeq_sequence>tgttgttactacccatgtcagcaccagggtgtctgtgtccgttttggcctcgatctctaccagtgtgactgcacccgcacgggctactctggccccaactgcaccgtccctgagctgtggacctggctccgggatacgttgcgccccagcccagcttttctccatttcctgctgacccacgggcgctggatctgggagtttatcaatgccaccttcatccgtgacatgctcatgcgtatggtacttacggggaagaagctgttaccagatgcccagctcctggcccatcgcttcctgctgaggaggaagttcattcctgatcctcaaggcaccaacctcatgtttgccttttttgcacaacattttacccaccagttcttcaaaactgctggcaagatgggtcccggcttcaccaaggccttgggccatggggtagacctgggccacatttatggtgacaacctggaacgtcagtatcaactgcggctctttaaggatgggaagctcaagtaccaggtgctggacggagaggtataccccccttcagtggaagaggcacgtgtgttgatgcactacccgcggaatgttttgccccggaaccagatggctgtgggccaggagatgtttggtttgcttccggggcttatgctctatgccaccatctggctcagagaacacaatcgtgtctgtgacttgctgaaggctgagcaccccacctgggatgatgagcagctcttccagacaacccgcctaattctcattggggagaccatcaagattgtaattgaagagtatgtgcagcagctgagtggctacttcctgcagctgaagtttgacccagagctgctgttcggggtccagttccagtatagcaaccgcatcgccctggagttcaaccacctctaccactggcacccgctcatgcctgactccttcaaagtgggctcccaagagtacagctacgagcagttcttgttcaacacctcactgctggtggactacggggtggaagccctggtggatgccttctctcgtcaggtggctggccggatcggtgggggcaggaacatggaccagcacgtcctgcacgtggccgtggaggtcatcaaggagtctcgcgagctgaatctgcagcccttcaatgaataccgcaagaggtttggcatgaggccctacacatccttcgaggaactcacaggagacaaggagatggcggctgaattggaagagctatatggtgatattgatgctatggagttctacccggggctgcttcttgagaaatgccttccaaactccatctttggggaaagtatgattgaatttggggctcccttttccctcaagggcctcctagggaatcccatctgttctccggagtactggaaacctagtacatttggtggtgagataggtttcaacattgtcaagactgccaccctgaagaagctcgtctgcctcaacaccaaaacctgtccctatgtttctttccaagcgcctgacctcatccaggatgaccagtctagtgcaaagcggccatccacagaactctaa</GBSeq_sequence>
+    <GBSeq_xrefs>
+      <GBXref>
+        <GBXref_dbname>BioProject</GBXref_dbname>
+        <GBXref_id>PRJNA221636</GBXref_id>
+      </GBXref>
+    </GBSeq_xrefs>
+  </GBSeq>
+
+  <GBSeq>
+
+    <GBSeq_locus>KR010251</GBSeq_locus>
+    <GBSeq_length>1053</GBSeq_length>
+    <GBSeq_strandedness>double</GBSeq_strandedness>
+    <GBSeq_moltype>DNA</GBSeq_moltype>
+    <GBSeq_topology>linear</GBSeq_topology>
+    <GBSeq_division>INV</GBSeq_division>
+    <GBSeq_update-date>22-APR-2016</GBSeq_update-date>
+    <GBSeq_create-date>22-APR-2016</GBSeq_create-date>
+    <GBSeq_definition>Comanthus briareus voucher SAM&lt;ZAF&gt;:K2510 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial</GBSeq_definition>
+    <GBSeq_primary-accession>KR010251</GBSeq_primary-accession>
+    <GBSeq_accession-version>KR010251.1</GBSeq_accession-version>
+    <GBSeq_other-seqids>
+      <GBSeqid>gb|KR010251.1|</GBSeqid>
+      <GBSeqid>gi|1004168594</GBSeqid>
+    </GBSeq_other-seqids>
+    <GBSeq_source>mitochondrion Comanthus briareus</GBSeq_source>
+    <GBSeq_organism>Comanthus briareus</GBSeq_organism>
+    <GBSeq_taxonomy>Eukaryota; Metazoa; Echinodermata; Pelmatozoa; Crinoidea; Articulata; Comatulida; Comatulidae; Comatulinae; Comanthus</GBSeq_taxonomy>
+    <GBSeq_references>
+      <GBReference>
+        <GBReference_reference>1</GBReference_reference>
+        <GBReference_position>1..1053</GBReference_position>
+        <GBReference_authors>
+          <GBAuthor>Summers,M.M.</GBAuthor>
+          <GBAuthor>Messing,C.G.</GBAuthor>
+          <GBAuthor>Rouse,G.W.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>The genera and species of Comatulidae (Comatulida: Crinoidea): taxonomic revisions and a molecular and morphological guide</GBReference_title>
+        <GBReference_journal>Unpublished</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>2</GBReference_reference>
+        <GBReference_position>1..1053</GBReference_position>
+        <GBReference_authors>
+          <GBAuthor>Summers,M.M.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Direct Submission</GBReference_title>
+        <GBReference_journal>Submitted (23-MAR-2015) Marine Biology Research Division, Scripps Institution of Oceanography, 9500 Gilman Drive, La Jolla, CA 92093, USA</GBReference_journal>
+      </GBReference>
+    </GBSeq_references>
+    <GBSeq_comment>##Assembly-Data-START## ; Sequencing Technology :: Sanger dideoxy sequencing ; ##Assembly-Data-END##</GBSeq_comment>
+    <GBSeq_feature-table>
+      <GBFeature>
+        <GBFeature_key>source</GBFeature_key>
+        <GBFeature_location>1..1053</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>1</GBInterval_from>
+            <GBInterval_to>1053</GBInterval_to>
+            <GBInterval_accession>KR010251.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>organism</GBQualifier_name>
+            <GBQualifier_value>Comanthus briareus</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>organelle</GBQualifier_name>
+            <GBQualifier_value>mitochondrion</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>mol_type</GBQualifier_name>
+            <GBQualifier_value>genomic DNA</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>specimen_voucher</GBQualifier_name>
+            <GBQualifier_value>SAM&lt;ZAF&gt;:K2510</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>db_xref</GBQualifier_name>
+            <GBQualifier_value>taxon:1529417</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>geo_loc_name</GBQualifier_name>
+            <GBQualifier_value>Australia: Marul</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+      <GBFeature>
+        <GBFeature_key>gene</GBFeature_key>
+        <GBFeature_location>&lt;1..&gt;1053</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>1</GBInterval_from>
+            <GBInterval_to>1053</GBInterval_to>
+            <GBInterval_accession>KR010251.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_partial5 value="true"/>
+        <GBFeature_partial3 value="true"/>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>gene</GBQualifier_name>
+            <GBQualifier_value>COI</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+      <GBFeature>
+        <GBFeature_key>CDS</GBFeature_key>
+        <GBFeature_location>&lt;1..&gt;1053</GBFeature_location>
+        <GBFeature_intervals>
+          <GBInterval>
+            <GBInterval_from>1</GBInterval_from>
+            <GBInterval_to>1053</GBInterval_to>
+            <GBInterval_accession>KR010251.1</GBInterval_accession>
+          </GBInterval>
+        </GBFeature_intervals>
+        <GBFeature_partial5 value="true"/>
+        <GBFeature_partial3 value="true"/>
+        <GBFeature_quals>
+          <GBQualifier>
+            <GBQualifier_name>gene</GBQualifier_name>
+            <GBQualifier_value>COI</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>codon_start</GBQualifier_name>
+            <GBQualifier_value>1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>transl_table</GBQualifier_name>
+            <GBQualifier_value>9</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>product</GBQualifier_name>
+            <GBQualifier_value>cytochrome oxidase subunit I</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>protein_id</GBQualifier_name>
+            <GBQualifier_value>AMP19033.1</GBQualifier_value>
+          </GBQualifier>
+          <GBQualifier>
+            <GBQualifier_name>translation</GBQualifier_name>
+            <GBQualifier_value>WAGMVGTALSIIIRAELAQPGSFLGDDHIYNVVVTSHALVMIFFMVMPVMIGGFGNWLIPLMIGAPDLAFPRVNNMSFWLLPPSFLLLLASAGVESGVGTGWTIYPPLSSGIAHSGGSVDLAIFSLHIAGASSIIASINFITTIINMRSPGVTFDRLSLFVWSIFITTFLLLLSLPVLAGAITMLLTDRNVNTTFFDPAGGGDPILFQHLFWFFGHPEVYILILPGFGMISHVVAHYSGKSEPFGYLGMVYAMVAIGILGFLVWAHHMFTVGMDVDTRAYFTAATMIIAVPTGIKVFSWMATLQGSNLRWEAPLFWSLGFIFLFTLGGLTGVVLSNSSLDIVLHDTYYVVA</GBQualifier_value>
+          </GBQualifier>
+        </GBFeature_quals>
+      </GBFeature>
+    </GBSeq_feature-table>
+    <GBSeq_sequence>tgagctgggatggttggtacagctttaagaataattattcgtgcagaacttgctcagcctggttcttttttaggggatgatcatatttataaagttgtggttacttctcatgctttggttatgattttttttatggtaatgcctgttatgataggtggttttggaaattggttaattcctttaatgattggagcgccagatttggcttttcctcgagtaaaaaaaatgagtttttggcttttacctccttcttttcttcttttattagcttctgctggtgttgaaaggggtgttggtacgggttgaactatatatcctcctttgtctagtggtatagctcattctggtggttctgttgatcttgctattttttctttacatatagctggtgcttcttctataattgcttctataaattttataactactattataaaaatgcgctctcctggtgtaacttttgatcgtctttctctttttgtttgatccatttttattactacttttcttcttttattatcgttacctgttttagctggtgctattactatgcttcttactgatcgtaatgttaatacaactttctttgatcctgcagggggaggggatcctattttgtttcagcatttattttggttttttggtcatcctgaggtttatattttaattttacctggttttgggatgatttctcatgttgtggctcattattctggtaagagagagccttttggttatttgggtatggtttatgctatggttgctataggtatacttggttttcttgtttgagctcatcatatgtttactgttggtatggatgttgatactcgagcttattttactgctgctacaatgataattgctgttcctacaggtattaaggtgtttagttgaatggctactcttcagggttctaatttgcgttgagaggctcctttgttttgatctttaggttttatttttttatttactttaggtggtttaactggtgttgttctttctaattctagtttagatatagttcttcatgatacttattatgttgttgct</GBSeq_sequence>
+  </GBSeq>
+
+</GBSet>

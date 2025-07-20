@@ -1,0 +1,497 @@
+{% from "macros/alert-level-icon.html" import render_level_icon %}
+{% from "macros/error-message.html" import render_error_message %}
+
+{% macro render_target_modal(context) %}
+
+{% set flag_5_1 = context.flags['5.1'][context.target_type][context.target_taxon] %}
+{% set flag_5_2 = context.flags['5.2'][context.target_type][context.target_taxon] %}
+{% set flag_5_3 = context.flags['5.3'][context.target_type][context.target_taxon] %}
+{% set flag = context.flags['5'][context.target_type].get(context.target_taxon, none) %}
+{% set errors = context.error_log.filter(
+    location_in=context.error_locations.DB_COVERAGE,
+    context={'target': context.target_taxon},
+  )
+%}
+
+<div class="modal fade" id="{{ context.target_id }}Modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Database coverage of {{ context.target_type_text }} <em>{{ context.target_taxon }}</em>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body text-start">
+        <p>
+          This {{ context.target_type_text }} has been independently evaluated against the reference database to determine whether sufficient reference data exists to support identification of this taxon. Insufficient coverage can result in that taxon not be correctly identified as the taxonomic identity of the sample (type-II error).
+        </p>
+
+        <p>
+          For example, if your sample is from <em>Homo sapiens</em>, but there are no <em>Homo sapiens</em> DNA records in the reference database, the analysis will be unable to detect <em>Homo sapiens</em> as the correct taxonomic identity. In the latter case, the analysis will most likely try to assign the closest relative with existing reference data as the taxonomic identity.
+        </p>
+
+        {% if not context.locus_provided %}
+        <p class="alert alert-warning">
+          <strong>Warning: no locus provided</strong>
+          <br>
+          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown correspnds to the
+          <strong>entire genome</strong>
+          of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
+        </p>
+        {% endif %}
+
+        <div class="border p-5">
+
+          <p class="text-center">
+            <span class="badge bg-secondary font-large">
+              Reference database:
+              <code class="px-3 text-light fw-light">{{ context.config.database_name }}</code>
+            </span>
+          </p>
+
+          {% set general_errors = errors.filter(
+              location_lt=context.error_locations.DB_COVERAGE_TARGET,
+          ) %}
+          {% if general_errors %}
+          {{ render_error_message(general_errors) }}
+          {% endif %}
+
+          {% if context.data.target is not none %}
+
+          <table style="margin: 2rem auto;">
+            <tbody>
+              <tr
+                onclick="document.getElementById('dbCovTarget-{{ context.target_id }}').scrollIntoView({ behavior: 'smooth' });"
+                style="cursor: pointer;"
+              >
+                <td class="btn btn-{{ flag_5_1.bs_class }} text-center mb-2">
+                  {{ render_level_icon(flag_5_1.level) }}
+                </td>
+                <td class="px-3">
+                  Coverage of <em>{{ context.target_taxon }}</em>
+                </td>
+              </tr>
+
+              <tr
+                onclick="document.getElementById('dbCovRelated-{{ context.target_id }}').scrollIntoView({ behavior: 'smooth' });"
+                style="cursor: pointer;"
+              >
+                <td class="btn btn-{{ flag_5_2.bs_class }} text-center mb-2">
+                  {{ render_level_icon(flag_5_2.level) }}
+                </td>
+                <td class="px-3">
+                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                </td>
+              </tr>
+
+              <tr
+                onclick="document.getElementById('dbCovCountry-{{ context.target_id }}').scrollIntoView({ behavior: 'smooth' });"
+                style="cursor: pointer;"
+              >
+                <td class="btn btn-{{ flag_5_3.bs_class }} text-center mb-2">
+                  {{ render_level_icon(flag_5_3.level) }}
+                </td>
+                <td class="px-3">
+                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  in country of origin <strong>{{ context.metadata.country }}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <hr>
+
+          <div class="my-5" id="dbCovTarget-{{ context.target_id }}">
+            <h3>Database coverage of <em>{{ context.target_taxon }}</em></h3>
+
+            <p class="alert alert-{{ flag_5_1.bs_class }}">
+              <strong>Flag {{ flag_5_1.flag_id }}{{ flag_5_1.value }}:</strong>
+              {{ flag_5_1.outcome }}
+              <br>
+              <strong>Reasoning:</strong> {{ flag_5_1.explanation }}
+            </p>
+
+            <div class="row my-5">
+              <div class="col">
+
+                {% set p5_1_errors = errors.filter(location=5.1) %}
+                {% if p5_1_errors %}
+                {{ render_error_message(p5_1_errors) }}
+                {% endif %}
+
+                {% if context.data.target is not in [none, 'NA', 'ERR'] %}
+                {% set records_str = "{:,}".format(context.data.target) %}
+                <div class="big-number alert-{{ flag_5_1.bs_class }}">
+                  {{ records_str }} records
+                </div>
+                <p class="my-3">
+                  There are {{ records_str }} sequence records in the reference database for
+                  <em>{{ context.target_taxon }}</em>
+                  <span
+                    {% if not context.locus_provided %}
+                    class="strikethrough"
+                    title="No locus was provided for this sample in metadata.csv"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    {% endif %}
+                  >
+                    that have been annotated with the given locus
+                    <strong>{{ context.metadata.locus }}</strong>.
+                    It is possible that more records exist for this taxon which were not correctly annotated with this locus.
+                  </span>
+                </p>
+
+                <!-- If toi and toi not detected, and data.target, show warning message -->
+                {% if context.target_type == 'toi' and context.tois_detected['target_taxon'] and context.data.target %}
+                <p class="alert alert-warning">
+                  <strong>Warning:</strong>
+                  The reference database includes records for <em>{{ context.target_taxon }}</em>, but they were not present in the top {{ context.config.BLAST_MAX_TARGET_SEQS }} hits with a sufficient alignment identity to meet candidate criteria. If there are over {{ context.config.BLAST_MAX_TARGET_SEQS }} related species' records in the database (as reported below), it is possible (though rare) that a viable hit for this TOI was present in hits ranked lower than the top {{ context.config.BLAST_MAX_TARGET_SEQS }}.
+                </p>
+                {% endif %}
+
+                {% endif %}
+              </div>
+
+              <div class="col" style="position: relative;">
+                <div
+                  class="occurrence-map"
+                  {% if context.data.map_exists %}
+                  onclick="this.classList.toggle('expanded')"
+                  title="Click to expand/close"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  {% endif %}
+                >
+                  <img
+                    src="{{ context.data.map_src_base64 }}"
+                    alt="Map of database coverage"
+                    class="img-fluid"
+                  >
+                  {% if context.data.map_exists %}
+                  <p style="color: white; text-align: center;">
+                    Global occurrence records for <em>{{ context.target_taxon }}</em>.
+                    <br>
+                    <small class="hide-small">
+                      Note that the occurrence data are not exhaustive, since the data fetched are limited to {{ context.config.GBIF_MAX_OCCURRENCE_RECORDS }} occurrence records.
+                      It is therefore possible for this species to occur in regions not shown on the map.
+                    </small>
+                  </p>
+                  {% else %}
+                  <p style="color: black; text-align: center;">
+                    <small>
+                      No map could be generated for this taxon, most likely due to an error in the GBIF Occurrence API.
+                      Please check for errors above.
+                    </small>
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="my-5" id="dbCovRelated-{{ context.target_id }}">
+            <h3>Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em></h3>
+
+            <p class="alert alert-{{ flag_5_2.bs_class }}">
+              <strong>Flag {{ flag_5_2.flag_id }}{{ flag_5_2.value }}:</strong>
+              {{ flag_5_2.outcome }}
+              <br>
+              <strong>Reasoning:</strong> {{ flag_5_2.explanation }}
+            </p>
+
+            {% set p5_2_errors = errors.filter(location=5.2) %}
+            {% if p5_2_errors %}
+            {{ render_error_message(p5_2_errors) }}
+            {% endif %}
+
+            {% if context.data.related %}
+            <div class="my-5">
+              <p>
+                <span class="small-number alert-{{ flag_5_2.bs_class }}">
+                  <span class="relatedHasReference-{{ context.target_id }}"></span>/<span class="relatedCount-{{ context.target_id }}"></span>
+                  (<span class="relatedCoveragePercent-{{ context.target_id }}"></span>%)
+                </span>
+                 of species have sequence records in the reference database for:
+              </p>
+
+               <ul>
+                <li>
+                  Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                </li>
+                <li>
+                  <span
+                    {% if not context.locus_provided %}
+                    class="strikethrough"
+                    title="No locus was provided for this sample in metadata.csv"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    {% endif %}
+                  >
+                    At the target locus <strong>{{ context.metadata.locus }}</strong>
+                </span>
+                </li>
+               </ul>
+            </div>
+
+            <div class="accordion" id="accordionRelated-{{ context.target_id }}">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseAccordionRelated-{{ context.target_id }}"
+                    aria-expanded="false"
+                    aria-controls="collapseAccordionRelated-{{ context.target_id }}"
+                  >
+                    Per-species reference sequence counts
+                  </button>
+                </h2>
+
+                <div
+                  id="collapseAccordionRelated-{{ context.target_id }}"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#accordionRelated-{{ context.target_id }}"
+                >
+                  <div class="accordion-body">
+                    <p class="mb-0 text-center">
+                      Number of GenBank records
+                      <span
+                        {% if not context.locus_provided %}
+                        class="strikethrough"
+                        title="No locus was provided for this sample in metadata.csv"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        {% endif %}
+                      >
+                        at locus <strong>{{ context.metadata.locus }}</strong>
+                      </span>
+                    </p>
+
+                    <div class="verticalScrollChart" id="dbcov-plot-related-{{ context.target_id }}"></div>
+
+                    <script>
+                      document.addEventListener('DOMContentLoaded', function() {
+                        const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.target_taxon }}'].related;
+                        const entries = Object.entries(data);
+                        entries.sort((a, b) => a[1] - b[1]);
+                        const keys = entries.map(entry => entry[0]);
+                        const values = entries.map(entry => entry[1]);
+                        const keyLength = Math.max(...keys.map(key => key.length));
+                        const zeroValues = values.filter(value => value === 0).length;
+                        const coverage = values.length - zeroValues;
+                        const coverage_percent = Math.round(coverage / values.length * 100);
+                        $(".relatedHasReference-{{ context.target_id }}").text(coverage);
+                        $(".relatedCount-{{ context.target_id }}").text(values.length);
+                        $(".relatedCoveragePercent-{{ context.target_id }}").text(coverage_percent);
+                        const plotData = [{
+                          type: 'bar',
+                          x: values,
+                          y: keys,
+                          orientation: 'h'
+                        }];
+                        const height = Math.max(300, 25 * keys.length);
+                        Plotly.newPlot(
+                          'dbcov-plot-related-{{ context.target_id }}',
+                          plotData,
+                          {
+                            margin: { t: 20, r: 0, b: 0, l: keyLength * 8 },
+                            height: height,
+                            xaxis: {
+                              side: 'top',
+                              range: [0, null],
+                            },
+                          }
+                        );
+                      });
+                    </script>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% else %}
+            {% if context.data.related %}
+            <p>
+              No species were found in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+              in the GBIF database, so there is nothing to report here.
+            </p>
+            {% endif %}
+            {% endif %}
+          </div>
+
+          <hr>
+
+          <div class="my-5" id="dbCovCountry-{{ context.target_id }}">
+            <h3>
+              Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+              that occur in country of origin <strong>{{ context.metadata.country }}</strong>
+            </h3>
+
+            {% if context.metadata.country != 'NA' %}
+
+            <p class="alert alert-{{ flag_5_3.bs_class }}">
+              <strong>Flag {{ flag_5_3.flag_id }}{{ flag_5_3.value }}:</strong>
+              {{ flag_5_3.outcome }}
+              <br>
+              <strong>Reasoning:</strong> {{ flag_5_3.explanation }}
+            </p>
+
+            {% set p5_3_errors = errors.filter(location=5.3) %}
+            {% if p5_3_errors %}
+            {{ render_error_message(p5_3_errors) }}
+            {% endif %}
+
+            {% if context.data.country %}
+              <div class="my-5">
+                <p>
+                  <span class="small-number alert-{{ flag_5_3.bs_class }}">
+                    <span class="relatedCountryHasReference-{{ context.target_id }}"></span>/<span class="relatedCountryCount-{{ context.target_id }}"></span>
+                    (<span class="relatedCountryCoveragePercent-{{ context.target_id }}"></span>%)
+                  </span>
+                  of species have sequence records in the reference database for:
+                </p>
+
+                <ul>
+                  <li>
+                    Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  </li>
+                  <li>
+                    <span
+                      {% if not context.locus_provided %}
+                      class="strikethrough"
+                      title="No locus was provided for this sample in metadata.csv"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      {% endif %}
+                    >
+                      At the target locus <strong>{{ context.metadata.locus }}</strong>
+                  </span>
+                  </li>
+                  <li>
+                    In the sample country of origin <strong>{{ context.metadata.country }}</strong>
+                  </li>
+                </ul>
+                </div>
+
+              <div class="accordion" id="accordionRelatedCountry-{{ context.target_id }}">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseAccordionRelatedCountry-{{ context.target_id }}"
+                      aria-expanded="false"
+                      aria-controls="collapseAccordionRelatedCountry-{{ context.target_id }}"
+                    >
+                      Per-species reference sequence counts
+                    </button>
+                  </h2>
+
+                  <div
+                    id="collapseAccordionRelatedCountry-{{ context.target_id }}"
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#accordionRelatedCountry-{{ context.target_id }}"
+                  >
+                    <div class="accordion-body">
+                      <p class="mb-0 text-center">
+                        Number of GenBank records
+                        <span
+                          {% if not context.locus_provided %}
+                          class="strikethrough"
+                          title="No locus was provided for this sample in metadata.csv"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="bottom"
+                          {% endif %}
+                        >
+                          at locus <strong>{{ context.metadata.locus }}</strong>
+                        </span>
+                      </p>
+
+                      <div class="verticalScrollChart" id="dbcov-plot-relatedCountry-{{ context.target_id }}"></div>
+
+                      <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                          const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.target_taxon }}'].country;
+                          const entries = Object.entries(data);
+                          entries.sort((a, b) => a[1] - b[1]);
+                          const keys = entries.map(entry => entry[0]);
+                          const values = entries.map(entry => entry[1]);
+                          const keyLength = Math.max(...keys.map(key => key.length));
+                          const zeroValues = values.filter(value => value === 0).length;
+                          const coverage = values.length - zeroValues;
+                          const coverage_percent = Math.round(coverage / values.length * 100);
+                          $(".relatedCountryHasReference-{{ context.target_id }}").text(coverage);
+                          $(".relatedCountryCount-{{ context.target_id }}").text(values.length);
+                          $(".relatedCountryCoveragePercent-{{ context.target_id }}").text(coverage_percent);
+                          const plotData = [{
+                            type: 'bar',
+                            x: values,
+                            y: keys,
+                            orientation: 'h'
+                          }];
+                          const height = Math.max(300, 25 * keys.length);
+                          Plotly.newPlot(
+                            'dbcov-plot-relatedCountry-{{ context.target_id }}',
+                            plotData,
+                            {
+                              margin: { t: 20, r: 0, b: 0, l: keyLength * 8 },
+                              height: height,
+                              xaxis: {
+                                side: 'top',
+                                range: [0, null],
+                              },
+                            }
+                          );
+                        });
+                      </script>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            {% else %}
+            {% if context.data.country %}
+            <p>
+              The GBIF database returned no species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+              with occurrence records in country <strong>{{ context.metadata.country }}</strong>,
+              so there is nothing to report here.
+            </p>
+            {% endif %}
+            {% endif %}
+
+            {% else %}
+            <p class="alert alert-info">
+              A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+            </p>
+            {% endif %}
+          </div>
+
+          {% else %}
+
+          <p class="alert alert-info">
+            No database coverage information is available for this taxon.
+            {% if context.target_type == 'candidate' and context.flags['1'].value.lower() in ['c', 'e'] %}
+            This is because database coverage is not evaluated when there are zero or &gt;3 candidate species.
+            {% else %}
+            This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
+            {% endif %}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endmacro %}
