@@ -3,7 +3,7 @@ This document provides a comprehensive technical overview of the `qcif/taxodacty
 
 # [main.nf](../main.nf)
 
-This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxodactyl.nf](../workflows/taxodactyl.nf) and finalises the pipeline run (notification emails, reports, etc.). 
+This is the pipeline entry point script. It handles parameter parsing and validation, initial setup, calls the main workflow defined in [workflows/taxodactyl.nf](../workflows/taxodactyl.nf) and finalises the pipeline run (notification emails, reports, etc.).
 
 ---
 
@@ -16,13 +16,13 @@ This is the main Nextflow workflow script for the pipeline. It orchestrates the 
 
 # Subworkflows
 
-These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/guidelines/) and have been adapted for use in this pipeline. 
+These subworkflows were originally developed by [nf-core](https://nf-co.re/docs/guidelines/) and have been adapted for use in this pipeline.
 
 ## [local/utils_nfcore_taxodactyl_pipeline/main.nf](../subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf)
 
-It defines two subworkflows for pipeline initialisation and completion, adapted from nf-core. Additionally, it includes utility functions for parameter validation, citation text, and methods description formatting for reporting. 
+It defines two subworkflows for pipeline initialisation and completion, adapted from nf-core. Additionally, it includes utility functions for parameter validation, citation text, and methods description formatting for reporting.
 
-Unlike the original nf-core implementation, the metadata samplesheet is no longer processed or validated within the Nextflow workflow itself. Instead, parsing and validation of metadata - as well as more comprehensive parameter validation - are handled externally by a [Python container](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs). The `validateInputParameters()` function within the workflow still checks for the presence of all required parameters and performs basic logical consistency checks (such as ensuring `blastdb` is set when using `blast_core_nt`, and that certain threshold values are in the correct order), but the main responsibility for input validation has been shifted outside the workflow.
+Unlike the original nf-core implementation, the metadata samplesheet is no longer processed or validated within the Nextflow workflow itself. Instead, parsing and validation of metadata - as well as more comprehensive parameter validation - are handled externally by a [Python container](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs). The `validateInputParameters()` function within the workflow still checks for the presence of all required parameters and performs basic logical consistency checks (such as ensuring `blastdb` is set when using `blast_core_nt`, and that certain threshold values are in the correct order), but the main responsibility for input validation has been shifted outside the workflow.
 
 ---
 
@@ -44,11 +44,11 @@ This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate
 
 ## [configure/environment](../modules/configure/environment/main.nf)
 
-This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/daff-biosecurity-wf2). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#environment-variables).
+This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/taxodactyl/tree/main/scripts). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#environment-variables).
 
 ## [validate/input](../modules/validate/input/main.nf)
 
-This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA, and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p0-validate-inputs).
+This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA, and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).
 
 ## [blast/blastn](../modules/blast/blastn/main.nf)
 
@@ -69,7 +69,7 @@ The results are saved as an XML file, and a `versions.yml` file is generated to 
 
 ## [extract/hits](../modules/extract/hits/main.nf)
 
-The `EXTRACT_HITS` process parses BLAST XML results to extract hit information and accession numbers. It takes the environment variables file and the BLAST XML output as input, then runs a Python script (`p1_parse_blast.py`) to generate files listing accessions, hit details in JSON format, and hit sequences in FASTA format. This process is used in the BLAST branch of the workflow, immediately after running BLASTN, to prepare hit data for downstream candidate extraction and analysis. More information about the `p1_parse_blast.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p1-blast-parser).
+The `EXTRACT_HITS` process parses BLAST XML results to extract hit information and accession numbers. It takes the environment variables file and the BLAST XML output as input, then runs a Python script (`p1_parse_blast.py`) to generate files listing accessions, hit details in JSON format, and hit sequences in FASTA format. This process is used in the BLAST branch of the workflow, immediately after running BLASTN, to prepare hit data for downstream candidate extraction and analysis. More information about the `p1_parse_blast.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p1-blast-parser).
 
 ## [blast/blastdbcmd](../modules/blast/blastdbcmd/main.nf)
 
@@ -77,39 +77,39 @@ The `BLAST_BLASTDBCMD` module uses the `blastdbcmd` tool to extract taxonomic ID
 
 ## [extract/taxonomy](../modules/extract/taxonomy/main.nf)
 
-The `EXTRACT_TAXONOMY` module runs a Python script (`p2_extract_taxonomy.py`) to extract taxonomy information for a list of taxids using the NCBI taxonomy database. It takes an environment variables file and a CSV of taxids as input, and outputs a taxonomy file. This module is used after retrieving taxids from BLAST hits, providing detailed taxonomy data needed for downstream candidate extraction and reporting. More information about the `p2_extract_taxonomy.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p2-ncbi-taxonomy-extractor).
+The `EXTRACT_TAXONOMY` module runs a Python script (`p2_extract_taxonomy.py`) to extract taxonomy information for a list of taxids using the NCBI taxonomy database. It takes an environment variables file and a CSV of taxids as input, and outputs a taxonomy file. This module is used after retrieving taxids from BLAST hits, providing detailed taxonomy data needed for downstream candidate extraction and reporting. More information about the `p2_extract_taxonomy.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p2-ncbi-taxonomy-extractor).
 
 ## [bold/search](../modules/bold/search/main.nf)
 
-The `BOLD_SEARCH` module runs a Python script (`p1_bold_search.py`) to perform a taxonomic assignment search using the BOLD database. It takes an environment variables file and a FASTA file as input, and outputs a taxonomy JSON file and hit files (JSON and FASTA) for each query. This module is used in the BOLD branch of the workflow as an alternative to the BLAST-based search, providing taxonomic assignments and hit details based on BOLD data (details [here](https://qcif.github.io/daff-biosecurity-wf2/understanding-the-analysis.html#bold---submitting-sequences-to-id-engine)).
+The `BOLD_SEARCH` module runs a Python script (`p1_bold_search.py`) to perform a taxonomic assignment search using the BOLD database. It takes an environment variables file and a FASTA file as input, and outputs a taxonomy JSON file and hit files (JSON and FASTA) for each query. This module is used in the BOLD branch of the workflow as an alternative to the BLAST-based search, providing taxonomic assignments and hit details based on BOLD data (details [here](https://qcif.github.io/taxodactyl/understanding-the-analysis.html#bold---submitting-sequences-to-id-engine)).
 
 ## [extract/candidates](../modules/extract/candidates/main.nf)
 
-The `EXTRACT_CANDIDATES` module runs a Python script (`p3_assign_taxonomy.py`) to extract and process candidate sequences from BLAST or BOLD hits for each query. It takes as input the environment variables file, hit files (JSON and FASTA), taxonomy file, and metadata, and outputs candidate information in multiple formats (JSON, CSV, FASTA), as well as summary and flag files for downstream analysis. This module is used after taxonomy extraction to prepare candidate data for alignment, source diversity, and database coverage evaluation. For phylogenetic analysis, a FASTA file is generated containing a subset of sequences from the BLAST or BOLD hits (see [the `Phylogenetic analysis` section of the `Understanding the analysis` document](https://qcif.github.io/daff-biosecurity-wf2/understanding-the-analysis.html#phylogenetic-analysis)). More information about the `p3_assign_taxonomy.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p3-evaluate-taxonomy).
+The `EXTRACT_CANDIDATES` module runs a Python script (`p3_assign_taxonomy.py`) to extract and process candidate sequences from BLAST or BOLD hits for each query. It takes as input the environment variables file, hit files (JSON and FASTA), taxonomy file, and metadata, and outputs candidate information in multiple formats (JSON, CSV, FASTA), as well as summary and flag files for downstream analysis. This module is used after taxonomy extraction to prepare candidate data for alignment, source diversity, and database coverage evaluation. For phylogenetic analysis, a FASTA file is generated containing a subset of sequences from the BLAST or BOLD hits (see [the `Phylogenetic analysis` section of the `Understanding the analysis` document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html#phylogenetic-analysis)). More information about the `p3_assign_taxonomy.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p3-evaluate-taxonomy).
 
 ## [evaluate/sourcediversity](../modules/evaluate/sourcediversity/main.nf)
 
-The `EVALUATE_SOURCE_DIVERSITY` module runs a Python script (`p4_source_diversity.py`) to assess the diversity of sources, such as publications, supporting candidate taxonomic assignments for each query. It takes the environment variables file and a candidate JSON file as input, and outputs a JSON file summarising independent sources for each query. This module is used after candidate extraction to provide additional evidence for taxonomic assignments. Only candidate sets with the maximum allowed count (`params.max_candidates_for_analysis`) are passed on for source diversity analysis. More information about the `p4_source_diversity.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p4-analysis-of-reference-sequence-publications).
+The `EVALUATE_SOURCE_DIVERSITY` module runs a Python script (`p4_source_diversity.py`) to assess the diversity of sources, such as publications, supporting candidate taxonomic assignments for each query. It takes the environment variables file and a candidate JSON file as input, and outputs a JSON file summarising independent sources for each query. This module is used after candidate extraction to provide additional evidence for taxonomic assignments. Only candidate sets with the maximum allowed count (`params.max_candidates_for_analysis`) are passed on for source diversity analysis. More information about the `p4_source_diversity.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p4-analysis-of-reference-sequence-publications).
 
 ## [evaluate/databasecoverage](../modules/evaluate/databasecoverage/main.nf)
 
-The `EVALUATE_DATABASE_COVERAGE` module runs a Python script (`p5_db_coverage.py`) to assess database coverage for candidate sequences in each query. It takes the environment variables file, a candidate JSON file, and metadata as input and outputs results to the query folder. This module is used after candidate extraction to evaluate how well candidate taxa are represented in the reference database, supporting downstream reporting and analysis. More information about the `p5_db_coverage.py` script can be found [here](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#p5-analysis-of-database-coverage).
+The `EVALUATE_DATABASE_COVERAGE` module runs a Python script (`p5_db_coverage.py`) to assess database coverage for candidate sequences in each query. It takes the environment variables file, a candidate JSON file, and metadata as input and outputs results to the query folder. This module is used after candidate extraction to evaluate how well candidate taxa are represented in the reference database, supporting downstream reporting and analysis. More information about the `p5_db_coverage.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p5-analysis-of-database-coverage).
 
 ## [mafft/align](../modules/mafft/align/main.nf)
 
-The `MAFFT_ALIGN` module performs multiple sequence alignment using the MAFFT tool. It takes as input a FASTA file containing the selected candidate sequences for phylogenetic analysis (generated by the `EXTRACT_CANDIDATES` module) and the query sequence, combines them, and runs MAFFT to produce an alignment in PHYLIP format. The aligned sequences are output to a specified file, and a `versions.yml` file is generated to record the MAFFT version used. 
+The `MAFFT_ALIGN` module performs multiple sequence alignment using the MAFFT tool. It takes as input a FASTA file containing the selected candidate sequences for phylogenetic analysis (generated by the `EXTRACT_CANDIDATES` module) and the query sequence, combines them, and runs MAFFT to produce an alignment in PHYLIP format. The aligned sequences are output to a specified file, and a `versions.yml` file is generated to record the MAFFT version used.
 
 ## [fastme](../modules/fastme/main.nf)
 
-The `FASTME` module performs phylogenetic tree construction using the FastME tool. It takes as input a PHYLIP alignment file of DNA sequences (`-d`) produced by the `MAFFT_ALIGN` module and outputs a Newick tree file (`*.nwk`), a statistics file (`*_stat.txt`), and a distance matrix (`*.matrix.phy`). The module also generates a `versions.yml` file to record the FastME version used. 
+The `FASTME` module performs phylogenetic tree construction using the FastME tool. It takes as input a PHYLIP alignment file of DNA sequences (`-d`) produced by the `MAFFT_ALIGN` module and outputs a Newick tree file (`*.nwk`), a statistics file (`*_stat.txt`), and a distance matrix (`*.matrix.phy`). The module also generates a `versions.yml` file to record the FastME version used.
 
 ## [report](../modules/report/main.nf)
 
-The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps - including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) to produce the report.
+The `REPORT` module generates the final HTML report for each query. It collects all relevant outputs from previous steps - including hits, phylogenetic trees, candidate data, database coverage, source diversity, version info, parameters, timestamps, taxonomy, and metadata - organises them into the query folder, and runs the Python script [`p6_report.py`](https://github.com/qcif/taxodactyl/tree/main/scripts#p6-report-generation) to produce the report.
 
 > [!NOTE]
-> - The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline. 
-> - To publish a file to the output directory, use the `publishDir` directive within your process definition. This directive specifies where output files should be copied or moved after the process completes, e.g. `publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename"`. More information in the [Nextflow documentation]( https://www.nextflow.io/docs/latest/process.html). 
+> - The modules for BLAST (`blast/blastn` and `blast/blastdbcmd`), MAFFT (`mafft/align`), and FastME (`fastme`) were originally downloaded from nf-core and have been adjusted as needed for this pipeline.
+> - To publish a file to the output directory, use the `publishDir` directive within your process definition. This directive specifies where output files should be copied or moved after the process completes, e.g. `publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename"`. More information in the [Nextflow documentation]( https://www.nextflow.io/docs/latest/process.html).
 > - Some input parameters are not parsed to the scripts executed in the modules as arguments, but rather using the environment variables. In those cases, we need to ensure they are available within the module’s container, e.g. `containerOptions "--bind ${file(params.sequences).parent}"`.
 
 ---
@@ -118,11 +118,11 @@ The `REPORT` module generates the final HTML report for each query. It collects 
 
 The pipeline uses several configuration files located in the [`conf/` folder](../conf/). They are all linked to the pipeline using [nextflow.config](../nextflow.config) file placed in the main project directory. See the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html) for more details.
 
-## [`conf/params.config`](../conf/params.config) 
+## [`conf/params.config`](../conf/params.config)
 Defines all pipeline parameters and their default values, such as input file names, thresholds, and output file names. These parameters can be overridden by user-supplied config files, command-line options or directly in this file. See the [customisation document](customise.md) for examples.
 
 ## [`conf/process.config`](../conf/process.config)
-Sets default resource requirements (CPUs, memory, time) and container images for each process or process label. It also defines the default error strategy and bash options for process execution. You can override these settings as required. See the [customisation document](customise.md) for examples of assigning different resources or error strategies to the processes. 
+Sets default resource requirements (CPUs, memory, time) and container images for each process or process label. It also defines the default error strategy and bash options for process execution. You can override these settings as required. See the [customisation document](customise.md) for examples of assigning different resources or error strategies to the processes.
 
 You can also change the container for a process but we cannot guarantee the compatibility in downstream analysis. Currently, the following containers are used by each process or process label:
 
@@ -144,7 +144,7 @@ Provides a minimal test dataset and settings for quick pipeline validation. Used
 ## [`conf/validation.config`](../conf/validation.config)
 Controls parameter validation and help behaviour, including which parameters are required and how help is displayed.
 
-## [`conf/manifest.config`](../conf/manifest.config)  
+## [`conf/manifest.config`](../conf/manifest.config)
 Contains pipeline metadata such as name, author, contributors, description, and version.
 
 ## [`conf/misc.config`](../conf/misc.config)
@@ -160,23 +160,23 @@ This file defines the Nextflow schema for pipeline parameters. It is used for pa
 
 # [schema_input.json](../assets/schema_input.json)
 
-This JSON schema describes the required structure and columns for the metadata CSV file used as input to the pipeline. If you need to add columns or change the metadata format, update this schema accordingly to ensure proper validation and compatibility. The [Python P6 module](https://github.com/qcif/daff-biosecurity-wf2/tree/v1.0.0?tab=readme-ov-file#p6-report-generation) will handle the additional columns and put the metadata in the report.
+This JSON schema describes the required structure and columns for the metadata CSV file used as input to the pipeline. If you need to add columns or change the metadata format, update this schema accordingly to ensure proper validation and compatibility. The [Python P6 module](https://github.com/qcif/taxodactyl/tree/main/scripts#p6-report-generation) will handle the additional columns and put the metadata in the report.
 
 ---
 
 # [loci.json](../assets/loci.json)
 
-This file defines the permitted loci (genes) and their synonyms used in the pipeline. It helps standardise locus names and supports synonym resolution for GenBank queries. For more details on how loci are used and formatted, see the [sample locus section in the Python modules README](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#sample-locus). 
+This file defines the permitted loci (genes) and their synonyms used in the pipeline. It helps standardise locus names and supports synonym resolution for GenBank queries. For more details on how loci are used and formatted, see the [sample locus section in the Python modules README](https://github.com/qcif/taxodactyl/tree/main/scripts#sample-locus).
 
 You can overwrite the contents of `loci.json` to customise which loci (genes) and synonyms are recognised by the pipeline. To do this:
 
-1. **Edit the File:**  
-   Open [`assets/loci.json`](../assets/loci.json) and modify, add, or remove loci and their synonyms as needed for your use case. Make sure the JSON structure matches the expected format described in the [Python modules README](https://github.com/qcif/daff-biosecurity-wf2?tab=readme-ov-file#sample-locus).
+1. **Edit the File:**
+   Open [`assets/loci.json`](../assets/loci.json) and modify, add, or remove loci and their synonyms as needed for your use case. Make sure the JSON structure matches the expected format described in the [Python modules README](https://github.com/qcif/taxodactyl/tree/main/scripts#sample-locus).
 
-2. **Provide a Custom File:**  
+2. **Provide a Custom File:**
    If you want to keep the original file unchanged, you can create your own custom `loci.json` and specify its path using the appropriate pipeline parameter (e.g., `--allowed_loci_file my_loci.json` on the command line or by setting `allowed_loci_file` in your config).
 
-3. **Using a Config File:**  
+3. **Using a Config File:**
    You can also set the path to your custom loci file in a Nextflow config file (such as `params.config` or a custom config), for example:
    ```nextflow
    params {

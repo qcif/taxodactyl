@@ -22,7 +22,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 2. **Input Validation** Checks the integrity and compatibility of input files (FASTA sequences, metadata, databases), preventing downstream errors.
 
-3. **Sequence Search**  
+3. **Sequence Search**
    - **[BLAST Core Nucleotide Database](https://ncbiinsights.ncbi.nlm.nih.gov/2024/07/18/new-blast-core-nucleotide-database/) ([BLASTN](https://blast.ncbi.nlm.nih.gov/Blast.cgi)):** Queries input sequences against the NCBI nucleotide database using BLASTN.
    - **[BOLD v4](https://v4.boldsystems.org/) ([API](https://v4.boldsystems.org/index.php/api_home)):** Queries input sequences against the Barcode of Life Data Systems. Taxonomic lineage included in the results.
 
@@ -34,7 +34,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 7. **Candidate Extraction** Identifies candidate species for each query, applying user-defined thresholds for identity and coverage.
 
-8. **Supporting Evidence Evaluation**  
+8. **Supporting Evidence Evaluation**
    - **Publications Diversity:** Assesses the diversity of data sources supporting each candidate.
    - **Database Coverage:** Evaluates the representation of candidates in global databases ([GBIF](https://www.gbif.org/), [GenBank](https://www.ncbi.nlm.nih.gov/genbank/), [BOLD](https://v4.boldsystems.org/)).
 
@@ -50,23 +50,23 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 To run the **qcif/taxodactyl** pipeline, you will need the following software installed:
 
-- **[Nextflow](https://www.nextflow.io/)**  
-  *Tested versions: 24.10.3, 24.10.6*  
+- **[Nextflow](https://www.nextflow.io/)**
+  *Tested versions: 24.10.3, 24.10.6*
 
-- **[Java](https://www.java.com/en/)**  
-  Required by Nextflow.  
-  *Tested version: 17.0.13*  
+- **[Java](https://www.java.com/en/)**
+  Required by Nextflow.
+  *Tested version: 17.0.13*
 
-- **[Singularity](https://docs.sylabs.io/guides/3.7/admin-guide/)**  
-  Used for containerised execution of all bioinformatics tools, ensuring reproducibility.  
-  *Tested version: 3.7.0*  
+- **[Singularity](https://docs.sylabs.io/guides/3.7/admin-guide/)**
+  Used for containerised execution of all bioinformatics tools, ensuring reproducibility.
+  *Tested version: 3.7.0*
 
 > [!NOTE]
 > - Instructions on how to set up Nextflow and a compatible version of Java can be found on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
 > - To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
 > - We provide different [profiles](conf/profiles.config) as per the default nf-core configuration however this pipeline was only tested with singularity.
 > - The pipeline was tested only on a Linux-based operating system - specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
-> - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md). 
+> - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md).
 
 ### NCBI API Key
 
@@ -132,9 +132,9 @@ The metadata file provides essential information about each sequence and must fo
     - rpod
     - rpb2
 > [!NOTE]
-> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`. 
+> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
 > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
-> - Loci synonyms will be checked as well (see [`assets/loci.json`](assets/loci.json)). 
+> - Loci synonyms will be checked as well (see [`assets/loci.json`](assets/loci.json)).
 > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
 3. **preliminary_id** - Preliminary morphology ID of the sample.
 
@@ -230,7 +230,7 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
 
 
 ## Pipeline output
-After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/daff-biosecurity-wf2/understanding-the-analysis.html) for tips on understanding the analysis and interpreting the final HTML report.
+After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html) for tips on understanding the analysis and interpreting the final HTML report.
 
 **BLAST Core Nucleotide Database**
 

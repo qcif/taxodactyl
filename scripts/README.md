@@ -1,7 +1,7 @@
 # Taxonomic Assignment workflow modules (DAFF Biosecurity Workflows)
 
 - [Workflow setup and configuration](https://github.com/qcif/taxodactyl/tree/main)
-- [Documentation of the analysis](https://qcif.github.io/daff-biosecurity-wf2/understanding-the-analysis.html)
+- [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
 
 These Python modules are used for intermediate data processing as part of a
 [Nextflow workflow](https://github.com/qcif/taxodactyl/tree/main)
@@ -10,7 +10,7 @@ is not metabarcoding, but a comprehensive analysis of samples at the individual
 level. Taxonomic identities are assigned conservatively, with various measures
 of confidence provided to support analytical conclusions. You can see an
 example workflow report
-[here](https://qcif.github.io/daff-biosecurity-wf2/example_report.html).
+[here](https://qcif.github.io/taxodactyl/example_report.html).
 
 A user guide for each module is listed below. Examples of running
 each script can be found in the [.vscode/launch.json](.vscode/launch.json) file,
@@ -52,7 +52,7 @@ which shows CLI arguments and environment variables for each script.
 - Some constants e.g. title, database names, can be modified in the [config](#application-configuration)
 - Most report text is defined in HTML templates, so try:
     - Repo-wide search for the text you're trying to update
-    - Looking through the [report templates](./scripts/src/report/templates/) for the component you want to update
+    - Looking through the [report templates](./src/report/templates/) for the component you want to update
 
 
 # Developer setup
@@ -63,10 +63,13 @@ it was more painful to get going.
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/qcif/daff-biosecurity-wf2.git
+   git clone https://github.com/qcif/taxodactyl.git
    ```
 2. Install dependencies
    ```sh
+   # Go to python scripts folder
+   cd scripts
+
    # Create a virtual environment for python3.12
    python3.12 -m venv venv
    source venv/bin/activate
@@ -94,7 +97,7 @@ it was more painful to get going.
 # Building a Docker image
 
 > [!NOTE]
-> The GitHub repo [qcif/daff-biosecurity-wf2](https://github.com/qcif/daff-biosecurity-wf2) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/daff-biosecurity-wf2/releases) is made. This is the preferred method of generating images as it removes human error.
+> The GitHub repo [qcif/taxodactly](https://github.com/qcif/taxodactly) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactly/releases) is made. This is the preferred method of generating images as it removes human error.
 
 > [!NOTE]
 > Make sure you update the VERSION file before publishing a new version!
@@ -180,7 +183,7 @@ FACILITY_NAME="Hogwarts"  # Displayed in report
 ANALYST_NAME="Harry Potter"  # Displayed in report
 ```
 
-Environment variables are fully documented [here](https://qcif.github.io/daff-biosecurity-wf2/environment.html).
+Environment variables are fully documented [here](https://qcif.github.io/taxodactyl/environment.html).
 
 
 ## P0 validate inputs
@@ -191,7 +194,7 @@ have erroneous content, this will raise an exception with an error message that
 should be sufficient for the user to understand what's wrong with their input
 data.
 
-See [config.INPUTS](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/utils/config.py#L113)
+See [config.INPUTS](https://github.com/qcif/taxodactly/blob/main/scripts/src/utils/config.py#L113)
 for some parameters which are used for validation, such as permitted FASTA
 sequence lengths and required metadata.csv fields.
 
@@ -397,14 +400,14 @@ reasonable time. The [Throttle](#throttling-api-requests)
 is critical here to avoid exceeding API rate limits, since the analysis involves
 sending LOTS of API requests (sometimes many hundreds per-sample). The entrypoint
 for the `coverage` module is
-[assess.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/coverage/assess.py).
+[assess.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/coverage/assess.py).
 
-1. **Setup** (see [targets.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/coverage/targets.py))
+1. **Setup** (see [targets.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/coverage/targets.py))
     1. A list of target taxa is generated from candidate species, PMIs and TOIs
     1. TaxIDs are extracted for each target taxon
     1. GBIF records are extracted for each target taxon (see
-      [relatives.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/gbif/relatives.py))
-1. **Occurrence maps** are drawn (see [maps.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/gbif/maps.py))
+      [relatives.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/relatives.py))
+1. **Occurrence maps** are drawn (see [maps.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/maps.py))
 1. **Generate tasks**: a list of analysis tasks (targets x 3 analyses) is generated for threading
 1. **Thread tasks** - for each target taxon:
     1. **5.1** - DB coverage of target taxon. How many records are in the
@@ -457,7 +460,7 @@ options:
 
 The entrypoint for the
 report module is
-[report.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/report/report.py)
+[report.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/report/report.py)
 which includes compilation of report context from analysis output files, followed
 by rendering the report. Given that we are rendering a standalone HTML file that
 needs to be fully portable and robust, this process involves some tactics that
@@ -472,12 +475,12 @@ are not typical of web development:
 - A "Save report" feature is included that allows the analyst to save any typed
   content and lock the document as read-only. This is a hack that involves a good
   dose of JavaScript (see
-  [save-report.js](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/report/static/js/save-report.js))
+  [save-report.js](https://github.com/qcif/taxodactly/blob/main/scripts/src/report/static/js/save-report.js))
 
 
 # Building the docs
 
-[Some documentation](./docs/) is written in markdown and rendered for display as a GitHub page. This adds a little more complexity than a GitHub Markdown page, but it allows us to render parameters directly into the HTML which helps to keep things up-to-date. If some parameters have changed, or been overridden with an [environment variable](https://qcif.github.io/daff-biosecurity-wf2/environment.html), you can re-render these docs and those values will be updated.
+[Some documentation](../docs/) is written in markdown and rendered for display as a GitHub page. This adds a little more complexity than a GitHub Markdown page, but it allows us to render parameters directly into the HTML which helps to keep things up-to-date. If some parameters have changed, or been overridden with an [environment variable](https://qcif.github.io/taxodactyl/environment.html), you can re-render these docs and those values will be updated.
 
 See [setup](#developer-setup) if you don't have a Python environment yet for this repo yet.
 
@@ -535,7 +538,7 @@ config.configure(args.output_dir, query_dir=args.query_dir)
 
 There are numerous locations in the workflow where non-fatal errors can occur.
 At minimum, a log statement is written to record these, but typically the
-[errors.py](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/utils/errors.py)
+[errors.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/utils/errors.py)
 module is used to track these errors and render them at the appropriate place in
 the HTML report:
 
@@ -600,7 +603,7 @@ write its timestamp to the table and then the throttle for that thread is
 released. The database table used depends on the `ENDPOINT` that the throttle
 was created with, as each endpoint is throttled independently:
 
-https://github.com/qcif/daff-biosecurity-wf2/blob/cfb1a93917cb91dc81bccf8b4956a7a081a86a29/scripts/src/utils/throttle.py#L14-L30
+https://github.com/qcif/taxodactyl/blob/main/scripts/src/utils/throttle.py#L14-L31
 
 
 ## Flags
@@ -671,4 +674,4 @@ against the `[Gene name]` and `[Title]` fields only, to avoid returning records
 which are not the intended locus. For example, a query of "COI[ALL]" matches
 all kinds of records that have nothing to do with the cytochrome oxidase gene.
 All the logic for managing loci and rendering GB query strings is encapsulated
-in [locus.py](./scripts/src/utils/locus.py).
+in [locus.py](./src/utils/locus.py).
