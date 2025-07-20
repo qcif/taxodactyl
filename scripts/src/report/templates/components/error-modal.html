@@ -1,0 +1,45 @@
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorModalLabel">Error messages</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Fill with Js -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const toggleErrorDetails = (element) => {
+    const errorList = JSON.parse(element.dataset.errorList || '[]');
+    const errorModalDiv = document.getElementById('errorModal');
+    const errorModalBody = errorModalDiv.querySelector('.modal-body');
+    errorModalBody.innerHTML = ''; // Clear previous content
+
+    if (errorList.length > 0) {
+      errorList.forEach(error => {
+        const errorItem = document.createElement('p');
+        errorItem.className = 'alert alert-danger';
+        errorItem.textContent = error.message;
+        if (error.exception) {
+          const exceptionInfo = document.createElement('small');
+          exceptionInfo.innerHTML = `
+            <br>
+            <strong>Exception:</strong>
+            <code class="text-danger">${error.exception}</code>`;
+          errorItem.appendChild(exceptionInfo);
+        }
+        errorModalBody.appendChild(errorItem);
+      });
+    }
+    const errorModal = new bootstrap.Modal(errorModalDiv);
+    errorModal.show();
+  };
+</script>

@@ -1,0 +1,8 @@
+{% macro info_badge(text, class_list="", placement="top") %}
+<span
+  class="info-badge {{ class_list }}"
+  title="{{ text }}"
+  data-bs-toggle="tooltip"
+  data-bs-placement="{{ placement }}"
+>&#9432;</span>
+{% endmacro %}

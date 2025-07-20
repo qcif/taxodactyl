@@ -1,0 +1,55 @@
+<!-- A modal describing all flags -->
+
+<div class="modal fade" id="flagsModal" tabindex="-1" aria-labelledby="flagsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xxl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="flagsModalLabel">Flag definitions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          The following table lists all flags that were raised during the analysis.
+          The <strong>Flag</strong> column indicates the flag number and value, while
+          the <strong>Outcome</strong> column describes the outcome of the analysis
+          for that flag. The <strong>Level</strong> column indicates the severity
+          of the flag, with levels >1 indicating increasing level of concern.
+        </p>
+
+        <div style="max-height: 70vh; overflow-y: auto;">
+          <table class="table tight freeze-header">
+            <thead>
+              <th class="text-center">Flag</th>
+              <th>Analysis</th>
+              <th>Explanation</th>
+              <th>Outcome</th>
+              <th class="text-center">Level</th>
+            </thead>
+
+            <tbody>
+              {% for flag_id, row in flag_definitions.items() %}
+              {% for flag_value in row.explanation %}
+              <tr
+                class="alert-{{ row.level[flag_value] | bs_class }}"
+                {% if not loop.index0 %}
+                style="border-top: 2px solid black;"
+                {% endif %}
+              >
+                <td class="text-center">{{ flag_id }}{{ flag_value }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.explanation[flag_value] }}</td>
+                <td>{{ row.outcome[flag_value] }}</td>
+                <td class="text-center">{{ row.level[flag_value] }}</td>
+              </tr>
+              {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

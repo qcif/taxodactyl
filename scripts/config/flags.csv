@@ -1,0 +1,34 @@
+id,name,value,explanation,outcome,level
+1,Candidate selection,A,1 candidate species matched with high stringency (identity ≥ 98.5%),Positive species identification,1
+1,Candidate selection,B,2-3 candidate species matched with high stringency (identity ≥ 98.5%),The analyst should attempt subjective species identification at the genus level,2
+1,Candidate selection,C,>3 candidate species matched with high stringency (identity ≥ 98.5%),The analyst should attempt subjective species identification at the genus level,3
+1,Candidate selection,D,At least one candidate species matched with moderate stringency (identity ≥93.5% and <98.5%),The analyst should attempt subjective species identification at the genus level,2
+1,Candidate selection,E,No candidate species matched,Identification not possible (potential unknown species),3
+2,Taxa of interest analysis,A,Taxon of interest detected in candidate species,At least one of the taxa of interest matched the candidates species,1
+2,Taxa of interest analysis,B,Taxon of interest NOT detected in candidate species,None of the taxa of interest matched the candidates species,3
+2,Taxa of interest analysis,NA,No Taxa of Interest were provided,Could not be assessed,0
+4,Supporting publications,A,Matching sequence records for this species are from >5 independent sources,Reference sequences are from diverse sources and therefore likely to be reliable,1
+4,Supporting publications,B,Matching sequence records for this species have only 1-5 independent sources,Reference sequence sources lack diversity and may therefore be unreliable,2
+5,Database coverage,NA,Criteria to perform this analysis were not met,Database coverage could not be assessed for this taxon.,0
+5,Database coverage,B,Locus was not provided for this sample,Database coverage could not be fully assessed for this taxon.,2
+5.1,Database representation for target taxon,A,The given locus for this taxon is well represented in reference database (>5 entries),The reference data supports this taxon well,1
+5.1,Database representation for target taxon,B,The given locus for this taxon has limited representation in reference database (≤5 entries),The reference data has some support for this taxon,2
+5.1,Database representation for target taxon,C,The given locus for this taxon is not present in reference database (0 entries),The reference data are likely to be unreliable for this species,3
+5.1,Database representation for target taxon,NA,Assessment of related species is only possible for taxa at rank genus/species,This taxon could not be fully assessed,0
+5.1,Database representation for target taxon,ERR,Please see error messages displayed in the Database Coverage report,The analysis could not be completed because an error occurred,0
+5.2,Database representation for related species,A,>90% of related taxa have reference sequence(s) at the given locus,The reference data supports species in this genus well,1
+5.2,Database representation for related species,B,10-90% of related taxa have reference sequence(s) at the given locus,The reference data offers some support for species in this genus,2
+5.2,Database representation for related species,C,≤10% of taxon have reference sequence(s) at the given locus,The reference data offers little support for species in this genus,3
+5.2,Database representation for related species,NA,Assessment of related species is only possible for taxa at rank genus/species,This taxon could not be fully assessed,0
+5.2,Database representation for related species,ERR,Please see error messages displayed in the Database Coverage report,The analysis could not be completed because an error occurred,0
+5.3,Database representation for related species in country of origin,A,All species in genus from country of origin have reference sequence(s) for this locus,"The reference data supports species in this genus well, when we evaluate only species that occur in the sample's country of origin",1
+5.3,Database representation for related species in country of origin,B,Not all species in genus from the country of origin have reference sequence(s) for this locus,"The reference data offers some support for species in this genus, when we evaluate only species that occur in the sample's country of origin",2
+5.3,Database representation for related species in country of origin,C,No species in genus have been observed in the country of origin,"It's unlikely that the true taxonomic identity is another species in this genus, because no others have been recorded in the sample's country of origin",0
+5.3,Database representation for related species in country of origin,NA,Assessment of related species is only possible for taxa at rank genus/species,This taxon could not be fully assessed,0
+5.3,Database representation for related species in country of origin,ERR,Please see error messages displayed in the Database Coverage report,The analysis could not be completed because an error occurred,0
+6,Phylogenetic assessment,A,Candidate species grouped within single clade,The query sequence is genetically consistent with sequences of the best-matching species,1
+6,Phylogenetic assessment,B,The query sequence clusters as sister to a species-specific clade or as a single branch in a tree,"The sample is genetically distinct from the sequences of the best-matching species, and may lack representation in the reference database. This indicates that the sample organism is either poorly studied or a potential novel species.",2
+6,Phylogenetic assessment,C,Genotype diversity grouped into multiple diverse groups,The top candidate species cannot be confidently distinguished from other related species,3
+7,Preliminary identification confirmation,A,Identified species is consistent with preliminary ID,The preliminary identification is supported by the molecular data,1
+7,Preliminary identification confirmation,B,Identified species is not consistent with preliminary ID,The molecular data contradicts the preliminary identification,3
+7,Preliminary identification confirmation,NA,Insufficient evidence due to inconclusive taxonomy of the sample,Cannot confirm or reject the preliminary ID,0

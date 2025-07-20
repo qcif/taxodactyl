@@ -1,0 +1,21 @@
+{% extends "header.html" %}
+
+{% block content %}
+<p>
+  This page lists permitted values for the <code>locus</code> field in the <code>metadata.csv</code> input file. Many of these loci are synonyms for the same target - it does not matter which synonym is specified as the input.
+</p>
+
+<p class="alert alert-info">
+  For virus queries and workflow runs using the BOLD database, the locus field is not required. In these cases, you should set this field to <code>NA</code>.
+</p>
+
+<p class="alert alert-info">
+  These values describe the default <code>loci.json</code> file that is defined in the workflow. It is possible for administrators to replace this with a custom file. If this might the case, please request a list of allowed loci from your service administrator.
+</p>
+
+<ul>
+  {% for locus in loci %}
+  <li><code>{{ locus }}</code></li>
+  {% endfor %}
+</ul>
+{% endblock %}

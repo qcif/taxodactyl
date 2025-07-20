@@ -1,0 +1,34 @@
+{
+    "query_title": "LC438549.1 Anneissia japonica mitochondrial COX1 mRNA for cytochrome c oxidase subunit 1, partial cds",
+    "query_length": 602,
+    "hits": [
+      {
+        "hit_id": "gi|1826670683|ref|XM_033267091.1|",
+        "hit_subject": "PREDICTED: Anneissia japonica cytochrome c oxidase subunit 1-like (LOC117121782), mRNA",
+        "accession": "XM_033267091",
+        "alignment_length": 602,
+        "subject_length": 1575,
+        "query_coverage": 1.0,
+        "bitscore": 1112.8,
+        "e_value": 0.0,
+        "identity": 1.0,
+        "hsps": [
+          {
+            "bitscore": 1112.8,
+            "e_value": 0.0,
+            "identities": 602,
+            "identity": 1.0,
+            "strand_query": "Plus",
+            "strand_subject": "Plus",
+            "gaps": 0,
+            "query_start": 1,
+            "query_end": 602,
+            "subject_start": 311,
+            "subject_end": 912,
+            "alignment_length": 602,
+            "alignment": "Query    1 GGTAAAAAAA ATGAGTTTTT GGCTTTTGCC TCCTTCTTTT CTTCTTTTAT TGGCTTCTGC TGGTGTTGAA AGGGGTGTTG\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  311 GGTAAAAAAA ATGAGTTTTT GGCTTTTGCC TCCTTCTTTT CTTCTTTTAT TGGCTTCTGC TGGTGTTGAA AGGGGTGTTG\n\nQuery   81 GTACTGGGTG AACTATTTAT CCTCCTTTGT CAAGTGGTAT TGCTCATTCT GGTGGTTCTG TTGATCTTGC TATTTTTTCT\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  391 GTACTGGGTG AACTATTTAT CCTCCTTTGT CAAGTGGTAT TGCTCATTCT GGTGGTTCTG TTGATCTTGC TATTTTTTCT\n\nQuery  161 TTACATATAG CTGGTGCTTC TTCTATTATA GCTTCGATTA ACTTTATAAC TACAATAATA AAAATGCGTG CTCCTGGTAT\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  471 TTACATATAG CTGGTGCTTC TTCTATTATA GCTTCGATTA ACTTTATAAC TACAATAATA AAAATGCGTG CTCCTGGTAT\n\nQuery  241 TTCTTTTGAT CGTCTTTCTC TTTTTGTTTG ATCAATTTTT ATTACTACTT TTCTTCTTTT GTTATCTTTA CCTGTTTTGG\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  551 TTCTTTTGAT CGTCTTTCTC TTTTTGTTTG ATCAATTTTT ATTACTACTT TTCTTCTTTT GTTATCTTTA CCTGTTTTGG\n\nQuery  321 CTGGGGCTAT AACAATGCTT CTTACTGATC GTAATGTAAA TACTACTTTT TTTGATCCTG CTGGTGGTGG TGATCCTATT\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  631 CTGGGGCTAT AACAATGCTT CTTACTGATC GTAATGTAAA TACTACTTTT TTTGATCCTG CTGGTGGTGG TGATCCTATT\n\nQuery  401 TTGTTTCAGC ATTTATTTTG GTTTTTTGGT CATCCTGAAG TTTATATTTT AATATTACCT GGTTTTGGTA TGATTTCTCA\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  711 TTGTTTCAGC ATTTATTTTG GTTTTTTGGT CATCCTGAAG TTTATATTTT AATATTACCT GGTTTTGGTA TGATTTCTCA\n\nQuery  481 TGTTGTTTCT CATTATTCTG GTAAGAGAGA GCCTTTTGGT TATTTGGGTA TGGTTTATGC GATGGTTGCT ATAGGTATAC\n           |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| |||||||||| ||||||||||\nSbjct  791 TGTTGTTTCT CATTATTCTG GTAAGAGAGA GCCTTTTGGT TATTTGGGTA TGGTTTATGC GATGGTTGCT ATAGGTATAC\n\nQuery  561 TTGGTTTTCT TGTTTGAGCA CATCATATGT TTACTGTAGG TA\n           |||||||||| |||||||||| |||||||||| |||||||||| ||\nSbjct  871 TTGGTTTTCT TGTTTGAGCA CATCATATGT TTACTGTAGG TA\n\n"
+          }
+        ]
+      }
+    ]
+}

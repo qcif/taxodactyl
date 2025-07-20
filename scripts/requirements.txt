@@ -1,0 +1,9 @@
+pygbif
+biopython==1.*
+jinja2
+filelock
+pycountry
+fsspec
+geopandas
+pyyaml
+markdown2

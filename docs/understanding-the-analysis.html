@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Documentation - DAFF Biosecurity workflows</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- For rendering LaTex-style math equations: -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body);"></script>
+
+    <style>
+      body {
+        padding: 3rem 1rem;
+      }
+      code {
+        color: #333;
+        background-color: #eee;
+        padding: 0.2rem;
+        border-radius: 0.25rem;
+      }
+      h2, h3 {
+        padding-top: 1em;
+        margin-top: 1em;
+        margin-bottom: .25em;
+      }
+      h2 {
+        border-top: 1px solid #ddd;
+      }
+      h3 {
+        font-size: 1.5rem;
+        color: var(--bs-gray);
+      }
+      h1 .small {
+        font-size: 0.75em;
+      }
+      .katex {
+        font-size: 2em;
+      }
+      pre code {
+        display: block;
+        padding: 1rem;
+        overflow-x: auto;
+        color: #333;
+        background-color: #eee;
+        border-radius: 0.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div class="row my-3">
+        <div class="col">
+          <h1>
+            Understanding the analysis
+            <br>
+            <span class="small text-muted">
+              DAFF Taxonomic assignment workflow
+            </span>
+          </h1>
+        </div>
+        <div class="col-auto px-3">
+          <img src="https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true" alt="DAFF Logo" width="300" style="margin-top: -1rem;">
+        </div>
+      </div>
+
+      <p>While the workflow report aims to be self-documenting, there are many analytical details which the user may wish to understand in further detail. The purpose of this document is to provide this enhanced understanding of what exactly happens during the analysis, and how outcomes are derived from the resulting data.</p>
+
+<ul>
+<li>To set up and run the workflow, visit the Nextflow workflow repository: <a href="https://github.com/qcif/taxodactyl">qcif/taxodactyl</a>.</li>
+<li>For analysis code (used in the above workflow), see the Python modules repository: <a href="https://github.com/qcif/daff-biosecurity-wf2">qcif/daff-biosecurity-wf2</a></li>
+<li>For reference, an example workflow report is available <a href="https://qcif.github.io/daff-biosecurity-wf2/example_report.html">here</a></li>
+</ul>
+
+<h2 id="table-of-contents">Table of contents</h2>
+
+<ol>
+<li><a href="#interpretting-the-workflow-report">Interpretting the workflow report</a></li>
+<li><a href="#reference-data">Reference data</a>
+<ol>
+<li><a href="#blast">BLAST</a></li>
+<li><a href="#bold">BOLD</a></li>
+</ol></li>
+<li><a href="#input-files">Input files</a>
+<ol>
+<li><a href="#fasta-file">FASTA file</a></li>
+<li><a href="#metadata-csv-file">Metadata CSV file</a></li>
+</ol></li>
+<li><a href="#blast-parsing-the-xml-output">BLAST - parsing the XML output</a>
+<ol>
+<li><a href="#extracted-values">Extracted values</a></li>
+<li><a href="#calculated-values">Calculated values</a></li>
+</ol></li>
+<li><a href="#blast-extracting-taxonomic-metadata">BLAST - Extracting taxonomic metadata</a></li>
+<li><a href="#bold-submitting-sequences-to-id-engine">BOLD - submitting sequences to ID Engine</a>
+<ol>
+<li><a href="#sequence-orientation">Sequence orientation</a></li>
+<li><a href="#submitting-to-id-engine">Submitting to ID Engine</a></li>
+<li><a href="#requesting-additional-metadata">Requesting additional metadata</a></li>
+</ol></li>
+<li><a href="#assigning-taxonomic-identity">Assigning taxonomic identity</a>
+<ol>
+<li><a href="#checking-preliminary-morphology-id">Checking preliminary morphology ID</a></li>
+<li><a href="#checking-taxa-of-interest">Checking taxa of interest</a></li>
+</ol></li>
+<li><a href="#phylogenetic-analysis">Phylogenetic analysis</a></li>
+<li><a href="#assessment-of-supporting-publications">Assessment of supporting publications</a></li>
+<li><a href="#assessment-of-database-coverage">Assessment of database coverage</a>
+<ol>
+<li><a href="#obtaining-related-species">Obtaining related species</a></li>
+<li><a href="#enumerating-genbank-records">Enumerating GenBank records</a></li>
+<li><a href="#occurrence-maps">Occurrence maps</a></li>
+</ol></li>
+</ol>
+
+<h2 id="interpretting-the-workflow-report">Interpretting the workflow report</h2>
+
+<p>The workflow report aims to deliver clear outcomes with supporting evidence. The taxonomic identity (or lack thereof) is the first thing to be reported. The remainder of the report serves to corroborate supporting evidence for that claim.</p>
+
+<p class="alert alert-warning">
+    It is crucial that the reader pays attention to supporting evidence when evaluating the report. Even when a positive identity is reported, there are other aspects of the analysis that can subtract from the credibility of such an outcome. Most notably, it is possible that a positive species identification could be based on a single reference sequence with an incorrect taxonomic annotation. In this case the result would obviously be erroneous. The potential for this error would be raised in the section "Publications supporting taxonomic association", which would flag that there is only one independent publication source supporting the outcome.
+</p>
+
+<h3 id="results-overview">Results overview</h3>
+
+<ol>
+<li>Check the taxonomic outcome (the first item under "Result overview")</li>
+<li>If positive, the <a href="#metadata-csv-file">Preliminary ID</a> will be either confirmed or rejected
+<ol>
+<li>If rejected, you may wish to check the database coverage (square button) to ensure that the taxon is represented in the reference database</li>
+</ol></li>
+<li>If Taxa of Interest (TOIs) were provided, check whether they were detected.
+<ol>
+<li>If not detected, you may wish to check the database coverage to ensure that the taxon is represented in the reference database. A brief overview of TOI coverage is provided beneath the TOI item; this shows the highest observed warning level from each of the provided TOIs. For the full database coverage reports, go to the "Taxa of interest" report section.</li>
+</ol></li>
+</ol>
+
+<h3 id="candidate-species">Candidate species</h3>
+
+<ol>
+<li>First take a look at the hit classification table (top-right). This shows how many hits were returned, and how they have been classified for the purpose of the analysis. You will typically see a few candidate species and many that are classified as <code>NO MATCH</code>. The first row of <code>STRONG MATCH</code> and <code>MODERATE MATCH</code> with 1+ species determines the <a href="#assigning-taxonomic-identity">identity threshold</a> for identifying candidates.</li>
+<li>Check the "Candidate species" table. For each species, you should take note of:
+<ol>
+<li>Number of hits - &gt;5 hits gives more confidence in the taxonomic annotation of reference sequences</li>
+<li>Top identity - with multiple candidates, a stark drop in identity between species provides higher confidence</li>
+<li>Median identity - if &gt;0.5% lower than the top identity, this indicates high intraspecific diversity or possibly misidentified reference sequences.</li>
+<li>Database coverage - if the identity is not 100% and there are species in the genus with no database representation, it's possible that the true identity of the sample could be one of the unrepresented species.</li>
+</ol></li>
+<li>If there are multiple candidates, the report will prompt the analyst to make a genus-level assignment for the sample. To aid in this process the analyst should refer to:
+<ol>
+<li>The identities (top and median) of each candidate</li>
+<li>The phylogenetic tree, to see how the query sequence relates to the reference sequences. We hope to see the query sequence clustering with a monophyletic clade of one species.</li>
+</ol></li>
+</ol>
+
+<h3 id="taxa-of-interest">Taxa of interest</h3>
+
+<p>See <a href="#checking-taxa-of-interest">Checking taxa of interest</a></p>
+
+<h2 id="reference-data">Reference data</h2>
+
+<h3 id="blast">BLAST</h3>
+
+<p>The reference data used by the workflow depends entirely on the deployment - ask your platform administrator if you are unsure.
+For the BLAST version of the workflow, the reference data will be a BLAST database of sequence records that is held on the analysis server - by default this is <code>NCBI Core Nt</code>, but it is possible to run with a different reference database. The workflow report specifies the database name in the database coverage report (admins can set this manually with <code>BLAST_DATABASE_NAME</code>).</p>
+
+<h3 id="bold">BOLD</h3>
+
+<p>By default this is set to <code>COX1_SPECIES_PUBLIC</code> (admins can override this by setting <code>BOLD_DATABASE</code>).</p>
+
+<h2 id="input-files">Input files</h2>
+
+<h3 id="fasta-file">FASTA file</h3>
+
+<p>A FASTA file containing sample sequences to be analysed. Multiple sequences per sample can be used, but the FASTA header for each sequence must be unique and match an entry in the <code>metadata.csv</code> input. The following constraints apply to this input:</p>
+
+<ul>
+<li>Seq IDs must be unique</li>
+<li>Seq IDs must match <code>metadata.csv</code> input</li>
+<li>Maximum query sequences: <code>150</code></li>
+<li>Minimum seq length: <code>20nt</code></li>
+<li>Max length of any sequence: <code>3000nt</code></li>
+<li>All residues must be valid nucleotide (ambiguous IUPAC DNA: <code>ATGCRYSWKMBDHVN</code>)</li>
+</ul>
+
+<h3 id="metadata-csv-file">Metadata CSV file</h3>
+
+<p>This file provides metadata for each query sequence, with the following fields:</p>
+
+<table class="table table-striped">
+<thead>
+<tr>
+  <th>Field</th>
+  <th>Required</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>sample_id</td>
+  <td>yes</td>
+  <td>Must match the header of one FASTA sequence</td>
+</tr>
+<tr>
+  <td>locus</td>
+  <td>yes</td>
+  <td>Must be in the <a href="./allowed-loci.html">list of allowed loci</a> or <code>NA</code> for virus or BOLD queries (note that this can be modified by updating <a href="https://github.com/qcif/taxodactyl/blob/main/assets/loci.json">this file</a>).</td>
+</tr>
+<tr>
+  <td>preliminary_id</td>
+  <td>yes</td>
+  <td>A suggested taxonomic identity based on sample morphology</td>
+</tr>
+<tr>
+  <td>taxa_of_interest</td>
+  <td>no</td>
+  <td>A pipe-delimited list of taxa to be evaluated against the sample. Can be at rank species, genus, family, order, class, phylum, kingdom or domain.</td>
+</tr>
+<tr>
+  <td>country</td>
+  <td>no</td>
+  <td>The sample country of origin</td>
+</tr>
+<tr>
+  <td>host</td>
+  <td>no</td>
+  <td>The host or commodity that the sample was extracted from</td>
+</tr>
+</tbody>
+</table>
+
+<p class="alert alert-info">
+  From <code>v1.1</code> any additional fields in this file will be displayed in the workflow report
+</p>
+
+<h2 id="blast-parsing-the-xml-output">BLAST - parsing the XML output</h2>
+
+<p>BLAST search is performed using a local (meaning run on the same machine as the workflow) BLASTN from the <a href="https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html">NCBI BLAST+ toolkit</a>; the version is specified in the workflow report. This command-line BLASTN process produces a series of alignments for each query sequence, with each alignment relating to a BLAST "hit" against a sequence in the reference database.</p>
+
+<p class="alert alert-info">
+    This step forks a single BLAST result into a series of query directories. From here each query's results are analysed in parallel.
+</p>
+
+<h3 id="extracted-values">Extracted values</h3>
+
+<p>The following values are extracted verbatim from BLAST XML fields:</p>
+
+<ul>
+<li>Hit identifier (GenBank ID)</li>
+<li>Hit definition (GenBank record title)</li>
+<li>Hit NCBI accession</li>
+<li>Hit subject length (nt)</li>
+<li>High-scoring pairs (HSPs; each represents a segment of the alignment):
+<ul>
+<li>bitscore</li>
+<li>evalue</li>
+<li>identity</li>
+<li>query_start</li>
+<li>query_end</li>
+<li>subject_start</li>
+<li>subject_end</li>
+<li>alignment_length</li>
+</ul></li>
+</ul>
+
+<h3 id="calculated-values">Calculated values</h3>
+
+<p>These values are not present in the BLAST XML and are calculated from the extracted values:</p>
+
+<table class="table table-striped">
+    <thead>
+        <th>Value</th>
+        <th>Description</th>
+        <th>Equation</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Alignment length
+            </td>
+            <td>
+                The total non-overlapping length of all HSPs.
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Hit bitscore
+            </td>
+            <td>
+                A score which takes into account both alignment strength and length. Calculated as the sum of bitscores across all HSPs.
+            </td>
+            <td class="text-center p-3">
+                \( \sum_{HSP \in \text{HSPs}} \text{bits}(HSP) \)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Hit E-value
+            </td>
+            <td>
+                An expression of probability that the alignment occurred due to random chance, often expressed as an exponent to distinguish between very low numbers. If there is only one HSP, the `hsp.evalue` will be used. Otherwise, a formula is used.
+            </td>
+            <td class="text-center p-3">
+                \( \text{ess} \cdot 2^{-\sum_{HSP \in \text{hit.HSPs}} \text{bits}(HSP)} \)
+                <br>
+                <em>Where <code>ess</code> is the effective search space specified in the BLAST XML output.</em>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Hit identity
+            </td>
+            <td>
+                The proportion of nucleotides which match between query and subject in the alignment. This is calculated as the weighted identity of HSPs (high-scoring pairs), clipped to a maximum of 1.
+            </td>
+            <td class="text-center p-3">
+                \(
+                    \frac{\sum_{HSP \in \text{HSPs}} \text{identities}(HSP)}{\sum_{HSP \in \text{HSPs}} \text{alignment length}(HSP)}
+                \)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Query coverage
+            </td>
+            <td>
+                The proportion of the query sequence that is covered by the alignment with the reference sequence.
+            </td>
+            <td class="text-center p-3">
+                \(
+                    \frac{\text{alignment length}}{\text{query length}}
+                \)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 id="blast-extracting-taxonomic-metadata">BLAST - Extracting taxonomic metadata</h2>
+
+<p>BLAST results do not include structured taxonomic information. This data is extracted for each BLAST hit subject using <a href="https://bioinf.shenwei.me/taxonkit/">taxonkit</a>, a command-line tool which can retrieve taxonomic records from NCBI's <a href="https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/">taxdump</a> archive. Taxids for each hit are extracted from the local BLAST database using <code>blastdbcmd</code>, another tool in the BLAST+ suite. This results in the following fields being collected for each hit:</p>
+
+<ul>
+<li>Taxid</li>
+<li>Domain</li>
+<li>Superkingdom</li>
+<li>Kingdom</li>
+<li>Phylum</li>
+<li>Class</li>
+<li>Order</li>
+<li>Family</li>
+<li>Genus</li>
+<li>Species</li>
+</ul>
+
+<h2 id="bold-submitting-sequences-to-id-engine">BOLD - submitting sequences to ID Engine</h2>
+
+<p>When the workflow is run in <code>--bold</code> mode, the search method changes to use the BOLD ID Engine through the BOLD API (<a href="https://v4.boldsystems.org/resources/api">https://v4.boldsystems.org/resources/api</a>). Since BOLD requires query DNA sequences that are correctly orientated (i.e. not antisense), we attempt to orientate the query sequences before submission. Query sequences are then submitted to the ID Engine API on-by-one. BOLD then returns a set of match statistics similar to BLAST for each query.</p>
+
+<p class="alert alert-info">
+    This step forks each BOLD into a series of query directories. From here each query's results are analysed in parallel.
+</p>
+
+<h3 id="sequence-orientation">Sequence orientation</h3>
+
+<p>Each DNA sequence is translated all three translation frames in both the forward and reverse directions. This results in six translated amino acid sequences for each query in frames <code>1</code>, <code>2</code>, <code>3</code>, <code>-1</code>, <code>-2</code>, <code>-3</code>.</p>
+
+<p>To orientate each query sequence, we then use the <code>hmmsearch</code> tool (part of the <a href="http://eddylab.org/software/hmmer/Userguide.pdf">HMMER suite</a>) locally to determine whether any the translation frames contain any of the following HMM profiles:</p>
+
+<ul>
+<li><code>pf00115.hmm</code> - <a href="https://www.ebi.ac.uk/interpro/entry/pfam/PF00115/">Cytochrome C and Quinol oxidase polypeptide I</a></li>
+<li><code>pf00116.hmm</code> - <a href="https://www.ebi.ac.uk/interpro/entry/pfam/PF00116/">Cytochrome C oxidase subunit II, periplasmic domain</a></li>
+<li><code>pf02790.hmm</code> - <a href="https://www.ebi.ac.uk/interpro/entry/pfam/PF02790/">Cytochrome C oxidase subunit II, transmembrane domain</a></li>
+</ul>
+
+<p>A match is accepted when the E-value is below <code>1e-05</code>. The first frame which is predicted to encode one of these domains dictates the orientation that will then be submitted to BOLD. For query sequences with no matches, both the forward and reverse orientations are submitted to BOLD and the one which returns hit(s) is assumed to be in the correct orientation (the other orientation's result is discarded).</p>
+
+<h3 id="submitting-to-id-engine">Submitting to ID Engine</h3>
+
+<p>Orientated query sequences are submitted to the ID Engine API sequentially, and the requests run in parallel to increase throughput.
+The following data are parsed directly from the API response:</p>
+
+<ul>
+<li>Query title</li>
+<li>Query length</li>
+<li>Query frame</li>
+<li>Query sequence</li>
+<li>Hits:
+<ul>
+<li>Hit identifier (BOLD ID)</li>
+<li>Hit sequence description</li>
+<li>Hit taxonomic identification (species)</li>
+<li>Hit similarity (used in place of identity)</li>
+<li>Hit URL (a link to the record on <a href="https://boldsystems.org">https://boldsystems.org</a>)</li>
+<li>Hit nucleotide sequence</li>
+<li>Hit collectors (BOLD database submitter(s))</li>
+</ul></li>
+</ul>
+
+<h3 id="requesting-additional-metadata">Requesting additional metadata</h3>
+
+<p>For each hit subject, additional metadata are then requested from the "Full data retrieval" BOLD API endpoint:</p>
+
+<ul>
+<li>Accession (GenBank accession)</li>
+<li>Phylum</li>
+<li>Class</li>
+<li>Order</li>
+<li>Family</li>
+<li>Genus</li>
+<li>Species</li>
+</ul>
+
+<p>The above fields are then used to fetch a kingdom classification (not included in BOLD response data) from the GBIF API.
+The phylum given above is used to fetch a the associated phylum record from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names/searchNames">GBIF species search API</a>, and the kingdom field is extracted from the response data.</p>
+
+<h2 id="assigning-taxonomic-identity">Assigning taxonomic identity</h2>
+
+<p>This is a critical stage in the analysis. Hits returned from BLAST/BOLD are filtered and a list of candidate species is extracted from those hits. Filtering is applied as follows. For BOLD search, the process is identical, with similarity being used in place of identity.</p>
+
+<ul>
+<li>All hits which are below <code>300nt</code> AND <code>85.0%</code> query coverage are excluded from the entire analysis. These are referred to as "filtered hits".</li>
+<li>The identity threshold for candidate hits is either:
+<ul>
+<li><code>98.5%</code> (if any filtered hits meet this threshold) - defined as a <strong>STRONG MATCH</strong></li>
+<li>OR <code>93.5%</code> - defined as a <strong>MODERATE MATCH</strong></li>
+</ul></li>
+<li>Resulting candidate hits are then aggregated by species and the top hit per-species is identified. These species are what you see reported in the "Candidates" section of the workflow report.</li>
+<li>The "No. hits" shown for each candidate includes all filtered hits, not just the candidate hits.</li>
+<li>The "Median identity" shown in the "Candidate species" table is derived from the identity (%) of all filtered hits. If there is a wide distribution of hit identities, the median will be reduced. If the median drops below the candidate threshold, the badge will turn from green to yellow. If it drops to less than <code>95.0%</code> of the threshold (i.e. <code>&lt;93.6%</code> for a threshold of <code>98.5%</code>), the badge will turn red.</li>
+</ul>
+
+<p>The candidate species identified above are then cross-checked against the Preliminary Morphology ID and Taxa of Interest (if provided).</p>
+
+<h3 id="checking-preliminary-morphology-id">Checking preliminary morphology ID</h3>
+
+<p>The PMI provided by the user is checked against each taxonomic rank from each candidate species. If the provided name matches any of the fields, this is regarded as a match. The user should be aware that in some edge-cases this can result in a mis-match due to the existence of taxonomic homonyms (<em>Morus</em>, for example, is both a plant and bird genus).</p>
+
+<h3 id="checking-taxa-of-interest">Checking taxa of interest</h3>
+
+<p>This process is identical to that described above, except that a little more information is collected for display in the "Taxa of interest" section of the workflow report. For each taxon of interest, the best-scoring species that matches the taxonomy is reported. It is possible for a TOI to match multiple candidates, but only the top candidate will be shown.</p>
+
+<h3 id="boxplot-of-identity-distribution">Boxplot of identity distribution</h3>
+
+<p>When the analysis identifies more than  candidate species, the analyst is prompted to make a subjective genus-level taxonomic assignment. To assist in this, a boxplot which shows the distribution of hit identities per-species is included in the report.</p>
+
+<h2 id="phylogenetic-analysis">Phylogenetic analysis</h2>
+
+<p>Subject sequences are selected from filtered hits <a href="#assigning-taxonomic-identity">extracted previously</a>.
+The selection process is a little complex, as it aims to strike a balance between reasonable coverage of the genetic diversity present in BLAST/BOLD hit subjects, while also trying to minimize the number of sequences that need to go through alignment and analysis. Building trees with 100+ sequences is SLOW and the resulting tree is often ugly, so we do our best to avoid that.</p>
+
+<ol>
+<li>Hits are collected in order of descending identity until at least 20 hits have been collected. This means that candidate hits are always collected for sampling, and filtered hits are included if there aren't enough to form a good tree.</li>
+<li>Next, if there are more than 30 hits for a species, these hits are strategically sampled to ensure that sequence diversity is accurately represented:</li>
+</ol>
+
+<ul>
+<li>Hits are ordered by identity</li>
+<li>A systematic sample of n=30 hits is taken, which always includes the first and last hit</li>
+</ul>
+
+<p>This sampling strategy is illustrated below for clarity, assuming a species where 45 hits have been collected and a sample size of <code>n=5</code>:</p>
+
+<p><img src="https://github.com/qcif/taxodactyl/blob/main/docs/images/systematic-sample.png?raw=true" alt="systematic sampling of hits" /></p>
+
+<p class="alert alert-info">
+    The workflow restricts the number of sequences to 30 per species by default, which strikes a balance between reasonable run time and representation of genetic diversity. Setting this sample size too low would result in poor quality trees that may give a false impression of genetic diversity to the user. Setting it too high would result in very long run times and large trees that are difficult to interpret. Please refer to the
+    <a href="https://github.com/qcif/taxodactyl/blob/main/docs/params.md">
+      Nextflow docs
+    </a>
+    for adjustment of workflow parameters.
+</p>
+
+<p>A FASTA sequence is then written by extracting the nucleotide sequence from each of the selected hits, and adding the query sequence.
+This FASTA file is then alignment with <a href="https://mafft.cbrc.jp/alignment/server/index.html">MAFFT</a>, and then a tree is computed from the alignment with <a href="http://www.atgc-montpellier.fr/fastme/">FastME</a>.</p>
+
+<h2 id="assessment-of-supporting-publications">Assessment of supporting publications</h2>
+
+<p>An important drawback of searching against the large Non-redundant (Nr) BLAST database is that this database contains many sequences which are not very reputable. Since anyone can submit sequences to GenBank there are many sequences with incorrect taxonomic annotation. This analysis presents a measure of confidence in the integrity of the reference sequences supporting the conclusions. Are the candidate reference sequences supported by numerous publications? Great, that means that the taxonomic annotation has been corroborated by multiple studies. Do we have 5 reference sequences that were all submitted to GenBank by the same author(s)? That casts some doubt over the integrity of the taxonomic annotation.</p>
+
+<p class="alert alert-warning">
+    Even when the workflow report is "green" in all other sections of the report, caution is advised if there is only one independent publication corroborating the reference sequences. Further investigation may be required to confirm the credibility of the reference sequence source.
+</p>
+
+<p>The analysis involves clusting of GenBank publication records based on the provided metadata (author, title, journal). An independent analysis is carried out per-candidate species:</p>
+
+<ol>
+<li>For each <a href="#assigning-taxonomic-identity">candidate hit</a>, a list of publications is extracted from the corresponding GenBank record using the Entrez <code>efetch</code> API.</li>
+<li>Each publication is annotated with:
+<ol>
+<li>The NCBI accession number</li>
+<li>A <code>source tag</code>, which is a token derived (by stripping non-alphanumeric characters and converting to lowercase) from one of the following fields (the field with a value):
+<ol>
+<li>Author list</li>
+<li>Publication title ("Direct submission" titles are ignored here as they are computed-generated and not a real publication)</li>
+<li>Journal</li>
+</ol></li>
+<li>Whether the record appears to have been automatically generated - determined by the presence of the string <code>##Genome-Annotation-Data-START##</code> in the GenBank record text.</li>
+</ol></li>
+<li>Publications are then clustered into groups of "independent publications":
+<ol>
+<li>If a publication <code>source tag</code> matches one in an existing group, it is added to that group</li>
+<li>Otherwise, it is added to a new group</li>
+<li>Records with no publications are allocated to a single group</li>
+</ol></li>
+<li>The groups are shown as "independent sources" in the "Publications supporting reference sequences" section of the workflow report.</li>
+</ol>
+
+<h2 id="assessment-of-database-coverage">Assessment of database coverage</h2>
+
+<p>An analysis of taxonomic coverage of the reference database is carried out for each of the following taxa:</p>
+
+<ul>
+<li>Candidate species (only when <code>n ≤ 3</code>)</li>
+<li>Preliminary ID taxon (provided in <a href="#metadata-csv-file">metadata.csv</a>)</li>
+<li>Taxa of interest (provided in <a href="#metadata-csv-file">metadata.csv</a>; only when <code>n ≤ 10</code>)</li>
+</ul>
+
+<p>Each of these is referred to as a "target taxon" or, more concisely, "target".
+For each target, three analyses may be performed:</p>
+
+<ul>
+<li><code>5.1</code>: number of GenBank records for target taxon at the <a href="#metadata-csv-file">given locus</a> (if provided)</li>
+<li><code>5.2</code>: number of species in target genus which have 1+ GenBank records at the <a href="#metadata-csv-file">given locus</a> (if provided)</li>
+<li><code>5.3</code>: as for <code>5.2</code>, but with species limited to those which occur in the country of origin (according to GBIF occurrence records)</li>
+</ul>
+
+<p class="alert alert-info">
+    Analyses <code>5.2</code> and <code>5.3</code> are only run when the target is of rank genus or species. This is because there would be far too much data to analyse at higher ranks.
+</p>
+
+<h3 id="obtaining-related-species">Obtaining related species</h3>
+
+<p>To obtain "species in genus" in analyses <code>5.2</code> and <code>5.3</code>, we use the GBIF API:</p>
+
+<ol>
+<li>A GBIF record is retrieved from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names">/species/suggest</a> API using the target taxon as the search query. If the target matches our <a href="https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/gbif/relatives.py#L16">list of canonical taxa</a>, the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).</li>
+<li>The genus key from the target record is then used to fetch all matching records at rank "species" from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names">/species/match</a> API endpoint.</li>
+<li>Returned speces records are filtered to exclude extinct species, and include only those where status is one of <code>['ACCEPTED', 'DOUBTFUL']</code>.</li>
+</ol>
+
+<h3 id="enumerating-genbank-records">Enumerating GenBank records</h3>
+
+<p>For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's <a href="https://github.com/qcif/taxodactyl/blob/main/assets/loci.json">loci.json</a> file. the taxid is extracted from NCBI taxonomies <a href="#blast-extracting-taxonomic-metadata">using taxonkit</a>.</p>
+
+<p>For example, the following locus and taxon "Homo sapiens" (taxid <code>9606</code>):</p>
+
+<pre><code># loci.json entry for "COI"
+{
+    "ambiguous_synonyms": [
+        "coi",
+        "co1",
+        "cox",
+        "cox1"
+    ],
+    "non_ambiguous_synonyms": [
+        "cytochrome oxidase subunit 1"
+    ]
+}
+</code></pre>
+
+<p>...would result in this GenBank query being rendered:</p>
+
+<pre><code>txid9606[Organism] AND (coi[Title]) OR (coi[GENE]) OR (co1[Title]) OR (co1[GENE]) OR (cox[Title]) OR (cox[GENE]) OR (cox1[Title]) OR (cox1[GENE]) OR (cytochrome oxidase subunit 1)
+</code></pre>
+
+<p>The response returned from Entrez includes a <code>count</code> field - this is the data that we use to enumerate records for each species.</p>
+
+<h3 id="occurrence-maps">Occurrence maps</h3>
+
+<p>In addition to the analyses above, a geographic distribution map is also generated based on occurrence records fetched from the GBIF occurrence API. The number of occurrence records fetched is limited to 5000, because some taxa (e.g. "arthropoda") have far too many occurrence records to fetch in a reasonable length of time.</p>
+
+
+
+
+    </main>
+  </body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daff Biosecurity Workflow Environment Variables</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <style>
+      tr.separator td {
+        background: #bbccdd33;
+        text-align: center;
+        font-weight: bold;
+        padding: .1rem;
+      }
+      code {
+        color: gray;
+      }
+    </style>
+  </head>
+
+  <body class="py-5">
+    <div class="container">
+      <h1>Environment variables</h1>
+
+      <p>
+        Many aspects of the analysis can be controlled through environment
+        variables, which are read in the
+        <a
+          href="https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/utils/config.py"
+        >
+          config.py
+        </a>
+        module. Most of these are optional, but some scripts require some
+        variables to be present (this is documented in the main
+        <a
+          href="https://github.com/qcif/daff-biosecurity-wf2/blob/main/README.md"
+          >README.md</a
+        >.
+      </p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="separator">
+            <td colspan="3">Credentials</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>USER_EMAIL</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              Used to authenticate with NCBI Entrez API if
+              <code>NCBI_API_KEY</code> not provided. Also used to rate limit
+              requests from different users on the same system.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>NCBI_API_KEY</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              Used to authenticate with NCBI Entrez API for an increased rate
+              limit on requests.
+            </td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">Reference data</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TAXONKIT_DATA</strong></code>
+            </td>
+            <td><code>$HOME/.taxonkit</code></td>
+            <td>The directory where NCBI's taxdump files can be found.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>ALLOWED_LOCI_FILE</strong></code>
+            </td>
+            <td><code>./loci.json</code></td>
+            <td>
+              A JSON file which describes permitted loci (barcoding regions) and
+              their synonyms. The default can be overridden with a file in the
+              same format. The <code>ambiguous_synonyms</code> listed in this
+              file are locus synonyms which may be ambiguous in a GenBank query.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BOLD_DATABASE</strong></code>
+            </td>
+            <td><code>COX1_SPECIES_PUBLIC</code></td>
+            <td></td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">User inputs</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>INPUT_FASTA_FILEPATH</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              The query FASTA file containing the user's sample DNA sequences
+              (required throughout the modules).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>INPUT_METADATA_CSV_FILEPATH</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              The metadata CSV file containing the user's sample metadata
+              (required throughout the modules).
+            </td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">Working directories</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>OUTPUT_DIR</strong></code>
+            </td>
+            <td><code>./output/</code></td>
+            <td>
+              Where output data should be written to for the Nextflow run.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>QUERY_DIR</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              The directory containing output data for the querying currently
+              being analysed.
+            </td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">Parameters</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BLAST_MAX_TARGET_SEQS</strong></code>
+            </td>
+            <td><code>2000</code></td>
+            <td>
+              The maximum number of hits collected for each query sequence in
+              the BLAST search. Not used for analysis but rendered in the
+              report.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COVERAGE_TOI_LIMIT</strong></code>
+            </td>
+            <td><code>10</code></td>
+            <td>
+              The maximum number of TOIs that will be analysed by P5 (database
+              coverage).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>GBIF_LIMIT_RECORDS</strong></code>
+            </td>
+            <td><code>500</code></td>
+            <td>
+              The maximum number of records per-request to the GBIF API. More
+              records than this will be fetched in batches.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>GBIF_MAX_OCCURRENCE_RECORDS</strong></code>
+            </td>
+            <td><code>5000</code></td>
+            <td>
+              The maximum number of GBIF records that will be fetched for
+              plotting the occurrence distribution map.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>GBIF_ACCEPTED_STATUS</strong></code>
+            </td>
+            <td><code>accepted,doubtful</code></td>
+            <td>
+              Only GBIF records with these statuses will be retained when
+              fetching related species (comma-separated).
+            </td>
+          </tr>
+          <!-- <tr>
+            <td><code><strong>PHYLOGENY_MIN_HIT_IDENTITY</strong></code></td>
+            <td><code>0.95</code></td>
+            <td>Minimum hit identity to be included into phylogenetic tree.</td>
+          </tr> -->
+          <tr>
+            <td><code><strong>PHYLOGENY_MIN_HIT_SEQUENCES</strong></code></td>
+            <td><code>20</code></td>
+            <td>
+              The minimum number of sequences to be included across all species (non-candidate sequences will be included until this limit is reached).
+            </td>
+          </tr>
+          <tr>
+            <td><code><strong>PHYLOGENY_MAX_HITS_PER_SPECIES</strong></code></td>
+            <td><code>30</code></td>
+            <td>
+              Maximum number of hits to be included for each species. This is useful where candidate species have 30+ candidate hits - more than is required for building the tree. Reducing this parameter to 10-30 increases tree clarity while also dramatically reducing run time. In this case, a systematic sample of sequences (based on identity) is taken to represent the range of diversity present in each species' sequences.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BLAST_DATABASE_NAME</strong></code>
+            </td>
+            <td><code>NCBI Core Nt</code></td>
+            <td>For showing in the report.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>FACILITY_NAME</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>This will be shown in the report.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>ANALYST_NAME</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>This will be shown in the report.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>REPORT_DEBUG</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              If <code>REPORT_DEBUG=1</code> this replaces the timestamp in the
+              report file name with <code>DEBUG</code> so that it can be easily
+              reloaded in the browser after re-rendering.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>SKIP_ORIENTATION</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              If <code>SKIP_ORIENTATION=1</code> then BOLD runs will skip orientation of query sequences and submit both forward and reverse sequences to the ID Engine API (for developers, this removes the need for local installation of Hmmsearch).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>LOGGING_DEBUG</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              If <code>LOGGING_DEBUG=1</code> then verbose log statements will be emitted to help diagnose issues.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>GENBANK_CONCURRENCY_TEST</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              For unit tests only. If <code>GENBANK_CONCURRENCY_TEST=1</code> this will enable the GenBank concurrency test, which sends a lot of API requests and takes a while to complete.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>KEEP_OUTPUTS</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              For integration tests only. If <code>KEEP_OUTPUTS=1</code> this will retain the temp working directory for inspection of output files after test completion.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>SKIP_PASSED_TESTS</strong></code>
+            </td>
+            <td><code>0</code></td>
+            <td>
+              For integration tests only. If <code>SKIP_PASSED_TESTS=1</code> this will re-run only the tests which have not yet passed.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>RUN_TEST_CASE</strong></code>
+            </td>
+            <td><code></code></td>
+            <td>
+              For integration tests only. Specify a single test case to run. Typically used when debugging a specific test case.
+            </td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">Analysis/filtering criteria</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MIN_NT</strong></code>
+            </td>
+            <td><code>300</code></td>
+            <td>
+              Minimum alignment length for a BLAST hit to be considered for
+              candidate screening (nucleotides).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MIN_Q_COVERAGE</strong></code>
+            </td>
+            <td><code>0.85</code></td>
+            <td>
+              Minimum query coverage for a BLAST hit to be considered for
+              candidate screening (decimal proportion).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MIN_IDENTITY</strong></code>
+            </td>
+            <td><code>0.935</code></td>
+            <td>
+              Minimum identity for a BLAST hit to be considered for candidate
+              screening (decimal proportion).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MIN_IDENTITY_STRICT</strong></code>
+            </td>
+            <td><code>0.985</code></td>
+            <td>
+              Minimum hit identity to be considered a STRONG candidate
+              (decimal proportion).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MEDIAN_IDENTITY_WARNING_FACTOR</strong></code>
+            </td>
+            <td><code>0.95</code></td>
+            <td>
+              Minimum proportion of candidate identity threshold for a median identity to receive WARNING level instead of DANGER level. e.g. if the median identity is >95% of the candidate identity threshold, then it will be marked as WARNING instead of DANGER
+              (decimal proportion).
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MAX_CANDIDATES_FOR_ANALYSIS</strong></code>
+            </td>
+            <td><code>3</code></td>
+            <td>
+              The maximum number of candidate species that will proceed to
+              further analysis (P4/5). When this threshold is reached, a boxplot
+              showing identity distributions is shown in the report "Candidates"
+              section.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>MIN_SOURCE_COUNT</strong></code>
+            </td>
+            <td><code>5</code></td>
+            <td>
+              Minimum number of independent publications required for a
+              candidate species to receive Flag 4A.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COV_MIN_A</strong></code>
+            </td>
+            <td><code>5</code></td>
+            <td>Minimum number of GenBank records to receive Flag 5.1A.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COV_MIN_B</strong></code>
+            </td>
+            <td><code>1</code></td>
+            <td>Minimum number of GenBank records to receive Flag 5.1B.</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COV_RELATED_MIN_A</strong></code>
+            </td>
+            <td><code>90</code></td>
+            <td>
+              Minimum percent species coverage of GenBank records to receive
+              Flag 5.2A.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COV_RELATED_MIN_B</strong></code>
+            </td>
+            <td><code>10</code></td>
+            <td>
+              Minimum percent species coverage of GenBank records to receive
+              Flag 5.2B.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COV_COUNTRY_MISSING_A</strong></code>
+            </td>
+            <td><code>1</code></td>
+            <td>
+              Minimum number of species WITHOUT GenBank records to receive Flag
+              5.3B.
+            </td>
+          </tr>
+          <tr class="separator">
+            <td colspan="3">Output file names</td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TIMESTAMP_FILENAME</strong></code>
+            </td>
+            <td><code>timestamp.txt</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>ACCESSIONS_FILENAME</strong></code>
+            </td>
+            <td><code>accessions.txt</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TAXONOMY_FILENAME</strong></code>
+            </td>
+            <td><code>taxonomy.csv</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>QUERY_TITLE_FILENAME</strong></code>
+            </td>
+            <td><code>query_title.txt</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>HITS_JSON_FILENAME</strong></code>
+            </td>
+            <td><code>hits.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>HITS_FASTA_FILENAME</strong></code>
+            </td>
+            <td><code>hits.fasta</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TAXONOMY_ID_CSV_FILENAME</strong></code>
+            </td>
+            <td><code>assigned_taxonomy.csv</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>CANDIDATES_FASTA_FILENAME</strong></code>
+            </td>
+            <td><code>candidates.fasta</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>CANDIDATES_CSV_FILENAME</strong></code>
+            </td>
+            <td><code>candidates.csv</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>CANDIDATES_JSON_FILENAME</strong></code>
+            </td>
+            <td><code>candidates.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>CANDIDATES_COUNT_FILENAME</strong></code>
+            </td>
+            <td><code>candidates_count.txt</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>CANDIDATES_SOURCES_JSON_FILENAME</strong></code>
+            </td>
+            <td><code>candidates_sources.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>INDEPENDENT_SOURCES_JSON_FILENAME</strong></code>
+            </td>
+            <td><code>aggregated_sources.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TOI_DETECTED_CSV_FILENAME</strong></code>
+            </td>
+            <td><code>taxa_of_concern_detected.csv</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>PMI_MATCH_CSV_FILENAME</strong></code>
+            </td>
+            <td><code>preliminary_id_match.csv</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BOXPLOT_IMG_FILENAME</strong></code>
+            </td>
+            <td><code>boxplot.png</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>TREE_NWK_FILENAME</strong></code>
+            </td>
+            <td><code>candidates.nwk</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>DB_COVERAGE_JSON_FILENAME</strong></code>
+            </td>
+            <td><code>db_coverage.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BOLD_TAXON_COUNT_JSON</strong></code>
+            </td>
+            <td><code>bold_taxon_counts.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BOLD_TAXON_COLLECTORS_JSON</strong></code>
+            </td>
+            <td><code>bold_taxon_collectors.json</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <code><strong>BOLD_TAXONOMY_JSON</strong></code>
+            </td>
+            <td><code>bold_taxonomy.json</code></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

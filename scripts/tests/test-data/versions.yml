@@ -1,0 +1,11 @@
+BLAST_BLASTDBCMD:
+  blast: 2.16.0+
+BLAST_BLASTN:
+  blast: 2.16.0+
+FASTME:
+  fastme: 2.1.6.3
+MAFFT_ALIGN:
+  mafft: 7.52
+Workflow:
+  daff/taxassignwf: v0.2.5
+  Nextflow: 24.10.6

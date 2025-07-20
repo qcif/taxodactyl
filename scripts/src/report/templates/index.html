@@ -1,0 +1,84 @@
+{% from "macros/subjective.html" import render_subjective_input %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ html_title }}</title>
+    {% include 'components/favicon.html' %}
+
+    {% for style in static.css %}
+      <style>
+        {{ style }}
+      </style>
+    {% endfor %}
+
+    <script>
+      const SAMPLE_ID = "{{ metadata.sample_id }}";
+      const DB_COVERAGE = {{ db_coverage | tojson }};
+    </script>
+
+    {% for script in static.js %}
+      <script>
+        {{ script }}
+      </script>
+    {% endfor %}
+
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      {% include "components/heading.html" %}
+
+      <section id="overview">
+        {% include "components/overview.html" %}
+        {{ render_subjective_input(1) }}
+      </section>
+
+      <section id="results-candidate-species">
+        {% include "components/results/1-candidate-species.html" %}
+      </section>
+
+      <section id="results-taxa-of-interest">
+        {% include "components/results/2-taxa-of-interest.html" %}
+      </section>
+
+      <section id="results-source-diversity">
+        {% include "components/results/3-source-diversity.html" %}
+      </section>
+
+      <section id="results-intraspecies">
+        {% include "components/results/5-intraspecies.html" %}
+      </section>
+
+      <section>
+        <h2>Taxonomy Check</h2>
+        {% include "components/taxonomy-check.html" %}
+      </section>
+    </div>
+
+    {% include "components/save-modal.html" %}
+    {% include "components/flags-modal.html" %}
+    {% include "components/error-modal.html" %}
+
+  </body>
+
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      document.querySelectorAll("table.sortable").forEach(function(table) {
+        new Tablesort(table);
+      });
+    });
+  </script>
+
+</html>

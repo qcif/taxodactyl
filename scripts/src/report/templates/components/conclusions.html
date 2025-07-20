@@ -1,0 +1,138 @@
+{% from "macros/alert-level-icon.html" import render_level_icon %}
+{% from "macros/db-coverage-target-modal.html" import render_target_modal %}
+{% from "macros/flag-badge.html" import render_flag %}
+
+<h3>Result overview</h3>
+
+<div class="my-3">
+  <div class="alert alert-{{ conclusions.summary.result.bs_class }}">
+    <p class="box-{{ conclusions.summary.result.bs_class }} text-center font-xxl mb-3">
+      <span class="px-3" style="position: relative; top: -0.1rem;">
+        {{ render_level_icon(conclusions.summary.result.level, width=24) }}
+      </span>
+      {% if conclusions.summary.result.confirmed %}
+      <em>
+        {{ conclusions.summary.result.species }}
+      </em>
+      {% else %}
+      <strong>Inconclusive</strong>
+      {% endif %}
+    </p>
+    {% if conclusions.summary.result.sources_verified is false %}
+    {{ render_flag(
+         conclusions.flags['1'],
+         extra_outcome=', pending verification of sources',
+         extra_reasoning=', but reference sequences lack independent publications',
+      ) }}
+    {% else %}
+    {{ render_flag(conclusions.flags['1']) }}
+    {% endif %}
+  </div>
+</div>
+
+<table class="table border alert-{{ conclusions.summary.pmi['bs-class'] }}">
+  <tr>
+    <td>
+      <strong>
+        Preliminary morphology ID
+        <em>{{ metadata.preliminary_id }}</em>
+        confirmed?
+      </strong>
+    </td>
+
+    <td style="width: 75px;">
+      {% if conclusions.summary.result.confirmed %}
+      <strong class="text-{{ conclusions.summary.pmi['bs-class'] }}">
+        {{ conclusions.summary.pmi.confirmed }}
+      </strong>
+      {% else %}
+      <strong>NA</strong>
+      {% endif %}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <small>
+        {% if '7' in conclusions.flags %}
+        {{ render_flag(conclusions.flags['7'], tooltip=conclusions.summary.pmi.tooltip) }}
+        {% else %}
+        <p>
+          No candidates were identified, so the preliminary morphology ID cannot be assessed.
+        </p>
+        {% endif %}
+      </small>
+    </td>
+
+    <td style="width: 75px;">
+      {% set flags = conclusions.flags %}
+      {% set taxon = metadata.preliminary_id %}
+      {% set target_id = 'pmi-' + taxon | css_hash %}
+      {% set flag = flags['5']['pmi'][taxon] %}
+
+      <div
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="{{ flag.outcome }}"
+        style="display: inline-block;"
+      >
+        <button
+          class="btn btn-{{ flag.bs_class }}"
+          data-bs-toggle="modal"
+          data-bs-target="#{{ target_id }}Modal"
+          type="button"
+          style="min-width: 3rem;"
+        >
+          {{ render_level_icon(flag.level) }}
+        </button>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+{% set modal_context = {
+  'data': db_coverage['pmi'][taxon],
+  'target_id': target_id,
+  'target_taxon': taxon,
+  'target_type': 'pmi',
+  'target_type_text': "Preliminary Morphology ID",
+  'flags': flags,
+  'metadata': metadata,
+  'error_log': error_log,
+  'error_locations': error_locations,
+  'config': config,
+  'tois_detected': {},
+  'locus_provided': locus_provided,
+} %}
+{{ render_target_modal(modal_context) }}
+
+
+{% if conclusions.summary.toi %}
+<table
+  class="table"
+  style="background: #eee;"
+>
+  <tr class="alert-{{ conclusions.summary.toi['bs-class'] }}">
+    <td><strong>Taxa of interest detected?</strong></td>
+    <td style="width: 75px;">
+      <strong class="text-{% if conclusions.summary.toi.detected %}success{% else %}danger{% endif %}">
+        {{ 'True' if conclusions.summary.toi.detected else 'False' }}
+      </strong>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <small>
+        {% for flag in conclusions.summary.toi.flags %}
+        <div class="alert alert-{{ flag.bs_class }} mb-1 p-2">
+          {{ render_flag(flag) }}
+        </div>
+        {% endfor %}
+      </small>
+    </td>
+  </tr>
+</table>
+{% else %}
+<p class="alert alert-secondary">No taxa of interest provided at rank genus/species</p>
+{% endif %}

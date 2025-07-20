@@ -1,0 +1,301 @@
+{
+    "configurations": [
+        {
+            "name": "Unit tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s", "scripts/tests",
+                "-p", "test*.py",
+                // "-p", "test_genbank.py",  // run a specific test
+                "-b",
+            ],
+            "env": {
+                "GENBANK_CONCURRENCY_TEST": "0",  // High network traffic
+                "PYTHONPATH": "${workspaceFolder}/scripts",
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Integration tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s", "scripts/tests/integration",
+                "-p", "test_integration.py",
+                "-f",  // fail fast
+                "-v",  // show stdout instead of dots
+            ],
+            "env": {
+                "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
+                "RUN_TEST_CASE": "c03",  // Optional, run a specific test case
+                "PYTHONPATH": "${workspaceFolder}/scripts",
+                "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
+                "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",
+                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "BOLD Integration tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s", "scripts/tests/integration",
+                "-p", "test_integration_bold.py",
+                "-f",  // fail fast
+                "-v",  // show stdout instead of dots
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/scripts",
+                "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
+                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
+                "RUN_TEST_CASE": "112",  // Optional, run a specific test case
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P1 BLAST Parser",
+            "program": "${workspaceFolder}/scripts/p1_parse_blast.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "tests/test-data/output.xml",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P1 BOLD search",
+            "program": "${workspaceFolder}/scripts/p1_bold_search.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "tests/test-data/queries.fasta",
+                // "--output_dir", "output/bold",
+
+                "output/issues/131/query.fasta",
+                "--output_dir", "output/issues/131/bold",
+            ],
+            "preLaunchTask": "clear-log-files",
+            "env": {
+                "LOGGING_DEBUG": "1",
+                "SKIP_ORIENTATION": "1",
+                "INPUT_METADATA_CSV_FILEPATH": "output/issues/131/metadata.csv",
+                "INPUT_FASTA_FILEPATH": "output/issues/131/query.fasta",
+            }
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P2 Extract taxonomy",
+            "program": "${workspaceFolder}/scripts/p2_extract_taxonomy.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "output/taxids.csv",
+                "--output_dir", "output",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P3 Assign taxonomy",
+            "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "output/query_001_LC438549"
+                // "output/query_002_ON075825"
+                // "output/query_003_PP466915"
+                // "output/query_004_JQ585746"
+                // "output/query_005_LC547004"
+
+                // For testing phylogeny hit sampling:
+                // "output/issues/c14/query_001_VE24-1067_COI",
+                // "--output_dir", "output/issues/c14",
+            ],
+            "env": {
+                "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",
+                // "MAX_CANDIDATES_FOR_ANALYSIS": "0",  // Force boxplot
+                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/c14/metadata_014.csv",
+                // "INPUT_FASTA_FILEPATH": "output/issues/c14/query_014.fasta",
+            },
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P3 BOLD Assign taxonomy",
+            "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "output/bold/query_001_LC438549",
+                // "output/bold/query_002_ON075825",
+                // "output/bold/query_003_PP466915",
+                // "output/bold/query_004_JQ585746",
+                // "output/bold/query_005_LC547004",
+                // "output/bold/query_006_VE24-1086_COI",
+                "--bold",
+
+                // For testing issue cases:
+                "output/issues/108/query_001_VE24-1066_COI",
+                "--output_dir", "output/issues/108",
+            ],
+            "env": {
+                // "MAX_CANDIDATES_FOR_ANALYSIS": "0",  // Force boxplot
+                "INPUT_METADATA_CSV_FILEPATH": "output/issues/108/metadata.csv",
+                "INPUT_FASTA_FILEPATH": "output/issues/108/query.fasta",
+            },
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P4 Source diversity",
+            "program": "${workspaceFolder}/scripts/p4_source_diversity.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "output/query_001_LC438549"
+                // "output/query_002_ON075825",
+                // "output/query_003_PP466915"
+                // "output/query_006_VE24-1086_COI"
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P4 BOLD Source diversity",
+            "program": "${workspaceFolder}/scripts/p4_source_diversity.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "output/bold/query_001_LC438549",
+                // "--output_dir", "output/bold",
+
+                "output/issues/112/query_004_MG240613_4",
+                "--output_dir", "output/issues/112",
+            ],
+            "env": {
+                "LOGGING_DEBUG": "1",
+                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
+                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
+            },
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P5 DB coverage",
+            "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "output/query_001_LC438549",
+                // "output/query_002_ON075825",
+                // "output/query_003_PP466915"
+                // "output/query_006_VE24-1086_COI"
+
+                // For testing issue cases:
+                // "output/issues/31/query_001_VE24-1351_COI",
+                // "--output_dir", "output/issues/31",
+            ],
+            "env": {
+                "LOGGING_DEBUG": "1",
+                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
+                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/31/metadata.csv",
+                // "INPUT_FASTA_FILEPATH": "output/issues/31/queries.fasta",
+            },
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P5 BOLD DB coverage",
+            "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "output/bold/query_001_LC438549",
+                // "--output_dir", "output/bold",
+                "--bold",
+
+                // For testing issue cases:
+                "output/issues/112/old_work/query_004_MG240613_4",
+                "--output_dir", "output/issues/112/old_work",
+            ],
+            "env": {
+                "LOGGING_DEBUG": "1",
+                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
+                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
+                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
+            },
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P6 Workflow report",
+            "program": "${workspaceFolder}/scripts/p6_report.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "output/query_001_LC438549",
+                // "output/query_002_ON075825",
+                // "output/query_003_PP466915",
+                "output/query_005_LC547004",
+
+                "--versions_yml", "tests/test-data/versions.yml",
+                "--params_json", "tests/test-data/params.json",
+
+                // For testing issue cases:
+                // "output/issues/44/query_001_VE25-1406_COI",
+                // "--output_dir", "output/issues/44",
+            ],
+            "env": {
+                "REPORT_DEBUG": "1",
+                "FACILITY_NAME": "Cairns Airport",
+                "ANALYST_NAME": "John Doe",
+                // "INPUT_FASTA_FILEPATH": "tests/test-data/queries.fasta",
+
+                // For testing issue cases:
+                // "INPUT_FASTA_FILEPATH": "output/issues/44/query.fasta",
+                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/44/metadata.csv",
+            },
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P6 BOLD Workflow report",
+            "program": "${workspaceFolder}/scripts/p6_report.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // "output/bold/query_001_LC438549",
+                // "--output_dir", "output/bold",
+                "--bold",
+                "--versions_yml", "tests/test-data/versions.yml",
+                "--params_json", "tests/test-data/params.json",
+
+                "output/issues/112/old_work/query_004_MG240613_4",
+                "--output_dir", "output/issues/112/old_work",
+            ],
+            "env": {
+                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
+                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
+
+            },
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "Render docs",
+            "program": "${workspaceFolder}/scripts/dev/render_docs.py",
+        }
+    ]
+}

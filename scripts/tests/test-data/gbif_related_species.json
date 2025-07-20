@@ -1,0 +1,466 @@
+{
+  "offset": 0,
+  "limit": 500,
+  "endOfRecords": true,
+  "count": 8,
+  "results": [
+    {
+      "key": 4732784,
+      "nameKey": 2336497,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 4732784,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena insignis",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732784,
+      "scientificName": "Cheiloxena insignis Blackburn, 1896",
+      "canonicalName": "Cheiloxena insignis",
+      "authorship": "Blackburn, 1896",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 7 \u2013 9 mm, female 8 \u2013 10.5 mm; body relatively flat in profile, length about 3.2 x height; colour dull to shining black, tibiae, tarsi and maxillary palpi, sometimes antennomeres 8 \u2013 11 and apex elytra, dark reddish-brown; with adpressed thick white setae (not scales), sparsely distributed on head, pronotum and venter, in discrete lateral and preapical patches on elytra; surface sculpture extremely variable: head and pronotum shining but often shallowly microreticulate; elytral background sculpture shining to dull, depending on depth of microreticulation, but apices of tubercles always smooth and shining, elytral punctures semi-striate or scattered. Head (Figs 7, 8, 17, 35, 39, 40): distinctly narrower than pronotum in both sexes, width 0.9 x (male) or 0.8 x (female) pronotal width; densely punctured (punctures separated by about 1 diameter); with sparse white hair-like setae, denser at sides; narrow impunctate smooth area around antennal cavities; vertex and frons elevated between eyes, and flat to concave between antennae, without midline groove posteriorly but midline smooth in some specimens; eyes small, elongate-reniform, strongly laterally prominent, separated by 6 eye widths in male, 7 eye widths in female; gena at shortest point about 2 / 3 eye length in both sexes; genal lobe about 1.3 x shortest length gena; antennae 5 \u2013 6 socket diameters apart; antennae about 0.6 x body length (male), or about 0.5 x body length (female); all antennomeres dull, 1 \u2013 7 sparsely and coarsely setose, 8 \u2013 11 densely and finely setose; antennomeres 1 and 3 \u2013 11 elongate, 2 quadrate> 0.5 x length 1, <0.5 x length 3, male antennomeres 3 \u2013 7 thicker and more compressed compared with female; relative lengths of antennomeres, with 3 longest in both sexes, and middle segments more unequal in length in female than male: male: 2 shortest, <8 = 9 = 10, <1, <4 = 6 = 11, <5 = 7, <3; female: 2 shortest, <8, <9 = 10, <1, <4 = 6, <5, <7 = 11, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin semicircularly excavate in male, with shallower V-shaped emargination in females, exposing anteclypeus; male apical maxillary palpomere securiform with broad truncate apex. Thorax (Figs 7, 8, 17): pronotum clearly transverse, width 1.1 \u2013 1.3 x length, greatest width at lateral median lobe or also anterior angle, sides contracted and straight behind middle; dorsum of pronotum distinctly demarcated, relatively horizontal compared with almost vertical hypomera; pronotal disc irregularly surfaced, with pair of low shiny swellings either side of middle, midline with similar low shiny swelling near base, sides of disc moderately depressed; pronotal punctures large but shallow, moderately close in depressed areas, where separated by 0.2 \u2013 1.5 puncture diameters, sparse elsewhere; pronotum with sparse white hair-like recumbent setae, denser at sides, interspaces shiny, either shallowly microreticulate or without microreticulation; anterior angles prominently anterolaterally produced, 45 \u2013 80 \u00b0; anterior edge of pronotum slightly produced but usually concave at middle; lateral margins with one prominent median tubercle and a smaller tubercle (sometimes almost absent) between this and anterior angle, with remnant of lateral carina from this second tubercle to anterior angle; basal edge weakly convex and usually flat but with trace of beading medially in some specimens; hypomeron strongly punctured and sparsely pubescent, except hypomeral lobe rugose and glabrous; prosternum finely and densely punctured and pubescent; scutellum finely punctured and setose on basal third, apically shiny and impunctate; recumbent white elytral pubescence mostly sparse, but forming patches at sides of middle and along apical third of suture, this sutural patch laterally expanded anteriorly (approximately T-shaped when elytra combined), elytra also with sparse erect setae; elytral sculpture variable but always with small relatively evenly sized tubercles, although they may coalesce into short elongate ridges; at one extreme of variation, elytra dull and densely microsculptured, with irregularly scattered punctures and small round tubercles, and at the other extreme, elytra shiny, with shallow microsculpture only in depressed areas, punctures partly linear and tubercles forming elongate low ridges; elytral disc distinctly arcuately depressed in basal half posterior to humerus; elytral punctures large and deep, sparsely distributed, separated by 1.5 \u2013 4 puncture diameters; discal elytral punctures with two small shining tubercles laterally on rim; elytral apices rounded; epipleuron impunctate and glabrous except line of recumbent white setae along basal margin; mesoventrite punctured as prosternum; metepisternum and metaventrite shiny, not or shallowly microsculptured, sparsely punctured and setose, with smooth impunctate midline; metatibiae with broad lateral longitudinal grooves, defining keels, short and robust and sparsely pubescent; bases of tarsomeres 1 \u2013 3 depressed; protarsomeres 1 \u2013 3 much broader at base (almost quadrate) in male than female. Abdomen (Figs 47, 56, 57, 66, 73): ventrites I \u2013 V shiny, not or feebly microreticulate; I relatively sparsely but strongly punctured, interspaces much greater than puncture diameters; puncturation of II \u2013 V increasingly dense; ventrite V relatively densely and slightly rugosely punctured; ventrites with evenly spaced recumbent white setae, erect setae only present on apical margin of ventrite V; apex of ventrite V convex in both sexes; apex of penis abruptly contracted to mucronate tip in dorsal view, apex thick and short in lateral view; tegminal keel sinuate and shallowly convex in lateral view; female sternite VIII apodeme short and narrow, apical sclerotised area roughly triangular but expanded at sides, wider than long, apex shallowly concave; apex of gonocoxite without conspicuous setae; stylus elongate, length twice width, with median constriction; median ventral sclerite very short; spermatheca falcate, blunt tipped, with simple uncoiled duct. Notes. The maxillary palpi of C. insignis were illustrated by Reid (1992; Fig. 20) under C. tuberosa."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena insignis is distinguished by: upper and lower surfaces setose, not scaled; anterior margin of clypeus deeply excavate; pronotum without dorsal ridges but with 1 \u2013 2 lateral tubercles; apical half of elytra not conspicuously tuberculate; elytral surface with erect setae."
+        },
+        {
+          "description": "Material examined. Non-types (13): Australia: unlocalised: \u2640 / Australie par Glason / Cheiloxena insignis Black. / Museum Paris coll. H. Clavareau 1932 / (MHNP); \u2640 / Cheiloxena westwoodii Baly / ex museo H. W. Bates 1892 / Museum Paris ex coll. R. Oberthur / (MHNP); New South Wales: \u2642 / Mittagong, Nov, C Oke (MVM); Victoria: \u018b, 2 \u2640 * / Victoria French / Cheiloxena insignis Black. / Museum Paris coll. H. Clavareau 1932 / (MHNP); \u2642 / Ferntree Gully, 16. x. 1927, FE Wilson (ANIC); \u2642 * / Lake Mountain, 26. i. 2016, M Lagerway (AMS); \u2640 * / Launching Place 9. ii. 1903 / C. insignis f det C. Reid / (MVM); \u2642 / Millgrove 20. xi. 1927 FE Wilson (ANIC); \u2642 / Monbulk 4. x. 1901 Jarvis (SAM); \u2640 / Monbulk 7. x. 1902 Jarvis (SAM); \u2642 * / One Tree Gully VIC Ferntree Gully 14. x. 1979 A [could be Acacia or Allocasuarina!] verticillata R. Patterson F 110 / (ANIC)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 4732785,
+      "nameKey": 30285981,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 4732785,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena frenchae",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732785,
+      "scientificName": "Cheiloxena frenchae Blackburn.Not, 1893",
+      "canonicalName": "Cheiloxena frenchae",
+      "authorship": "Blackburn.Not, 1893",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 9.5 mm, female 12.5 \u2013 15.5 mm; body moderately convex in profile, length about 3 x height; colour black, except maxillary and labial palpi reddish-brown; almost entirely clothed with adpressed white to brown scale-like setae (length 3 \u2013 5 x width), but not distinctly variegated in colour, setae not thinner on depressed areas of pronotum and elytra, thinner on anterior of clypeus, apices of mandibles, prosternal and mesoventral processes, legs, apex of abdominal ventrite V, and antennomeres 1 \u2013 7, absent from antennomeres 8 \u2013 11 (with simple setae only); scale-like setae distributed almost evenly on head but clypeal margins glabrous, almost evenly on pronotum but slightly sparser on depressed areas and absent from apices of ridges, densely on scutellum, and irregularly on elytra with mosaic of dense patches and more sparsely setose areas and larger tubercles withelongate semi-erect brown setae at apices; ventral surfaces with dense white adpressed setae except thin setae on ventrite V, setae of appendages thin but dense; surface sculpture: head except clypeal margins, pronotum and metaventrite densely punctured and microreticulate, relatively shining, elytra and rest of thoracic venter, including pronotal hypomera, dull, more sparsely punctate but densely microsculptured; clypeal margins, apices of tubercles and ridges, and abdominal ventrites shining and not distinctly microsculptured. Head (Figs 2, 6, 16, 25): slightly narrower than pronotum in both sexes, head width 0.95 x pronotal width; closely but not confluently punctured, punctures small, intervals shiny and not conspicuously microsculptured, and with narrow impunctate shining frontoclypeal sutures, apicolateral margin of clypeus, and margins of antennal cavities; convex between eyes, flat between antennae; eyes laterally prominent, separated by about 4 eye widths (male) or 5 eye widths (female); gena at shortest point about 0.3 x eye length (male) to about 0.5 x eye length (female); genal lobe 2 x (male) to equal (female) shortest length of gena; antennae 3 x (male) to 4 x (female) socket diameters apart; antennae about 0.8 x body length (male), or about 0.6 x body length (female); antennomeres 1 \u2013 6 dull with shining apices, apex of 7 and 8 \u2013 11 entirely matt; antennomeres 1 and 3 \u2013 11 elongate, 2 slightly transverse, 0.5 x length of 1, 0.25 x length of 3, relative lengths of antennomeres with 3 longest and 7 next, in both sexes, and middle segments of unequal lengths: male: 2, <1, <8, <9 = 10, <4, <6, <5, <11, <7, <3; female: 2, <1 = 8, <9 = 10, <6, <4 = 11, <5, <7, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin truncate; male apical maxillary palpomere broadly ovoid with truncate apex. Thorax (Figs 2, 6, 16, 25, 33, 42): sides slightly swollen laterally at middle, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum; pronotal puncturation similar to head, except punctures slightly larger on average; interspaces lightly microsculptured, slightly shiny; pronotum slightly longer (measured at midline) than wide, length 1.05 x width, greatest width at anterior angles and middle, sides weakly sinuate; anterior angles prominent, acute (45 \u00b0); anterior margin produced, concave at middle; sides without tubercles; basal margin feebly convex; pronotal disc with two prominent subparallel keels from middle to anterior margin, asymmetrically convex in lateral view with shorter strongly curved anterior slope and longer straight posterior slope, sharp in anterior half; remainder of disc unevenly surfaced, concave apicolaterally and either side of small postmedian swelling; hypomeron and prosternum densely punctured and pubescent, as pronotum, with shiny interspaces, except most of hypomeral lobe glabrous and rugose (base of lobe with punctures and scales); scutellum punctured and setose, as pronotum; elytra fairly evenly scaled, but tendency to form pale flecks; elytron conspicuously tuberculate, with variably sized shiny tipped tubercles arranged in approximately 4 clusters close to suture, from base to apex, as follows: first (basal) with 1 large posteriorly directed tubercle; second (median) with 1 small conical tubercle; third (subapical) with 2 adjacent massive conical tubercles, larger than others; fourth (apical) with 3 conspicuous but small tubercles, well-separated and arranged as a triangle; small tubercles scattered at base and sides of elytron; elytral disc shallowly arcuately depressed in basal half, posterior to humerus, and slightly concave at sides of middle; elytral punctures large, diameters 1.5 \u2013 2 x width pronotal punctures and much deeper, and slightly sparser, separated by 1 \u2013 1.5 x diameters; interspaces dull, densely microsculptured; discal elytral punctures with two small shining tubercles laterally on rim; elytral apex narrowly truncate; epipleuron finely and shallowly punctured, with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite shiny but distinctly microsculptured, densely punctured and scaled, except midline impunctate and shining; metatibiae with shallow irregular lateral longitudinal grooves, thin and elongated; bases of tarsomeres 1 \u2013 3 depressed; protarsomeres 1 \u2013 3 equally narrow at base in both sexes. Abdomen (Figs 46, 55, 65, 72, 77): ventrites I \u2013 V closely and strongly punctured, interspaces shiny and shallowly microreticulate throughout; ventrite pubescence recumbent, scale-like, but much narrower on ventrite V, which has erect setae at apex; apex of ventrite V narrowly truncate in male, convex in female; apex of penis contracted to blunt mucronate tip in dorsal view, apex thin and elongate in lateral view, and strongly curved; tegminal keel shallowly sinuate in lateral view, proximal tip slightly expanded and bilobed; female sternite VIII apodeme short and broad, apical sclerotised area about as long as wide, with narrow lateral arms, apex truncate; apex of outer margin of gonocoxite with several long setae; stylus only slightly elongate; median ventral sclerite elongate, only lateral margins distinctly sclerotised; spermatheca falcate, acutely tipped, with simple, short, uncoiled duct. Notes. The previous description of this species was based on a combination of the female holotype and a male from NSW which we now regard as a separate species (C. monga, see below). Our description therefore represents the first correct description of the male."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena frenchae is distinguished by: upper and lower surfaces scaled; anterior margin of clypeus truncate; pronotum with almost parallel paired ridges; hypomeral lobe rugose, with scales at base; apical half of elytra conspicuously tuberculate with largest tubercles arranged in a transverse row."
+        },
+        {
+          "description": "Material examined. Types: Holotype: \u2640 * / Latrobe R Dist Vict / Cheiloxena frenchae Blackb. Victoria / Nat. Mus. Victoria C. French\u2019s coll 5.11.08 / type / type T- 9752 Cheiloxena frenchi [sic] Blkb. / (MVM). Nontypes (2): \u018b *, \u2640 * / VIC, Cambarville, by picnic grounds, 37.559817 S 145.883788 E on Lomatia fraseri, det CR, 26. i. 2016, M. Lagerway / (AMS)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 4732786,
+      "nameKey": 30285980,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 4732786,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena westwoodii",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732786,
+      "scientificName": "Cheiloxena westwoodii Baly Elytra, 1860",
+      "canonicalName": "Cheiloxena westwoodii",
+      "authorship": "Baly Elytra, 1860",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 9.5 \u2013 13 mm, female 8 \u2013 13 mm; body convex in profile, length about 3 x height; colour entirely black, except maxillary and labial palpi often reddish-brown, dorsal and ventral surfaces with golden scale-like setae except scales dark and thin on apices of elytral tubercles; scale-like setae recumbent, variable in proportion (length 3 \u2013 8 x width), narrowest at apices of tubercles, distributed as follows: close and almost even on head; close and almost even on pronotum; dense on scutellum; with mosaic of dense patches and unscaled areas on elytral disc, usually forming 3 \u2013 7 pale spots along elytral suture and along lateral margin, elytral tubercles with elongate semi-erect setae, fairly sparse but even on ventral surfaces, or with dense pale spots at lateral margin of metaventrite and middle of ventrites, ventral surfaces of femora with or without dense pale setae, setae of remainder of appendages thin, except antennomeres 8 \u2013 11 minutely setose; surface sculpture: head, pronotum, elytra and venter dull, punctate and densely microsculptured, except shining apices of tubercles. Head (Figs 1, 11, 12, 20, 21, 29, 30): distinctly narrower than pronotum in both sexes; densely and slightly confluently punctured, punctures small and shallow, intervals dull and microsculptured, with close recumbent scales; narrow impunctate smooth area around antennal cavities; flat between eyes and flat between antennae; eyes small, slightly laterally prominent or not extending laterally beyond temples (some females), separated by about 4.5 eye widths (male) or about 5.5 eye widths (female); gena at shortest point about 0.6 x eye length (both sexes); genal lobe about 0.65 x shortest length of gena; antennae 3 (male) \u2013 4 (female) x socket diameters apart; antennae 0.65 \u2013 0.75 x body length (male), or 0.55 \u2013 0.65 x body length (female); antennomeres 1 \u2013 7 dull, 8 \u2013 11 duller; antennomeres 1 and 3 \u2013 11 elongate, 2 transverse to quadrate, about 0.6 length of 1, 0.3 \u2013 0.35 x length of 3; relative lengths of antennomeres, with 3 longest and 7 next in both sexes, and most middle segments of similar length: male: 2, <1, <4 = 6, <5 = 8 = 9 = 10, <11, <7, <3; female: 2, <1, <6 = 8 = 9 = 10, <4 = 5 = 11, <7, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin deeply concave, usually less so in female; male apical maxillary palpomere slightly variable in width from elongate-ovoid to almost cylindrical, with truncate apex. Thorax (Figs 1, 11, 12, 20, 21, 29, 33, 36): sides almost vertical, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum; pronotal punctures and scales similar to head, with dense shallow punctures and ridged dull interspaces, and close recumbent scales; pronotum slightly wider than long, width 0.95 x length, greatest width at lateral tubercles and sides straight to weakly sinuate in posterior half; anterior angles anteriorly projecting, about 45 \u00b0; anterior margin produced, truncate or rounded at middle; lateral sides with 1 \u2013 2 small sharp tubercles in apical half; basal margin truncate or weakly convex; anterior edge of pronotum with transverse partly confluent row of shining tubercles; disc unevenly surfaced, with shallow concavities at sides and middle and small postmedian swelling; hypomeron and prosternum densely punctured and pubescent, as pronotum, except hypomeral lobe rugose and glabrous; scutellum closely punctured and scaled, forming a golden spot; elytra irregularly scaled, mostly sparse but usually forming pale flecks laterally; elytron with small tubercles and occasionally short ridges when these coalesce; pattern of tubercles, at minimum (some Victorian specimens) with a short ridge halfway between humerus and suture, a low tubercle at middle near suture, two elongate low tubercles in parallel on edge of apical elytral declivity, 4 minute tubercles on declivity; pattern of tubercles, at maximum (some central NSW and northern specimens) with minimum arrangement plus about five additional tubercles between humerus and suture, about 5 additional tubercles from middle to apical elytral declivity, and several small tubercles laterally; northern specimens generally with the minimum set more prominent and often elongate; elytral disc shallowly arcuately depressed in basal half, posterior to humerus, and concave at sides of middle; elytral punctures large, 1.5 \u2013 2 x pronotal puncture diameters, and sparse, separated by 1 \u2013 1.5 x diameters, interspaces dull, microsculptured; discal elytral punctures with two small shining tubercles laterally on rim; elytral apex narrowly truncate, or rounded; epipleuron finely and shallowly punctured, with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite dull and microsculptured, closely punctured and scaled, except middle impunctate and shining; metatibiae with deep regular lateral longitudinal grooves, defining keels, short and robust; bases of tarsomeres 1 \u2013 3 depressed; protarsomeres 1 \u2013 3 much broader at base in male (almost quadrate) than female. Abdomen (Figs 36, 37, 50, 51, 60, 61, 68, 75, 76): ventrite I shiny, weakly or not microsculptured, closely and shallowly punctured; II \u2013 IV similar to ventrite I but more closely punctured, and shallowly microreticulate and dull at sides; ventrite V duller, microreticulate; ventrites scaled, scales tending to clump together either side of midline, erect setae only present on apical margin of ventrite V; apex of ventrite V narrowly truncate in male, more rounded in female; apex of penis contracted to blunt mucronate tip in dorsal view, apex thick and short in lateral view, reflexed at about 90 \u00b0; tegminal keel deep and strongly sinuate in lateral view; female sternite VIII basal apodeme short and narrow, apical sclerotised area roughly triangular but slightly expanded at sides, longer than wide, apex deeply concave; apex of gonocoxite with 1 \u2013 2 conspicuous setae; stylus only slightly elongate; median ventral sclerite elongate, only lateral margins distinctly sclerotised; spermatheca falcate, with rounded tip, and with tightly coiled duct. Notes. Cheiloxena westwoodii is the most widespread and frequently collected species of the genus and also the most variable. Reid (1992) suggested that there were two geographically defined forms, separated by a gap of about 200 km in central eastern NSW. That gap is here reduced to about 125 km but is still evident (Fig. 78). The northern form is generally more strongly sculptured on the elytra, with larger and more numerous tubercles or ridges. This form exists as far south as Robertson (34.59 \u00b0 S), from where there is a single specimen with numerous prominent elytral tubercles. Southern specimens, from Mount Bibbenluke (35.26 \u00b0 S) southwards, are generally smoother, without conspicuous tubercles, but a few specimens in the south are as tuberculate as the least tuberculate northern specimens. Another character that separates the records geographically is the density of setae on the ventral surfaces of the femora. Specimens from Barrington Tops (32.03 \u00b0 S) northwards have the femoral ventral surfaces densely covered in pale grey scales, whereas specimens from Culoul Range (33.23 \u00b0 S) southwards have increasingly sparser setae, with the femoral ventral surface visible. Other variable features include shape of elytral apices, shape of male maxillary palpi and convexity of female eyes, but these features do not vary geographically. There are no consistent genitalic differences between these populations or forms therefore we prefer to treat all as a single variable species. The distribution of Cheiloxena westwoodii almost overlaps with all other species, from southern Victoria to southeastern Queensland (Fig. 78). Within this range it is associated with eucalypt woodland and forest. Several adults of C. westwoodii were collected on Astrotricha latifolia (Araliaceae) at Kuringai Chase National Park and caged for two weeks with this plant, but failed to reproduce, although they fed on the foliage. A specimen was also collected on Astrotricha ledifolia in the Brindabella Ranges, ACT. The host plants are probably various species of Astrotricha, but it has also been collected from eucalypts and from a \" fern-like shrub somewhat similar to Lomatia \". The species has been photographed at several sites in Victoria, including Cambarville (Monaghan 2018), Dandenong Ranges (Monaghan 2018), Garfield (Lagerway 2016 a), Powelltown (Monaghan 2018) and Reefton (Monaghan 2018). Adults are occasionally attracted to ultraviolet light."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena westwoodii is distinguished by: anterior margin of clypeus deeply excavate; pronotum without dorsal ridges but with 1 \u2013 2 lateral tubercles; elytra without large conical tubercles."
+        },
+        {
+          "description": "Material examined. Non-types (85). ACT: \u018b * / Blundell Hill, Brindabella Ra, 900 m, Astrotricha ledifolia (flws), 17. xii. 1989 C. Reid (ANIC); \u2642 / Blundell Ck, 12. xi. 1985 G. Cassis (AMS); \u2642 / Brindabella Ra, 3000 \u2019, 12. xii. 1966, IFB Common (ANIC); New South Wales: \u2640 / Barrington Tops, J Hopson (AMS); \u2642, \u2640 / The Bird Tree, Little Brother SF, 31: 41 S 142: 41 E, stop 50, 16. xi. 1983 D Rentz, M Harvey (ANIC); 2 \u2642, 2 \u2640 / Blackheath, Blue Mtns, on fern-like shrub somewhat similar to Lomatia, i. 1941, B & G. Styles (ANIC); 1 \u2640 / Lots 72, 73, 148, Caparra 13. x. 1995 mv light S Watkins / SG Watkins coll. donated 2001 / (ANIC); 1 \u2640 ditto except 6. xii. 1994 (ANIC); 1 \u2640 ditto except 17. xii. 1993 (ANIC); 1 \u2642 ditto except 4. x. 1988 (ANIC); \u2642 / Culoul Ra., at light, 8. xi. 1978 (AMS); \u2640 / nr Cutters pass, Williams R, 23 \u2013 30. x. 1926 A Musgrave & TG Campbell (AMS); 2 \u2640 / Dingo Tops Forest Park, Dingo SF, NW Wingham, 14. i. 1993, mv light / SG Watkins coll. donated 2001 / (ANIC); \u2642 / Dorrigo W Heron (ANIC); \u2640 / Doyles River SF, Tirrill Ck Rd, nr bridge, on ground at night, 31. x. 2007, A. Scott (AMS); \u2640 / Eungai 16. x. 197 [numeral missing] FT Fricke (AMS); 2 \u2642 * / Gibraltar Ra. NP, 29: 28 S 152: 21 E, 950 m, 10. x. 1974 IFB Common, ED Edwards (ANIC); \u2640 / The Granites, Washpool NP, to light, 4. i. 1991 A Sundholm, R De Keyzer (AMS); 2 \u2642 / Hasting R HJC [arter] (ANIC); \u2640 * / Island Bend, Kosciusko NP, 36: 19 S 148: 29 E, 850 m, on Eucalyptus, 5. xi. 1987, C. Reid (ANIC); \u2640 / Kuringai NP, McCarrs Rd entrance, feeding on Astritricha latifolia, i. 2007, S D\u00fcngelhoef & J Pedersen (AMS); 3 \u2642, 3 \u2640 / Moonpah SF, via Dorrigo, 11. xii. 1971 GB Monteith (QMB); \u2640 / Mt Bib [benluke], 21. iii. 1964 / DA Doolan coll / (AMS); 1 \u2642 / summit Mt Marie, Dingo SF 23. xii. 1 994 mv light S Watkins / SG Watkins coll. donated 2001 / (ANIC); 3 \u2640 / Mt Tomah, Blue Mtns, 31. i. 1981 NW Rodd (AMS); \u2640, ditto, except 30. i. 1981 (AMS); \u2640, ditto except 20. x. 1980 (AMS); \u2640, ditto except 28. xi. 1981 (AMS); \u2642, ditto except 5. i. 1982 (AMS); \u2642, ditto except 2. i. 1984 (AMS); \u2640, ditto except 16. xi. 1984 (AMS); \u2642, ditto, except 4. xi. 1988 (AMS); \u2642, ditto, except 29. x. 1988 (AMS); \u2642, ditto, except 29. ii. 1992 (AMS); 2 \u2642, \u2640 / Mt Tomah 9. i. 1978 (AMS); 2 \u2642, 2 \u2640, ditto, except 24. ii. 1978 (AMS); \u2640, ditto except 29. ii. 1984 (AMS); \u2640 / North Rocks 20. ix. 1941 (ANIC); \u2642 / 5 k NW Ourimbah, 33: 19 S 151: 21 E, 25. xi. 1976 IFB Common & ED Edwards (ANIC); \u2642 / Potoroo Rd @ Little Run Ck Dingo SF 15. xi. 1994 / SG Watkins coll. donated 2001 / (ANIC); \u2640 / Robertson, HJC (ANIC); \u2642 / Swans Xing, Kerewong SF, c. 12 k WNW Kendall, ex rainforest, 11 \u2013 12. xii. 1994, G Williams (AMS); \u2642 / 24 k SE Threeways, 32: 49 S 150: 25 E, 30. xii. 1977 G Daniels (AMS); 2 \u2642, \u2640 / Ulong East Dorrigo W Heron / (AMS); \u2642 / Vincents Lookout N East Lansdowne NSW 11. ix. 1995 S Watkins / SG Watkins coll. donated 2001 / (ANIC); \u2640 / Wadsworth Trail @ Potoroo Rd, Dingo SF, NSW, 4. xii. 1995, mv light / SG Watkins coll. donated 2001 / (ANIC); 2 \u2640 * / Wild Cattle Ck SF, Mobong Ck, 17 k (air) N Dorrigo, 16. xi. 1982 J Doyen (ANIC); \u2640 / Yarranapping Mt, 16. x. 1973 FT Fricke (AMS); Queensland: \u2642, \u2640 / [Lamington] National Park, xii. 1919 H Hacker (QMB); \u2642 / Mt Asplenium, 28: 09 S 152: 26 E, 1290 m, 18 \u2013 20. xii. 1992 GB Monteith (QMB); Victoria: 2 \u2642 / no further data (MHNP); 2 \u2642, 2 \u2640 / French [ex coll.] (MHNP); \u2640 * / \" loc.? \" CF (ANIC); \u2642, \u2640 * / Belgrave, xi. 1948, C. O [ke] / JG Brooks bequest 1976 / (ANIC); \u2640 / ditto, except i. 1949 (MVM); \u2642 / Emerald, 26. ii. 1903 GAK (ANIC); \u2642 / Emerald, 7. iii. 1943, FE Wilson (ANIC); \u2642 * / H [ealesville] 3746 [Blackburn label] / (AMS); 2 \u2642 / Healesville / EW Ferguson coll. / (ANIC); \u2642 / Melbourne no. 1530 E. Fischer / (ANIC); \u2640 / Mt Buffalo NP, 8 km from entrance gate, c 20 k SE Myrtleford, 500 m, 4. xii. 1980, DA Pollock & LA Reichert (ANIC); \u2642 / Warburton, Cement Ck, Nothofagus cunninghamii etc, 670 m, 10 \u2013 17. i. 1980, A. Newton, M. Thayer (ANIC); \u2642 / Warburton, 6. xii. 1931 FE Wilson (ANIC); \u2642 / 25 k from Warburton, on Acheron Way, 37: 37: 35 S 145: 42: 46 E, on Pomaderris aspera, swampy burnt forest, 7. xii. 2012, C Reid & E Tan (AMS)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 4732787,
+      "nameKey": 2336490,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 4732787,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena blackburni",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732787,
+      "scientificName": "Cheiloxena blackburni Reid, 1992",
+      "canonicalName": "Cheiloxena blackburni",
+      "authorship": "Reid, 1992",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 10.5 \u2013 11 mm, female 12 \u2013 15 mm; body moderately convex in profile, length about 3 x height; colour dark brown to almost black, except labrum and legs dark reddish-brown; entirely sparsely clothed with short adpressed scale-like setae (length 3 \u2013 4 x width and about equal to puncture diameters), setae thinner and sparser on appendages and apical ventrites; pronotum and elytra dull, punctate and densely microsculptured, except shining apices of tubercles and ridges. Head (Figs 4, 14, 23): as wide as pronotum (male) or distinctly narrower than pronotum (female); densely and slightly confluently punctured, intervals shining not or feebly microsculptured; narrow impunctate smooth area around antennal cavities; elevated between eyes, but flat between antennae, without grooves on vertex including midline; eyes small, slightly laterally prominent, separated by about 4 eye widths (male) or about 7 eye widths (female); gena at shortest point about 0.4 x eye length (male) or about 0.6 x eye length (female); genal lobe 0.75 x shortest length gena; antennae about 4 x socket diameters apart; antennae about 0.75 x body length (male), or about 0.6 x body length (female); antennomeres 1 and 3 \u2013 11 elongate, 2 transverse <0.5 x length 1, <0.3 x length 3, relative lengths of antennomeres with 3 longest and 7 next, in both sexes and most middle segments of similar length: 2 shortest, <1, <4 = 6 = 8 = 9 = 10, <5, <11, <7, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin truncate; male apical maxillary palpomere elongate-ovate with truncate apex. Thorax (Figs 4, 14, 23, 32): pronotal sides almost vertical, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum; pronotal puncturation as head, except interspaces dull; pronotal width 1.03 x length (length almost equal width), greatest width at anterior third and sides weakly sinuate; anterior angles prominent, 60 \u00b0; anterior margin produced but concave at middle; lateral margins without tubercles or lobes; basal margin weakly convex; pronotal disc with pair of narrow elevated oblique ridges from sides of middle to anterior margin, ridges splayed laterally towards posterior, abruptly terminating posteriorly in lateral view, disc with low swelling near base of midline, and laterally uneven; hypomeron and prosternum closely punctured and scaled, as pronotum, except hypomeral lobe rugose and glabrous; scutellum punctured and setose, as pronotum; elytral scale-like setae in irregular patches; elytron tuberculate, the irregularly sized shiny tipped tubercles arranged in 4 longitudinal rows, as follows: first (innermost) with 7 \u2013 10 small tubercles, largest posterior to humerus; second with 5 \u2013 8 small tubercles, largest level with apex of hind femur; third starting on inner surface of humerus, with 5 \u2013 10 small tubercles; fourth starting on outer surface of humerus, with 5 \u2013 8 small tubercles; elytral disc shallowly transversely depressed in basal half, posterior to humerus; elytral punctures large, about 1.5 x pronotal puncture diameters, and sparse, separated by 1 \u2013 1.5 x diameters, interspaces dull, microsculptured; elytral punctures on disc with two small shining tubercles laterally on rim; elytral apex narrowly truncate; epipleuron finely and shallowly punctured with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite shining, not or shallowly microsculptured, sparsely punctured and scaled, except midline impunctate for posterior 2 / 3; metatibiae with shallow irregular lateral longitudinal grooves, thin and elongated; bases of tarsomeres 1 \u2013 3 depressed; protarsomeres 1 \u2013 3 slightly broader at base in male than female. Abdomen (Figs 44, 53, 63, 70): ventrite I smooth and shining at middle, closely and strongly punctured and microreticulate at sides; II \u2013 V densely punctured, shining at middle but shallowly microreticulate, dull at sides; ventrite pubescence recumbent, scale-like throughout, erect setae only present on apical margin of ventrite V; apex of ventrite V convex in both sexes; apex of penis contracted to blunt mucronate tip in dorsal view, apex thin and elongate in lateral view; tegminal keel shallowly sinuate in lateral view; female sternite VIII apodeme short and broad, apical sclerotised area triangular, longer than wide, apex bilobed with rounded lobes; apex of outer margin of gonocoxite with several long setae; stylus only slightly elongate; median ventral sclerite elongate, only lateral margins distinctly sclerotised; spermatheca falcate, acutely tipped, with simple uncoiled duct. Notes. Cheiloxena blackburni is only known from the Blue Mountains, NSW (Fig. 77, including aditional localities from Reid 1992), Kosciuszko National Park region (a specimen labelled ' Kosc. '), at least 250 km further south, and a single specimen from Balook, Victoria, in MVM (Reid 1992). We think the Balook specimen was mislabelled by Charles Oke, former curator of the MVM entomology collection. Balook is a lowland site with quite different vegetation from Blackheath in the Blue Mountains, which is the only other definitive locality for this species. There is a similar label problem for a specimen of C. insignis (see below). The ' Kosc' female is lacking its abdomen and is without detailed locality information. All of the known specimens of Cheiloxena blackburni are old, mostly from the collections of E. W. Ferguson (1884 \u2013 1927), H. W. Brown (1883 \u2013 1958) and H. J. Carter (1858 \u2013 1940) (Daniels 2004). Only one is dated, anonymously collected in January 1935 (the ' Kosc' specimen). In the unlikely event Brown collected his specimens in the last year of his life, the most recent collection date for this large beetle species is 1958, at least 60 years ago."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena blackburni is distinguished by: upper and lower surfaces scaled; anterior margin of clypeus truncate; pronotum with posteriorly divergent paired ridges; hypomeral lobe rugose, without scales; apical half of elytra with small inconspicuous tubercles."
+        },
+        {
+          "description": "Material examined. Types: Paratypes (5): \u018b / Blue Mts N. S. Wales / E. W. Ferguson collection / Cheiloxena sp. W. K. Hughes det. / Cheiloxena blackburni Reid / AN 25 001071 / (ANIC); \u2640 / Blue Mts N. S. Wales / E. W. Ferguson collection / Cheiloxena sp. W. K. Hughes det. / Cheiloxena blackburni Reid / AN 25 001072 / (ANIC); \u2640 / Blue Mts N. S. Wales / E. W. Ferguson collection / Cheiloxena sp. W. K. Hughes det. / Cheiloxena blackburni Reid / AN 25 001073 / (ANIC); \u2640 / Blue Mts N. S. Wales / Cheiloxena sp. not insignis not westwoodi E. B. Britton det / Cheiloxena blackburni Reid / AN 25 001074 / (ANIC); \u2640 * / Blue Mts N. S. Wales / John Carter / Cheiloxena? frenchae Blackb. / Cheiloxena blackburni Reid / AN 25 001075 / (ANIC). Non-types: \u2640 / Kosc. 12. i. 1935 / student\u2019s collection / (AMS); 2 \u2642 * / Blue Mts / Cheiloxena westwoodi Blue Mts NSW / ex H. W. Brown coll. / (AMS)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 4732788,
+      "nameKey": 2336499,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 4732788,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena tuberosa",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 4732788,
+      "scientificName": "Cheiloxena tuberosa Reid, 1992",
+      "canonicalName": "Cheiloxena tuberosa",
+      "authorship": "Reid, 1992",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 9.5 \u2013 11.5 mm, female 8.5 \u2013 11.5 mm; body convex in profile, length about 2.7 x height; colour entirely black, except apex last maxillary palp and labial palpi reddish-brown, with ashy grey or golden scale-like setae; scale-like setae adpressed except semi-erect on largest elytral tubercles, variable in proportion (length 3 \u2013 10 x width), thinner and sparser on depressed areas of pronotum and elytra, and apical ventrites, distributed as follows: almost evenly on head but golden behind eyes and white anteriorly; variegated on pronotum with band of dense golden setae on anterior ridge and posterior margin and white setae in five irregular broad stripes following elevated areas, almost glabrous between; scutellum clothed with elongate golden setae; elytra with irregular mosaic of adpressed white setae except tubercles with elongate semi-erect golden setae and golden adpressed setae posterior to tubercles, ventral surfaces with dense white adpressed setae except thin and sparse on apical ventrite, setae of appendages thin but dense, except antennomeres 8 \u2013 11 minutely setose; surface sculpture: head pronotum, elytra and venter dull, punctate and densely microsculptured, except shining apices of tubercles. Head (Figs 10, 19, 28, 38): distinctly narrower than pronotum in both sexes; densely and slightly confluently punctured, punctures small, intervals dull and microsculptured; narrow impunctate smooth area around antennal cavities; flat between eyes, slightly concave between antennae; eyes small, slightly laterally prominent, separated by about 4 eye widths (male) or about 4.5 eye widths (female); gena at shortest point about 0.6 x eye length (male) or about 0.4 x eye length (female); genal lobe 0.75 x shortest length of gena; antennae 3 \u2013 3.5 x socket diameters apart; antennae about 0.65 x body length (male), or about 0.55 x body length (female); antennomeres 1 \u2013 7 dull with shining apices, 8 \u2013 11 duller; antennomeres 1 and 3 \u2013 11 elongate, 2 transverse 0.5 \u2013 0.7 x length of 1, 0.25 \u2013 0.3 x length of 3, relative lengths of antennomeres, with 3 longest and 11 next, and middle segments generally similar in length: male: 2, <1, <4 = 5 = 6, <9 = 10, <8, <7, <11, <3; female: 2, <1, <6, <4 = 5 = 8 = 9 = 10, <7, <11, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin deeply concave, usually less so in female; male apical maxillary palpomere broadly ovoid with truncate apex. Thorax (Figs 10, 19, 28, 41): sides almost vertical, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum; pronotal puncturation similar to head, except depressed parts of disc sparsely punctured; interspaces dull; pronotum slightly longer than wide, width 0.95 x length, greatest width at anterior third and sides weakly sinuate; anterior angles prominent but tips blunt, 45 \u00b0; anterior margin produced, truncate at middle; lateral sides with 1 \u2013 2 small tubercles in apical half; basal margin weakly convex; pronotum with transverse preapical low ridge of shining tubercles, notched at middle; disc unevenly surfaced, with concave sides and middle and small postmedian swelling; hypomeron and prosternum densely punctured and pubescent, as pronotum, except hypomeral lobe rugose and glabrous; scutellum punctured and setose, as pronotum; elytra irregularly scaled and glabrous, the scales generally sparse except for small white patch near elytral apex on lateral margin; elytron conspicuously tuberculate, with variably sized shiny tipped tubercles arranged in approximately 4 irregular longitudinal rows, as follows: first (innermost) with 3 similar sized massive conical tubercles; second with 2 small conical tubercles at elytral base, one massive conical tubercle beside apical tubercle of inner row, and small tubercle on apical elytral slope; third starting on inner surface of humerus, with elongate ridge at base and 3 small tubercles posteriorly; fourth starting on outer surface of humerus, with 6 \u2013 9 small tubercles; elytral disc shallowly arcuately depressed in basal half, posterior to humerus, and concave at sides of middle; elytral punctures large, 1.5 \u2013 2 x pronotal puncture diameters, and sparse, separated by 1 \u2013 1.5 x diameters, interspaces dull, microsculptured; discal elytral punctures with two small shining tubercles laterally on rim; elytral apex narrowly truncate; epipleuron finely and shallowly punctured, with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite dull and microsculptured, closely punctured and scaled, except midline impunctate and shining; metatibiae with shallow irregular lateral longitudinal grooves, short and robust; bases of tarsomeres 1 \u2013 3 depressed; protarsomeres 1 \u2013 3 slightly broader at base in male than female. Abdomen (Figs 49, 59, 67, 74): ventrite I shinier than thoracic ventrites but closely and strongly punctured and microreticulate; II \u2013 V impunctate and shining at apices, but densely punctured, shining at middle but shallowly microreticulate, dull at sides; ventrite pubescence recumbent, scale-like, but much narrower on ventrite V, erect setae only present on apical margin ventrite V; apex of ventrite V narrowly truncate in both sexes; apex of penis contracted to elongate mucronate tip in dorsal view, short and thick in lateral view, strongly reflexed by about 90 \u00b0; tegminal keel deep and slightly sinuate in lateral view; female sternite VIII apodeme short and narrow, apical sclerotised area roughly triangular but expanded at sides, longer than wide, apex concave; apex of gonocoxite without conspicuous setae; stylus only slightly elongate; median ventral sclerite elongate; spermatheca falcate, acutely tipped, with coiled duct. Notes. The maxillary palpi of C. tuberosa were illustrated by Reid (1992; Fig. 19) under C. insignis."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena tuberosa is distinguished by: anterior margin of clypeus deeply excavate; pronotum without dorsal ridges but with 1 \u2013 2 lateral tubercles; each elytron with four large conical tubercles."
+        },
+        {
+          "description": "Material examined. Types: Holotype: \u018b * / Lamington NP, xi. 1983 M Lowman / no. 15 / Holotype Cheiloxena tuberosa Reid / (ANIC); Paratypes (3): New South Wales: \u2642 / Dorrigo W Heron / paratype Cheiloxena tuberosa Reid / (ANIC); \u2640 * / Mt Warning in rainforest, 11. xi. 1974 G Williams / paratype Cheiloxena tuberosa Reid / (ANIC); Queensland: \u018b * / Mt Glorious St. For., Qld, xi \u2013 xii. 1985 Y. Bassett coll. ex Argyrodendron actinophyllum r / f / ANIC coleoptera voucher no 87 - 0134 / CO ANT 10 / Argyrodendron actinophyllum Edlin subtropical rainforest Mt Glorious SF IT 1 (MT), 19 \u2013 26. xi. 1987, Y Bassett / paratype Cheiloxena tuberosa Reid / (ANIC). Non-types (17): New South Wales: 1 \u018b / Bielsdown SF, jn Bielsdown / Coramba Rds, 30: 17 S 152: 44 E dry rf by rd, 7. xi. 2013, Reid & Tan (AMS); 1 / eastern section Border Ranges NP, NSW, 14. xii. 1996, S. Watkins coll. / (ANIC); \u2640 / Dorrigo NP, 2500 \u2019, 18. xi. 1973, A & M Walford-Huggins / WH 7745 / (QMB); \u2642, \u2640 / The Glade picnic area, Dorrigo NP, 16 \u2013 17. xii. 2009, R de Keyzer, at MV light (AMS); 1 / Whian Whian State Forest, on E. grandis (DPIO); Queensland: \u2640 / no further data, Deane (QMB); \u2642 / Lamington NP, canopy light trap 2, 13. i. 1995 R Kitching (AMS); \u2642 2 \u2640 / [Lamington] NP xi. 1920 H Hacker (QMB); \u2640 / ditto except 5. xii. 1970 FT Fricke (AMS); \u2640 / Mt Glorious 22 k NW Brisbane, rainforest, 635 m, 13. xii. 1983 A Hiller (QMB); \u2640 / Mt Glorious, 21. i. 1983 J Sedlacek (QMB); \u2640 / ditto except 17. i. 1978 (QMB); \u2642 / ditto except 15. ii. 1972 GB Monteith (QMB); \u2640 / Upper Dalrymple Ck, via Goomburra, 21 \u2013 22. xi. 1987 GB Monteith (QMB)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 9897450,
+      "nameKey": 30285979,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 9897450,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena monga",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 9897450,
+      "scientificName": "Cheiloxena monga Reid & Beatson, 2018",
+      "canonicalName": "Cheiloxena monga",
+      "authorship": "Reid & Beatson, 2018",
+      "publishedIn": "Reid, C. A. M., Beatson, M. (2018): Revision of the Australian leaf beetle genus Cheiloxena Baly, 1860 (Coleoptera: Chrysomelidae: Spilopyrinae). Zootaxa 4497 (4): 501-534, DOI: https://doi.org/10.11646/zootaxa.4497.4.3",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description (female unknown). Length 11 mm; body moderately convex in profile, length about 3 x height; colour black, but elytra mostly dark brown with black tubercles, and maxillary and labial palpi reddish-brown; almost entirely clothed with adpressed creamy-white scale-like setae (length 3 \u2013 5 x width), not distinctly variegated in colour, setae not thinner on depressed areas of pronotum and elytra, thinner on anterior of clypeus, apices of mandibles, prosternal and mesoventral processes, legs, apex of abdominal ventrite V, and antennomeres 1 \u2013 7, scalelike setae absent from antennomeres 8 \u2013 11 (minute simple setae only); scale-like setae distributed as follows: almost evenly on head but clypeal margins anteriorly glabrous; almost evenly on pronotum but slightly sparser on depressed areas and absent from apices of ridges; scutellum clothed with thin setae; elytra with irregular mosaic of dense patches and more sparsely setose areas, setae of larger tubercles not differentiated except slightly more elongate; ventral surfaces with dense white adpressed setae except thin and sparse on apical half of ventrite V, setae of appendages thin but dense (except antennomeres 8 \u2013 11); surface sculpture: head including clypeal margins, pronotum and metaventrite densely punctured and microreticulate, dull, elytra and rest of thoracic venter, including pronotal hypomera, densely microsculptured and dull; apices of tubercles and ridges, and abdominal ventrites shiny and not or shallowly microsculptured. Head (Figs 9, 18, 27): slightly narrower than pronotum; densely and slightly confluently punctured, punctures small but larger than ommatidia, intervals dull and microsculptured, including narrow impunctate frontoclypeal sutures, apical margin clypeus, and margin of antennal cavities; convex between eyes, shallowly concave between antennae; eyes laterally prominent, separated by about 3 eye widths; gena at shortest point about 0.3 x eye length; genal lobe 2 x shortest length of gena; antennae 3 x socket diameters apart; antennae about 0.75 x body length; antennomeres 1 \u2013 6 dull with shining apices, apical half of 7, and whole of 8 \u2013 11 matt; antennomeres 1 and 3 \u2013 11 elongate, 2 slightly transverse and about 0.5 x length of 1, 0.25 x length of 3, relative lengths of antennomeres, with 3 longest and 7 next, and middle segments unequal in length: 2, <1, <8, <4 = 9 = 10, <6, <5, <11, <7, <3; clypeus with 2 pairs of long subapical setae; clypeal anterior margin truncate; apical maxillary palpomere broadly ovoid, with truncate apex. Thorax (Figs 9, 18, 27, 34): sides bulging slightly at middle, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum; pronotal punctures dense, diameters 1.5 \u2013 2 x larger than on head; interspaces dull, densely microsculptured; pronotum slightly wider than long (measured at midline), length 0.95 x width, greatest width at middle, sides weakly sinuate; anterior angles prominent but apices blunt, 90 \u00b0; anterior margin produced, concave at middle; sides without tubercles; basal margin truncate; pronotal disc with two prominent subparallel keels from middle to anterior margin, almost symmetrically convex in lateral view, sharper in anterior half; remainder of disc unevenly surfaced, concave apicolaterally and either side of small postmedian swelling; hypomeron and prosternum densely punctured and pubescent, as pronotum, except hypomeral lobe rugose and glabrous; scutellum closely punctured and setose, scales more elongate than on pronotum; elytra irregularly scaled, forming network of pale flecks; elytron conspicuously tuberculate, with variably sized shiny-tipped tubercles arranged in approximately 4 clusters close to suture, from base to apex, as follows: first (basal) with 1 large blunt tubercle at apex of ridge from base of elytra; second (median) with 1 smaller conical or elongate tubercle; third (subapical) with 3 conical tubercles arranged in an equilateral triangle, largest lateral and smallest basal; fourth (apical) with 3 conspicuous but smaller well-separated tubercles arranged in an equilateral triangle; small tubercles scattered at base and sides of elytron; elytral disc shallowly arcuately depressed in basal half, posterior to humerus, and concave at sides of middle; elytral punctures large, similar diameter to largest on pronotum, but much deeper, and slightly sparser, separated by 1 \u2013 1.5 x diameters; interspaces dull, densely microsculptured; discal elytral punctures with two small shining tubercles laterally on rim; elytral apex narrowly truncate; epipleuron finely and shallowly punctured, with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite dull and microsculptured, densely punctured and scaled, except midline impunctate and shining; metatibiae with shallow irregular lateral longitudinal grooves, thin and elongated; bases of tarsomeres 1 \u2013 3 depressed and not expanded. Abdomen (Figs 48, 58): ventrites I \u2013 V shinier than thoracic ventrites, strongly but less densely punctured and more shallowly microreticulate; ventrite pubescence recumbent, scale-like, but much narrower on ventrite V, only erect setae present on apical half of ventrite V; apex of ventrite V feebly convex; apex of penis contracted to blunt mucronate tip in dorsal view, apex thick and short in lateral view, strongly curved; tegminal keel shallowly sinuate in lateral view, with acute simple proximal tip."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena monga is distinguished by: upper and lower surfaces scaled; anterior margin of clypeus truncate; pronotum with almost parallel paired ridges; hypomeral lobe rugose, without scales; apical half of elytra conspicuously tuberculate, with largest tubercles arranged in a curve."
+        },
+        {
+          "description": "Etymology. Named from the type locality, as a noun in apposition. Notes. Cheiloxena monga is only known from the holotype, collected at the margin of cool temperate rainforest and tall eucalypt forest in what is now Monga National Park. It was beaten off a sapling of Eucalyptus rubida, now a synonym of E. dalrympleana (Myrtaceae), with no evidence of feeding. This specimen was previously incorporated in a description of C. frenchae, when the only other known specimen of that species was the holotype (Reid 1992). Based on the small amount of additional material of this complex (C. aitori, C. frenchae and C. monga) made available since 1992 we now believe that the Monga specimen represents a valid species."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 10048014,
+      "nameKey": 30285983,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 10048014,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena aitori",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 10048014,
+      "scientificName": "Cheiloxena aitori Reid & Beatson, 2018",
+      "canonicalName": "Cheiloxena aitori",
+      "authorship": "Reid & Beatson, 2018",
+      "publishedIn": "Reid, C. A. M., Beatson, M. (2018): Revision of the Australian leaf beetle genus Cheiloxena Baly, 1860 (Coleoptera: Chrysomelidae: Spilopyrinae). Zootaxa 4497 (4): 501-534, DOI: https://doi.org/10.11646/zootaxa.4497.4.3",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 9 \u2013 10.5 mm (Holotype: 10 mm), female 11 \u2013 12 mm; body moderately convex in profile, length about 3 x height; colour black, except tubercles and ridges may be dark reddish-brown, and maxillary and labial palpi reddish-brown; almost entirely clothed with adpressed white to cream scale-like setae (length 3 \u2013 4 x width), not distinctly variegated in colour, setae not thinner on depressed areas of pronotum and elytra, thinner on anterior of clypeus, apices of mandibles, legs, apex of abdominal ventrite V, and antennomeres 1 \u2013 7, absent from antennomeres 8 \u2013 11 (with minute simple setae only); scale-like setae distributed as follows: almost evenly on head but clypeal margins glabrous; almost evenly on pronotum but slightly sparser on depressed areas and absent from apices of ridges; scutellum clothed with thin setae; elytra with irregular mosaic of dense patches and more sparsely setose areas, larger tubercles with elongate semi-erect creamy-white setae; ventral surfaces with dense white adpressed setae except thin and sparse on apical half of ventrite V, setae of appendages thin but dense (except antennomeres 8 \u2013 11); surface sculpture: head except clypeal margins, pronotum and metaventrite densely punctured and microreticulate, relatively shining, elytra and rest of thoracic venter, including pronotal hypomera, dull, more sparsely punctate but densely microsculptured; clypeal margins, apices of tubercles and ridges, and abdominal ventrites shining and not distinctly microsculptured. Head (Figs 3, 13, 22): distinctly narrower than pronotum in both sexes; densely and slightly confluently punctured, punctures small, intervals dull and microsculptured, except narrow impunctate shining frontoclypeal sutures, apical margin of clypeus, and margin of antennal cavities; convex between eyes, feebly convex between antennae; eyes slightly laterally prominent, separated by about 4 eye widths (male) or 4.5 eye widths (female); gena at shortest point about 0.4 x eye length (male) to about 0.5 x eye length (female); genal lobe 2 x (male) to 1.25 x (female) shortest length of gena; antennae 3 x (male) to 4 x (female) socket diameters apart; antennae about 0.65 x body length (male), or about 0.55 x body length (female); antennomeres 1 \u2013 7 dull with shining apices, 8 \u2013 11 matt; antennomeres 1 and 3 \u2013 11 elongate, 2 slightly transverse 0.5 \u2013 0.7 x length of 1, 0.25 \u2013 0.3 x length of 3, relative lengths of antennomeres with 3 longest and 7 next, in both sexes, and middle segments of unequal lengths: male: 2, <1, <8, <9, <10, <4, <5 = 6, <11, <7, <3; female: 2, <1, <8 = 9, <4 = 10, <11, <6, <5, <7, <3; clypeus with 2 \u2013 3 pairs of long subapical setae; clypeal anterior margin truncate; male apical maxillary palpomere broadly ovoid with truncate apex. Thorax (Figs 3, 13, 22, 31): sides bulging laterally at middle, but without clear distinction between dorsal and ventral (hypomeral) areas of pronotum, except hypomeral lobe glabrous and impunctate; pronotal puncturation similar to head, except depressed parts of disc sparsely punctured; interspaces lightly microsculptured on disc, slightly shiny, densely microsculptured and dull at sides; pronotum slightly wider than long (measured at midline), length 0.95 x width, greatest width usually at middle, sometimes also at anterior angles, sides weakly sinuate; anterior angles prominent, acute (45 \u00b0); anterior margin produced, concave at middle; sides without tubercles; basal margin feebly convex; pronotal disc with two prominent subparallel keels from middle to anterior margin, symmetrically convex in lateral view, sharper in anterior half; remainder of disc unevenly surfaced, concave apicolaterally and either side of small postmedian swelling; hypomeron and prosternum densely punctured and pubescent, as pronotum, except hypomeral lobe smooth and glabrous; scutellum punctured and setose, as pronotum; elytra irregularly scaled, forming a network of pale flecks; elytron conspicuously tuberculate, the variably sized shiny tipped tubercles arranged in approximately 4 clusters close to the suture, from base to apex, as follows: first (basal) with 1 large conical tubercle; second (median) with 1 large conical tubercle; third (subapical) with 2 large adjacent conical tubercles; fourth (apical) with 2 \u2013 3 conspicuous but smaller tubercles, partly fused; small tubercles scattered at base and sides of elytron; elytral disc shallowly arcuately depressed in basal half, posterior to humerus, and concave at sides of middle; elytral punctures large, similar diameter to pronotal punctures but much deeper, and sparse, separated by 1 \u2013 1.5 x diameters; interspaces dull, densely microsculptured; elytral punctures on disc with two small shining tubercles laterally on rim; elytral apex narrowly truncate or concave; epipleuron finely and shallowly punctured with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite dull, microsculptured, strongly punctured and clothed with recumbent scales, except midline impunctate and shining; metatibiae with shallow irregular lateral longitudinal grooves, thin and elongated; bases of tarsomeres 1 \u2013 3 depressed, protarsomeres 1 \u2013 3 slightly broader at base in male than female. Abdomen (Figs 43, 52, 62, 69): ventrite I shinier than thoracic ventrites but closely and strongly punctured and microreticulate; II \u2013 V densely punctured, shiny and shallowly microreticulate throughout; ventrite pubescence recumbent, scale-like, but much narrower on ventrite V, erect setae only present on apical half of ventrite V; apex ventrite V feebly convex in both sexes; apex of penis contracted to mucronate tip in dorsal view, apex thin, elongate and strongly curved in lateral view; tegminal keel shallowly sinuate in lateral view; female sternite VIII apodeme short and narrow, apical sclerotised area as long as wide, with angularly bilobed apex; apex of outer margin of gonocoxite with several long setae; stylus only slightly elongate; median ventral sclerite elongate, only lateral margins distinctly sclerotised; spermatheca falcate, acutely tipped, with simple uncoiled duct."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena aitori is distinguished by: upper and lower surfaces scaled; anterior margin of clypeus truncate; pronotum with almost parallel paired ridges; hypomeral lobe smooth, without scales; apical half of elytra conspicuously tuberculate with largest tubercles adjacent to each other and arranged in a transverse row."
+        },
+        {
+          "description": "Etymology. Named for Aitor, youngest son of one of the authors (M. Beatson). Notes. Cheiloxena aitori is endemic to the New England National Park area (Fig. 77), occuring in the cool temperate rainforest and wet heathland near the escarpment edge, at approximately 1500 m elevation. The placename Ebor on an old specimen probably refers to this town because it is the nearest settlement to the escarpment. Ebor is unlikely to be a collection locality as it is surrounded by quite different habitat (dry woodland). Faecal material in the gut of a dissected male largely consisted of densely packed fragmented trichomes. A specimen of this species was photographed on a leaf of Lomatia arborescens (Proteaceae) (identified by one of the authors, C. Reid) at the type locality, by Adam \u015alipi\u0144ski (pers. comm., February 2018). Cheiloxena aitori has been collected at light."
+        },
+        {
+          "description": "Material examined. Types: Holotype: \u018b / 30 \u00b0 29 \u2019 S 152 \u00b0 25 \u2019 E Point Lookout area New England NP 16 \u2013 18. xi. 1990 A. Calder (ANIC); Paratypes (7): \u2642 / Berarngutta picnic area, New England NP, mv light, 1. xii. 2016, R de Keyzer, A. Scott & A. Sundholm (AMS); \u2642 / Ebor xii. 1939 Colonel Morisset / (AMS); \u2642, \u2640 / Little Styx R., nr Ebor NSW ii. 1972 T. E. Bellas / Cheiloxena? frenchi Blbn det B. P. Moore / (ANIC); \u2640 / New England NP, 3 \u2013 4. i. 1966 CN Smithers (AMS); 2 \u2642 * / 30 \u00b0 29 \u2019 S 152 \u00b0 25 \u2019 E Point Lookout area New England NP 16 \u2013 18. xi. 1990, T. A. Weir, sweeping foliage (ANIC)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    },
+    {
+      "key": 10239944,
+      "nameKey": 30285982,
+      "datasetKey": "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c",
+      "constituentKey": "f09380a8-4d31-4e79-9b72-74ee26438553",
+      "nubKey": 10239944,
+      "parentKey": 4732783,
+      "parent": "Cheiloxena",
+      "kingdom": "Animalia",
+      "phylum": "Arthropoda",
+      "order": "Coleoptera",
+      "family": "Chrysomelidae",
+      "genus": "Cheiloxena",
+      "species": "Cheiloxena conani",
+      "kingdomKey": 1,
+      "phylumKey": 54,
+      "classKey": 216,
+      "orderKey": 1470,
+      "familyKey": 7780,
+      "genusKey": 4732783,
+      "speciesKey": 10239944,
+      "scientificName": "Cheiloxena conani Reid & Beatson, 2018",
+      "canonicalName": "Cheiloxena conani",
+      "authorship": "Reid & Beatson, 2018",
+      "publishedIn": "Reid, C. A. M., Beatson, M. (2018): Revision of the Australian leaf beetle genus Cheiloxena Baly, 1860 (Coleoptera: Chrysomelidae: Spilopyrinae). Zootaxa 4497 (4): 501-534, DOI: https://doi.org/10.11646/zootaxa.4497.4.3",
+      "nameType": "SCIENTIFIC",
+      "taxonomicStatus": "ACCEPTED",
+      "rank": "SPECIES",
+      "origin": "SOURCE",
+      "numDescendants": 0,
+      "numOccurrences": 0,
+      "habitats": [],
+      "nomenclaturalStatus": [],
+      "threatStatuses": [],
+      "descriptions": [
+        {
+          "description": "Description. Length: male 13 \u2013 15.5 mm (Holotype: 13 mm), female 14 \u2013 15.5 mm; body moderately convex in profile, length about 3 x height; colour dull black, tarsi and antennae usually dark brown, maxillary palpi dark reddish-brown; entirely clothed with adpressed scale-like setae (length 3 \u2013 4 x width), setae patchily distributed on elytra, thinner and sparser on appendages and apical ventrites; surface sculpture: head, pronotum and elytra dull, punctate and densely microsculptured, except shining apices of tubercles and ridges. Head (Figs 5, 15, 24): distinctly narrower than pronotum in both sexes, width 0.8 x (male) or 0.7 x (female) pronotal width; middle of vertex slightly elevated; densely punctured (separated by <1 diameter) except sparser on middle of vertex in two specimens (separated by 1 \u2013 2 diameters); narrow impunctate smooth area around antennal cavities; slightly convex between eyes, but flat between antennae, without groove on vertex but midline smooth in two specimens; eyes small, elongate-reniform, strongly laterally prominent, separated by about 4 eye widths in both sexes; gena at shortest point about half eye length in both sexes; genal lobe about 1.5 x shortest length gena; antennae 6 \u2013 7 socket diameters apart; antennae about 0.7 x body length (male), or about 0.6 x body length (female); all antennomeres dull, 1 \u2013 7 sparsely and coarsely setose, 8 \u2013 11 densely and finely setose; antennomeres 1 and 3 \u2013 11 elongate, 2 quadrate 0.5 x length 1, <0.3 x length 3, relative lengths of antennomeres with 3 longest and 11 next, in both sexes, and most middle segments of similar length: 2 shortest, <1, <6, <4 = 5 = 7, <8, <9 = 10, <11, <3; clypeus without long subapical setae; clypeal anterior margin semicircularly excavate; male apical maxillary palpomere elongate-ovate with truncate apex. Thorax (Figs 5, 15, 24, 33): pronotal sides almost vertical in posterior half, no clear distinction between dorsal and ventral (hypomeral) areas of pronotum, but with roughly equilateral triangular extension just anterior to middle and 1 \u2013 2 low tubercles on a ridge from this extension to anterior angles; pronotal disc irregularly surfaced, with pair of low shining tubercles anteriorly reaching anterior pronotal margin, midline depressed for anterior 2 / 3 but with low swelling posteriorly, sides deeply depressed; pronotal punctures large, close to dense, separated by 0.2 \u2013 1.5 puncture diameters; pronotum with fairly evenly distributed scale-like setae, as head, interspaces dull and densely microreticulate; pronotum clearly transverse, width 1.3 x length (male) to 1.4 x (female), greatest width at lateral triangular lobe, sides concave behind this; anterior angles prominently anteriorly produced, 80 \u00b0; anterior edge produced but concave at middle, basal edge weakly convex; hypomeron and prosternum densely punctured and pubescent as pronotum, except hypomeral lobe rugose and glabrous; scutellum punctured and apically shining, but more densely scaled than pronotum; elytra with scales irregularly distributed, forming a patchwork of glabrous and scaled areas, the latter sometimes denser forming pale spots; elytron tuberculate, but shiny tipped tubercles small not distinctly elevated, irregularly arranged in approximately 4 longitudinal rows, as follows: first (innermost) with 7 \u2013 10 small tubercles; second with 5 \u2013 8 small tubercles, usually with largest level with apex hind femur; third starting on inner surface of humerus, with 5 \u2013 10 small tubercles; fourth starting on outer surface of humerus, with 5 \u2013 8 small tubercles; elytral disc not or feebly transversely depressed in basal half, posterior to humerus; elytral punctures large (same as pronotal punctures) and deep, sparsely but evenly distributed, separated by 1.5 \u2013 2 x diameters, interspaces dull, microsculptured; each elytral puncture with one small dull tubercle on anterior surface and small seta inside; elytral apex rounded; epipleuron finely and shallowly punctured with scale-like pubescence; mesoventrite punctured as prosternum; metepisternum and metaventrite dull, densely punctured and scaled, except shining and sparsely punctured midline; metatibiae with shallow irregular lateral longitudinal grooves, short and robust; bases of tarsomeres 1 \u2013 3 not depressed; protarsomeres 1 \u2013 3 equally narrow at base in both sexes. Abdomen (Figs 45, 54, 64, 71): ventrites I \u2013 V entirely dull, microreticulate; I more closely and strongly punctured at middle (interspaces less than or equal to puncture diameters), sparsely punctured at sides (interspaces much greater than puncture diameters); puncturation of II \u2013 IV similar to I; ventrite V densely and rugosely punctured; ventrite pubescence recumbent and scale-like, fine erect setae only present on apical margin of ventrite V; apex of ventrite V truncate in male, with thickened edge, convex in female; apex of penis contracted to mucronate tip in dorsal view, apex thick and short in lateral view; tegminal keel shallowly convex in lateral view; female sternite VIII apodeme short and narrow, apical sclerotised area triangular, about as long as wide, apex truncate; setae at apex of gonocoxite short and inconspicuous; stylus elongate, length twice width; median ventral sclerite elongate-triangular, distinctly sclerotised; spermatheca falcate, acutely tipped, with simple uncoiled duct."
+        },
+        {
+          "description": "Diagnosis. Cheiloxena conani is distinguished by: upper and lower surfaces scaled; anterior margin of clypeus deeply excavate; pronotum without dorsal ridges but with large lateral lobes; apical half of elytra without conspicuous tubercles; elytral surface without erect setae."
+        },
+        {
+          "description": "Etymology. Named for Conan, eldest son of M. Beatson. Notes. Cheiloxena conani has been collected from two upland localities in central and south Queensland, Kroombit Tops and Wonga Hills (Fig. 77). Kroombit Tops, an isolated low massif (930 m elevation), is unusual for its relatively temperate flora and fauna at 24 \u00b0 S (Monteith 1986). The old specimens labelled \u2018 Rockhampton\u2019 by Brown may have been collected at Kroombit Tops (115 km south of Rockhampton) or possibly in the lower elevation hills 50 km south of Rockhampton (maximum elevation 746 m) (G. Monteith, pers. com. 2013). The other locality, Wonga Hills, is a plateau at about 300 m elevation with low hills up to 550 m elevation, with large blocks of vine-thicket rainforest and eucalypt forest. The Wonga Hills site is 185 km south of Kroombit Tops. The two most recently collected specimens were at light, in vine thicket and open forest, in December and February."
+        },
+        {
+          "description": "Material examined. Types: Holotype: \u2642 * / Rockhampton, HW Brown (AMS); Paratypes (4): f * / Rockhampton, HW Brown (AMS); \u2642 *, \u2640 * / Kroombit Tops, Northern escarp., 45 k SSW Calliope, open for., 3 \u2013 4. ii. 1984, Monteith, Hagan & Yeates (QMB); f / Qld 26 \u00b0 04 \u2019 S 150 \u00b0 49 \u2019 E Wonga Hills site 3, 520 m 11. xii. 2001 10257 Monteith, Cook & Wright mv light, vine scrub / (QMB)."
+        }
+      ],
+      "vernacularNames": [],
+      "higherClassificationMap": {
+        "1": "Animalia",
+        "54": "Arthropoda",
+        "216": "Insecta",
+        "1470": "Coleoptera",
+        "7780": "Chrysomelidae",
+        "4732783": "Cheiloxena"
+      },
+      "synonym": false,
+      "class": "Insecta"
+    }
+  ],
+  "facets": []
+}

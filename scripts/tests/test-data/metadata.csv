@@ -1,0 +1,6 @@
+sample_id,locus,preliminary_id,taxa_of_interest,country,host,sequencing_platform
+LC438549.1,COI,Asterias rubens,Asteridae|Acanthaster planci,Japan,driftwood,nanopore
+ON075825.1,COX1,Epinephelus,Epinephelus|Epinephelus awoara,China,fishing net,illumina
+PP466915.1,COX1,Sitodiplosis,,,,nanopore
+JQ585746.1,COX1,Doradidae,Platydoras armatulus,China,fishing net,nanopore
+LC547004.1,COX1,Ascidiacea,Pedunculata,Indonesia,fishing net,nanopore

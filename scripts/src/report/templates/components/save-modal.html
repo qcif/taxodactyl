@@ -1,0 +1,18 @@
+<div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="saveModalLabel">Save as read-only?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        This will lock the text boxes in the report against further editing.
+        If you select "No", the text boxes will remain editable in your saved document.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveReport(readonly=true)">Yes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="saveReport(readonly=false)">No</button>
+      </div>
+    </div>
+  </div>
+</div>

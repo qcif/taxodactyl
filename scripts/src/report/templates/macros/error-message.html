@@ -1,0 +1,37 @@
+{% macro render_error_message(errorlist) %}
+
+<div class="alert alert-danger">
+  <strong>Errors encountered:</strong>
+  <ul>
+    {% for error in errorlist %}
+    <li>
+      {{ error.message }}
+      {% if error.exception %}
+      <br>
+      <small>
+        <strong>Exception:</strong>
+        <code class="text-danger">
+          {{ error.exception }}
+        </code>
+      </small>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endmacro %}
+
+{% macro render_error_badge(errorlist) %}
+
+<span
+  class="badge bg-danger error-badge mx-2"
+  title="Errors encountered in this record"
+  data-bs-toggle="tooltip"
+  data-error-list='{{ errorlist.to_json() | tojson }}'
+  onclick="toggleErrorDetails(this);"
+>
+  X
+</span>
+
+{% endmacro %}

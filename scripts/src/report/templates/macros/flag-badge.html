@@ -1,0 +1,38 @@
+{% from "macros/info-badge.html" import info_badge %}
+
+{% macro render_flag(flag, tooltip=none, extra_outcome='',  extra_reasoning='') %}
+
+<div class="row align-items-center">
+  <div class="col-auto pe-2">
+    <a
+      class="font-large"
+      href="#"
+      data-bs-toggle="modal"
+      data-bs-target="#flagsModal"
+    >
+      <span
+        class="badge bg-{{ flag.bs_class }} {% if flag.level == 2 %}text-dark{% else %}text-light{% endif %}"
+        title="Show flag definitions"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+      >
+        Flag {{ flag.flag_id }}{{ flag.value }}
+      </span>
+    </a>
+    {% if tooltip %}
+    <p class="text-center font-xl mb-0">
+      {{ info_badge(tooltip, placement="bottom") }}
+    </p>
+    {% endif %}
+  </div>
+
+  <div class="col">
+    <strong>Outcome:</strong>
+    {{ flag.outcome }}{{ extra_outcome }}.
+    <br>
+    <strong>Reasoning:</strong>
+    {{ flag.explanation }}{{ extra_reasoning }}.
+  </div>
+</div>
+
+{% endmacro %}

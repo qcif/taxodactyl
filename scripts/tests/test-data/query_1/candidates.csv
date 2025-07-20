@@ -1,0 +1,180 @@
+species,taxid,accession,hit_subject,identity,query_coverage,alignment_length,e_value,bitscore
+Epinephelus coioides,94232,ON075825,"Epinephelus coioides cyclooxygenase 1 (COX1) mRNA, complete cds",1.0,1.0,1788,0.0,1788.0
+Epinephelus lanceolatus,310571,XM_033618714,"PREDICTED: Epinephelus lanceolatus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1.0,1.0,1788,0.0,1788.0
+Epinephelus moara,300413,XM_050051969,"PREDICTED: Epinephelus moara prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1719.0
+Epinephelus fuscoguttatus,293821,XM_049579369,"PREDICTED: Epinephelus fuscoguttatus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1692.0
+Sebastes umbrosus,72105,XM_037776566,"PREDICTED: Sebastes umbrosus prostaglandin G/H synthase 1-like (LOC119492250), mRNA",1,1.0,1788,0.0,1267.0
+Siniperca chuatsi,119488,XM_044197067,"PREDICTED: Siniperca chuatsi prostaglandin G/H synthase 1-like (LOC122876567), transcript variant X1, mRNA",1,1.0,1788,0.0,1266.0
+Sander lucioperca,283035,XM_031305836,"PREDICTED: Sander lucioperca prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1255.0
+Perca fluviatilis,8168,XM_039804594,"PREDICTED: Perca fluviatilis prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1240.0
+Perca flavescens,8167,XM_028577700,"PREDICTED: Perca flavescens prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1231.0
+Anarrhichthys ocellatus,433405,XM_031849616,"PREDICTED: Anarrhichthys ocellatus prostaglandin G/H synthase 1-like (LOC116384705), mRNA",1,1.0,1788,0.0,1293.0
+Anoplopoma fimbria,229290,XM_054610851,"PREDICTED: Anoplopoma fimbria prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1210.0
+Micropterus dolomieu,147949,XM_046036006,"PREDICTED: Micropterus dolomieu prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1764,0.0,1194.0
+Micropterus salmoides,27706,XM_038704082,"Micropterus salmoides prostaglandin G/H synthase 1 (ptgs1), mRNA",1,1,1764,0.0,1194.0
+Larimichthys crocea,215358,XM_010736825,"PREDICTED: Larimichthys crocea prostaglandin G/H synthase 1 (LOC104923661), mRNA",1,1.0,1787,0.0,1193.0
+Cebidichthys violaceus,271503,XM_068721069,"PREDICTED: Cebidichthys violaceus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1192.0
+Cottoperca gobio,56716,XM_029439085,"PREDICTED: Cottoperca gobio prostaglandin G/H synthase 1-like (LOC115013092), mRNA",1,1.0,1788,0.0,1183.0
+Etheostoma cragini,417921,XM_034872660,"PREDICTED: Etheostoma cragini prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1182.0
+Chelmon rostratus,109905,XM_041936725,"PREDICTED: Chelmon rostratus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1167.0
+Etheostoma spectabile,54343,XM_032515515,"PREDICTED: Etheostoma spectabile prostaglandin G/H synthase 1-like (LOC116689125), transcript variant X1, mRNA",1,1.0,1788,0.0,1164.0
+Dicentrarchus labrax,13489,XM_051423209,"PREDICTED: Dicentrarchus labrax prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1155.0
+Trematomus bernacchii,40690,XM_034118616,"PREDICTED: Trematomus bernacchii prostaglandin G/H synthase 1-like (LOC117473125), mRNA",1,1,1767,0.0,1147.0
+Pseudochaenichthys georgianus,52239,XM_034091701,"PREDICTED: Pseudochaenichthys georgianus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1755,0.0,1141.0
+Sparus aurata,8175,XM_030415994,"PREDICTED: Sparus aurata prostaglandin G/H synthase 1-like (LOC115581124), mRNA",1,1,1772,0.0,1139.0
+Acanthopagrus latus,8177,XM_037099445,"PREDICTED: Acanthopagrus latus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1,1765,0.0,1138.0
+Seriola lalandi,1841481,XM_023417095,"PREDICTED: Seriola lalandi dorsalis prostaglandin G/H synthase 1-like (LOC111663044), mRNA",1,1.0,1788,0.0,1137.0
+Seriola aureovittata,2871759,XM_056377099,"PREDICTED: Seriola aureovittata prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1134.0
+Seriola dumerili,41447,XM_022765171,"PREDICTED: Seriola dumerili prostaglandin G/H synthase 1-like (LOC111236442), transcript variant X1, mRNA",1,1.0,1788,0.0,1134.0
+Gymnodraco acuticeps,8218,XM_034225346,"PREDICTED: Gymnodraco acuticeps prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1755,0.0,1129.0
+Eleginops maclovinus,56733,XM_063897721,"PREDICTED: Eleginops maclovinus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1752,0.0,1113.0
+Morone saxatilis,34816,XM_035657965,"PREDICTED: Morone saxatilis prostaglandin G/H synthase 1-like (LOC118325336), mRNA",1,1.0,1788,0.0,1110.0
+Myoxocephalus octodecemspinosus,68557,EU703784,"Myoxocephalus octodecemspinosus cyclooxygenase-1a mRNA, complete cds",1,1.0,1788,0.0,1110.0
+Lates calcarifer,8187,XM_018664763,"PREDICTED: Lates calcarifer prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1110.0
+Xiphias gladius,8245,XM_040155964,"PREDICTED: Xiphias gladius prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1786,0.0,1090.0
+Centropristis striata,184440,XM_059338001,"PREDICTED: Centropristis striata prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1089.0
+Cyclopterus lumpus,8103,XM_034542161,"PREDICTED: Cyclopterus lumpus prostaglandin G/H synthase 1-like (LOC117736668), mRNA",1,1.0,1788,0.0,1089.0
+Toxotes jaculatrix,941984,XM_041042970,"PREDICTED: Toxotes jaculatrix prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1077.0
+Clinocottus analis,304258,XM_068604972,"PREDICTED: Clinocottus analis prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1745,0.0,1076.0
+Notolabrus celidotus,1203425,XM_034693087,"PREDICTED: Notolabrus celidotus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1.0,1788,0.0,1068.0
+Gasterosteus aculeatus,481459,XM_040196285,"PREDICTED: Gasterosteus aculeatus aculeatus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1,1775,0.0,1053.0
+Labrus mixtus,508554,XM_061038439,"PREDICTED: Labrus mixtus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1047.0
+Scatophagus argus,75038,XM_046385467,"PREDICTED: Scatophagus argus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1769,0.0,1044.0
+Mastacembelus armatus,205130,XM_026321886,"PREDICTED: Mastacembelus armatus prostaglandin G/H synthase 1-like (LOC113138974), transcript variant X1, mRNA",1,1.0,1780,0.0,1040.0
+Amphiprion ocellaris,80972,XM_023288126,"PREDICTED: Amphiprion ocellaris prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1761,0.0,1035.0
+Acanthochromis polyacanthus,80966,XM_051951262,"PREDICTED: Acanthochromis polyacanthus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1786,0.0,1034.0
+Scophthalmus maximus,52904,XM_035640884,"PREDICTED: Scophthalmus maximus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1,1699,0.0,1033.0
+Thunnus albacares,8236,XR_006398302,"PREDICTED: Thunnus albacares prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, misc_RNA",1,1.0,1788,0.0,1032.0
+Monopterus albus,43700,XM_020598198,"PREDICTED: Monopterus albus prostaglandin G/H synthase 1-like (LOC109959089), mRNA",1,1.0,1788,0.0,1029.0
+Thunnus maccoyii,8240,XM_042422378,"PREDICTED: Thunnus maccoyii prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1026.0
+Scomber japonicus,13676,XM_053325279,"PREDICTED: Scomber japonicus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1020.0
+Thunnus thynnus,8237,XM_067616178,"PREDICTED: Thunnus thynnus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,1014.0
+Scomber scombrus,13677,XM_062417771,"PREDICTED: Scomber scombrus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,1011.0
+Labrus bergylta,56723,XM_020643953,"PREDICTED: Labrus bergylta prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,999.0
+Pseudoliparis swirei,2059687,XM_056420189,"PREDICTED: Pseudoliparis swirei prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1783,0.0,991.0
+Hippoglossus hippoglossus,8267,XM_034596270,"PREDICTED: Hippoglossus hippoglossus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1780,0.0,986.0
+Channa argus,215402,XM_067521976,"PREDICTED: Channa argus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1780,0.0,986.0
+Pungitius pungitius,134920,XM_037483688,"PREDICTED: Pungitius pungitius prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1751,0.0,986.0
+Hippoglossus stenolepis,195615,XM_035164899,"PREDICTED: Hippoglossus stenolepis prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1780,0.0,986.0
+Paralichthys olivaceus,8255,XM_020099050,"PREDICTED: Paralichthys olivaceus prostaglandin G/H synthase 1-like (LOC109636984), mRNA",1,1.0,1780,0.0,985.0
+Limanda limanda,27771,XM_061071700,"PREDICTED: Limanda limanda prostaglandin G/H synthase 1-like (LOC133001973), mRNA",1,1.0,1780,0.0,973.0
+Anabas testudineus,64144,XM_026344209,"PREDICTED: Anabas testudineus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1.0,1788,0.0,973.0
+Cheilinus undulatus,241271,XM_041787536,"PREDICTED: Cheilinus undulatus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,963.0
+Echeneis naucrates,173247,XM_029510138,"PREDICTED: Echeneis naucrates prostaglandin G/H synthase 1-like (LOC115048571), transcript variant X1, mRNA",1,1,1776,0.0,957.0
+Stegastes partitus,144197,XM_008288663,"PREDICTED: Stegastes partitus prostaglandin G/H synthase 1-like (LOC103362336), mRNA",1,1.0,1784,0.0,947.0
+Plectropomus leopardus,160734,XM_042488709,"PREDICTED: Plectropomus leopardus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1287,0.0,945.0
+Archocentrus centrarchus,63155,XM_030737346,"PREDICTED: Archocentrus centrarchus prostaglandin G/H synthase 1-like (LOC115785598), mRNA",1,1,1739,0.0,932.0
+Solea solea,90069,XM_058635252,"PREDICTED: Solea solea prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1.0,1788,0.0,930.0
+Pleuronectes platessa,8262,XM_053421621,"PREDICTED: Pleuronectes platessa prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1780,0.0,928.0
+Antennarius striatus,241820,XM_068310389,"PREDICTED: Antennarius striatus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1751,0.0,924.0
+Platichthys flesus,8260,XM_062385048,"PREDICTED: Platichthys flesus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1780,0.0,913.0
+Brachionichthys hirsutus,412623,XM_068760869,"PREDICTED: Brachionichthys hirsutus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1733,0.0,912.0
+Solea senegalensis,28829,XM_044025429,"PREDICTED: Solea senegalensis prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1788,0.0,907.0
+Haplochromis burtoni,8153,XM_005928827,"PREDICTED: Haplochromis burtoni prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1743,0.0,894.0
+Pelmatolapia mariae,158779,XM_063489406,"PREDICTED: Pelmatolapia mariae prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1743,0.0,891.0
+Oreochromis niloticus,8128,XM_003454164,"PREDICTED: Oreochromis niloticus prostaglandin G/H synthase 1 (LOC100699955), mRNA",1,1,1744,0.0,889.0
+Maylandia zebra,106582,XM_004566751,"PREDICTED: Maylandia zebra prostaglandin G/H synthase 1 (LOC101475411), mRNA",1,1,1743,0.0,885.0
+Astatotilapia calliptera,8154,XM_026187347,"PREDICTED: Astatotilapia calliptera prostaglandin G/H synthase 1-like (LOC113033501), mRNA",1,1,1743,0.0,885.0
+Pundamilia nyererei,303518,XM_005743108,"PREDICTED: Pundamilia nyererei prostaglandin G/H synthase 1-like (LOC102194354), mRNA",1,1,1743,0.0,885.0
+Oreochromis aureus,47969,XM_031747303,"PREDICTED: Oreochromis aureus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1743,0.0,882.0
+Simochromis diagramma,43689,XM_040050990,"PREDICTED: Simochromis diagramma prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1743,0.0,882.0
+Neolamprologus brichardi,32507,XM_006803828,"PREDICTED: Neolamprologus brichardi prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1743,0.0,867.0
+Cololabis saira,129043,XM_061730131,"PREDICTED: Cololabis saira prostaglandin G/H synthase 1-like (LOC133451168), mRNA",1,1,1712,0.0,866.0
+Melanotaenia boesemani,1250792,XM_042000682,"PREDICTED: Melanotaenia boesemani prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1.0,1786,0.0,859.0
+Parambassis ranga,210632,XM_028414870,"PREDICTED: Parambassis ranga prostaglandin G/H synthase 1-like (LOC114441787), transcript variant X1, mRNA",1,1,1698,0.0,834.0
+Mugil cephalus,48193,XM_047590884,"PREDICTED: Mugil cephalus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1.0,1788,0.0,831.0
+Betta splendens,158456,XM_029163670,"PREDICTED: Betta splendens prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1701,0.0,831.0
+Austrofundulus limnaeus,52670,XM_014024209,"PREDICTED: Austrofundulus limnaeus prostaglandin G/H synthase 1-like (LOC106528924), mRNA",1,1,1708,0.0,811.0
+Nothobranchius furzeri,105023,XM_054731046,"PREDICTED: Nothobranchius furzeri prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1746,0.0,780.0
+Sphaeramia orbicularis,375764,XM_030144536,"PREDICTED: Sphaeramia orbicularis prostaglandin G/H synthase 1-like (LOC115426414), transcript variant X2, mRNA",1,1,1761,0.0,780.0
+Kryptolebias marmoratus,37003,XM_017412275,"PREDICTED: Kryptolebias marmoratus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1,1703,0.0,776.0
+Gouania willdenowi,441366,XM_028457140,"PREDICTED: Gouania willdenowi prostaglandin G/H synthase 1-like (LOC114469548), transcript variant X1, mRNA",1,1,1682,0.0,773.0
+Girardinichthys multiradiatus,208333,XM_047381824,"PREDICTED: Girardinichthys multiradiatus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1.0,1786,0.0,770.0
+Nematolebias whitei,451745,XM_037680887,"PREDICTED: Nematolebias whitei prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1689,0.0,762.0
+Fundulus heteroclitus,8078,XM_012878435,"PREDICTED: Fundulus heteroclitus prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1,1755,0.0,742.0
+Salarias fasciatus,181472,XM_030104657,"PREDICTED: Salarias fasciatus prostaglandin G/H synthase 1-like (LOC115398037), mRNA",1,1,1688,0.0,725.0
+Poecilia latipinna,48699,XM_015043689,"PREDICTED: Poecilia latipinna prostaglandin G/H synthase 1-like (LOC106954300), transcript variant X1, mRNA",1,1,1746,0.0,714.0
+Poecilia formosa,48698,XM_007557813,"PREDICTED: Poecilia formosa prostaglandin G/H synthase 1-like (LOC103141975), transcript variant X2, mRNA",1,1,1746,0.0,714.0
+Poecilia mexicana,48701,XM_014996967,"PREDICTED: Poecilia mexicana prostaglandin G/H synthase 1-like (LOC106923731), transcript variant X2, mRNA",1,1,1746,0.0,708.0
+Oryzias melastigma,30732,XM_024276021,"PREDICTED: Oryzias melastigma prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1,1666,0.0,706.0
+Xiphophorus hellerii,8084,XM_032579803,"PREDICTED: Xiphophorus hellerii prostaglandin G/H synthase 1-like (LOC116730499), mRNA",1,1,1746,0.0,700.0
+Takifugu rubripes,31033,XM_011615980,"PREDICTED: Takifugu rubripes prostaglandin G/H synthase 1-like (LOC101070781), mRNA",1,1,1723,0.0,664.0
+Notothenia coriiceps,8208,XM_010778639,"PREDICTED: Notothenia coriiceps prostaglandin G/H synthase 1-like (LOC104951902), mRNA",1,1,999,0.0,654.0
+Takifugu flavidus,433684,XM_057033633,"PREDICTED: Takifugu flavidus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1723,0.0,649.0
+Myripristis murdjan,586833,XM_030059698,"PREDICTED: Myripristis murdjan prostaglandin G/H synthase 1-like (LOC115364988), mRNA",1,1,1745,0.0,618.0
+Periophthalmus magnuspinnatus,409849,XM_033972632,"PREDICTED: Periophthalmus magnuspinnatus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1700,0.0,602.0
+Oncorhynchus nerka,8023,XM_029637471,"PREDICTED: Oncorhynchus nerka prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1705,0.0,529.0
+Salmo salar,8030,XM_014171594,"PREDICTED: Salmo salar prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1,1648,0.0,511.0
+Hippocampus comes,109280,XM_019885530,"PREDICTED: Hippocampus comes prostaglandin G/H synthase 1-like (LOC109525209), mRNA",1,1,1657,0.0,475.0
+Syngnathus scovelli,161590,XM_049763189,"PREDICTED: Syngnathus scovelli prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X1, mRNA",1,1,1673,0.0,473.0
+Hippocampus zosterae,109293,XM_052068859,"PREDICTED: Hippocampus zosterae prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1,1652,0.0,467.0
+Scleropages formosus,113540,XM_018755178,"PREDICTED: Scleropages formosus prostaglandin-endoperoxide synthase 1 (ptgs1), mRNA",1,1,1648,0.0,361.0
+Poeciliopsis prolifica,188132,XM_055052693,"PREDICTED: Poeciliopsis prolifica prostaglandin G/H synthase 1-like (LOC129374323), mRNA",1,1,1573,1.34753e-166,325.0
+Brienomyrus brachyistius,42636,XM_049001221,"PREDICTED: Brienomyrus brachyistius prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X2, mRNA",1,1,1629,4.84658e-166,324.0
+Paramormyrops kingsleyae,1676925,XM_023792281,"PREDICTED: Paramormyrops kingsleyae prostaglandin G/H synthase 1-like (LOC111833721), mRNA",1,1,1629,2.25489e-164,321.0
+Poecilia reticulata,8081,XM_008423706,"PREDICTED: Poecilia reticulata prostaglandin G/H synthase 1-like (LOC103473446), mRNA",1,1,1587,1.0491e-162,318.0
+Xiphophorus couchianus,32473,XM_028025149,"PREDICTED: Xiphophorus couchianus prostaglandin G/H synthase 1-like (LOC114149351), mRNA",1,1,1587,1.0491e-162,318.0
+Entelurus aequoreus,161455,XM_062031395,"PREDICTED: Entelurus aequoreus phosducin-like (pdcl), mRNA",1,1,1639,6.31396e-160,313.0
+Nerophis ophidion,159077,XM_061876659,"PREDICTED: Nerophis ophidion prostaglandin-endoperoxide synthase 1 (ptgs1), transcript variant X4, mRNA",1,1,1639,1.36673e-156,307.0
+Syngnathus acus,161584,XM_037265502,"PREDICTED: Syngnathus acus prostaglandin G/H synthase 1-like (LOC119131237), mRNA",1,1,1579,6.40393e-150,295.0
+Hemicordylus capensis,884348,XM_053281643,"PREDICTED: Hemicordylus capensis prostaglandin-endoperoxide synthase 1 (PTGS1), mRNA",1,1,1467,1.08687e-137,273.0
+Conger conger,82655,XM_061262022,"PREDICTED: Conger conger prostaglandin G/H synthase 1-like (LOC133141450), mRNA",1,1,1634,8.52178e-129,257.0
+Lacerta agilis,80427,XM_033137700,"PREDICTED: Lacerta agilis prostaglandin-endoperoxide synthase 1 (PTGS1), mRNA",1,1,1652,4.0786e-107,218.0
+Equus asinus,9793,XM_044778843,"PREDICTED: Equus asinus prostaglandin-endoperoxide synthase 1 (PTGS1), transcript variant X3, mRNA",1,1,1354,1.47734e-101,208.0
+Equus quagga,89248,XM_046642586,"PREDICTED: Equus quagga prostaglandin-endoperoxide synthase 1 (PTGS1), mRNA",1,1,1354,6.87339e-100,205.0
+Equus przewalskii,9798,XM_008526890,"PREDICTED: Equus przewalskii prostaglandin-endoperoxide synthase 1 (prostaglandin G/H synthase and cyclooxygenase) (PTGS1), transcript variant X3, mRNA",1,1,1160,8.89129e-99,203.0
+Equus caballus,9796,NM_001163976,"Equus caballus prostaglandin-endoperoxide synthase 1 (PTGS1), mRNA",1,1,1160,8.89129e-99,203.0
+Galeopterus variegatus,482537,XM_008572036,"PREDICTED: Galeopterus variegatus prostaglandin-endoperoxide synthase 1 (prostaglandin G/H synthase and cyclooxygenase) (PTGS1), mRNA",1,1,1381,1.49839e-91,190.0
+Elephantulus edwardii,28737,XM_006890675,"PREDICTED: Elephantulus edwardii prostaglandin-endoperoxide synthase 1 (prostaglandin G/H synthase and cyclooxygenase) (PTGS1), transcript variant X1, mRNA",1,1,859,1.49839e-91,190.0
+Mesocricetus auratus,10036,XM_013121983,"PREDICTED: Mesocricetus auratus prostaglandin-endoperoxide synthase 1 (Ptgs1), mRNA",1,1,1355,1.95205e-85,179.0
+Phodopus roborovskii,109678,XM_051185325,"PREDICTED: Phodopus roborovskii prostaglandin-endoperoxide synthase 1 (Ptgs1), mRNA",1,1,1355,1.97987e-75,161.0
+Alexandromys fortis,100897,XM_050126817,"PREDICTED: Alexandromys fortis prostaglandin-endoperoxide synthase 1 (Ptgs1), transcript variant X2, mRNA",1,1,887,4.31609e-67,146.0
+Zonotrichia albicollis,44394,XM_026793501,"PREDICTED: Zonotrichia albicollis prostaglandin-endoperoxide synthase 2 (PTGS2), transcript variant X2, mRNA",1,1,327,1.23448e-47,111.0
+Catharus ustulatus,91951,XM_033067810,"PREDICTED: Catharus ustulatus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,331,1.60823e-41,100.0
+Oryzias latipes,8090,NM_001172396,"Oryzias latipes prostaglandin-endoperoxide synthase 2b (ptgs2b), mRNA >gi|288561845|dbj|AB516993.1| Oryzias latipes ptgs2 mRNA for prostaglandin-endoperoxide synthase 2, complete cds",1,1,933,3.48122e-38,94.0
+Passer montanus,9160,XM_039726361,"PREDICTED: Passer montanus prostaglandin-endoperoxide synthase 2 (PTGS2), transcript variant X2, mRNA",1,1,206,2.09515e-35,89.0
+Taeniopygia guttata,59729,XM_030279481,"PREDICTED: Taeniopygia guttata prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.09515e-35,89.0
+Passer domesticus,48849,XM_064427762,"PREDICTED: Passer domesticus prostaglandin-endoperoxide synthase 2 (PTGS2), transcript variant X2, mRNA",1,1,206,2.09515e-35,89.0
+Serinus canaria,9135,XM_009088420,"PREDICTED: Serinus canaria prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,9.74779e-34,86.0
+Pygocentrus nattereri,42514,XM_017704117,"PREDICTED: Pygocentrus nattereri prostaglandin-endoperoxide synthase 2a (ptgs2a), mRNA",1,1,564,1.1695912361648939e-79,168.0
+Silurus meridionalis,175797,XM_046836685,"PREDICTED: Silurus meridionalis prostaglandin-endoperoxide synthase 2b (ptgs2b), mRNA",1,1,270,1.26096e-32,84.0
+Astyanax mexicanus,7994,XM_007245061,"PREDICTED: Astyanax mexicanus prostaglandin-endoperoxide synthase 2a (ptgs2a), mRNA",1,1,166,4.53521e-32,83.0
+Lonchura striata,40157,XM_021525158,"PREDICTED: Lonchura striata prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,4.53521e-32,83.0
+Cinclus cinclus,127875,XM_062497510,"PREDICTED: Cinclus cinclus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,295,1.63115e-31,82.0
+Corvus brachyrhynchos,85066,XM_017736490,"PREDICTED: Corvus brachyrhynchos prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.11003e-30,80.0
+Corvus moneduloides,1196302,XM_032118374,"PREDICTED: Corvus moneduloides prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.11003e-30,80.0
+Corvus cornix,932674,XM_039556443,"PREDICTED: Corvus cornix cornix prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.11003e-30,80.0
+Corvus hawaiiensis,134902,XM_048313441,"PREDICTED: Corvus hawaiiensis prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.11003e-30,80.0
+Corvus kubaryi,68294,XM_042033920,"PREDICTED: Corvus kubaryi prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.11003e-30,80.0
+Corapipo altera,415028,XM_027665332,"PREDICTED: Corapipo altera prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,313,7.58901e-30,79.0
+Cyanistes caeruleus,156563,XM_023931590,"PREDICTED: Cyanistes caeruleus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,9.817e-29,77.0
+Sturnus vulgaris,9172,XM_014884300,"PREDICTED: Sturnus vulgaris prostaglandin-endoperoxide synthase 2 (prostaglandin G/H synthase and cyclooxygenase) (PTGS2), transcript variant X1, mRNA",1,1,206,9.817e-29,77.0
+Parus major,9157,XM_015636330,"PREDICTED: Parus major prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,9.817e-29,77.0
+Myxocyprinus asiaticus,70543,XM_051700899,"PREDICTED: Myxocyprinus asiaticus prostaglandin G/H synthase 2-like (LOC127442703), mRNA",1,1,287,9.817e-29,77.0
+Neopelma chrysocephalum,114329,XM_027704520,"PREDICTED: Neopelma chrysocephalum prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,313,3.53082e-28,76.0
+Colossoma macropomum,42526,XM_036581284,"PREDICTED: Colossoma macropomum prostaglandin-endoperoxide synthase 2b (ptgs2b), mRNA",1,1,156,1.26991e-27,75.0
+Hoplias malabaricus,27720,XM_066677716,"PREDICTED: Hoplias malabaricus prostaglandin-endoperoxide synthase 2a (ptgs2a), mRNA",1,1,103,1.64273e-26,73.0
+Megalops cyprinoides,118141,XM_036553785,"PREDICTED: Megalops cyprinoides prostaglandin-endoperoxide synthase 2a (ptgs2a), mRNA",1,1,240,5.90831e-26,72.0
+Lepidothrix coronata,321398,XM_017834935,"PREDICTED: Lepidothrix coronata prostaglandin-endoperoxide synthase 2 (PTGS2), transcript variant X1, mRNA",1,1,272,2.12501e-25,71.0
+Pseudopodoces humilis,181119,XM_005531316,"PREDICTED: Pseudopodoces humilis prostaglandin-endoperoxide synthase 2 (prostaglandin G/H synthase and cyclooxygenase) (PTGS2), mRNA",1,1,206,2.12501e-25,71.0
+Micropogonias undulatus,29154,AB292357,"Micropogonias undulatus COX-2 gene for cyclooxygenase-2, complete cds",1,1,284,2.12501e-25,71.0
+Manacus vitellinus,328815,XM_008930938,"PREDICTED: Manacus vitellinus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,272,2.12501e-25,71.0
+Pseudopipra pipra,415032,XM_064664036,"PREDICTED: Pseudopipra pipra prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,272,2.12501e-25,71.0
+Pipra filicauda,649802,XM_027749415,"PREDICTED: Pipra filicauda prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,272,2.12501e-25,71.0
+Chiroxiphia lanceolata,296741,XM_032697067,"PREDICTED: Chiroxiphia lanceolata prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,308,2.12501e-25,71.0
+Poecile atricapillus,48891,XM_058843298,"PREDICTED: Poecile atricapillus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,206,2.12501e-25,71.0
+Gavia stellata,37040,XM_009822287,"PREDICTED: Gavia stellata prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,101,9.8867e-24,68.0
+Nothoprocta perdicaria,30464,XM_026043739,"PREDICTED: Nothoprocta perdicaria prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,92,4.59983e-22,65.0
+Tauraco erythrolophus,121530,XM_009988111,"PREDICTED: Tauraco erythrolophus prostaglandin-endoperoxide synthase 2 (prostaglandin G/H synthase and cyclooxygenase) (PTGS2), transcript variant X2, mRNA",1,1,101,2.14009e-20,62.0
+Struthio camelus,8801,XM_068952377,"PREDICTED: Struthio camelus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,268,7.69715e-20,61.0
+Rhea pennata,8795,XM_062580971,"PREDICTED: Rhea pennata prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,268,3.58113e-18,58.0
+Lathamus discolor,678569,XM_065673851,"PREDICTED: Lathamus discolor prostaglandin-endoperoxide synthase 2 (PTGS2), transcript variant X1, mRNA",1,1,268,3.58113e-18,58.0
+Pezoporus flaviventris,889875,XM_061451753,"PREDICTED: Pezoporus flaviventris prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,179,4.63249e-17,56.0
+Pezoporus wallicus,35540,XM_057402437,"PREDICTED: Pezoporus wallicus prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,179,4.63249e-17,56.0
+Buceros rhinoceros,175836,XM_010132721,"PREDICTED: Buceros rhinoceros silvestris prostaglandin-endoperoxide synthase 2 (prostaglandin G/H synthase and cyclooxygenase) (PTGS2), mRNA",1,1,98,4.63249e-17,56.0
+Podarcis muralis,64176,XM_028732513,"PREDICTED: Podarcis muralis prostaglandin G/H synthase 2 (LOC114598628), mRNA",1,1,201,5.9925e-16,54.0
+Pezoporus occidentalis,407982,XM_062606273,"PREDICTED: Pezoporus occidentalis prostaglandin-endoperoxide synthase 2 (PTGS2), mRNA",1,1,179,2.15529e-15,53.0
+Zootoca vivipara,8524,XM_035123561,"PREDICTED: Zootoca vivipara prostaglandin G/H synthase 2-like (LOC118089145), mRNA",1,1,105,2.78804e-14,51.0
+Oncorhynchus tshawytscha,74940,XM_024422345,"PREDICTED: Oncorhynchus tshawytscha prostaglandin-endoperoxide synthase 2b (ptgs2b), mRNA",1,1,221,1.00276e-13,50.0
+Podarcis raffonei,65483,XM_053391431,"PREDICTED: Podarcis raffonei prostaglandin G/H synthase 2-like (LOC128415343), mRNA",1,1,201,6.03505e-11,45.0
+Petromyzon marinus,7757,XM_032980577,"PREDICTED: Petromyzon marinus uncharacterized LOC116958091 (LOC116958091), mRNA",1.04,1,28,0.170188,28.0

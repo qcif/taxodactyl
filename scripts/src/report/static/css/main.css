@@ -1,0 +1,278 @@
+:root {
+  --bs-hover-bg: aliceblue;
+}
+section {
+  padding: 2rem 0 5rem 0;
+  border-bottom: 1px solid gray;
+  margin-bottom: 5rem;
+}
+h3, h4, h5 {
+  color: var(--bs-gray)
+}
+code {
+  color: gray;
+}
+.heading {
+  border-bottom: 1px solid gray;
+}
+.font-small {
+  font-size: 0.8rem;
+}
+.font-normal {
+  font-size: 1rem;
+}
+.font-large {
+  font-size: 1.25rem;
+}
+.font-xl {
+  font-size: 1.5rem;
+}
+.font-xxl {
+  font-size: 2rem;
+}
+.strikethrough {
+  color: var(--bs-danger);
+  text-decoration: line-through;
+}
+.modal-xxl {
+  max-width: 1400px;
+}
+table.tight th, table.tight td {
+  padding: 0 1rem 0 .5rem;
+}
+table.lined tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+table.freeze-header {
+  text-align: left;
+  position: relative;
+}
+table.freeze-header th {
+  background: #eee;
+  position: sticky;
+  top: 0;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+table.sortable th {
+  cursor: pointer;
+  position: relative;
+  padding-left: 1.5rem;
+  vertical-align: middle;
+}
+table.sortable th::before {
+  content: "⇅";
+  opacity: 0;
+  position: absolute;
+  left: 0.5em;
+  bottom: calc(50% - 0.6rem);
+  padding-right: 1rem;
+  pointer-events: none;
+}
+table.sortable th:hover {
+  background-color: #ddd;
+}
+table.sortable th:hover::before {
+  opacity: 0.6;
+}
+table.sortable th[aria-sort="ascending"]::before {
+  opacity: 0.6;
+  content: "⇑";
+}
+table.sortable th[aria-sort="descending"]::before {
+  opacity: 0.6;
+  content: "⇓";
+}
+.info-badge {
+  font-size: 80%;
+  margin: 0 .5em;
+  cursor: default;
+}
+.source {
+  background: #f9f9f9;
+  border-radius: .5rem;
+  padding: .5rem;
+  margin: 1rem 0;
+}
+.nav .btn {
+  margin: 1px;
+}
+.nav .btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+.nav .btn.active {
+  border: 2px solid gray;
+  border-right: none;
+  box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+.nav .btn:not(.active) {
+  opacity: .5;
+}
+.big-number,
+.small-number {
+ padding: 1rem;
+ border-radius: .25rem;
+ font-size: large;
+}
+.big-number {
+  text-align: center;
+}
+.small-number {
+  font-size: medium;
+  padding: .5rem;
+  margin: 0 .5rem;
+}
+.alert-secondary {
+  background-color: #f5f5f5;
+}
+[class^="box-"] {
+  margin: -1rem -1rem 0 -1rem;
+}
+.box-success {
+  background-color: #73dc62;
+}
+.box-warning {
+  background-color: #ffc107;
+}
+.box-danger {
+  background-color: #e3734b;
+}
+.box-secondary {
+  background-color: #eee;
+}
+thead.no-wrap th {
+  white-space: nowrap;
+}
+.error-badge {
+  position: relative;
+  cursor: pointer;
+}
+
+/* BLAST hits */
+#selectedHitAlignment {
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: x-small;
+  padding: .5rem;
+}
+tr.interactive {
+  cursor: pointer;
+}
+tr.interactive:hover {
+  background-color: var(--bs-hover-bg);
+}
+tr.interactive.active {
+  background: rgb(166, 213, 255);
+}
+
+/* Source diversity */
+.hide {
+  display: none;
+}
+
+/* Database coverage */
+.occurrence-map {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+.occurrence-map img {
+  max-width: 100%;
+  height: auto;
+}
+.occurrence-map p {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  text-align: center;
+  margin: .5rem 1rem;
+}
+.occurrence-map .hide-small {
+  display: none;
+}
+.occurrence-map.expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75vw;
+  z-index: 10;
+}
+.occurrence-map.expanded::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200vw;
+  height: 200vh;
+  background: rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+.occurrence-map.expanded .hide-small {
+  display: inline;
+}
+
+/* Figures */
+.verticalScrollChart {
+  max-height: 350px;
+  overflow-y: auto;
+}
+#phylotree {
+  height: 500px;
+  background: #f5f6f7;
+  border-radius: .5rem;
+}
+#minimizeTreeBtn {
+  display: none;
+}
+.phylotree.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background: white;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.phylotree.fullscreen #phylotree {
+  height: 100vh;
+}
+.phylotree.fullscreen .controls {
+  top: 2rem;
+  left: 2rem;
+}
+.phylotree {
+  position: relative;
+}
+.phylotree .controls {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+  padding: .5rem;
+  background: rgba(220,220,220,0.8);
+  border-radius: .5rem;
+  opacity: 0;
+  transition-duration: .25s;
+}
+.phylotree:hover .controls {
+  opacity: 1;
+}
+.btn-icon {
+  padding: 0;
+  color: gray;
+  opacity: .75;
+  transition-duration: .25s;
+  line-height: 0;
+}
+.btn-icon:hover {
+  opacity: 1;
+}
