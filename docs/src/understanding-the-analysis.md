@@ -1,8 +1,8 @@
 While the workflow report aims to be self-documenting, there are many analytical details which the user may wish to understand in further detail. The purpose of this document is to provide this enhanced understanding of what exactly happens during the analysis, and how outcomes are derived from the resulting data.
 
 - To set up and run the workflow, visit the Nextflow workflow repository: [qcif/taxodactyl](https://github.com/qcif/taxodactyl).
-- For analysis code (used in the above workflow), see the Python modules repository: [qcif/daff-biosecurity-wf2](https://github.com/qcif/daff-biosecurity-wf2)
-- For reference, an example workflow report is available [here](https://qcif.github.io/daff-biosecurity-wf2/example_report.html)
+- For analysis code (used in the above workflow), see the Python modules repository: [qcif/daff-biosecurity-wf2](https://github.com/qcif/taxodactyl/tree/main/scripts)
+- For reference, an example workflow report is available [here](https://qcif.github.io/taxodactyl/example_report.html)
 
 ## Table of contents
 
@@ -375,7 +375,7 @@ For each target, three analyses may be performed:
 
 To obtain "species in genus" in analyses `5.2` and `5.3`, we use the GBIF API:
 
-1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/daff-biosecurity-wf2/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
+1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
 1. The genus key from the target record is then used to fetch all matching records at rank "species" from the [/species/match](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API endpoint.
 1. Returned speces records are filtered to exclude extinct species, and include only those where status is one of `{{ config.GBIF_ACCEPTED_STATUS }}`.
 
