@@ -97,7 +97,7 @@ it was more painful to get going.
 # Building a Docker image
 
 > [!NOTE]
-> The GitHub repo [qcif/taxodactly](https://github.com/qcif/taxodactly) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactly/releases) is made. This is the preferred method of generating images as it removes human error.
+> The GitHub repo [qcif/taxodactyl](https://github.com/qcif/taxodactyl) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactyl/releases) is made. This is the preferred method of generating images as it removes human error.
 
 > [!NOTE]
 > Make sure you update the VERSION file before publishing a new version!
@@ -194,7 +194,7 @@ have erroneous content, this will raise an exception with an error message that
 should be sufficient for the user to understand what's wrong with their input
 data.
 
-See [config.INPUTS](https://github.com/qcif/taxodactly/blob/main/scripts/src/utils/config.py#L113)
+See [config.INPUTS](https://github.com/qcif/taxodactyl/blob/main/scripts/src/utils/config.py#L113)
 for some parameters which are used for validation, such as permitted FASTA
 sequence lengths and required metadata.csv fields.
 
@@ -400,14 +400,14 @@ reasonable time. The [Throttle](#throttling-api-requests)
 is critical here to avoid exceeding API rate limits, since the analysis involves
 sending LOTS of API requests (sometimes many hundreds per-sample). The entrypoint
 for the `coverage` module is
-[assess.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/coverage/assess.py).
+[assess.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/coverage/assess.py).
 
-1. **Setup** (see [targets.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/coverage/targets.py))
+1. **Setup** (see [targets.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/coverage/targets.py))
     1. A list of target taxa is generated from candidate species, PMIs and TOIs
     1. TaxIDs are extracted for each target taxon
     1. GBIF records are extracted for each target taxon (see
-      [relatives.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/relatives.py))
-1. **Occurrence maps** are drawn (see [maps.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/maps.py))
+      [relatives.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/relatives.py))
+1. **Occurrence maps** are drawn (see [maps.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/maps.py))
 1. **Generate tasks**: a list of analysis tasks (targets x 3 analyses) is generated for threading
 1. **Thread tasks** - for each target taxon:
     1. **5.1** - DB coverage of target taxon. How many records are in the
@@ -460,7 +460,7 @@ options:
 
 The entrypoint for the
 report module is
-[report.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/report/report.py)
+[report.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/report/report.py)
 which includes compilation of report context from analysis output files, followed
 by rendering the report. Given that we are rendering a standalone HTML file that
 needs to be fully portable and robust, this process involves some tactics that
@@ -475,7 +475,7 @@ are not typical of web development:
 - A "Save report" feature is included that allows the analyst to save any typed
   content and lock the document as read-only. This is a hack that involves a good
   dose of JavaScript (see
-  [save-report.js](https://github.com/qcif/taxodactly/blob/main/scripts/src/report/static/js/save-report.js))
+  [save-report.js](https://github.com/qcif/taxodactyl/blob/main/scripts/src/report/static/js/save-report.js))
 
 
 # Building the docs
@@ -538,7 +538,7 @@ config.configure(args.output_dir, query_dir=args.query_dir)
 
 There are numerous locations in the workflow where non-fatal errors can occur.
 At minimum, a log statement is written to record these, but typically the
-[errors.py](https://github.com/qcif/taxodactly/blob/main/scripts/src/utils/errors.py)
+[errors.py](https://github.com/qcif/taxodactyl/blob/main/scripts/src/utils/errors.py)
 module is used to track these errors and render them at the appropriate place in
 the HTML report:
 

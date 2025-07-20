@@ -15,7 +15,7 @@ config = Config()
 ROOT_DIR = Path(__file__).resolve().parents[2]
 DOCS_SRC_DIR = ROOT_DIR / 'docs/src'
 DOCS_DEST_DIR = ROOT_DIR / 'docs'
-ALLOWED_LOCI_PATH = ROOT_DIR / 'config/loci.json'
+ALLOWED_LOCI_PATH = ROOT_DIR / 'scripts/config/loci.json'
 ALLOWED_LOCI_TEMPLATE = 'allowed-loci.html'
 
 

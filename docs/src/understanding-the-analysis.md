@@ -375,7 +375,7 @@ For each target, three analyses may be performed:
 
 To obtain "species in genus" in analyses `5.2` and `5.3`, we use the GBIF API:
 
-1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
+1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
 1. The genus key from the target record is then used to fetch all matching records at rank "species" from the [/species/match](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API endpoint.
 1. Returned speces records are filtered to exclude extinct species, and include only those where status is one of `{{ config.GBIF_ACCEPTED_STATUS }}`.
 

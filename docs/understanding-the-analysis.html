@@ -6,7 +6,7 @@
     <title>Documentation - DAFF Biosecurity workflows</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="https://github.com/qcif/taxodactly/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true">
+    <link rel="icon" href="https://github.com/qcif/taxodactyl/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- For rendering LaTex-style math equations: -->
@@ -66,7 +66,7 @@
           </h1>
         </div>
         <div class="col-auto px-3">
-          <img src="https://github.com/qcif/taxodactly/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true" alt="DAFF Logo" width="300" style="margin-top: -1rem;">
+          <img src="https://github.com/qcif/taxodactyl/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true" alt="DAFF Logo" width="300" style="margin-top: -1rem;">
         </div>
       </div>
 
@@ -541,7 +541,7 @@ For each target, three analyses may be performed:</p>
 <p>To obtain "species in genus" in analyses <code>5.2</code> and <code>5.3</code>, we use the GBIF API:</p>
 
 <ol>
-<li>A GBIF record is retrieved from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names">/species/suggest</a> API using the target taxon as the search query. If the target matches our <a href="https://github.com/qcif/taxodactly/blob/main/scripts/src/gbif/relatives.py#L16">list of canonical taxa</a>, the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).</li>
+<li>A GBIF record is retrieved from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names">/species/suggest</a> API using the target taxon as the search query. If the target matches our <a href="https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/relatives.py#L16">list of canonical taxa</a>, the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).</li>
 <li>The genus key from the target record is then used to fetch all matching records at rank "species" from the <a href="https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names">/species/match</a> API endpoint.</li>
 <li>Returned speces records are filtered to exclude extinct species, and include only those where status is one of <code>['ACCEPTED', 'DOUBTFUL']</code>.</li>
 </ol>
