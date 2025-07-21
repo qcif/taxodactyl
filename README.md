@@ -10,7 +10,7 @@
   </tr>
 </table>
 
-<p style="text-align: center; max-width: 400px; margin: auto;">
+<p align="center" style="max-width: 400px; margin: auto;">
     <img src="docs/images/taxodactyl_diagram.png" alt="taxodactyl_diagram" width="350"/>
 </p>
 
