@@ -1,0 +1,190 @@
+{% from "macros/info-badge.html" import info_badge %}
+
+<div class="modal fade" id="blastHitsModal" tabindex="-1">
+  <div class="modal-dialog modal-xxl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">BLAST search results</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          This table shows all results that were returned by the BLAST search.
+            Each row represents a reference sequence that matched the query
+            sequence.
+          Use <code>CTRL+F</code> to search the table, and click table headers
+            to sort by column. Click on a row to show the corresponding BLAST
+            alignment and taxonomy information in the bottom panes.
+        </p>
+        <div class="mb-3" style="max-height: 35vh; overflow-y: auto;">
+          <table class="table tight font-small freeze-header sortable">
+            <thead class="no-wrap">
+              <th class="text-center" data-sort-method="number">
+                Rank
+                {{ info_badge("The hit rank determined in the BLAST program output.") }}
+              </th>
+              <th>
+                Accession
+                {{ info_badge("The NCBI accession number for the reference sequence record. Click to view on NCBI.") }}
+              </th>
+              <th>
+                Hit subject
+                {{ info_badge("A description of the NCBI sequence record (information provided by the sequence submitter).") }}
+              </th>
+              <th class="text-center" data-sort-method="number">
+                Align length
+                {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
+              </th>
+              <th class="text-center" data-sort-method="number">
+                Query coverage
+                {{ info_badge("The proportion of the sample DNA sequence that must be matched by the hit sequence.") }}
+              </th>
+              <th class="text-center" data-sort-method="number">
+                Bitscore
+                {{ info_badge("A match score calculated by the BLAST algorithm based on the number of matches,mismatches and gaps in the sequence alignment.") }}
+              </th>
+              <th class="text-center" data-sort-method="number" style="white-space: nowrap;">
+                E-value
+                {{ info_badge("A measure of likelihood that the match is due to random chance. A value of zero is an excellent match.") }}
+              </th>
+              <th class="text-center" data-sort-method="number">
+                Identity
+                {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
+              </th>
+            </thead>
+            {% for hit in hits %}
+            <tr class="interactive" onclick="showBlastHit({{ loop.index0 }});">
+              <td class="text-center">{{ loop.index }}</td>
+              <td>
+                <a
+                  href="https://ncbi.nlm.nih.gov/nuccore/{{ hit.accession }}"
+                  target="_blank"
+                  title="View sequence record on NCBI"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                >
+                  {{ hit.accession }}
+                </a>
+              </td>
+              <td>{{ hit.hit_subject }}</td>
+              <td class="text-center" data-sort="{{ hit.alignment_length }}">{{ hit.alignment_length }}</td>
+              <td class="text-center" data-sort="{{ hit.query_coverage }}">{{ (hit.query_coverage * 100) | round(1) }}%</td>
+              <td class="text-center" data-sort="{{ hit.bitscore }}">{{ hit.bitscore }}</td>
+              <td class="text-center" data-sort="{{ hit.e_value }}">{{ "% .2e" | format(hit.e_value) }}</td>
+              <td class="text-center" data-sort="{{ hit.identity }}">{{ (hit.identity * 100) | round(1) }}%</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-around">
+          <div style="flex: 1.5; margin-right: 2rem;">
+            <p class="lead">
+              Selected alignment
+              {{ info_badge("This pane shows the BLAST alignment between query and reference sequences, allowing any mismatched residues and gaps in the alignment to be manually inspected.") }}
+            </p>
+            <pre id="selectedHitAlignment"></pre>
+          </div>
+          <div style="flex: 1;">
+            <p class="lead">
+              Selected taxonomy
+              {{ info_badge("Taxonomic records provided by the NCBI Taxonomy registry.") }}
+            </p>
+            <table id="selectedHitTaxonomy" class="table tight font-small">
+              <tr>
+                <th>Domain</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Kingdom</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Phylum</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Class</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Order</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Family</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Genus</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Species</th>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const HITS = {{ hits | tojson }};
+    const TAXONOMY = {{ hits_taxonomy | tojson }};
+    const TAXONOMY_ORDER = [
+      'kingdom',
+      'phylum',
+      'class',
+      'order',
+      'family',
+      'genus',
+      'species',
+    ];
+
+    function showBlastHit(index) {
+      const hit = HITS[index];
+      showBlastAlignment(hit);
+      $('#selectedHitTaxonomy td').each((i, el) => {
+        const value = TAXONOMY[hit.accession][TAXONOMY_ORDER[i]] || 'No data';
+        $(el).text(value);
+      });
+      $('tr.interactive').removeClass('active');
+      $('tr.interactive')[index].classList.add('active');
+    }
+
+    function showBlastAlignment(hit) {
+      let ix = 1;
+      alignments = hit.hsps.reduce((acc, hsp) => {
+        title = `HSP ${ix}/${hit.hsps.length}`;
+        length = `Alignment length: ${hsp.alignment_length}`;
+        identity = `Identity: ${100 * hsp.identity}%`;
+        evalue = `E-value: ${hsp.e_value}`;
+        bitscore = `Bitscore: ${hsp.bitscore}`;
+        alignment = [title, length, identity, evalue, bitscore].join('  ') + '\n';
+        alignment += hsp.alignment + '\n\n';
+        ix ++;
+        return acc + alignment;
+      }, '');
+      $('#selectedHitAlignment').text(alignment);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showBlastHit(0);
+    });
+  </script>
+</div>
