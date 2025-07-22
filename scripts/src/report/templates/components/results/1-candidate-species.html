@@ -1,0 +1,251 @@
+{% from "macros/subjective.html" import render_subjective_input %}
+{% from "macros/alert-level-icon.html" import render_level_icon %}
+{% from "macros/db-coverage-target-modal.html" import render_target_modal %}
+{% from "macros/flag-badge.html" import render_flag %}
+{% from "macros/info-badge.html" import info_badge %}
+
+<h2>Identification of candidate species</h2>
+
+<div class="my-3 alert alert-{{ conclusions.flags['1'].bs_class }}">
+  {{ render_flag(conclusions.flags['1']) }}
+</div>
+
+<div class="row my-5">
+  {% if not bold %}
+  <div class="col">
+    <p class="lead" style="margin-bottom: 2rem;">
+      {{ info_badge("A BLAST hit is a match between the sample DNA sequence and a sequence record in the reference database. There are often hundreds of hits per query sequence, of varying similarity.") }}
+      BLAST hits must meet <strong>ONE</strong> of these criteria to be considered for candidate screening:
+    </p>
+
+    <table class="table">
+      <tr>
+        <td>
+          <strong>
+            Minimum alignment length
+            {{ info_badge("The length of matching sequence between the sample DNA sequence and the matching hit sequence.") }}
+          </strong>
+        </td>
+        <td>
+          <code>{{ config.CRITERIA.ALIGNMENT_MIN_NT }}bp</code>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>
+            Minimum query coverage
+            {{ info_badge("The proportion of the sample DNA sequence that must be matched by the hit sequence.") }}
+          </strong>
+        </td>
+        <td>
+          <code>{{ config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE * 100 }}%</code>
+        </td>
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+
+  <div class="col">
+    <p class="lead">
+      {{ info_badge("Candidate species will be taken from the highest-ranking group only. If no hits meet the criteria for STRONG MATCH or MODERATE MATCH, no candidate species will be identified and the result will be inconclusive.") }}
+      {% if bold %}BOLD{% else %}BLAST{% endif %}
+      hits have been classified as follows:
+    </p>
+    <table class="table tight font-small">
+      <thead>
+        <th>Classification</th>
+        <th>
+          Alignment identity
+          {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
+        </th>
+        <th>
+          Number of hits
+          {{ info_badge("The number of reference sequences that meet this threshold. There can be many reference sequences for one species.") }}
+        </th>
+        <th>
+          Number of species
+          {{ info_badge("The number of species that are represented in the matching reference sequences at this threshold. These are considered 'Candidate Species' for the purpose of the analysis.") }}
+        </th>
+      </thead>
+      <tr class="alert-success">
+        <td>
+          <strong style="white-space: nowrap;">STRONG MATCH</strong>
+        </td>
+        <td>
+          &ge; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT * 100 }}%
+        </td>
+        <td>{{candidates.hit_counts.strong.hits }}</td>
+        <td>{{ candidates.hit_counts.strong.species }}</td>
+      </tr>
+      <tr class="alert-warning">
+        <td>
+          <strong style="white-space: nowrap;">MODERATE MATCH</strong>
+        </td>
+        <td>
+          &ge; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY * 100 }}%
+        </td>
+        <td>{{candidates.hit_counts.moderate.hits }}</td>
+        <td>{{ candidates.hit_counts.moderate.species }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong style="white-space: nowrap;">NO MATCH</strong>
+        </td>
+        <td>
+          &lt; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY * 100 }}%
+        </td>
+        <td>{{candidates.hit_counts.filtered.hits }}</td>
+        <td>{{ candidates.hit_counts.filtered.species }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="my-5">
+  <h3>Candidate species</h3>
+
+  <div class="mb-3" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-striped freeze-header sortable">
+
+      {% set flags = conclusions.flags %}
+
+      <thead>
+        <th>Species</th>
+        <th class="text-center">
+          No. hits
+          {{ info_badge("The number of hits with a reference sequence annotated as this species.") }}
+        </th>
+        <th class="text-center" data-sort-method="number">
+          Top identity
+          {{ info_badge("The proportion of nucleotides that match between the query and best-matching reference sequence for this species.") }}
+        </th>
+        <th class="text-center" data-sort-method="number">
+          Median identity
+          {{ info_badge("The median of all hit identities for this species. A median that is significantly lower than the top identity indicates high genetic diversity across reference sequences, reducing our confidence in their taxonomic annotation.") }}
+        </th>
+        {% if bold %}
+          <th class="text-center">
+            BOLD Record
+            {{ info_badge("The highest-matching BOLD sequence record for this species.") }}
+          </th>
+        {% else %}
+          <th class="text-center">
+            Top E-value
+            {{ info_badge("A measure of likelihood that the best match for this species is due to random chance. A value of zero is an excellent match.") }}
+          </th>
+        {% endif %}
+        <th class="text-center">
+          Database coverage
+          {{ info_badge("An analysis of species coverage in the reference database.") }}
+        </th>
+      </thead>
+      {% for candidate in candidates.species %}
+      {% set taxon = candidate.species %}
+      <tr>
+        <td><em>{{ taxon }}</em></td>
+        <td class="text-center">{{ candidate.hit_count }}</td>
+        <td class="text-center" data-sort="{{ candidate.identity }}">
+          {{ (candidate.identity * 100) | round(2)}}%
+        </td>
+        <td class="text-center" data-sort="{{ candidate.median_identity }}">
+          <span class="badge alert-{{ candidate.median_bs_class }} font-normal">
+            {{ (candidate.median_identity * 100) | round(2)}}%
+          </span>
+        </td>
+        {% if bold %}
+        <td class="text-center">
+          <a href="{{ candidate.url }}" target="_blank">{{ candidate.hit_id }}</a>
+        </td>
+        {% else %}
+        <td class="text-center">{{ candidate.e_value }}</td>
+        {% endif %}
+        <td class="text-center">
+          {% if candidates.species | length > config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS %}
+          <span
+            class="badge bg-secondary px-2"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Too many candidates to perform database coverage analysis"
+          >
+            NA
+          </span>
+          {% else %}
+
+          {% set target_id = 'candidate-' + taxon | css_hash %}
+          {% set flag = flags['5']['candidate'].get(taxon, flags['5']['candidate'].null) %}
+
+          <button
+            class="btn btn-{{ flag.bs_class }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{{ flag.outcome }}"
+            onclick="new bootstrap.Modal(document.getElementById('{{ target_id }}Modal')).show();"
+            type="button"
+            style="min-width: 3rem;"
+          >
+            {{ render_level_icon(flag.level) }}
+          </button>
+
+          {% set modal_context = {
+            'data': db_coverage['candidate'][taxon],
+            'target_id': target_id,
+            'target_taxon': taxon,
+            'target_type': 'candidate',
+            'target_type_text': "Candidate",
+            'flags': flags,
+            'metadata': metadata,
+            'error_log': error_log,
+            'error_locations': error_locations,
+            'config': config,
+            'tois_detected': {},
+            'locus_provided': locus_provided,
+          } %}
+          {{ render_target_modal(modal_context) }}
+
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+
+      {% if candidates.species | length == 0 %}
+      <tr>
+        <td colspan="5" class="text-danger text-center">
+          <em>No candidate species identified</em>
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+
+  {% if hits | length %}
+    <p class="text-center">
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="{{ '#boldHitsModal' if bold else '#blastHitsModal' }}"
+      >
+        {{ 'View all BOLD hits' if bold else 'View all BLAST hits' }}
+      </button>
+    </p>
+    {% if bold %}
+      {% include "components/results/1b-bold-hits-modal.html" %}
+    {% else %}
+      {% include "components/results/1a-blast-hits-modal.html" %}
+    {% endif %}
+  {% else %}
+    <p class="alert alert-info">
+      <em>No BLAST hits were returned for the given query DNA sequence.</em>
+    </p>
+  {% endif %}
+</div>
+
+{% if candidates_boxplot_src %}
+<div class="my-5">
+  <img class="img-fluid my-3" src="{{ candidates_boxplot_src }}" alt="Boxplot of BLAST hit identity percent grouped by genus">
+  <p>
+    The boxplot above shows the distribution of BLAST hits identity within each genus. Each data point shows the alignment identity between the query sequence and reference sequence. The analyst may wish to refer to this figure when making a subjective genus-level identification for the sample.
+  </p>
+</div>
+{% endif %}
+
+{{ render_subjective_input(2) }}
