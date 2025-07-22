@@ -1,0 +1,83 @@
+{% from "macros/alert-level-icon.html" import render_level_icon %}
+{% from "macros/db-coverage-target-modal.html" import render_target_modal %}
+{% from "macros/flag-badge.html" import render_flag %}
+
+{% set flags = conclusions.flags %}
+
+<h2>Taxa of interest (TOI) analysis</h2>
+
+<div class="my-3 alert alert-{{ flags['2'].bs_class }}">
+  {{ render_flag(flags['2']) }}
+</div>
+
+<p>
+  This sections shows the taxa of interest (TOI) specified by the sample submitter. Each of these taxa has been cross-referenced against the candidate species to determine if they might match the taxonomic identity of the sample. A blank row indicates a TOI that did not match any candidate species, meaning that it is unlikely that the sample matches that TOI.
+</p>
+
+{% if tois_detected %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      {% for colname in toi_rows[0] %}
+      <th>{{ colname }}</th>
+      {% endfor %}
+      <th class="text-center">Database coverage</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in toi_rows %}
+    {% set taxon = row['Taxon of interest'] %}
+    <tr>
+    {% if row["Match rank"] %}
+      {% for value in row.values() %}
+      <td class="text-success">{{ value or '-' }}</td>
+      {% endfor %}
+    {% else %}
+      <td class="text-danger">{{ taxon }}</td>
+      <td colspan="5" class="text-danger text-center" style="padding-right: 15%;">
+        Did not match any candidate
+      </td>
+    {% endif %}
+    <td class="text-center">
+      {% set target_id = 'toi-' + taxon | css_hash %}
+      {% set flag = flags['5']['toi'].get(taxon, flags['5']['toi'].null) %}
+
+      <button
+        class="btn btn-{{ flag.bs_class }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="{{ flag.outcome }}"
+        onclick="new bootstrap.Modal(document.getElementById('{{ target_id }}Modal')).show();"
+        type="button"
+        style="min-width: 3rem;"
+      >
+        {{ render_level_icon(flag.level) }}
+      </button>
+
+      {% set modal_context = {
+        'data': db_coverage['toi'][taxon],
+        'target_id': target_id,
+        'target_taxon': taxon,
+        'target_type': 'toi',
+        'target_type_text': "Taxon of Interest",
+        'flags': flags,
+        'metadata': metadata,
+        'error_log': error_log,
+        'error_locations': error_locations,
+        'config': config,
+        'tois_detected': tois_detected,
+        'locus_provided': locus_provided,
+      } %}
+      {{ render_target_modal(modal_context) }}
+
+    </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<div class="alert alert-info">
+  No Taxa of Interest to assess.
+</div>
+{% endif %}

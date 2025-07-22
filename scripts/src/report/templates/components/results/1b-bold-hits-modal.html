@@ -1,0 +1,110 @@
+<div class="modal fade" id="boldHitsModal" tabindex="-1">
+  <div class="modal-dialog modal-xxl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">BOLD search results</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          This table shows all results that were returned by the BOLD search.
+          Use <code>CTRL+F</code> to search the table, and click table headers
+          to sort by column.
+        </p>
+        <div class="mb-5" style="max-height: 35vh; overflow-y: auto;">
+          <table class="table tight font-small freeze-header sortable">
+            <thead>
+              <th class="text-center">Rank</th>
+              <th>Hit ID</th>
+              <th>Accession</th>
+              <th>Taxonomic Identification</th>
+              <th class="text-center" data-sort-method="number">Similarity</th>
+              <th>URL</th>
+            </thead>
+            {% for hit in hits %}
+            <tr class="interactive" onclick="showBoldHit({{ loop.index0 }});">
+              <td class="text-center">{{ "%03d" % loop.index }}</td>
+              <td>{{ hit.hit_id }}</td>
+              <td>{{ hit.accession }}</td>
+              <td>{{ hit.taxonomic_identification }}</td>
+              <td class="text-center" data-sort="{{ hit.similarity }}">{{ (hit.similarity * 100) | round(1) }}%</td>
+              <td><a href="{{ hit.url }}" target="_blank">View Record</a></td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-around">
+          <div style="flex: 1.5; margin-right: 2rem;">
+            <p class="lead">Selected taxonomy</p>
+            <table id="selectedHitTaxonomy" class="table tight font-small">
+              <tr>
+                <th>Phylum</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Class</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Order</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Family</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Genus</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Species</th>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BOLD_HITS = {{ hits | tojson }};
+    const TAXONOMY_ORDER = [
+      'phylum',
+      'class',
+      'order',
+      'family',
+      'genus',
+      'species',
+    ];
+
+    function showBoldHit(index) {
+      const hit = BOLD_HITS[index];
+      $('#selectedHitTaxonomy td').each((i, el) => {
+        const value = hit.taxonomy[TAXONOMY_ORDER[i]] || 'No data';
+        $(el).text(value);
+      });
+      $('tr.interactive').removeClass('active');
+      $('tr.interactive')[index].classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showBoldHit(0);
+    });
+  </script>
+</div>

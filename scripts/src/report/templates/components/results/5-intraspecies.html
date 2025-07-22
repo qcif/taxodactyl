@@ -1,0 +1,11 @@
+{% from "macros/subjective.html" import render_subjective_input %}
+
+<h2>Intraspecies diversity</h2>
+
+<p>
+  This section provides a phylogeny of the candidate reference sequences. The analyst can use this to make a subjective observation on how well the reference sequences are able to distinguish between species. If the phylogeny shows distinct clades for each species, we can be confident that the molecular data are capable of distinguishing between those species. However, if the phylogeny shows overlap between species, this reduces the capacity of the molecular data to confidently distinguish between those species. In some cases, we may see the query sequence falling outside of the adjacent species" clades, which indicates that our query species is not represented in the reference database, which could indicate a rare or novel species.
+</p>
+
+{{ render_subjective_input(5) }}
+
+{% include "components/results/5a-phylogenetic-tree.html" %}
