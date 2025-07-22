@@ -1,0 +1,239 @@
+{% from "macros/alert-level-icon.html" import render_level_icon %}
+{% from "macros/subjective.html" import render_subjective_input %}
+{% from "macros/flag-badge.html" import render_flag %}
+{% from "macros/info-badge.html" import info_badge %}
+{% from "macros/error-message.html" import render_error_badge, render_error_message %}
+
+<h2>Publications supporting taxonomic association</h2>
+
+<p>
+  This analysis evaluates how many independent publication events have contributed matching sequences for each candidate species. This provides a measure of confidence in the taxonomic annotation of references sequences. A sequence that has been annotated by multiple independent sources is more likely to have a correct taxonomic annotation.
+</p>
+
+{{ render_subjective_input(3) }}
+
+{% if aggregated_sources %}
+<div class="d-flex align-items-start my-5">
+  <div
+    class="nav flex-column nav-pills"
+    id="sources-tabs-buttons"
+    role="tablist"
+    aria-orientation="vertical"
+    style="margin-right: -2px; position: relative; z-index: 2;"
+  >
+    <p class="mb-3 text-center">
+      <strong>Candidates</strong>
+    </p>
+    {% for species in aggregated_sources %}
+    {% set species_id = 'p4-' + species | css_hash %}
+    {% set flag = conclusions.flags['4'][species] %}
+    <button
+      class="btn btn-{{ flag.bs_class }} {% if not loop.index0 %}active{% endif %}"
+      id="{{ species_id }}-tab"
+      data-bs-toggle="pill"
+      data-bs-target="#{{ species_id }}"
+      type="button"
+      role="tab"
+      aria-controls="{{ species_id }}"
+      aria-selected="true"
+    >
+      {{ render_level_icon(flag.level) }}
+      {{ species }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="tab-content" id="sources-tabs-content">
+    {% for species, src_groups in aggregated_sources.items() %}
+    {% set species_id = 'p4-' + species | css_hash %}
+    <div
+      class="tab-pane fade{% if not loop.index0 %} show active{% endif %}"
+      id="{{ species_id }}"
+      role="tabpanel"
+      aria-labelledby="{{ species_id }}-tab"
+    >
+
+      {% set errors = error_log.filter(
+          location=error_locations.SOURCE_DIVERSITY_ACCESSION_ERROR,
+          context={'species': species},
+        )
+      %}
+
+      <p class="mb-3 text-center">
+        <strong>Independent publication sources</strong>
+      </p>
+
+      <div class="border p-5" style="max-height: 800px; overflow-y: auto;">
+        <div class="row">
+          <div class="col">
+            {% set flag = conclusions.flags['4'][species] %}
+            <div class="alert alert-{{ flag.bs_class }} p-3">
+              {{ render_flag(flag) }}
+              <p class="text-center mb-0">
+                (Found {{ src_groups|length }} sources)
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <p class="lead px-3 fw-bold">
+              {{ src_groups|length }} Independent Source{% if src_groups|length > 1 %}s{% endif %}
+            </p>
+            <p class="px-3">
+              The matching reference sequences for this species have been annotated by {{ src_groups|length }} independent source(s). A source is considered independent if the author list or publication title is distinct.
+              {% if bold %}
+              For BOLD records without a GenBank IDs, the BOLD Collector is used as the source.
+              {% endif %}
+            </p>
+
+
+          </div>
+        </div>
+
+        {% set blank_accession_errors = errors.filter(
+            context={'accession': ''},
+          )
+        %}
+        {% set null_accession_errors = errors.filter(
+            context={'accession': none},
+          )
+        %}
+        {% set misc_errors = blank_accession_errors + null_accession_errors %}
+        {% if misc_errors %}'
+        {{ render_error_message(misc_errors) }}
+        {% endif %}
+
+
+        {% for src_group in src_groups %}
+        <div class="source">
+          <p class="lead">
+            Source {{ loop.index }}
+          </p>
+          <table class="table table-striped mb-5">
+            <thead>
+              <tr>
+                <th style="white-space: nowrap;">Hit accession</th>
+                <th>
+                  Automated
+                  {{ info_badge("If true, this record was the result of a computer-guided annotation that has likely not been confirmed by a human.") }}
+                </th>
+                <th>Authors</th>
+                <th>Title</th>
+                <th>Journal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set ns = namespace(counter=0) %}
+              {% for src in src_group %}
+              {% for publication in src.publications %}
+              {% set ns.counter = ns.counter + 1 %}
+              <tr{% if ns.counter > 2 %} class="hide"{% endif %}>
+                <td>
+                  {% set accession_errors = errors.filter(
+                      context={'accession': src['accession']},
+                    )
+                  %}
+                  {% if src.accession and accession_errors %}
+                  {{ render_error_badge(accession_errors) }}
+                  {% endif %}
+                  <a href="{{ url_from_accession(src['accession']) }}" target="_blank">
+                    {{ src.accession }}
+                  </a>
+                </td>
+                <td>{{ src.is_automated }}</td>
+                <td class="font-small">
+                  {% for author in publication.authors %}
+                  {{ author }}{% if not loop.last %}<br>{% endif %}
+                  {% endfor %}
+                </td>
+                <td class="font-small">{{ publication.title }}</td>
+                <td class="font-small">{{ publication.journal }}</td>
+              </tr>
+              {% endfor %}
+
+              {% if not src.publications %}
+                {% set ns.counter = ns.counter + 1 %}
+                <tr{% if ns.counter > 2 %} class="hide"{% endif %}>
+                {% if 'collectors' in src %}
+                  <td>
+                    <a href="{{ src.bold_url }}" target="_blank">
+                      {{ src.bold_id }}
+                    </a>
+                  </td>
+                  <td>False</td>
+                  <td>BOLD Collectors: {{ src.collectors }}</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                {% else %}
+                  <td>
+                    {% set accession_errors = errors.filter(
+                        context={'accession': src['accession']},
+                      )
+                    %}
+                    {% if src.accession and accession_errors %}
+                    {{ render_error_badge(accession_errors) }}
+                    {% endif %}
+                    <a href="{{ url_from_accession(src['accession']) }}" target="_blank">
+                      {{ src.accession }}
+                    </a>
+                  </td>
+                  <td>{{ src.is_automated }}</td>
+                  <td colspan="3">No publications for this record</td>
+                  {% endif %}
+                </tr>
+              {% endif %}
+
+              {% endfor %}
+
+              {% set remaining_publications = ns.counter - 2 %}
+              {% if remaining_publications > 0 %}
+              <tr>
+                <td colspan="5">
+                  <a href="javascript:void(0);" onclick="togglePublicationsCollapse(this);">
+                    <span class="toggle-collapse">Show</span>
+                    <span class="toggle-collapse hide">Hide</span>
+                    {{ remaining_publications }}
+                    <span class="toggle-collapse">more</span>
+                    publication{% if remaining_publications > 1 %}s{% endif %}...
+                  </a>
+                </td>
+              </tr>
+              {% endif %}
+
+            </tbody>
+          </table>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function togglePublicationsCollapse(link) {
+    const tableRow = link.closest('tr');
+    tableRow.querySelectorAll('.toggle-collapse').forEach((el) => {
+      el.classList.toggle('hide');
+    });
+
+    // Toggle the visibility of the surplus rows
+    const tableBody = tableRow.parentElement;
+    const rows = tableBody.querySelectorAll('tr.hide,tr.show');
+    rows.forEach((row) => {
+      row.classList.toggle('hide');
+      row.classList.toggle('show');
+    });
+  }
+</script>
+
+{% else %}
+  {% if candidates.species | length %}
+  <p class="alert alert-secondary">
+    Too many candidate species to report on
+    (found {{ candidates.species | length }} candidate species; maximum for this analysis is
+    {{ config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS }}).
+  </p>
+  {% else %}
+  <p class="alert alert-secondary">No candidate species to report on.</p>
+  {% endif %}
+{% endif %}
