@@ -19,7 +19,7 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
-PROJECT_ROOT = Path(__file__).parents[2]
+PROJECT_ROOT = Path(__file__).parents[3]
 TEST_DATA_DIR = PROJECT_ROOT / "scripts/tests/test-data"
 COMPLETED_TESTS_FILE = "completed_tests.json"
 TEMPDIR_PREFIX = "integration_test_"
