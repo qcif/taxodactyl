@@ -5,10 +5,9 @@ API Docs: https://v4.boldsystems.org/index.php/resources/api
 
 import csv
 import logging
-import os
+import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from xml.etree import ElementTree
 
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -17,12 +16,12 @@ import requests
 
 from src.gbif.taxonomy import fetch_kingdom
 from src.utils import errors
-from src.utils.orient import orientate
+# from src.utils.orient import orientate
 from src.utils.throttle import ENDPOINTS, Throttle
 
 logger = logging.getLogger(__name__)
 BOLD_DATABASE = "COX1_SPECIES_PUBLIC"
-ID_ENGINE_URL = "http://v4.boldsystems.org/index.php/Ids_xml"
+# ID_ENGINE_URL = "http://v4.boldsystems.org/index.php/Ids_xml"
 FULL_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/combined"
 SEQUENCE_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/sequence"
 METADATA_REQUEST_BATCH_SIZE = 50
@@ -31,13 +30,21 @@ MIN_HTTP_CODE_ERROR = 400
 
 class BoldSearch:
     """Fetch metadata for given taxa from the BOLD API."""
-    def __init__(self, fasta_file: Path, db: str = BOLD_DATABASE):
-        self.fasta_file = fasta_file
-        raw_hits = self._bold_sequence_search(fasta_file, db)
-        if not any(raw_hits.values()):
-            logger.info("No hits from BOLD ID Engine for FASTA query.")
-        self.hits = self._fetch_hit_metadata(raw_hits)
+    def __init__(
+        self,
+        fasta_file: Path,
+        database: int,
+        mode: int,
+        thresholds=None,
+    ):
+        self.fasta_file = fasta_file  # TODO: orientate
+        self.database = database
+        self.mode = mode
+        self.thresholds = thresholds
+        self.hits = self._bold_sequence_search()
+        logger.debug(f"hits: {self.hits}")
         self.hit_sequences = self._parse_sequences(self.hits)
+        # logger.debug(f"hits sequence: {self.hit_sequences}")
         self.taxa = self._extract_taxa(self.hits)
         # self.records = self._fetch_records(self.taxa)  # Not used
 
@@ -94,132 +101,84 @@ class BoldSearch:
             sequences.append(record)
         return sequences
 
-    def _parse_bold_xml(self, xml_string):
-        root = ElementTree.fromstring(xml_string.text)
-        hits = []
-        for match in root.findall("match"):
-            similarity_str = match.find("similarity").text
-            latitude_str = match.find(
-                "specimen/collectionlocation/coord/lat").text
-            longitude_str = match.find(
-                "specimen/collectionlocation/coord/lon").text
-            result = {
-                "hit_id": match.find("ID").text,
-                "sequence_description": (
-                    match.find("sequencedescription").text
-                ),
-                "database": match.find("database").text,
-                "citation": match.find("citation").text,
-                "taxonomic_identification": (
-                    match.find("taxonomicidentification").text
-                ),
-                "similarity": (
-                    float(similarity_str) if similarity_str else None),
-                "specimen": match.find("specimen").text,
-                "url": match.find("specimen/url").text,
-                "country": (
-                    match.find("specimen/collectionlocation/country").text
-                ),
-                "latitude": float(latitude_str) if latitude_str else None,
-                "longitude": (
-                    float(longitude_str) if longitude_str else None),
+    def _parse_bold_tsv(self, output: str) -> dict[str, list]:
+        """Parse the results from BOLDigger3 CLI."""
+        hits = {}
+        lines = output.split("\n")
+        for line in lines[1:]:
+            if not line.strip():
+                continue
+            fields = line.split("\t")
+            hit = {
+                "hit_id": fields[0],
+                "taxonomic_identification": fields[1],
+                "similarity": float(fields[2]),
+                "database": fields[3],
+                "url": fields[4],
+                "country": fields[5],
+                "latitude": float(fields[6]) if fields[6] else None,
+                "longitude": float(fields[7]) if fields[7] else None,
             }
-            hits.append(result)
+            query_id = fields[8]
+            if query_id not in hits:
+                hits[query_id] = []
+            hits[query_id].append(hit)
         return hits
 
-    def _bold_sequence_search(
-        self,
-        fasta_file: Path,
-        db: str = BOLD_DATABASE,
-    ) -> dict[str, list[dict[str, any]]]:
-        """Submit a sequence search request to BOLD API.
-        Attempt to orientate sequences before submission. For sequences which
-        cannot be oriented, both forward and reverse sequences are submitted
-        and the sequence which returns BOLD hits is used.
-        """
-        def submit_sequence(sequence, i, n_sequences: int):
-            throttle = Throttle(ENDPOINTS.BOLD)
+    def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
+        """Submit a sequence search request using BOLDigger3."""
+        command = [
+            "boldigger3", "identify", str(self.fasta_file),
+            "--db", str(self.database),
+            "--mode", str(self.mode)
+        ]
+
+        if self.thresholds:
+            command += ["--thresholds"] + [str(t) for t in self.thresholds]
+
+        try:
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                encoding="utf-8")
+            logger.debug(f"BOLDigger3 raw output:\n{result.stdout}")
             logger.debug(
-                f"Submitting sequence {i + 1}/{n_sequences}"
-                f": {sequence.id}"
-            )
-            params = {
-                "sequence": str(sequence.seq),
-                "db": db
-            }
-            response = throttle.with_retry(
-                requests.get,
-                args=[ID_ENGINE_URL],
-                kwargs={"params": params})
-            response.raise_for_status()
+                "Parsed BOLDigger3 results:"
+                f" {self._parse_bold_tsv(result.stdout)}")
 
-            sequence_hits = self._parse_bold_xml(response)
-            return sequence.id, sequence_hits
+            # TODO:
+            # hits[sequence_id] = {
+            #     'query_index': seqids.index(sequence_id),
+            #     'query_id': sequence_id,
+            #     'query_title': sequence.description,
+            #     'query_length': len(sequence.seq),
+            #     'query_frame': sequence.annotations.get(
+            #         "frame"
+            #     ),
+            #     'query_strand': (
+            #         '+'
+            #         if sequence.annotations.get(
+            #             "forward", True
+            #         )
+            #         else '-'
+            #     ),
+            #     'query_sequence': str(sequence.seq),
+            #     'query_orientation': (
+            #         'HMMSearch'
+            #         if sequence.annotations.get(
+            #             "oriented"
+            #         )
+            #         else 'BOLD ID Engine'
+            #     ),
+            #     'hits': sequence_hits,
+            # }
 
-        hits = {}
-        sequences = self._read_sequence_from_fasta(fasta_file)
-        seqids = [seq.id for seq in sequences]
-        n_sequences = len(sequences)
-        if not os.getenv('SKIP_ORIENTATION'):
-            sequences = orientate(sequences)
-        logger.debug(
-            f"Submitting {n_sequences} sequences to BOLD ID Engine..."
-        )
+            return self._parse_bold_tsv(result.stdout)
 
-        # If multiple seq IDs, only keep the one with hits
-        # (the correct orientation)
-        # Submit all sequences concurrently
-        with ThreadPoolExecutor(max_workers=15) as executor:
-            future_to_seq = {
-                executor.submit(
-                    submit_sequence,
-                    sequence,
-                    i,
-                    n_sequences
-                ): sequence
-                for i, sequence in enumerate(sequences)
-            }
-
-            # Collect results as they complete
-            for future in as_completed(future_to_seq):
-                sequence = future_to_seq[future]
-                sequence_id, sequence_hits = future.result()
-                if (
-                    sequence_id not in hits
-                    or sequence_hits
-                ):
-                    hits[sequence_id] = {
-                        'query_index': seqids.index(sequence_id),
-                        'query_id': sequence_id,
-                        'query_title': sequence.description,
-                        'query_length': len(sequence.seq),
-                        'query_frame': sequence.annotations.get(
-                            "frame"
-                        ),
-                        'query_strand': (
-                            '+'
-                            if sequence.annotations.get(
-                                "forward", True
-                            )
-                            else '-'
-                        ),
-                        'query_sequence': str(sequence.seq),
-                        'query_orientation': (
-                            'HMMSearch'
-                            if sequence.annotations.get(
-                                "oriented"
-                            )
-                            else 'BOLD ID Engine'
-                        ),
-                        'hits': sequence_hits,
-                    }
-
-            ordered_hits = {
-                seq.id: hits[seq.id]
-                for seq in sequences
-            }
-
-            return ordered_hits
+        except Exception as e:
+            logger.error(f"Error running BOLDigger3: {e}")
+            return {}
 
     def _fetch_hit_metadata(self, hits) -> dict[str, list]:
         """Fetch metadata by calling BOLD public API with accessions."""
@@ -338,6 +297,8 @@ class BoldSearch:
                     and taxonomic_identification not in taxa
                 ):
                     taxa.append(taxonomic_identification)
+        logger.debug(f"Extracted taxa: {taxa}")
+
         return taxa
 
     def _fetch_records(self, taxa: list[str]) -> list[dict]:

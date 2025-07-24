@@ -6,4 +6,5 @@ pycountry
 fsspec
 geopandas
 pyyaml
+boldigger3
 markdown2
