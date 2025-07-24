@@ -22,7 +22,7 @@ def main():
     result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)
     _write_hits_json(result)
     _write_hits_fasta(result)
-    _write_taxa_metadata(result)
+    # _write_taxa_metadata(result)  # Not actually used downstream
     logger.info("BOLD search completed.")
 
 
