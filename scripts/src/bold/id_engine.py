@@ -25,6 +25,7 @@ BOLD_DATABASE = "COX1_SPECIES_PUBLIC"
 ID_ENGINE_URL = "http://v4.boldsystems.org/index.php/Ids_xml"
 FULL_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/combined"
 SEQUENCE_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/sequence"
+METADATA_REQUEST_BATCH_SIZE = 50
 MIN_HTTP_CODE_ERROR = 400
 
 
@@ -38,7 +39,7 @@ class BoldSearch:
         self.hits = self._fetch_hit_metadata(raw_hits)
         self.hit_sequences = self._parse_sequences(self.hits)
         self.taxa = self._extract_taxa(self.hits)
-        self.records = self._fetch_records(self.taxa)
+        # self.records = self._fetch_records(self.taxa)  # Not used
 
     @property
     def taxon_count(self) -> dict[str, int]:
@@ -251,12 +252,15 @@ class BoldSearch:
             f"Fetching sequences for {len(hit_record_ids)} hit records..."
         )
         metadata = {}
-        batch_size = 25
 
         with ThreadPoolExecutor(max_workers=15) as executor:
             futures = []
-            for i in range(0, len(hit_record_ids), batch_size):
-                batch = hit_record_ids[i:i + batch_size]
+            for i in range(
+                0,
+                len(hit_record_ids),
+                METADATA_REQUEST_BATCH_SIZE,
+            ):
+                batch = hit_record_ids[i:i + METADATA_REQUEST_BATCH_SIZE]
                 futures.append(executor.submit(_fetch_batch, batch))
             for future in as_completed(futures):
                 metadata.update(future.result())
@@ -372,9 +376,15 @@ class BoldSearch:
                 f"Records fetched successfully: {len(records)} records."
             )
         else:
+            url = FULL_DATA_URL + "?" + "&".join(
+                key
+                if value is None
+                else f"{key}={value}"
+                for key, value in params.items()
+            )
             msg = (
-                f"Error HTTP {response.status_code} from the BOLD API when"
-                f" running ID Engine: {response.text}"
+                f"Error HTTP {response.status_code} from the BOLD API"
+                f" ({url}): {response.text}"
             )
             logger.error(msg)
             errors.write(
