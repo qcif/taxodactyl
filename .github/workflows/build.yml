@@ -20,12 +20,12 @@ jobs:
 
       - name: Check that VERSION file is up-to-date
         run: |
-          if [ ! -f VERSION ]; then
+          if [ ! -f scripts/VERSION ]; then
             echo "VERSION file not found in repository"
             exit 1
           fi
-          if [ "v$(cat VERSION)" != "${{ env.VERSION_TAG }}" ]; then
-            echo "VERSION file does not match the release tag. Release tag: ${{ env.VERSION_TAG }}, VERSION file: $(cat VERSION)"
+          if [ "v$(cat scripts/VERSION)" != "${{ env.VERSION_TAG }}" ]; then
+            echo "VERSION file does not match the release tag. Release tag: ${{ env.VERSION_TAG }}, VERSION file: $(cat scripts/VERSION)"
             exit 1
           fi
 
