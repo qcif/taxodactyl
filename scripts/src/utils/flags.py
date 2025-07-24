@@ -1,11 +1,11 @@
 """Describe how flags are used to record outcomes."""
 
+import json
 import logging
 from typing import Union
 
 from .config import Config
 
-PATH_SUB_STR = '(~)'
 FLAG_DETAILS_LOCUS_PHRASES = (
     " given locus for this",
     " at the given locus",
@@ -58,6 +58,7 @@ class Flag:
             "flag_id": self.flag_id,
             "value": self.value,
             "target": self.target,
+            "target_type": self.target_type,
             "level": self.level,
             "outcome": self.outcome,
             "explanation": self.explanation,
@@ -108,33 +109,71 @@ class Flag:
 
     @classmethod
     def read(cls, query, as_json=False):
-        """Read flags from *.flag files.
-        If a flag file doesn't exist for a given <flag_id, type, target>
-        combination, it will be created with a default value of 'NA'.
-
-        TODO: Honestly this is an abomination - should probably refactor this
-        to serialize each flag to a JSON file with a standard structure rather
-        than encoding metadata in the filename.
-        """
+        """Read flags from *.flag files containing JSON data."""
         def get_level(flag):
             """Get the warning level for the given flag."""
             if as_json:
                 return flag['level']
             return flag.level
 
-        pattern = (
-            config.get_query_dir(query)
-            / config.FLAG_FILE_TEMPLATE.format(identifier="*")
-        )
+        query_dir = config.get_query_dir(query)
 
         flags = {}
-        for path in pattern.parent.glob(pattern.name):
+        for path in query_dir.glob("*.flag"):
             if path.is_file():
-                flag_id, target, target_type = cls._parse_flag_filename(path)
-                value = path.read_text().strip()
-                flag = Flag(flag_id, value=value, target=target, query=query)
+                file_flags = cls._process_flag_file(path, query, as_json)
+                # Merge file_flags into flags
+                for flag_id, flag_data in file_flags.items():
+                    if flag_id in flags:
+                        is_dict_merge = (isinstance(flags[flag_id], dict) and
+                                         isinstance(flag_data, dict))
+                        if is_dict_merge:
+                            # Merge nested dictionaries for target-based flags
+                            for key, value in flag_data.items():
+                                if key in flags[flag_id]:
+                                    existing_key = flags[flag_id][key]
+                                    is_nested_dict = (
+                                        isinstance(existing_key, dict) and
+                                        isinstance(value, dict)
+                                    )
+                                    if is_nested_dict:
+                                        flags[flag_id][key].update(value)
+                                    else:
+                                        flags[flag_id][key] = value
+                                else:
+                                    flags[flag_id][key] = value
+                        else:
+                            flags[flag_id] = flag_data
+                    else:
+                        flags[flag_id] = flag_data
+
+        flags = cls._post_process_flags(flags, query, as_json,
+                                        get_level)
+        return flags
+
+    @classmethod
+    def _process_flag_file(cls, path, query, as_json):
+        """Process a single flag file and return flags dictionary."""
+        flags = {}
+        try:
+            with path.open('r') as f:
+                flag_data_list = json.load(f)
+
+            # Handle both single dict and list of dicts
+            if isinstance(flag_data_list, dict):
+                flag_data_list = [flag_data_list]
+
+            for flag_data in flag_data_list:
+                flag_id = flag_data['flag_id']
+                value = flag_data['value']
+                target = flag_data.get('target')
+                target_type = flag_data.get('target_type')
+
+                flag = Flag(flag_id, value=value, target=target,
+                            target_type=target_type, query=query)
                 if as_json:
                     flag = flag.to_json()
+
                 if target:
                     flags[flag_id] = flags.get(flag_id, {})
                     if target_type:
@@ -145,18 +184,33 @@ class Flag:
                         flags[flag_id][target] = flag
                 else:
                     flags[flag_id] = flag
-        for flag, data in flags.items():
+        except (json.JSONDecodeError, KeyError) as e:
+            logger.warning(f"Error reading flag file {path}: {e}")
+
+        return flags
+
+    @classmethod
+    def _post_process_flags(cls, flags, query, as_json, get_level):
+        """Post-process flags to handle missing data and create summary flags.
+        """
+        # Create a copy to avoid modifying the original
+        processed_flags = flags.copy()
+
+        # Ensure all DB coverage flags have all target types
+        for flag, data in processed_flags.items():
             if flag.startswith('5'):
-                for ttype in [TARGETS.CANDIDATE, TARGETS.PMI, TARGETS.TOI]:
+                target_types = [TARGETS.CANDIDATE, TARGETS.PMI, TARGETS.TOI]
+                for ttype in target_types:
                     if ttype not in data:
                         data[ttype] = {}
 
-        if FLAGS.SOURCES not in flags:
+        if FLAGS.SOURCES not in processed_flags:
             # Number of candidates did not meet requirements to run P4
-            flags[FLAGS.SOURCES] = None
+            processed_flags[FLAGS.SOURCES] = None
 
-        flags[FLAGS.DB_COVERAGE_ALL] = {}
-        for ttype in [TARGETS.CANDIDATE, TARGETS.PMI, TARGETS.TOI]:
+        processed_flags[FLAGS.DB_COVERAGE_ALL] = {}
+        target_types = [TARGETS.CANDIDATE, TARGETS.PMI, TARGETS.TOI]
+        for ttype in target_types:
             # Create a null flag for missing targets to fall back on
             null_flag = Flag(
                 FLAGS.DB_COVERAGE_ALL,
@@ -165,15 +219,22 @@ class Flag:
             )
             if as_json:
                 null_flag = null_flag.to_json()
-            flags[FLAGS.DB_COVERAGE_ALL][ttype] = {'null': null_flag}
-            if flags[FLAGS.DB_COVERAGE_TARGET][ttype]:
+            coverage_all = processed_flags[FLAGS.DB_COVERAGE_ALL]
+            coverage_all[ttype] = {'null': null_flag}
+            target_flag_key = FLAGS.DB_COVERAGE_TARGET
+            db_coverage_target = processed_flags.get(target_flag_key, {})
+            if db_coverage_target.get(ttype):
                 # For each target taxon, set flag 5 to represent all 5.* flags
                 # (NA or max warning level)
-                for target in flags[FLAGS.DB_COVERAGE_TARGET][ttype]:
-                    flag_5_1 = flags[FLAGS.DB_COVERAGE_TARGET][ttype][target]
-                    flag_5_2 = flags[FLAGS.DB_COVERAGE_RELATED][ttype][target]
-                    flag_5_3 = flags[FLAGS.DB_COVERAGE_RELATED_COUNTRY][ttype][
-                        target]
+                coverage_target = db_coverage_target[ttype]
+                for target in coverage_target:
+                    flag_5_1 = coverage_target[target]
+                    db_related_flags = FLAGS.DB_COVERAGE_RELATED
+                    coverage_related = processed_flags[db_related_flags]
+                    flag_5_2 = coverage_related[ttype][target]
+                    coverage_country = processed_flags[
+                        FLAGS.DB_COVERAGE_RELATED_COUNTRY]
+                    flag_5_3 = coverage_country[ttype][target]
                     repr_flag_func = max
                     if 0 in (
                         get_level(flag_5_1),
@@ -188,10 +249,11 @@ class Flag:
                         flag_5_2,
                         flag_5_3,
                     ], key=lambda x: get_level(x))
-                    if (
-                        get_level(repr_flag) < 2
-                        and not config.locus_was_provided_for(query)
-                    ):
+                    needs_special_flag = (
+                        get_level(repr_flag) < 2 and
+                        not config.locus_was_provided_for(query)
+                    )
+                    if needs_special_flag:
                         # If no locus provided, level should be 2
                         # (warning) or higher, so provide a special flag
                         repr_flag = Flag(
@@ -201,45 +263,11 @@ class Flag:
                             target_type=ttype,
                             query=query,
                         )
-                    flags[FLAGS.DB_COVERAGE_ALL][ttype][target] = repr_flag
+                    db_coverage_all = processed_flags[FLAGS.DB_COVERAGE_ALL]
+                    coverage_all_ttype = db_coverage_all[ttype]
+                    coverage_all_ttype[target] = repr_flag
 
-        return flags
-
-    @staticmethod
-    def _parse_flag_filename(path):
-        """Parse flag filename to extract flag_id, target, target_type."""
-        stem = path.stem
-        target_type = None
-        try:
-            if '-' in stem:
-                flag_id, target = stem.split("-", 1)
-                if '-' in target:
-                    target_type, target = target.split("-", 1)
-                # Reconstitute BOLD unclassified species chars:
-                target = target.replace("_", " ").replace(PATH_SUB_STR, '-')
-            else:
-                flag_id = stem
-                target = None
-            return flag_id, target, target_type
-        except Exception as exc:
-            raise ValueError(
-                f"Error parsing flag filename {path}"
-            ) from exc
-
-    @staticmethod
-    def _build_flag_identifier(flag_id, target, target_type):
-        """Build flag identifier from flag_id, target, target_type."""
-        identifier = flag_id
-        target_str = ''
-        if target:
-            if '-' in target:
-                # Preserve special chars (BOLD unclassified species ID):
-                target = target.replace('-', PATH_SUB_STR)
-            type_str = f"{target_type}-" if target_type else ''
-            target_str = f"-{type_str}{target}".replace(' ', '_')
-            identifier += target_str
-            target_str = ' ' + target_str.strip('-')
-        return identifier
+        return processed_flags
 
     @classmethod
     def write(
@@ -250,18 +278,56 @@ class Flag:
         target=None,
         target_type=None,
     ):
-        """Write flags value to JSON file.
+        """Write flag data to JSON file.
 
         target: the target taxon name
         target_type: one of TARGETS.[candidate, pmi, toi]
         """
-        identifier = cls._build_flag_identifier(
-            flag_id, target, target_type
-        )
-        path = query_dir / config.FLAG_FILE_TEMPLATE.format(
-            identifier=identifier)
+        path = query_dir / f"{flag_id}.flag"
+
+        # Create flag data dict
+        flag_data = {
+            'flag_id': flag_id,
+            'value': value,
+            'target': target,
+            'target_type': target_type
+        }
+
+        # Read existing flags from file if it exists
+        existing_flags = []
+        if path.exists():
+            try:
+                with path.open('r') as f:
+                    existing_data = json.load(f)
+                    # Handle both single dict and list of dicts
+                    if isinstance(existing_data, dict):
+                        existing_flags = [existing_data]
+                    else:
+                        existing_flags = existing_data
+            except (json.JSONDecodeError, IOError) as e:
+                msg = f"Error reading existing flag file {path}: {e}"
+                logger.warning(msg)
+                existing_flags = []
+
+        # Check if this exact flag already exists and if so update it
+        flag_updated = False
+        for i, existing_flag in enumerate(existing_flags):
+            if (
+                existing_flag.get('flag_id') == flag_id
+                and existing_flag.get('target') == target
+                and existing_flag.get('target_type') == target_type
+            ):
+                existing_flags[i] = flag_data
+                flag_updated = True
+                break
+
+        if not flag_updated:
+            existing_flags.append(flag_data)
+
+        # Write back to file
         with path.open('w') as f:
-            f.write(value)
+            json.dump(existing_flags, f, indent=2)
+
         logger.info(f"Flag {flag_id}{value} written to {path}")
 
 
