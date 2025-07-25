@@ -7,7 +7,7 @@ from pathlib import Path
 
 from Bio import SeqIO
 
-from src.bold.id_engine import BoldSearch
+from src.bold.id_engine import BOLD_MODES, BoldSearch
 from src.utils import existing_path
 from src.utils.config import Config
 
@@ -19,11 +19,13 @@ def main():
     args = _parse_args()
     config.configure(args.output_dir, bold=True)
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
-    # config.BOLD_DATABASE?
-    result = BoldSearch(args.fasta_file, database=2, mode=1)
+    result = BoldSearch(
+        args.fasta_file,
+        database=config.BOLD_DATABASE,
+        mode=BOLD_MODES.RAPID_SPECIES,
+    )
     _write_hits_json(result)
     _write_hits_fasta(result)
-    # _write_taxa_metadata(result)  # Not actually used downstream
     logger.info("BOLD search completed.")
 
 
@@ -64,24 +66,6 @@ def _write_hits_fasta(result: BoldSearch):
         with path.open("w") as f:
             SeqIO.write(result.hit_sequences[query_title], f, "fasta")
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
-
-
-def _write_taxa_metadata(result: BoldSearch):
-    """Write BOLD taxon record metadata to JSON files."""
-    path = config.output_dir / config.BOLD_TAXON_COUNT_JSON
-    with path.open("w") as f:
-        json.dump(result.taxon_count, f, indent=2)
-        logger.info(f"BOLD taxon count written to {path}")
-
-    path = config.output_dir / config.BOLD_TAXON_COLLECTORS_JSON
-    with path.open("w") as f:
-        json.dump(result.taxon_collectors, f, indent=2)
-        logger.info(f"BOLD taxon collectors written to {path}")
-
-    path = config.output_dir / config.BOLD_TAXONOMY_JSON
-    with path.open("w") as f:
-        json.dump(result.taxon_taxonomy, f, indent=2)
-        logger.info(f"BOLD taxonomies written to {path}")
 
 
 if __name__ == '__main__':

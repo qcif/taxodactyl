@@ -3,29 +3,32 @@
 API Docs: https://v4.boldsystems.org/index.php/resources/api
 """
 
-import csv
 import logging
 import subprocess
+import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from Bio import SeqIO
 from Bio.Seq import Seq
 
-import requests
+import pandas as pd
 
 from src.gbif.taxonomy import fetch_kingdom
-from src.utils import errors
-# from src.utils.orient import orientate
-from src.utils.throttle import ENDPOINTS, Throttle
+from src.utils.orient import orientate
 
 logger = logging.getLogger(__name__)
-BOLD_DATABASE = "COX1_SPECIES_PUBLIC"
-# ID_ENGINE_URL = "http://v4.boldsystems.org/index.php/Ids_xml"
-FULL_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/combined"
-SEQUENCE_DATA_URL = "http://v4.boldsystems.org/index.php/API_Public/sequence"
-METADATA_REQUEST_BATCH_SIZE = 50
-MIN_HTTP_CODE_ERROR = 400
+
+BOLD_RECORD_BASE_URL = "https://portal.boldsystems.org/record/"
+BOLDIGGER_OUTPUT_XLSX_PATTERN = (
+    'boldigger3_data/queries_bold_results_part_*.xlsx')
+BOLDIGGER_NO_MATCH_STR = 'no-match'
+
+
+class BOLD_MODES:
+    RAPID_SPECIES = 1
+    GENUS_AND_SPECIES = 2
+    EXHAUSTIVE = 3
 
 
 class BoldSearch:
@@ -37,61 +40,26 @@ class BoldSearch:
         mode: int,
         thresholds=None,
     ):
-        self.fasta_file = fasta_file  # TODO: orientate
+        self.fasta_file = self._orientate(fasta_file)
         self.database = database
         self.mode = mode
         self.thresholds = thresholds
         self.hits = self._bold_sequence_search()
-        logger.debug(f"hits: {self.hits}")
-        self.hit_sequences = self._parse_sequences(self.hits)
-        # logger.debug(f"hits sequence: {self.hit_sequences}")
-        self.taxa = self._extract_taxa(self.hits)
-        # self.records = self._fetch_records(self.taxa)  # Not used
+        self.hit_sequences = self._parse_sequences()
+        self._fetch_kingdoms()
 
-    @property
-    def taxon_count(self) -> dict[str, int]:
-        """Return a count of records for each taxon."""
-        taxa_counts = {}
-        for record in self.records:
-            taxon = record.get("species_name", "")
-            taxa_counts[taxon] = taxa_counts.get(taxon, 0) + 1
-        return taxa_counts
+    def _orientate(self, fasta_file: Path) -> Path:
+        """Orientate the sequences in the FASTA file."""
+        sequences = self._read_fasta(fasta_file)
+        # TODO: check whether annotations are encoded in file?
+        # Most likely won't be returned from BOLD API
+        # Will need to encode in the query ID instead...
+        oriented_sequences = orientate(sequences)
+        out_path = fasta_file.with_suffix(".oriented.fasta")
+        SeqIO.write(oriented_sequences, out_path, "fasta")
+        return out_path
 
-    @property
-    def taxon_collectors(self) -> dict[str, list[str]]:
-        """Return a dictionary of taxa and related collectors."""
-        taxa_collectors = {}
-        for record in self.records:
-            taxon = record.get("species_name", "")
-            collector = record.get("collectors", "")
-            if taxon:
-                if taxon not in taxa_collectors:
-                    taxa_collectors[taxon] = set()
-                if collector:
-                    taxa_collectors[taxon].update(collector.split(","))
-        return {
-            k: list(v)
-            for k, v in taxa_collectors.items()
-        }
-
-    @property
-    def taxon_taxonomy(self) -> dict[str, dict[str, str]]:
-        """Build a taxonomy dictionary."""
-        taxonomy_dict = {}
-        for record in self.records:
-            species_name = record.get("species_name", "")
-            if species_name:
-                taxonomy_dict[species_name] = {
-                    "phylum": record.get("phylum_name", ""),
-                    "class": record.get("class_name", ""),
-                    "order": record.get("order_name", ""),
-                    "family": record.get("family_name", ""),
-                    "genus": record.get("genus_name", ""),
-                    "species": species_name,
-                }
-        return self._fetch_kingdoms(taxonomy_dict)
-
-    def _read_sequence_from_fasta(
+    def _read_fasta(
         self,
         fasta_file: Path,
     ) -> list[SeqIO.SeqRecord]:
@@ -101,269 +69,110 @@ class BoldSearch:
             sequences.append(record)
         return sequences
 
-    def _parse_bold_tsv(self, output: str) -> dict[str, list]:
-        """Parse the results from BOLDigger3 CLI."""
+    def _parse_bold_xlsx(self, path: Path) -> dict[str, list]:
+        """Parse the results from BOLDigger3 XLSX output file."""
+        df = pd.read_excel(path)
         hits = {}
-        lines = output.split("\n")
-        for line in lines[1:]:
-            if not line.strip():
+
+        for _, row in df.iterrows():
+            query_id = row['id']
+            if row.get('phylum') == BOLDIGGER_NO_MATCH_STR:
+                hits[query_id] = []
                 continue
-            fields = line.split("\t")
+
+            genus = row.get('genus', '')
+            species = row.get('species', '')
+            taxonomic_identification = species if species else f"{genus} sp."
+            process_id = row.get('processid')
+
             hit = {
-                "hit_id": fields[0],
-                "taxonomic_identification": fields[1],
-                "similarity": float(fields[2]),
-                "database": fields[3],
-                "url": fields[4],
-                "country": fields[5],
-                "latitude": float(fields[6]) if fields[6] else None,
-                "longitude": float(fields[7]) if fields[7] else None,
+                "hit_id": process_id,
+                "bin_uri": row.get('bin_uri'),
+                "taxonomic_identification": taxonomic_identification,
+                "identity": row.get('pct_identity'),
+                "url": BOLD_RECORD_BASE_URL + process_id,
+                "country": row.get('country/ocean'),
+                "nucleotide": row.get('nuc').replace('-', ''),
+                "identified_by": row.get('identified_by'),
+                "phylum": row.get('phylum'),
+                "class": row.get('class'),
+                "order": row.get('order'),
+                "family": row.get('family'),
+                "genus": row.get('genus'),
+                "species": row.get('species'),
             }
-            query_id = fields[8]
+
             if query_id not in hits:
                 hits[query_id] = []
             hits[query_id].append(hit)
+
         return hits
 
     def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
         """Submit a sequence search request using BOLDigger3."""
+        wdir = tempfile.TemporaryDirectory()
         command = [
             "boldigger3", "identify", str(self.fasta_file),
             "--db", str(self.database),
             "--mode", str(self.mode)
         ]
-
         if self.thresholds:
             command += ["--thresholds"] + [str(t) for t in self.thresholds]
 
         try:
-            result = subprocess.run(
+            subprocess.run(
                 command,
+                cwd=wdir.name,
+                check=True,
                 capture_output=True,
                 text=True,
-                encoding="utf-8")
-            logger.debug(f"BOLDigger3 raw output:\n{result.stdout}")
-            logger.debug(
-                "Parsed BOLDigger3 results:"
-                f" {self._parse_bold_tsv(result.stdout)}")
-
-            # TODO:
-            # hits[sequence_id] = {
-            #     'query_index': seqids.index(sequence_id),
-            #     'query_id': sequence_id,
-            #     'query_title': sequence.description,
-            #     'query_length': len(sequence.seq),
-            #     'query_frame': sequence.annotations.get(
-            #         "frame"
-            #     ),
-            #     'query_strand': (
-            #         '+'
-            #         if sequence.annotations.get(
-            #             "forward", True
-            #         )
-            #         else '-'
-            #     ),
-            #     'query_sequence': str(sequence.seq),
-            #     'query_orientation': (
-            #         'HMMSearch'
-            #         if sequence.annotations.get(
-            #             "oriented"
-            #         )
-            #         else 'BOLD ID Engine'
-            #     ),
-            #     'hits': sequence_hits,
-            # }
-
-            return self._parse_bold_tsv(result.stdout)
-
-        except Exception as e:
-            logger.error(f"Error running BOLDigger3: {e}")
-            return {}
-
-    def _fetch_hit_metadata(self, hits) -> dict[str, list]:
-        """Fetch metadata by calling BOLD public API with accessions."""
-        def _fetch_batch(batch_ids):
-            params = {
-                "ids": "|".join(batch_ids),
-                "format": "tsv",
-            }
-            throttle = Throttle(ENDPOINTS.BOLD)
-            response = throttle.with_retry(
-                requests.get,
-                args=[FULL_DATA_URL],
-                kwargs={"params": params},
             )
-            if response.status_code >= MIN_HTTP_CODE_ERROR:
-                response.raise_for_status()
-            lines = response.text.splitlines()
-            reader = csv.DictReader(lines, delimiter="\t")
-            return {
-                row.pop("processid"): row
-                for row in reader
-            }
+        except Exception as exc:
+            raise RuntimeError("Error running BOLDigger3") from exc
 
-        hit_record_ids = [
-            hit["hit_id"]
-            for query_hits in hits.values()
-            for hit in query_hits['hits']
-        ]
-        logger.info(
-            f"Fetching sequences for {len(hit_record_ids)} hit records..."
-        )
-        metadata = {}
+        results = {}
+        for path in wdir.glob(BOLDIGGER_OUTPUT_XLSX_PATTERN):
+            if not path.is_file():
+                continue
+            logger.info(f"Parsing BOLDigger results from {path}...")
+            results = self._merge_results(
+                results,
+                self._parse_bold_xlsx(path),
+            )
+        wdir.cleanup()
 
-        with ThreadPoolExecutor(max_workers=15) as executor:
-            futures = []
-            for i in range(
-                0,
-                len(hit_record_ids),
-                METADATA_REQUEST_BATCH_SIZE,
-            ):
-                batch = hit_record_ids[i:i + METADATA_REQUEST_BATCH_SIZE]
-                futures.append(executor.submit(_fetch_batch, batch))
-            for future in as_completed(futures):
-                metadata.update(future.result())
+        return results
 
-        hits_with_metadata = {
-            query_title: {
-                **query_hits,
-                'hits': [
-                    {
-                        **hit,
-                        **metadata.get(hit["hit_id"], {}),
-                    }
-                    for hit in query_hits['hits']
-                ],
-            }
-            for query_title, query_hits in hits.items()
-        }
+    def _merge_results(self, results_a: dict, results_b: dict) -> dict:
+        """Merge two results dictionaries."""
+        for query_id, hits in results_b.items():
+            if query_id not in results_a:
+                results_a[query_id] = []
+            results_a[query_id].extend(hits)
+        return results_a
 
-        # Expand taxonomy fields
-        for query_title, query_hits in hits_with_metadata.items():
-            for i, hit in enumerate(query_hits['hits']):
-                hit['species'] = hit.get("species_name", "")
-                hit['taxonomy'] = {
-                    "phylum": hit.get("phylum_name", ""),
-                    "class": hit.get("class_name", ""),
-                    "order": hit.get("order_name", ""),
-                    "family": hit.get("family_name", ""),
-                    "genus": hit.get("genus_name", ""),
-                    "species": hit.get("species_name", ""),
-                }
-                hit['accession'] = hit.pop("genbank_accession", "")
-                hit['identity'] = hit['similarity']
-                # Remove redundant fields
-                hit.pop("phylum_name", None)
-                hit.pop("class_name", None)
-                hit.pop("order_name", None)
-                hit.pop("family_name", None)
-                hit.pop("genus_name", None)
-                hit.pop("species_name", None)
-
-                hits_with_metadata[query_title]['hits'][i] = hit
-
-        self.raw_hits = None
-
-        return hits_with_metadata
-
-    def _parse_sequences(
-        self,
-        hits: dict[str, list[dict]],
-    ) -> dict[str, list[SeqIO.SeqRecord]]:
+    def _parse_sequences(self) -> list[SeqIO.SeqRecord]:
         """Parse sequences from hits into SeqRecord objects."""
-        query_hits_sequences = {}
-        for query_title, query_hits in hits.items():
-            query_hits_sequences[query_title] = [
+        sequences = []
+        for hits in self.hits.values():
+            sequences += [
                 SeqIO.SeqRecord(
-                    Seq(hit.get("nucleotides", "").replace('-', '')),
+                    Seq(hit["nucleotides"]),
                     id=hit['hit_id'],
                     description=hit['taxonomic_identification'],
                 )
-                for hit in query_hits['hits']
+                for hit in hits
+                if hit.get("nucleotides")
             ]
-        return query_hits_sequences
 
-    def _extract_taxa(
-        self,
-        query_results: dict[str, dict[str, list[dict]]],
-    ) -> list[str]:
-        """Extract taxa (taxonomic_identification)."""
-        taxa = []
-        for result in query_results.values():
-            for hit in result['hits']:
-                taxonomic_identification = hit.get("taxonomic_identification")
-                if (
-                    taxonomic_identification
-                    and taxonomic_identification not in taxa
-                ):
-                    taxa.append(taxonomic_identification)
-        logger.debug(f"Extracted taxa: {taxa}")
+        return sequences
 
-        return taxa
-
-    def _fetch_records(self, taxa: list[str]) -> list[dict]:
-        """Fetch records for taxa list by calling BOLD API."""
-        records = []
-        if not taxa:
-            logger.info("No taxa to fetch BOLD metadata.")
-            return records
-        taxa_param = "|".join(taxa)
-        params = {
-            "taxon": taxa_param,
-            "format": "tsv"
-        }
-        throttle = Throttle(ENDPOINTS.BOLD)
-        response = throttle.with_retry(
-                requests.get,
-                args=[FULL_DATA_URL],
-                kwargs={"params": params})
-        if response.status_code <= MIN_HTTP_CODE_ERROR:
-            lines = response.text.splitlines()
-            if not lines:  # Check if 'lines' is empty
-                msg = "Empty response received from BOLD API"
-                logger.error(msg)
-                errors.write(
-                    errors.LOCATIONS.BOLD_TAXA,
-                    msg,
-                    context={"taxa": taxa},
-                )
-                return records
-
-            headers = lines[0].split("\t")
-            for line in lines[1:]:
-                row = dict(zip(headers, line.split("\t")))
-                records.append(row)
-            logger.info(
-                f"Records fetched successfully: {len(records)} records."
-            )
-        else:
-            url = FULL_DATA_URL + "?" + "&".join(
-                key
-                if value is None
-                else f"{key}={value}"
-                for key, value in params.items()
-            )
-            msg = (
-                f"Error HTTP {response.status_code} from the BOLD API"
-                f" ({url}): {response.text}"
-            )
-            logger.error(msg)
-            errors.write(
-                errors.LOCATIONS.BOLD_TAXA,
-                msg,
-                exc=response.text,
-                context={
-                    "taxa": taxa,
-                },
-            )
-
-        return records
-
-    def _fetch_kingdoms(self, taxonomies: dict) -> dict:
+    def _fetch_kingdoms(self) -> dict:
         """Fetch correct taxonomic kingdom for each taxonomy."""
         phyla = {
-            data['phylum']: None
-            for data in taxonomies.values()
+            hit['phylum']: None
+            for hits in self.hits.values()
+            for hit in hits
         }
 
         with ThreadPoolExecutor(max_workers=15) as executor:
@@ -382,14 +191,10 @@ class BoldSearch:
                             f"Kingdom not found for phylum: {phylum}"
                         )
                 except Exception as e:
-                    logger.error(
+                    logger.warning(
                         f"Error fetching kingdom for phylum {phylum}: {e}"
                     )
 
-        return {
-            taxon: {
-                **data,
-                "kingdom": phyla[data['phylum']] or 'NONE',
-            }
-            for taxon, data in taxonomies.items()
-        }
+        for query in self.hits:
+            for hit in self.hits[query]:
+                hit['kingdom'] = phyla[hit['phylum']]
