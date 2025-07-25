@@ -62,14 +62,88 @@ class HMMSearchResult:
     evalue: float
 
 
+class ORIENTATION_METHOD:
+    ID_ENGINE = 'BOLD ID Engine'
+    HMMSEARCH = 'HMMSearch'
+
+
+class SeqAnnotation:
+    """Parse sequence metadata to and from sequence ID.
+
+    Orientation annotation is encoded in the seq ID like:
+    Forward oriented: <seq_index>_<seqid>_(+)
+    Reverse unknown:  <seq_index>_<seqid>_(?-)
+    """
+
+    FORWARD_SYMBOL = '+'
+    REVERSE_SYMBOL = '-'
+    UNKNOWN_SYMBOL = '?'
+
+    def __init__(
+        self,
+        index: int,
+        seqid: str,
+        forward: bool = True,
+        oriented: bool = True,
+    ):
+        self.index = index
+        self.seqid = seqid
+        self.forward = forward
+        self.oriented = oriented
+
+    def to_identifier(self):
+        """Encode the annotation in a sequence identifier."""
+        return f"{self.index}_{self.seqid}_({self.orient_symbol})"
+
+    def from_identifier(self, identifier: str):
+        """Parse the identifier to extract orientation and unknown status."""
+        parts = identifier.split('_', 1)
+        self.index = int(parts[0])
+        self.seqid, orient_str = parts[1].rsplit('_', 1)
+        orient_symbol = orient_str.split('(')[1].split(')')[0]
+        self.oriented = self.UNKNOWN_SYMBOL not in orient_symbol
+        self.forward = self.FORWARD_SYMBOL in orient_symbol
+
+    @property
+    def orient_symbol(self) -> str:
+        orientation_symbol = (
+            self.FORWARD_SYMBOL
+            if self.forward
+            else self.REVERSE_SYMBOL)
+        unknown = self.UNKNOWN_SYMBOL if self.unknown else ''
+        return unknown + orientation_symbol
+
+    @property
+    def reverse(self) -> bool:
+        return not self.forward
+
+    @property
+    def strand(self) -> str:
+        return self.FORWARD_SYMBOL if self.forward else self.REVERSE_SYMBOL
+
+    @property
+    def unknown(self) -> bool:
+        return False if self.oriented else True
+
+    @property
+    def orientation_method(self) -> bool:
+        return (
+            ORIENTATION_METHOD.ID_ENGINE
+            if self.oriented
+            else ORIENTATION_METHOD.HMMSEARCH)
+
+
 def orientate(queries: list[SeqRecord]) -> list[SeqRecord]:
     """Orientate given sequences using HMMSearch.
 
+    Returned sequences will have query index, oriented direction and
+    orientation method encoded in the sequences title string. This can be
+    encoded/decoded with the SeqAnnotation class which provides these metadata
+    attributes.
+
     For sequences that can't be oriented with HMMSearch due to missing COX1
-    domain, the function will return both strands (+/-). Each strand will
-    have seq.annotations["oriented"]=False if orientation was not possible,
-    and seq.annotations["reverse_complement"]=True to identify the reverse
-    strand.
+    domain, the function will return both strands (+/-) which can be identified
+    by SeqAnnotation.unknown = True.
     """
     def ix_to_frame(i: int) -> int:
         """Convert translation frame index to frame number.
@@ -85,6 +159,9 @@ def orientate(queries: list[SeqRecord]) -> list[SeqRecord]:
 
     aa_frames = []
     oriented_seqs = []
+    seqids = [
+        seq.id for seq in queries
+    ]
     query_index = {
         seq.id: seq
         for seq in queries
@@ -93,15 +170,17 @@ def orientate(queries: list[SeqRecord]) -> list[SeqRecord]:
         frames = translate(seq.seq)
         for i, s in enumerate(frames):
             frame = ix_to_frame(i)
+            seq_annotation = SeqAnnotation(
+                seqids.index(seq.id),
+                seq.id,
+                forward=frame > 0,
+                oriented=True,
+            )
             aa_frames.append(
                 SeqRecord(
                     s,
-                    id=seq.id,
+                    id=seq_annotation.to_identifier(),
                     description=seq.description,
-                    annotations={
-                        "frame": frame,
-                        "forward": frame > 0,
-                    },
                 )
             )
     filtered_seqs = search_cox_profile(aa_frames)
@@ -133,8 +212,13 @@ def orientate(queries: list[SeqRecord]) -> list[SeqRecord]:
 
     for seq_id in unmatched_query_ids:
         seq = query_index[seq_id]
-        seq.annotations["oriented"] = False
-        seq.annotations["reverse_complement"] = False
+        seq_annotation = SeqAnnotation(
+            seqids.index(seq_id),
+            seq.id,
+            forward=True,
+            oriented=False,
+        )
+        seq.id = seq_annotation.to_identifier()
         oriented_seqs.append(seq)
         reverse_comp = seq.reverse_complement(
             id=True,
@@ -142,7 +226,13 @@ def orientate(queries: list[SeqRecord]) -> list[SeqRecord]:
             description=True,
             annotations=True,
         )
-        reverse_comp.annotations["reverse_complement"] = True
+        rev_annotation = SeqAnnotation(
+            seqids.index(seq_id),
+            reverse_comp.id,
+            forward=False,
+            oriented=False,
+        )
+        reverse_comp.id = rev_annotation.to_identifier()
         oriented_seqs.append(reverse_comp)
 
     return oriented_seqs

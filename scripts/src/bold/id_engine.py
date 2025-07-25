@@ -15,7 +15,7 @@ from Bio.Seq import Seq
 import pandas as pd
 
 from src.gbif.taxonomy import fetch_kingdom
-from src.utils.orient import orientate
+from src.utils.orient import SeqAnnotation, orientate
 
 logger = logging.getLogger(__name__)
 
@@ -51,12 +51,9 @@ class BoldSearch:
     def _orientate(self, fasta_file: Path) -> Path:
         """Orientate the sequences in the FASTA file."""
         sequences = self._read_fasta(fasta_file)
-        # TODO: check whether annotations are encoded in file?
-        # Most likely won't be returned from BOLD API
-        # Will need to encode in the query ID instead...
-        oriented_sequences = orientate(sequences)
+        self.oriented_sequences = orientate(sequences)
         out_path = fasta_file.with_suffix(".oriented.fasta")
-        SeqIO.write(oriented_sequences, out_path, "fasta")
+        SeqIO.write(self.oriented_sequences, out_path, "fasta")
         return out_path
 
     def _read_fasta(
@@ -69,22 +66,58 @@ class BoldSearch:
             sequences.append(record)
         return sequences
 
-    def _parse_bold_xlsx(self, path: Path) -> dict[str, list]:
-        """Parse the results from BOLDigger3 XLSX output file."""
+    def _parse_bold_xlsx(
+        self,
+        path: Path,
+        results: dict = {},
+    ) -> dict[str, list]:
+        """Parse the results from BOLDigger3 XLSX output file.
+
+        Optionally append results to an existing result dict.
+        """
         df = pd.read_excel(path)
-        hits = {}
 
         for _, row in df.iterrows():
-            query_id = row['id']
+            raw_id = row['id']
+            annotation = SeqAnnotation.from_identifier(raw_id)
+            query_id = annotation.seqid
+            seq = [
+                s for s in self.oriented_sequences
+                if s.id == query_id
+            ][0]
+            query_annotations = {
+                'query_id': query_id,
+                'query_title': seq.description,
+                'query_index': annotation.index,
+                'query_length': len(seq.seq),
+                'query_sequence': seq.seq,
+                'query_strand': annotation.strand,
+                'query_orientation': annotation.orientation_method,
+            }
+
+            results[query_id] = results.get('query_id', {
+                **query_annotations,
+                'hits': [],
+            })
+
             if row.get('phylum') == BOLDIGGER_NO_MATCH_STR:
-                hits[query_id] = []
+                continue
+
+            if (
+                results[query_id]['hits']
+                and results[query_id]['query_strand'] !=
+                    query_annotations['query_strand']
+            ):
+                logger.warning(
+                    'BOLD hits were returned for both query sequence'
+                    ' orientations. Hits will only be collected from the (+)'
+                    ' orientation.')
                 continue
 
             genus = row.get('genus', '')
             species = row.get('species', '')
             taxonomic_identification = species if species else f"{genus} sp."
             process_id = row.get('processid')
-
             hit = {
                 "hit_id": process_id,
                 "bin_uri": row.get('bin_uri'),
@@ -101,12 +134,9 @@ class BoldSearch:
                 "genus": row.get('genus'),
                 "species": row.get('species'),
             }
+            results[query_id]['hits'].append(hit)
 
-            if query_id not in hits:
-                hits[query_id] = []
-            hits[query_id].append(hit)
-
-        return hits
+        return results
 
     def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
         """Submit a sequence search request using BOLDigger3."""
@@ -135,27 +165,16 @@ class BoldSearch:
             if not path.is_file():
                 continue
             logger.info(f"Parsing BOLDigger results from {path}...")
-            results = self._merge_results(
-                results,
-                self._parse_bold_xlsx(path),
-            )
+            results = self._parse_bold_xlsx(path, results)
         wdir.cleanup()
 
         return results
 
-    def _merge_results(self, results_a: dict, results_b: dict) -> dict:
-        """Merge two results dictionaries."""
-        for query_id, hits in results_b.items():
-            if query_id not in results_a:
-                results_a[query_id] = []
-            results_a[query_id].extend(hits)
-        return results_a
-
     def _parse_sequences(self) -> list[SeqIO.SeqRecord]:
         """Parse sequences from hits into SeqRecord objects."""
-        sequences = []
-        for hits in self.hits.values():
-            sequences += [
+        sequences = {}
+        for seqid, hits in self.hits.items():
+            sequences[seqid] = [
                 SeqIO.SeqRecord(
                     Seq(hit["nucleotides"]),
                     id=hit['hit_id'],
