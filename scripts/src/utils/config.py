@@ -84,6 +84,9 @@ class Config:
     # BOLD-specific
     BOLD_DATABASE = int(os.getenv("BOLD_DATABASE", 2))
     BOLD_FLAG = 'BOLD'
+    BOLDIGGER_KEEP_OUTPUTS = os.getenv("BOLDIGGER_KEEP_OUTPUTS", "0") in (
+        "1", "true", "True", "yes", "Yes"
+    )  # Copy BOLDigger outputs to CWD
 
     # Other configuration
     FLAG_DETAILS_CSV_PATH = (

@@ -4,6 +4,7 @@ API Docs: https://v4.boldsystems.org/index.php/resources/api
 """
 
 import logging
+import shutil
 import subprocess
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,13 +16,16 @@ from Bio.Seq import Seq
 import pandas as pd
 
 from src.gbif.taxonomy import fetch_kingdom
+from src.utils import config
 
+config = config.Config()
 logger = logging.getLogger(__name__)
 
 BOLD_RECORD_BASE_URL = "https://portal.boldsystems.org/record/"
 BOLDIGGER_OUTPUT_XLSX_PATTERN = (
     'boldigger3_data/queries_bold_results_part_*.xlsx')
 BOLDIGGER_NO_MATCH_STR = 'no-match'
+BOLDIGGER_OUTPUT_DIRNAME = 'boldigger3_output'
 
 
 class BOLD_MODES:
@@ -84,7 +88,7 @@ class BoldSearch:
                 'query_sequence': query_seq.seq,
             }
 
-            results[query_id] = results.get('query_id', {
+            results[query_id] = results.get(query_id, {
                 **query_annotations,
                 'hits': [],
             })
@@ -94,16 +98,30 @@ class BoldSearch:
 
             genus = row.get('genus', '')
             species = row.get('species', '')
+            
+            # Handle NaN values for genus and species
+            if pd.isna(genus):
+                genus = ''
+            if pd.isna(species):
+                species = ''
+                
             taxonomic_identification = species if species else f"{genus} sp."
             process_id = row.get('processid')
+            
+            # Handle NaN process_id
+            if pd.isna(process_id):
+                process_id = ''
+            else:
+                process_id = str(process_id)
+                
             hit = {
                 "hit_id": process_id,
                 "bin_uri": row.get('bin_uri'),
                 "taxonomic_identification": taxonomic_identification,
                 "identity": row.get('pct_identity'),
-                "url": BOLD_RECORD_BASE_URL + process_id,
+                "url": BOLD_RECORD_BASE_URL + process_id if process_id else '',
                 "country": row.get('country/ocean'),
-                "nucleotide": row.get('nuc').replace('-', ''),
+                "nucleotide": str(row.get('nuc', '')).replace('-', '') if not pd.isna(row.get('nuc')) else '',
                 "identified_by": row.get('identified_by'),
                 "phylum": row.get('phylum'),
                 "class": row.get('class'),
@@ -118,21 +136,23 @@ class BoldSearch:
 
     def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
         """Submit a sequence search request using BOLDigger3."""
-        wdir = tempfile.TemporaryDirectory()
+        wdir = config.output_dir / BOLDIGGER_OUTPUT_DIRNAME
+        input_fasta_path = wdir / self.fasta_file.name
+        input_fasta_path.write_text(self.fasta_file.read_text())
         args = [
             "boldigger3",
             "identify",
-            str(self.fasta_file),
+            str(input_fasta_path),
             "--db", str(self.database),
             "--mode", str(self.mode)
         ]
         if self.thresholds:
             args += ["--thresholds"] + [str(t) for t in self.thresholds]
 
+        logger.info("Submitting query sequences to BOLD with BOLDigger3...")
         try:
             subprocess.run(
                 args,
-                cwd=wdir.name,
                 check=True,
                 capture_output=True,
                 text=True,
@@ -142,11 +162,19 @@ class BoldSearch:
 
         results = {}
         for path in wdir.glob(BOLDIGGER_OUTPUT_XLSX_PATTERN):
-            if not path.is_file():
-                continue
             logger.info(f"Parsing BOLDigger results from {path}...")
             results = self._parse_bold_xlsx(path, results)
-        wdir.cleanup()
+        if not results:
+            raise RuntimeError(
+                "No results found in BOLDigger outputs - this indicates a bug"
+                " in the code, even for queries with no hits."
+            )
+        if config.BOLDIGGER_KEEP_OUTPUTS:
+            logger.info(
+                'BOLDIGGER_KEEP_OUTPUTS=true - BOLDigger outputs have been'
+                f' saved to {wdir}')
+        else:
+            shutil.rmtree(wdir, ignore_errors=True)
 
         return results
 
