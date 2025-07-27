@@ -6,7 +6,6 @@ API Docs: https://v4.boldsystems.org/index.php/resources/api
 import logging
 import shutil
 import subprocess
-import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -98,22 +97,22 @@ class BoldSearch:
 
             genus = row.get('genus', '')
             species = row.get('species', '')
-            
+
             # Handle NaN values for genus and species
             if pd.isna(genus):
                 genus = ''
             if pd.isna(species):
                 species = ''
-                
+
             taxonomic_identification = species if species else f"{genus} sp."
             process_id = row.get('processid')
-            
+
             # Handle NaN process_id
             if pd.isna(process_id):
                 process_id = ''
             else:
                 process_id = str(process_id)
-                
+
             hit = {
                 "hit_id": process_id,
                 "bin_uri": row.get('bin_uri'),
@@ -121,7 +120,11 @@ class BoldSearch:
                 "identity": row.get('pct_identity'),
                 "url": BOLD_RECORD_BASE_URL + process_id if process_id else '',
                 "country": row.get('country/ocean'),
-                "nucleotide": str(row.get('nuc', '')).replace('-', '') if not pd.isna(row.get('nuc')) else '',
+                "nucleotide": (
+                    str(row.get('nuc', '')).replace('-', '')
+                    if not pd.isna(row.get('nuc'))
+                    else ''
+                ),
                 "identified_by": row.get('identified_by'),
                 "phylum": row.get('phylum'),
                 "class": row.get('class'),
@@ -137,6 +140,7 @@ class BoldSearch:
     def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
         """Submit a sequence search request using BOLDigger3."""
         wdir = config.output_dir / BOLDIGGER_OUTPUT_DIRNAME
+        wdir.mkdir(parents=True, exist_ok=True)
         input_fasta_path = wdir / self.fasta_file.name
         input_fasta_path.write_text(self.fasta_file.read_text())
         args = [
