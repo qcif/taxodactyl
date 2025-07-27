@@ -24,13 +24,12 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `blastdb`      | string  |                   | Path to the BLAST database files. Must end with 'core_nt'.                                       | Must be a valid path ending with `core_nt`, e.g. '/folder_path/blast_db/202505/core_nt'. Required if `db_type` set to 'blast_core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq." |
 
 ---
-
 ### Search BOLD database
 
-| Name                  | Type    | Default | Description                                                                                      | Requirements                        |
-|-----------------------|---------|---------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| `bold_skip_orientation` | int   | 0       | If 1, BOLD runs skip orientation and submit both forward and reverse sequences to the API.        | Must be 0 or 1. Default: 0.          |
-| `bold_database_name` | string   | 'COX1_SPECIES_PUBLIC'       | Name of the BOLD database to use for taxonomic assignment.        | Must be a string.          |
+| Name                | Type  | Default | Description                                                                                                         | Requirements         |
+|---------------------|-------|---------|---------------------------------------------------------------------------------------------------------------------|----------------------|
+| `bold_database_name`| int   | 2       | BOLD database ID. See [BOLDigger3 databases](https://github.com/DominikBuchner/BOLDigger3?tab=readme-ov-file#databases). | Must be an integer.  |
+
 
 ---
 

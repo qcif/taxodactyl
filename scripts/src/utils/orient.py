@@ -1,5 +1,8 @@
 """Translate a DNA sequence.
 
+NOTE: this is no longer requrired because BOLD v5 appears to accept queries in
+forward or reverse orientation.
+
 # Search for COX1 domain:
 hmmsearch --tblout out.tbl --noali pf00115.hmm query.fasta
 

@@ -15,7 +15,6 @@ from Bio.Seq import Seq
 import pandas as pd
 
 from src.gbif.taxonomy import fetch_kingdom
-from src.utils.orient import SeqAnnotation, orientate
 
 logger = logging.getLogger(__name__)
 
@@ -40,21 +39,15 @@ class BoldSearch:
         mode: int,
         thresholds=None,
     ):
-        self.fasta_file = self._orientate(fasta_file)
+        self.fasta_file = fasta_file
         self.database = database
         self.mode = mode
         self.thresholds = thresholds
+        self.query_sequences = self._read_fasta(fasta_file)
+        self.query_seqids = [s.id for s in self.query_sequences]
         self.hits = self._bold_sequence_search()
         self.hit_sequences = self._parse_sequences()
         self._fetch_kingdoms()
-
-    def _orientate(self, fasta_file: Path) -> Path:
-        """Orientate the sequences in the FASTA file."""
-        sequences = self._read_fasta(fasta_file)
-        self.oriented_sequences = orientate(sequences)
-        out_path = fasta_file.with_suffix(".oriented.fasta")
-        SeqIO.write(self.oriented_sequences, out_path, "fasta")
-        return out_path
 
     def _read_fasta(
         self,
@@ -78,21 +71,17 @@ class BoldSearch:
         df = pd.read_excel(path)
 
         for _, row in df.iterrows():
-            raw_id = row['id']
-            annotation = SeqAnnotation.from_identifier(raw_id)
-            query_id = annotation.seqid
-            seq = [
-                s for s in self.oriented_sequences
+            query_id = row['id']
+            query_seq = [
+                s for s in self.query_sequences
                 if s.id == query_id
             ][0]
             query_annotations = {
                 'query_id': query_id,
-                'query_title': seq.description,
-                'query_index': annotation.index,
-                'query_length': len(seq.seq),
-                'query_sequence': seq.seq,
-                'query_strand': annotation.strand,
-                'query_orientation': annotation.orientation_method,
+                'query_title': query_seq.description,
+                'query_index': self.query_seqids.index(query_id),
+                'query_length': len(query_seq.seq),
+                'query_sequence': query_seq.seq,
             }
 
             results[query_id] = results.get('query_id', {
@@ -101,17 +90,6 @@ class BoldSearch:
             })
 
             if row.get('phylum') == BOLDIGGER_NO_MATCH_STR:
-                continue
-
-            if (
-                results[query_id]['hits']
-                and results[query_id]['query_strand'] !=
-                    query_annotations['query_strand']
-            ):
-                logger.warning(
-                    'BOLD hits were returned for both query sequence'
-                    ' orientations. Hits will only be collected from the (+)'
-                    ' orientation.')
                 continue
 
             genus = row.get('genus', '')
@@ -141,17 +119,19 @@ class BoldSearch:
     def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
         """Submit a sequence search request using BOLDigger3."""
         wdir = tempfile.TemporaryDirectory()
-        command = [
-            "boldigger3", "identify", str(self.fasta_file),
+        args = [
+            "boldigger3",
+            "identify",
+            str(self.fasta_file),
             "--db", str(self.database),
             "--mode", str(self.mode)
         ]
         if self.thresholds:
-            command += ["--thresholds"] + [str(t) for t in self.thresholds]
+            args += ["--thresholds"] + [str(t) for t in self.thresholds]
 
         try:
             subprocess.run(
-                command,
+                args,
                 cwd=wdir.name,
                 check=True,
                 capture_output=True,

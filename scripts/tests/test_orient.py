@@ -14,6 +14,7 @@ TEST_FASTA_REV_INDEXES = (1, 5)
 TEST_FASTA_NO_COX1_INDEXES = (2, 3, 6)
 
 
+@unittest.skip("This test is redundant as orientation is no longer required")
 class TestSequenceOrientation(unittest.TestCase):
 
     def setUp(self):

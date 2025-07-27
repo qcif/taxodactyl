@@ -90,28 +90,18 @@ it was more painful to get going.
    wget -c ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
    tar -xzf taxdump.tar.gz && rm taxdump.tar.gz
    ```
-4. (Optional) Install HMMSearch for orientation of BOLD queries. If you omit this step you will need to run p1_bold_search.py with env var `SKIP_ORIENTATION=1`. See [Dockerfile](./Dockerfile) for installation instructions.
-
-
 
 # Building a Docker image
 
 > [!NOTE]
-> The GitHub repo [qcif/taxodactyl](https://github.com/qcif/taxodactyl) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactyl/releases) is made. This is the preferred method of generating images as it removes human error.
+> The GitHub repo [qcif/taxodactyl](https://github.com/qcif/taxodactyl) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactyl/releases) is made. This is the preferred method of generating images as it removes human error. To do this, create a pre-release like v1.0.0-pre so that the image can be built end tested in NextFlow before creating the official 1.0.0 release.
 
 > [!NOTE]
-> Make sure you update the VERSION file before publishing a new version!
+> Make sure you update the VERSION file before publishing a new version! The GitHub workflow will error if this doesn't match the release tag e.g. v1.0.0.
 
 We've pushed a lot of versions, so there's a script for this.
 
-Update the image path before running if required. You will need to have push access to the remote repository (e.g. DockerHub) if you intend to push this:
-
-```sh
-# nano docker_build.sh
-IMAGE=neoformit/daff-taxonomic-assignment
-```
-
-Now to build image `neoformit/daff-taxonomic-assignment:v1.2.0`:
+You will need to have push access to the remote repository (e.g. DockerHub) if you intend to push this. To build image `neoformit/daff-taxonomic-assignment:v1.2.0`:
 
 ```sh
 # Build an image from the current working directory:
@@ -120,7 +110,6 @@ Now to build image `neoformit/daff-taxonomic-assignment:v1.2.0`:
 # To build and push in one go:
 ./docker_build.sh -t v1.2.0 -p
 ```
-
 
 
 # Running tests
@@ -176,7 +165,6 @@ Some other environment variables that can be useful in development:
 
 ```sh
 LOGGING_DEBUG=0  # 1 to enable additional logging to help with debugging
-SKIP_ORIENTATION=0  # 1 to skip orientation of BOLD sequences (requires setup)
 GBIF_MAX_OCCURRENCE_RECORDS=200  # Reduce to 200 for testing/dev to speed up p5. Default 5000.
 REPORT_DEBUG=0  # 1 to omit timestamp from report filename for browser reload between changes
 FACILITY_NAME="Hogwarts"  # Displayed in report
@@ -624,23 +612,16 @@ script that can be collected by Nextflow and then passed to the P6 script for
 rendering the report. So I decided to write one file per flag, encode the flag
 metadata in the file name, and then write only the value to the file. These files
 can then all be read from the output directory to get a complete "Flag set" for
-the report. A complete set of flag files might look like this, though the
-number of flag 4/5s depends on how many candidates and TOIs exist:
+the report. A complete set of flag files shoudl look like this:
 
 ```
 1.flag
 2.flag
-4-Anneissia_japonica.flag
-4-Anneissia_sp._NIBGE_MOT(~)03651.flag
-5.1-candidate-Anneissia_japonica.flag
-5.1-pmi-Tortricidae.flag
-5.1-toi-Acanthaster_planci.flag
-5.2-candidate-Anneissia_japonica.flag
-5.2-pmi-Tortricidae.flag
-5.2-toi-Acanthaster_planci.flag
-5.3-candidate-Anneissia_japonica.flag
-5.3-pmi-Tortricidae.flag
-5.3-toi-Acanthaster_planci.flag
+4.flag
+4.flag
+5.1.flag
+5.2.flag
+5.3.flag
 7.flag
 ```
 

@@ -71,18 +71,10 @@
                     "description": "Path to the BLAST database files.",
                     "errorMessage": "Parameter 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
                 },
-                "bold_skip_orientation": {
-                    "type": "integer",
-                    "default": 0,
-                    "enum": [0, 1],
-                    "description": "If SKIP_ORIENTATION=1 then BOLD runs will skip orientation of query sequences and submit both forward and reverse sequences to the ID Engine API (for developers, this removes the need for local installation of Hmmsearch).",
-                    "hidden": true,
-                    "errorMessage": "Parameter 'bold_skip_orientation' must be one of [0, 1]. Default: 0."
-                },
                 "bold_database_name": {
-                    "type": "string",
-                    "default": "COX1_SPECIES_PUBLIC",
-                    "description": "Name of the BOLD database to use for taxonomic assignment.",
+                    "type": "int",
+                    "default": "2",
+                    "description": "Choice of reference database (default 2 is 'ANIMAL SPECIES-LEVEL LIBRARY (PUBLIC + PRIVATE)') Available option: https://github.com/DominikBuchner/BOLDigger3?tab=readme-ov-file#databases",
                     "errorMessage": "Parameter 'bold_database_name' must be a string."
                 },
                 "max_candidates_for_analysis": {
@@ -381,14 +373,6 @@
                     "pattern": "^\\S+\\.json$",
                     "description": "Filename for the JSON file listing aggregated publications supporting taxonomic associations.",
                     "errorMessage": "Parameter 'independent_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'independent_sources.json'."
-                },
-                "bold_taxonomy_json": {
-                    "type": "string",
-                    "default": "bold_taxonomy.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file containing BOLD taxonomy data.",
-                    "errorMessage": "Parameter 'bold_taxonomy_json' file name cannot contain spaces and must have a .json extension. Default: 'bold_taxonomy.json'."
                 },
                 "taxonomy_filename": {
                     "type": "string",

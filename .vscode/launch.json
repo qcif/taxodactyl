@@ -81,18 +81,17 @@
             "program": "${workspaceFolder}/scripts/p1_bold_search.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "tests/test-data/queries.fasta",
-                // "--output_dir", "output/bold",
+                "tests/test-data/queries.fasta",
+                "--output_dir", "output/bold",
 
-                "output/issues/131/query.fasta",
-                "--output_dir", "output/issues/131/bold",
+                // "output/issues/131/query.fasta",
+                // "--output_dir", "output/issues/131/bold",
             ],
             "preLaunchTask": "clear-log-files",
             "env": {
                 "LOGGING_DEBUG": "1",
-                "SKIP_ORIENTATION": "1",
-                "INPUT_METADATA_CSV_FILEPATH": "output/issues/131/metadata.csv",
-                "INPUT_FASTA_FILEPATH": "output/issues/131/query.fasta",
+                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/131/metadata.csv",
+                // "INPUT_FASTA_FILEPATH": "output/issues/131/query.fasta",
             }
         },
         {
