@@ -107,8 +107,7 @@ def parse_bold_xlsx(
 
 ### Use of constants
 
-Where appropriate, declare string, int and float values as constants at the top of the script, below imports.
-Path name and URL strings should always be declared in this way. Dictionary keys typically do not.
+Where appropriate, declare string, int and float values as constants at the top of the script, below imports. This should only be done where it improves the readability of code. Paths, URLs and "magic numbers" should always be declared in this way, but not dictionary keys.
 
 ## Enforcement
 Claude will automatically ensure all code follows these guidelines before writing or modifying any Python files.
