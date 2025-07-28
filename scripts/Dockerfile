@@ -1,3 +1,6 @@
+# For BOLDigger3, must bind a temp dir to database path:
+#   /usr/local/lib/python3.12/site-packages/boldigger3/database/
+
 FROM python:3.12
 
 RUN apt update && apt install -y nano less

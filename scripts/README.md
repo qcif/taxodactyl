@@ -26,6 +26,7 @@ which shows CLI arguments and environment variables for each script.
     1. [Units tests](#unit-tests)
     2. [Integration tests](#integration-tests)
 1. [Running the scripts](#workflow-steps-python-scripts)
+    1. [Bind mounts](#bind-mounts)
     1. [Environment variables](#environment-variables)
     1. [P0 validate inputs](#p0-validate-inputs)
     2. [P1 BLAST parser](#p1-blast-parser)
@@ -141,7 +142,6 @@ The integration tests are actually run with unittest (see [test_integration.py](
 ```
 
 
-
 # Workflow steps (Python scripts)
 
 Six Python scripts provide entrypoints which can be called by Nextflow to run
@@ -149,6 +149,17 @@ the steps required for this pipeline. Some workflow steps (BLASTN, BLASTDBCMD,
 MAFFT, FastME) are actioned with other tools, but most steps require invoking one
 of the Python scripts included in this repository. For ease of reference, the
 scripts are enumerated as P1-P6.
+
+## Bind mounts
+
+If running the Docker image, you will need to bind the BOLDigger3 database directory to ensure that the databases persist between runs (downloading can take 30 mins). With singularity you can add this bind mount like so (the host location is up to you):
+
+```sh
+singularity exec \
+    --bind /tmp/boldigger3_dbs:/usr/local/lib/python3.12/site-packages/boldigger3/database \
+    my_container.sif \
+    <command>
+```
 
 ## Environment variables
 
@@ -169,6 +180,7 @@ GBIF_MAX_OCCURRENCE_RECORDS=200  # Reduce to 200 for testing/dev to speed up p5.
 REPORT_DEBUG=0  # 1 to omit timestamp from report filename for browser reload between changes
 FACILITY_NAME="Hogwarts"  # Displayed in report
 ANALYST_NAME="Harry Potter"  # Displayed in report
+BOLDIGGER_KEEP_OUTPUTS=true  # Keep BOLDigger3 output files for debugging/inspection
 ```
 
 Environment variables are fully documented [here](https://qcif.github.io/taxodactyl/environment.html).
