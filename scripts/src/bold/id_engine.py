@@ -154,13 +154,22 @@ class BoldSearch:
             args += ["--thresholds"] + [str(t) for t in self.thresholds]
 
         logger.info("Submitting query sequences to BOLD with BOLDigger3...")
+
         try:
-            subprocess.run(
+            proc = subprocess.Popen(
                 args,
                 check=True,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 text=True,
+                bufsize=1,  # line-buffered
             )
+            for line in proc.stdout:
+                print(line, end='')
+
+            proc.stdout.close()
+            proc.wait()
+
         except Exception as exc:
             raise RuntimeError("Error running BOLDigger3") from exc
 
