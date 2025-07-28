@@ -19,7 +19,7 @@ QUERIES_FASTA_FILENAME = "queries.fasta"
 TEST_FASTA_FILENAME = "test_queries.fasta"
 
 # Test constants
-FIRST_SEQUENCE_INDEX = 0
+SEQUENCE_INDEX = 0
 SEQUENCE_PREVIEW_LENGTH = 50
 EXPECTED_URL_PREFIX = "https://portal.boldsystems.org/record/"
 
@@ -54,8 +54,8 @@ class TestBoldSearch(unittest.TestCase):
         self.query_seqids = [seq.id for seq in self.query_sequences]
 
         # Set up expected test values using first sequence
-        self.expected_query_id = self.query_sequences[FIRST_SEQUENCE_INDEX].id
-        self.expected_query_seq = self.query_sequences[FIRST_SEQUENCE_INDEX]
+        self.expected_query_id = self.query_sequences[SEQUENCE_INDEX].id
+        self.expected_query_seq = self.query_sequences[SEQUENCE_INDEX]
 
         # Create a minimal BoldSearch instance for testing
         self.bold_search = BoldSearch.__new__(BoldSearch)
@@ -78,7 +78,7 @@ class TestBoldSearch(unittest.TestCase):
         self.assertEqual(
             query_result["query_title"], self.expected_query_seq.description
         )
-        self.assertEqual(query_result["query_index"], FIRST_SEQUENCE_INDEX)
+        self.assertEqual(query_result["query_index"], SEQUENCE_INDEX)
         self.assertEqual(
             query_result["query_length"], len(self.expected_query_seq.seq)
         )
