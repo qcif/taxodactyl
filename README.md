@@ -18,7 +18,7 @@
 
 - [Example workflow report](https://qcif.github.io/taxodactyl/example_report.html)
 - [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
-- [Python scripts](./scripts)
+- [Python scripts](./scripts) (for developers)
 
 ### Workflow Overview
 
@@ -34,21 +34,21 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 4. **Hit Extraction** Parses BLAST results to extract relevant hits for each query.
 
-5. **Taxonomic ID Extraction** Retrieves taxonomic IDs for BLAST hits.
+5. **Taxonomic ID Extraction** Retrieve taxids for BLAST hit records.
 
-6. **Taxonomic Lineage Extraction** Maps taxonomic IDs to full lineages, enabling downstream filtering and reporting.
+6. **Build Taxonomic Lineage** Maps taxonomic IDs to full lineages, enabling downstream filtering and reporting.
 
-7. **Candidate Extraction** Identifies candidate species for each query, applying user-defined thresholds for identity and coverage.
+7. **Candidate Evaluation** Identifies candidate species for each query, applying configurable thresholds for identity and coverage.
 
 8. **Supporting Evidence Evaluation**
-   - **Publications Diversity:** Assesses the diversity of data sources supporting each candidate.
-   - **Database Coverage:** Evaluates the representation of candidates in global databases ([GBIF](https://www.gbif.org/), [GenBank](https://www.ncbi.nlm.nih.gov/genbank/), [BOLD](https://v4.boldsystems.org/)).
+   - **Supporting Publications:** Assesses the diversity of publications supporting each candidate species' reference sequences.
+   - **Database Coverage:** Evaluates the representation of candidate species, taxa of interest and preliminary taxonomic ID in global databases ([GBIF](https://www.gbif.org/), [GenBank](https://www.ncbi.nlm.nih.gov/genbank/), [BOLD](https://v4.boldsystems.org/)).
 
 9. **Multiple Sequence Alignment ([MAFFT](https://mafft.cbrc.jp/alignment/server/index.html))** Aligns candidate and query sequences to prepare for phylogenetic analysis.
 
-10. **Phylogenetic Tree Construction ([FastMe](http://www.atgc-montpellier.fr/fastme/))** Builds a phylogenetic tree to visualise relationships among candidates and queries.
+10. **Phylogenetic Tree Construction ([FastMe](http://www.atgc-montpellier.fr/fastme/))** Builds a phylogenetic tree to visualise relatedness of candidate and query sequences.
 
-11. **Comprehensive Reporting** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and all supporting evidence for each assignment.
+11. **Workflow report** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and supporting evidence for each assignment.
 
 ## Usage
 
@@ -107,41 +107,12 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Required Columns
 1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
-2. **locus** - Name of the genetic locus for the sample. Choose from the following (uppercase also permitted):
-    - NA (for samples with no locus, e.g. viruses or BOLD runs)
-    - 16s
-    - 28s
-    - act
-    - alt-a1
-    - ß-tub
-    - cmda
-    - co2
-    - coi
-    - cytb
-    - dnax
-    - ef1a
-    - fusa
-    - gapa
-    - gyrb
-    - hsp60
-    - its
-    - its1
-    - its2
-    - leus
-    - lsu
-    - matk
-    - rbcl
-    - recn
-    - reca
-    - rpob
-    - rplb
-    - rpod
-    - rpb2
-> [!NOTE]
-> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
-> - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
-> - Loci synonyms will be checked as well (see [`assets/loci.json`](assets/loci.json)).
-> - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
+2. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
+    > [!NOTE]
+    > - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
+    > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
+    > - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
+    > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
 3. **preliminary_id** - Preliminary morphology ID of the sample.
 
 #### Optional Columns
@@ -193,10 +164,11 @@ The metadata file provides essential information about each sequence and must fo
 > [!NOTE]
 > - All required columns must be present for every sample.
 > - Optional columns can be left blank or completely omitted if not applicable.
+> - Columns 4 and 5 are examples of "arbitrary columns" - add any arbitrary columns you like, and they will be included in the workflow report "Sample metadata".
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 > - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 
-You can run the pipeline using the BLAST Core Nucleotide Database:
+To run the pipeline against local BLAST Core Nt Database:
 ```bash
 nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --metadata /path/to/metadata.csv \
@@ -212,8 +184,7 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     -resume
 ```
 
-You can also run the pipeline using the BOLD database with the following command:
-
+To run the pipeline using the BOLD web database:
 ```bash
 nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --metadata /path/to/metadata.csv \
@@ -236,7 +207,7 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
 
 
 ## Pipeline output
-After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html) for tips on understanding the analysis and interpreting the final HTML report.
+After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html) for a detailed description of the analysis and interpretation of the workflow report.
 
 **BLAST Core Nucleotide Database**
 
