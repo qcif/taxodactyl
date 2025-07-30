@@ -109,12 +109,12 @@ The metadata file provides essential information about each sequence and must fo
 1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
 2. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
 
-    > [!NOTE]
-    > - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
-    > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
-    > - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
-    > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
-    
+> [!NOTE]
+> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
+> - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
+> - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
+> - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailled_tech.md).
+
 3. **preliminary_id** - Preliminary morphology ID of the sample.
 
 #### Optional Columns
