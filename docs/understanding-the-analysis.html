@@ -210,7 +210,7 @@ For the BLAST version of the workflow, the reference data will be a BLAST databa
 <tr>
   <td>locus</td>
   <td>yes</td>
-  <td>Must be in the <a href="./allowed-loci.html">list of allowed loci</a> or <code>NA</code> for virus or BOLD queries (note that this can be modified by updating <a href="https://github.com/qcif/taxodactyl/blob/main/assets/loci.json">this file</a>).</td>
+  <td>Must be in the <a href="./allowed-loci.html">list of allowed loci</a> or <code>NA</code> for virus or BOLD queries (note that this can be modified by updating <a href="https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json">this file</a>).</td>
 </tr>
 <tr>
   <td>preliminary_id</td>
@@ -548,7 +548,7 @@ For each target, three analyses may be performed:</p>
 
 <h3 id="enumerating-genbank-records">Enumerating GenBank records</h3>
 
-<p>For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's <a href="https://github.com/qcif/taxodactyl/blob/main/assets/loci.json">loci.json</a> file. the taxid is extracted from NCBI taxonomies <a href="#blast-extracting-taxonomic-metadata">using taxonkit</a>.</p>
+<p>For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's <a href="https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json">loci.json</a> file. the taxid is extracted from NCBI taxonomies <a href="#blast-extracting-taxonomic-metadata">using taxonkit</a>.</p>
 
 <p>For example, the following locus and taxon "Homo sapiens" (taxid <code>9606</code>):</p>
 

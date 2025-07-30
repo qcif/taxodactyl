@@ -164,14 +164,14 @@ This JSON schema describes the required structure and columns for the metadata C
 
 ---
 
-# [loci.json](../assets/loci.json)
+# [loci.json](../scripts/config/loci.json)
 
 This file defines the permitted loci (genes) and their synonyms used in the pipeline. It helps standardise locus names and supports synonym resolution for GenBank queries. For more details on how loci are used and formatted, see the [sample locus section in the Python modules README](https://github.com/qcif/taxodactyl/tree/main/scripts#sample-locus).
 
 You can overwrite the contents of `loci.json` to customise which loci (genes) and synonyms are recognised by the pipeline. To do this:
 
 1. **Edit the File:**
-   Open [`assets/loci.json`](../assets/loci.json) and modify, add, or remove loci and their synonyms as needed for your use case. Make sure the JSON structure matches the expected format described in the [Python modules README](https://github.com/qcif/taxodactyl/tree/main/scripts#sample-locus).
+   Open [`scripts/config/loci.json`](../scripts/config/loci.json) and modify, add, or remove loci and their synonyms as needed for your use case. Make sure the JSON structure matches the expected format described in the [Python modules README](https://github.com/qcif/taxodactyl/tree/main/scripts#sample-locus).
 
 2. **Provide a Custom File:**
    If you want to keep the original file unchanged, you can create your own custom `loci.json` and specify its path using the appropriate pipeline parameter (e.g., `--allowed_loci_file my_loci.json` on the command line or by setting `allowed_loci_file` in your config).
