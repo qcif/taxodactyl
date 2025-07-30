@@ -41,6 +41,7 @@ class class_property:
 
 class Config:
 
+    DEBUG = os.getenv("DEBUG", "0") in ("1", "true", "True", "yes", "Yes")
     USER_EMAIL = os.getenv("USER_EMAIL")
     NCBI_API_KEY = os.getenv("NCBI_API_KEY")
     TAXONKIT_DATA = os.getenv("TAXONKIT_DATA",

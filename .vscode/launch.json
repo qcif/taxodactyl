@@ -89,7 +89,9 @@
             ],
             "preLaunchTask": "clear-log-files",
             "env": {
+                "DEBUG": "1",
                 "LOGGING_DEBUG": "1",
+                "BOLDIGGER_KEEP_OUTPUTS": "1",
                 // "INPUT_METADATA_CSV_FILEPATH": "output/issues/131/metadata.csv",
                 // "INPUT_FASTA_FILEPATH": "output/issues/131/query.fasta",
             }

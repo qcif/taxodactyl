@@ -48,7 +48,7 @@ class BoldSearch:
         self.thresholds = thresholds
         self.query_sequences = self._read_fasta(fasta_file)
         self.query_seqids = [s.id for s in self.query_sequences]
-        self.hits = self._bold_sequence_search()
+        self.results = self._bold_sequence_search()
         self.hit_sequences = self._parse_sequences()
         self._fetch_kingdoms()
 
@@ -62,6 +62,63 @@ class BoldSearch:
             sequences.append(record)
         return sequences
 
+    def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
+        """Submit a sequence search request using BOLDigger3."""
+        wdir = config.output_dir / BOLDIGGER_OUTPUT_DIRNAME
+        if wdir.exists() and not config.DEBUG:
+            logger.info(f"Removing existing output directory {wdir}")
+            shutil.rmtree(wdir, ignore_errors=True)
+        wdir.mkdir(parents=True, exist_ok=True)
+        input_fasta_path = wdir / self.fasta_file.name
+        input_fasta_path.write_text(self.fasta_file.read_text())
+        args = [
+            "boldigger3",
+            "identify",
+            str(input_fasta_path),
+            "--db", str(self.database),
+            "--mode", str(self.mode)
+        ]
+        if self.thresholds:
+            args += ["--thresholds"] + [str(t) for t in self.thresholds]
+
+        logger.info(
+            "Submitting query sequences to BOLD with BOLDigger3...")
+
+        proc = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,  # line-buffered
+        )
+
+        for line in proc.stdout:
+            print(line, end='')
+        proc.stdout.close()
+        proc.wait()
+
+        if proc.returncode != 0:
+            raise RuntimeError(
+                f"Error running BOLDigger3:\n{proc.stderr.read()}")
+
+        results = {}
+        for path in wdir.glob(BOLDIGGER_OUTPUT_XLSX_PATTERN):
+            logger.info(f"Parsing BOLDigger results from {path}...")
+            results = self._parse_bold_xlsx(path, results)
+        if not results:
+            raise RuntimeError(
+                "No results found in BOLDigger outputs - this indicates a bug"
+                " in the code, even for queries with no hits."
+            )
+        if config.BOLDIGGER_KEEP_OUTPUTS:
+            logger.info(
+                'BOLDIGGER_KEEP_OUTPUTS=true - BOLDigger outputs have been'
+                f' saved to {wdir}')
+        else:
+            shutil.rmtree(wdir, ignore_errors=True)
+
+        return results
+
     def _parse_bold_xlsx(
         self,
         path: Path,
@@ -71,6 +128,11 @@ class BoldSearch:
 
         Optionally append results to an existing result dict.
         """
+        def _get_value_or_none(row, key, default=None):
+            """Get value from row or return None if not present."""
+            value = row.get(key, default)
+            return default if pd.isna(value) else value
+
         df = pd.read_excel(path)
 
         for _, row in df.iterrows():
@@ -84,7 +146,7 @@ class BoldSearch:
                 'query_title': query_seq.description,
                 'query_index': self.query_seqids.index(query_id),
                 'query_length': len(query_seq.seq),
-                'query_sequence': query_seq.seq,
+                'query_sequence': str(query_seq.seq),
             }
 
             results[query_id] = results.get(query_id, {
@@ -105,104 +167,43 @@ class BoldSearch:
                 species = ''
 
             taxonomic_identification = species if species else f"{genus} sp."
-            process_id = row.get('processid')
-
-            # Handle NaN process_id
-            if pd.isna(process_id):
-                process_id = ''
-            else:
-                process_id = str(process_id)
+            process_id = _get_value_or_none(row, 'process_id')
 
             hit = {
                 "hit_id": process_id,
-                "bin_uri": row.get('bin_uri'),
+                "bin_uri": _get_value_or_none(row, 'bin_uri'),
                 "taxonomic_identification": taxonomic_identification,
-                "identity": row.get('pct_identity'),
-                "url": BOLD_RECORD_BASE_URL + process_id if process_id else '',
-                "country": row.get('country/ocean'),
-                "nucleotide": (
-                    str(row.get('nuc', '')).replace('-', '')
-                    if not pd.isna(row.get('nuc'))
-                    else ''
-                ),
-                "identified_by": row.get('identified_by'),
-                "phylum": row.get('phylum'),
-                "class": row.get('class'),
-                "order": row.get('order'),
-                "family": row.get('family'),
-                "genus": row.get('genus'),
-                "species": row.get('species'),
+                "identity": _get_value_or_none(row, 'pct_identity'),
+                "url": BOLD_RECORD_BASE_URL + process_id,
+                "country": _get_value_or_none(row, 'country/ocean'),
+                "nucleotides": _get_value_or_none(
+                    row,
+                    'nuc',
+                    '',
+                ).replace('-', ''),
+                "identified_by": _get_value_or_none(row, 'identified_by'),
+                "phylum": _get_value_or_none(row, 'phylum'),
+                "class": _get_value_or_none(row, 'class'),
+                "order": _get_value_or_none(row, 'order'),
+                "family": _get_value_or_none(row, 'family'),
+                "genus": _get_value_or_none(row, 'genus'),
+                "species": _get_value_or_none(row, 'species'),
             }
             results[query_id]['hits'].append(hit)
-
-        return results
-
-    def _bold_sequence_search(self) -> dict[str, list[dict[str, any]]]:
-        """Submit a sequence search request using BOLDigger3."""
-        wdir = config.output_dir / BOLDIGGER_OUTPUT_DIRNAME
-        wdir.mkdir(parents=True, exist_ok=True)
-        input_fasta_path = wdir / self.fasta_file.name
-        input_fasta_path.write_text(self.fasta_file.read_text())
-        args = [
-            "boldigger3",
-            "identify",
-            str(input_fasta_path),
-            "--db", str(self.database),
-            "--mode", str(self.mode)
-        ]
-        if self.thresholds:
-            args += ["--thresholds"] + [str(t) for t in self.thresholds]
-
-        logger.info("Submitting query sequences to BOLD with BOLDigger3...")
-
-        try:
-            proc = subprocess.Popen(
-                args,
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,  # line-buffered
-            )
-            for line in proc.stdout:
-                print(line, end='')
-
-            proc.stdout.close()
-            proc.wait()
-
-        except Exception as exc:
-            raise RuntimeError("Error running BOLDigger3") from exc
-
-        results = {}
-        for path in wdir.glob(BOLDIGGER_OUTPUT_XLSX_PATTERN):
-            logger.info(f"Parsing BOLDigger results from {path}...")
-            results = self._parse_bold_xlsx(path, results)
-        if not results:
-            raise RuntimeError(
-                "No results found in BOLDigger outputs - this indicates a bug"
-                " in the code, even for queries with no hits."
-            )
-        if config.BOLDIGGER_KEEP_OUTPUTS:
-            logger.info(
-                'BOLDIGGER_KEEP_OUTPUTS=true - BOLDigger outputs have been'
-                f' saved to {wdir}')
-        else:
-            shutil.rmtree(wdir, ignore_errors=True)
 
         return results
 
     def _parse_sequences(self) -> list[SeqIO.SeqRecord]:
         """Parse sequences from hits into SeqRecord objects."""
         sequences = {}
-        for seqid, hits in self.hits.items():
+        for seqid, result in self.results.items():
             sequences[seqid] = [
                 SeqIO.SeqRecord(
                     Seq(hit["nucleotides"]),
                     id=hit['hit_id'],
                     description=hit['taxonomic_identification'],
                 )
-                for hit in hits
-                if hit.get("nucleotides")
+                for hit in result['hits']
             ]
 
         return sequences
@@ -211,8 +212,8 @@ class BoldSearch:
         """Fetch correct taxonomic kingdom for each taxonomy."""
         phyla = {
             hit['phylum']: None
-            for hits in self.hits.values()
-            for hit in hits
+            for result in self.results.values()
+            for hit in result['hits']
         }
 
         with ThreadPoolExecutor(max_workers=15) as executor:
@@ -235,6 +236,6 @@ class BoldSearch:
                         f"Error fetching kingdom for phylum {phylum}: {e}"
                     )
 
-        for query in self.hits:
-            for hit in self.hits[query]:
+        for result in self.results.values():
+            for hit in result['hits']:
                 hit['kingdom'] = phyla[hit['phylum']]

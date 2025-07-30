@@ -19,13 +19,13 @@ def main():
     args = _parse_args()
     config.configure(args.output_dir, bold=True)
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
-    result = BoldSearch(
+    search = BoldSearch(
         args.fasta_file,
         database=config.BOLD_DATABASE,
         mode=BOLD_MODES.RAPID_SPECIES,
     )
-    _write_hits_json(result)
-    _write_hits_fasta(result)
+    _write_hits_json(search)
+    _write_hits_fasta(search)
     logger.info("BOLD search completed.")
 
 
@@ -46,25 +46,25 @@ def _parse_args():
     return parser.parse_args()
 
 
-def _write_hits_json(result: BoldSearch):
+def _write_hits_json(search: BoldSearch):
     """Write the search results to a JSON file."""
-    for query_title, hits in result.hits.items():
-        query_ix = hits['query_index']
-        query_dir = config.create_query_dir(query_ix, query_title)
+    for result in search.results.values():
+        query_ix = result['query_index']
+        query_dir = config.create_query_dir(query_ix, result['query_title'])
         path = query_dir / config.HITS_JSON
         with path.open("w") as f:
-            json.dump(hits, f, indent=2)
+            json.dump(result, f, indent=2)
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
 
 
-def _write_hits_fasta(result: BoldSearch):
+def _write_hits_fasta(search: BoldSearch):
     """Write the search results to a FASTA file."""
-    for query_title, hits in result.hits.items():
-        query_ix = hits['query_index']
+    for query_id, result in search.results.items():
+        query_ix = result['query_index']
         query_dir = config.get_query_dir(query_ix)
         path = query_dir / config.HITS_FASTA
         with path.open("w") as f:
-            SeqIO.write(result.hit_sequences[query_title], f, "fasta")
+            SeqIO.write(search.hit_sequences[query_id], f, "fasta")
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
 
 
