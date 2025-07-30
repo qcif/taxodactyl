@@ -194,7 +194,7 @@ have erroneous content, this will raise an exception with an error message that
 should be sufficient for the user to understand what's wrong with their input
 data.
 
-See [config.INPUTS](https://github.com/qcif/taxodactyl/blob/main/scripts/src/utils/config.py#L113)
+See [config.INPUTS](./src/utils/config.py#L113)
 for some parameters which are used for validation, such as permitted FASTA
 sequence lengths and required metadata.csv fields.
 

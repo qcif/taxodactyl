@@ -16,7 +16,7 @@
             "locus": {
                 "type": "string",
                 "description": "Name of the genetic locus for the sample.",
-                "errorMessage": "Parameter 'locus' must be a string. Check available loci in ‘assets/loci.json’. You can override it by setting the ‘allowed_loci_file’ parameter. For samples with no locus (viruses and BOLD runs), please enter 'NA'."
+                "errorMessage": "Parameter 'locus' must be a string. Check available loci in ‘scripts/config/loci.json’. You can override it by setting the ‘allowed_loci_file’ parameter. For samples with no locus (viruses and BOLD runs), please enter 'NA'."
             },
             "preliminary_id": {
                 "type": "string",

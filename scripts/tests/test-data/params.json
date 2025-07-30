@@ -49,5 +49,5 @@
     "gbif_limit_records": 500,
     "tree_nwk_filename": "candidates.nwk",
     "boxplot_img_filename": "candidates_identity_boxplot.png",
-    "allowed_loci_file": "/home/ubuntu/nextflow-pipeline/daff-taxassignwf/assets/loci.json"
+    "allowed_loci_file": "/home/ubuntu/nextflow-pipeline/daff-taxassignwf/scripts/config/loci.json"
 }

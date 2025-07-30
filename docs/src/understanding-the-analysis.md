@@ -97,7 +97,7 @@ This file provides metadata for each query sequence, with the following fields:
 | Field             | Required | Description                                                                                                         |
 |-------------------|----------|---------------------------------------------------------------------------------------------------------------------|
 | sample_id         | yes      | Must match the header of one FASTA sequence                                                                         |
-| locus             | yes      | Must be in the [list of allowed loci](./allowed-loci.html) or `NA` for virus or BOLD queries (note that this can be modified by updating [this file](https://github.com/qcif/taxodactyl/blob/main/assets/loci.json)).
+| locus             | yes      | Must be in the [list of allowed loci](./allowed-loci.html) or `NA` for virus or BOLD queries (note that this can be modified by updating [this file](https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json)).
 | preliminary_id    | yes      | A suggested taxonomic identity based on sample morphology                                                           |
 | taxa_of_interest  | no       | A pipe-delimited list of taxa to be evaluated against the sample. Can be at rank species, genus, family, order, class, phylum, kingdom or domain. |
 | country           | no       | The sample country of origin                                                                                        |
@@ -381,7 +381,7 @@ To obtain "species in genus" in analyses `5.2` and `5.3`, we use the GBIF API:
 
 ### Enumerating GenBank records
 
-For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's [loci.json](https://github.com/qcif/taxodactyl/blob/main/assets/loci.json) file. the taxid is extracted from NCBI taxonomies [using taxonkit](#blast-extracting-taxonomic-metadata).
+For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's [loci.json](https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json) file. the taxid is extracted from NCBI taxonomies [using taxonkit](#blast-extracting-taxonomic-metadata).
 
 For example, the following locus and taxon "Homo sapiens" (taxid `9606`):
 
