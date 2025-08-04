@@ -15,12 +15,14 @@ process BOLD_SEARCH {
         pattern:    "query_*/$params.hits_fasta_filename" // Publish hit FASTA files to output directory
 
     script:
+    def bold_database_arg = params.bold_database_name ? "--bold-database ${params.bold_database_name}" : ''
     """
     # Source environment variables
     source ${env_var_file}
     # Run the BOLD search Python script
     python /app/scripts/p1_bold_search.py \
         --output_dir ./ \
+        ${bold_database_arg} \
         ${fasta} 
     """
 }

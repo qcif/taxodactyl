@@ -12,6 +12,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     tuple val(query_folder), path("$query_folder/$params.independent_sources_json_filename"), emit: independent_sources // Output: independent sources JSON
 
     script:
+    def min_source_count_arg = params.min_source_count ? "--min-source-count ${params.min_source_count}" : ''
     """
     # Source environment variables
     source ${env_var_file}
@@ -22,6 +23,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     # Run the source diversity Python script
     python /app/scripts/p4_source_diversity.py \
     $query_folder \
-    --output_dir ./
+    --output_dir ./ \
+    ${min_source_count_arg}
     """
 }

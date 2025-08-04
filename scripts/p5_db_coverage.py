@@ -28,6 +28,31 @@ MODULE_NAME = "Database Coverage"
 def main():
     args = _parse_args()
     config.configure(args.output_dir, query_dir=args.query_dir)
+
+    # Update config with CLI arguments
+    if args.db_coverage_toi_limit is not None:
+        config.DB_COVERAGE_TOI_LIMIT = args.db_coverage_toi_limit
+    if args.db_coverage_max_candidates is not None:
+        config.DB_COVERAGE_MAX_CANDIDATES = args.db_coverage_max_candidates
+    if args.gbif_limit_records is not None:
+        config.GBIF_LIMIT_RECORDS = args.gbif_limit_records
+    if args.gbif_max_occurrence_records is not None:
+        config.GBIF_MAX_OCCURRENCE_RECORDS = args.gbif_max_occurrence_records
+    if args.gbif_accepted_status is not None:
+        config.GBIF_ACCEPTED_STATUS = (
+            args.gbif_accepted_status.upper().replace(' ', '').split(','))
+    if args.db_cov_target_min_a is not None:
+        config.CRITERIA.DB_COV_TARGET_MIN_A = args.db_cov_target_min_a
+    if args.db_cov_target_min_b is not None:
+        config.CRITERIA.DB_COV_TARGET_MIN_B = args.db_cov_target_min_b
+    if args.db_cov_related_min_a is not None:
+        config.CRITERIA.DB_COV_RELATED_MIN_A = args.db_cov_related_min_a
+    if args.db_cov_related_min_b is not None:
+        config.CRITERIA.DB_COV_RELATED_MIN_B = args.db_cov_related_min_b
+    if args.db_cov_country_missing_a is not None:
+        config.CRITERIA.DB_COV_COUNTRY_MISSING_A = (
+            args.db_cov_country_missing_a)
+
     results, error_detected = assess_coverage(
         args.query_dir,
         is_bold=args.bold,
@@ -57,6 +82,56 @@ def _parse_args():
         "--bold",
         action="store_true",
         help="Reference the BOLD database instead of GenBank.")
+    parser.add_argument(
+        "--db-coverage-toi-limit",
+        type=int,
+        help="Limit for taxa of interest in coverage analysis",
+    )
+    parser.add_argument(
+        "--db-coverage-max-candidates",
+        type=int,
+        help="Maximum candidates for coverage assessment",
+    )
+    parser.add_argument(
+        "--gbif-limit-records",
+        type=int,
+        help="Limit for GBIF taxonomy records",
+    )
+    parser.add_argument(
+        "--gbif-max-occurrence-records",
+        type=int,
+        help="Maximum GBIF occurrence records",
+    )
+    parser.add_argument(
+        "--gbif-accepted-status",
+        type=str,
+        help="Comma-separated list of accepted taxonomic statuses",
+    )
+    parser.add_argument(
+        "--db-cov-target-min-a",
+        type=int,
+        help="Minimum records for target species (grade A)",
+    )
+    parser.add_argument(
+        "--db-cov-target-min-b",
+        type=int,
+        help="Minimum records for target species (grade B)",
+    )
+    parser.add_argument(
+        "--db-cov-related-min-a",
+        type=int,
+        help="Minimum records for related species (grade A)",
+    )
+    parser.add_argument(
+        "--db-cov-related-min-b",
+        type=int,
+        help="Minimum records for related species (grade B)",
+    )
+    parser.add_argument(
+        "--db-cov-country-missing-a",
+        type=int,
+        help="Threshold for missing country data (grade A)",
+    )
     return parser.parse_args()
 
 

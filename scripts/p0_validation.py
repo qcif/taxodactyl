@@ -31,6 +31,21 @@ TAXDB_EXPECT_FILES = {
 
 def main():
     args = _parse_args()
+
+    # Update config with CLI arguments
+    if args.allowed_loci_file is not None:
+        config.ALLOWED_LOCI_FILE = args.allowed_loci_file
+    if args.input_fasta is not None:
+        os.environ["INPUT_FASTA_FILEPATH"] = str(args.input_fasta)
+    if args.input_metadata is not None:
+        os.environ["INPUT_METADATA_CSV_FILEPATH"] = str(args.input_metadata)
+    if args.fasta_max_sequences is not None:
+        config.INPUTS.FASTA_MAX_SEQUENCES = args.fasta_max_sequences
+    if args.fasta_min_length is not None:
+        config.INPUTS.FASTA_MIN_LENGTH_NT = args.fasta_min_length
+    if args.fasta_max_length is not None:
+        config.INPUTS.FASTA_MAX_LENGTH_NT = args.fasta_max_length
+
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)
     _validate_metadata(args.metadata_csv, ids, bold=args.bold)
@@ -62,6 +77,36 @@ def _parse_args():
         "--bold",
         action="store_true",
         help="Validate inputs for a BOLD analysis (accept blank locus field).",
+    )
+    parser.add_argument(
+        "--allowed-loci-file",
+        type=existing_path,
+        help="Path to JSON file containing allowed loci definitions",
+    )
+    parser.add_argument(
+        "--input-fasta",
+        type=existing_path,
+        help="Path to input FASTA file containing query sequences",
+    )
+    parser.add_argument(
+        "--input-metadata",
+        type=existing_path,
+        help="Path to input metadata CSV file",
+    )
+    parser.add_argument(
+        "--fasta-max-sequences",
+        type=int,
+        help="Maximum number of sequences allowed",
+    )
+    parser.add_argument(
+        "--fasta-min-length",
+        type=int,
+        help="Minimum sequence length in nucleotides",
+    )
+    parser.add_argument(
+        "--fasta-max-length",
+        type=int,
+        help="Maximum sequence length in nucleotides",
     )
     return parser.parse_args()
 

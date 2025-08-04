@@ -33,6 +33,14 @@ process EXTRACT_CANDIDATES {
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
+    def min_alignment_length_arg = params.min_nt ? "--min-alignment-length ${params.min_nt}" : ''
+    def min_query_coverage_arg = params.min_q_coverage ? "--min-query-coverage ${params.min_q_coverage}" : ''
+    def min_identity_arg = params.min_identity ? "--min-identity ${params.min_identity}" : ''
+    def min_identity_strict_arg = params.min_identity_strict ? "--min-identity-strict ${params.min_identity_strict}" : ''
+    def median_identity_warning_factor_arg = params.median_identity_warning_factor ? "--median-identity-warning-factor ${params.median_identity_warning_factor}" : ''
+    def max_candidates_analysis_arg = params.max_candidates_for_analysis ? "--max-candidates-analysis ${params.max_candidates_for_analysis}" : ''
+    def phylogeny_min_sequences_arg = params.phylogeny_min_hit_sequences ? "--phylogeny-min-sequences ${params.phylogeny_min_hit_sequences}" : ''
+    def phylogeny_max_per_species_arg = params.phylogeny_max_hits_per_species ? "--phylogeny-max-per-species ${params.phylogeny_max_hits_per_species}" : ''
     """
     # Source environment variables
     source ${env_var_file}
@@ -45,6 +53,14 @@ process EXTRACT_CANDIDATES {
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
     --output_dir ./ \
-    ${bold_flag} 
+    ${bold_flag} \
+    ${min_alignment_length_arg} \
+    ${min_query_coverage_arg} \
+    ${min_identity_arg} \
+    ${min_identity_strict_arg} \
+    ${median_identity_warning_factor_arg} \
+    ${max_candidates_analysis_arg} \
+    ${phylogeny_min_sequences_arg} \
+    ${phylogeny_max_per_species_arg}
     """
 }
