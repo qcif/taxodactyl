@@ -27,6 +27,11 @@ process REPORT {
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
+    def report_debug_arg = params.report_debug ? "--report-debug" : ''
+    def database_name_arg = params.blast_database_name_for_report ? "--database-name ${params.blast_database_name_for_report}" : ''
+    def facility_name_arg = params.facility_name ? "--facility-name '${params.facility_name}'" : ''
+    def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
+    def flag_details_csv_arg = params.flag_details_csv ? "--flag-details-csv ${file(params.flag_details_csv)}" : ''
     """
     # Source environment variables
     source ${env_var_file}
@@ -52,6 +57,11 @@ process REPORT {
             --output_dir ./ \
             --versions_yml ${versions_file} \
             --params_json ${params_file} \
-            ${bold_flag} 
+            ${bold_flag} \
+            ${report_debug_arg} \
+            ${database_name_arg} \
+            ${facility_name_arg} \
+            ${analyst_name_arg} \
+            ${flag_details_csv_arg}
     """
 }

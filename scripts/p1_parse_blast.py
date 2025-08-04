@@ -17,6 +17,11 @@ config = Config()
 def main():
     args = _parse_args()
     config.configure(args.output_dir)
+
+    # Update config with CLI arguments
+    if args.blast_max_target_seqs is not None:
+        config.BLAST_MAX_TARGET_SEQS = args.blast_max_target_seqs
+
     hits, fastas = parse_blast_xml(args.blast_xml_path)
     _write_hits(hits)
     _write_fastas(fastas)
@@ -38,6 +43,11 @@ def _parse_args():
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
+    )
+    parser.add_argument(
+        "--blast-max-target-seqs",
+        type=int,
+        help="Maximum number of target sequences for BLAST",
     )
     return parser.parse_args()
 

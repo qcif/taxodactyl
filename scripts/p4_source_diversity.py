@@ -25,6 +25,11 @@ config = Config()
 def main():
     args = _parse_args()
     config.configure(args.output_dir, query_dir=args.query_dir)
+
+    # Update config with CLI arguments
+    if args.min_source_count is not None:
+        config.CRITERIA.SOURCES_MIN_COUNT = args.min_source_count
+
     species, hits = _read_candidate_hits(args.query_dir)
     candidate_hits = [
         hit for hit in hits
@@ -54,6 +59,11 @@ def _parse_args():
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
+    parser.add_argument(
+        "--min-source-count",
+        type=int,
+        help="Minimum number of independent sources required",
+    )
     return parser.parse_args()
 
 

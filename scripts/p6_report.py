@@ -13,6 +13,19 @@ def main():
     """Build the workflow report."""
     args = _parse_args()
     config.configure(args.output_dir, query_dir=args.query_dir)
+
+    # Update config with CLI arguments
+    if args.report_debug is not None:
+        config.REPORT.DEBUG = args.report_debug
+    if args.database_name is not None:
+        config.REPORT.DATABASE_NAME = args.database_name
+    if args.facility_name is not None:
+        config.INPUTS.FACILITY_NAME = args.facility_name
+    if args.analyst_name is not None:
+        config.INPUTS.ANALYST_NAME = args.analyst_name
+    if args.flag_details_csv is not None:
+        config.FLAG_DETAILS_CSV_PATH = args.flag_details_csv
+
     report.render(
         args.query_dir,
         args.bold,
@@ -44,6 +57,31 @@ def _parse_args():
         "--versions_yml",
         type=existing_path,
         help="Path to versions YAML file."
+    )
+    parser.add_argument(
+        "--report-debug",
+        action="store_true",
+        help="Enable debug mode for report generation"
+    )
+    parser.add_argument(
+        "--database-name",
+        type=str,
+        help="Name of the reference database"
+    )
+    parser.add_argument(
+        "--facility-name",
+        type=str,
+        help="Name of the analysis facility"
+    )
+    parser.add_argument(
+        "--analyst-name",
+        type=str,
+        help="Name of the analyst"
+    )
+    parser.add_argument(
+        "--flag-details-csv",
+        type=existing_path,
+        help="Path to CSV file containing flag definitions"
     )
 
     return parser.parse_args()

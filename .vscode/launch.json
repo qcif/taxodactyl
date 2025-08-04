@@ -36,8 +36,8 @@
                 "RUN_TEST_CASE": "c03",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
-                "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",
-                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
+                // Note: PHYLOGENY_MAX_HITS_PER_SPECIES and GBIF_MAX_OCCURRENCE_RECORDS
+                // are now passed as CLI arguments in the Python scripts
             },
             "console": "integratedTerminal",
             "justMyCode": true
@@ -57,8 +57,8 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
                 "RUN_TEST_CASE": "112",  // Optional, run a specific test case
+                // Note: GBIF_MAX_OCCURRENCE_RECORDS is now passed as CLI argument
             },
             "console": "integratedTerminal",
             "justMyCode": true
@@ -86,6 +86,7 @@
 
                 "output/issues/131/query.fasta",
                 "--output_dir", "output/issues/131/bold",
+                "--bold-database", "COX1_SPECIES_PUBLIC",
             ],
             "preLaunchTask": "clear-log-files",
             "env": {
@@ -114,21 +115,18 @@
             "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549"
-                // "output/query_002_ON075825"
-                // "output/query_003_PP466915"
-                // "output/query_004_JQ585746"
-                // "output/query_005_LC547004"
-
+                "output/query_001_LC438549",
+                "--phylogeny-max-per-species", "10",
+                // "--max-candidates-analysis", "0",  // Force boxplot
+                
                 // For testing phylogeny hit sampling:
                 // "output/issues/c14/query_001_VE24-1067_COI",
                 // "--output_dir", "output/issues/c14",
+                // "--input-metadata", "output/issues/c14/metadata_014.csv",
+                // "--input-fasta", "output/issues/c14/query_014.fasta",
             ],
             "env": {
-                "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",
-                // "MAX_CANDIDATES_FOR_ANALYSIS": "0",  // Force boxplot
-                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/c14/metadata_014.csv",
-                // "INPUT_FASTA_FILEPATH": "output/issues/c14/query_014.fasta",
+                // Keep remaining env vars that aren't converted yet
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -146,15 +144,16 @@
                 // "output/bold/query_005_LC547004",
                 // "output/bold/query_006_VE24-1086_COI",
                 "--bold",
+                // "--max-candidates-analysis", "0",  // Force boxplot
 
                 // For testing issue cases:
                 "output/issues/108/query_001_VE24-1066_COI",
                 "--output_dir", "output/issues/108",
+                "--input-metadata", "output/issues/108/metadata.csv",
+                "--input-fasta", "output/issues/108/query.fasta",
             ],
             "env": {
-                // "MAX_CANDIDATES_FOR_ANALYSIS": "0",  // Force boxplot
-                "INPUT_METADATA_CSV_FILEPATH": "output/issues/108/metadata.csv",
-                "INPUT_FASTA_FILEPATH": "output/issues/108/query.fasta",
+                // Keep remaining env vars that aren't converted yet
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -184,6 +183,7 @@
 
                 "output/issues/112/query_004_MG240613_4",
                 "--output_dir", "output/issues/112",
+                "--min-source-count", "5",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
@@ -200,6 +200,7 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 "output/query_001_LC438549",
+                "--gbif-max-occurrence-records", "200",
                 // "output/query_002_ON075825",
                 // "output/query_003_PP466915"
                 // "output/query_006_VE24-1086_COI"
@@ -207,12 +208,11 @@
                 // For testing issue cases:
                 // "output/issues/31/query_001_VE24-1351_COI",
                 // "--output_dir", "output/issues/31",
+                // "--input-metadata", "output/issues/31/metadata.csv",
+                // "--input-fasta", "output/issues/31/queries.fasta",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
-                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
-                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/31/metadata.csv",
-                // "INPUT_FASTA_FILEPATH": "output/issues/31/queries.fasta",
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -226,6 +226,7 @@
                 // "output/bold/query_001_LC438549",
                 // "--output_dir", "output/bold",
                 "--bold",
+                "--gbif-max-occurrence-records", "200",
 
                 // For testing issue cases:
                 "output/issues/112/old_work/query_004_MG240613_4",
@@ -233,7 +234,6 @@
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
-                "GBIF_MAX_OCCURRENCE_RECORDS": "200",
                 "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
                 "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
             },
@@ -253,20 +253,18 @@
 
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
+                "--report-debug",
+                "--facility-name", "Cairns Airport",
+                "--analyst-name", "John Doe",
 
                 // For testing issue cases:
                 // "output/issues/44/query_001_VE25-1406_COI",
                 // "--output_dir", "output/issues/44",
+                // "--input-fasta", "output/issues/44/query.fasta",
+                // "--input-metadata", "output/issues/44/metadata.csv",
             ],
             "env": {
-                "REPORT_DEBUG": "1",
-                "FACILITY_NAME": "Cairns Airport",
-                "ANALYST_NAME": "John Doe",
-                // "INPUT_FASTA_FILEPATH": "tests/test-data/queries.fasta",
-
-                // For testing issue cases:
-                // "INPUT_FASTA_FILEPATH": "output/issues/44/query.fasta",
-                // "INPUT_METADATA_CSV_FILEPATH": "output/issues/44/metadata.csv",
+                // Keep remaining env vars that aren't converted yet
             },
         },
         {
@@ -288,7 +286,6 @@
             "env": {
                 "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
                 "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
-
             },
         },
         {

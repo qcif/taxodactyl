@@ -92,8 +92,10 @@ class Config:
                                    "bold_taxonomy.json")
 
     # Other configuration
-    FLAG_DETAILS_CSV_PATH = (
-        Path(__file__).parents[2] / 'config/flags.csv')
+    FLAG_DETAILS_CSV_PATH = Path(
+        os.getenv(
+            "FLAG_DETAILS_CSV_PATH",
+            Path(__file__).parents[2] / 'config/flags.csv'))
     ALLOWED_LOCI_FILE = Path(
         os.getenv(
             "ALLOWED_LOCI_FILE",
@@ -101,7 +103,7 @@ class Config:
             / 'config/loci.json'))
     DB_COVERAGE_TOI_LIMIT = int(os.getenv("DB_COVERAGE_TOI_LIMIT", 10))
     HMMSEARCH_MIN_EVALUE = 1e-5
-    DB_COVERAGE_MAX_CANDIDATES = 3
+    DB_COVERAGE_MAX_CANDIDATES = int(os.getenv("DB_COVERAGE_MAX_CANDIDATES", 3))
     FLAG_FILE_TEMPLATE = '{identifier}.flag'
     GBIF_LIMIT_RECORDS = int(os.getenv("GBIF_LIMIT_RECORDS", 500))
     GBIF_MAX_OCCURRENCE_RECORDS = int(

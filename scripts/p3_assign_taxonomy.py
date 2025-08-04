@@ -57,6 +57,30 @@ CANDIDATE_CSV_HEADER_BOLD = [
 def main():
     args = _parse_args()
     config.configure(args.output_dir, query_dir=args.query_dir)
+
+    # Update config with CLI arguments
+    if args.min_alignment_length is not None:
+        config.CRITERIA.ALIGNMENT_MIN_NT = args.min_alignment_length
+    if args.min_query_coverage is not None:
+        config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE = args.min_query_coverage
+    if args.min_identity is not None:
+        config.CRITERIA.ALIGNMENT_MIN_IDENTITY = args.min_identity
+    if args.min_identity_strict is not None:
+        config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT = (
+            args.min_identity_strict)
+    if args.median_identity_warning_factor is not None:
+        config.CRITERIA.MEDIAN_IDENTITY_WARNING_FACTOR = (
+            args.median_identity_warning_factor)
+    if args.max_candidates_analysis is not None:
+        config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS = (
+            args.max_candidates_analysis)
+    if args.phylogeny_min_sequences is not None:
+        config.CRITERIA.PHYLOGENY_MIN_HIT_SEQUENCES = (
+            args.phylogeny_min_sequences)
+    if args.phylogeny_max_per_species is not None:
+        config.CRITERIA.PHYLOGENY_MAX_HITS_PER_SPECIES = (
+            args.phylogeny_max_per_species)
+
     result = config.read_hits_json(args.query_dir)
     if args.bold:
         filtered_hits = result['hits']
@@ -91,6 +115,38 @@ def _parse_args():
         "--bold",
         action="store_true",
         help="Outputs are from BOLD query.")
+    parser.add_argument(
+        "--min-alignment-length",
+        type=int,
+        help="Minimum alignment length in nucleotides")
+    parser.add_argument(
+        "--min-query-coverage",
+        type=float,
+        help="Minimum query coverage fraction")
+    parser.add_argument(
+        "--min-identity",
+        type=float,
+        help="Minimum sequence identity for moderate matches")
+    parser.add_argument(
+        "--min-identity-strict",
+        type=float,
+        help="Minimum sequence identity for strong matches")
+    parser.add_argument(
+        "--median-identity-warning-factor",
+        type=float,
+        help="Factor for median identity warnings")
+    parser.add_argument(
+        "--max-candidates-analysis",
+        type=int,
+        help="Maximum candidates to include in detailed analysis")
+    parser.add_argument(
+        "--phylogeny-min-sequences",
+        type=int,
+        help="Minimum sequences required for phylogeny")
+    parser.add_argument(
+        "--phylogeny-max-per-species",
+        type=int,
+        help="Maximum sequences per species for phylogeny")
     return parser.parse_args()
 
 

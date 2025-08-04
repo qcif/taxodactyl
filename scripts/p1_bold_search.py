@@ -18,6 +18,11 @@ config = Config()
 def main():
     args = _parse_args()
     config.configure(args.output_dir, bold=True)
+
+    # Update config with CLI arguments
+    if args.bold_database is not None:
+        config.BOLD_DATABASE = args.bold_database
+
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
     result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)
     _write_hits_json(result)
@@ -39,6 +44,11 @@ def _parse_args():
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
+    )
+    parser.add_argument(
+        "--bold-database",
+        type=str,
+        help="BOLD database to search",
     )
     return parser.parse_args()
 
