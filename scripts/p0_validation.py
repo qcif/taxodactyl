@@ -36,9 +36,9 @@ def main():
     if args.allowed_loci_file is not None:
         config.ALLOWED_LOCI_FILE = args.allowed_loci_file
     if args.input_fasta is not None:
-        os.environ["INPUT_FASTA_FILEPATH"] = str(args.input_fasta)
+        config.fasta_filepath = args.input_fasta
     if args.input_metadata is not None:
-        os.environ["INPUT_METADATA_CSV_FILEPATH"] = str(args.input_metadata)
+        config.metadata_path = args.input_metadata
     if args.fasta_max_sequences is not None:
         config.INPUTS.FASTA_MAX_SEQUENCES = args.fasta_max_sequences
     if args.fasta_min_length is not None:
