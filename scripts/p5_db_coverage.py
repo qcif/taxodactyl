@@ -30,28 +30,12 @@ def main():
     config.configure(args.output_dir, query_dir=args.query_dir)
 
     # Update config with CLI arguments
-    if args.db_coverage_toi_limit is not None:
-        config.DB_COVERAGE_TOI_LIMIT = args.db_coverage_toi_limit
-    if args.db_coverage_max_candidates is not None:
-        config.DB_COVERAGE_MAX_CANDIDATES = args.db_coverage_max_candidates
-    if args.gbif_limit_records is not None:
-        config.GBIF_LIMIT_RECORDS = args.gbif_limit_records
-    if args.gbif_max_occurrence_records is not None:
-        config.GBIF_MAX_OCCURRENCE_RECORDS = args.gbif_max_occurrence_records
+    config.update_from_args(args)
+    
+    # Handle special case for gbif_accepted_status
     if args.gbif_accepted_status is not None:
         config.GBIF_ACCEPTED_STATUS = (
             args.gbif_accepted_status.upper().replace(' ', '').split(','))
-    if args.db_cov_target_min_a is not None:
-        config.CRITERIA.DB_COV_TARGET_MIN_A = args.db_cov_target_min_a
-    if args.db_cov_target_min_b is not None:
-        config.CRITERIA.DB_COV_TARGET_MIN_B = args.db_cov_target_min_b
-    if args.db_cov_related_min_a is not None:
-        config.CRITERIA.DB_COV_RELATED_MIN_A = args.db_cov_related_min_a
-    if args.db_cov_related_min_b is not None:
-        config.CRITERIA.DB_COV_RELATED_MIN_B = args.db_cov_related_min_b
-    if args.db_cov_country_missing_a is not None:
-        config.CRITERIA.DB_COV_COUNTRY_MISSING_A = (
-            args.db_cov_country_missing_a)
 
     results, error_detected = assess_coverage(
         args.query_dir,

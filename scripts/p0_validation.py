@@ -33,18 +33,7 @@ def main():
     args = _parse_args()
 
     # Update config with CLI arguments
-    if args.allowed_loci_file is not None:
-        config.ALLOWED_LOCI_FILE = args.allowed_loci_file
-    if args.input_fasta is not None:
-        config.fasta_filepath = args.input_fasta
-    if args.input_metadata is not None:
-        config.metadata_path = args.input_metadata
-    if args.fasta_max_sequences is not None:
-        config.INPUTS.FASTA_MAX_SEQUENCES = args.fasta_max_sequences
-    if args.fasta_min_length is not None:
-        config.INPUTS.FASTA_MIN_LENGTH_NT = args.fasta_min_length
-    if args.fasta_max_length is not None:
-        config.INPUTS.FASTA_MAX_LENGTH_NT = args.fasta_max_length
+    config.update_from_args(args)
 
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)

@@ -20,8 +20,7 @@ def main():
     config.configure(args.output_dir, bold=True)
 
     # Update config with CLI arguments
-    if args.bold_database is not None:
-        config.BOLD_DATABASE = args.bold_database
+    config.update_from_args(args)
 
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
     result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)

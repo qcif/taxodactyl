@@ -213,6 +213,21 @@ class Config:
         if bold:
             self.bold_flag_file.write_text('1')
 
+    def update_from_args(self, args):
+        """Update config values from CLI arguments using the built-in mapping.
+
+        Args:
+            args: Parsed command line arguments
+        """
+        for arg_name, config_path in self.CLI_ARG_MAPPING.items():
+            value = getattr(args, arg_name, None)
+            if value is not None:
+                parts = config_path.split('.')
+                obj = self
+                for part in parts[:-1]:
+                    obj = getattr(obj, part)
+                setattr(obj, parts[-1], value)
+
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
         query_dir = self.get_query_dir(query_ix)
