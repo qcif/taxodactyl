@@ -198,6 +198,12 @@ class IntegrationTest(unittest.TestCase):
                         "query_fasta": wdir / "query.fasta",
                         "taxdb_dir": self.taxdump_dir,
                         "bold": False,
+                        "allowed_loci_file": None,
+                        "input_fasta": None,
+                        "input_metadata": None,
+                        "fasta_max_sequences": None,
+                        "fasta_min_length": None,
+                        "fasta_max_length": None,
                     },
                 )
                 print_green(f"\nTest case {test_case.name}: P0 PASS\n")
@@ -207,6 +213,7 @@ class IntegrationTest(unittest.TestCase):
                     {
                         "blast_xml_path": wdir / "blast_result.xml",
                         "output_dir": wdir,
+                        "blast_max_target_seqs": None,
                     },
                 )
                 print_green(f"\nTest case {test_case.name}: P1 PASS\n")
@@ -230,6 +237,14 @@ class IntegrationTest(unittest.TestCase):
                         "query_dir": query_dir,
                         "output_dir": wdir,
                         "bold": False,
+                        "min_alignment_length": None,
+                        "min_query_coverage": None,
+                        "min_identity": None,
+                        "min_identity_strict": None,
+                        "median_identity_warning_factor": None,
+                        "max_candidates_analysis": None,
+                        "phylogeny_min_sequences": None,
+                        "phylogeny_max_per_species": None,
                     },
                 )
                 print_green(f"\nTest case {test_case.name}: P3 PASS\n")
@@ -245,6 +260,7 @@ class IntegrationTest(unittest.TestCase):
                         {
                             "query_dir": query_dir,
                             "output_dir": wdir,
+                            "min_source_count": None,
                         },
                     )
                     print_green(f"\nTest case {test_case.name}: P4 PASS\n")
@@ -260,6 +276,16 @@ class IntegrationTest(unittest.TestCase):
                         "query_dir": query_dir,
                         "output_dir": wdir,
                         "bold": False,
+                        "db_coverage_toi_limit": None,
+                        "db_coverage_max_candidates": None,
+                        "gbif_limit_records": None,
+                        "gbif_max_occurrence_records": None,
+                        "gbif_accepted_status": None,
+                        "db_cov_target_min_a": None,
+                        "db_cov_target_min_b": None,
+                        "db_cov_related_min_a": None,
+                        "db_cov_related_min_b": None,
+                        "db_cov_country_missing_a": None,
                     },
                 )
                 print_green(f"\nTest case {test_case.name}: P5 PASS\n")
@@ -276,6 +302,11 @@ class IntegrationTest(unittest.TestCase):
                         "bold": False,
                         "params_json": TEST_DATA_DIR / "params.json",
                         "versions_yml": TEST_DATA_DIR / "versions.yml",
+                        "report_debug": False,
+                        "database_name": None,
+                        "facility_name": None,
+                        "analyst_name": None,
+                        "flag_details_csv": None,
                     },
                 )
                 print_green(f"\nTest case {test_case.name}: P6 PASS\n")

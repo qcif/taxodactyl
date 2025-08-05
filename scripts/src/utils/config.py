@@ -40,6 +40,18 @@ class class_property:
 
 
 class Config:
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Config, cls).__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if Config._initialized:
+            return
+        Config._initialized = True
 
     USER_EMAIL = os.getenv("USER_EMAIL")
     NCBI_API_KEY = os.getenv("NCBI_API_KEY")
@@ -103,7 +115,8 @@ class Config:
             / 'config/loci.json'))
     DB_COVERAGE_TOI_LIMIT = int(os.getenv("DB_COVERAGE_TOI_LIMIT", 10))
     HMMSEARCH_MIN_EVALUE = 1e-5
-    DB_COVERAGE_MAX_CANDIDATES = int(os.getenv("DB_COVERAGE_MAX_CANDIDATES", 3))
+    DB_COVERAGE_MAX_CANDIDATES = int(
+        os.getenv("DB_COVERAGE_MAX_CANDIDATES", 3))
     FLAG_FILE_TEMPLATE = '{identifier}.flag'
     GBIF_LIMIT_RECORDS = int(os.getenv("GBIF_LIMIT_RECORDS", 500))
     GBIF_MAX_OCCURRENCE_RECORDS = int(
