@@ -32,8 +32,7 @@ TAXDB_EXPECT_FILES = {
 def main():
     args = _parse_args()
 
-    # Update config with CLI arguments
-    config.update_from_args(args)
+    # Configuration is now handled in Config.__init__ via YAML
 
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)

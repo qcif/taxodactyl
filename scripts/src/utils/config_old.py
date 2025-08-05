@@ -1,25 +1,22 @@
-"""Runtime configuration for the workflow using YAML and Pydantic validation."""
+"""Runtime configuration for the workflow.
 
-import argparse
+All configuration values can be overridden with environment variables.
+"""
+
 import csv
 import json
 import logging
 import os
 import shutil
-import sys
 import tempfile
-import yaml
 from datetime import datetime, timedelta
 from functools import cached_property
 from logging.config import dictConfig
 from pathlib import Path
-from typing import Optional
 
 from Bio import SeqIO
-from pydantic import ValidationError
 
 from . import countries
-from .config_schema import ConfigSchema
 from .locus import Locus
 from .log import get_logging_config
 from .utils import path_safe_str
@@ -32,11 +29,9 @@ REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_FASTA_INPUT = ROOT_DIR / 'scripts/tests/test-data/queries.fasta'
 DEFAULT_METADATA_INPUT = ROOT_DIR / 'scripts/tests/test-data/metadata.csv'
-DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 
 
 class Config:
-    """Singleton configuration class using YAML with Pydantic validation."""
     _instance = None
     _initialized = False
 
@@ -50,166 +45,164 @@ class Config:
             return
         Config._initialized = True
 
-        # Parse command line for config files (supports cascading)
-        config_paths = self._get_config_paths()
-        
-        # Load and validate configuration with cascading
-        self._load_cascading_config(config_paths)
-        
         # Initialize singleton attributes
         self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
         self.query_dir = None
 
-    def _get_config_paths(self) -> list[Path]:
-        """Parse command line to get config file paths (supports multiple -c flags)."""
-        # Create a minimal parser just for the config argument
-        parser = argparse.ArgumentParser(add_help=False)
-        parser.add_argument(
-            '-c', '--config', 
-            type=Path,
-            action='append',
-            help='Configuration YAML file path (can be specified multiple times for cascading configs)'
+    USER_EMAIL = os.getenv("USER_EMAIL")
+    NCBI_API_KEY = os.getenv("NCBI_API_KEY")
+    TAXONKIT_DATA = os.getenv("TAXONKIT_DATA",
+                              Path('~/.taxonkit').expanduser())
+
+    # Outputs
+    TIMESTAMP_FILENAME = os.getenv("TIMESTAMP_FILENAME", 'timestamp.txt')
+    ACCESSIONS_FILENAME = os.getenv("ACCESSIONS_FILENAME", "accessions.txt")
+    TAXONOMY_FILE = os.getenv("TAXONOMY_FILENAME", 'taxonomy.csv')
+    QUERY_TITLE_FILE = os.getenv("QUERY_TITLE_FILENAME", 'query_title.txt')
+    HITS_JSON = os.getenv("HITS_JSON_FILENAME", 'hits.json')
+    HITS_FASTA = os.getenv("HITS_FASTA_FILENAME", 'hits.fasta')
+    TAXONOMY_ID_CSV = os.getenv("TAXONOMY_ID_CSV_FILENAME",
+                                'assigned_taxonomy.csv')
+    CANDIDATES_FASTA = os.getenv("CANDIDATES_FASTA_FILENAME",
+                                 'candidates.fasta')
+    PHYLOGENY_FASTA = os.getenv("PHYLOGENY_FASTA_FILENAME",
+                                'phylogeny.fasta')
+    CANDIDATES_CSV = os.getenv("CANDIDATES_CSV_FILENAME", 'candidates.csv')
+    CANDIDATES_JSON = os.getenv("CANDIDATES_JSON_FILENAME", 'candidates.json')
+    CANDIDATES_COUNT_FILE = os.getenv("CANDIDATES_COUNT_FILENAME",
+                                      'candidates_count.txt')
+    CANDIDATES_SOURCES_JSON = os.getenv("CANDIDATES_SOURCES_JSON_FILENAME",
+                                        'candidates_sources.json')
+    INDEPENDENT_SOURCES_JSON = os.getenv("INDEPENDENT_SOURCES_JSON_FILENAME",
+                                         'aggregated_sources.json')
+    TOI_DETECTED_CSV = os.getenv("TOI_DETECTED_CSV_FILENAME",
+                                 'taxa_of_concern_detected.csv')
+    PMI_MATCH_CSV = os.getenv("PMI_MATCH_CSV_FILENAME",
+                              'preliminary_id_match.csv')
+    BOXPLOT_IMG_FILENAME = os.getenv("BOXPLOT_IMG_FILENAME",
+                                     'identity-boxplot.png')
+    TREE_NWK_FILENAME = os.getenv("TREE_NWK_FILENAME",
+                                  'candidates.nwk')
+    DB_COVERAGE_JSON = os.getenv("DB_COVERAGE_JSON_FILENAME",
+                                 'db_coverage.json')
+
+    # BLAST-specific
+    BLAST_MAX_TARGET_SEQS = int(os.getenv("BLAST_MAX_TARGET_SEQS", 2000))
+
+    # BOLD-specific
+    BOLD_DATABASE = os.getenv("BOLD_DATABASE", "COX1_SPECIES_PUBLIC")
+    BOLD_FLAG = 'BOLD'
+    BOLD_TAXON_COUNT_JSON = os.getenv("BOLD_TAXON_COUNT_JSON",
+                                      "bold_taxon_counts.json")
+    BOLD_TAXON_COLLECTORS_JSON = os.getenv("BOLD_TAXON_COLLECTORS_JSON",
+                                           "bold_taxon_collectors.json")
+    BOLD_TAXONOMY_JSON = os.getenv("BOLD_TAXONOMY_JSON",
+                                   "bold_taxonomy.json")
+
+    # Other configuration
+    FLAG_DETAILS_CSV_PATH = Path(
+        os.getenv(
+            "FLAG_DETAILS_CSV_PATH",
+            Path(__file__).parents[2] / 'config/flags.csv'))
+    ALLOWED_LOCI_FILE = Path(
+        os.getenv(
+            "ALLOWED_LOCI_FILE",
+            Path(__file__).parents[2]
+            / 'config/loci.json'))
+    DB_COVERAGE_TOI_LIMIT = int(os.getenv("DB_COVERAGE_TOI_LIMIT", 10))
+    HMMSEARCH_MIN_EVALUE = 1e-5
+    DB_COVERAGE_MAX_CANDIDATES = int(
+        os.getenv("DB_COVERAGE_MAX_CANDIDATES", 3))
+    FLAG_FILE_TEMPLATE = '{identifier}.flag'
+    GBIF_LIMIT_RECORDS = int(os.getenv("GBIF_LIMIT_RECORDS", 500))
+    GBIF_MAX_OCCURRENCE_RECORDS = int(
+        os.getenv("GBIF_MAX_OCCURRENCE_RECORDS", 5000))
+    GBIF_ACCEPTED_STATUS = os.getenv(
+        "GBIF_ACCEPTED_STATUS",
+        'accepted,doubtful',
+    ).upper().replace(' ', '').split(',')
+    LOG_FILENAME = 'run.log'
+    QUERY_LOG_FILENAME = 'query.log'
+    ENTREZ_CACHE_DIRNAME = 'entrez_cache'
+    THROTTLE_SQLITE_FILE = 'throttle.sqlite'
+    PLACEHOLDER_IMG_PATH = (
+        Path(__file__).parents[1] / 'report/static/img/placeholder.png')
+    MAX_API_RETRIES = 3
+    ERRORS_DIR = 'errors'
+    TEMP_DIR_NAME = 'biosecurity'
+    TEMP_CLEAN_AFTER_DAYS = 7
+
+    TEMP_FILES = [
+        ENTREZ_CACHE_DIRNAME,
+    ]
+
+    class INPUTS:
+        FACILITY_NAME = os.getenv('FACILITY_NAME', "Not provided")
+        ANALYST_NAME = os.getenv('ANALYST_NAME', "Not provided")
+        METADATA_CSV_HEADER = {
+            # Values indicate column names in the input CSV file
+            "sample_id": "sample_id",
+            "locus": "locus",
+            "preliminary_id": "preliminary_id",
+            "taxa_of_interest": "taxa_of_interest",
+            "country": "country",
+            "host": "host",
+        }
+        METADATA_CSV_REQUIRED_FIELDS = (
+            "sample_id",
+            "locus",
+            "preliminary_id",
         )
-        
-        # Parse known args to get config paths, ignore unknown args
-        args, _ = parser.parse_known_args()
-        
-        # If no config files specified, use default
-        if not args.config:
-            return [DEFAULT_CONFIG_PATH]
-        
-        return args.config
+        FASTA_MAX_LENGTH_NT = 3000
+        FASTA_MIN_LENGTH_NT = 20
+        FASTA_MAX_SEQUENCES = 150
+        FASTA_FILEPATH = Path(
+            os.getenv("INPUT_FASTA_FILEPATH", DEFAULT_FASTA_INPUT)
+        )
+        METADATA_PATH = Path(
+            os.getenv("INPUT_METADATA_CSV_FILEPATH", DEFAULT_METADATA_INPUT)
+        )
 
-    def _load_cascading_config(self, config_paths: list[Path]):
-        """Load and merge multiple configuration files with cascading override."""
-        try:
-            # Start with empty config data
-            merged_config_data = {}
-            
-            for config_path in config_paths:
-                if config_path.exists():
-                    logger.info(f"Loading config: {config_path}")
-                    with open(config_path, 'r') as f:
-                        config_data = yaml.safe_load(f) or {}
-                    
-                    # Deep merge the config data
-                    merged_config_data = self._deep_merge_dicts(merged_config_data, config_data)
-                else:
-                    logger.warning(f"Config file not found: {config_path}. Skipping.")
-            
-            # If no configs were loaded, log info
-            if not merged_config_data:
-                logger.info("No configuration files found. Using defaults.")
-            
-            # Validate merged configuration with Pydantic
-            self._config = ConfigSchema(**merged_config_data)
-            
-            # Set attributes from validated config
-            self._apply_config()
-            
-        except ValidationError as e:
-            logger.error(f"Configuration validation failed: {e}")
-            sys.exit(1)
-        except Exception as e:
-            logger.error(f"Failed to load configuration: {e}")
-            sys.exit(1)
+    class CRITERIA:
+        ALIGNMENT_MIN_NT = int(os.getenv('MIN_NT', 300))
+        ALIGNMENT_MIN_Q_COVERAGE = float(os.getenv('MIN_Q_COVERAGE', 0.85))
+        ALIGNMENT_MIN_IDENTITY = float(os.getenv('MIN_IDENTITY', 0.935))
+        ALIGNMENT_MIN_IDENTITY_STRICT = float(
+            os.getenv('MIN_IDENTITY_STRICT', 0.985))
+        MEDIAN_IDENTITY_WARNING_FACTOR = float(
+            os.getenv('MEDIAN_IDENTITY_WARNING_FACTOR', 0.95))
+        MAX_CANDIDATES_FOR_ANALYSIS = int(
+            os.getenv('MAX_CANDIDATES_FOR_ANALYSIS', 3))
+        SOURCES_MIN_COUNT = int(os.getenv('MIN_SOURCE_COUNT', 5))
+        DB_COV_TARGET_MIN_A = int(os.getenv('DB_COV_MIN_A', 5))
+        DB_COV_TARGET_MIN_B = int(os.getenv('DB_COV_MIN_B', 1))
+        DB_COV_RELATED_MIN_A = int(os.getenv('DB_COV_RELATED_MIN_A', 90))
+        DB_COV_RELATED_MIN_B = int(os.getenv('DB_COV_RELATED_MIN_B', 10))
+        DB_COV_COUNTRY_MISSING_A = int(
+            os.getenv('DB_COV_COUNTRY_MISSING_A', 1))
+        PHYLOGENY_MIN_HIT_IDENTITY = float(
+            os.getenv('PHYLOGENY_MIN_HIT_IDENTITY', 0.95))
+        PHYLOGENY_MIN_HIT_SEQUENCES = int(
+            os.getenv('PHYLOGENY_MIN_HIT_SEQUENCES', 20))
+        PHYLOGENY_MAX_HITS_PER_SPECIES = int(
+            os.getenv('PHYLOGENY_MAX_HITS_PER_SPECIES', 30))
 
-    def _deep_merge_dicts(self, base: dict, override: dict) -> dict:
-        """Deep merge two dictionaries, with override taking precedence."""
-        result = base.copy()
-        
-        for key, value in override.items():
-            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-                # Recursively merge nested dictionaries
-                result[key] = self._deep_merge_dicts(result[key], value)
-            else:
-                # Override the value (including lists, primitives, etc.)
-                result[key] = value
-        
-        return result
-
-    def _apply_config(self):
-        """Apply validated configuration to instance attributes."""
-        config = self._config
-        
-        # Direct attributes
-        self.ALLOWED_LOCI_FILE = config.allowed_loci_file
-        self.FLAG_DETAILS_CSV_PATH = config.flag_details_csv_path
-        
-        # Output filenames
-        self.TIMESTAMP_FILENAME = config.timestamp_filename
-        self.ACCESSIONS_FILENAME = config.accessions_filename
-        self.TAXONOMY_FILE = config.taxonomy_file
-        self.QUERY_TITLE_FILE = config.query_title_file
-        self.HITS_JSON = config.hits_json
-        self.HITS_FASTA = config.hits_fasta
-        self.TAXONOMY_ID_CSV = config.taxonomy_id_csv
-        self.CANDIDATES_FASTA = config.candidates_fasta
-        self.PHYLOGENY_FASTA = config.phylogeny_fasta
-        self.CANDIDATES_CSV = config.candidates_csv
-        self.CANDIDATES_JSON = config.candidates_json
-        self.CANDIDATES_COUNT_FILE = config.candidates_count_file
-        self.CANDIDATES_SOURCES_JSON = config.candidates_sources_json
-        self.INDEPENDENT_SOURCES_JSON = config.independent_sources_json
-        self.TOI_DETECTED_CSV = config.toi_detected_csv
-        self.PMI_MATCH_CSV = config.pmi_match_csv
-        self.BOXPLOT_IMG_FILENAME = config.boxplot_img_filename
-        self.TREE_NWK_FILENAME = config.tree_nwk_filename
-        self.DB_COVERAGE_JSON = config.db_coverage_json
-        
-        # BLAST configuration
-        self.BLAST_MAX_TARGET_SEQS = config.blast_max_target_seqs
-        
-        # BOLD configuration
-        self.BOLD_DATABASE = config.bold_database
-        self.BOLD_FLAG = config.bold_flag
-        self.BOLD_TAXON_COUNT_JSON = config.bold_taxon_count_json
-        self.BOLD_TAXON_COLLECTORS_JSON = config.bold_taxon_collectors_json
-        self.BOLD_TAXONOMY_JSON = config.bold_taxonomy_json
-        
-        # Database coverage
-        self.DB_COVERAGE_TOI_LIMIT = config.db_coverage_toi_limit
-        self.DB_COVERAGE_MAX_CANDIDATES = config.db_coverage_max_candidates
-        self.HMMSEARCH_MIN_EVALUE = config.hmmsearch_min_evalue
-        self.FLAG_FILE_TEMPLATE = config.flag_file_template
-        
-        # GBIF configuration
-        self.GBIF_LIMIT_RECORDS = config.gbif_limit_records
-        self.GBIF_MAX_OCCURRENCE_RECORDS = config.gbif_max_occurrence_records
-        self.GBIF_ACCEPTED_STATUS = config.gbif_accepted_status
-        
-        # Logging and temp files
-        self.LOG_FILENAME = config.log_filename
-        self.QUERY_LOG_FILENAME = config.query_log_filename
-        self.ENTREZ_CACHE_DIRNAME = config.entrez_cache_dirname
-        self.THROTTLE_SQLITE_FILE = config.throttle_sqlite_file
-        self.MAX_API_RETRIES = config.max_api_retries
-        self.ERRORS_DIR = config.errors_dir
-        self.TEMP_DIR_NAME = config.temp_dir_name
-        self.TEMP_CLEAN_AFTER_DAYS = config.temp_clean_after_days
-        
-        # Nested configurations as attribute objects
-        self.INPUTS = config.inputs
-        self.CRITERIA = config.criteria
-        self.REPORT = config.report
-        
-        # Keep sensitive env vars (not from config)
-        self.USER_EMAIL = os.getenv("USER_EMAIL")
-        self.NCBI_API_KEY = os.getenv("NCBI_API_KEY")
-        self.TAXONKIT_DATA = Path(os.getenv("TAXONKIT_DATA", 
-                                           Path('~/.taxonkit').expanduser()))
-        
-        # Temp files list
-        self.TEMP_FILES = [
-            self.ENTREZ_CACHE_DIRNAME,
+    class OUTPUTS:
+        TOI_DETECTED_HEADER = [
+            "Taxon of interest",
+            "Match rank",
+            "Match taxon",
+            "Match species",
+            "Match accession",
+            "Match identity",
         ]
-        
-        # Placeholder image path (fixed path)
-        self.PLACEHOLDER_IMG_PATH = (
-            Path(__file__).parents[1] / 'report/static/img/placeholder.png')
+
+    class REPORT:
+        TITLE = "Taxonomic identification report"
+        DEBUG = os.getenv("REPORT_DEBUG") not in (None, "0", "false")
+        DATABASE_NAME = os.getenv("BLAST_DATABASE_NAME", "NCBI Core Nt")
 
     def configure(self, output_dir=None, query_dir=None, bold=False):
-        """Configure output directory and logging."""
         if output_dir:
             self.output_dir = Path(output_dir)
             self.output_dir.mkdir(exist_ok=True, parents=True)
@@ -219,6 +212,21 @@ class Config:
         dictConfig(conf)
         if bold:
             self.bold_flag_file.write_text('1')
+
+    def update_from_args(self, args):
+        """Update config values from CLI arguments using the built-in mapping.
+
+        Args:
+            args: Parsed command line arguments
+        """
+        for arg_name, config_path in self.CLI_ARG_MAPPING.items():
+            value = getattr(args, arg_name, None)
+            if value is not None:
+                parts = config_path.split('.')
+                obj = self
+                for part in parts[:-1]:
+                    obj = getattr(obj, part)
+                setattr(obj, parts[-1], value)
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
@@ -281,11 +289,13 @@ class Config:
         """Return the name of the reference database."""
         if self.is_bold:
             return 'BOLD'
-        return self.REPORT.database_name
+        return self.REPORT.DATABASE_NAME
 
     @property
     def allowed_loci(self) -> list[Locus]:
-        """Return a list of allowed loci synonyms."""
+        """Return a list of allowed loci synonyms.
+        Each list contains a series of synonyms for each locus.
+        """
         allowed_loci_data = json.loads(self.ALLOWED_LOCI_FILE.read_text())
         return [
             Locus(name, data)
@@ -320,7 +330,7 @@ class Config:
     def start_time(self) -> datetime:
         path = self.output_dir / self.TIMESTAMP_FILENAME
         if path.exists():
-            ts = path.read_text().strip(' \\n')
+            ts = path.read_text().strip(' \n')
             return datetime.strptime(ts, "%Y%m%d %H%M%S")
         now = datetime.now()
         timestamp = now.strftime("%Y%m%d %H%M%S")
@@ -334,7 +344,12 @@ class Config:
 
     @cached_property
     def metadata(self) -> dict[str, dict]:
-        """Read metadata from CSV file."""
+        """Read metadata from CSV file.
+
+        This returns a dictionary which maps sample IDs to metadata
+        dictionaries. Arbitrary columns will be read in from the CSV file,
+        and the keys will be the raw column names.
+        """
         def _get_value_for_key(key, row, colname):
             value = row[colname].strip()
             if 'interest' in key.lower():
@@ -346,14 +361,15 @@ class Config:
             return value
 
         data = {}
-        with self.INPUTS.metadata_path.open() as f:
+        with self.INPUTS.METADATA_PATH.open() as f:
             reader = csv.DictReader(f)
-            header = self.INPUTS.metadata_csv_header.copy()
+            # header = self.INPUTS.METADATA_CSV_HEADER
+            header = self.INPUTS.METADATA_CSV_HEADER.copy()
             header.update({
                 x: x
                 for x in reader.fieldnames
-                if x not in self.INPUTS.metadata_csv_header.keys()
-                and x not in self.INPUTS.metadata_csv_header.values()
+                if x not in self.INPUTS.METADATA_CSV_HEADER.keys()
+                and x not in self.INPUTS.METADATA_CSV_HEADER.values()
             })
             for row in reader:
                 sample_id = row.pop(
@@ -369,7 +385,7 @@ class Config:
     def _get_metadata_for_query(self, query, field) -> str:
         sample_id = self.get_sample_id(query)
         return self.metadata[sample_id][
-            self.INPUTS.metadata_csv_header[field]
+            self.INPUTS.METADATA_CSV_HEADER[field]
         ]
 
     def get_locus_for_query(self, query) -> Locus:
@@ -387,8 +403,8 @@ class Config:
                 return locus.rename(name)
         raise ValueError(
             f"Unrecognized locus '{name}' for query {query}. This should have"
-            " been raised in p0_validation.py. Allowed loci are:\\n- "
-            f"{'\\n- '.join([str(locus) for locus in self.allowed_loci])}"
+            " been raised in p0_validation.py. Allowed loci are:\n- "
+            f"{'\n- '.join([str(locus) for locus in self.allowed_loci])}"
         )
 
     def locus_was_provided_for(self, query) -> bool:
@@ -419,7 +435,7 @@ class Config:
         return self.get_query_dir(query_ix) / path_safe_str(
             REPORT_FILENAME.format(
                 sample_id=self.get_sample_id(query_ix).replace('.', '_'),
-                timestamp='DEBUG' if self.REPORT.debug else self.timestamp,
+                timestamp='DEBUG' if self.REPORT.DEBUG else self.timestamp,
                 prefix='BOLD_' if bold else '',
             )
         )
@@ -449,7 +465,7 @@ class Config:
         """Read query FASTA file."""
         if not hasattr(self, "query_sequences"):
             self.query_sequences = list(
-                SeqIO.parse(self.INPUTS.fasta_filepath, "fasta"))
+                SeqIO.parse(self.INPUTS.FASTA_FILEPATH, "fasta"))
         if index is not None:
             return self.query_sequences[int(index)]
         return self.query_sequences
@@ -489,7 +505,7 @@ class Config:
             key: value
             for key, value in self.__dict__.items()
             if key not in (
-                'query_sequences', '_config'
+                'query_sequences',
             )
         }
 

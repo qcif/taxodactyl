@@ -1,0 +1,24 @@
+# Base configuration - common settings for all analyses
+blast_max_target_seqs: 2000
+bold_database: "COX1_SPECIES_PUBLIC"
+
+inputs:
+  facility_name: "Default Lab"
+  analyst_name: "Unknown"
+  fasta_max_sequences: 150
+  fasta_max_length_nt: 3000
+  fasta_min_length_nt: 20
+
+criteria:
+  alignment_min_nt: 300
+  alignment_min_q_coverage: 0.85
+  alignment_min_identity: 0.935
+  max_candidates_for_analysis: 3
+
+gbif_limit_records: 500
+gbif_max_occurrence_records: 5000
+
+report:
+  title: "Taxonomic Identification Report"
+  debug: false
+  database_name: "NCBI Core Nt"

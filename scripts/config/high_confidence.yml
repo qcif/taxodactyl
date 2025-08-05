@@ -1,0 +1,13 @@
+# High confidence analysis overrides - stricter criteria
+criteria:
+  alignment_min_identity: 0.95    # Higher than base 0.935
+  alignment_min_q_coverage: 0.90  # Higher than base 0.85
+  max_candidates_for_analysis: 5   # More than base 3
+
+inputs:
+  fasta_max_sequences: 100         # Fewer sequences for careful analysis
+
+gbif_limit_records: 1000           # More occurrence data
+
+report:
+  title: "High-Confidence Taxonomic Identification"

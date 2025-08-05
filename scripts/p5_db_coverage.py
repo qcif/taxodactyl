@@ -29,13 +29,7 @@ def main():
     args = _parse_args()
     config.configure(args.output_dir, query_dir=args.query_dir)
 
-    # Update config with CLI arguments
-    config.update_from_args(args)
-    
-    # Handle special case for gbif_accepted_status
-    if args.gbif_accepted_status is not None:
-        config.GBIF_ACCEPTED_STATUS = (
-            args.gbif_accepted_status.upper().replace(' ', '').split(','))
+    # Configuration is now handled in Config.__init__ via YAML
 
     results, error_detected = assess_coverage(
         args.query_dir,
