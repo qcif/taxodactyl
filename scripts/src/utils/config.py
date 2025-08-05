@@ -31,14 +31,6 @@ DEFAULT_FASTA_INPUT = ROOT_DIR / 'scripts/tests/test-data/queries.fasta'
 DEFAULT_METADATA_INPUT = ROOT_DIR / 'scripts/tests/test-data/metadata.csv'
 
 
-class class_property:
-    def __init__(self, fget):
-        self.fget = fget
-
-    def __get__(self, instance, owner):
-        return self.fget(owner)
-
-
 class Config:
     _instance = None
     _initialized = False
@@ -52,6 +44,10 @@ class Config:
         if Config._initialized:
             return
         Config._initialized = True
+
+        # Initialize singleton attributes
+        self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
+        self.query_dir = None
 
     USER_EMAIL = os.getenv("USER_EMAIL")
     NCBI_API_KEY = os.getenv("NCBI_API_KEY")
@@ -160,19 +156,12 @@ class Config:
         FASTA_MAX_LENGTH_NT = 3000
         FASTA_MIN_LENGTH_NT = 20
         FASTA_MAX_SEQUENCES = 150
-
-        @class_property
-        def FASTA_FILEPATH(cls):
-            return Path(
-                os.getenv("INPUT_FASTA_FILEPATH", DEFAULT_FASTA_INPUT)
-            )
-
-        @class_property
-        def METADATA_PATH(cls):
-            return Path(
-                os.getenv("INPUT_METADATA_CSV_FILEPATH",
-                          DEFAULT_METADATA_INPUT)
-            )
+        FASTA_FILEPATH = Path(
+            os.getenv("INPUT_FASTA_FILEPATH", DEFAULT_FASTA_INPUT)
+        )
+        METADATA_PATH = Path(
+            os.getenv("INPUT_METADATA_CSV_FILEPATH", DEFAULT_METADATA_INPUT)
+        )
 
     class CRITERIA:
         ALIGNMENT_MIN_NT = int(os.getenv('MIN_NT', 300))
@@ -215,32 +204,14 @@ class Config:
 
     def configure(self, output_dir=None, query_dir=None, bold=False):
         if output_dir:
-            self.set_output_dir(output_dir)
+            self.output_dir = Path(output_dir)
+            self.output_dir.mkdir(exist_ok=True, parents=True)
         if query_dir:
-            self.set_query_dir(query_dir)
+            self.query_dir = Path(query_dir)
         conf = get_logging_config(self.output_dir / self.LOG_FILENAME)
         dictConfig(conf)
         if bold:
             self.bold_flag_file.write_text('1')
-
-    @property
-    def output_dir(self):
-        return Path(os.getenv("OUTPUT_DIR", 'output'))
-
-    def set_output_dir(self, output_dir):
-        """Set directory in env to be used throughout the current process."""
-        output_dir = Path(output_dir)
-        output_dir.mkdir(exist_ok=True, parents=True)
-        os.environ["OUTPUT_DIR"] = str(output_dir)
-
-    def set_query_dir(self, query_dir):
-        """Set directory in env to be used throughout the current process.
-        Note that this is not currently used, but could allow us to stop
-        passing 'query' around everywhere.
-        """
-        os.environ["QUERY_DIR"] = str(query_dir)
-        conf = get_logging_config(query_dir / self.QUERY_LOG_FILENAME)
-        dictConfig(conf)
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
@@ -263,12 +234,11 @@ class Config:
     def get_query_dir(self, ix_or_dir=None):
         """Resolve query index/dir to query dir Path."""
         if ix_or_dir is None:
-            d = os.getenv("QUERY_DIR")
-            if d:
-                return Path(d)
+            if self.query_dir:
+                return self.query_dir
             raise ValueError(
                 "Cannot get a query_dir - no query dir provided and no"
-                " QUERY_DIR env var set.")
+                " query_dir set in config.")
         if (
             isinstance(ix_or_dir, str) and QUERY_DIR_PREFIX in ix_or_dir
         ) or isinstance(ix_or_dir, Path):

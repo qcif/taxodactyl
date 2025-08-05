@@ -180,6 +180,7 @@ class IntegrationTest(unittest.TestCase):
             with self.subTest(test_case=test_case.name):
                 query_dir = None
                 wdir = self.prepare_working_dir(test_case)
+                # Note: Setting env vars for backward compatibility with existing setup
                 os.environ['INPUT_FASTA_FILEPATH'] = str(
                     wdir / "query.fasta")
                 os.environ['INPUT_METADATA_CSV_FILEPATH'] = str(
