@@ -59,27 +59,7 @@ def main():
     config.configure(args.output_dir, query_dir=args.query_dir)
 
     # Update config with CLI arguments
-    if args.min_alignment_length is not None:
-        config.CRITERIA.ALIGNMENT_MIN_NT = args.min_alignment_length
-    if args.min_query_coverage is not None:
-        config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE = args.min_query_coverage
-    if args.min_identity is not None:
-        config.CRITERIA.ALIGNMENT_MIN_IDENTITY = args.min_identity
-    if args.min_identity_strict is not None:
-        config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT = (
-            args.min_identity_strict)
-    if args.median_identity_warning_factor is not None:
-        config.CRITERIA.MEDIAN_IDENTITY_WARNING_FACTOR = (
-            args.median_identity_warning_factor)
-    if args.max_candidates_analysis is not None:
-        config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS = (
-            args.max_candidates_analysis)
-    if args.phylogeny_min_sequences is not None:
-        config.CRITERIA.PHYLOGENY_MIN_HIT_SEQUENCES = (
-            args.phylogeny_min_sequences)
-    if args.phylogeny_max_per_species is not None:
-        config.CRITERIA.PHYLOGENY_MAX_HITS_PER_SPECIES = (
-            args.phylogeny_max_per_species)
+    config.update_from_args(args)
 
     result = config.read_hits_json(args.query_dir)
     if args.bold:

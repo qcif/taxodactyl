@@ -19,8 +19,7 @@ def main():
     config.configure(args.output_dir)
 
     # Update config with CLI arguments
-    if args.blast_max_target_seqs is not None:
-        config.BLAST_MAX_TARGET_SEQS = args.blast_max_target_seqs
+    config.update_from_args(args)
 
     hits, fastas = parse_blast_xml(args.blast_xml_path)
     _write_hits(hits)

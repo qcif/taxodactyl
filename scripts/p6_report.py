@@ -15,16 +15,7 @@ def main():
     config.configure(args.output_dir, query_dir=args.query_dir)
 
     # Update config with CLI arguments
-    if args.report_debug is not None:
-        config.REPORT.DEBUG = args.report_debug
-    if args.database_name is not None:
-        config.REPORT.DATABASE_NAME = args.database_name
-    if args.facility_name is not None:
-        config.INPUTS.FACILITY_NAME = args.facility_name
-    if args.analyst_name is not None:
-        config.INPUTS.ANALYST_NAME = args.analyst_name
-    if args.flag_details_csv is not None:
-        config.FLAG_DETAILS_CSV_PATH = args.flag_details_csv
+    config.update_from_args(args)
 
     report.render(
         args.query_dir,

@@ -27,8 +27,7 @@ def main():
     config.configure(args.output_dir, query_dir=args.query_dir)
 
     # Update config with CLI arguments
-    if args.min_source_count is not None:
-        config.CRITERIA.SOURCES_MIN_COUNT = args.min_source_count
+    config.update_from_args(args)
 
     species, hits = _read_candidate_hits(args.query_dir)
     candidate_hits = [
