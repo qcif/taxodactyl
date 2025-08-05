@@ -1,0 +1,101 @@
+# Default configuration for Biosecurity Workflow
+# All values shown here are defaults and can be overridden
+
+# File paths and directories
+allowed_loci_file: "scripts/config/loci.json"
+flag_details_csv_path: "scripts/config/flags.csv"
+
+# Output filenames
+timestamp_filename: "timestamp.txt"
+accessions_filename: "accessions.txt"
+taxonomy_file: "taxonomy.csv"
+query_title_file: "query_title.txt"
+hits_json: "hits.json"
+hits_fasta: "hits.fasta"
+taxonomy_id_csv: "assigned_taxonomy.csv"
+candidates_fasta: "candidates.fasta"
+phylogeny_fasta: "phylogeny.fasta"
+candidates_csv: "candidates.csv"
+candidates_json: "candidates.json"
+candidates_count_file: "candidates_count.txt"
+candidates_sources_json: "candidates_sources.json"
+independent_sources_json: "aggregated_sources.json"
+toi_detected_csv: "taxa_of_concern_detected.csv"
+pmi_match_csv: "preliminary_id_match.csv"
+boxplot_img_filename: "identity-boxplot.png"
+tree_nwk_filename: "candidates.nwk"
+db_coverage_json: "db_coverage.json"
+
+# BLAST configuration
+blast_max_target_seqs: 2000
+
+# BOLD configuration
+bold_database: "COX1_SPECIES_PUBLIC"
+bold_flag: "BOLD"
+bold_taxon_count_json: "bold_taxon_counts.json"
+bold_taxon_collectors_json: "bold_taxon_collectors.json"
+bold_taxonomy_json: "bold_taxonomy.json"
+
+# Database coverage configuration
+db_coverage_toi_limit: 10
+db_coverage_max_candidates: 3
+hmmsearch_min_evalue: 1e-5
+flag_file_template: "{identifier}.flag"
+
+# GBIF configuration
+gbif_limit_records: 500
+gbif_max_occurrence_records: 5000
+gbif_accepted_status: ["ACCEPTED", "DOUBTFUL"]
+
+# Logging and temporary files
+log_filename: "run.log"
+query_log_filename: "query.log"
+entrez_cache_dirname: "entrez_cache"
+throttle_sqlite_file: "throttle.sqlite"
+max_api_retries: 3
+errors_dir: "errors"
+temp_dir_name: "biosecurity"
+temp_clean_after_days: 7
+
+# Input configuration
+inputs:
+  facility_name: "Not provided"
+  analyst_name: "Not provided"
+  metadata_csv_header:
+    sample_id: "sample_id"
+    locus: "locus"
+    preliminary_id: "preliminary_id"
+    taxa_of_interest: "taxa_of_interest"
+    country: "country"
+    host: "host"
+  metadata_csv_required_fields: ["sample_id", "locus", "preliminary_id"]
+  fasta_max_length_nt: 3000
+  fasta_min_length_nt: 20
+  fasta_max_sequences: 150
+  # fasta_filepath and metadata_path should be set via CLI or config override
+  # fasta_filepath: null
+  # metadata_path: null
+
+# Analysis criteria
+criteria:
+  alignment_min_nt: 300
+  alignment_min_q_coverage: 0.85
+  alignment_min_identity: 0.935
+  alignment_min_identity_strict: 0.985
+  median_identity_warning_factor: 0.95
+  max_candidates_for_analysis: 3
+  sources_min_count: 5
+  db_cov_target_min_a: 5
+  db_cov_target_min_b: 1
+  db_cov_related_min_a: 90
+  db_cov_related_min_b: 10
+  db_cov_country_missing_a: 1
+  phylogeny_min_hit_identity: 0.95
+  phylogeny_min_hit_sequences: 20
+  phylogeny_max_hits_per_species: 30
+
+# Report configuration
+report:
+  title: "Taxonomic identification report"
+  debug: false
+  database_name: "NCBI Core Nt"

@@ -19,8 +19,7 @@ def main():
     args = _parse_args()
     config.configure(args.output_dir, bold=True)
 
-    # Update config with CLI arguments
-    config.update_from_args(args)
+    # Configuration is now handled in Config.__init__ via YAML
 
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
     result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)

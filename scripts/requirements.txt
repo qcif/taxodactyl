@@ -7,3 +7,4 @@ fsspec
 geopandas
 pyyaml
 markdown2
+pydantic>=2.0

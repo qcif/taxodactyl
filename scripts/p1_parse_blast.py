@@ -18,8 +18,7 @@ def main():
     args = _parse_args()
     config.configure(args.output_dir)
 
-    # Update config with CLI arguments
-    config.update_from_args(args)
+    # Configuration is now handled in Config.__init__ via YAML
 
     hits, fastas = parse_blast_xml(args.blast_xml_path)
     _write_hits(hits)
