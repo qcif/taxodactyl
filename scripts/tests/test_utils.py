@@ -3,6 +3,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from src.utils.flags import FLAGS, Flag
 
@@ -18,7 +19,13 @@ class TestUtils(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.query_dir)
 
-    def test_flags(self):
+    @patch('src.utils.flags.config.locus_was_provided_for')
+    @patch('src.utils.flags.config.get_query_dir')
+    def test_flags(self, mock_get_query_dir, mock_locus_was_provided_for):
+        # Mock the config methods to avoid file system dependencies
+        mock_get_query_dir.return_value = self.query_dir
+        mock_locus_was_provided_for.return_value = True
+
         Flag.write(self.query_dir, FLAGS.POSITIVE_ID, FLAGS.A)
         Flag.write(self.query_dir, FLAGS.TOI, FLAGS.B)
         for flag_id in (
@@ -54,29 +61,31 @@ class TestUtils(unittest.TestCase):
     def test_flag_json_storage(self):
         """Test that flags are properly stored in JSON format."""
         # Write multiple flags to the same flag_id file
-        Flag.write(self.query_dir, FLAGS.DB_COVERAGE_TARGET, FLAGS.A, 
-                  target='species1', target_type='candidate')
-        Flag.write(self.query_dir, FLAGS.DB_COVERAGE_TARGET, FLAGS.B, 
-                  target='species2', target_type='pmi')
-        
+        Flag.write(
+            self.query_dir, FLAGS.DB_COVERAGE_TARGET, FLAGS.A,
+            target='species1', target_type='candidate')
+        Flag.write(
+            self.query_dir, FLAGS.DB_COVERAGE_TARGET, FLAGS.B,
+            target='species2', target_type='pmi')
+
         # Check that the file contains JSON with multiple flags
         flag_file = self.query_dir / f"{FLAGS.DB_COVERAGE_TARGET}.flag"
         self.assertTrue(flag_file.exists())
-        
+
         with flag_file.open('r') as f:
             data = json.load(f)
-        
+
         # Should be a list of flag dicts
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 2)
-        
+
         # Check first flag
         flag1 = data[0]
         self.assertEqual(flag1['flag_id'], FLAGS.DB_COVERAGE_TARGET)
         self.assertEqual(flag1['value'], FLAGS.A)
         self.assertEqual(flag1['target'], 'species1')
         self.assertEqual(flag1['target_type'], 'candidate')
-        
+
         # Check second flag
         flag2 = data[1]
         self.assertEqual(flag2['flag_id'], FLAGS.DB_COVERAGE_TARGET)
@@ -87,18 +96,20 @@ class TestUtils(unittest.TestCase):
     def test_flag_update_existing(self):
         """Test that updating an existing flag works correctly."""
         # Write initial flag
-        Flag.write(self.query_dir, FLAGS.POSITIVE_ID, FLAGS.A, 
-                  target='species1', target_type='candidate')
-        
+        Flag.write(
+            self.query_dir, FLAGS.POSITIVE_ID, FLAGS.A,
+            target='species1', target_type='candidate')
+
         # Update the same flag
-        Flag.write(self.query_dir, FLAGS.POSITIVE_ID, FLAGS.B, 
-                  target='species1', target_type='candidate')
-        
+        Flag.write(
+            self.query_dir, FLAGS.POSITIVE_ID, FLAGS.B,
+            target='species1', target_type='candidate')
+
         # Check that file still has only one flag with updated value
         flag_file = self.query_dir / f"{FLAGS.POSITIVE_ID}.flag"
         with flag_file.open('r') as f:
             data = json.load(f)
-        
+
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]['value'], FLAGS.B)
@@ -106,11 +117,11 @@ class TestUtils(unittest.TestCase):
     def test_flag_no_target(self):
         """Test flags without target/target_type."""
         Flag.write(self.query_dir, FLAGS.POSITIVE_ID, FLAGS.C)
-        
+
         flag_file = self.query_dir / f"{FLAGS.POSITIVE_ID}.flag"
         with flag_file.open('r') as f:
             data = json.load(f)
-        
+
         self.assertEqual(data[0]['flag_id'], FLAGS.POSITIVE_ID)
         self.assertEqual(data[0]['value'], FLAGS.C)
         self.assertIsNone(data[0]['target'])

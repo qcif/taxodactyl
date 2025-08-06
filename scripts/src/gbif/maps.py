@@ -40,10 +40,10 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         if res.get('endOfRecords', True):
             break
         offset += res['limit']
-        if offset >= config.GBIF_MAX_OCCURRENCE_RECORDS:
+        if offset >= config.gbif_max_occurrence_records:
             logger.warning(
                 "Maximum number of records reached:"
-                f" {config.GBIF_MAX_OCCURRENCE_RECORDS}")
+                f" {config.gbif_max_occurrence_records}")
             break
 
     lats = [record['decimalLatitude']

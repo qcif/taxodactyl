@@ -197,9 +197,9 @@ def _set_flags(db_coverage, query_dir, higher_taxon_targets):
             raise ValueError(
                 f"Unexpected count value for target"
                 f" ({target_type}) '{target}': {count}.")
-        elif count > config.CRITERIA.DB_COV_TARGET_MIN_A:
+        elif count > config.criteria.db_cov_target_min_a:
             flag_value = FLAGS.A
-        elif count > config.CRITERIA.DB_COV_TARGET_MIN_B:
+        elif count > config.criteria.db_cov_target_min_b:
             flag_value = FLAGS.B
         else:
             flag_value = FLAGS.C
@@ -237,9 +237,9 @@ def _set_flags(db_coverage, query_dir, higher_taxon_targets):
                     if count and count > 0
                 ])
                 percent_coverage = 100 * represented_species / total_species
-                if percent_coverage > config.CRITERIA.DB_COV_RELATED_MIN_A:
+                if percent_coverage > config.criteria.db_cov_related_min_a:
                     flag_value = FLAGS.A
-                elif percent_coverage > config.CRITERIA.DB_COV_RELATED_MIN_B:
+                elif percent_coverage > config.criteria.db_cov_related_min_b:
                     flag_value = FLAGS.B
                 else:
                     flag_value = FLAGS.C

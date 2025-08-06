@@ -15,7 +15,7 @@ MODULE_NAME = "Database Coverage"
 
 
 def _read_candidate_species(query_dir):
-    candidates = config.read_json(query_dir / config.CANDIDATES_JSON)
+    candidates = config.read_json(query_dir / config.candidates_json)
     return [
         c["species"]
         for c in candidates["species"]
@@ -24,20 +24,20 @@ def _read_candidate_species(query_dir):
 
 def get_targets(query_dir):
     candidates = _read_candidate_species(query_dir)
-    if len(candidates) > config.DB_COVERAGE_MAX_CANDIDATES:
+    if len(candidates) > config.db_coverage_max_candidates:
         logger.info(
             f"Skipping database coverage assessment for"
-            f" candidates: more than {config.DB_COVERAGE_MAX_CANDIDATES}"
+            f" candidates: more than {config.db_coverage_max_candidates}"
             f" candidates species have been identified ({len(candidates)})."
         )
         candidates = []
     pmi = config.get_pmi_for_query(query_dir)
     toi_list = config.get_toi_list_for_query(query_dir)
-    if len(toi_list) > config.DB_COVERAGE_TOI_LIMIT:
-        toi_list = toi_list[:config.DB_COVERAGE_TOI_LIMIT]
-        excluded_tois = toi_list[config.DB_COVERAGE_TOI_LIMIT:]
+    if len(toi_list) > config.db_coverage_toi_limit:
+        toi_list = toi_list[:config.db_coverage_toi_limit]
+        excluded_tois = toi_list[config.db_coverage_toi_limit:]
         msg = (
-            f"Only the first {config.DB_COVERAGE_TOI_LIMIT} taxa of interest"
+            f"Only the first {config.db_coverage_toi_limit} taxa of interest"
             f" will be evaluated. The following taxa of interest will be"
             f" excluded: {', '.join(excluded_tois)}. This limit can be raised"
             f" by setting the 'DB_COVERAGE_TOI_LIMIT' environment variable.")

@@ -22,7 +22,7 @@ def main():
     # Configuration is now handled in Config.__init__ via YAML
 
     logger.info(f"Searching BOLD with query {args.fasta_file}...")
-    result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)
+    result = BoldSearch(args.fasta_file, config.bold_database)
     _write_hits_json(result)
     _write_hits_fasta(result)
     # _write_taxa_metadata(result)  # Not actually used downstream
@@ -56,7 +56,7 @@ def _write_hits_json(result: BoldSearch):
     for query_title, hits in result.hits.items():
         query_ix = hits['query_index']
         query_dir = config.create_query_dir(query_ix, query_title)
-        path = query_dir / config.HITS_JSON
+        path = query_dir / config.hits_json
         with path.open("w") as f:
             json.dump(hits, f, indent=2)
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
@@ -67,7 +67,7 @@ def _write_hits_fasta(result: BoldSearch):
     for query_title, hits in result.hits.items():
         query_ix = hits['query_index']
         query_dir = config.get_query_dir(query_ix)
-        path = query_dir / config.HITS_FASTA
+        path = query_dir / config.hits_fasta
         with path.open("w") as f:
             SeqIO.write(result.hit_sequences[query_title], f, "fasta")
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
@@ -75,17 +75,17 @@ def _write_hits_fasta(result: BoldSearch):
 
 def _write_taxa_metadata(result: BoldSearch):
     """Write BOLD taxon record metadata to JSON files."""
-    path = config.output_dir / config.BOLD_TAXON_COUNT_JSON
+    path = config.output_dir / config.bold_taxon_count_json
     with path.open("w") as f:
         json.dump(result.taxon_count, f, indent=2)
         logger.info(f"BOLD taxon count written to {path}")
 
-    path = config.output_dir / config.BOLD_TAXON_COLLECTORS_JSON
+    path = config.output_dir / config.bold_taxon_collectors_json
     with path.open("w") as f:
         json.dump(result.taxon_collectors, f, indent=2)
         logger.info(f"BOLD taxon collectors written to {path}")
 
-    path = config.output_dir / config.BOLD_TAXONOMY_JSON
+    path = config.output_dir / config.bold_taxonomy_json
     with path.open("w") as f:
         json.dump(result.taxon_taxonomy, f, indent=2)
         logger.info(f"BOLD taxonomies written to {path}")

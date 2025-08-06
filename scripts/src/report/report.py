@@ -86,7 +86,7 @@ def _get_img_src(path):
     if not path.exists():
         logger.warning(f"Expected image {path} does not exist. Replacing with"
                        " placeholder image.")
-        path = config.PLACEHOLDER_IMG_PATH
+        path = config.placeholder_img_path
     ext = path.suffix[1:]
     return (
         f"data:image/{ext};base64,"
@@ -99,17 +99,17 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
     query_fasta_str = config.read_query_fasta(query_ix).format('fasta')
     hits = config.read_hits_json(query_ix)['hits']
     html_title = (
-        'BOLD - ' + config.REPORT.TITLE
+        'BOLD - ' + config.report.title
         if bold
-        else config.REPORT.TITLE
+        else config.report.title
     )
     return {
-        'title': config.REPORT.TITLE,
+        'title': config.report.title,
         'html_title': html_title,
         'workflow_params': _read_params_json(params_json),
         'workflow_versions': _read_versions_yml(versions_yml),
-        'facility': config.INPUTS.FACILITY_NAME,
-        'analyst_name': config.INPUTS.ANALYST_NAME,
+        'facility': config.inputs.facility_name,
+        'analyst_name': config.inputs.analyst_name,
         'start_time': config.start_time.strftime("%Y-%m-%d %H:%M:%S"),
         'end_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'wall_time': _get_walltime(),
@@ -130,7 +130,7 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'aggregated_sources': _read_source_diversity(query_ix),
         'db_coverage': _read_db_coverage(query_ix),
         'tree_nwk_str': (config.get_query_dir(query_ix)
-                         / config.TREE_NWK_FILENAME).read_text().strip(),
+                         / config.tree_nwk_filename).read_text().strip(),
         'error_log': ErrorLog(config.get_query_dir(query_ix)),
         'bold': bold,
         # rendering functions:
@@ -203,7 +203,7 @@ def _draw_conclusions(query_ix):
 
 def _get_taxonomic_result(query_ix, flags):
     """Determine the taxonomic result from the flags."""
-    path = config.get_query_dir(query_ix) / config.TAXONOMY_ID_CSV
+    path = config.get_query_dir(query_ix) / config.taxonomy_id_csv
     flag_1 = flags[FLAGS.POSITIVE_ID]
     if flag_1.value == FLAGS.A:
         # Should only be 'success' if also flag 4A
@@ -262,7 +262,7 @@ def _get_pmi_result(flags):
 def _get_toi_result(query_ix, flags):
     """Determine the taxa of interest detection from the flags."""
     query_dir = config.get_query_dir(query_ix)
-    path = query_dir / config.TOI_DETECTED_CSV
+    path = query_dir / config.toi_detected_csv
     if not path.exists():
         logger.info(f"No taxa of interest file available at {path}")
         return
@@ -271,10 +271,10 @@ def _get_toi_result(query_ix, flags):
         detected_tois = [
             DetectedTaxon(*[
                 row.get(colname)
-                for colname in config.OUTPUTS.TOI_DETECTED_HEADER
+                for colname in config.toi_detected_header
             ])
             for row in reader
-            if row.get(config.OUTPUTS.TOI_DETECTED_HEADER[1])
+            if row.get(config.toi_detected_header[1])
         ]
     flag_2 = flags[FLAGS.TOI]
     ruled_out = flag_2.value == FLAGS.B
@@ -312,11 +312,11 @@ def _get_candidates(query_ix):
     """Read data for the candidate hits/taxa."""
     flags = Flag.read(query_ix)
     query_dir = config.get_query_dir(query_ix)
-    with open(query_dir / config.CANDIDATES_JSON) as f:
+    with open(query_dir / config.candidates_json) as f:
         candidates = json.load(f)
     candidates['fasta'] = {
         seq.id: seq.format("fasta")
-        for seq in config.read_fasta(query_dir / config.CANDIDATES_FASTA)
+        for seq in config.read_fasta(query_dir / config.candidates_fasta)
     }
     candidates['strict'] = (
         flags[FLAGS.POSITIVE_ID].value
@@ -351,7 +351,7 @@ def _load_taxonomies_bold(hits):
 
 def _get_boxplot_src(query_ix) -> Path:
     """Return the path to the boxplot image if it exists."""
-    path = config.get_query_dir(query_ix) / config.BOXPLOT_IMG_FILENAME
+    path = config.get_query_dir(query_ix) / config.boxplot_img_filename
     if path.exists():
         return _get_img_src(path)
     return None
@@ -359,7 +359,7 @@ def _get_boxplot_src(query_ix) -> Path:
 
 def _read_toi_rows(query_ix):
     """Read the taxa of interest detected from the CSV file."""
-    path = config.get_query_dir(query_ix) / config.TOI_DETECTED_CSV
+    path = config.get_query_dir(query_ix) / config.toi_detected_csv
     if not path.exists():
         return []
     with path.open() as f:
@@ -369,7 +369,7 @@ def _read_toi_rows(query_ix):
 
 def _read_toi_detected(query_ix):
     """Read the taxa of interest detected from the CSV file."""
-    path = config.get_query_dir(query_ix) / config.TOI_DETECTED_CSV
+    path = config.get_query_dir(query_ix) / config.toi_detected_csv
     if not path.exists():
         return {}
     with path.open() as f:
@@ -382,7 +382,7 @@ def _read_toi_detected(query_ix):
 
 def _read_source_diversity(query_ix):
     """Read the source diversity table from the CSV file."""
-    path = config.get_query_dir(query_ix) / config.INDEPENDENT_SOURCES_JSON
+    path = config.get_query_dir(query_ix) / config.independent_sources_json
     if not path.exists():
         logger.warning(f'No source diversity file found at {path}')
         return {}
@@ -392,7 +392,7 @@ def _read_source_diversity(query_ix):
 
 def _read_db_coverage(query_ix):
     """Read the database coverage table from the CSV file."""
-    path = config.get_query_dir(query_ix) / config.DB_COVERAGE_JSON
+    path = config.get_query_dir(query_ix) / config.db_coverage_json
     if not path.exists():
         logger.warning(f'No database coverage file found at {path}')
         return {}

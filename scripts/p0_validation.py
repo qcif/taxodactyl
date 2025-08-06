@@ -140,24 +140,24 @@ def _validate_fasta(path: Path) -> list[str]:
                 raise FASTAFormatError(
                     f'invalid DNA in sequence ##{count}'
                 ) from exc
-            if count > config.INPUTS.FASTA_MAX_SEQUENCES:
+            if count > config.inputs.fasta_max_sequences:
                 raise FASTAFormatError(
                     f"too many query sequences provided. A maximum of"
-                    f" {config.INPUTS.FASTA_MAX_SEQUENCES} sequences is"
+                    f" {config.inputs.fasta_max_sequences} sequences is"
                     " allowed."
                 )
             length = len(seq.seq)
-            if length < config.INPUTS.FASTA_MIN_LENGTH_NT:
+            if length < config.inputs.fasta_min_length_nt:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp does not meet the"
                     " minimum allowed length of"
-                    f" {config.INPUTS.FASTA_MAX_LENGTH_NT}bp (sequence"
+                    f" {config.inputs.fasta_min_length_nt}bp (sequence"
                     f" ##{count})"
                 )
-            if length > config.INPUTS.FASTA_MAX_LENGTH_NT:
+            if length > config.inputs.fasta_max_length_nt:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp exceeds the maximum"
-                    f" allowed length of {config.INPUTS.FASTA_MAX_LENGTH_NT}bp"
+                    f" allowed length of {config.inputs.fasta_max_length_nt}bp"
                     f" (sequence ##{count})"
                 )
 
@@ -174,7 +174,7 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
     TOI list column should be pipe-delimited if multiple - validate chars?
     """
     sample_ids = []
-    columns = config.INPUTS.METADATA_CSV_HEADER
+    columns = config.inputs.metadata_csv_header
     with path.open() as f:
         reader = csv.DictReader(f)
         rows = list(reader)  # skip header row
@@ -192,7 +192,7 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
             )
         for col_id, colname in columns.items():
             if (
-                col_id in config.INPUTS.METADATA_CSV_REQUIRED_FIELDS
+                col_id in config.inputs.metadata_csv_required_fields
                 and not row[colname].strip()
             ):
                 msg = (

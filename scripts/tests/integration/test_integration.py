@@ -137,16 +137,48 @@ class IntegrationTest(unittest.TestCase):
         shutil.copytree(test_case, wdir)
         return wdir
 
-    def patch_and_run(self, module_name, patched_args):
+    def create_test_config(self, wdir: Path) -> Path:
+        """Create a test-specific config file with correct file paths"""
+        import yaml
+        # Load base integration test config
+        base_config_path = TEST_DATA_DIR / "test-config.yml"
+        with open(base_config_path, 'r') as f:
+            config_data = yaml.safe_load(f)
+        # Set test-specific file paths
+        config_data['inputs']['fasta_filepath'] = str(wdir / "query.fasta")
+        config_data['inputs']['metadata_path'] = str(wdir / "metadata.csv")
+        # Write test-specific config file
+        test_config_path = wdir / "test_config.yml"
+        with open(test_config_path, 'w') as f:
+            yaml.dump(config_data, f, default_flow_style=False)
+        return test_config_path
+
+    def patch_and_run(self, module_name, patched_args, config_file=None):
         mock_args = Namespace(**patched_args)
         module_path = f"scripts.{module_name}"
-        module = importlib.import_module(module_path)
-        with patch.object(
-            module,
-            "_parse_args",
-            return_value=mock_args,
-        ):
-            module.main()
+        # Mock sys.argv BEFORE importing the module
+        original_argv = sys.argv.copy()
+        if config_file:
+            sys.argv = ['script.py', '-c', str(config_file)]
+        else:
+            sys.argv = ['script.py']
+        # Reset Config singleton before importing
+        if 'src.utils.config' in sys.modules:
+            from src.utils.config import Config
+            Config._instance = None
+            Config._initialized = False
+        try:
+            # Now import the module (this will create Config with correct argv)
+            module = importlib.import_module(module_path)
+            with patch.object(
+                module,
+                "_parse_args",
+                return_value=mock_args,
+            ):
+                module.main()
+        finally:
+            # Restore original sys.argv
+            sys.argv = original_argv
 
         # Ensure that modules are cleaned up after each step to avoid
         # cross-test contamination e.g. config instances
@@ -180,11 +212,7 @@ class IntegrationTest(unittest.TestCase):
             with self.subTest(test_case=test_case.name):
                 query_dir = None
                 wdir = self.prepare_working_dir(test_case)
-                # Note: Setting env vars for backward compatibility with existing setup
-                os.environ['INPUT_FASTA_FILEPATH'] = str(
-                    wdir / "query.fasta")
-                os.environ['INPUT_METADATA_CSV_FILEPATH'] = str(
-                    wdir / "metadata.csv")
+                config_file = self.create_test_config(wdir)
                 query_ix_path = wdir / QUERY_INDEX_FILENAME
                 query_ix = (
                     int(query_ix_path.read_text().strip()) + 1
@@ -199,13 +227,8 @@ class IntegrationTest(unittest.TestCase):
                         "query_fasta": wdir / "query.fasta",
                         "taxdb_dir": self.taxdump_dir,
                         "bold": False,
-                        "allowed_loci_file": None,
-                        "input_fasta": None,
-                        "input_metadata": None,
-                        "fasta_max_sequences": None,
-                        "fasta_min_length": None,
-                        "fasta_max_length": None,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P0 PASS\n")
 
@@ -214,8 +237,8 @@ class IntegrationTest(unittest.TestCase):
                     {
                         "blast_xml_path": wdir / "blast_result.xml",
                         "output_dir": wdir,
-                        "blast_max_target_seqs": None,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P1 PASS\n")
 
@@ -225,6 +248,7 @@ class IntegrationTest(unittest.TestCase):
                         "taxids_csv": wdir / "taxids.csv",
                         "output_dir": wdir,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P2 PASS\n")
 
@@ -238,15 +262,8 @@ class IntegrationTest(unittest.TestCase):
                         "query_dir": query_dir,
                         "output_dir": wdir,
                         "bold": False,
-                        "min_alignment_length": None,
-                        "min_query_coverage": None,
-                        "min_identity": None,
-                        "min_identity_strict": None,
-                        "median_identity_warning_factor": None,
-                        "max_candidates_analysis": None,
-                        "phylogeny_min_sequences": None,
-                        "phylogeny_max_per_species": None,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P3 PASS\n")
 
@@ -261,8 +278,8 @@ class IntegrationTest(unittest.TestCase):
                         {
                             "query_dir": query_dir,
                             "output_dir": wdir,
-                            "min_source_count": None,
                         },
+                        config_file=config_file,
                     )
                     print_green(f"\nTest case {test_case.name}: P4 PASS\n")
                 else:
@@ -277,17 +294,8 @@ class IntegrationTest(unittest.TestCase):
                         "query_dir": query_dir,
                         "output_dir": wdir,
                         "bold": False,
-                        "db_coverage_toi_limit": None,
-                        "db_coverage_max_candidates": None,
-                        "gbif_limit_records": None,
-                        "gbif_max_occurrence_records": None,
-                        "gbif_accepted_status": None,
-                        "db_cov_target_min_a": None,
-                        "db_cov_target_min_b": None,
-                        "db_cov_related_min_a": None,
-                        "db_cov_related_min_b": None,
-                        "db_cov_country_missing_a": None,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P5 PASS\n")
 
@@ -303,12 +311,8 @@ class IntegrationTest(unittest.TestCase):
                         "bold": False,
                         "params_json": TEST_DATA_DIR / "params.json",
                         "versions_yml": TEST_DATA_DIR / "versions.yml",
-                        "report_debug": False,
-                        "database_name": None,
-                        "facility_name": None,
-                        "analyst_name": None,
-                        "flag_details_csv": None,
                     },
+                    config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P6 PASS\n")
 
