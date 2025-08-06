@@ -114,7 +114,7 @@ def _parse_args():
 
 
 def write_db_coverage(query_dir, results):
-    path = query_dir / config.DB_COVERAGE_JSON
+    path = query_dir / config.db_coverage_json
     with path.open("w") as f:
         json.dump(results, f, indent=2)
     logger.info(

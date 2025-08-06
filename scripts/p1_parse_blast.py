@@ -54,7 +54,7 @@ def _write_hits(hits):
     """Write a JSON file of BLAST hits for each query sequence."""
     for i, query_hits in enumerate(hits):
         query_dir = config.create_query_dir(i, query_hits['query_title'])
-        path = query_dir / config.HITS_JSON
+        path = query_dir / config.hits_json
         with path.open("w") as f:
             json.dump(query_hits, f, indent=2)
             logger.info(f"BLAST hits for query [{i}] written to {path}")
@@ -65,7 +65,7 @@ def _write_fastas(query_fastas):
     for i, fastas in enumerate(query_fastas):
         if not fastas:
             continue
-        path = config.get_query_dir(i) / config.HITS_FASTA
+        path = config.get_query_dir(i) / config.hits_fasta
         with open(path, "w") as f:
             SeqIO.write(fastas, f, "fasta")
             logger.info(
@@ -77,7 +77,7 @@ def _write_accessions(hits):
 
     These will be used for extracting taxonomy data.
     """
-    hit_accesssions_path = config.output_dir / config.ACCESSIONS_FILENAME
+    hit_accesssions_path = config.output_dir / config.accessions_filename
     all_accessions = list({
         hit["accession"]
         for query in hits

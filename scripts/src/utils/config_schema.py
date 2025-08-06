@@ -106,6 +106,15 @@ class ConfigSchema(BaseModel):
             Path(__file__).parents[3] / 'scripts/config/flags.csv'),
         description="Path to flag details CSV file"
     )
+    placeholder_img_path: Path = Field(
+        default_factory=lambda: (
+            Path(__file__).parents[1] / 'report/static/img/placeholder.png'),
+        description="Path to placeholder image file"
+    )
+    taxonkit_data: Path = Field(
+        default_factory=lambda: Path('~/.taxonkit').expanduser(),
+        description="Path to TaxonKit data directory"
+    )
 
     # Output filenames
     timestamp_filename: str = Field(
@@ -143,6 +152,16 @@ class ConfigSchema(BaseModel):
     toi_detected_csv: str = Field(
         default='taxa_of_concern_detected.csv',
         description="TOI detected CSV filename")
+    toi_detected_header: List[str] = Field(
+        default=[
+            "Taxon of interest",
+            "Match rank",
+            "Match taxon",
+            "Match species",
+            "Match accession",
+            "Match identity",
+        ],
+        description="TOI detected CSV header")
     pmi_match_csv: str = Field(
         default='preliminary_id_match.csv',
         description="PMI match CSV filename")

@@ -66,7 +66,7 @@ def _parse_args():
 
 
 def _read_candidate_hits(query_dir):
-    candidates = config.read_json(query_dir / config.CANDIDATES_JSON)
+    candidates = config.read_json(query_dir / config.candidates_json)
     species = candidates["species"]
     hits = candidates["hits"]
     return species, hits
@@ -78,7 +78,7 @@ def _set_flags(species_sources, query_dir):
         flag_value = (
             FLAGS.A
             if species['independent_sources']
-            > config.CRITERIA.SOURCES_MIN_COUNT
+            > config.criteria.sources_min_count
             else FLAGS.B
         )
         Flag.write(
@@ -90,14 +90,14 @@ def _set_flags(species_sources, query_dir):
 
 
 def _write_candidates(candidates, query_dir):
-    path = query_dir / config.CANDIDATES_SOURCES_JSON
+    path = query_dir / config.candidates_sources_json
     with path.open('w') as f:
         json.dump(candidates, f, default=serialize, indent=2)
     logger.info(f"Candidate hits with source diversity data written to {path}")
 
 
 def _write_sources(sources, query_dir):
-    path = query_dir / config.INDEPENDENT_SOURCES_JSON
+    path = query_dir / config.independent_sources_json
     with path.open('w') as f:
         json.dump(sources, f, default=serialize, indent=2)
     logger.info(f"Aggregated reference sequence sources written to {path}")

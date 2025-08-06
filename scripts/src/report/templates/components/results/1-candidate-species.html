@@ -27,7 +27,7 @@
           </strong>
         </td>
         <td>
-          <code>{{ config.CRITERIA.ALIGNMENT_MIN_NT }}bp</code>
+          <code>{{ config.criteria.alignment_min_nt }}bp</code>
         </td>
       </tr>
       <tr>
@@ -38,7 +38,7 @@
           </strong>
         </td>
         <td>
-          <code>{{ config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE * 100 }}%</code>
+          <code>{{ config.criteria.alignment_min_q_coverage * 100 }}%</code>
         </td>
       </tr>
     </table>
@@ -72,7 +72,7 @@
           <strong style="white-space: nowrap;">STRONG MATCH</strong>
         </td>
         <td>
-          &ge; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT * 100 }}%
+          &ge; {{ config.criteria.alignment_min_identity_strict * 100 }}%
         </td>
         <td>{{candidates.hit_counts.strong.hits }}</td>
         <td>{{ candidates.hit_counts.strong.species }}</td>
@@ -82,7 +82,7 @@
           <strong style="white-space: nowrap;">MODERATE MATCH</strong>
         </td>
         <td>
-          &ge; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY * 100 }}%
+          &ge; {{ config.criteria.alignment_min_identity * 100 }}%
         </td>
         <td>{{candidates.hit_counts.moderate.hits }}</td>
         <td>{{ candidates.hit_counts.moderate.species }}</td>
@@ -92,7 +92,7 @@
           <strong style="white-space: nowrap;">NO MATCH</strong>
         </td>
         <td>
-          &lt; {{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY * 100 }}%
+          &lt; {{ config.criteria.alignment_min_identity * 100 }}%
         </td>
         <td>{{candidates.hit_counts.filtered.hits }}</td>
         <td>{{ candidates.hit_counts.filtered.species }}</td>
@@ -160,7 +160,7 @@
         <td class="text-center">{{ candidate.e_value }}</td>
         {% endif %}
         <td class="text-center">
-          {% if candidates.species | length > config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS %}
+          {% if candidates.species | length > config.criteria.max_candidates_for_analysis %}
           <span
             class="badge bg-secondary px-2"
             data-bs-toggle="tooltip"

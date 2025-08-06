@@ -113,7 +113,7 @@ class RelatedTaxaGBIF:
     def _is_accepted(self, record):
         status_key = 'status' if 'status' in record else 'taxonomicStatus'
         return (
-            record[status_key] in config.GBIF_ACCEPTED_STATUS
+            record[status_key] in config.gbif_accepted_status
             and (self.INCLUDE_EXTINCT or record.get('isExtinct') is not True)
         )
 
@@ -133,12 +133,12 @@ class RelatedTaxaGBIF:
         kwargs = {
             'rank': 'species',
             'higherTaxonKey': self.genus_key,
-            'limit': config.GBIF_LIMIT_RECORDS,
+            'limit': config.gbif_limit_records,
         }
 
         previous_first_name = None
         while not end_of_records:
-            kwargs['offset'] = i * config.GBIF_LIMIT_RECORDS
+            kwargs['offset'] = i * config.gbif_limit_records
             throttle = Throttle(ENDPOINTS.GBIF_SLOW)
             res = throttle.with_retry(
                 pygbif.species.name_lookup,
@@ -171,8 +171,8 @@ class RelatedTaxaGBIF:
                 'genusKey': self.genus_key,
                 'country': country_code,
                 'facet': "speciesKey",
-                'facetLimit': config.GBIF_LIMIT_RECORDS,
-                'offset': i * config.GBIF_LIMIT_RECORDS,
+                'facetLimit': config.gbif_limit_records,
+                'offset': i * config.gbif_limit_records,
                 'limit': 1,  # don't need every occurence for each species
             }
             throttle = Throttle(ENDPOINTS.GBIF_FAST)
@@ -184,7 +184,7 @@ class RelatedTaxaGBIF:
             try:
                 end_of_records = (
                     len(res['facets'][0]['counts'])
-                    < config.GBIF_LIMIT_RECORDS)
+                    < config.gbif_limit_records)
             except (KeyError, IndexError):
                 end_of_records = True
             i += 1

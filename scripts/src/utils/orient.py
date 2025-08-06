@@ -259,7 +259,7 @@ def hmmsearch(seqlist: list[SeqRecord], profile: Path) -> list[SeqRecord]:
                     query_accession=fields[3],
                     evalue=float(fields[4]),
                 )
-                if result.evalue < config.HMMSEARCH_MIN_EVALUE:
+                if result.evalue < config.hmmsearch_min_evalue:
                     matches.append(result)
 
     except subprocess.CalledProcessError as e:

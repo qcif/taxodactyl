@@ -49,7 +49,7 @@ def _parse_args():
 
 
 def _write_csv(taxonomies, accession_taxids):
-    path = config.output_dir / config.TAXONOMY_FILE
+    path = config.output_dir / config.taxonomy_file
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('w') as output_file:
         writer = csv.DictWriter(

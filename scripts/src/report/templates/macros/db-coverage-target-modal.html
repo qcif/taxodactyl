@@ -152,7 +152,7 @@
                 {% if context.target_type == 'toi' and context.tois_detected['target_taxon'] and context.data.target %}
                 <p class="alert alert-warning">
                   <strong>Warning:</strong>
-                  The reference database includes records for <em>{{ context.target_taxon }}</em>, but they were not present in the top {{ context.config.BLAST_MAX_TARGET_SEQS }} hits with a sufficient alignment identity to meet candidate criteria. If there are over {{ context.config.BLAST_MAX_TARGET_SEQS }} related species' records in the database (as reported below), it is possible (though rare) that a viable hit for this TOI was present in hits ranked lower than the top {{ context.config.BLAST_MAX_TARGET_SEQS }}.
+                  The reference database includes records for <em>{{ context.target_taxon }}</em>, but they were not present in the top {{ context.config.blast_max_target_seqs }} hits with a sufficient alignment identity to meet candidate criteria. If there are over {{ context.config.blast_max_target_seqs }} related species' records in the database (as reported below), it is possible (though rare) that a viable hit for this TOI was present in hits ranked lower than the top {{ context.config.blast_max_target_seqs }}.
                 </p>
                 {% endif %}
 
@@ -179,7 +179,7 @@
                     Global occurrence records for <em>{{ context.target_taxon }}</em>.
                     <br>
                     <small class="hide-small">
-                      Note that the occurrence data are not exhaustive, since the data fetched are limited to {{ context.config.GBIF_MAX_OCCURRENCE_RECORDS }} occurrence records.
+                      Note that the occurrence data are not exhaustive, since the data fetched are limited to {{ context.config.gbif_max_occurrence_records }} occurrence records.
                       It is therefore possible for this species to occur in regions not shown on the map.
                     </small>
                   </p>

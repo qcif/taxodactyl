@@ -134,9 +134,9 @@ def _filter_hits(hits):
     filtered_hits = [
         hit for hit in hits
         if (
-            hit["alignment_length"] >= config.CRITERIA.ALIGNMENT_MIN_NT
+            hit["alignment_length"] >= config.criteria.alignment_min_nt
             or hit["query_coverage"]
-            >= config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE
+            >= config.criteria.alignment_min_q_coverage
         )
     ]
     for hit in filtered_hits:
@@ -155,11 +155,11 @@ def _filter_hits(hits):
                 " species list.")
     candidate_hits = [
         hit for hit in filtered_hits
-        if hit["identity"] >= config.CRITERIA.ALIGNMENT_MIN_IDENTITY
+        if hit["identity"] >= config.criteria.alignment_min_identity
     ]
     candidate_hits_strict = [
         hit for hit in candidate_hits
-        if hit["identity"] >= config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT
+        if hit["identity"] >= config.criteria.alignment_min_identity_strict
     ]
     return filtered_hits, candidate_hits, candidate_hits_strict
 
@@ -167,11 +167,11 @@ def _filter_hits(hits):
 def _filter_hits_bold(hits):
     candidate_hits = [
         hit for hit in hits
-        if hit["similarity"] >= config.CRITERIA.ALIGNMENT_MIN_IDENTITY
+        if hit["similarity"] >= config.criteria.alignment_min_identity
     ]
     candidate_hits_strict = [
         hit for hit in candidate_hits
-        if hit["similarity"] >= config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT
+        if hit["similarity"] >= config.criteria.alignment_min_identity_strict
     ]
     return candidate_hits, candidate_hits_strict
 
@@ -197,16 +197,16 @@ def _assign_species_id(
     def _get_median_bs_class(median_identity, top_identity):
         """Get the median identity class based on the top identity."""
         identity_threshold = (
-            config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT
-            if top_identity >= config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT
-            else config.CRITERIA.ALIGNMENT_MIN_IDENTITY
+            config.criteria.alignment_min_identity_strict
+            if top_identity >= config.criteria.alignment_min_identity_strict
+            else config.criteria.alignment_min_identity
         )
         if median_identity >= identity_threshold:
             return "success"
         elif (
             median_identity
             >= identity_threshold
-            * config.CRITERIA.MEDIAN_IDENTITY_WARNING_FACTOR
+            * config.criteria.median_identity_warning_factor
         ):
             return "warning"
         else:
@@ -294,7 +294,7 @@ def _assign_species_id(
         selected_species_hits,
         bold=bold,
     )
-    if len(selected_species) > config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS:
+    if len(selected_species) > config.criteria.max_candidates_for_analysis:
         _write_boxplot(query_dir, selected_species_hits, bold)
     taxonomic_id = _write_taxonomic_id(query_dir, candidate_species_strict)
     _write_pmi_match(taxonomic_id, query_ix, query_dir)
@@ -326,7 +326,7 @@ def _get_accessions_for_phylogeny(
         return [data[i] for i in idx]
 
     accessions = []
-    max_hits = config.CRITERIA.PHYLOGENY_MAX_HITS_PER_SPECIES
+    max_hits = config.criteria.phylogeny_max_hits_per_species
     phylo_species = {
         hit['species'] for hit in phylo_hits
     }
@@ -356,14 +356,14 @@ def _get_accessions_for_phylogeny(
 def _write_taxonomic_id(query_dir, candidate_species_strict):
     if len(candidate_species_strict) != 1:
         logger.info(
-            f"Query {query_dir} - not writing {config.TAXONOMY_ID_CSV}:"
+            f"Query {query_dir} - not writing {config.taxonomy_id_csv}:"
             " no taxonomic identification could be made"
             f" ({len(candidate_species_strict)} candidates found).")
     else:
-        src = query_dir / config.CANDIDATES_CSV
-        dest = query_dir / config.TAXONOMY_ID_CSV
+        src = query_dir / config.candidates_csv
+        dest = query_dir / config.taxonomy_id_csv
         dest.write_text(src.read_text())
-        logger.info(f"Writing taxonomic ID to {config.TAXONOMY_ID_CSV}")
+        logger.info(f"Writing taxonomic ID to {config.taxonomy_id_csv}")
         return candidate_species_strict[0]
 
 
@@ -401,7 +401,7 @@ def _write_candidates(
 
 
 def _write_candidates_json(query_dir, hit_counts, hits, species):
-    path = query_dir / config.CANDIDATES_JSON
+    path = query_dir / config.candidates_json
     with path.open("w") as f:
         json.dump({
             "hits": hits,
@@ -413,7 +413,7 @@ def _write_candidates_json(query_dir, hit_counts, hits, species):
 
 def _write_candidates_csv(query_dir, hits, bold=False):
     header = CANDIDATE_CSV_HEADER_BOLD if bold else CANDIDATE_CSV_HEADER
-    path = query_dir / config.CANDIDATES_CSV
+    path = query_dir / config.candidates_csv
     with path.open("w") as f:
         writer = csv.writer(f)
         writer.writerow(header)
@@ -434,8 +434,8 @@ def _write_candidates_fasta(query_dir, hits, bold=False):
     """
     id_key = "hit_id" if bold else "accession"
     identity_key = "similarity" if bold else "identity"
-    path = query_dir / config.CANDIDATES_FASTA
-    phylo_path = query_dir / config.PHYLOGENY_FASTA
+    path = query_dir / config.candidates_fasta
+    phylo_path = query_dir / config.phylogeny_fasta
     fastas = config.read_hits_fasta(query_dir)
     accessions = [
         hit[id_key] for hit in hits
@@ -445,7 +445,7 @@ def _write_candidates_fasta(query_dir, hits, bold=False):
         hits,
         key=lambda x: x[identity_key]
     ):
-        if len(phylogeny_hits) > config.CRITERIA.PHYLOGENY_MIN_HIT_SEQUENCES:
+        if len(phylogeny_hits) > config.criteria.phylogeny_min_hit_sequences:
             break
         phylogeny_hits.append(hit)
 
@@ -472,7 +472,7 @@ def _write_candidates_fasta(query_dir, hits, bold=False):
 
 
 def _write_candidates_count(query_dir, candidate_species):
-    path = query_dir / config.CANDIDATES_COUNT_FILE
+    path = query_dir / config.candidates_count_file
     count = len(candidate_species)
     with path.open("w") as f:
         f.write(str(count))
@@ -494,7 +494,7 @@ def _write_pmi_match(taxonomic_identity, query_ix, query_dir):
             FLAGS.A if match else FLAGS.B,
         )
         if match:
-            path = query_dir / config.PMI_MATCH_CSV
+            path = query_dir / config.pmi_match_csv
             with path.open('w') as f:
                 f.write(','.join(('rank', 'taxon')))
                 f.write(','.join(match[0]))
@@ -527,7 +527,7 @@ def _write_boxplot(query_dir, hits, bold=False):
         plt.xticks(rotation=80)
     plt.xlabel('Genus', fontsize=14)
     plt.ylabel(title, fontsize=14)
-    boxplot_image_path = query_dir / config.BOXPLOT_IMG_FILENAME
+    boxplot_image_path = query_dir / config.boxplot_img_filename
     plt.savefig(boxplot_image_path, bbox_inches='tight', dpi=150)
     plt.close()
     logger.info(f"Written boxplot PNG to {boxplot_image_path}")
@@ -562,9 +562,9 @@ def _detect_taxa_of_interest(candidate_species, query_dir):
     ]
     write_flag = True
 
-    with (query_dir / config.TOI_DETECTED_CSV).open("w") as f:
+    with (query_dir / config.toi_detected_csv).open("w") as f:
         writer = csv.writer(f)
-        writer.writerow(config.OUTPUTS.TOI_DETECTED_HEADER)
+        writer.writerow(config.toi_detected_header)
 
     for toi in taxa_of_interest:
         try:
@@ -583,7 +583,7 @@ def _detect_taxa_of_interest(candidate_species, query_dir):
         if detected_taxon:
             write_flag = False
     logger.info("Writing taxa of interest detection to"
-                f" {query_dir / config.TOI_DETECTED_CSV}")
+                f" {query_dir / config.toi_detected_csv}")
 
 
 def _write_toi_detected(query_dir, toi, detected, write_flag=True):
@@ -598,7 +598,7 @@ def _write_toi_detected(query_dir, toi, detected, write_flag=True):
             FLAGS.TOI,
             value,
         )
-    with (query_dir / config.TOI_DETECTED_CSV).open("a") as f:
+    with (query_dir / config.toi_detected_csv).open("a") as f:
         writer = csv.writer(f)
         writer.writerow([
             toi,
