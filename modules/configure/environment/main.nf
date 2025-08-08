@@ -39,8 +39,8 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.hits_fasta_filename} != null ]; then echo 'export HITS_FASTA_FILENAME=${params.hits_fasta_filename}' >> env_vars.sh; fi
     if [ ${params.hits_json_filename} != null ]; then echo 'export HITS_JSON_FILENAME=${params.hits_json_filename}' >> env_vars.sh; fi
     if [ ${params.independent_sources_json_filename} != null ]; then echo 'export INDEPENDENT_SOURCES_JSON_FILENAME=${params.independent_sources_json_filename}' >> env_vars.sh; fi
-    if [ ${params.sequences} != null ]; then echo 'export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})' >> env_vars.sh; fi
-    if [ ${params.metadata} != null ]; then echo 'export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})' >> env_vars.sh; fi
+    if [ ${params.sequences} != null ]; then echo "export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})" >> env_vars.sh; fi
+    if [ ${params.metadata} != null ]; then echo "export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})" >> env_vars.sh; fi
     if [ ${params.logging_debug} != null ]; then echo 'export LOGGING_DEBUG=${params.logging_debug}' >> env_vars.sh; fi
     if [ ${params.max_candidates_for_analysis} != null ]; then echo 'export MAX_CANDIDATES_FOR_ANALYSIS=${params.max_candidates_for_analysis}' >> env_vars.sh; fi
     if [ ${params.median_identity_warning_factor} != null ]; then echo 'export MEDIAN_IDENTITY_WARNING_FACTOR=${params.median_identity_warning_factor}' >> env_vars.sh; fi
