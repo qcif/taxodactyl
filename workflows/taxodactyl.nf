@@ -20,6 +20,7 @@ include { FASTME } from '../modules/fastme/main'
 include { REPORT } from '../modules/report/main'
 include { VALIDATE_INPUT } from '../modules/validate/input/main'
 include { BOLD_SEARCH } from '../modules/bold/search/main'
+include { PREPARE_INPUTS } from '../modules/prepare/inputs/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,14 +38,28 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true)
 
+    // Copy input files to work directory first to ensure availability
+    PREPARE_INPUTS (
+        file(params.sequences),
+        file(params.metadata)
+    )
+    
+    ch_sequences = PREPARE_INPUTS.out.sequences
+    ch_metadata = PREPARE_INPUTS.out.metadata
+
     // Set up environment variables
-    CONFIGURE_ENVIRONMENT ()
+    CONFIGURE_ENVIRONMENT (
+        ch_sequences,
+        ch_metadata
+    )
 	 
     ch_env_var_file = CONFIGURE_ENVIRONMENT.out
 
     // Validate input files and parameters
     VALIDATE_INPUT (
         ch_env_var_file,
+        ch_sequences,
+        ch_metadata
     )
 
     // Run BOLD or BLAST search depending on db_type
@@ -52,7 +67,7 @@ workflow TAXODACTYL {
         // BOLD search branch
         BOLD_SEARCH (
             ch_env_var_file,
-            file(params.sequences),
+            ch_sequences,
             VALIDATE_INPUT.out
         )
         ch_hits = BOLD_SEARCH.out.hits
@@ -61,7 +76,7 @@ workflow TAXODACTYL {
     } else {
         // BLAST search branch
         BLAST_BLASTN (
-            file(params.sequences),
+            ch_sequences,
             VALIDATE_INPUT.out
         )
 
@@ -96,11 +111,11 @@ workflow TAXODACTYL {
         ch_env_var_file,
         ch_hits_to_filter,
         ch_taxonomy_file,
-        file(params.metadata)
+        ch_metadata
     )
 
     // Prepare query sequences for alignment
-    ch_query_fasta = Channel.fromPath(file(params.sequences))
+    ch_query_fasta = ch_sequences
         .splitFasta(record: [id: true, sequence: true])
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
@@ -139,7 +154,7 @@ workflow TAXODACTYL {
     EVALUATE_DATABASE_COVERAGE (
         ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-        file(params.metadata)
+        ch_metadata
     )
 
     // Prepare hits for report
@@ -208,7 +223,7 @@ workflow TAXODACTYL {
         ch_env_var_file,
         ch_files_for_report,
         ch_taxonomy_file,
-        file(params.metadata)
+        ch_metadata
     )
 
 }
