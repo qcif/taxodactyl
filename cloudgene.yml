@@ -1,0 +1,43 @@
+# Could possible store API keys in a local file and index them by user email
+
+id: taxodactyl
+name: Taxodactyl
+description: Per-sample taxonomic classification from assembled DNA barcodes
+version: 1.2.0
+website: https://github.com/qcif/taxodactyl
+author: Magdalena Antczak, Cameron Hyde and Daisy Li
+logo: https://github.com/qcif/taxodactyl/blob/main/docs/images/taxodactyl_logo.png?raw=true
+
+workflow:
+  steps:
+    - name: Run taxonomic classification
+      stdout: true
+      params:
+        db_type: blast_core_nt
+        blastdb: /mnt/data/blast/core_nt
+        taxdb: /mnt/data/taxdump
+        ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
+        analyst_name: ${CLOUDGENE_USER_FULL_NAME}
+
+  inputs:
+    - id: metadata
+      description: Input metadata CSV
+      type: file
+      accept: .csv
+    - id: sequences
+      description: Sample DNA sequences in FASTA format
+      type: file
+      accept: .fasta, .fa, .fna, .fsa, .fas
+    # - id: facility_name
+    #   description: Your facility/site name
+    #   type: string
+    #   required: false
+    # - id: ncbi_api_key
+    #   description: Your NCBI API key (for faster access to NCBI APIs)
+    #   type: string
+    #   required: false
+
+  outputs:
+    - id: outdir
+      description: Outputs
+      type: folder
