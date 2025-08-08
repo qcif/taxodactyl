@@ -13,7 +13,7 @@ workflow:
     - name: Run taxonomic classification
       params:
         db_type: blast_core_nt
-        blastdb: /mnt/data/blast/testdb/testdb
+        blastdb: /mnt/data/blast/core_nt/core_nt
         taxdb: /mnt/data/taxdump
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
