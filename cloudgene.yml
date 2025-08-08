@@ -11,7 +11,6 @@ logo: https://github.com/qcif/taxodactyl/blob/main/docs/images/taxodactyl_logo.p
 workflow:
   steps:
     - name: Run taxonomic classification
-      stdout: true
       params:
         db_type: blast_core_nt
         blastdb: /mnt/data/blast/core_nt
