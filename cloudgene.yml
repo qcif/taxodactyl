@@ -18,6 +18,8 @@ workflow:
         taxdb: /mnt/data/taxdump
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
+        facility_name: QCIF
+        ncbi_api_key: XXX
 
   inputs:
     - id: metadata
