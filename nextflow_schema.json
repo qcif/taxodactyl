@@ -67,7 +67,6 @@
                 "blastdb": {
                     "type": "string",
                     "format": "file-path",
-                    "pattern": ".*core_nt",
                     "description": "Path to the BLAST database files.",
                     "errorMessage": "Parameter 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
                 },
