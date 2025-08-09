@@ -34,6 +34,8 @@ process REPORT {
     
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
+    # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
+    export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})
     # Ensure the query folder exists
     mkdir -p ${query_folder}
     # Move tree file into the query folder with the correct name
