@@ -137,11 +137,14 @@ workflow TAXODACTYL {
     ch_query_fasta = ch_sequences
         .splitFasta(record: [id: true, sequence: true])
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
+        .view { "DEBUG: ch_query_fasta: $it" }
 
     // Combine candidate and query sequences for alignment
     ch_seqs_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+        .view { "DEBUG: mapped candidates before combine: $it" }
         .combine(ch_query_fasta, by: 0)
+        .view { "DEBUG: after combine with query_fasta: $it" }
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
         .view { "DEBUG: ch_seqs_for_alignment: $it" }
 
