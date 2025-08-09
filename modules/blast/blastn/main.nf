@@ -38,7 +38,8 @@ process BLAST_BLASTN {
         -max_target_seqs 500 \\
         -evalue 0.05 \\
         -reward 1 \\
-        -penalty -3
+        -penalty -3 \\
+        -taxids 35069
 
     # Record the BLAST version used
     cat <<-END_VERSIONS > versions.yml
