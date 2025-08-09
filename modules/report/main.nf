@@ -19,6 +19,7 @@ process REPORT {
         path(timestamp_file)                                                  // File with timestamps
     path(taxonomy_file) // Taxonomy file
     path(metadata_file) // Metadata file
+    path(sequences_file) // Sequences file
 
     output:
     path("$query_folder/*.html") // Output: final HTML report
@@ -30,6 +31,9 @@ process REPORT {
     """
     # Source environment variables
     source ${env_var_file}
+    
+    # Override INPUT_FASTA_FILEPATH to use local sequences file
+    export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
     # Ensure the query folder exists
     mkdir -p ${query_folder}
     # Move tree file into the query folder with the correct name

@@ -239,7 +239,8 @@ workflow TAXODACTYL {
         ch_env_var_file,
         ch_files_for_report,
         ch_taxonomy_file,
-        ch_metadata
+        ch_metadata,
+        ch_sequences
     )
 
 }
