@@ -30,7 +30,7 @@ process MOCK_BLASTN {
         exit 1
     fi
     
-    echo "MOCK: Successfully copied test BLAST output ($(wc -l < ${params.blast_xml_filename}) lines)"
+    echo "MOCK: Successfully copied test BLAST output (\$(wc -l < ${params.blast_xml_filename}) lines)"
 
     # Record a mock BLAST version
     cat <<-END_VERSIONS > versions.yml
