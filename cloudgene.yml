@@ -18,6 +18,7 @@ workflow:
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
         facility_name: QCIF
+        mock_blast: true
 
   inputs:
     - id: metadata
@@ -28,12 +29,12 @@ workflow:
       description: Sample DNA sequences in FASTA format
       type: file
       accept: .fasta, .fa, .fna, .fsa, .fas
+    - id: ncbi_api_key
+      description: Your NCBI API key (for faster access to NCBI APIs)
+      type: string
+      required: false
     # - id: facility_name
     #   description: Your facility/site name
-    #   type: string
-    #   required: false
-    # - id: ncbi_api_key
-    #   description: Your NCBI API key (for faster access to NCBI APIs)
     #   type: string
     #   required: false
 

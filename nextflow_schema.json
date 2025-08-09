@@ -294,6 +294,13 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'logging_debug' must be one of [0, 1]. Default: 0."
                 },
+                "mock_blast": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, use mock BLAST for testing purposes instead of running actual BLAST.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'mock_blast' must be true or false. Default: false."
+                },
                 "accessions_filename": {
                     "type": "string",
                     "default": "accessions.txt",
