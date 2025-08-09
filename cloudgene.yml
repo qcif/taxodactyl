@@ -18,7 +18,7 @@ workflow:
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
         facility_name: QCIF
-        mock_blast: true
+        mock_blast: false
 
   inputs:
     - id: metadata
