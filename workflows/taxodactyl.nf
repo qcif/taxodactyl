@@ -128,6 +128,10 @@ workflow TAXODACTYL {
         ch_taxonomy_file,
         ch_metadata
     )
+    
+    // Debug: Check what candidates are produced
+    EXTRACT_CANDIDATES.out.candidates_for_alignment
+        .view { "DEBUG: candidates_for_alignment: $it" }
 
     // Prepare query sequences for alignment
     ch_query_fasta = ch_sequences
@@ -139,6 +143,7 @@ workflow TAXODACTYL {
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
         .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
+        .view { "DEBUG: ch_seqs_for_alignment: $it" }
 
     // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
@@ -152,11 +157,14 @@ workflow TAXODACTYL {
 
     // Filter candidates for source diversity evaluation 
     ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+        .view { "DEBUG: candidates_for_source_diversity_all (before filter): $it" }
         .filter { tuple -> 
             def (folder, countFile, candidateJsonFile) = tuple
             def count = countFile.text.trim().toInteger()
+            println "DEBUG: Source diversity filter - folder: ${folder}, count: ${count}, max_candidates: ${params.max_candidates_for_analysis}"
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
+        .view { "DEBUG: candidates_for_source_diversity_filtered (after filter): $it" }
         .map { tuple -> [tuple[0], tuple[2]] }
     
     // Evaluate source diversity for filtered candidates
@@ -223,6 +231,13 @@ workflow TAXODACTYL {
             newLine: true
         )
         
+    // Debug: Check individual channels before combining for report
+    ch_hits_for_report.view { "DEBUG: ch_hits_for_report: $it" }
+    FASTME.out.nwk.view { "DEBUG: FASTME.out.nwk: $it" }
+    ch_candidates_for_report.view { "DEBUG: ch_candidates_for_report: $it" }
+    EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report.view { "DEBUG: db_coverage_for_report: $it" }
+    ch_source_diversity_for_report.view { "DEBUG: ch_source_diversity_for_report: $it" }
+    
     // Combine all files needed for the final report
     ch_files_for_report = ch_hits_for_report
         .combine(FASTME.out.nwk, by: 0)
@@ -232,6 +247,7 @@ workflow TAXODACTYL {
         .combine(ch_collated_versions)
         .combine(ch_params_json)
         .combine(ch_workflow_timestamp)
+        .view { "DEBUG: ch_files_for_report (combined): $it" }
          
     // Generate the final report
     REPORT (
