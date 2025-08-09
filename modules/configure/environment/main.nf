@@ -49,7 +49,19 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.min_nt} != null ]; then echo 'export MIN_NT=${params.min_nt}' >> env_vars.sh; fi
     if [ ${params.min_q_coverage} != null ]; then echo 'export MIN_Q_COVERAGE=${params.min_q_coverage}' >> env_vars.sh; fi
     if [ ${params.min_source_count} != null ]; then echo 'export MIN_SOURCE_COUNT=${params.min_source_count}' >> env_vars.sh; fi
-    if [ ${params.ncbi_api_key} != null ]; then echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh; elif [ ! -z "\${NCBI_API_KEY}" ]; then echo 'export NCBI_API_KEY=\${NCBI_API_KEY}' >> env_vars.sh; fi
+    # Debug NCBI_API_KEY configuration
+    echo "DEBUG: params.ncbi_api_key = ${params.ncbi_api_key}"
+    echo "DEBUG: Host NCBI_API_KEY = \${NCBI_API_KEY:-UNSET}"
+    
+    if [ ${params.ncbi_api_key} != null ]; then 
+        echo "DEBUG: Using params.ncbi_api_key"
+        echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
+    elif [ ! -z "\${NCBI_API_KEY:-}" ]; then 
+        echo "DEBUG: Using host environment NCBI_API_KEY"
+        echo 'export NCBI_API_KEY=\${NCBI_API_KEY}' >> env_vars.sh
+    else
+        echo "DEBUG: No NCBI_API_KEY available from params or environment"
+    fi
     if [ ${params.outdir} != null ]; then echo 'export OUTPUT_DIR=${params.outdir}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_identity} != null ]; then echo 'export PHYLOGENY_MIN_HIT_IDENTITY=${params.phylogeny_min_hit_identity}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_sequences} != null ]; then echo 'export PHYLOGENY_MIN_HIT_SEQUENCES=${params.phylogeny_min_hit_sequences}' >> env_vars.sh; fi
