@@ -58,7 +58,7 @@ process CONFIGURE_ENVIRONMENT {
         echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
     elif [ ! -z "\${NCBI_API_KEY:-}" ]; then 
         echo "DEBUG: Using host environment NCBI_API_KEY"
-        echo 'export NCBI_API_KEY=\${NCBI_API_KEY}' >> env_vars.sh
+        echo "export NCBI_API_KEY=\${NCBI_API_KEY}" >> env_vars.sh
     else
         echo "DEBUG: No NCBI_API_KEY available from params or environment"
     fi
