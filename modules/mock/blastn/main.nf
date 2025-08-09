@@ -5,6 +5,7 @@ process MOCK_BLASTN {
     input:
     path(fasta) // Input FASTA file (can be gzipped) - same interface as BLAST_BLASTN
     val ready   // Readiness flag - same interface as BLAST_BLASTN
+    path(test_output) // Test output file to copy
 
     output:
     path("$params.blast_xml_filename"), emit: blast_output // Mock BLAST XML output
@@ -22,7 +23,7 @@ process MOCK_BLASTN {
     echo "MOCK: Copying test output file to ${params.blast_xml_filename}"
     
     # Copy the test output file to the expected output location
-    cp ${projectDir}/scripts/tests/test-data/output.xml ${params.blast_xml_filename}
+    cp ${test_output} ${params.blast_xml_filename}
     
     # Verify the file was copied successfully
     if [ ! -f ${params.blast_xml_filename} ]; then

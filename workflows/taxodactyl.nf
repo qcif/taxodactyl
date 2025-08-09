@@ -80,7 +80,8 @@ workflow TAXODACTYL {
             // Mock BLAST for testing
             MOCK_BLASTN (
                 ch_sequences,
-                VALIDATE_INPUT.out
+                VALIDATE_INPUT.out,
+                file("${projectDir}/scripts/tests/test-data/output.xml")
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
