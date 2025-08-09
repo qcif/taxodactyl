@@ -81,7 +81,7 @@ workflow TAXODACTYL {
             MOCK_BLASTN (
                 ch_sequences,
                 VALIDATE_INPUT.out,
-                file("${projectDir}/scripts/tests/test-data/output.xml")
+                file("${projectDir}/scripts/tests/test-data/one_output.xml")
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
