@@ -7,7 +7,8 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { dumpParametersToJSON } from '../subworkflows/nf-core/utils_nextflow_pipeline'
-include { BLAST_BLASTN } from '../modules/blast/blastn/main' 
+include { BLAST_BLASTN } from '../modules/blast/blastn/main'
+include { MOCK_BLASTN } from '../modules/mock/blastn/main' 
 include { MAFFT_ALIGN } from '../modules/mafft/align/main'
 include { EXTRACT_HITS } from '../modules/extract/hits/main'
 include { BLAST_BLASTDBCMD } from '../modules/blast/blastdbcmd/main'
@@ -74,15 +75,28 @@ workflow TAXODACTYL {
 
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
-        // BLAST search branch
-        BLAST_BLASTN (
-            ch_sequences,
-            VALIDATE_INPUT.out
-        )
+        // BLAST search branch - use mock or real BLAST based on params.mock_blast
+        if (params.mock_blast) {
+            // Mock BLAST for testing
+            MOCK_BLASTN (
+                ch_sequences,
+                VALIDATE_INPUT.out
+            )
+            ch_blast_output = MOCK_BLASTN.out.blast_output
+            ch_blast_versions = MOCK_BLASTN.out.versions
+        } else {
+            // Real BLAST
+            BLAST_BLASTN (
+                ch_sequences,
+                VALIDATE_INPUT.out
+            )
+            ch_blast_output = BLAST_BLASTN.out.blast_output
+            ch_blast_versions = BLAST_BLASTN.out.versions
+        }
 
         EXTRACT_HITS (
             ch_env_var_file,
-            BLAST_BLASTN.out.blast_output
+            ch_blast_output
         )
         ch_hits = EXTRACT_HITS.out.hits
 
@@ -194,7 +208,7 @@ workflow TAXODACTYL {
 
     } else {
 
-        ch_versions = BLAST_BLASTN.out.versions
+        ch_versions = ch_blast_versions
             .mix(BLAST_BLASTDBCMD.out.versions)
             .mix(MAFFT_ALIGN.out.versions)
             .mix(FASTME.out.versions)
