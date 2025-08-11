@@ -16,6 +16,7 @@
   </div>
 </div>
 
+{{#is(loggedIn, true)}}
 <div class="container bd-content" style="margin-bottom: 0px;">
   <h1>Available workflows</h1>
 
@@ -266,6 +267,17 @@
     </table>
   </div>
 </div>
+
+{{else}}
+  <div class="container">
+    <p>
+      <a href="/#!pages/register">
+      Create an account
+      </a>
+      to view and run workflows. Only accounts created with DAFF email addresses will be approved for access to workflows.
+    </p>
+  </div>
+{{/is}}
 
 <script>
 $(function () {
