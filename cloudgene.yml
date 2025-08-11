@@ -25,18 +25,22 @@ workflow:
       description: Input metadata CSV
       type: file
       accept: .csv
+      details: |
+        Ensure sample IDs match those in the FASTA file.
     - id: sequences
       description: Sample DNA sequences in FASTA format
       type: file
       accept: .fasta, .fa, .fna, .fsa, .fas
     - id: ncbi_api_key
-      description: Your NCBI API key (for faster access to NCBI APIs)
       type: string
       required: false
-    # - id: facility_name
-    #   description: Your facility/site name
-    #   type: string
-    #   required: false
+      description: Your NCBI API key
+      details: Not required, but will make your run go faster.
+    - id: facility_name
+      description: Your facility/site name
+      type: string
+      required: false
+      details: Not required, but will be included in the workflow report.
 
   outputs:
     - id: outdir
