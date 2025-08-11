@@ -29,6 +29,28 @@ include { PREPARE_INPUTS } from '../modules/prepare/inputs/main'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+onProcessError { trace ->
+    // Nice header
+    def tag = trace.tag ? " ${trace.tag}" : ""
+    println "\n[${trace.process}${tag}] failed (exit ${trace.exitStatus})"
+
+    // Try to stream the task's .command.err
+    try {
+        def errPath = "${trace.workDir}/.command.err"
+        def err = file(errPath)      // works with local FS and object stores
+        if (err.exists()) {
+            println err.text         // emit stderr to Nextflow stdout
+        } else if (trace.error) {
+            println trace.error      // fallback to Nextflow’s short error message
+        }
+    } catch (ignored) {
+        if (trace.error) println trace.error
+        else println "(stderr unavailable; see ${trace.workDir})"
+    }
+}
+
+
 workflow TAXODACTYL {
 
     main:
