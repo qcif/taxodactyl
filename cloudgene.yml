@@ -29,10 +29,10 @@ workflow:
       description: Sample DNA sequences in FASTA format
       type: file
       accept: .fasta, .fa, .fna, .fsa, .fas
-    # - id: ncbi_api_key
-    #   description: Your NCBI API key (for faster access to NCBI APIs)
-    #   type: string
-    #   required: false
+    - id: ncbi_api_key
+      description: Your NCBI API key (for faster access to NCBI APIs)
+      type: string
+      required: false
     # - id: facility_name
     #   description: Your facility/site name
     #   type: string
