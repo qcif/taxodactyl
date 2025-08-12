@@ -39,8 +39,8 @@ workflow:
     - id: facility_name
       description: Your facility/site name
       type: string
-      required: false
-      details: Not required, but will be included in the workflow report.
+      value: QCIF
+      details: Included in the workflow report.
 
   outputs:
     - id: outdir
