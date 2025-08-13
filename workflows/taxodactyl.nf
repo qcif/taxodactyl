@@ -119,7 +119,18 @@ workflow TAXODACTYL {
         .flatten()
         .map { file-> [file.parent.name, file] }
         .groupTuple()
-        .map { folder, files -> [folder, files[0], files[1] ]} 
+        .map { folder, files -> 
+            // Handle cases where FASTA file may be missing (no hits found)
+            def jsonFile = files.find { it.name.endsWith('.json') }
+            def fastaFile = files.find { it.name.endsWith('.fasta') }
+            
+            // If no FASTA file exists, create an empty placeholder
+            if (fastaFile == null) {
+                fastaFile = file("${folder}/${params.hits_fasta_filename}", checkIfExists: false)
+            }
+            
+            [folder, jsonFile, fastaFile]
+        } 
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
