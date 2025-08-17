@@ -403,7 +403,7 @@ class Config:
                 return locus.rename(name)
         raise ValueError(
             f"Unrecognized locus '{name}' for query {query}. This should have"
-            " been raised in p0_validation.py. Allowed loci are:\n- "
+            " been raised in p0_validation.py. Allowed loci are:\n- 'NA'\n- "
             f"{'\n- '.join([str(locus) for locus in self.allowed_loci])}"
         )
 
