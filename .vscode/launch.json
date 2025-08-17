@@ -248,8 +248,8 @@
             "args": [
                 // "output/query_001_LC438549",
                 // "output/query_002_ON075825",
-                // "output/query_003_PP466915",
-                "output/query_005_LC547004",
+                "output/query_003_PP466915",
+                // "output/query_005_LC547004",
 
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
