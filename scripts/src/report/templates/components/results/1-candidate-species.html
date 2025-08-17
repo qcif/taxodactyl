@@ -123,6 +123,10 @@
           Median identity
           {{ info_badge("The median of all hit identities for this species. A median that is significantly lower than the top identity indicates high genetic diversity across reference sequences, reducing our confidence in their taxonomic annotation.") }}
         </th>
+        <th class="text-center" data-sort-method="number">
+          Min identity
+          {{ info_badge("The lowest identity for this species across all hits. A minimum that is significantly lower than the top identity indicates high genetic diversity across reference sequences, reducing our confidence in their taxonomic annotation.") }}
+        </th>
         {% if bold %}
           <th class="text-center">
             BOLD Record
@@ -135,8 +139,8 @@
           </th>
         {% endif %}
         <th class="text-center">
-          Database coverage
-          {{ info_badge("An analysis of species coverage in the reference database.") }}
+          Coverage
+          {{ info_badge("Evaluation of species/genus coverage in the reference database.") }}
         </th>
       </thead>
       {% for candidate in candidates.species %}
@@ -151,6 +155,9 @@
           <span class="badge alert-{{ candidate.median_bs_class }} font-normal">
             {{ (candidate.median_identity * 100) | round(2)}}%
           </span>
+        </td>
+        <td class="text-center" data-sort="{{ candidate.min_identity }}">
+          {{ (candidate.min_identity * 100) | round(2)}}%
         </td>
         {% if bold %}
         <td class="text-center">
