@@ -10,6 +10,7 @@ class ExcludeLockFilter(logging.Filter):
 
 
 def get_logging_config(log_file):
+    log_file.parent.mkdir(parents=True, exist_ok=True)
     return {
         "version": 1,
         "disable_existing_loggers": False,
