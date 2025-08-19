@@ -16,10 +16,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir)
-
-    # Configuration is now handled in Config.__init__ via YAML
-
+    config.update_from_args(args)
     hits, fastas = parse_blast_xml(args.blast_xml_path)
     _write_hits(hits)
     _write_fastas(fastas)

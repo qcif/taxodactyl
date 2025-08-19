@@ -19,7 +19,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir)
+    config.update_from_args(args)
     with args.taxids_csv.open() as taxids_file:
         accession_taxids = {
             row[0]: row[1]

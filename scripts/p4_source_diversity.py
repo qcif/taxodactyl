@@ -24,10 +24,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir, query_dir=args.query_dir)
-
-    # Configuration is now handled in Config.__init__ via YAML
-
+    config.update_from_args(args)
     species, hits = _read_candidate_hits(args.query_dir)
     candidate_hits = [
         hit for hit in hits

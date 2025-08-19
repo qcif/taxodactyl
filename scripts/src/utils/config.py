@@ -229,17 +229,108 @@ class Config:
         """Parse GBIF status list from environment variable."""
         return value.upper().replace(' ', '').split(',')
 
-    def configure(self, output_dir=None, query_dir=None, bold=False):
-        """Configure output directory and logging."""
-        if output_dir:
-            self.output_dir = Path(output_dir)
+    def update_from_args(self, args: argparse.Namespace):
+        """Update config from CLI arguments and setup logging/directories.
+
+        Args:
+            args: argparse.Namespace containing CLI arguments
+        """
+        # Handle special setup arguments first
+        if hasattr(args, 'output_dir') and args.output_dir:
+            self.output_dir = Path(args.output_dir)
             self.output_dir.mkdir(exist_ok=True, parents=True)
-        if query_dir:
-            self.query_dir = Path(query_dir)
+
+        if hasattr(args, 'query_dir') and args.query_dir:
+            self.query_dir = Path(args.query_dir)
+
+        # Setup logging
         conf = get_logging_config(self.output_dir / self.log_filename)
         dictConfig(conf)
-        if bold:
+
+        # Handle BOLD flag
+        if hasattr(args, 'bold') and args.bold:
             self.bold_flag_file.write_text('1')
+
+        # Define mapping of CLI argument names to config paths
+        arg_mappings = {
+            # BLAST configuration
+            'blast_max_target_seqs': ('blast_max_target_seqs',),
+
+            # BOLD configuration
+            'bold_database': ('bold_database',),
+
+            # GBIF configuration
+            'gbif_limit_records': ('gbif_limit_records',),
+            'gbif_max_occurrence_records': ('gbif_max_occurrence_records',),
+            'gbif_accepted_status': ('gbif_accepted_status',),
+
+            # Analysis criteria (nested in criteria object)
+            'min_alignment_length': ('criteria', 'alignment_min_nt'),
+            'min_query_coverage': ('criteria', 'alignment_min_q_coverage'),
+            'min_identity': ('criteria', 'alignment_min_identity'),
+            'min_identity_strict': (
+                'criteria', 'alignment_min_identity_strict'),
+            'median_identity_warning_factor': (
+                'criteria', 'median_identity_warning_factor'),
+            'max_candidates_analysis': (
+                'criteria', 'max_candidates_for_analysis'),
+            'min_source_count': ('criteria', 'sources_min_count'),
+            'phylogeny_min_sequences': (
+                'criteria', 'phylogeny_min_hit_sequences'),
+            'phylogeny_max_per_species': (
+                'criteria', 'phylogeny_max_hits_per_species'),
+
+            # Database coverage criteria
+            'db_cov_target_min_a': ('criteria', 'db_cov_target_min_a'),
+            'db_cov_target_min_b': ('criteria', 'db_cov_target_min_b'),
+            'db_cov_related_min_a': ('criteria', 'db_cov_related_min_a'),
+            'db_cov_related_min_b': ('criteria', 'db_cov_related_min_b'),
+            'db_cov_country_missing_a': (
+                'criteria', 'db_cov_country_missing_a'),
+
+            # Database coverage settings
+            'db_coverage_toi_limit': ('db_coverage_toi_limit',),
+            'db_coverage_max_candidates': ('db_coverage_max_candidates',),
+
+            # Input validation settings
+            'fasta_max_sequences': ('inputs', 'fasta_max_sequences'),
+            'fasta_min_length': ('inputs', 'fasta_min_length_nt'),
+            'fasta_max_length': ('inputs', 'fasta_max_length_nt'),
+
+            # Report settings
+            'report_debug': ('report', 'debug'),
+            'database_name': ('report', 'database_name'),
+            'facility_name': ('inputs', 'facility_name'),
+            'analyst_name': ('inputs', 'analyst_name'),
+        }
+
+        # Iterate through all CLI arguments
+        for arg_name, arg_value in vars(args).items():
+            # Skip None values (arguments not provided by user)
+            if arg_value is None:
+                continue
+
+            # Skip arguments that don't have config mappings
+            if arg_name not in arg_mappings:
+                continue
+
+            config_path = arg_mappings[arg_name]
+
+            try:
+                if len(config_path) == 1:
+                    # Simple attribute: set directly on config
+                    setattr(self, config_path[0], arg_value)
+                elif len(config_path) == 2:
+                    # Nested attribute: set on nested object
+                    nested_obj_name, field_name = config_path
+                    nested_obj = getattr(self, nested_obj_name)
+                    setattr(nested_obj, field_name, arg_value)
+
+            except (AttributeError, TypeError) as e:
+                logger.warning(
+                    f"Failed to update config from CLI arg "
+                    f"{arg_name}={arg_value}: {e}")
+                continue
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""

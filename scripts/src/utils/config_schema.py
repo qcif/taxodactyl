@@ -244,9 +244,14 @@ class ConfigSchema(BaseModel):
         'allowed_loci_file', 'flag_details_csv_path', mode='before')
     @classmethod
     def validate_paths(cls, v):
-        """Convert string paths to Path objects."""
+        """Convert string paths to Path objects and resolve relative paths."""
         if isinstance(v, str):
-            return Path(v)
+            path = Path(v)
+            # If path is relative, resolve it relative to scripts directory
+            if not path.is_absolute():
+                scripts_dir = Path(__file__).parents[2]  # Go up to scripts dir
+                path = scripts_dir / path
+            return path
         return v
 
     class Config:
