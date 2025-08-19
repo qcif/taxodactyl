@@ -163,22 +163,17 @@ scripts are enumerated as P1-P6.
 
 Each script can also accept an optional argument `-c config.yml` that can be used 
 in place of CLI arguments, though CLI arguments will override any parameters 
-provided by the config file.
+provided by the config file. See the
+[configuration section](#application-configuration) for more info on
+configuration options.
 
 ## Environment variables
 
-Throughout execution of these scripts, access to input files is required.
-To avoid repeated passing of these files, they are just set as environment
-variables:
+Some environment variables that can be useful in development. These can all be passed as CLI params to the relevant scripts, or declared in a config.yml file, but sometimes this might be easier:
 
 ```sh
 INPUT_FASTA_FILEPATH="/my/input/folder/query.fasta"
 INPUT_METADATA_CSV_FILEPATH="/my/input/folder/metadata.csv"
-```
-
-Some other environment variables that can be useful in development:
-
-```sh
 LOGGING_DEBUG=0  # 1 to enable additional logging to help with debugging
 SKIP_ORIENTATION=0  # 1 to skip orientation of BOLD sequences (requires setup)
 GBIF_MAX_OCCURRENCE_RECORDS=200  # Reduce to 200 for testing/dev to speed up p5. Default 5000.
@@ -621,7 +616,7 @@ This will prompt the github.io docs pages to rebuild, which takes 2-3 minutes.
 
 ## Application configuration
 
-The [config.py] module provides all of the configuration for the application at
+The [config.py](./src/utils/config.py) module provides all of the configuration for the application at
 runtime, and pulls a lot of configuration from environment variables set by the
 user or Nextflow. The idea is that any module should be able to import config
 and easily access a set of global constants/variables:
@@ -629,7 +624,7 @@ and easily access a set of global constants/variables:
 ```py
 from src.utils.config import Config
 
-config = Config()
+config = Config()  # Returns a singleton, shared across all modules
 ```
 
 The `Config` object has a lot of properties/methods for convenient access to
@@ -641,16 +636,25 @@ sample_id = config.get_sample_id(query_ix)
 locus = config.get_locus_for_query(query_ix)
 ```
 
-You do have to be careful when mutating config attributes - just because you
-change a config attribute in one script, doesn't mean that it has changed in
-an imported module! We have special methods for mutating config, one of which
-is called at the beginning of most scripts:
+You can update config with args parsed from command-line. Note that config
+mutation has to be done before calling any external modules/functions:
 
 ```py
-# Set the output dir and query dir globally so the entire codebase
-# can use the config object to build reliable and reproducible file paths.
-# Otherwise we'd be passing these variables throughout the entire codebase:
-config.configure(args.output_dir, query_dir=args.query_dir)
+# E.g. set args.output_dir and args.query_dir parsed from command-line
+config.update_from_args(args)
+
+# Or manually update any config attribute
+config.output_dir = args.output_dir
+```
+
+If you find yourself passing the same CLI arguments repeatedly when running the Python scripts, you may wish to use config files. See [config/default.yml](./config/default.yml) for the full list of available params, and their default values.
+
+```yml
+output_dir: /my/output/dir
+query_dir: /my/output/dir/query_001
+inputs:
+  facility_name: "Hogwarts"
+  analyst_name: "Harry Potter"
 ```
 
 
@@ -738,30 +742,45 @@ HTML report, so any text updates here will propagate to the report generation.
 Some of the criteria for calling flags is declared in `config.CRITERIA` - refer
 the [config section](#application-configuration).
 
-During the analysis (P3-P5) flag files are written. I'm not super happy with how
-these are structured, but they needed to be written as a separate file for each
-script that can be collected by Nextflow and then passed to the P6 script for
-rendering the report. So I decided to write one file per flag, encode the flag
-metadata in the file name, and then write only the value to the file. These files
-can then all be read from the output directory to get a complete "Flag set" for
-the report. A complete set of flag files might look like this, though the
-number of flag 4/5s depends on how many candidates and TOIs exist:
+During the analysis (P3-P5) flag files are written in JSON format. These should
+be collected by Nextflow and then all passed to p6 script for report generation
+at the end. The flag files
+can then all be read from the output directory to get a complete "flag set" for
+the report. A complete set of flag files should look like this:
 
 ```
 1.flag
 2.flag
-4-Anneissia_japonica.flag
-4-Anneissia_sp._NIBGE_MOT(~)03651.flag
-5.1-candidate-Anneissia_japonica.flag
-5.1-pmi-Tortricidae.flag
-5.1-toi-Acanthaster_planci.flag
-5.2-candidate-Anneissia_japonica.flag
-5.2-pmi-Tortricidae.flag
-5.2-toi-Acanthaster_planci.flag
-5.3-candidate-Anneissia_japonica.flag
-5.3-pmi-Tortricidae.flag
-5.3-toi-Acanthaster_planci.flag
+4.flag
+5.1.flag
+5.2.flag
+5.3.flag
 7.flag
+```
+
+Example flag file content:
+
+```json
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Anneissia japonica",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Acanthaster planci",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Asterias rubens",
+    "target_type": "pmi"
+  }
+]
 ```
 
 Flags have caused a few bugs because sometimes a non-fatal error (usually an
