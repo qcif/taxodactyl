@@ -12,10 +12,7 @@ config = Config()
 def main():
     """Build the workflow report."""
     args = _parse_args()
-    config.configure(args.output_dir, query_dir=args.query_dir)
-
-    # Configuration is now handled in Config.__init__ via YAML
-
+    config.update_from_args(args)
     report.render(
         args.query_dir,
         args.bold,

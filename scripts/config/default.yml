@@ -2,8 +2,8 @@
 # All values shown here are defaults and can be overridden
 
 # File paths and directories
-allowed_loci_file: "scripts/config/loci.json"
-flag_details_csv_path: "scripts/config/flags.csv"
+allowed_loci_file: "config/loci.json"
+flag_details_csv_path: "config/flags.csv"
 
 # Output filenames
 timestamp_filename: "timestamp.txt"

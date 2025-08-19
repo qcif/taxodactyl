@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Test Config singleton behavior and YAML-based configuration."""
 
+import argparse
 import os
 import tempfile
 import unittest
 import yaml
+from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -303,6 +305,180 @@ class TestConfigYAMLLoading(unittest.TestCase):
         self.assertNotEqual(original_value, default_value)
         self.assertEqual(original_value, 3000)  # From our test config
         self.assertEqual(default_value, 2000)   # Default value
+
+
+class TestConfigCLIArgumentUpdate(unittest.TestCase):
+    """Test that CLI arguments can be passed to Config for updates."""
+
+    def setUp(self):
+        """Reset singleton state before each test."""
+        # Clear singleton instance
+        Config._instance = None
+        Config._initialized = False
+
+        # Clear any environment variables that might affect tests
+        self.original_env = {}
+        for var in ENV_VARS_TO_CLEAR:
+            self.original_env[var] = os.environ.get(var)
+            if var in os.environ:
+                del os.environ[var]
+
+    def tearDown(self):
+        """Restore environment variables after each test."""
+        for var, value in self.original_env.items():
+            if value is not None:
+                os.environ[var] = value
+            elif var in os.environ:
+                del os.environ[var]
+
+    def test_config_update_from_cli_args(self):
+        """Test config can be updated from CLI arguments using method."""
+        # Initialize config with defaults
+        with patch('sys.argv', ['test_script']):
+            config = Config()
+
+            # Store original values to verify they change
+            original_blast_max = config.blast_max_target_seqs
+            original_min_identity = config.criteria.alignment_min_identity
+            original_min_nt = config.criteria.alignment_min_nt
+
+            # Create CLI args that should override config values
+            cli_args = argparse.Namespace(
+                blast_max_target_seqs=5000,
+                min_identity=0.99,
+                min_alignment_length=500,
+                bold_database='COX1_SPECIES_PUBLIC',
+                db_cov_target_min_a=10,
+                gbif_max_occurrence_records=1000
+            )
+
+            # This should work but currently fails because update_from_args
+            # doesn't exist. Test will fail until we implement this method
+            self.assertTrue(hasattr(config, 'update_from_args'),
+                            "Config should have an update_from_args method")
+
+            # Update config from CLI args
+            config.update_from_args(cli_args)
+
+            # Verify that config values were updated
+            self.assertEqual(config.blast_max_target_seqs, 5000)
+            self.assertEqual(config.criteria.alignment_min_identity, 0.99)
+            self.assertEqual(config.criteria.alignment_min_nt, 500)
+            self.assertEqual(config.bold_database, 'COX1_SPECIES_PUBLIC')
+            self.assertEqual(config.criteria.db_cov_target_min_a, 10)
+            self.assertEqual(config.gbif_max_occurrence_records, 1000)
+
+            # Verify original values were different (proving update worked)
+            self.assertNotEqual(original_blast_max, 5000)
+            self.assertNotEqual(original_min_identity, 0.99)
+            self.assertNotEqual(original_min_nt, 500)
+
+    def test_config_update_ignores_none_values(self):
+        """Test that update_from_args ignores None values from CLI args."""
+        with patch('sys.argv', ['test_script']):
+            config = Config()
+            original_blast_max = config.blast_max_target_seqs
+
+            # CLI args with some None values (not specified by user)
+            cli_args = argparse.Namespace(
+                blast_max_target_seqs=None,  # Should be ignored
+                min_identity=0.95,          # Should be applied
+                some_nonexistent_arg=None   # Should be ignored safely
+            )
+
+            config.update_from_args(cli_args)
+
+            # blast_max_target_seqs should remain unchanged
+            self.assertEqual(config.blast_max_target_seqs, original_blast_max)
+            # min_identity should be updated
+            self.assertEqual(config.criteria.alignment_min_identity, 0.95)
+
+    def test_config_update_handles_missing_attributes(self):
+        """Test update_from_args handles CLI args that don't map to config."""
+        with patch('sys.argv', ['test_script']):
+            config = Config()
+
+            # CLI args with non-existent config mappings
+            cli_args = Namespace(
+                nonexistent_arg=123,
+                another_fake_arg='test'
+            )
+
+            # Should not raise an exception
+            config.update_from_args(cli_args)
+
+
+class TestConfigPathResolution(unittest.TestCase):
+    """Test that relative paths in config files are resolved correctly."""
+
+    def setUp(self):
+        """Create temporary directory and reset singleton state."""
+        # Reset singleton instance
+        Config._instance = None
+        Config._initialized = False
+
+        # Create temporary directory for test files
+        self.temp_dir = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        """Clean up temporary files."""
+        import shutil
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def test_relative_path_resolution_in_config(self):
+        """Test that relative paths in YAML config are resolved correctly."""
+        # Create temp config with relative paths
+        temp_config = self.temp_dir / 'relative_paths.yml'
+        config_data = {
+            'allowed_loci_file': 'config/loci.json',
+            'flag_details_csv_path': 'config/flags.csv',
+        }
+
+        with open(temp_config, 'w') as f:
+            yaml.dump(config_data, f)
+
+        # Test with relative paths in config
+        with patch('sys.argv', ['test_script', '-c', str(temp_config)]):
+            config = Config()
+
+            # Paths should be absolute and point to correct location
+            self.assertTrue(config.allowed_loci_file.is_absolute())
+            self.assertTrue(config.flag_details_csv_path.is_absolute())
+
+            # Should exist (assuming test runs from correct directory)
+            self.assertTrue(config.allowed_loci_file.exists())
+            self.assertTrue(config.flag_details_csv_path.exists())
+
+            # Should contain 'scripts/config' in the path
+            self.assertIn('scripts/config', str(config.allowed_loci_file))
+            self.assertIn('scripts/config', str(config.flag_details_csv_path))
+
+    def test_absolute_path_passthrough_in_config(self):
+        """Test that absolute paths in YAML config are left unchanged."""
+        # Create temp config with absolute paths
+        temp_config = self.temp_dir / 'absolute_paths.yml'
+        abs_loci_path = self.temp_dir / 'custom_loci.json'
+        abs_flags_path = self.temp_dir / 'custom_flags.csv'
+
+        # Create dummy files
+        abs_loci_path.write_text('[]')
+        abs_flags_path.write_text('id,name\n')
+
+        config_data = {
+            'allowed_loci_file': str(abs_loci_path),
+            'flag_details_csv_path': str(abs_flags_path),
+        }
+
+        with open(temp_config, 'w') as f:
+            yaml.dump(config_data, f)
+
+        # Test with absolute paths in config
+        with patch('sys.argv', ['test_script', '-c', str(temp_config)]):
+            config = Config()
+
+            # Should maintain the exact absolute paths specified
+            self.assertEqual(config.allowed_loci_file, abs_loci_path)
+            self.assertEqual(config.flag_details_csv_path, abs_flags_path)
 
 
 if __name__ == '__main__':

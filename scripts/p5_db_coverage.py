@@ -27,10 +27,7 @@ MODULE_NAME = "Database Coverage"
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir, query_dir=args.query_dir)
-
-    # Configuration is now handled in Config.__init__ via YAML
-
+    config.update_from_args(args)
     results, error_detected = assess_coverage(
         args.query_dir,
         is_bold=args.bold,
@@ -88,22 +85,24 @@ def _parse_args():
     parser.add_argument(
         "--db-cov-target-min-a",
         type=int,
-        help="Minimum records for target species (grade A)",
+        help="Minimum reference database record count for target species flag"
+             " 5.1A.",
     )
     parser.add_argument(
         "--db-cov-target-min-b",
         type=int,
-        help="Minimum records for target species (grade B)",
+        help="Minimum database coverage record count for target species flag"
+             " 5.1B.",
     )
     parser.add_argument(
         "--db-cov-related-min-a",
         type=int,
-        help="Minimum records for related species (grade A)",
+        help="Minimum database species coverage for target genus flag 5.2A.",
     )
     parser.add_argument(
         "--db-cov-related-min-b",
         type=int,
-        help="Minimum records for related species (grade B)",
+        help="Minimum database species coverage for target genus flag 5.2B",
     )
     parser.add_argument(
         "--db-cov-country-missing-a",

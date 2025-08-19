@@ -56,10 +56,7 @@ CANDIDATE_CSV_HEADER_BOLD = [
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir, query_dir=args.query_dir)
-
-    # Configuration is now handled in Config.__init__ via YAML
-
+    config.update_from_args(args)
     result = config.read_hits_json(args.query_dir)
     if args.bold:
         filtered_hits = result['hits']
