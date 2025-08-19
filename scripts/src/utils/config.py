@@ -230,11 +230,7 @@ class Config:
         return value.upper().replace(' ', '').split(',')
 
     def update_from_args(self, args: argparse.Namespace):
-        """Update config from CLI arguments and setup logging/directories.
-
-        Args:
-            args: argparse.Namespace containing CLI arguments
-        """
+        """Update config from CLI arguments and setup logging/directories."""
         # Handle special setup arguments first
         if hasattr(args, 'output_dir') and args.output_dir:
             self.output_dir = Path(args.output_dir)
