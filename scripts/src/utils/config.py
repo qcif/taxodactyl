@@ -33,6 +33,10 @@ MAP_FILENAME_TEMPLATE = "map_{taxon_str}.png"
 REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
+VARS_FROM_ENV = (
+    "USER_EMAIL",
+    "NCBI_API_KEY",
+)
 
 
 class Config:
@@ -132,14 +136,12 @@ class Config:
             # Use lowercase attribute names directly
             setattr(self, field_name, field_value)
 
-        # Load sensitive env vars
-        self.USER_EMAIL = os.getenv("USER_EMAIL")
-        self.NCBI_API_KEY = os.getenv("NCBI_API_KEY")
+        for var in VARS_FROM_ENV:
+            value = os.getenv(var)
+            setattr(self, var, value)
 
         # Override config values from environment variables
         self._apply_env_overrides()
-
-        # Note: placeholder_img_path is already set from schema
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
