@@ -161,6 +161,10 @@ MAFFT, FastME) are actioned with other tools, but most steps require invoking on
 of the Python scripts included in this repository. For ease of reference, the
 scripts are enumerated as P1-P6.
 
+Each script can also accept an optional argument `-c config.yml` that can be used 
+in place of CLI arguments, though CLI arguments will override any parameters 
+provided by the config file.
+
 ## Environment variables
 
 Throughout execution of these scripts, access to input files is required.
@@ -203,6 +207,12 @@ $ python p0_validation.py -h
 
 usage: p0_validation.py [-h] --metadata_csv METADATA_CSV --query_fasta
                         QUERY_FASTA --taxdb_dir TAXDB_DIR [--bold]
+                        [--allowed-loci-file ALLOWED_LOCI_FILE]
+                        [--input-fasta INPUT_FASTA]
+                        [--input-metadata INPUT_METADATA]
+                        [--fasta-max-sequences FASTA_MAX_SEQUENCES]
+                        [--fasta-min-length FASTA_MIN_LENGTH]
+                        [--fasta-max-length FASTA_MAX_LENGTH]
 
 Validate user input.
 
@@ -216,6 +226,18 @@ options:
                         Path to queries.fasta input file.
   --bold                Validate inputs for a BOLD analysis (accept blank
                         locus field).
+  --allowed-loci-file ALLOWED_LOCI_FILE
+                        Path to JSON file containing allowed loci definitions
+  --input-fasta INPUT_FASTA
+                        Path to input FASTA file containing query sequences
+  --input-metadata INPUT_METADATA
+                        Path to input metadata CSV file
+  --fasta-max-sequences FASTA_MAX_SEQUENCES
+                        Maximum number of sequences allowed
+  --fasta-min-length FASTA_MIN_LENGTH
+                        Minimum sequence length in nucleotides
+  --fasta-max-length FASTA_MAX_LENGTH
+                        Maximum sequence length in nucleotides
 ```
 
 
@@ -236,9 +258,11 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --input-db INPUT_DB   Database path to use for retrieving taxon ID.
   --output_dir OUTPUT_DIR
                         Directory to save parsed output files (JSON and FASTA).
+                        Defaults to env variable 'OUTPUT_DIR' or 'output'.
+  --blast-max-target-seqs BLAST_MAX_TARGET_SEQS
+                        Maximum number of target sequences for BLAST
 ```
 
 Output is in per-query directories corresponding to the sequence index in
@@ -257,6 +281,28 @@ output/
 │   └── query_title.txt
 ├── ...
 ...
+```
+
+## P1 BOLD search
+
+This script uses the BOLD API to search for similar sequences to query sequences.
+It's an alternative to BLAST when using the BOLD database for taxonomic identification.
+
+```
+$ python scripts/p1_bold_search.py -h
+
+Use the BOLD API to search for similar sequences to query.
+
+positional arguments:
+  fasta_file            Path to the FASTA file containing sequences to search.
+
+options:
+  -h, --help            show this help message and exit
+  --output_dir OUTPUT_DIR
+                        Directory to save parsed output files (JSON and FASTA).
+                        Defaults to env variable 'OUTPUT_DIR' or 'output'.
+  --bold-database BOLD_DATABASE
+                        BOLD database to search
 ```
 
 ## BLASTDBCMD
@@ -297,7 +343,7 @@ positional arguments:
 options:
   -h, --help           show this help message and exit
   --output OUTPUT_CSV  CSV file where taxonomy data will be written. Defaults to taxonomy.csv
-  --taxdb TAXDB_PATH   Path to directory containing NCBI taxdump files for taxonkit. Defaults to /home/ubuntu/.taxonkit
+  --taxdb TAXDB_PATH   Path to directory containing NCBI taxdump files for taxonkit. Defaults to $HOME/.taxonkit
   ```
 
 
@@ -314,7 +360,16 @@ represented by those hits. It generates several reportable outcomes:
 
 ```
 $ python p3_assign_taxonomy.py -h
-usage: p3_assign_taxonomy.py [-h] [--output_dir OUTPUT_DIR] [--bold] query_dir
+usage: p3_assign_taxonomy.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+                             [--min-alignment-length MIN_ALIGNMENT_LENGTH]
+                             [--min-query-coverage MIN_QUERY_COVERAGE]
+                             [--min-identity MIN_IDENTITY]
+                             [--min-identity-strict MIN_IDENTITY_STRICT]
+                             [--median-identity-warning-factor MEDIAN_IDENTITY_WARNING_FACTOR]
+                             [--max-candidates-analysis MAX_CANDIDATES_ANALYSIS]
+                             [--phylogeny-min-sequences PHYLOGENY_MIN_SEQUENCES]
+                             [--phylogeny-max-per-species PHYLOGENY_MAX_PER_SPECIES]
+                             query_dir
 
 Run logic for pipeline phase 1-2. - Attempt species ID from BLAST results.json (flag 1) - Detect Taxa of Interest (flag 2) Taxa of Interest output has the following CSV
 fields: Taxon of interest: The provided TOI that matched a candidate species Match rank: The taxonomic rank of the match (TOI rank may be above species) Match taxon: The taxon
@@ -328,6 +383,22 @@ options:
   --output_dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Outputs are from BOLD query.
+  --min-alignment-length MIN_ALIGNMENT_LENGTH
+                        Minimum alignment length in nucleotides
+  --min-query-coverage MIN_QUERY_COVERAGE
+                        Minimum query coverage fraction
+  --min-identity MIN_IDENTITY
+                        Minimum sequence identity for moderate matches
+  --min-identity-strict MIN_IDENTITY_STRICT
+                        Minimum sequence identity for strong matches
+  --median-identity-warning-factor MEDIAN_IDENTITY_WARNING_FACTOR
+                        Factor for median identity warnings
+  --max-candidates-analysis MAX_CANDIDATES_ANALYSIS
+                        Maximum candidates to include in detailed analysis
+  --phylogeny-min-sequences PHYLOGENY_MIN_SEQUENCES
+                        Minimum sequences required for phylogeny
+  --phylogeny-max-per-species PHYLOGENY_MAX_PER_SPECIES
+                        Maximum sequences per species for phylogeny
 ```
 
 
@@ -344,7 +415,9 @@ publication author, journal and title for each publication.
 ```
 $ python p4_source_diversity.py -h
 
-usage: p4_source_diversity.py [-h] [--output_dir OUTPUT_DIR] query_dir
+usage: p4_source_diversity.py [-h] [--output_dir OUTPUT_DIR]
+                               [--min-source-count MIN_SOURCE_COUNT]
+                               query_dir
 
 Analyze the diversity of reference sequence sources oer target. A source is
 defined as a publication or set of authors that are linked to the genbank
@@ -361,6 +434,8 @@ options:
   -h, --help            show this help message and exit
   --output_dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
+  --min-source-count MIN_SOURCE_COUNT
+                        Minimum number of independent sources required
 ```
 
 
@@ -378,7 +453,18 @@ each target taxon.
 ```
 $ python p5_db_coverage.py -h
 
-usage: p5_db_coverage.py [-h] [--output_dir OUTPUT_DIR] [--bold] query_dir
+usage: p5_db_coverage.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+                         [--db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT]
+                         [--db-coverage-max-candidates DB_COVERAGE_MAX_CANDIDATES]
+                         [--gbif-limit-records GBIF_LIMIT_RECORDS]
+                         [--gbif-max-occurrence-records GBIF_MAX_OCCURRENCE_RECORDS]
+                         [--gbif-accepted-status GBIF_ACCEPTED_STATUS]
+                         [--db-cov-target-min-a DB_COV_TARGET_MIN_A]
+                         [--db-cov-target-min-b DB_COV_TARGET_MIN_B]
+                         [--db-cov-related-min-a DB_COV_RELATED_MIN_A]
+                         [--db-cov-related-min-b DB_COV_RELATED_MIN_B]
+                         [--db-cov-country-missing-a DB_COV_COUNTRY_MISSING_A]
+                         query_dir
 
 Analyze the database coverage of target species at the given locus. Database coverage is analysed at three levels: 1. Target species coverage: The number of records for the
 target species 2. Related species coverage: The number of records for species related to the target species 3. Related species from sample country of origin: as for (2), but
@@ -392,6 +478,26 @@ options:
   --output_dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Reference the BOLD database instead of GenBank.
+  --db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT
+                        Limit for taxa of interest in coverage analysis
+  --db-coverage-max-candidates DB_COVERAGE_MAX_CANDIDATES
+                        Maximum candidates for coverage assessment
+  --gbif-limit-records GBIF_LIMIT_RECORDS
+                        Limit for GBIF taxonomy records
+  --gbif-max-occurrence-records GBIF_MAX_OCCURRENCE_RECORDS
+                        Maximum GBIF occurrence records
+  --gbif-accepted-status GBIF_ACCEPTED_STATUS
+                        Comma-separated list of accepted taxonomic statuses
+  --db-cov-target-min-a DB_COV_TARGET_MIN_A
+                        Minimum records for target species (grade A)
+  --db-cov-target-min-b DB_COV_TARGET_MIN_B
+                        Minimum records for target species (grade B)
+  --db-cov-related-min-a DB_COV_RELATED_MIN_A
+                        Minimum records for related species (grade A)
+  --db-cov-related-min-b DB_COV_RELATED_MIN_B
+                        Minimum records for related species (grade B)
+  --db-cov-country-missing-a DB_COV_COUNTRY_MISSING_A
+                        Threshold for missing country data (grade A)
 ```
 
 The code for these analyses is fairly abstract in order to accomodate the range
@@ -440,7 +546,12 @@ by the user. The report is a single HTML file rendered from many templates
 
 ```
 $ python p6_report.py -h
-usage: p6_report.py [-h] [--output_dir OUTPUT_DIR] [--bold] [--params_json PARAMS_JSON] [--versions_yml VERSIONS_YML] query_dir
+usage: p6_report.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+                    [--params_json PARAMS_JSON] [--versions_yml VERSIONS_YML]
+                    [--report-debug] [--database-name DATABASE_NAME]
+                    [--facility-name FACILITY_NAME] [--analyst-name ANALYST_NAME]
+                    [--flag-details-csv FLAG_DETAILS_CSV]
+                    query_dir
 
 Build the workflow report.
 
@@ -456,6 +567,15 @@ options:
                         Path to params JSON file.
   --versions_yml VERSIONS_YML
                         Path to versions YAML file.
+  --report-debug        Enable debug mode for report generation
+  --database-name DATABASE_NAME
+                        Name of the reference database
+  --facility-name FACILITY_NAME
+                        Name of the analysis facility
+  --analyst-name ANALYST_NAME
+                        Name of the analyst
+  --flag-details-csv FLAG_DETAILS_CSV
+                        Path to CSV file containing flag definitions
 ```
 
 The entrypoint for the
