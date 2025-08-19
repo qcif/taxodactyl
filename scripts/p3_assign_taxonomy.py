@@ -249,6 +249,7 @@ def _assign_species_id(
             h['identity'] for h in selected_species_hits
             if h['species'] == hit['species']
         ]
+        hit['min_identity'] = sorted(hit_identities)[-1]
         hit['median_identity'] = sorted(hit_identities)[
             len(hit_identities) // 2
         ]
