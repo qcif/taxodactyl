@@ -1,0 +1,187 @@
+{% from "macros/flag-badge.html" import render_flag %}
+{% from "macros/info-badge.html" import info_badge %}
+{% from "macros/error-message.html" import render_error_badge, render_error_message %}
+
+{# Modal template for publications supporting taxonomic association
+   Parameters:
+   - taxon: The species name
+   - pub_modal_id: The modal ID
+   - aggregated_sources: The source data
+   - conclusions: Flag conclusions
+   - error_log: Error log data
+   - error_locations: Error location constants
+   - bold: Boolean indicating if this is BOLD data
+   - url_from_accession: Function to generate URLs from accessions
+#}
+
+<div class="modal fade" id="{{ pub_modal_id }}" tabindex="-1" aria-labelledby="{{ pub_modal_id }}Label" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="{{ pub_modal_id }}Label">
+          Publications supporting taxonomic association - <em>{{ taxon }}</em>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if aggregated_sources and aggregated_sources.get(taxon) %}
+          {% set src_groups = aggregated_sources[taxon] %}
+          
+          <p>
+            This analysis evaluates how many independent publication events have contributed matching sequences for <em>{{ taxon }}</em>. This provides a measure of confidence in the taxonomic annotation of references sequences. A sequence that has been annotated by multiple independent sources is more likely to have a correct taxonomic annotation.
+          </p>
+
+          <div class="row mb-4">
+            <div class="col">
+              {% set flag = conclusions.flags['4'][taxon] %}
+              <div class="alert alert-{{ flag.bs_class }} p-3">
+                {{ render_flag(flag) }}
+                <p class="text-center mb-0">
+                  (Found {{ src_groups|length }} sources)
+                </p>
+              </div>
+            </div>
+            <div class="col">
+              <p class="lead px-3 fw-bold">
+                {{ src_groups|length }} Independent Source{% if src_groups|length > 1 %}s{% endif %}
+              </p>
+              <p class="px-3">
+                The matching reference sequences for this species have been annotated by {{ src_groups|length }} independent source(s). A source is considered independent if the author list or publication title is distinct.
+                {% if bold %}
+                For BOLD records without a GenBank IDs, the BOLD Collector is used as the source.
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          {% set errors = error_log.filter(
+              location=error_locations.SOURCE_DIVERSITY_ACCESSION_ERROR,
+              context={'species': taxon},
+            )
+          %}
+
+          {% set blank_accession_errors = errors.filter(
+              context={'accession': ''},
+            )
+          %}
+          {% set null_accession_errors = errors.filter(
+              context={'accession': none},
+            )
+          %}
+          {% set misc_errors = blank_accession_errors + null_accession_errors %}
+          {% if misc_errors %}
+          {{ render_error_message(misc_errors) }}
+          {% endif %}
+
+          <div>
+            {% for src_group in src_groups %}
+            <div class="source">
+              <p class="lead">
+                Source {{ loop.index }}
+              </p>
+              <table class="table table-striped mb-5">
+                <thead>
+                  <tr>
+                    <th style="white-space: nowrap;">Hit accession</th>
+                    <th>
+                      Automated
+                      {{ info_badge("If true, this record was the result of a computer-guided annotation that has likely not been confirmed by a human.") }}
+                    </th>
+                    <th>Authors</th>
+                    <th>Title</th>
+                    <th>Journal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% set ns = namespace(counter=0) %}
+                  {% for src in src_group %}
+                  {% for publication in src.publications %}
+                  {% set ns.counter = ns.counter + 1 %}
+                  <tr{% if ns.counter > 2 %} class="hide"{% endif %}>
+                    <td>
+                      {% set accession_errors = errors.filter(
+                          context={'accession': src['accession']},
+                        )
+                      %}
+                      {% if src.accession and accession_errors %}
+                      {{ render_error_badge(accession_errors) }}
+                      {% endif %}
+                      <a href="{{ url_from_accession(src['accession']) }}" target="_blank">
+                        {{ src.accession }}
+                      </a>
+                    </td>
+                    <td>{{ src.is_automated }}</td>
+                    <td class="font-small">
+                      {% for author in publication.authors %}
+                      {{ author }}{% if not loop.last %}<br>{% endif %}
+                      {% endfor %}
+                    </td>
+                    <td class="font-small">{{ publication.title }}</td>
+                    <td class="font-small">{{ publication.journal }}</td>
+                  </tr>
+                  {% endfor %}
+
+                  {% if not src.publications %}
+                    {% set ns.counter = ns.counter + 1 %}
+                    <tr{% if ns.counter > 2 %} class="hide"{% endif %}>
+                    {% if 'collectors' in src %}
+                      <td>
+                        <a href="{{ src.bold_url }}" target="_blank">
+                          {{ src.bold_id }}
+                        </a>
+                      </td>
+                      <td>False</td>
+                      <td>BOLD Collectors: {{ src.collectors }}</td>
+                      <td>NA</td>
+                      <td>NA</td>
+                    {% else %}
+                      <td>
+                        {% set accession_errors = errors.filter(
+                            context={'accession': src['accession']},
+                          )
+                        %}
+                        {% if src.accession and accession_errors %}
+                        {{ render_error_badge(accession_errors) }}
+                        {% endif %}
+                        <a href="{{ url_from_accession(src['accession']) }}" target="_blank">
+                          {{ src.accession }}
+                        </a>
+                      </td>
+                      <td>{{ src.is_automated }}</td>
+                      <td colspan="3">No publications for this record</td>
+                      {% endif %}
+                    </tr>
+                  {% endif %}
+
+                  {% endfor %}
+
+                  {% set remaining_publications = ns.counter - 2 %}
+                  {% if remaining_publications > 0 %}
+                  <tr>
+                    <td colspan="5">
+                      <a href="javascript:void(0);" onclick="togglePublicationsCollapse(this);">
+                        <span class="toggle-collapse">Show</span>
+                        <span class="toggle-collapse hide">Hide</span>
+                        {{ remaining_publications }}
+                        <span class="toggle-collapse">more</span>
+                        publication{% if remaining_publications > 1 %}s{% endif %}...
+                      </a>
+                    </td>
+                  </tr>
+                  {% endif %}
+
+                </tbody>
+              </table>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="alert alert-secondary">No publication data available for <em>{{ taxon }}</em>.</p>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

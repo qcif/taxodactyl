@@ -49,7 +49,7 @@ table.freeze-header {
 }
 table.freeze-header th {
   background: #eee;
-  position: sticky;
+  position: sticky !important;  /* Gets clobbered by 'sortable' */
   top: 0;
   padding-top: .25rem;
   padding-bottom: .25rem;

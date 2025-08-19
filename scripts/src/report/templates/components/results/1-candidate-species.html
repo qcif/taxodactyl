@@ -123,6 +123,10 @@
           Median identity
           {{ info_badge("The median of all hit identities for this species. A median that is significantly lower than the top identity indicates high genetic diversity across reference sequences, reducing our confidence in their taxonomic annotation.") }}
         </th>
+        <th class="text-center" data-sort-method="number">
+          Min identity
+          {{ info_badge("The lowest identity for this species across all hits. A minimum that is significantly lower than the top identity indicates high genetic diversity across reference sequences, reducing our confidence in their taxonomic annotation.") }}
+        </th>
         {% if bold %}
           <th class="text-center">
             BOLD Record
@@ -135,13 +139,17 @@
           </th>
         {% endif %}
         <th class="text-center">
-          Database coverage
-          {{ info_badge("An analysis of species coverage in the reference database.") }}
+          Coverage
+          {{ info_badge("Evaluation of species/genus coverage in the reference database.") }}
+        </th>
+        <th class="text-center">
+          Publications
+          {{ info_badge("Analysis of reference sequences' credibility based on supporting publications.") }}
         </th>
       </thead>
       {% for candidate in candidates.species %}
       {% set taxon = candidate.species %}
-      <tr>
+      <tr class="align-middle">
         <td><em>{{ taxon }}</em></td>
         <td class="text-center">{{ candidate.hit_count }}</td>
         <td class="text-center" data-sort="{{ candidate.identity }}">
@@ -151,6 +159,9 @@
           <span class="badge alert-{{ candidate.median_bs_class }} font-normal">
             {{ (candidate.median_identity * 100) | round(2)}}%
           </span>
+        </td>
+        <td class="text-center" data-sort="{{ candidate.min_identity }}">
+          {{ (candidate.min_identity * 100) | round(2)}}%
         </td>
         {% if bold %}
         <td class="text-center">
@@ -204,18 +215,53 @@
 
         </td>
         {% endif %}
+        <td class="text-center">
+          {% set pub_modal_id = 'publicationsModal-' + taxon | css_hash %}
+          {% if aggregated_sources and aggregated_sources.get(taxon) %}
+            {% set pub_flag = conclusions.flags['4'][taxon] %}
+            {% set src_groups = aggregated_sources[taxon] %}
+            <button
+              class="btn btn-{{ pub_flag.bs_class }}"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="{{ pub_flag.outcome }}"
+              type="button"
+              style="min-width: 3rem;"
+              onclick="new bootstrap.Modal(document.getElementById('{{ pub_modal_id }}')).show();"
+            >
+              <strong>{{ src_groups|length }}</strong>
+            </button>
+          {% else %}
+            <span
+              class="badge bg-secondary px-2"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="No publication data available"
+            >
+              NA
+            </span>
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
 
       {% if candidates.species | length == 0 %}
       <tr>
-        <td colspan="5" class="text-danger text-center">
+        <td colspan="7" class="text-danger text-center">
           <em>No candidate species identified</em>
         </td>
       </tr>
       {% endif %}
     </table>
   </div>
+
+  <!-- Publications Modals -->
+  {% for candidate in candidates.species %}
+  {% set taxon = candidate.species %}
+  {% set pub_modal_id = 'publicationsModal-' + taxon | css_hash %}
+  
+  {% include "components/results/3-source-diversity-modal.html" %}
+  {% endfor %}
 
   {% if hits | length %}
     <p class="text-center">
@@ -249,3 +295,20 @@
 {% endif %}
 
 {{ render_subjective_input(2) }}
+
+<script>
+  function togglePublicationsCollapse(link) {
+    const tableRow = link.closest('tr');
+    tableRow.querySelectorAll('.toggle-collapse').forEach((el) => {
+      el.classList.toggle('hide');
+    });
+
+    // Toggle the visibility of the surplus rows
+    const tableBody = tableRow.parentElement;
+    const rows = tableBody.querySelectorAll('tr.hide,tr.show');
+    rows.forEach((row) => {
+      row.classList.toggle('hide');
+      row.classList.toggle('show');
+    });
+  }
+</script>

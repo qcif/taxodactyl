@@ -21,8 +21,8 @@
             to sort by column. Click on a row to show the corresponding BLAST
             alignment and taxonomy information in the bottom panes.
         </p>
-        <div class="mb-3" style="max-height: 35vh; overflow-y: auto;">
-          <table class="table tight font-small freeze-header sortable">
+        <div class="mb-3" style="max-height: 35vh; overflow-y: auto; border-bottom: 1px solid lightgray;">
+          <table class="table tight font-small sortable freeze-header">
             <thead class="no-wrap">
               <th class="text-center" data-sort-method="number">
                 Rank
@@ -41,8 +41,8 @@
                 {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
               </th>
               <th class="text-center" data-sort-method="number">
-                Query coverage
-                {{ info_badge("The proportion of the sample DNA sequence that must be matched by the hit sequence.") }}
+                Identity
+                {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
               </th>
               <th class="text-center" data-sort-method="number">
                 Bitscore
@@ -53,8 +53,8 @@
                 {{ info_badge("A measure of likelihood that the match is due to random chance. A value of zero is an excellent match.") }}
               </th>
               <th class="text-center" data-sort-method="number">
-                Identity
-                {{ info_badge("The proportion of nucleotides that match between the query and reference sequence.") }}
+                Query coverage
+                {{ info_badge("The proportion of the sample DNA sequence that must be matched by the hit sequence.") }}
               </th>
             </thead>
             {% for hit in hits %}
@@ -73,10 +73,10 @@
               </td>
               <td>{{ hit.hit_subject }}</td>
               <td class="text-center" data-sort="{{ hit.alignment_length }}">{{ hit.alignment_length }}</td>
-              <td class="text-center" data-sort="{{ hit.query_coverage }}">{{ (hit.query_coverage * 100) | round(1) }}%</td>
+              <td class="text-center" data-sort="{{ hit.identity }}">{{ (hit.identity * 100) | round(1) }}%</td>
               <td class="text-center" data-sort="{{ hit.bitscore }}">{{ hit.bitscore }}</td>
               <td class="text-center" data-sort="{{ hit.e_value }}">{{ "% .2e" | format(hit.e_value) }}</td>
-              <td class="text-center" data-sort="{{ hit.identity }}">{{ (hit.identity * 100) | round(1) }}%</td>
+              <td class="text-center" data-sort="{{ hit.query_coverage }}">{{ (hit.query_coverage * 100) | round(1) }}%</td>
             </tr>
             {% endfor %}
           </table>

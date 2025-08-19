@@ -134,18 +134,15 @@
                 <p class="my-3">
                   There are {{ records_str }} sequence records in the reference database for
                   <em>{{ context.target_taxon }}</em>
-                  <span
-                    {% if not context.locus_provided %}
-                    class="strikethrough"
-                    title="No locus was provided for this sample in metadata.csv"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    {% endif %}
-                  >
-                    that have been annotated with the given locus
-                    <strong>{{ context.metadata.locus }}</strong>.
-                    It is possible that more records exist for this taxon which were not correctly annotated with this locus.
-                  </span>
+                  {% if context.locus_provided %}
+                  that have been annotated with the given locus
+                  <strong>{{ context.metadata.locus }}</strong>.
+                  It is possible that more records exist for this taxon which were not correctly annotated with this locus.
+                  {% else %}
+                  across the entire genome because
+                  <strong>no locus was provided</strong>.
+                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider provising a locus in <code>metadata.csv</code> to obtain a more relevant analysis.
+                  {% endif %}
                 </p>
 
                 <!-- If toi and toi not detected, and data.target, show warning message -->
@@ -228,16 +225,11 @@
                   Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
                 </li>
                 <li>
-                  <span
-                    {% if not context.locus_provided %}
-                    class="strikethrough"
-                    title="No locus was provided for this sample in metadata.csv"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    {% endif %}
-                  >
-                    At the target locus <strong>{{ context.metadata.locus }}</strong>
-                </span>
+                  {% if context.locus_provided %}
+                  At the target locus <strong>{{ context.metadata.locus }}</strong>
+                  {% else %}
+                  Across the entire genome (<strong>no locus provided</strong>)
+                  {% endif %}
                 </li>
                </ul>
             </div>
@@ -265,16 +257,11 @@
                   <div class="accordion-body">
                     <p class="mb-0 text-center">
                       Number of GenBank records
-                      <span
-                        {% if not context.locus_provided %}
-                        class="strikethrough"
-                        title="No locus was provided for this sample in metadata.csv"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        {% endif %}
-                      >
-                        at locus <strong>{{ context.metadata.locus }}</strong>
-                      </span>
+                      {% if context.locus_provided %}
+                      at locus <strong>{{ context.metadata.locus }}</strong>
+                      {% else %}
+                      across the entire genome (<strong>no locus provided</strong>)
+                      {% endif %}
                     </p>
 
                     <div class="verticalScrollChart" id="dbcov-plot-related-{{ context.target_id }}"></div>
@@ -366,16 +353,11 @@
                     Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
                   </li>
                   <li>
-                    <span
-                      {% if not context.locus_provided %}
-                      class="strikethrough"
-                      title="No locus was provided for this sample in metadata.csv"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="bottom"
-                      {% endif %}
-                    >
-                      At the target locus <strong>{{ context.metadata.locus }}</strong>
-                  </span>
+                    {% if context.locus_provided %}
+                    At the target locus <strong>{{ context.metadata.locus }}</strong>
+                    {% else %}
+                    Across the entire genome (<strong>no locus provided</strong>)
+                    {% endif %}
                   </li>
                   <li>
                     In the sample country of origin <strong>{{ context.metadata.country }}</strong>
@@ -406,16 +388,11 @@
                     <div class="accordion-body">
                       <p class="mb-0 text-center">
                         Number of GenBank records
-                        <span
-                          {% if not context.locus_provided %}
-                          class="strikethrough"
-                          title="No locus was provided for this sample in metadata.csv"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="bottom"
-                          {% endif %}
-                        >
-                          at locus <strong>{{ context.metadata.locus }}</strong>
-                        </span>
+                        {% if context.locus_provided %}
+                        at locus <strong>{{ context.metadata.locus }}</strong>
+                        {% else %}
+                        across the entire genome (<strong>no locus provided</strong>)
+                        {% endif %}
                       </p>
 
                       <div class="verticalScrollChart" id="dbcov-plot-relatedCountry-{{ context.target_id }}"></div>
