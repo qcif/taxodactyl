@@ -266,17 +266,30 @@
   {% if hits | length %}
     <p class="text-center">
       <button
-        class="btn btn-primary"
+        class="btn btn-primary me-2"
         data-bs-toggle="modal"
         data-bs-target="{{ '#boldHitsModal' if bold else '#blastHitsModal' }}"
       >
-        {{ 'View all BOLD hits' if bold else 'View all BLAST hits' }}
+        {{ 'All BOLD hits' if bold else 'All BLAST hits' }}
       </button>
+      {% if tree_nwk_str %}
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#distanceTreeModal"
+      >
+        Distance tree
+      </button>
+      {% endif %}
     </p>
     {% if bold %}
       {% include "components/results/1b-bold-hits-modal.html" %}
     {% else %}
       {% include "components/results/1a-blast-hits-modal.html" %}
+    {% endif %}
+    
+    {% if tree_nwk_str %}
+      {% include "components/results/1c-distance-tree-modal.html" %}
     {% endif %}
   {% else %}
     <p class="alert alert-info">
@@ -311,4 +324,5 @@
       row.classList.toggle('show');
     });
   }
+
 </script>
