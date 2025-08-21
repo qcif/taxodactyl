@@ -30,21 +30,21 @@
       <td>
         {% set taxon = candidate.species %}
         {% set flag = conclusions.flags['5.2']['candidate'].get(taxon, none) %}
+        {% if db_coverage.summary.get('candidate', {}).get(taxon, {}).get('related') is not none %}
+        {% set coverage_percent = db_coverage.summary.candidate[taxon].related %}
         <span
-          {% if flag %}
-          data-bs-toggle="tooltip"
-          data-bs-placement="bottom"
-          title="{{ flag.outcome }}"
-          class="badge bg-{{ flag.bs_class }}"
-          {% endif %}
+        {% if flag %}
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="{{ flag.outcome }}"
+        class="badge bg-{{ flag.bs_class }}"
+        {% endif %}
         >
-          {% set coverage_percent = db_coverage.summary.candidate.get(taxon, {}).get('related') %}
-          {% if coverage_percent is not none %}
           {{ "%.0f" | format(coverage_percent * 100) }}%
-          {% else %}
-          <span class="text-muted">-</span>
-          {% endif %}
         </span>
+        {% else %}
+        -
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

@@ -33,7 +33,7 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "c03",  // Optional, run a specific test case
+                "RUN_TEST_CASE": "75",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
                 "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",

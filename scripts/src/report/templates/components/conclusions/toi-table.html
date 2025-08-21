@@ -34,25 +34,24 @@
         {% endif %}
       </td>
       <td> <!-- DB records -->
-        {% set toi_records = db_coverage.summary.toi.get(taxon, {}).get('target') %}
-        {% if toi_records is not none %}
         {% set flag = flags['5.1']['toi'][taxon] %}
+        {% if db_coverage.summary.get('toi', {}).get(taxon, {}).get('target') is not none %}
         <span
           class="badge bg-{{ flag.bs_class }}"
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           title="{{ flag.outcome }}"
         >
-          {{ toi_records }}
+          {{ db_coverage.summary.toi[taxon].target }}
         </span>
         {% else %}
         -
         {% endif %}
       </td>
       <td> <!-- Genus coverage -->
-        {% set coverage_percent = db_coverage.summary.toi.get(taxon, {}).get('related') %}
-        {% if coverage_percent is not none %}
         {% set flag = flags['5.2']['toi'][taxon] %}
+        {% if db_coverage.summary.get('toi', {}).get(taxon, {}).get('related') is not none %}
+        {% set coverage_percent = db_coverage.summary.toi[taxon].related %}
         <span
           class="badge bg-{{ flag.bs_class }}"
           data-bs-toggle="tooltip"
