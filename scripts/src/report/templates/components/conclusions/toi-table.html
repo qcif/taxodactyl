@@ -22,12 +22,12 @@
       <td><em>{{ taxon }}</em></td>
       <td> <!-- Detected? -->
         {% if toi['Match rank'] %}
-        <div class="text-success" style="width: 24px; height: 24px;">
+        <div class="text-success mx-auto" style="width: 24px; height: 24px;">
           {% set width = 24 %}
           {% include 'components/icons/check-circle-fill.svg' %}
         </div>
         {% else %}
-        <div class="text-danger" style="width: 24px; height: 24px;">
+        <div class="text-danger mx-auto" style="width: 24px; height: 24px;">
           {% set width = 24 %}
           {% include 'components/icons/x.svg' %}
         </div>

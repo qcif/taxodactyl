@@ -20,7 +20,7 @@
       <td><em>{{ metadata.preliminary_id }}</em></td>
       <td> <!-- Confirmed -->
         {% if conclusions.summary.result.confirmed %}
-        <div class="text-{{ conclusions.summary.pmi['bs-class'] }}" style="width: 24px; height: 24px;">
+        <div class="text-{{ conclusions.summary.pmi['bs-class'] }} mx-auto" style="width: 24px; height: 24px;">
           {% if conclusions.summary.pmi.confirmed %}
           {% set width = 24 %}
           {% include 'components/icons/check-circle-fill.svg' %}
