@@ -21,7 +21,7 @@ workflow:
         mock_blast: true
     - name: "Say hello"
       type: "command"
-      cmd: "/bin/echo hey ${CLOUDGENE_USER_NAME}"
+      cmd: "nextflow log last -f hash,workdir,stderr -F 'exit != 0'"
       stdout: "true"
 
   inputs:
