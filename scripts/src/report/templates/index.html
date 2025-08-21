@@ -16,7 +16,7 @@
 
     <script>
       const SAMPLE_ID = "{{ metadata.sample_id }}";
-      const DB_COVERAGE = {{ db_coverage | tojson }};
+      const DB_COVERAGE = {{ db_coverage.full | tojson }};
     </script>
 
     {% for script in static.js %}
