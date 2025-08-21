@@ -98,6 +98,16 @@
         <td>{{ candidates.hit_counts.filtered.species }}</td>
       </tr>
     </table>
+
+    <p class="my-3 text-center">
+      Lowest identity of all
+      {{ hits | length }}
+      BLAST hits:
+      <span class="badge bg-secondary text-light mx-3" style="position: relative; bottom: 2px;">
+        {{ "%.1f" | format(conclusions.hits.lowest_identity * 100) }}%
+      </span>
+    </p>
+
   </div>
 </div>
 

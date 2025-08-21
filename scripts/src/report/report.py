@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from src.utils import config, serialize
 from src.utils.errors import ErrorLog, LOCATIONS
-from src.utils.flags import FLAGS, Flag, TARGETS, level_to_bs_class
+from src.utils.flags import FLAGS, Flag, level_to_bs_class
 
 from .filters.css_hash import css_hash
 from .outcomes import DetectedTaxon
@@ -118,7 +118,7 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'config': config,
         'flag_definitions': config.read_flag_details_csv(),
         'input_fasta': query_fasta_str,
-        'conclusions': _draw_conclusions(query_ix),
+        'conclusions': _draw_conclusions(query_ix, hits),
         'hits': hits,
         'candidates': _get_candidates(query_ix),
         'hits_taxonomy': (
@@ -188,7 +188,7 @@ def _get_metadata(query_ix):
     }
 
 
-def _draw_conclusions(query_ix):
+def _draw_conclusions(query_ix, hits):
     """Determine conclusions from outputs flags and files."""
     flags = Flag.read(query_ix)
     return {
@@ -197,7 +197,12 @@ def _draw_conclusions(query_ix):
             'result': _get_taxonomic_result(query_ix, flags),
             'pmi': _get_pmi_result(flags),
             'toi': _get_toi_result(query_ix, flags),
-        }
+        },
+        'hits': {
+            'lowest_identity': min(
+                hit['identity'] for hit in hits
+            ),
+        },
     }
 
 
