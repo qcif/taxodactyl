@@ -1,0 +1,57 @@
+<table class="table tight border centered-columns">
+  <thead>
+    <tr>
+      <th colspan="6" class="text-center text-light bg-secondary bg-gradient">Candidate species</th>
+    </tr>
+    <tr class="bg-gray-100">
+      <th>Candidate Species</th>
+      <th>Hits</th>
+      <th>Sources</th>
+      <th>Max Identity</th>
+      <th>Min Identity</th>
+      <th>Genus Coverage</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if candidates.species %}
+    {% for candidate in candidates.species %}
+    <tr>
+      <td><em>{{ candidate.species }}</em></td>
+      <td>{{ candidate.hit_count }}</td>
+      <td>
+        {% if aggregated_sources[candidate.species] %}
+        {{ aggregated_sources[candidate.species] | length }}
+        {% else %}
+        0
+        {% endif %}
+      </td>
+      <td>{{ "%.1f" | format(candidate.identity * 100) }}%</td>
+      <td>{{ "%.1f" | format(candidate.min_identity * 100) }}%</td>
+      <td>
+        {% set taxon = candidate.species %}
+        {% set flag = conclusions.flags['5.2']['candidate'].get(taxon, none) %}
+        <span
+          {% if flag %}
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+          class="badge bg-{{ flag.bs_class }}"
+          {% endif %}
+        >
+          {% set coverage_percent = db_coverage.summary.candidate.get(taxon, {}).get('related') %}
+          {% if coverage_percent is not none %}
+          {{ "%.0f" | format(coverage_percent * 100) }}%
+          {% else %}
+          <span class="text-muted">-</span>
+          {% endif %}
+        </span>
+      </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+      <td colspan="6" class="text-center text-muted">No candidates identified</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>

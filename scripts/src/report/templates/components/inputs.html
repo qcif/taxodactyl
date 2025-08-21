@@ -1,11 +1,11 @@
 {% from "macros/info-badge.html" import info_badge %}
 
-<h3>
+<h4>
   Sample metadata
   {{ info_badge("These details are derived from your metadata.csv input file.") }}
-</h3>
+</h4>
 
-<table class="table table-striped my-3">
+<table class="table table-striped my-3 tight">
   <tbody>
     {% for key, value in metadata.items() %}
     <tr>
@@ -26,11 +26,11 @@
         Query DNA sequence
       </td>
       <td>
-        <button
-          class="btn btn-primary btn-sm"
+        <a
+          href="#"
           data-bs-toggle="modal"
           data-bs-target="#inputFastaModal"
-        >View</button>
+        >View</a>
       </td>
     </tr>
   </tbody>

@@ -87,7 +87,7 @@
         <td>{{candidates.hit_counts.moderate.hits }}</td>
         <td>{{ candidates.hit_counts.moderate.species }}</td>
       </tr>
-      <tr>
+      <tr class="alert alert-danger">
         <td>
           <strong style="white-space: nowrap;">NO MATCH</strong>
         </td>
@@ -198,7 +198,7 @@
           </button>
 
           {% set modal_context = {
-            'data': db_coverage['candidate'][taxon],
+            'data': db_coverage.full.candidate[taxon],
             'target_id': target_id,
             'target_taxon': taxon,
             'target_type': 'candidate',

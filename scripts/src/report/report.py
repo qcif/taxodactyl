@@ -278,31 +278,10 @@ def _get_toi_result(query_ix, flags):
         ]
     flag_2 = flags[FLAGS.TOI]
     ruled_out = flag_2.value == FLAGS.B
-    criteria = [flag_2]
-
-    if TARGETS.TOI in flags[FLAGS.DB_COVERAGE_TARGET]:
-        flags_5_1_targets = flags[FLAGS.DB_COVERAGE_TARGET][TARGETS.TOI]
-        flag_5_1_max = max(
-            flags_5_1_targets.values(),
-            # Rank NA values the lowest so they don't clobber proper results
-            key=lambda x: x.value if x.value != 'NA' else '0',
-        )
-        flags_5_2_targets = flags[FLAGS.DB_COVERAGE_RELATED][TARGETS.TOI]
-        flag_5_2_max = max(
-            flags_5_2_targets.values(),
-            # Rank NA values the lowest so they don't clobber proper results
-            key=lambda x: x.value if x.value != 'NA' else '0',
-        )
-        ruled_out = (
-            ruled_out
-            and flag_5_1_max.value == FLAGS.A
-            and flag_5_2_max.value == FLAGS.A
-        )
-        criteria += [flag_5_1_max, flag_5_2_max]
 
     return {
         'detected': detected_tois,
-        'flags': criteria,
+        'flag': flag_2,
         'ruled_out': ruled_out,
         'bs-class': 'success' if detected_tois else 'danger',
     }
@@ -406,7 +385,33 @@ def _read_db_coverage(query_ix):
             )
             data[target_type][target]['map_exists'] = path.exists()
             data[target_type][target]['map_src_base64'] = _get_img_src(path)
-    return data
+    return {
+        'full': data,
+        'summary': _get_db_cov_summary(data),
+    }
+
+
+def _get_db_cov_summary(db_coverage_data):
+    """Get a summary of the database coverage."""
+    def _coverage_percent(data: dict) -> float:
+        """Calculate the coverage percentage."""
+        if not data:
+            return None
+        total = len(data)
+        covered = len([
+            x for x in data.values() if x
+        ])
+        return round(covered / total, 2) if total else 0.0
+
+    summary = {}
+    for target_type, targets in db_coverage_data.items():
+        for target, data in targets.items():
+            summary.setdefault(target_type, {})[target] = {
+                'target': data['target'],
+                'related': _coverage_percent(data['related']),
+                'country': _coverage_percent(data['country']),
+            }
+    return summary
 
 
 if __name__ == '__main__':

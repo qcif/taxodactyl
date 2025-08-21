@@ -6,7 +6,7 @@ section {
   border-bottom: 1px solid gray;
   margin-bottom: 5rem;
 }
-h3, h4, h5 {
+h2, h3, h4, h5 {
   color: var(--bs-gray)
 }
 code {
@@ -83,6 +83,10 @@ table.sortable th[aria-sort="descending"]::before {
   opacity: 0.6;
   content: "⇓";
 }
+table.centered-columns td:not(:first-child),
+table.centered-columns th:not(:first-child) {
+  text-align: center;
+}
 .info-badge {
   font-size: 80%;
   margin: 0 .5em;
@@ -129,6 +133,9 @@ table.sortable th[aria-sort="descending"]::before {
 [class^="box-"] {
   margin: -1rem -1rem 0 -1rem;
 }
+.bg-warning {
+  color: black;
+}
 .box-success {
   background-color: #73dc62;
 }
@@ -147,6 +154,9 @@ thead.no-wrap th {
 .error-badge {
   position: relative;
   cursor: pointer;
+}
+.bg-gray-100 {
+  background-color: #eee;
 }
 
 /* BLAST hits */

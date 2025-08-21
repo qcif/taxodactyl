@@ -1,0 +1,116 @@
+{% set flags = conclusions.flags %}
+{% set taxon = metadata.preliminary_id %}
+{% set target_id = 'pmi-' + taxon | css_hash %}
+
+<table class="table tight border align-middle centered-columns">
+  <thead>
+    <tr>
+      <th colspan="5" class="text-center text-light bg-secondary bg-gradient">Preliminary ID</th>
+    </tr>
+    <tr class="bg-gray-100">
+      <th>Species</th>
+      <th>Confirmed?</th>
+      <th>DB records</th>
+      <th>Genus coverage</th>
+      <th>Coverage report</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>{{ metadata.preliminary_id }}</em></td>
+      <td> <!-- Confirmed -->
+        {% if conclusions.summary.result.confirmed %}
+        <div class="text-{{ conclusions.summary.pmi['bs-class'] }}" style="width: 24px; height: 24px;">
+          {% if conclusions.summary.pmi.confirmed %}
+          {% set width = 24 %}
+          {% include 'components/icons/check-circle-fill.svg' %}
+          {% else %}
+          {% set width = 24 %}
+          {% include 'components/icons/x.svg' %}
+          {% endif %}
+        </div>
+        {% else %}
+        <strong>NA</strong>
+        {% endif %}
+      </td>
+      <td> <!-- DB records -->
+        {% set pmi_records = db_coverage.summary.pmi.get(metadata.preliminary_id, {}).get('target', 0) %}
+        {% if pmi_records %}
+        {% set flag = flags['5.1']['pmi'][taxon] %}
+        <span
+          class="badge bg-{{ flag.bs_class }}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+        >
+          {{ pmi_records }}
+        </span>
+        {% else %}
+        -
+        {% endif %}
+      </td>
+      <td> <!-- Genus coverage -->
+        {% set flag = flags['5.2']['pmi'][taxon] %}
+        <span
+          class="badge bg-{{ flag.bs_class }}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+        >
+          {% set coverage_percent = db_coverage.summary.pmi.get(metadata.preliminary_id, {}).get('related') %}
+          {% if coverage_percent is not none %}
+          {{ "%.0f" | format(coverage_percent * 100) }}%
+          {% else %}
+          <span class="text-muted">-</span>
+          {% endif %}
+        </span>
+      </td>
+      <td> <!-- Coverage report button -->
+        {% set flag = flags['5']['pmi'][taxon] %}
+        <div
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="See full database coverage report"
+          style="display: inline-block;"
+        >
+          <button
+            class="btn btn-{{ flag.bs_class }} p-0 my-1"
+            data-bs-toggle="modal"
+            data-bs-target="#{{ target_id }}Modal"
+            type="button"
+            style="width: 4rem;"
+          >
+            {{ render_level_icon(flag.level) }}
+          </button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="py-2" colspan="5">
+        <small>
+          {% if '7' in conclusions.flags %}
+          {{ render_flag(conclusions.flags['7'], tooltip=conclusions.summary.pmi.tooltip) }}
+          {% else %}
+          No candidates were identified, so the preliminary morphology ID cannot be assessed.
+          {% endif %}
+        </small>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+{% set modal_context = {
+  'data': db_coverage.full.pmi[taxon],
+  'target_id': target_id,
+  'target_taxon': taxon,
+  'target_type': 'pmi',
+  'target_type_text': "Preliminary Morphology ID",
+  'flags': flags,
+  'metadata': metadata,
+  'error_log': error_log,
+  'error_locations': error_locations,
+  'config': config,
+  'tois_detected': {},
+  'locus_provided': locus_provided,
+} %}
+{{ render_target_modal(modal_context) }}
