@@ -19,6 +19,10 @@ workflow:
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
         facility_name: QCIF
         mock_blast: true
+    - name: "Say hello"
+      type: "command"
+      cmd: "/bin/echo hey ${CLOUDGENE_USER_NAME}"
+      stdout: "true"
 
   inputs:
     - id: metadata
