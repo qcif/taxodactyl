@@ -34,16 +34,15 @@
         {% endif %}
       </td>
       <td> <!-- DB records -->
-        {% set pmi_records = db_coverage.summary.pmi.get(metadata.preliminary_id, {}).get('target', 0) %}
-        {% if pmi_records %}
         {% set flag = flags['5.1']['pmi'][taxon] %}
+        {% if db_coverage.summary.get('pmi', {}).get(taxon, {}).get('target') is not none %}
         <span
           class="badge bg-{{ flag.bs_class }}"
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           title="{{ flag.outcome }}"
         >
-          {{ pmi_records }}
+          {{ db_coverage.summary.pmi[taxon].target }}
         </span>
         {% else %}
         -
@@ -51,19 +50,19 @@
       </td>
       <td> <!-- Genus coverage -->
         {% set flag = flags['5.2']['pmi'][taxon] %}
+        {% if db_coverage.summary.get('pmi', {}).get(taxon, {}).get('related') is not none %}
+        {% set coverage_percent = db_coverage.summary.pmi[taxon].get('related') %}
         <span
           class="badge bg-{{ flag.bs_class }}"
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           title="{{ flag.outcome }}"
         >
-          {% set coverage_percent = db_coverage.summary.pmi.get(metadata.preliminary_id, {}).get('related') %}
-          {% if coverage_percent is not none %}
           {{ "%.0f" | format(coverage_percent * 100) }}%
-          {% else %}
-          <span class="text-muted">-</span>
-          {% endif %}
         </span>
+        {% else %}
+        -
+        {% endif %}
       </td>
       <td> <!-- Coverage report button -->
         {% set flag = flags['5']['pmi'][taxon] %}
