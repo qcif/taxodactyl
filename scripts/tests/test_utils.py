@@ -133,7 +133,7 @@ class TestCache(unittest.TestCase):
         }
 
         # Set cache
-        cache.set(cache_key, test_data)
+        cache.put(cache_key, test_data)
 
         # Get cache
         retrieved = cache.get(cache_key)
@@ -150,13 +150,13 @@ class TestCache(unittest.TestCase):
         # String key
         string_key = "simple_string_key"
         string_data = "simple data"
-        cache.set(string_key, string_data)
+        cache.put(string_key, string_data)
         self.assertEqual(cache.get(string_key), string_data)
 
         # Integer key
         int_key = 12345
         int_data = {"number": 42}
-        cache.set(int_key, int_data)
+        cache.put(int_key, int_data)
         self.assertEqual(cache.get(int_key), int_data)
 
     def test_cache_overwrite_existing_key(self):
@@ -165,8 +165,8 @@ class TestCache(unittest.TestCase):
         first_data = "first value"
         second_data = "second value"
 
-        cache.set(test_key, first_data)
-        cache.set(test_key, second_data)
+        cache.put(test_key, first_data)
+        cache.put(test_key, second_data)
         retrieved = cache.get(test_key)
         self.assertEqual(retrieved, second_data)
 
@@ -181,7 +181,7 @@ class TestCache(unittest.TestCase):
             'float': 3.14159
         }
 
-        cache.set(cache_key, complex_data)
+        cache.put(cache_key, complex_data)
         retrieved = cache.get(cache_key)
         self.assertEqual(retrieved, complex_data)
 
@@ -197,7 +197,7 @@ class TestCache(unittest.TestCase):
         mock_datetime.fromisoformat = datetime.fromisoformat
 
         # Set cache
-        cache.set(cache_key, test_data)
+        cache.put(cache_key, test_data)
 
         # Mock datetime for getting cache (25 hours later, past 1 week default)
         get_time = set_time + timedelta(hours=169)  # Past 168 hour default
@@ -214,7 +214,7 @@ class TestCache(unittest.TestCase):
         test_data = "should not be expired"
 
         # Set cache
-        cache.set(cache_key, test_data)
+        cache.put(cache_key, test_data)
 
         # Get cache - should return data due to very long timeout
         retrieved = cache.get(cache_key)

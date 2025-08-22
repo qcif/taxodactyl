@@ -6,6 +6,7 @@ from pprint import pformat
 
 from .config import Config
 from .errors import APIError
+from src.utils import cache
 
 config = Config()
 logger = logging.getLogger(__name__)
@@ -203,14 +204,18 @@ class Throttle:
 
         return within_per_second_limit and within_per_minute_limit
 
-    def with_retry(self, func, args=[], kwargs={}):
+    def with_retry(self, func, args=[], kwargs={}, with_cache=False):
         retries = config.MAX_API_RETRIES
         while True:
             try:
                 with self:
                     logger.debug("Throttle released. Sending request to"
                                  f" {self.name}...")
-                    return func(*args, **kwargs)
+                if with_cache:
+                    return cache.get_or_put(func, args=args, kwargs=kwargs)
+
+                return func(*args, **kwargs)
+
             except Exception as exc:
                 sleep_seconds = 1
                 retries -= 1

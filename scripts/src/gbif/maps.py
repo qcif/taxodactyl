@@ -34,7 +34,8 @@ def draw_occurrence_map(taxon_key: str, path: Path):
             kwargs={
                 'taxonKey': taxon_key,
                 'offset': offset,
-            }
+            },
+            with_cache=True,
         )
         all_results.extend(res.get('results', []))
         if res.get('endOfRecords', True):
