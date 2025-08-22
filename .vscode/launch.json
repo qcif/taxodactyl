@@ -33,7 +33,7 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "75",  // Optional, run a specific test case
+                "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
                 "PHYLOGENY_MAX_HITS_PER_SPECIES": "10",
@@ -114,11 +114,11 @@
             "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549"
-                // "output/query_002_ON075825"
-                // "output/query_003_PP466915"
-                // "output/query_004_JQ585746"
-                // "output/query_005_LC547004"
+                "output/query_001_LC438549.1"
+                // "output/query_002_ON075825.1"
+                // "output/query_003_PP466915.1"
+                // "output/query_004_JQ585746.1"
+                // "output/query_005_LC547004.1"
 
                 // For testing phylogeny hit sampling:
                 // "output/issues/c14/query_001_VE24-1067_COI",
@@ -139,11 +139,11 @@
             "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "output/bold/query_001_LC438549",
-                // "output/bold/query_002_ON075825",
-                // "output/bold/query_003_PP466915",
-                // "output/bold/query_004_JQ585746",
-                // "output/bold/query_005_LC547004",
+                // "output/bold/query_001_LC438549.1",
+                // "output/bold/query_002_ON075825.1",
+                // "output/bold/query_003_PP466915.1",
+                // "output/bold/query_004_JQ585746.1",
+                // "output/bold/query_005_LC547004.1",
                 // "output/bold/query_006_VE24-1086_COI",
                 "--bold",
 
@@ -165,9 +165,9 @@
             "program": "${workspaceFolder}/scripts/p4_source_diversity.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549"
-                // "output/query_002_ON075825",
-                // "output/query_003_PP466915"
+                "output/query_001_LC438549.1"
+                // "output/query_002_ON075825.1",
+                // "output/query_003_PP466915.1"
                 // "output/query_006_VE24-1086_COI"
             ],
             "preLaunchTask": "clear-log-files"
@@ -179,7 +179,7 @@
             "program": "${workspaceFolder}/scripts/p4_source_diversity.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "output/bold/query_001_LC438549",
+                // "output/bold/query_001_LC438549.1",
                 // "--output_dir", "output/bold",
 
                 "output/issues/112/query_004_MG240613_4",
@@ -199,9 +199,9 @@
             "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549",
-                // "output/query_002_ON075825",
-                // "output/query_003_PP466915"
+                "output/query_001_LC438549.1",
+                // "output/query_002_ON075825.1",
+                // "output/query_003_PP466915.1"
                 // "output/query_006_VE24-1086_COI"
 
                 // For testing issue cases:
@@ -223,7 +223,7 @@
             "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "output/bold/query_001_LC438549",
+                // "output/bold/query_001_LC438549.1",
                 // "--output_dir", "output/bold",
                 "--bold",
 
@@ -246,9 +246,9 @@
             "program": "${workspaceFolder}/scripts/p6_report.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549",
-                // "output/query_002_ON075825",
-                // "output/query_003_PP466915",
+                "output/query_001_LC438549.1",
+                // "output/query_002_ON075825.1",
+                // "output/query_003_PP466915.1",
                 // "output/query_005_LC547004",
 
                 "--versions_yml", "tests/test-data/versions.yml",
@@ -276,7 +276,7 @@
             "program": "${workspaceFolder}/scripts/p6_report.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "output/bold/query_001_LC438549",
+                // "output/bold/query_001_LC438549.1",
                 // "--output_dir", "output/bold",
                 "--bold",
                 "--versions_yml", "tests/test-data/versions.yml",

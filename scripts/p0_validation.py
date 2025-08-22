@@ -197,7 +197,8 @@ def _validate_metadata_sample_id(value):
         char = invalid_match.group()
         raise MetadataFormatError(
             f'Invalid sample ID "{value}": character "{char}" is not'
-            f' permitted in the sample ID.'
+            f' permitted in the sample ID. Must be alphanumeric, underscore or'
+            ' dash.'
         )
 
 

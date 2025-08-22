@@ -59,7 +59,8 @@ def _write_csv(taxonomies, accession_taxids):
         writer.writeheader()
         rows = [
             {
-                'accession': accession,
+                # Split off trailing .\d to match BLAST result format
+                'accession': accession.split('.')[0],
                 'taxid': taxid,
                 **taxonomies[taxid]
             }

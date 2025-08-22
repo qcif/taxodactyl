@@ -272,7 +272,7 @@ class Config:
     def get_sample_id(self, query):
         """Resolve query index/dir to sample ID."""
         query_ix = self.get_query_ix(query)
-        return self.read_query_fasta(query_ix).id.split('.')[0]
+        return self.read_query_fasta(query_ix).id
 
     @property
     def bold_flag_file(self):
@@ -372,9 +372,7 @@ class Config:
                 and x not in self.INPUTS.METADATA_CSV_HEADER.values()
             })
             for row in reader:
-                sample_id = row.pop(
-                    header["sample_id"]
-                ).split('.')[0].split(' ')[0]
+                sample_id = row.pop(header["sample_id"])
                 data[sample_id] = {
                     key: _get_value_for_key(key, row, colname)
                     for key, colname in header.items()
@@ -487,7 +485,7 @@ class Config:
         taxonomies = {}
         with self.taxonomy_path.open() as f:
             for row in csv.DictReader(f):
-                taxonomies[row["accession"].split('.')[0]] = row
+                taxonomies[row["accession"]] = row
         return taxonomies
 
     def read_json(self, path):
