@@ -244,7 +244,18 @@ def _set_flags(db_coverage, query_dir, higher_taxon_targets):
                 else:
                     flag_value = FLAGS.C
             else:
-                flag_value = FLAGS.NA
+                flag_value = FLAGS.ERR
+                errors.write(
+                    errors.LOCATIONS.DB_COVERAGE_RELATED,
+                    f"No related species found in genus '{target}'."
+                    " This indicates an error in the GBIF API, since we would"
+                    " expect at least the target species to be present.",
+                    context={
+                        'target': target,
+                        'target_type': target_type,
+                    },
+                    query_dir=query_dir,
+                )
         Flag.write(
             query_dir,
             FLAGS.DB_COVERAGE_RELATED,

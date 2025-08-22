@@ -1,4 +1,4 @@
-"""docstring"""
+"""Aggregate API requests and submit them in parallel with threading."""
 
 import logging
 import urllib.error

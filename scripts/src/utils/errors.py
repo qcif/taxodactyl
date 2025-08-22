@@ -63,7 +63,7 @@ def write(
     query_dir: Path = None,
     context: dict = None,
 ):
-    """Write a non-fatal error to file for later reporting.
+    """Write a non-fatal error to file for rendering in the HTML report.
 
     location: display the error message in an appropriate
               location in the report.
