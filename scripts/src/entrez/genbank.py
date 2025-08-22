@@ -150,10 +150,10 @@ def fetch_entrez(
             return handle.read()
         return Entrez.read(handle)
 
-    cache_key = (endpoint, db, truncate_metadata, kwargs)
+    cache_key = cache.keyhash(endpoint, db, truncate_metadata, kwargs)
     cached_data = cache.get(cache_key)
     if cached_data is not None:
-        logger.debug(f"Cache hit for {cache_key}")
+        logger.debug(f"Cache hit for Entrez {endpoint}: {kwargs}")
         return cached_data
 
     Entrez.local_cache = config.entrez_cache_dir
