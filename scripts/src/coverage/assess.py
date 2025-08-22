@@ -244,7 +244,7 @@ def _set_flags(db_coverage, query_dir, higher_taxon_targets):
                 else:
                     flag_value = FLAGS.C
             else:
-                flag_value = FLAGS.ERR
+                flag_value = FLAGS.ERROR
                 errors.write(
                     errors.LOCATIONS.DB_COVERAGE_RELATED,
                     f"No related species found in genus '{target}'."
