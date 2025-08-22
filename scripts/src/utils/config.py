@@ -467,8 +467,8 @@ class Config:
     def read_query_fasta(self, index=None) -> list[SeqIO.SeqRecord]:
         """Read query FASTA file."""
         if not hasattr(self, "query_sequences"):
-            self.query_sequences = list(
-                SeqIO.parse(self.INPUTS.FASTA_FILEPATH, "fasta"))
+            with open(self.INPUTS.FASTA_FILEPATH) as f:
+                self.query_sequences = list(SeqIO.parse(f, "fasta"))
         if index is not None:
             return self.query_sequences[int(index)]
         return self.query_sequences
