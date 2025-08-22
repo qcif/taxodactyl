@@ -7,6 +7,7 @@ from xml.etree import ElementTree as ET
 
 from Bio import Entrez
 
+from src.utils import cache
 from src.utils.config import Config
 from src.utils.locus import Locus
 from src.utils.throttle import ENDPOINTS, Throttle
@@ -149,6 +150,12 @@ def fetch_entrez(
             return handle.read()
         return Entrez.read(handle)
 
+    cache_key = (endpoint, db, truncate_metadata, kwargs)
+    cached_data = cache.get(cache_key)
+    if cached_data is not None:
+        logger.debug(f"Cache hit for {cache_key}")
+        return cached_data
+
     Entrez.local_cache = config.entrez_cache_dir
     handle = None
     kwargs.update({
@@ -158,6 +165,7 @@ def fetch_entrez(
     handle = throttle.with_retry(endpoint, kwargs=kwargs)
     data = read(handle)
     handle.close()
+    cache.set(cache_key, data)
     return data
 
 

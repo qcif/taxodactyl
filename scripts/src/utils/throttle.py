@@ -75,6 +75,7 @@ class Throttle:
         )
         self.db_path = config.throttle_sqlite_path
         self.name = endpoint['name']
+        self.table_name = f"throttle_{self.name}"
         self._initialize_db()
 
     def __enter__(self):
@@ -92,7 +93,7 @@ class Throttle:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(f"""
-                CREATE TABLE IF NOT EXISTS {self.name} (
+                CREATE TABLE IF NOT EXISTS {self.table_name} (
                     {self.FIELD_NAME} INTEGER
                 )
             """)
@@ -125,7 +126,8 @@ class Throttle:
                         if self._within_request_limits(now, conn):
                             # Insert current timestamp atomically
                             conn.execute(
-                                f"INSERT INTO {self.name} ({self.FIELD_NAME})"
+                                f"INSERT INTO {self.table_name}"
+                                f" ({self.FIELD_NAME})"
                                 " VALUES (?)",
                                 (now,)
                             )
@@ -163,7 +165,7 @@ class Throttle:
 
         # Remove expired timestamps older than window length
         conn.execute(
-            f"DELETE FROM {self.name}"
+            f"DELETE FROM {self.table_name}"
             f" WHERE {self.FIELD_NAME} < ?",
             (window_start,))
 
@@ -173,7 +175,7 @@ class Throttle:
 
         if self.per_second_limit:
             args = [
-                f"SELECT COUNT(*) FROM {self.name}",
+                f"SELECT COUNT(*) FROM {self.table_name}",
             ]
             if self.per_minute_limit:
                 # The window is for rpm, so need to narrow
@@ -187,7 +189,7 @@ class Throttle:
 
         if self.per_minute_limit:
             rpm_observed = conn.execute(
-                f"SELECT COUNT(*) FROM {self.name}"
+                f"SELECT COUNT(*) FROM {self.table_name}"
             ).fetchone()[0]
 
         within_per_second_limit = (

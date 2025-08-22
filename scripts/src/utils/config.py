@@ -113,13 +113,14 @@ class Config:
     LOG_FILENAME = 'run.log'
     QUERY_LOG_FILENAME = 'query.log'
     ENTREZ_CACHE_DIRNAME = 'entrez_cache'
-    THROTTLE_SQLITE_FILE = 'throttle.sqlite'
+    SQLITE_FILE = 'db.sqlite'
     PLACEHOLDER_IMG_PATH = (
         Path(__file__).parents[1] / 'report/static/img/placeholder.png')
     MAX_API_RETRIES = 3
     ERRORS_DIR = 'errors'
     TEMP_DIR_NAME = 'biosecurity'
     TEMP_CLEAN_AFTER_DAYS = 7
+    CACHE_TIMEOUT_HOURS = int(os.getenv("CACHE_TIMEOUT_HOURS", 168))  # 1 week
 
     TEMP_FILES = [
         ENTREZ_CACHE_DIRNAME,
@@ -324,7 +325,11 @@ class Config:
 
     @property
     def throttle_sqlite_path(self):
-        return self.user_tempdir / self.THROTTLE_SQLITE_FILE
+        return self.user_tempdir / ('throttle_' + self.SQLITE_FILE)
+
+    @property
+    def cache_sqlite_path(self):
+        return self.tempdir / ('cache_' + self.SQLITE_FILE)
 
     @property
     def start_time(self) -> datetime:
