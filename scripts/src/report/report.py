@@ -400,7 +400,7 @@ def _get_db_cov_summary(db_coverage_data):
     """Get a summary of the database coverage."""
     def _coverage_percent(data: dict) -> float:
         """Calculate the coverage percentage."""
-        if not data:
+        if not (data and isinstance(data, dict)):
             return None
         total = len(data)
         covered = len([
