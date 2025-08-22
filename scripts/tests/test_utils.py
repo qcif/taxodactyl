@@ -131,18 +131,18 @@ class TestCache(unittest.TestCase):
             'items': [1, 2, 3],
             'nested': {'key': 'value'}
         }
-
-        # Set cache
-        cache.put(cache_key, test_data)
+        test_keyhash = cache.keyhash(cache_key)
+        cache.put(test_keyhash, test_data)
 
         # Get cache
-        retrieved = cache.get(cache_key)
+        retrieved = cache.get(test_keyhash)
         self.assertEqual(retrieved, test_data)
 
     def test_cache_get_nonexistent_key(self):
         """Test getting non-existent cache key returns None."""
         nonexistent_key = ('does', 'not', 'exist')
-        result = cache.get(nonexistent_key)
+        keyhash = cache.keyhash(nonexistent_key)
+        result = cache.get(keyhash)
         self.assertIsNone(result)
 
     def test_cache_with_different_key_types(self):
@@ -150,14 +150,16 @@ class TestCache(unittest.TestCase):
         # String key
         string_key = "simple_string_key"
         string_data = "simple data"
-        cache.put(string_key, string_data)
-        self.assertEqual(cache.get(string_key), string_data)
+        string_keyhash = cache.keyhash(string_key)
+        cache.put(string_keyhash, string_data)
+        self.assertEqual(cache.get(string_keyhash), string_data)
 
         # Integer key
         int_key = 12345
         int_data = {"number": 42}
-        cache.put(int_key, int_data)
-        self.assertEqual(cache.get(int_key), int_data)
+        int_keyhash = cache.keyhash(int_key)
+        cache.put(int_keyhash, int_data)
+        self.assertEqual(cache.get(int_keyhash), int_data)
 
     def test_cache_overwrite_existing_key(self):
         """Test that setting a key twice overwrites the first value."""
@@ -165,9 +167,10 @@ class TestCache(unittest.TestCase):
         first_data = "first value"
         second_data = "second value"
 
-        cache.put(test_key, first_data)
-        cache.put(test_key, second_data)
-        retrieved = cache.get(test_key)
+        test_keyhash = cache.keyhash(test_key)
+        cache.put(test_keyhash, first_data)
+        cache.put(test_keyhash, second_data)
+        retrieved = cache.get(test_keyhash)
         self.assertEqual(retrieved, second_data)
 
     def test_cache_with_complex_data_types(self):
@@ -180,9 +183,9 @@ class TestCache(unittest.TestCase):
             'boolean': True,
             'float': 3.14159
         }
-
-        cache.put(cache_key, complex_data)
-        retrieved = cache.get(cache_key)
+        test_keyhash = cache.keyhash(cache_key)
+        cache.put(test_keyhash, complex_data)
+        retrieved = cache.get(test_keyhash)
         self.assertEqual(retrieved, complex_data)
 
     @patch('src.utils.cache.datetime')
@@ -196,15 +199,15 @@ class TestCache(unittest.TestCase):
         mock_datetime.now.return_value = set_time
         mock_datetime.fromisoformat = datetime.fromisoformat
 
-        # Set cache
-        cache.put(cache_key, test_data)
+        test_keyhash = cache.keyhash(cache_key)
+        cache.put(test_keyhash, test_data)
 
         # Mock datetime for getting cache (25 hours later, past 1 week default)
         get_time = set_time + timedelta(hours=169)  # Past 168 hour default
         mock_datetime.now.return_value = get_time
 
         # Get cache - should return None due to expiry
-        retrieved = cache.get(cache_key)
+        retrieved = cache.get(test_keyhash)
         self.assertIsNone(retrieved)
 
     @patch.dict(os.environ, {'CACHE_TIMEOUT_HOURS': '999999'})
@@ -213,9 +216,9 @@ class TestCache(unittest.TestCase):
         cache_key = 'timeout_test_valid'
         test_data = "should not be expired"
 
-        # Set cache
-        cache.put(cache_key, test_data)
+        test_keyhash = cache.keyhash(cache_key)
+        cache.put(test_keyhash, test_data)
 
         # Get cache - should return data due to very long timeout
-        retrieved = cache.get(cache_key)
+        retrieved = cache.get(test_keyhash)
         self.assertEqual(retrieved, test_data)
