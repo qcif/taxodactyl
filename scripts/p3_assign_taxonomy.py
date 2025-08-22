@@ -177,7 +177,6 @@ def _assign_species_id(
         else:
             return "danger"
 
-    query_ix = config.get_query_ix(query_dir)
     candidate_species = deduplicate([
         hit for hit in candidate_hits
     ], key=lambda x: x.get("species"))
@@ -263,7 +262,7 @@ def _assign_species_id(
     if len(selected_species) > config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS:
         _write_boxplot(query_dir, selected_species_hits, bold)
     taxonomic_id = _write_taxonomic_id(query_dir, candidate_species_strict)
-    _write_pmi_match(taxonomic_id, query_ix, query_dir)
+    _write_pmi_match(taxonomic_id, query_dir)
     return selected_species
 
 
@@ -445,13 +444,13 @@ def _write_candidates_count(query_dir, candidate_species):
     logger.info(f"Written candidate count [{count}] to {path}")
 
 
-def _write_pmi_match(taxonomic_identity, query_ix, query_dir):
+def _write_pmi_match(taxonomic_identity, query_dir):
     """Write PMI match as a flag."""
     if taxonomic_identity:
         match = [
             (rank, taxon)
             for rank, taxon in taxonomic_identity["taxonomy"].items()
-            if taxon.lower() == config.get_pmi_for_query(query_ix).lower()
+            if taxon.lower() == config.get_pmi_for_query(query_dir).lower()
         ]
         logger.info("Writing PMI match flag")
         Flag.write(
