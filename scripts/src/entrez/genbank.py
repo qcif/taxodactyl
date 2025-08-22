@@ -165,7 +165,7 @@ def fetch_entrez(
     handle = throttle.with_retry(endpoint, kwargs=kwargs)
     data = read(handle)
     handle.close()
-    cache.set(cache_key, data)
+    cache.put(cache_key, data)
     return data
 
 

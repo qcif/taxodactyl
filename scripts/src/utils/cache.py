@@ -1,38 +1,40 @@
 """Cache module for storing data in SQLite database."""
 
-import sqlite3
-import pickle
 import hashlib
+import logging
+import pickle
+import sqlite3
 from datetime import datetime, timedelta
 
 from .config import Config
+
+logger = logging.getLogger(__name__)
+
+KEY_COLUMN = 'key'
+VALUE_COLUMN = 'value'
+CREATED_AT_COLUMN = 'created_at'
 
 
 def _serialize_cache_key_item(item):
     """Serialize individual cache key item to a consistent string."""
     if callable(item):
-        # For functions, use module + name instead of memory address
+        # Functions use module.name to exclude memory address (ephemeral)
         return f"function:{item.__module__}.{item.__name__}"
+    elif hasattr(item, 'serialize'):
+        return item.serialize()
     elif hasattr(item, '__dict__'):
-        # For objects with attributes, use class name
+        # For other class objects use class name
         return f"object:{item.__class__.__module__}.{item.__class__.__name__}"
     else:
-        # For simple types, use string representation
         return str(item)
 
 
-def _get_cache_key_hash(cache_key):
+def keyhash(*cache_key_items):
     """Convert cache key to a hashable string."""
-    if isinstance(cache_key, tuple):
-        # Serialize each item in the tuple consistently
-        serialized_items = [
-            _serialize_cache_key_item(item) for item in cache_key
-        ]
-        key_str = "|".join(serialized_items)
-    else:
-        key_str = _serialize_cache_key_item(cache_key)
-
-    # Create a hash to ensure consistent key length
+    serialized_items = [
+        _serialize_cache_key_item(item) for item in cache_key_items
+    ]
+    key_str = "|".join(serialized_items)
     return hashlib.sha256(key_str.encode()).hexdigest()
 
 
@@ -41,32 +43,34 @@ def _ensure_cache_table(sqlite_path):
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
 
     with sqlite3.connect(sqlite_path) as conn:
-        # Create table with new schema
-        conn.execute("""
+        conn.execute(f"""
             CREATE TABLE IF NOT EXISTS cache (
-                key TEXT PRIMARY KEY,
-                value BLOB,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                {KEY_COLUMN} TEXT PRIMARY KEY,
+                {VALUE_COLUMN} BLOB,
+                {CREATED_AT_COLUMN} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
 
-        # Check if created_at column exists, add it if missing (migration)
+        # Check if created_at column exists, add it if missing
         cursor = conn.execute("PRAGMA table_info(cache)")
         columns = [row[1] for row in cursor.fetchall()]
-        if 'created_at' not in columns:
-            # Add column without default, then update existing rows
-            conn.execute("ALTER TABLE cache ADD COLUMN created_at TIMESTAMP")
-            # Set current timestamp for existing entries
+        if CREATED_AT_COLUMN not in columns:
+            conn.execute(
+                f"ALTER TABLE cache ADD COLUMN {CREATED_AT_COLUMN} TIMESTAMP"
+            )
             current_time = datetime.now().isoformat()
             conn.execute(
-                "UPDATE cache SET created_at = ? WHERE created_at IS NULL",
+                (
+                    f"UPDATE cache SET {CREATED_AT_COLUMN} = ? "
+                    f"WHERE {CREATED_AT_COLUMN} IS NULL"
+                ),
                 (current_time,)
             )
 
         conn.commit()
 
 
-def get(cache_key):
+def get(key_hash):
     """Get cached data by key.
 
     Args:
@@ -81,18 +85,17 @@ def get(cache_key):
     if not sqlite_path.exists():
         return None
 
-    key_hash = _get_cache_key_hash(cache_key)
-
     try:
         with sqlite3.connect(sqlite_path) as conn:
-            # Calculate cutoff time for expired entries
             config = Config()
             cutoff_time = datetime.now() - timedelta(
                 hours=config.CACHE_TIMEOUT_HOURS
             )
-
             cursor = conn.execute(
-                "SELECT value, created_at FROM cache WHERE key = ?",
+                (
+                    f"SELECT {VALUE_COLUMN}, {CREATED_AT_COLUMN} FROM cache "
+                    f"WHERE {KEY_COLUMN} = ?"
+                ),
                 (key_hash,)
             )
             row = cursor.fetchone()
@@ -101,9 +104,10 @@ def get(cache_key):
                 if created_at >= cutoff_time:
                     return pickle.loads(row[0])
                 else:
-                    # Remove expired entry
+                    # Remove expired entries
                     conn.execute(
-                        "DELETE FROM cache WHERE key = ?", (key_hash,)
+                        f"DELETE FROM cache WHERE {KEY_COLUMN} = ?",
+                        (key_hash,)
                     )
                     conn.commit()
             return None
@@ -111,7 +115,7 @@ def get(cache_key):
         return None
 
 
-def set(cache_key, value):
+def put(key_hash, value):
     """Set cached data by key.
 
     Args:
@@ -120,18 +124,31 @@ def set(cache_key, value):
     """
     config = Config()
     sqlite_path = config.cache_sqlite_path
-
     _ensure_cache_table(sqlite_path)
-    key_hash = _get_cache_key_hash(cache_key)
-
     try:
         with sqlite3.connect(sqlite_path) as conn:
             conn.execute(
-                "INSERT OR REPLACE INTO cache (key, value, created_at) "
-                "VALUES (?, ?, ?)",
+                (
+                    f"INSERT OR REPLACE INTO cache "
+                    f"({KEY_COLUMN}, {VALUE_COLUMN}, {CREATED_AT_COLUMN}) "
+                    "VALUES (?, ?, ?)"
+                ),
                 (key_hash, pickle.dumps(value), datetime.now().isoformat())
             )
             conn.commit()
     except (sqlite3.Error, pickle.PickleError):
         # Silently fail if we can't cache the data
         pass
+
+
+def get_or_put(func, args=[], kwargs={}):
+    """Get cached data or call the function to set it."""
+    key = keyhash(func, args, kwargs)
+    cached_data = get(key)
+    if cached_data is not None:
+        logger.debug("Cache hit")
+        return cached_data
+
+    data = func(*args, **kwargs)
+    put(key, data)
+    return data
