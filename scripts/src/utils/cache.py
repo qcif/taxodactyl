@@ -139,16 +139,3 @@ def put(key_hash, value):
     except (sqlite3.Error, pickle.PickleError):
         # Silently fail if we can't cache the data
         pass
-
-
-def get_or_put(func, args=[], kwargs={}):
-    """Get cached data or call the function to set it."""
-    key = keyhash(func, args, kwargs)
-    cached_data = get(key)
-    if cached_data is not None:
-        logger.debug("Cache hit")
-        return cached_data
-
-    data = func(*args, **kwargs)
-    put(key, data)
-    return data

@@ -206,15 +206,23 @@ class Throttle:
 
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
         retries = config.MAX_API_RETRIES
+        if with_cache:
+            cache_key = cache.keyhash(func, args, kwargs)
+            cached_data = cache.get(cache_key)
+            if cached_data is not None:
+                logger.debug(f"Cache hit for {func.__module__}.{func.__name__}"
+                             " request")
+                return cached_data
+
         while True:
             try:
                 with self:
                     logger.debug("Throttle released. Sending request to"
                                  f" {self.name}...")
+                res = func(*args, **kwargs)
                 if with_cache:
-                    return cache.get_or_put(func, args=args, kwargs=kwargs)
-
-                return func(*args, **kwargs)
+                    cache.put(cache_key, res)
+                return res
 
             except Exception as exc:
                 sleep_seconds = 1
