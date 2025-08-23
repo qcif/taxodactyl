@@ -18,7 +18,11 @@ workflow:
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
         facility_name: QCIF
-        mock_blast: false
+        mock_blast: true
+    - name: "Say hello"
+      type: "command"
+      cmd: "nextflow log last -f hash,workdir,stderr -F 'exit != 0'"
+      stdout: "true"
 
   inputs:
     - id: metadata
