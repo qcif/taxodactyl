@@ -11,6 +11,10 @@ externalWorkspace:
 maxRunningJobsPerUser: 1
 navigation: !java.util.Vector
 - !cloudgene.mapred.util.MenuItem
+   id: download
+   name: Download
+   link: /download
+- !cloudgene.mapred.util.MenuItem
    id: help
    name: Help
    link: http://docs.cloudgene.io
