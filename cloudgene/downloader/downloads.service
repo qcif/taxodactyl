@@ -1,0 +1,31 @@
+[Unit]
+Description=Report bundler (FastAPI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bundler
+Group=bundler
+WorkingDirectory=/opt/bundler
+Environment=HOST=127.0.0.1
+Environment=PORT=8002
+ExecStart=/opt/bundler/venv/bin/uvicorn app:app --host=${HOST} --port=${PORT} --workers=2
+Restart=on-failure
+RestartSec=2
+# Basic hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/bundler
+AmbientCapabilities=
+CapabilityBoundingSet=
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
