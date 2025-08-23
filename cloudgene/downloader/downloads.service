@@ -4,12 +4,12 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=bundler
-Group=bundler
-WorkingDirectory=/opt/bundler
+User=www-data
+Group=www-data
+WorkingDirectory=/mnt/data/taxodactyl/cloudgene/downloader
 Environment=HOST=127.0.0.1
 Environment=PORT=8002
-ExecStart=/opt/bundler/venv/bin/uvicorn app:app --host=${HOST} --port=${PORT} --workers=2
+ExecStart=/mnt/data/taxodactyl/cloudgene/downloader/venv/bin/uvicorn app:app --host=${HOST} --port=${PORT} --workers=2
 Restart=on-failure
 RestartSec=2
 # Basic hardening
@@ -17,7 +17,7 @@ NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/bundler
+ReadWritePaths=/mnt/data/taxodactyl/cloudgene/downloader
 AmbientCapabilities=
 CapabilityBoundingSet=
 LockPersonality=yes
