@@ -41,7 +41,7 @@ def extract_report_urls(input_text: str) -> list[str]:
     return sorted(urls)
 
 
-@app.get("/download")
+@app.get("/")
 def download_page():
     """
     Serve the HTML page for downloading reports.
@@ -49,7 +49,7 @@ def download_page():
     return HTMLResponse(content=INDEX_HTML.read_text(), status_code=200)
 
 
-@app.post("/download/reports.zip")
+@app.post("/reports.zip")
 def download_reports(payload: dict = Body(...)):
     raw = payload.get("input", "")
     if not raw:
