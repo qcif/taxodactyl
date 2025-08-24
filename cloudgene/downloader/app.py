@@ -59,21 +59,22 @@ def download_reports(payload: dict = Body(...)):
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
     zip_path = tmp.name
     tmp.close()
+    url = None
     try:
         with zipfile.ZipFile(
             zip_path,
             "w",
             compression=zipfile.ZIP_DEFLATED,
         ) as zf:
-            for u in urls:
-                p = urlparse(u)
+            for url in urls:
+                p = urlparse(url)
                 if p.scheme != "https" or p.netloc != HOST:
                     continue  # strict allow-list to avoid SSRF
                 parent = os.path.basename(os.path.dirname(p.path))
                 fname = os.path.basename(p.path)
                 # keeps files distinct and meaningful
                 arcname = f"{parent}_{fname}"
-                with requests.get(u, stream=True, timeout=30) as r:
+                with requests.get(url, stream=True, timeout=30) as r:
                     r.raise_for_status()
                     with zf.open(arcname, "w") as dest:
                         for chunk in r.iter_content(8192):
@@ -85,4 +86,4 @@ def download_reports(payload: dict = Body(...)):
             media_type="application/zip",
         )
     except Exception as e:
-        raise HTTPException(502, f"Bundling failed: {e}")
+        raise HTTPException(502, f"Bundling failed for url {url}: {e}")
