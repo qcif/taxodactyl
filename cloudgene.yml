@@ -19,9 +19,9 @@ workflow:
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
         facility_name: QCIF
         mock_blast: true
-    - name: "Say hello"
+    - name: "Errors"
       type: "command"
-      cmd: "nextflow log last -f hash,workdir,stderr -F 'exit != 0'"
+      cmd: "/usr/bin/bash /mnt/data/taxodactyl/bin/collect_errors.sh ${CLOUDGENE_JOB_NAME}"
       stdout: "true"
 
   inputs:
