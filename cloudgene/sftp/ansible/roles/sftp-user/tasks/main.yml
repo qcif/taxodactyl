@@ -16,36 +16,47 @@
   user:
     name: "{{ sftp_username }}"
     group: "{{ sftp_group }}"
-    home: "{{ sftp_home_dir }}"
+    home: "/home/{{ sftp_username }}"
     shell: /bin/false
-    create_home: no
+    create_home: yes
     state: present
 
 - name: Create SFTP user subdirectory for user files
   file:
-    path: "{{ sftp_home_dir }}/{{ sftp_username }}"
+    path: "{{ sftp_home_dir }}/uploads"
     state: directory
     owner: "{{ sftp_username }}"
     group: "{{ sftp_group }}"
     mode: '0755'
 
-- name: Create .ssh directory for SFTP user
+- name: Create .ssh directory for SFTP user (in real home dir, not chroot)
   file:
-    path: "{{ sftp_home_dir }}/.ssh"
+    path: "/home/{{ sftp_username }}/.ssh"
     state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    owner: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    mode: '0700'
 
 - name: Copy public key to authorized_keys
   copy:
     src: cloudgene_sftp.pub
-    dest: "{{ sftp_home_dir }}/.ssh/authorized_keys"
+    dest: "/home/{{ sftp_username }}/.ssh/authorized_keys"
+    owner: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    mode: '0600'
+
+- name: Ensure chroot directory parent paths exist with correct ownership
+  file:
+    path: "{{ item }}"
+    state: directory
     owner: root
     group: root
-    mode: '0644'
+    mode: '0755'
+  loop:
+    - "/mnt"
+    - "/mnt/data"
 
-- name: Set ownership of user home directory to root (required for chroot)
+- name: Set ownership of chroot directory to root (required for chroot)
   file:
     path: "{{ sftp_home_dir }}"
     owner: root
