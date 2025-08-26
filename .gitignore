@@ -8,3 +8,4 @@ testing*
 *.pyc
 null/
 !scripts/src/report/templates/components/results/
+vault_password.txt
