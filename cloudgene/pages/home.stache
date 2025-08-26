@@ -34,6 +34,7 @@
         <th>Purpose</th>
         <th>Inputs</th>
         <th>Outputs</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -70,13 +71,12 @@
             </li>
           </ul>
         </td>
+        <td></td>
       </tr>
 
       <tr>
         <td>
-          <a href="/index.html#!run/taxodactyl%401.2.0">#2 Taxodactyl</a>
-          <br>
-          <a class="btn btn-primary btn-sm" href="/#!pages/taxodactyl">View user guide</a>
+          <a href="/#!pages/taxodactyl">Taxodactyl</a>
         </td>
         <td>
           Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).
@@ -97,6 +97,9 @@
               (see <a href="https://qcif.github.io/taxodactyl/example_report.html">example report</a>)
             </li>
           </ul>
+        </td>
+        <td>
+          <a href="/#!run/taxodactyl">Run</a>
         </td>
       </tr>
     </tbody>
