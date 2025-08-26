@@ -1,25 +1,41 @@
 <div class="container">
-  <h1>Workflow 2: Taxodactyl</h1>
+  <div class=mb-5>
+    <h1>Taxodactyl: taxonomic classification of samples from DNA barcodes</h1>
+
+    <a href="https://github.com/qcif/taxodactyl">
+      View on GitHub
+    </a>
+  </div>
 
   <p>
-    This workflow performs taxonomic classification of sample DNA sequences, and can process up to 100 samples per-run. For each sample, the workflow will generate a comprehensive report of the resulting taxonomic classification.
+    This workflow performs taxonomic classification of sample DNA sequences, and can process up to 100 samples per-run. For each sample, the workflow will generate a comprehensive report of the resulting taxonomic classification. Your DNA barcodes must be from a
+    <a href="https://qcif.github.io/taxodactyl/allowed-loci.html" target="_blank">supported locus</a>
+    for this analysis (new loci can be added on request).
   </p>
 
   <ol>
     <li>
       <a href="#prepare">Preparing your data</a>
-      <a href="#run">Running the workflow</a>
-      <a href="#results">Viewing results</a>
-      <a href="#errors">Resolving errors</a>
-      <a href="#issues">Reporting issues</a>
     </li>
+      <li>
+        <a href="#run">Running the workflow</a>
+      </li>
+      <li>
+        <a href="#results">Viewing results</a>
+      </li>
+      <li>
+        <a href="#errors">Resolving errors</a>
+      </li>
+      <li>
+        <a href="#issues">Reporting issues</a>
+      </li>
   </ol>
 
   <section class="my-5" id="prepare">
     <h2>Preparing your input data</h2>
 
     <p>
-      The workflow requires a FASTA file containing barcode DNA sequences (possibly from WF1 output) and a CSV file with sample metadata. FASTA sequence IDs must match the <code>sample_id</code> field provided in the metadata CSV file. You should ensure that the sample IDs do not contain fancy characters - only letters, numbers, and <code>- _</code> are permitted. No spaces please!
+      The workflow requires a FASTA file containing barcode DNA sequences (possibly from WF1 output) and a CSV file with sample metadata. FASTA sequence IDs must match the <code>sample_id</code> field provided in the metadata CSV file. You should ensure that the sample IDs do not contain fancy characters - only letters, numbers, and <code>- _</code> characters are permitted. <strong>No spaces please!</strong>
     </p>
 
     <h5 class="mt-5 my-3">Metadata CSV format</h5>
@@ -106,10 +122,14 @@
     </table>
 
     <h5 class="mt-5 my-3">Example FASTA sequence file</h5>
-    <pre>&gt;VE24-1079_COI
+    <pre class="border p-3">&gt;VE24-1079_COI
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
 ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
 
 &gt;VE24-1080_COI
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
 ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
 
 ... (up to 100 sequences)
@@ -121,16 +141,21 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
   <section class="my-5" id="run">
     <h2>Running the workflow</h2>
 
+    <p>
+      Run time depends on the current server resources, but expect up to 2 hours.
+      With optimal resources, a full run can be completed in under 30 minutes.
+    </p>
+
     <ol>
       <li>
-        Go to "Run" > "Taxodactyl" in the navigation bar.
+        Go to <em>Run</em> > <em>Taxodactyl</em> in the navigation bar.
       </li>
       <li>
         Select your Metadata and FASTA input files.
       </li>
       <li>
         An NCBI API key is required for the workflow to fetch Genbank records. Follow the instructions to create one
-        <a href="https://support.nlm.nih.gov/kbArticle/?pn=KA-05317">
+        <a href="https://support.nlm.nih.gov/kbArticle/?pn=KA-05317" target="_blank">
           here</a>.
       </li>
       <li>
@@ -157,17 +182,19 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
     <h5>Viewing results</h5>
 
     <p>
-      In the "Results" tab you should see a list of output folders/files. There should be a series of <code>query_XXX_[sample_id]</code> that contain results for each sample that you submitted. Inside each folder is a <code>report_[sample_id]_date_time.html</code> file - this is the workflow report. You can click on this to open it directly in the browser.
+      In the "Results" tab you should see a list of output folders/files. There should be a series of <code>query_XXX_[sample_id]</code> folders that contain results for each sample that you submitted. Inside each folder is a <code>report_[sample_id]_[date]_[time].html</code> file - this is the workflow report. You can click on this to open it directly in the browser.
     </p>
 
     <h5>Bulk-download results</h5>
 
     <p>
-      To quickly download all workflow reports, click the "wget" button and copy the <code>curl ... </code> command. Paste this into the dialog on the "Download" page to download a ZIP file of all workflow reports in that job.
+      To quickly download all workflow reports, click the "wget" button and copy the <code>curl ... </code> command. Paste this into the dialog on the
+      <a href="/download">Download</a>
+      page to download a ZIP file of all workflow reports in that job.
     </p>
 
     <p>
-      If you have access to a Bash terminal (e.g. Linux machines, or WSL in Windows), you can also paste the <code>wget</code>/<code>curl</code> command directly into your terminal to download all result data. Make sure you are in the directory where you want the results to be downloaded first!
+      If you have access to a Bash terminal (e.g. Linux machines, or WSL in Windows), you can also paste the <code>wget</code>/<code>curl</code> commands directly into your terminal to download all result data. Make sure you are in the directory where you want the results to be downloaded first!
     </p>
   </section>
 
@@ -206,24 +233,9 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
     <h1>Reporting issues</h1>
 
     <p>
-      If you encounter issues running a workflow, or have a suggestion for improvement, please post an issue on the GitHub repository:
+      If you encounter issues running a workflow, or have a suggestion for improvement, please post an issue on the
+      <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">
+        Taxodactyl GitHub repository</a>.
     </p>
-
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Workflow</th>
-          <th>Repository</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>WF2: Taxodactyl</td>
-          <td>
-            <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">WF2: Taxodactyl</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </section>
 </div>
