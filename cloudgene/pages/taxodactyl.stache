@@ -195,7 +195,7 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
     <h2>Viewing results</h2>
 
     <p>
-      Once a job is complete, the main "Details" tab should show you if anything has gone wrong. If everything looks OK, you can proceed to the "Results" tab. If something has gone wrong, you should see an error message near the bottom of the output. For more details you can also check the "Logs" tab.
+      Once a job is complete, the main "Details" tab should show you if anything has gone wrong. If everything looks OK, you can proceed to the "Results" tab. If something has gone wrong, you should see an error message near the bottom of the output. For more details you can also check the "Logs" tab. Please remember that the workflow will always display a green tick indicating it finished successfully, even if completed with errors. It is important to check the "Errors" section at the end of the "Details" tab.
     </p>
 
     <h5>Viewing results</h5>
