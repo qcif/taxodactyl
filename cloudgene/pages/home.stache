@@ -99,7 +99,7 @@
           </ul>
         </td>
         <td>
-          <a href="/#!run/taxodactyl">Run</a>
+          <a class="btn btn-primary btn-sm" href="/#!run/taxodactyl">Run</a>
         </td>
       </tr>
     </tbody>
