@@ -1,83 +1,76 @@
-# Default configuration for Biosecurity Workflow
-# All values shown here are defaults and can be overridden
-
-# File paths and directories
-allowed_loci_file: "config/loci.json"
-flag_details_csv_path: "config/flags.csv"
-
-# Output filenames
-timestamp_filename: "timestamp.txt"
-accessions_filename: "accessions.txt"
-taxonomy_file: "taxonomy.csv"
-query_title_file: "query_title.txt"
-hits_json: "hits.json"
-hits_fasta: "hits.fasta"
-taxonomy_id_csv: "assigned_taxonomy.csv"
-candidates_fasta: "candidates.fasta"
-phylogeny_fasta: "phylogeny.fasta"
-candidates_csv: "candidates.csv"
-candidates_json: "candidates.json"
-candidates_count_file: "candidates_count.txt"
-candidates_sources_json: "candidates_sources.json"
-independent_sources_json: "aggregated_sources.json"
-toi_detected_csv: "taxa_of_concern_detected.csv"
-pmi_match_csv: "preliminary_id_match.csv"
-boxplot_img_filename: "identity-boxplot.png"
-tree_nwk_filename: "candidates.nwk"
-db_coverage_json: "db_coverage.json"
-
-# BLAST configuration
+allowed_loci_file: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/config/loci.json
+flag_details_csv_path: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/config/flags.csv
+placeholder_img_path: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/src/report/static/img/placeholder.png
+taxonkit_data: /home/cameron/.taxonkit
+timestamp_filename: timestamp.txt
+accessions_filename: accessions.txt
+taxonomy_file: taxonomy.csv
+query_title_file: query_title.txt
+hits_json: hits.json
+hits_fasta: hits.fasta
+taxonomy_id_csv: assigned_taxonomy.csv
+candidates_fasta: candidates.fasta
+phylogeny_fasta: phylogeny.fasta
+candidates_csv: candidates.csv
+candidates_json: candidates.json
+candidates_count_file: candidates_count.txt
+candidates_sources_json: candidates_sources.json
+independent_sources_json: aggregated_sources.json
+toi_detected_csv: taxa_of_concern_detected.csv
+toi_detected_header:
+- Taxon of interest
+- Match rank
+- Match taxon
+- Match species
+- Match accession
+- Match identity
+pmi_match_csv: preliminary_id_match.csv
+boxplot_img_filename: identity-boxplot.png
+tree_nwk_filename: candidates.nwk
+db_coverage_json: db_coverage.json
 blast_max_target_seqs: 2000
-
-# BOLD configuration
-bold_database: "COX1_SPECIES_PUBLIC"
-bold_flag: "BOLD"
-bold_taxon_count_json: "bold_taxon_counts.json"
-bold_taxon_collectors_json: "bold_taxon_collectors.json"
-bold_taxonomy_json: "bold_taxonomy.json"
-
-# Database coverage configuration
+bold_database: COX1_SPECIES_PUBLIC
+bold_flag: BOLD
+bold_taxon_count_json: bold_taxon_counts.json
+bold_taxon_collectors_json: bold_taxon_collectors.json
+bold_taxonomy_json: bold_taxonomy.json
 db_coverage_toi_limit: 10
 db_coverage_max_candidates: 3
-hmmsearch_min_evalue: 1e-5
-flag_file_template: "{identifier}.flag"
-
-# GBIF configuration
+hmmsearch_min_evalue: 1.0e-05
+flag_file_template: '{identifier}.flag'
 gbif_limit_records: 500
 gbif_max_occurrence_records: 5000
-gbif_accepted_status: ["ACCEPTED", "DOUBTFUL"]
-
-# Logging and temporary files
-log_filename: "run.log"
-query_log_filename: "query.log"
-entrez_cache_dirname: "entrez_cache"
-sqlite_file: "db.sqlite"
+gbif_accepted_status:
+- ACCEPTED
+- DOUBTFUL
+log_filename: run.log
+query_log_filename: query.log
+sqlite_file: db.sqlite
+entrez_cache_dirname: entrez_cache
+cache_timeout_hours: 168
 max_api_retries: 3
-errors_dir: "errors"
-temp_dir_name: "biosecurity"
+errors_dir: errors
+temp_dir_name: biosecurity
 temp_clean_after_days: 7
-cache_timeout_hours: 168  # 1 week
-
-# Input configuration
 inputs:
-  facility_name: "Not provided"
-  analyst_name: "Not provided"
+  facility_name: Not provided
+  analyst_name: Not provided
   metadata_csv_header:
-    sample_id: "sample_id"
-    locus: "locus"
-    preliminary_id: "preliminary_id"
-    taxa_of_interest: "taxa_of_interest"
-    country: "country"
-    host: "host"
-  metadata_csv_required_fields: ["sample_id", "locus", "preliminary_id"]
+    sample_id: sample_id
+    locus: locus
+    preliminary_id: preliminary_id
+    taxa_of_interest: taxa_of_interest
+    country: country
+    host: host
+  metadata_csv_required_fields:
+  - sample_id
+  - locus
+  - preliminary_id
   fasta_max_length_nt: 3000
   fasta_min_length_nt: 20
   fasta_max_sequences: 150
-  # fasta_filepath and metadata_path should be set via CLI or config file
-  # fasta_filepath: null
-  # metadata_path: null
-
-# Analysis criteria
+  fasta_filepath: null
+  metadata_path: null
 criteria:
   alignment_min_nt: 300
   alignment_min_q_coverage: 0.85
@@ -94,9 +87,7 @@ criteria:
   phylogeny_min_hit_identity: 0.95
   phylogeny_min_hit_sequences: 20
   phylogeny_max_hits_per_species: 30
-
-# Report configuration
 report:
-  title: "Taxonomic identification report"
+  title: Taxonomic identification report
   debug: false
-  database_name: "NCBI Core Nt"
+  database_name: NCBI Core Nt
