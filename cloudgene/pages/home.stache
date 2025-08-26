@@ -44,7 +44,7 @@
         data-placement="left"
       >
         <td>
-          WF1: Barcode assembly
+          #1 Barcode assembly
         </td>
         <td>
           Assembly of barcode consensus sequence from Nanopore sequencing reads (one sample per run).
@@ -74,10 +74,11 @@
 
       <tr>
         <td>
-          <a href="/index.html#!run/taxodactyl%401.2.0">WF2: Taxodactyl</a>
+          <a href="/index.html#!run/taxodactyl%401.2.0">#2 Taxodactyl</a>
         </td>
         <td>
           Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).
+          <a href="/#!pages/taxodactyl">View user guide</a>
         </td>
         <td>
           <ul>
@@ -99,147 +100,6 @@
       </tr>
     </tbody>
   </table>
-
-  <hr class="my-3">
-
-  <div class="my-5">
-    <h1>Workflow user guides</h1>
-
-    <section class="my-5">
-      <h2 id="wf1-guide">Workflow 1: Barcode assembly</h2>
-
-      <p>
-        This workflow assembles consensus sequences from Nanopore sequencing reads. It requires <code>.fastq.gz</code> files containing the reads and a CSV file with sample metadata. The <code>.fastq.gz</code> file names must match the pattern provided in the metadata CSV file <code>fastq_path</code> field. The <code>target_size</code> describes the expected size of the amplicon in nucleotides.
-      </p>
-
-      <h5 class="mt-5 my-3">Example metadata CSV</h5>
-
-      <table class="table table-bordered my-3">
-          <thead>
-            <tr>
-              <th>sampleid</th>
-              <th>fastq_path</th>
-              <th>target_size</th>
-              <th>target_organism</th>
-              <th>target_gene</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>barcode02_VE24-1280_COI</code></td>
-              <td><code>barcode02_VE24-1280_COI*.fastq.gz</code></td>
-              <td>380</td>
-              <td>Polerovirus</td>
-              <td>capsid</td>
-            </tr>
-            <tr>
-              <td colspan="5">
-                <em class="text-muted">(up to 100 rows)</em>
-              </td>
-            </tr>
-          </tbody>
-      </table>
-
-      <p>
-        The following uploaded FASTQ files would then be associated with the sample in row 1:
-        <ul>
-          <li><code>barcode02_VE24-1280_COI_1.fastq.gz</code></li>
-          <li><code>barcode02_VE24-1280_COI_2.fastq.gz</code></li>
-        </ul>
-      </p>
-    </section>
-
-    <section class="my-5">
-      <h2 id="wf2-guide">Workflow 2: Taxodactyl</h2>
-
-      <p>
-        This workflow performs taxonomic classification of sample DNA sequences. It requires a FASTA file containing barcode DNA sequences (possibly from WF1 output) and a CSV file with sample metadata. FASTA sequence IDs must match the <code>sample_id</code> field provided in the metadata CSV file.
-      </p>
-
-      <h5 class="mt-5 my-3">Metadata CSV format</h5>
-
-      <table class="table table-bordered my-3">
-        <thead>
-          <tr>
-            <th>Field name</th>
-            <th>Description</th>
-            <th>Required</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="white-space: nowrap;"><code>sample_id</code></td>
-            <td>Unique identifier for the sample. Must match the sequence ID in the FASTA file.</td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap;"><code>locus</code></td>
-            <td>
-              Name of the genetic locus, case-insensitive. Permitted values are documented
-              <a href="https://qcif.github.io/taxodactyl/allowed-loci.html" target="_blank">here</a>. If no value can be provided (e.g. for viruses), use <code>NA</code>.
-            </td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap;"><code>preliminary_id</code></td>
-            <td>Putative taxonomic identification, based on sample morphology.</td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap;"><code>taxa_of_interest</code></td>
-            <td>
-              Target taxon name (kingdom, phylum, class, order, family, genus or species) of interest for the analysis. Multiple values per sample can be provided in pipe-separated format (e.g. <code>Hominidae|Homo erectus</code>).
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap;"><code>country</code></td>
-            <td>Country of sample origin. Please ensure that the correct full name of the country is used. Case-insensitive.</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td style="white-space: nowrap;"><code>&lt;arbitrary&nbsp;columns&gt;</code></td>
-            <td>
-              Additional arbitrary columns can be added at the user's discretion (e.g. "host", "sequencing platform"). These aren't used in the analysis but will be included in the workflow report for future reference.
-            </td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h5 class="mt-5 my-3">Example metadata CSV</h5>
-
-      <table class="table table-bordered my-3">
-        <thead>
-          <tr>
-            <th>sample_id</th>
-            <th>locus</th>
-            <th>preliminary_id</th>
-            <th>taxa_of_interest</th>
-            <th>country</th>
-            <th>host</th>
-            <th>sequencing_platform</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="white-space: nowrap;"><code>VE24-1079_COI</code></td>
-            <td>COI</td>
-            <td>Miridae</td>
-            <td>Lygus pratensis</td>
-            <td>Netherlands</td>
-            <td>Cut flower Paenonia</td>
-            <td>Nanopore</td>
-          </tr>
-          <tr>
-            <td colspan="7">
-              <em class="text-muted">(up to 100 rows)</em>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </div>
 
   <hr class="my-3">
 
