@@ -7,29 +7,41 @@
     </a>
   </div>
 
-  <p>
-    This workflow performs taxonomic classification of sample DNA sequences, and can process up to 100 samples per-run. For each sample, the workflow will generate a comprehensive report of the resulting taxonomic classification. Your DNA barcodes must be from a
-    <a href="https://qcif.github.io/taxodactyl/allowed-loci.html" target="_blank">supported locus</a>
-    for this analysis (new loci can be added on request).
-  </p>
+  <div class="row">
+    <div class="col">
+      <p>
+        This workflow performs taxonomic classification of sample DNA sequences, and can process up to 100 samples per-run. For each sample, the workflow will generate a comprehensive report of the resulting taxonomic classification. Your DNA barcodes must be from a
+        <a href="https://qcif.github.io/taxodactyl/allowed-loci.html" target="_blank">supported locus</a>
+        for this analysis (new loci can be added on request).
+      </p>
 
-  <ol>
-    <li>
-      <a href="#prepare">Preparing your data</a>
-    </li>
-      <li>
-        <a href="#run">Running the workflow</a>
-      </li>
-      <li>
-        <a href="#results">Viewing results</a>
-      </li>
-      <li>
-        <a href="#errors">Resolving errors</a>
-      </li>
-      <li>
-        <a href="#issues">Reporting issues</a>
-      </li>
-  </ol>
+      <ol>
+        <li>
+          <a href="#prepare">Preparing your data</a>
+        </li>
+          <li>
+            <a href="#run">Running the workflow</a>
+          </li>
+          <li>
+            <a href="#results">Viewing results</a>
+          </li>
+          <li>
+            <a href="#errors">Resolving errors</a>
+          </li>
+          <li>
+            <a href="#issues">Reporting issues</a>
+          </li>
+      </ol>
+    </div>
+
+    <div class="col-auto">
+      <img
+        src="https://github.com/qcif/taxodactyl/raw/main/docs/images/taxodactyl_logo.png"
+        alt="Taxodactyl logo"
+        style="max-width: 300px;"
+      >
+    </div>
+  </div>
 
   <section class="my-5" id="prepare">
     <h2>Preparing your input data</h2>
@@ -51,7 +63,10 @@
       <tbody>
         <tr>
           <td style="white-space: nowrap;"><code>sample_id</code></td>
-          <td>Unique identifier for the sample. Must match the sequence ID in the FASTA file.</td>
+          <td>
+            Unique identifier for the sample. Must match the sequence ID in the FASTA file.
+            Permitted characters are alphanumeric and and <code>- _</code> only - no spaces or other special characters.
+          </td>
           <td>Yes</td>
         </tr>
         <tr>
@@ -76,7 +91,11 @@
         </tr>
         <tr>
           <td style="white-space: nowrap;"><code>country</code></td>
-          <td>Country of sample origin. Please ensure that the correct full name of the country is used. Case-insensitive.</td>
+          <td>
+            Country of sample origin. Please ensure that either the full, correct name or
+            <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">alpha-2 code</a>
+            is used (e.g. <code>CA</code> for Canada). Case-insensitive.
+          </td>
           <td></td>
         </tr>
         <tr>
