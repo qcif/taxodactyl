@@ -1,0 +1,229 @@
+<div class="container">
+  <h1>Workflow 2: Taxodactyl</h1>
+
+  <p>
+    This workflow performs taxonomic classification of sample DNA sequences, and can process up to 100 samples per-run. For each sample, the workflow will generate a comprehensive report of the resulting taxonomic classification.
+  </p>
+
+  <ol>
+    <li>
+      <a href="#prepare">Preparing your data</a>
+      <a href="#run">Running the workflow</a>
+      <a href="#results">Viewing results</a>
+      <a href="#errors">Resolving errors</a>
+      <a href="#issues">Reporting issues</a>
+    </li>
+  </ol>
+
+  <section class="my-5" id="prepare">
+    <h2>Preparing your input data</h2>
+
+    <p>
+      The workflow requires a FASTA file containing barcode DNA sequences (possibly from WF1 output) and a CSV file with sample metadata. FASTA sequence IDs must match the <code>sample_id</code> field provided in the metadata CSV file. You should ensure that the sample IDs do not contain fancy characters - only letters, numbers, and <code>- _</code> are permitted. No spaces please!
+    </p>
+
+    <h5 class="mt-5 my-3">Metadata CSV format</h5>
+
+    <table class="table table-bordered my-3">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Description</th>
+          <th>Required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="white-space: nowrap;"><code>sample_id</code></td>
+          <td>Unique identifier for the sample. Must match the sequence ID in the FASTA file.</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap;"><code>locus</code></td>
+          <td>
+            Name of the genetic locus, case-insensitive. Permitted values are documented
+            <a href="https://qcif.github.io/taxodactyl/allowed-loci.html" target="_blank">here</a>. If no value can be provided (e.g. for viruses), use <code>NA</code>.
+          </td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap;"><code>preliminary_id</code></td>
+          <td>Putative taxonomic identification, based on sample morphology.</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap;"><code>taxa_of_interest</code></td>
+          <td>
+            Target taxon name (kingdom, phylum, class, order, family, genus or species) of interest for the analysis. Multiple values per sample can be provided in pipe-separated format (e.g. <code>Hominidae|Homo erectus</code>).
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap;"><code>country</code></td>
+          <td>Country of sample origin. Please ensure that the correct full name of the country is used. Case-insensitive.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap;"><code>&lt;arbitrary&nbsp;columns&gt;</code></td>
+          <td>
+            Additional arbitrary columns can be added at the user's discretion (e.g. "host", "sequencing platform"). These aren't used in the analysis but will be included in the workflow report for future reference.
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h5 class="mt-5 my-3">Example metadata CSV</h5>
+
+    <table class="table table-bordered my-3">
+      <thead>
+        <tr>
+          <th>sample_id</th>
+          <th>locus</th>
+          <th>preliminary_id</th>
+          <th>taxa_of_interest</th>
+          <th>country</th>
+          <th>host</th>
+          <th>sequencing_platform</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="white-space: nowrap;"><code>VE24-1079_COI</code></td>
+          <td>COI</td>
+          <td>Miridae</td>
+          <td>Lygus pratensis</td>
+          <td>Netherlands</td>
+          <td>Cut flower Paenonia</td>
+          <td>Nanopore</td>
+        </tr>
+        <tr>
+          <td colspan="7">
+            <em class="text-muted">(up to 100 rows)</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h5 class="mt-5 my-3">Example FASTA sequence file</h5>
+    <pre>&gt;VE24-1079_COI
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
+
+&gt;VE24-1080_COI
+ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
+
+... (up to 100 sequences)
+</pre>
+  </section>
+
+  <hr class="my-3">
+
+  <section class="my-5" id="run">
+    <h2>Running the workflow</h2>
+
+    <ol>
+      <li>
+        Go to "Run" > "Taxodactyl" in the navigation bar.
+      </li>
+      <li>
+        Select your Metadata and FASTA input files.
+      </li>
+      <li>
+        An NCBI API key is required for the workflow to fetch Genbank records. Follow the instructions to create one
+        <a href="https://support.nlm.nih.gov/kbArticle/?pn=KA-05317">
+          here</a>.
+      </li>
+      <li>
+        Your facility name is optional, and will be included in the workflow report for traceability of results.
+      </li>
+      <li>
+        Submit job
+      </li>
+      <li>
+        Once submitted, you can close the browser and come back later if desired. Just go the "Jobs" page to see your running and completed jobs.
+      </li>
+    </ol>
+  </section>
+
+  <hr class="my-3">
+
+  <section class="my-5" id="results">
+    <h2>Viewing results</h2>
+
+    <p>
+      Once a job is complete, the main "Details" tab should show you if anything has gone wrong. If everything looks OK, you can proceed to the "Results" tab. If something has gone wrong, you should see an error message near the bottom of the output. For more details you can also check the "Logs" tab.
+    </p>
+
+    <h5>Viewing results</h5>
+
+    <p>
+      In the "Results" tab you should see a list of output folders/files. There should be a series of <code>query_XXX_[sample_id]</code> that contain results for each sample that you submitted. Inside each folder is a <code>report_[sample_id]_date_time.html</code> file - this is the workflow report. You can click on this to open it directly in the browser.
+    </p>
+
+    <h5>Bulk-download results</h5>
+
+    <p>
+      To quickly download all workflow reports, click the "wget" button and copy the <code>curl ... </code> command. Paste this into the dialog on the "Download" page to download a ZIP file of all workflow reports in that job.
+    </p>
+
+    <p>
+      If you have access to a Bash terminal (e.g. Linux machines, or WSL in Windows), you can also paste the <code>wget</code>/<code>curl</code> command directly into your terminal to download all result data. Make sure you are in the directory where you want the results to be downloaded first!
+    </p>
+  </section>
+
+  <hr class="my-3">
+
+  <section class="my-5" id="errors">
+    <h2>Resolving errors</h2>
+
+    <p>
+      Jobs can fail for a variety of reasons. Failures are often genuine - please read error messages carefully as you may need to correct your input data. Common issues include:
+    </p>
+
+    <ul>
+      <li>
+        Metadata CSV formatting issues - ensure that the CSV is properly formatted, with commas separating fields, and that all required fields are present.
+      </li>
+      <li>
+        Sample ID mismatch between FASTA and CSV input files.
+      </li>
+      <li>
+        Illegal characters in the sample ID
+      </li>
+      <li>
+        API error - sometimes an external service that we rely on (e.g. GBIF) is not responsive, so you may need to retry later.
+      </li>
+    </ul>
+
+    <p>
+      If you have an error that you cannot resolve, please see the "Reporting issues" section below for how to get help.
+    </p>
+  </section>
+
+  <hr class="my-3">
+
+  <section class="my-5" id="issues">
+    <h1>Reporting issues</h1>
+
+    <p>
+      If you encounter issues running a workflow, or have a suggestion for improvement, please post an issue on the GitHub repository:
+    </p>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Workflow</th>
+          <th>Repository</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>WF2: Taxodactyl</td>
+          <td>
+            <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">WF2: Taxodactyl</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
