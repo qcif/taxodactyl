@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+  <title>Download workflow reports</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+    crossorigin="anonymous"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"
+  ></script>
+</head>
+
+<nav class="navbar navbar-expand-md fixed-top navbar-dark" style="background: rgb(52, 58, 64)">
+  <div class="container d-flex justify-content-between">
+    <a class="navbar-brand" href="/#!pages/home">DAFF Biosecurity workflows</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarsExampleDefault"
+      aria-controls="navbarsExampleDefault"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/#!pages/home">Home <span class="sr-only">(current)</span></a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="dropdown01"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Run</a
+          >
+          <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="/#!run/taxodactyl@1.2.0"
+              >Taxodactyl <small class="text-muted">1.2.0</small></a
+            >
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/#!pages/jobs">Jobs</a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="/download">Download</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="docs">Docs</a>
+          <div class="dropdown-menu" aria-labelledby="docs">
+              <a class="dropdown-item" href="/#!pages/taxodactyl">Taxodactyl</a>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/#!pages/contact">Contact</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav my-2 my-lg-0">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="dropdown02"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            ><i class="fas fa-user"></i> User</a
+          >
+          <div class="dropdown-menu" aria-labelledby="dropdown02">
+            <a class="dropdown-item" href="/#!pages/profile">Profile</a>
+            <div class="dropdown-divider"></div>
+
+            <a class="dropdown-item" href="/#!pages/logout">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5 pt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Download Report Bundle</h4>
+          <form>
+            <div class="form-group">
+              <label for="textInput" class="font-weight-bold">
+                Paste your <code>curl … | bash</code> line (or the script text) here:
+              </label>
+              <textarea
+                id="textInput"
+                class="form-control"
+                rows="5"
+                placeholder="Paste your curl command or script text here..."
+              ></textarea>
+              <small class="form-text text-muted">
+                You can copy this command snippet from the "result" tab of your completed job (look for the
+                <code>wget</code> button).
+              </small>
+            </div>
+            <div class="text-center">
+              <button type="button" id="downloadBtn" class="btn btn-primary btn-lg">
+                <span id="buttonText"> <i class="fas fa-download mr-2"></i>Download all reports (.zip) </span>
+                <span id="loadingSpinner" class="d-none">
+                  <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                  Zipping reports...
+                </span>
+              </button>
+              <small class="form-text text-muted d-none" id="loadingMessage"> This may take a few minutes... </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("downloadBtn").onclick = async () => {
+    const input = document.getElementById("textInput").value.trim();
+    if (!input) return;
+
+    const buttonText = document.getElementById("buttonText");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    // Show loading state
+    buttonText.classList.add("d-none");
+    loadingSpinner.classList.remove("d-none");
+    loadingMessage.classList.remove("d-none");
+    downloadBtn.disabled = true;
+
+    try {
+      const res = await fetch("/download/reports.zip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input }),
+      });
+
+      if (!res.ok) {
+        alert("Bundling failed" + (res.statusText ? ": " + res.statusText : ""));
+        return;
+      }
+
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "reports.zip";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    } finally {
+      // Reset button state
+      buttonText.classList.remove("d-none");
+      loadingSpinner.classList.add("d-none");
+      loadingMessage.classList.add("d-none");
+      downloadBtn.disabled = false;
+    }
+  };
+</script>

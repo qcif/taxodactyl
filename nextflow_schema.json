@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["metadata", "sequences", "outdir", "db_type", "taxdb", "analyst_name", "facility_name", "ncbi_api_key", "ncbi_user_email"],
+            "required": ["metadata", "sequences", "outdir", "db_type", "taxdb", "analyst_name", "facility_name", "ncbi_user_email"],
             "properties": {
                 "analyst_name": {
                     "type": "string",
@@ -67,7 +67,6 @@
                 "blastdb": {
                     "type": "string",
                     "format": "file-path",
-                    "pattern": ".*core_nt",
                     "description": "Path to the BLAST database files.",
                     "errorMessage": "Parameter 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq."
                 },
@@ -239,8 +238,9 @@
                 },
                 "ncbi_api_key": {
                     "type": "string",
+                    "default": null,
                     "pattern": "^\\S+$",
-                    "description": "Used to authenticate with NCBI Entrez API for an increased rate limit on requests.",
+                    "description": "Used to authenticate with NCBI Entrez API for an increased rate limit on requests. If not provided, will use NCBI_API_KEY environment variable if available.",
                     "errorMessage": "Parameter 'ncbi_api_key' must not contain spaces."
                 },
                 "ncbi_user_email": {
@@ -293,6 +293,13 @@
                     "description": "If LOGGING_DEBUG=1 then verbose log statements will be emitted to help diagnose issues.",
                     "hidden": true,
                     "errorMessage": "Parameter 'logging_debug' must be one of [0, 1]. Default: 0."
+                },
+                "mock_blast": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, use mock BLAST for testing purposes instead of running actual BLAST.",
+                    "hidden": true,
+                    "errorMessage": "Parameter 'mock_blast' must be true or false. Default: false."
                 },
                 "accessions_filename": {
                     "type": "string",
