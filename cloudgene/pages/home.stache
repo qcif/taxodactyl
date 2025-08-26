@@ -1,0 +1,157 @@
+<!-- <p class="alert alert-info">
+  The server is currently running on limited resources - jobs will run more slowly than usual.
+</p> -->
+<!-- <p class="alert alert-info">
+  The service will be temporarily suspended for maintenance on September 30. Any jobs running at this time will be cancelled.
+</p> -->
+
+<div class="jumbotron jumbotron-fluid text-white" style="background: #343a40;">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h1>DAFF Biosecurity</h1>
+        <h2>Workflows testing environment</h2>
+      </div>
+      <div class="col-auto">
+        <img src="https://github.com/qcif/taxodactyl/blob/main/scripts/src/report/static/img/daff-logo.png?raw=true" alt="DAFF logo" width="350" style="position: relative; top: -30px; filter: invert(1); opacity: 0.9;">
+      </div>
+    </div>
+
+    <p>
+      This server allows you to trial our new biosecurity workflows through a web interface. Please note that these workflows are still in development, and we therefore encourage you to provide feedback on your experience.
+    </p>
+  </div>
+</div>
+
+{{#is(loggedIn, true)}}
+<div class="container bd-content" style="margin-bottom: 0px;">
+  <h1>Available workflows</h1>
+
+  <table class="table table-striped my-5">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Purpose</th>
+        <th>Inputs</th>
+        <th>Outputs</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="text-muted"
+        title="This workflow is coming soon."
+        data-toggle="tooltip"
+        data-placement="left"
+      >
+        <td>
+          #1 Barcode assembly
+        </td>
+        <td>
+          Assembly of barcode consensus sequence from Nanopore sequencing reads (one sample per run).
+        </td>
+        <td>
+          <ul>
+            <li>
+              <code>FASTQ</code> file(s) containing consensus DNA sequences
+            </li>
+            <li>
+              <code>CSV</code> file with sample metadata
+            </li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>
+              <code>HTML</code> web-based workflow report
+              <!-- (see <a href="">example report</a>) -->
+            </li>
+            <li>
+              <code>FASTA</code> file of consensus sequences
+            </li>
+          </ul>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>
+          <a href="/#!pages/taxodactyl">Taxodactyl</a>
+        </td>
+        <td>
+          Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).
+        </td>
+        <td>
+          <ul>
+            <li>
+              <code>FASTA</code> file containing consensus DNA sequences. Can be consensus sequences selected from WF1 output.</li>
+            <li>
+              <code>CSV</code> file with sample metadata
+            </li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>
+              <code>HTML</code> web-based workflow report
+              (see <a href="https://qcif.github.io/taxodactyl/example_report.html">example report</a>)
+            </li>
+          </ul>
+        </td>
+        <td>
+          <a class="btn btn-primary btn-sm" href="/#!run/taxodactyl">Run</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="my-3">
+
+  <div class="my-5">
+    <h1>Reporting issues</h1>
+
+    <p>
+      If you encounter issues running a workflow, or have a suggestion for improvement, please post an issue on the relevant GitHub repository below:
+    </p>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Workflow</th>
+          <th>Repository</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#1 Barcode assembly</td>
+          <td>
+            <a href="https://github.com/maelyg/ont_amplicon/issues" target="_blank">https://github.com/maelyg/ont_amplicon/issues</a>
+          </td>
+        </tr>
+        <tr>
+          <td>#2 Taxodactyl</td>
+          <td>
+            <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">https://github.com/qcif/taxodactyl/issues</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{{else}}
+  <div class="container">
+    <p>
+      <a href="/#!pages/register">
+      Create an account
+      </a>
+      to view and run workflows. Only accounts created with DAFF email addresses will be approved for access to workflows.
+    </p>
+  </div>
+{{/is}}
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

@@ -1,0 +1,51 @@
+# Could possible store API keys in a local file and index them by user email
+
+id: taxodactyl
+name: Taxodactyl
+description: Per-sample taxonomic classification from assembled DNA barcodes
+version: 1.2.0
+website: https://github.com/qcif/taxodactyl
+author: Magdalena Antczak, Cameron Hyde and Daisy Li
+logo: https://github.com/qcif/taxodactyl/blob/main/docs/images/taxodactyl_logo.png?raw=true
+
+workflow:
+  steps:
+    - name: Run taxonomic classification
+      params:
+        db_type: blast_core_nt
+        blastdb: /mnt/data/blast/core_nt/core_nt
+        taxdb: /mnt/data/taxdump
+        ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
+        analyst_name: ${CLOUDGENE_USER_FULL_NAME}
+        facility_name: QCIF
+    - name: "Errors"
+      type: "command"
+      cmd: "/usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME}"
+      stdout: "true"
+
+  inputs:
+    - id: metadata
+      description: Input metadata CSV
+      type: file
+      accept: .csv
+      details: |
+        Ensure sample IDs match those in the FASTA file.
+    - id: sequences
+      description: Sample DNA sequences in FASTA format
+      type: file
+      accept: .fasta, .fa, .fna, .fsa, .fas
+    - id: ncbi_api_key
+      type: string
+      required: false
+      description: Your NCBI API key
+      details: Not required, but will make your run go faster.
+    - id: facility_name
+      description: Your facility/site name
+      type: string
+      value: QCIF
+      details: Included in the workflow report.
+
+  outputs:
+    - id: outdir
+      description: Outputs
+      type: folder
