@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE=neoformit/daff-taxonomic-assignment
+IMAGE=neoformit/taxodactyl
 
 # Check for -t argument and set TAG if provided
 while getopts "t:" opt; do
