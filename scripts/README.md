@@ -657,6 +657,23 @@ inputs:
   analyst_name: "Harry Potter"
 ```
 
+### Updating configuration schema
+
+Configuration is defined using Pydantic models in [config_schema.py](./src/utils/config_schema.py). When you modify the configuration schema, you should regenerate the default configuration file to ensure consistency:
+
+```bash
+# Regenerate config/default.yml from Pydantic models
+python dev/generate_default_config.py
+```
+
+This script automatically:
+- Creates a default instance of the `ConfigSchema` 
+- Extracts all default values from the Pydantic models
+- Converts the configuration to YAML format
+- Writes to `config/default.yml`
+
+**Important**: Always run this script after modifying `ConfigSchema` or its nested models (`InputsConfig`, `CriteriaConfig`, `ReportConfig`) to keep the default configuration file up to date.
+
 
 ## Handling errors
 
