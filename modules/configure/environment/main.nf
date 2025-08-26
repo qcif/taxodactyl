@@ -1,4 +1,8 @@
 process CONFIGURE_ENVIRONMENT {
+    input:
+    path sequences_file
+    path metadata_file
+    
     output:
     file 'env_vars.sh' // Output: environment variables file for downstream modules
 
@@ -35,8 +39,8 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.hits_fasta_filename} != null ]; then echo 'export HITS_FASTA_FILENAME=${params.hits_fasta_filename}' >> env_vars.sh; fi
     if [ ${params.hits_json_filename} != null ]; then echo 'export HITS_JSON_FILENAME=${params.hits_json_filename}' >> env_vars.sh; fi
     if [ ${params.independent_sources_json_filename} != null ]; then echo 'export INDEPENDENT_SOURCES_JSON_FILENAME=${params.independent_sources_json_filename}' >> env_vars.sh; fi
-    if [ ${params.sequences} != null ]; then echo 'export INPUT_FASTA_FILEPATH=${file(params.sequences)}' >> env_vars.sh; fi
-    if [ ${params.metadata} != null ]; then echo 'export INPUT_METADATA_CSV_FILEPATH=${file(params.metadata)}' >> env_vars.sh; fi
+    if [ ${params.sequences} != null ]; then echo "export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})" >> env_vars.sh; fi
+    if [ ${params.metadata} != null ]; then echo "export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})" >> env_vars.sh; fi
     if [ ${params.logging_debug} != null ]; then echo 'export LOGGING_DEBUG=${params.logging_debug}' >> env_vars.sh; fi
     if [ ${params.max_candidates_for_analysis} != null ]; then echo 'export MAX_CANDIDATES_FOR_ANALYSIS=${params.max_candidates_for_analysis}' >> env_vars.sh; fi
     if [ ${params.median_identity_warning_factor} != null ]; then echo 'export MEDIAN_IDENTITY_WARNING_FACTOR=${params.median_identity_warning_factor}' >> env_vars.sh; fi
@@ -45,7 +49,11 @@ process CONFIGURE_ENVIRONMENT {
     if [ ${params.min_nt} != null ]; then echo 'export MIN_NT=${params.min_nt}' >> env_vars.sh; fi
     if [ ${params.min_q_coverage} != null ]; then echo 'export MIN_Q_COVERAGE=${params.min_q_coverage}' >> env_vars.sh; fi
     if [ ${params.min_source_count} != null ]; then echo 'export MIN_SOURCE_COUNT=${params.min_source_count}' >> env_vars.sh; fi
-    if [ ${params.ncbi_api_key} != null ]; then echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh; fi
+    if [ ${params.ncbi_api_key} != null ]; then 
+        echo 'export NCBI_API_KEY=${params.ncbi_api_key}' >> env_vars.sh
+    elif [ ! -z "\${NCBI_API_KEY:-}" ]; then 
+        echo "export NCBI_API_KEY=\${NCBI_API_KEY}" >> env_vars.sh
+    fi
     if [ ${params.outdir} != null ]; then echo 'export OUTPUT_DIR=${params.outdir}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_identity} != null ]; then echo 'export PHYLOGENY_MIN_HIT_IDENTITY=${params.phylogeny_min_hit_identity}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_sequences} != null ]; then echo 'export PHYLOGENY_MIN_HIT_SEQUENCES=${params.phylogeny_min_hit_sequences}' >> env_vars.sh; fi

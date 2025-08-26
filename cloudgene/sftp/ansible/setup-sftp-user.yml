@@ -1,0 +1,11 @@
+---
+- name: Setup SFTP-only user with chroot jail
+  hosts: cloudgene_servers
+  become: yes
+  vars:
+    sftp_username: "sftpuser"
+    sftp_home_dir: "/mnt/data/user-data"
+    sftp_group: "sftpusers"
+  
+  roles:
+    - sftp-user

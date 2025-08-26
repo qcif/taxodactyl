@@ -1,0 +1,19 @@
+<div class="container bd-content" style="margin-bottom: 0px;">
+  <h1>Contact</h1>
+
+  <p>
+    For problems with server and workflow please open a
+    <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">
+      GitHub issue</a>.
+  </p>
+
+  <p>
+    To request support from QCIF, please
+    <a href="https://support.qcif.edu.au/form/services-to-non-qcif-members?" target="_blank">
+      submit a support request</a>.
+  </p>
+
+  <p>
+    For DAFF business please contact Bradley Pease.
+  </p>
+</div>
