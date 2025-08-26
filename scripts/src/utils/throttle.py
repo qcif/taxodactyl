@@ -6,6 +6,7 @@ from pprint import pformat
 
 from .config import Config
 from .errors import APIError
+from src.utils import cache
 
 config = Config()
 logger = logging.getLogger(__name__)
@@ -75,6 +76,7 @@ class Throttle:
         )
         self.db_path = config.throttle_sqlite_path
         self.name = endpoint['name']
+        self.table_name = f"throttle_{self.name}"
         self._initialize_db()
 
     def __enter__(self):
@@ -92,7 +94,7 @@ class Throttle:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(f"""
-                CREATE TABLE IF NOT EXISTS {self.name} (
+                CREATE TABLE IF NOT EXISTS {self.table_name} (
                     {self.FIELD_NAME} INTEGER
                 )
             """)
@@ -125,7 +127,8 @@ class Throttle:
                         if self._within_request_limits(now, conn):
                             # Insert current timestamp atomically
                             conn.execute(
-                                f"INSERT INTO {self.name} ({self.FIELD_NAME})"
+                                f"INSERT INTO {self.table_name}"
+                                f" ({self.FIELD_NAME})"
                                 " VALUES (?)",
                                 (now,)
                             )
@@ -163,7 +166,7 @@ class Throttle:
 
         # Remove expired timestamps older than window length
         conn.execute(
-            f"DELETE FROM {self.name}"
+            f"DELETE FROM {self.table_name}"
             f" WHERE {self.FIELD_NAME} < ?",
             (window_start,))
 
@@ -173,7 +176,7 @@ class Throttle:
 
         if self.per_second_limit:
             args = [
-                f"SELECT COUNT(*) FROM {self.name}",
+                f"SELECT COUNT(*) FROM {self.table_name}",
             ]
             if self.per_minute_limit:
                 # The window is for rpm, so need to narrow
@@ -187,7 +190,7 @@ class Throttle:
 
         if self.per_minute_limit:
             rpm_observed = conn.execute(
-                f"SELECT COUNT(*) FROM {self.name}"
+                f"SELECT COUNT(*) FROM {self.table_name}"
             ).fetchone()[0]
 
         within_per_second_limit = (
@@ -201,14 +204,26 @@ class Throttle:
 
         return within_per_second_limit and within_per_minute_limit
 
-    def with_retry(self, func, args=[], kwargs={}):
-        retries = config.max_api_retries
+    def with_retry(self, func, args=[], kwargs={}, with_cache=False):
+        retries = config.MAX_API_RETRIES
+        if with_cache:
+            cache_key = cache.keyhash(func, args, kwargs)
+            cached_data = cache.get(cache_key)
+            if cached_data is not None:
+                logger.debug(f"Cache hit for {func.__module__}.{func.__name__}"
+                             " request")
+                return cached_data
+
         while True:
             try:
                 with self:
                     logger.debug("Throttle released. Sending request to"
                                  f" {self.name}...")
-                    return func(*args, **kwargs)
+                res = func(*args, **kwargs)
+                if with_cache:
+                    cache.put(cache_key, res)
+                return res
+
             except Exception as exc:
                 sleep_seconds = 1
                 retries -= 1

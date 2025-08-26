@@ -1,0 +1,145 @@
+{% set flags = conclusions.flags %}
+
+{% if conclusions.summary.toi %}
+<table class="table tight border align-middle centered-columns">
+  <thead>
+    <tr>
+      <th colspan="5" class="text-center text-light bg-secondary bg-gradient">Taxa of Interest</th>
+    </tr>
+    <tr class="bg-gray-100">
+      <th>Taxon</th>
+      <th>Detected?</th>
+      <th>DB Records</th>
+      <th>Genus Coverage</th>
+      <th>Coverage report</th>
+    </t>
+  </thead>
+  <tbody>
+    {% if toi_rows %}
+    {% for toi in toi_rows %}
+    {% set taxon = toi['Taxon of interest'] %}
+    <tr>
+      <td><em>{{ taxon }}</em></td>
+      <td> <!-- Detected? -->
+        {% if toi['Match rank'] %}
+        <div class="text-success mx-auto" style="width: 24px; height: 24px;">
+          {% set width = 24 %}
+          {% include 'components/icons/check-circle-fill.svg' %}
+        </div>
+        {% else %}
+        <div class="text-danger mx-auto" style="width: 24px; height: 24px;">
+          {% set width = 24 %}
+          {% include 'components/icons/x.svg' %}
+        </div>
+        {% endif %}
+      </td>
+      <td> <!-- DB records -->
+        {% set flag = flags['5.1']['toi'][taxon] %}
+        {% if db_coverage.summary.get('toi', {}).get(taxon, {}).get('target') is not none %}
+        <span
+          class="badge bg-{{ flag.bs_class }}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+        >
+          {{ db_coverage.summary.toi[taxon].target }}
+        </span>
+        {% else %}
+        -
+        {% endif %}
+      </td>
+      <td> <!-- Genus coverage -->
+        {% set flag = flags['5.2']['toi'][taxon] %}
+        {% if db_coverage.summary.get('toi', {}).get(taxon, {}).get('related') is not none %}
+        {% set coverage_percent = db_coverage.summary.toi[taxon].related %}
+        <span
+          class="badge bg-{{ flag.bs_class }}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+        >
+          {{ "%.0f" | format(coverage_percent * 100) }}%
+        </span>
+        {% else %}
+        -
+        {% endif %}
+      </td>
+      <td> <!-- Coverage report button -->
+        {% set target_id = 'toi-' + taxon | css_hash %}
+        {% set flag = flags['5']['toi'].get(taxon, none) %}
+        {% if flag %}
+        <div
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="See full database coverage report"
+          style="display: inline-block;"
+          >
+          <button
+          class="btn btn-{{ flag.bs_class }} p-0 my-1"
+          data-bs-toggle="modal"
+          data-bs-target="#{{ target_id }}Modal"
+          type="button"
+          style="width: 4rem;"
+          >
+          {{ render_level_icon(flag.level) }}
+        </button>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+
+    {% if '2' in conclusions.flags %}
+    <tr>
+      <td class="py-2" colspan="5">
+        <small>
+          {{ render_flag(conclusions.flags['2']) }}
+        </small>
+      </td>
+    </tr>
+    {% endif %}
+
+    {% else %}
+    <tr>
+      <td colspan="3" class="text-center text-muted">No taxa of interest provided</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+{% for toi in toi_rows %}
+{% set taxon = toi['Taxon of interest'] %}
+{% set target_id = 'toi-' + taxon | css_hash %}
+{% set modal_context = {
+  'data': db_coverage.full.get('toi', {}).get(taxon, {}),
+  'target_id': target_id,
+  'target_taxon': taxon,
+  'target_type': 'toi',
+  'target_type_text': "Taxa of Interest",
+  'flags': flags,
+  'metadata': metadata,
+  'error_log': error_log,
+  'error_locations': error_locations,
+  'config': config,
+  'tois_detected': tois_detected,
+  'locus_provided': locus_provided,
+} %}
+{{ render_target_modal(modal_context) }}
+{% endfor %}
+
+{% else %}
+<table class="table table-striped tight">
+  <thead>
+    <tr>
+      <th class="text-center text-light bg-secondary bg-gradient">Taxa of Interest</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-center text-muted">No taxa of interest provided</td>
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+
+

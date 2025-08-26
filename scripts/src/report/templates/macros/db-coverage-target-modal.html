@@ -324,7 +324,7 @@
               that occur in country of origin <strong>{{ context.metadata.country }}</strong>
             </h3>
 
-            {% if context.metadata.country != 'NA' %}
+            {% if context.metadata.country and context.metadata.country != 'NA' %}
 
             <p class="alert alert-{{ flag_5_3.bs_class }}">
               <strong>Flag {{ flag_5_3.flag_id }}{{ flag_5_3.value }}:</strong>

@@ -15,22 +15,36 @@ logging.disable(logging.CRITICAL)
 
 class TestFetchRelatedSpecies(unittest.TestCase):
 
+    @patch('src.utils.cache.get', return_value=None)
     @patch('pygbif.species.name_lookup')
-    def test_it_can_fetch_the_correct_relatives(self, mock_search):
+    def test_it_can_fetch_the_correct_relatives(
+        self,
+        mock_search,
+        mock_cache_get,
+    ):
         mock_search.return_value = json.loads(
             GBIF_NAME_LOOKUP_RESPONSE.read_text())
+        mock_search.__name__ = 'name_lookup'
         taxon = RelatedTaxaGBIF('Cheiloxena aitori')
         self.assertEqual(len(taxon.relatives), 8)
         self.assertEqual(taxon.genus_key, 4732783)
         mock_search.assert_called_once()
 
+    @patch('src.utils.cache.get', return_value=None)
     @patch('pygbif.species.name_lookup')
     @patch('pygbif.occurrences.search')
-    def test_request_country(self, mock_occurence_search, mock_search):
+    def test_request_country(
+        self,
+        mock_occurence_search,
+        mock_search,
+        mock_cache_get,
+    ):
         mock_search.return_value = json.loads(
             GBIF_NAME_LOOKUP_RESPONSE.read_text())
+        mock_search.__name__ = 'name_lookup'
         mock_occurence_search.return_value = json.loads(
             GBIF_OCCURRENCE_RESPONSE.read_text())
+        mock_occurence_search.__name__ = 'search'
         relatives = RelatedTaxaGBIF('Cheiloxena aitori')
         species_for_country = relatives.for_country('AU')
         mock_search.assert_called_once_with(

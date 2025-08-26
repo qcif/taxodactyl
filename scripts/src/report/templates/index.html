@@ -16,7 +16,7 @@
 
     <script>
       const SAMPLE_ID = "{{ metadata.sample_id }}";
-      const DB_COVERAGE = {{ db_coverage | tojson }};
+      const DB_COVERAGE = {{ db_coverage.full | tojson }};
     </script>
 
     {% for script in static.js %}
@@ -44,10 +44,6 @@
 
       <section id="results-taxa-of-interest">
         {% include "components/results/2-taxa-of-interest.html" %}
-      </section>
-
-      <section id="results-intraspecies">
-        {% include "components/results/5-intraspecies.html" %}
       </section>
 
       <section>

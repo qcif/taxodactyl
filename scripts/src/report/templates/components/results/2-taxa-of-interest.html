@@ -56,7 +56,7 @@
       </button>
 
       {% set modal_context = {
-        'data': db_coverage['toi'][taxon],
+        'data': db_coverage.full.toi[taxon],
         'target_id': target_id,
         'target_taxon': taxon,
         'target_type': 'toi',
