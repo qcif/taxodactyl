@@ -75,10 +75,11 @@
       <tr>
         <td>
           <a href="/index.html#!run/taxodactyl%401.2.0">#2 Taxodactyl</a>
+          <br>
+          <a class="btn btn-primary btn-sm" href="/#!pages/taxodactyl">View user guide</a>
         </td>
         <td>
           Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).
-          <a href="/#!pages/taxodactyl">View user guide</a>
         </td>
         <td>
           <ul>
