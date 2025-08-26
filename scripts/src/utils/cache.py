@@ -89,7 +89,7 @@ def get(key_hash):
         with sqlite3.connect(sqlite_path) as conn:
             config = Config()
             cutoff_time = datetime.now() - timedelta(
-                hours=config.CACHE_TIMEOUT_HOURS
+                hours=config.cache_timeout_hours
             )
             cursor = conn.execute(
                 (

@@ -212,10 +212,12 @@ class ConfigSchema(BaseModel):
     log_filename: str = Field(default='run.log', description="Log filename")
     query_log_filename: str = Field(
         default='query.log', description="Query log filename")
+    sqlite_file: str = Field(
+        default='db.sqlite', description="Throttle SQLite filename")
     entrez_cache_dirname: str = Field(
         default='entrez_cache', description="Entrez cache directory name")
-    throttle_sqlite_file: str = Field(
-        default='throttle.sqlite', description="Throttle SQLite filename")
+    cache_timeout_hours: int = Field(
+        default=168, description="Cache timeout in hours")
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")

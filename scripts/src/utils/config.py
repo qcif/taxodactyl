@@ -425,11 +425,11 @@ class Config:
 
     @property
     def throttle_sqlite_path(self):
-        return self.user_tempdir / ('throttle_' + self.SQLITE_FILE)
+        return self.user_tempdir / ('throttle_' + self.sqlite_file)
 
     @property
     def cache_sqlite_path(self):
-        return self.tempdir / ('cache_' + self.SQLITE_FILE)
+        return self.tempdir / ('cache_' + self.sqlite_file)
 
     @property
     def start_time(self) -> datetime:

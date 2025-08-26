@@ -205,7 +205,7 @@ class Throttle:
         return within_per_second_limit and within_per_minute_limit
 
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
-        retries = config.MAX_API_RETRIES
+        retries = config.max_api_retries
         if with_cache:
             cache_key = cache.keyhash(func, args, kwargs)
             cached_data = cache.get(cache_key)
