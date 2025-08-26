@@ -93,7 +93,7 @@
           <td style="white-space: nowrap;"><code>country</code></td>
           <td>
             Country of sample origin. Please ensure that either the full, correct name or
-            <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank">alpha-2 code</a>
+            <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" target="_blank">alpha-2 code</a>
             is used (e.g. <code>CA</code> for Canada). Case-insensitive.
           </td>
           <td></td>
