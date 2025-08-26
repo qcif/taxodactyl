@@ -1,0 +1,11 @@
+flake8
+geopandas
+jinja2
+lxml_html_clean
+markdown2
+pycountry
+pygbif
+requests
+fsspec
+pyyaml
+biopython

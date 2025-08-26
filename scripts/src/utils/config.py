@@ -37,6 +37,9 @@ VARS_FROM_ENV = (
     "USER_EMAIL",
     "NCBI_API_KEY",
 )
+TEMP_FILES = (
+    'entrez_cache_dirname',
+)
 
 
 class Config:
@@ -372,7 +375,7 @@ class Config:
     def get_sample_id(self, query):
         """Resolve query index/dir to sample ID."""
         query_ix = self.get_query_ix(query)
-        return self.read_query_fasta(query_ix).id.split('.')[0]
+        return self.read_query_fasta(query_ix).id
 
     @property
     def bold_flag_file(self):
@@ -422,7 +425,11 @@ class Config:
 
     @property
     def throttle_sqlite_path(self):
-        return self.user_tempdir / self.throttle_sqlite_file
+        return self.user_tempdir / ('throttle_' + self.SQLITE_FILE)
+
+    @property
+    def cache_sqlite_path(self):
+        return self.tempdir / ('cache_' + self.SQLITE_FILE)
 
     @property
     def start_time(self) -> datetime:
@@ -464,9 +471,7 @@ class Config:
                 and x not in self.inputs.metadata_csv_header.values()
             })
             for row in reader:
-                sample_id = row.pop(
-                    header["sample_id"]
-                ).split('.')[0].split(' ')[0]
+                sample_id = row.pop(header["sample_id"])
                 data[sample_id] = {
                     key: _get_value_for_key(key, row, colname)
                     for key, colname in header.items()
@@ -556,8 +561,8 @@ class Config:
     def read_query_fasta(self, index=None) -> list[SeqIO.SeqRecord]:
         """Read query FASTA file."""
         if not hasattr(self, "query_sequences"):
-            self.query_sequences = list(
-                SeqIO.parse(self.inputs.fasta_filepath, "fasta"))
+            with open(self.INPUTS.FASTA_FILEPATH) as f:
+                self.query_sequences = list(SeqIO.parse(f, "fasta"))
         if index is not None:
             return self.query_sequences[int(index)]
         return self.query_sequences
@@ -579,7 +584,7 @@ class Config:
         taxonomies = {}
         with self.taxonomy_path.open() as f:
             for row in csv.DictReader(f):
-                taxonomies[row["accession"].split('.')[0]] = row
+                taxonomies[row["accession"]] = row
         return taxonomies
 
     def read_json(self, path):
@@ -610,11 +615,10 @@ class Config:
     def cleanup(self):
         """Remove temporary files."""
         logger.info("Cleaning temporary files from output dir...")
-        # Temp files list contains actual filenames, not attribute names
-        temp_files = [
-            self.entrez_cache_dirname,
-        ]
-        for filename in temp_files:
+        for attr_name in TEMP_FILES:
+            filename = getattr(self, attr_name, None)
+            if not filename:
+                continue
             path = self.output_dir / filename
             if path.exists():
                 if path.is_dir():

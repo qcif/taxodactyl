@@ -1,0 +1,169 @@
+<div class="modal fade" id="distanceTreeModal" tabindex="-1" aria-labelledby="distanceTreeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xxl modal-fullscreen-lg-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="distanceTreeModalLabel">Distance Tree</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="phylotree">
+          <div id="phylotree-modal"></div>
+          <div class="controls">
+            <small>
+              <p class="mb-1">
+                <code>Click + drag</code> to pan
+              </p>
+              <p class="mb-1">
+                <code>Scroll</code> to zoom in/out
+              </p>
+              <p class="mb-3">
+                <code>Click</code> a label to view NCBI record
+              </p>
+              <p class="text-center mb-0">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  title="Full screen"
+                  onclick="fullScreenModalTree();"
+                  id="maximizeModalTreeBtn"
+                >
+                  Full screen
+                </button>
+              </p>
+              <p class="text-center mb-0">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  title="Minimize"
+                  onclick="fullScreenModalTree(reset=1);"
+                  id="minimizeModalTreeBtn"
+                  style="display: none;"
+                >
+                  Minimize
+                </button>
+              </p>
+            </small>
+          </div>
+
+          <p class="my-3 px-5">
+            <small>
+              This phylogenetic tree shows the genetic relationship between the query sequence
+              (labelled <code>QUERY</code>)
+              and matching reference sequences (labelled species/accession).
+              The tree was computed with
+              <a href="http://www.atgc-montpellier.fr/fastme/" target="_blank">
+                FastME
+              </a>
+              using the Neighbor-Joining method. Multiple-sequence alignment of the candidate reference sequences was performed using
+              <a href="https://mafft.cbrc.jp/alignment/server/index.html" target="_blank">MAFFT</a>.
+
+              The visualization is rendered with
+              <a href="https://www.phylocanvas.gl/" target="_blank">
+                Phylocanvas.GL
+              </a>.
+              Leaf nodes are colour-coded to indicate species. The query sequence is selected by default (green circle) and is indicated with a red star.
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Phylogenetic tree modal functionality
+    let phyloTreeModal;
+    let fullScreenModalTree;
+    const NCBI_URL = "https://www.ncbi.nlm.nih.gov/nuccore";
+    const newickString = {{ tree_nwk_str | tojson }};
+    const colors = [
+      "blue", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF",
+      "#800000", "#008000", "#000080", "#808000", "#800080", "#008080",
+      "#C0C0C0", "#808080", "#FFA500", "#A52A2A", "#D2691E", "#8B4513",
+      "#5F9EA0", "#4682B4", "#7FFF00", "#D2691E",
+    ];
+    const speciesColors = {
+      {%- for hit in candidates.species %}
+      {{ hit.species | tojson }}: colors[{{ loop.index0 }}] || "black",
+      {%- endfor %}
+    };
+    const leafNames = {
+      {%- for hit in candidates.hits %}
+      {{ hit.accession | tojson }}: {
+        label: {{ (hit.species + " " + hit.accession) | tojson }},
+        fillColour: speciesColors[{{ hit.species | tojson }}] || "black",
+      },
+      {%- endfor %}
+    };
+    const leafStyles = {
+      QUERY: {
+        fillColour: "red",
+        shape: phylocanvas.Shapes.Star,
+        nodeSize: 25,
+      },
+      ...leafNames,
+    };
+
+    // Initialize modal tree when modal is shown
+    $('#distanceTreeModal').on('shown.bs.modal', function () {
+      if (!phyloTreeModal) {
+        const parent = document.querySelector("#phylotree-modal");
+        const defaultTreeSize = {
+          width: parent.offsetWidth,
+          height: Math.max(400, window.innerHeight * 0.9 - 200),
+        };
+        
+        phyloTreeModal = new phylocanvas.PhylocanvasGL(
+          parent,
+          {
+            size: defaultTreeSize,
+            nodeSize: 10,
+            showLabels: true,
+            showLeafLabels: true,
+            selectedIds: ["QUERY"],
+            interactive: true,
+            source: newickString,
+            type: phylocanvas.TreeTypes.Rectangular,
+            zoom: -0.5,
+            styles: leafStyles,
+          },
+        );
+
+        phyloTreeModal.handleClick = (target, event) => {
+          if (target.object.isLeaf) {
+            const accession = target.object.id;
+            console.log('Clicked leaf ID:', accession);
+            if (/^\w\w\d\d/.test(accession)) {
+              url = `${NCBI_URL}/${accession}`;
+              window.open(url, '_blank');
+            }
+          }
+        }
+
+        fullScreenModalTree = (reset = 0) => {
+          const modal = $('#distanceTreeModal');
+          const treeWrapper = modal.find('.phylotree');
+          if (reset) {
+            treeWrapper.removeClass("fullscreen");
+            $('#minimizeModalTreeBtn').hide();
+            $('#maximizeModalTreeBtn').show();
+            phyloTreeModal.resize(defaultTreeSize.width, defaultTreeSize.height);
+          } else {
+            treeWrapper.addClass("fullscreen");
+            $('#minimizeModalTreeBtn').show();
+            $('#maximizeModalTreeBtn').hide();
+            phyloTreeModal.resize(
+              window.innerWidth,
+              window.innerHeight - 50,
+            );
+          }
+        }
+      }
+    });
+
+    // Clean up when modal is hidden
+    $('#distanceTreeModal').on('hidden.bs.modal', function () {
+      const treeWrapper = $(this).find('.phylotree');
+      treeWrapper.removeClass("fullscreen");
+      $('#minimizeModalTreeBtn').hide();
+      $('#maximizeModalTreeBtn').show();
+    });
+  </script>
+</div>
