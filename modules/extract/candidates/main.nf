@@ -40,7 +40,10 @@ process EXTRACT_CANDIDATES {
     mkdir -p $query_folder
     # Move hits files into the query folder
     mv $hits_json_file $query_folder/
-    mv $hits_fasta_file $query_folder/
+    # Only move FASTA file if it exists (may be missing when no hits found)
+    if [ -f "$hits_fasta_file" ]; then
+        mv $hits_fasta_file $query_folder/
+    fi
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
