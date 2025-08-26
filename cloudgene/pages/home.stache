@@ -123,15 +123,15 @@
       </thead>
       <tbody>
         <tr>
-          <td>WF1: Barcode assembly</td>
+          <td>#1 Barcode assembly</td>
           <td>
-            <a href="https://github.com/maelyg/ont_amplicon/issues" target="_blank">WF1: Barcode assembly</a>
+            <a href="https://github.com/maelyg/ont_amplicon/issues" target="_blank">https://github.com/maelyg/ont_amplicon/issues</a>
           </td>
         </tr>
         <tr>
-          <td>WF2: Taxodactyl</td>
+          <td>#2 Taxodactyl</td>
           <td>
-            <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">WF2: Taxodactyl</a>
+            <a href="https://github.com/qcif/taxodactyl/issues" target="_blank">https://github.com/qcif/taxodactyl/issues</a>
           </td>
         </tr>
       </tbody>
