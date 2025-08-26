@@ -37,13 +37,16 @@ process {
 
 ### Error strategy
 
-The error strategy for the workflow is set to `ignore`. It means that even if a process encounters an error, Nextflow will continue executing subsequent processes rather than terminating the workflow. This is to avoid interrupting the entire workflow with multiple queries when only one of them fails. To overwrite, add or modify the following block in a config file to specify the error strategy 
+The workflow uses the `ignore` error strategy, allowing Nextflow to continue running subsequent processes even if one fails - preventing a single error from halting the entire pipeline. To specify a different strategy, add or modify the following block in a config file:
 ```
 process {
     errorStrategy = 'ignore'
 }
 ```
 Replace `ignore` with the desired error handling strategy, such as `terminate`, `retry`, or `finish`, depending on the desired behavior. See [Nextflow documentation](https://www.nextflow.io/docs/latest/reference/process.html#process-error-strategy) for details. 
+
+The `ignore` error strategy is used in conjunction with the `workflow.failOnIgnore = true` for the workflow to fail at the end if any tasks resulted in errors. 
+
 
 ### Parameters
 
