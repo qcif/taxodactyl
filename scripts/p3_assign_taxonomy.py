@@ -24,7 +24,7 @@ from Bio import SeqIO
 
 from src.utils import deduplicate, existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import ARGUMENTS
+from src.utils.config import arguments
 from src.utils.flags import FLAGS, Flag
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
@@ -90,52 +90,52 @@ def _parse_args():
         action="store_true",
         help="Outputs are from BOLD query.")
     parser.add_argument(
-        f"--{ARGUMENTS.OUTPUT_DIR}",
+        f"--{arguments.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.MIN_ALIGNMENT_LENGTH}",
+        f"--{arguments.MIN_ALIGNMENT_LENGTH}",
         type=int,
         help="Minimum alignment length in nucleotides")
     parser.add_argument(
-        f"--{ARGUMENTS.MIN_QUERY_COVERAGE}",
+        f"--{arguments.MIN_QUERY_COVERAGE}",
         type=float,
         help="Minimum query coverage fraction")
     parser.add_argument(
-        f"--{ARGUMENTS.MIN_IDENTITY}",
+        f"--{arguments.MIN_IDENTITY}",
         type=float,
         help="Minimum sequence identity for moderate matches")
     parser.add_argument(
-        f"--{ARGUMENTS.MIN_IDENTITY_STRICT}",
+        f"--{arguments.MIN_IDENTITY_STRICT}",
         type=float,
         help="Minimum sequence identity for strong matches")
     parser.add_argument(
-        f"--{ARGUMENTS.MEDIAN_IDENTITY_WARNING_FACTOR}",
+        f"--{arguments.MEDIAN_IDENTITY_WARNING_FACTOR}",
         type=float,
         help="Factor for median identity warnings")
     parser.add_argument(
-        f"--{ARGUMENTS.MAX_CANDIDATES_ANALYSIS}",
+        f"--{arguments.MAX_CANDIDATES_ANALYSIS}",
         type=int,
         help="Maximum candidates to include in detailed analysis")
     parser.add_argument(
-        f"--{ARGUMENTS.PHYLOGENY_MIN_SEQUENCES}",
+        f"--{arguments.PHYLOGENY_MIN_SEQUENCES}",
         type=int,
         help="Minimum sequences required for phylogeny")
     parser.add_argument(
-        f"--{ARGUMENTS.PHYLOGENY_MAX_PER_SPECIES}",
+        f"--{arguments.PHYLOGENY_MAX_PER_SPECIES}",
         type=int,
         help="Maximum sequences per species for phylogeny")
     return parser.parse_args()

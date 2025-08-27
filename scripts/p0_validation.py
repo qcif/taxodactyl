@@ -11,7 +11,7 @@ from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import ARGUMENTS
+from src.utils.config import arguments
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
@@ -43,19 +43,19 @@ def _parse_args():
         description="Validate user input."
     )
     parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.TAXDB_DIR}",
+        f"--{arguments.TAXDB_DIR}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
@@ -66,22 +66,22 @@ def _parse_args():
         help="Validate inputs for a BOLD analysis (accept blank locus field).",
     )
     parser.add_argument(
-        f"--{ARGUMENTS.ALLOWED_LOCI_FILE}",
+        f"--{arguments.ALLOWED_LOCI_FILE}",
         type=existing_path,
         help="Path to JSON file containing allowed loci definitions",
     )
     parser.add_argument(
-        f"--{ARGUMENTS.FASTA_MAX_SEQUENCES}",
+        f"--{arguments.FASTA_MAX_SEQUENCES}",
         type=int,
         help="Maximum number of sequences allowed",
     )
     parser.add_argument(
-        f"--{ARGUMENTS.FASTA_MIN_LENGTH}",
+        f"--{arguments.FASTA_MIN_LENGTH}",
         type=int,
         help="Minimum sequence length in nucleotides",
     )
     parser.add_argument(
-        f"--{ARGUMENTS.FASTA_MAX_LENGTH}",
+        f"--{arguments.FASTA_MAX_LENGTH}",
         type=int,
         help="Maximum sequence length in nucleotides",
     )

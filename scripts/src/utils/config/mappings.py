@@ -2,61 +2,7 @@
 
 from pathlib import Path
 
-
-class ARGUMENTS:
-    """Namespace for CLI argument names to ensure single source of truth."""
-
-    # BLAST configuration
-    BLAST_MAX_TARGET_SEQS = 'blast-max-target-seqs'
-
-    # BOLD configuration
-    BOLD_DATABASE = 'bold-database'
-
-    # GBIF configuration
-    GBIF_LIMIT_RECORDS = 'gbif-limit-records'
-    GBIF_MAX_OCCURRENCE_RECORDS = 'gbif-max-occurrence-records'
-    GBIF_ACCEPTED_STATUS = 'gbif-accepted-status'
-
-    # Analysis criteria
-    MIN_ALIGNMENT_LENGTH = 'min-alignment-length'
-    MIN_QUERY_COVERAGE = 'min-query-coverage'
-    MIN_IDENTITY = 'min-identity'
-    MIN_IDENTITY_STRICT = 'min-identity-strict'
-    MEDIAN_IDENTITY_WARNING_FACTOR = 'median-identity-warning-factor'
-    MAX_CANDIDATES_ANALYSIS = 'max-candidates-analysis'
-    MIN_SOURCE_COUNT = 'min-source-count'
-    PHYLOGENY_MIN_SEQUENCES = 'phylogeny-min-sequences'
-    PHYLOGENY_MAX_PER_SPECIES = 'phylogeny-max-per-species'
-
-    # Database coverage criteria
-    DB_COV_TARGET_MIN_A = 'db-cov-target-min-a'
-    DB_COV_TARGET_MIN_B = 'db-cov-target-min-b'
-    DB_COV_RELATED_MIN_A = 'db-cov-related-min-a'
-    DB_COV_RELATED_MIN_B = 'db-cov-related-min-b'
-    DB_COV_COUNTRY_MISSING_A = 'db-cov-country-missing-a'
-
-    # Database coverage settings
-    DB_COVERAGE_TOI_LIMIT = 'db-coverage-toi-limit'
-    DB_COVERAGE_MAX_CANDIDATES = 'db-coverage-max-candidates'
-
-    # Input validation settings
-    FASTA_MAX_SEQUENCES = 'fasta-max-sequences'
-    FASTA_MIN_LENGTH = 'fasta-min-length'
-    FASTA_MAX_LENGTH = 'fasta-max-length'
-
-    # Report settings
-    REPORT_DEBUG = 'report-debug'
-    DATABASE_NAME = 'database-name'
-    FACILITY_NAME = 'facility-name'
-    ANALYST_NAME = 'analyst-name'
-
-    # File paths and validation settings
-    OUTPUT_DIR = 'output-dir'
-    METADATA_CSV = 'metadata-csv'
-    QUERY_FASTA = 'query-fasta'
-    TAXDB_DIR = 'taxdb-dir'
-    ALLOWED_LOCI_FILE = 'allowed-loci-file'
-    FLAG_DETAILS_CSV = 'flag-details-csv'
+from . import arguments
 
 
 def _parse_status_list(value):
@@ -74,63 +20,63 @@ CLI_ARGS = {
     for k, v in
     {
         # File paths and validation settings
-        ARGUMENTS.OUTPUT_DIR: ('output_dir',),
-        ARGUMENTS.METADATA_CSV: ('inputs', 'metadata_csv'),
-        ARGUMENTS.QUERY_FASTA: ('inputs', 'query_fasta'),
-        ARGUMENTS.TAXDB_DIR: ('taxdb_dir',),
-        ARGUMENTS.ALLOWED_LOCI_FILE: ('allowed_loci_file',),
-        ARGUMENTS.FLAG_DETAILS_CSV: ('flag_details_csv_path',),
+        arguments.OUTPUT_DIR: ('output_dir',),
+        arguments.METADATA_CSV: ('inputs', 'metadata_csv'),
+        arguments.QUERY_FASTA: ('inputs', 'query_fasta'),
+        arguments.TAXDB_DIR: ('taxdb_dir',),
+        arguments.ALLOWED_LOCI_FILE: ('allowed_loci_file',),
+        arguments.FLAG_DETAILS_CSV: ('flag_details_csv_path',),
 
         # BLAST configuration
-        ARGUMENTS.BLAST_MAX_TARGET_SEQS: ('blast_max_target_seqs',),
+        arguments.BLAST_MAX_TARGET_SEQS: ('blast_max_target_seqs',),
 
         # BOLD configuration
-        ARGUMENTS.BOLD_DATABASE: ('bold_database',),
+        arguments.BOLD_DATABASE: ('bold_database',),
 
         # GBIF configuration
-        ARGUMENTS.GBIF_LIMIT_RECORDS: ('gbif_limit_records',),
-        ARGUMENTS.GBIF_MAX_OCCURRENCE_RECORDS: (
+        arguments.GBIF_LIMIT_RECORDS: ('gbif_limit_records',),
+        arguments.GBIF_MAX_OCCURRENCE_RECORDS: (
             'gbif_max_occurrence_records',),
-        ARGUMENTS.GBIF_ACCEPTED_STATUS: ('gbif_accepted_status',),
+        arguments.GBIF_ACCEPTED_STATUS: ('gbif_accepted_status',),
 
         # Analysis criteria (nested in criteria object)
-        ARGUMENTS.MIN_ALIGNMENT_LENGTH: ('criteria', 'alignment_min_nt'),
-        ARGUMENTS.MIN_QUERY_COVERAGE: ('criteria', 'alignment_min_q_coverage'),
-        ARGUMENTS.MIN_IDENTITY: ('criteria', 'alignment_min_identity'),
-        ARGUMENTS.MIN_IDENTITY_STRICT: (
+        arguments.MIN_ALIGNMENT_LENGTH: ('criteria', 'alignment_min_nt'),
+        arguments.MIN_QUERY_COVERAGE: ('criteria', 'alignment_min_q_coverage'),
+        arguments.MIN_IDENTITY: ('criteria', 'alignment_min_identity'),
+        arguments.MIN_IDENTITY_STRICT: (
             'criteria', 'alignment_min_identity_strict'),
-        ARGUMENTS.MEDIAN_IDENTITY_WARNING_FACTOR: (
+        arguments.MEDIAN_IDENTITY_WARNING_FACTOR: (
             'criteria', 'median_identity_warning_factor'),
-        ARGUMENTS.MAX_CANDIDATES_ANALYSIS: (
+        arguments.MAX_CANDIDATES_ANALYSIS: (
             'criteria', 'max_candidates_for_analysis'),
-        ARGUMENTS.MIN_SOURCE_COUNT: ('criteria', 'sources_min_count'),
-        ARGUMENTS.PHYLOGENY_MIN_SEQUENCES: (
+        arguments.MIN_SOURCE_COUNT: ('criteria', 'sources_min_count'),
+        arguments.PHYLOGENY_MIN_SEQUENCES: (
             'criteria', 'phylogeny_min_hit_sequences'),
-        ARGUMENTS.PHYLOGENY_MAX_PER_SPECIES: (
+        arguments.PHYLOGENY_MAX_PER_SPECIES: (
             'criteria', 'phylogeny_max_hits_per_species'),
 
         # Database coverage criteria
-        ARGUMENTS.DB_COV_TARGET_MIN_A: ('criteria', 'db_cov_target_min_a'),
-        ARGUMENTS.DB_COV_TARGET_MIN_B: ('criteria', 'db_cov_target_min_b'),
-        ARGUMENTS.DB_COV_RELATED_MIN_A: ('criteria', 'db_cov_related_min_a'),
-        ARGUMENTS.DB_COV_RELATED_MIN_B: ('criteria', 'db_cov_related_min_b'),
-        ARGUMENTS.DB_COV_COUNTRY_MISSING_A: (
+        arguments.DB_COV_TARGET_MIN_A: ('criteria', 'db_cov_target_min_a'),
+        arguments.DB_COV_TARGET_MIN_B: ('criteria', 'db_cov_target_min_b'),
+        arguments.DB_COV_RELATED_MIN_A: ('criteria', 'db_cov_related_min_a'),
+        arguments.DB_COV_RELATED_MIN_B: ('criteria', 'db_cov_related_min_b'),
+        arguments.DB_COV_COUNTRY_MISSING_A: (
             'criteria', 'db_cov_country_missing_a'),
 
         # Database coverage settings
-        ARGUMENTS.DB_COVERAGE_TOI_LIMIT: ('db_coverage_toi_limit',),
-        ARGUMENTS.DB_COVERAGE_MAX_CANDIDATES: ('db_coverage_max_candidates',),
+        arguments.DB_COVERAGE_TOI_LIMIT: ('db_coverage_toi_limit',),
+        arguments.DB_COVERAGE_MAX_CANDIDATES: ('db_coverage_max_candidates',),
 
         # Input validation settings
-        ARGUMENTS.FASTA_MAX_SEQUENCES: ('inputs', 'fasta_max_sequences'),
-        ARGUMENTS.FASTA_MIN_LENGTH: ('inputs', 'fasta_min_length_nt'),
-        ARGUMENTS.FASTA_MAX_LENGTH: ('inputs', 'fasta_max_length_nt'),
+        arguments.FASTA_MAX_SEQUENCES: ('inputs', 'fasta_max_sequences'),
+        arguments.FASTA_MIN_LENGTH: ('inputs', 'fasta_min_length_nt'),
+        arguments.FASTA_MAX_LENGTH: ('inputs', 'fasta_max_length_nt'),
 
         # Report settings
-        ARGUMENTS.REPORT_DEBUG: ('report', 'debug'),
-        ARGUMENTS.DATABASE_NAME: ('report', 'database_name'),
-        ARGUMENTS.FACILITY_NAME: ('inputs', 'facility_name'),
-        ARGUMENTS.ANALYST_NAME: ('inputs', 'analyst_name'),
+        arguments.REPORT_DEBUG: ('report', 'debug'),
+        arguments.DATABASE_NAME: ('report', 'database_name'),
+        arguments.FACILITY_NAME: ('inputs', 'facility_name'),
+        arguments.ANALYST_NAME: ('inputs', 'analyst_name'),
     }.items()
 }
 

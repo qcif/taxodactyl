@@ -5,7 +5,7 @@ import argparse
 from src.report import report
 from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import ARGUMENTS
+from src.utils.config import arguments
 
 config = Config()
 
@@ -44,44 +44,44 @@ def _parse_args():
         help="Path to versions YAML file."
     )
     parser.add_argument(
-        f"--{ARGUMENTS.OUTPUT_DIR}",
+        f"--{arguments.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.REPORT_DEBUG}",
+        f"--{arguments.REPORT_DEBUG}",
         action="store_true",
         help="Enable debug mode for report generation"
     )
     parser.add_argument(
-        f"--{ARGUMENTS.DATABASE_NAME}",
+        f"--{arguments.DATABASE_NAME}",
         type=str,
         help="Name of the reference database"
     )
     parser.add_argument(
-        f"--{ARGUMENTS.FACILITY_NAME}",
+        f"--{arguments.FACILITY_NAME}",
         type=str,
         help="Name of the analysis facility"
     )
     parser.add_argument(
-        f"--{ARGUMENTS.ANALYST_NAME}",
+        f"--{arguments.ANALYST_NAME}",
         type=str,
         help="Name of the analyst"
     )
     parser.add_argument(
-        f"--{ARGUMENTS.FLAG_DETAILS_CSV}",
+        f"--{arguments.FLAG_DETAILS_CSV}",
         type=existing_path,
         help="Path to CSV file containing flag definitions"
     )
