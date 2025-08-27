@@ -161,8 +161,8 @@ MAFFT, FastME) are actioned with other tools, but most steps require invoking on
 of the Python scripts included in this repository. For ease of reference, the
 scripts are enumerated as P1-P6.
 
-Each script can also accept an optional argument `-c config.yml` that can be used 
-in place of CLI arguments, though CLI arguments will override any parameters 
+Each script can also accept an optional argument `-c config.yml` that can be used
+in place of CLI arguments, though CLI arguments will override any parameters
 provided by the config file. See the
 [configuration section](#application-configuration) for more info on
 configuration options.
@@ -200,8 +200,8 @@ sequence lengths and required metadata.csv fields.
 ```
 $ python p0_validation.py -h
 
-usage: p0_validation.py [-h] --metadata_csv METADATA_CSV --query_fasta
-                        QUERY_FASTA --taxdb_dir TAXDB_DIR [--bold]
+usage: p0_validation.py [-h] --metadata-csv METADATA_CSV --query-fasta
+                        QUERY_FASTA --taxdb-dir TAXDB_DIR [--bold]
                         [--allowed-loci-file ALLOWED_LOCI_FILE]
                         [--input-fasta INPUT_FASTA]
                         [--input-metadata INPUT_METADATA]
@@ -213,11 +213,11 @@ Validate user input.
 
 options:
   -h, --help            show this help message and exit
-  --metadata_csv METADATA_CSV
+  --metadata-csv METADATA_CSV
                         Path to metadata.csv input file.
-  --query_fasta QUERY_FASTA
+  --query-fasta QUERY_FASTA
                         Path to queries.fasta input file.
-  --taxdb_dir TAXDB_DIR
+  --taxdb-dir TAXDB_DIR
                         Path to queries.fasta input file.
   --bold                Validate inputs for a BOLD analysis (accept blank
                         locus field).
@@ -253,7 +253,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Directory to save parsed output files (JSON and FASTA).
                         Defaults to env variable 'OUTPUT_DIR' or 'output'.
   --blast-max-target-seqs BLAST_MAX_TARGET_SEQS
@@ -293,7 +293,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Directory to save parsed output files (JSON and FASTA).
                         Defaults to env variable 'OUTPUT_DIR' or 'output'.
   --bold-database BOLD_DATABASE
@@ -355,7 +355,7 @@ represented by those hits. It generates several reportable outcomes:
 
 ```
 $ python p3_assign_taxonomy.py -h
-usage: p3_assign_taxonomy.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+usage: p3_assign_taxonomy.py [-h] [--output-dir OUTPUT_DIR] [--bold]
                              [--min-alignment-length MIN_ALIGNMENT_LENGTH]
                              [--min-query-coverage MIN_QUERY_COVERAGE]
                              [--min-identity MIN_IDENTITY]
@@ -375,7 +375,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Outputs are from BOLD query.
   --min-alignment-length MIN_ALIGNMENT_LENGTH
@@ -410,7 +410,7 @@ publication author, journal and title for each publication.
 ```
 $ python p4_source_diversity.py -h
 
-usage: p4_source_diversity.py [-h] [--output_dir OUTPUT_DIR]
+usage: p4_source_diversity.py [-h] [--output-dir OUTPUT_DIR]
                                [--min-source-count MIN_SOURCE_COUNT]
                                query_dir
 
@@ -427,7 +427,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --min-source-count MIN_SOURCE_COUNT
                         Minimum number of independent sources required
@@ -448,7 +448,7 @@ each target taxon.
 ```
 $ python p5_db_coverage.py -h
 
-usage: p5_db_coverage.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+usage: p5_db_coverage.py [-h] [--output-dir OUTPUT_DIR] [--bold]
                          [--db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT]
                          [--db-coverage-max-candidates DB_COVERAGE_MAX_CANDIDATES]
                          [--gbif-limit-records GBIF_LIMIT_RECORDS]
@@ -470,7 +470,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Reference the BOLD database instead of GenBank.
   --db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT
@@ -541,7 +541,7 @@ by the user. The report is a single HTML file rendered from many templates
 
 ```
 $ python p6_report.py -h
-usage: p6_report.py [-h] [--output_dir OUTPUT_DIR] [--bold]
+usage: p6_report.py [-h] [--output-dir OUTPUT_DIR] [--bold]
                     [--params_json PARAMS_JSON] [--versions_yml VERSIONS_YML]
                     [--report-debug] [--database-name DATABASE_NAME]
                     [--facility-name FACILITY_NAME] [--analyst-name ANALYST_NAME]
@@ -555,7 +555,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                If set, will enable the 'bold' logic for rendering the report.
   --params_json PARAMS_JSON
@@ -616,63 +616,26 @@ This will prompt the github.io docs pages to rebuild, which takes 2-3 minutes.
 
 ## Application configuration
 
-The [config.py](./src/utils/config.py) module provides all of the configuration for the application at
-runtime, and pulls a lot of configuration from environment variables set by the
-user or Nextflow. The idea is that any module should be able to import config
-and easily access a set of global constants/variables:
+The application uses a flexible YAML-based configuration system with Pydantic validation. Configuration is defined in [config_schema.py](./src/utils/config_schema.py) and loaded via the [config.py](./src/utils/config.py) module, which provides a singleton Config object for runtime access.
 
 ```py
 from src.utils.config import Config
 
 config = Config()  # Returns a singleton, shared across all modules
-```
-
-The `Config` object has a lot of properties/methods for convenient access to
-analysis context, for example:
-
-```py
-query_ix = 0
 sample_id = config.get_sample_id(query_ix)
-locus = config.get_locus_for_query(query_ix)
 ```
 
-You can update config with args parsed from command-line. Note that config
-mutation has to be done before calling any external modules/functions:
+The configuration system supports cascading files and CLI argument overrides. For detailed configuration usage, examples, and the full schema documentation, see: **[./config/README.md](./config/README.md)**
 
-```py
-# E.g. set args.output_dir and args.query_dir parsed from command-line
-config.update_from_args(args)
+### For developers: Maintaining configuration
 
-# Or manually update any config attribute
-config.output_dir = args.output_dir
-```
-
-If you find yourself passing the same CLI arguments repeatedly when running the Python scripts, you may wish to use config files. See [config/default.yml](./config/default.yml) for the full list of available params, and their default values.
-
-```yml
-output_dir: /my/output/dir
-query_dir: /my/output/dir/query_001
-inputs:
-  facility_name: "Hogwarts"
-  analyst_name: "Harry Potter"
-```
-
-### Updating configuration schema
-
-Configuration is defined using Pydantic models in [config_schema.py](./src/utils/config_schema.py). When you modify the configuration schema, you should regenerate the default configuration file to ensure consistency:
+When modifying the Pydantic configuration schema, you **must** regenerate the default configuration file:
 
 ```bash
-# Regenerate config/default.yml from Pydantic models
 python dev/generate_default_config.py
 ```
 
-This script automatically:
-- Creates a default instance of the `ConfigSchema` 
-- Extracts all default values from the Pydantic models
-- Converts the configuration to YAML format
-- Writes to `config/default.yml`
-
-**Important**: Always run this script after modifying `ConfigSchema` or its nested models (`InputsConfig`, `CriteriaConfig`, `ReportConfig`) to keep the default configuration file up to date.
+This ensures `config/default.yml` stays synchronized with the schema defined in `config_schema.py`. This step is critical for maintaining consistency between the code and configuration files.
 
 
 ## Handling errors

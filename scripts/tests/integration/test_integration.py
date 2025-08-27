@@ -145,8 +145,8 @@ class IntegrationTest(unittest.TestCase):
         with open(base_config_path, 'r') as f:
             config_data = yaml.safe_load(f)
         # Set test-specific file paths
-        config_data['inputs']['fasta_filepath'] = str(wdir / "query.fasta")
-        config_data['inputs']['metadata_path'] = str(wdir / "metadata.csv")
+        config_data['inputs']['query_fasta'] = str(wdir / "query.fasta")
+        config_data['inputs']['metadata_csv'] = str(wdir / "metadata.csv")
         # Write test-specific config file
         test_config_path = wdir / "test_config.yml"
         with open(test_config_path, 'w') as f:

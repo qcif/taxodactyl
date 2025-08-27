@@ -12,6 +12,7 @@ from src.taxonomy import extract
 from src.taxonomy.extract import TAXONOMIC_RANKS
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -33,13 +34,13 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'taxids_csv',
+        'taxids_csv',  # Not mapped to config
         type=existing_path,
         help='CSV file with columns (accession,taxid) to extract taxonomy'
              ' information for.',
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=existing_path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",

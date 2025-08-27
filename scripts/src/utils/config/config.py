@@ -20,15 +20,17 @@ from pathlib import Path
 from Bio import SeqIO
 from pydantic import ValidationError
 
-from . import countries
-from .config_schema import ConfigSchema
-from .locus import Locus
-from .log import get_logging_config
-from .utils import path_safe_str
+from src.utils import countries
+from src.utils.locus import Locus
+from src.utils.log import get_logging_config
+from src.utils.utils import path_safe_str
+
+from . import mappings
+from .schema import ConfigSchema
 
 logger = logging.getLogger(__name__)
 
-ROOT_DIR = Path(__file__).parents[3]
+ROOT_DIR = Path(__file__).parents[4]
 MAP_FILENAME_TEMPLATE = "map_{taxon_str}.png"
 REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
 QUERY_DIR_PREFIX = 'query_'
@@ -57,8 +59,6 @@ class Config:
             return
         Config._initialized = True
         self._load_cascading_config()
-
-        # Initialize singleton attributes
         self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
         self.query_dir = None
 
@@ -124,10 +124,8 @@ class Config:
                 and isinstance(result[key], dict)
                 and isinstance(value, dict)
             ):
-                # Recursively merge nested dictionaries
                 result[key] = self._deep_merge_dicts(result[key], value)
             else:
-                # Override the value (including lists, primitives, etc.)
                 result[key] = value
 
         return result
@@ -136,68 +134,17 @@ class Config:
         """Apply validated configuration to instance attributes."""
         for field_name in self._config.__class__.model_fields:
             field_value = getattr(self._config, field_name)
-            # Use lowercase attribute names directly
             setattr(self, field_name, field_value)
 
         for var in VARS_FROM_ENV:
             value = os.getenv(var)
             setattr(self, var, value)
 
-        # Override config values from environment variables
         self._apply_env_overrides()
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
-        # Define mapping of env var names to config paths
-        env_mappings = {
-            # Input file paths
-            'INPUT_FASTA_FILEPATH': ('inputs', 'fasta_filepath', Path),
-            'INPUT_METADATA_CSV_FILEPATH': ('inputs', 'metadata_path', Path),
-            # BLAST configuration
-            'BLAST_MAX_TARGET_SEQS': ('blast_max_target_seqs', int),
-            # BOLD configuration
-            'BOLD_DATABASE': ('bold_database', str),
-            # GBIF configuration
-            'GBIF_LIMIT_RECORDS': ('gbif_limit_records', int),
-            'GBIF_MAX_OCCURRENCE_RECORDS': (
-                'gbif_max_occurrence_records', int),
-            'GBIF_ACCEPTED_STATUS': (
-                'gbif_accepted_status', self._parse_status_list),
-            # Analysis criteria
-            'MIN_NT': ('criteria', 'alignment_min_nt', int),
-            'MIN_Q_COVERAGE': ('criteria', 'alignment_min_q_coverage', float),
-            'MIN_IDENTITY': ('criteria', 'alignment_min_identity', float),
-            'MIN_IDENTITY_STRICT': (
-                'criteria', 'alignment_min_identity_strict', float),
-            'MEDIAN_IDENTITY_WARNING_FACTOR': (
-                'criteria', 'median_identity_warning_factor', float),
-            'MAX_CANDIDATES_FOR_ANALYSIS': (
-                'criteria', 'max_candidates_for_analysis', int),
-            'MIN_SOURCE_COUNT': ('criteria', 'sources_min_count', int),
-            'DB_COV_MIN_A': ('criteria', 'db_cov_target_min_a', int),
-            'DB_COV_MIN_B': ('criteria', 'db_cov_target_min_b', int),
-            'DB_COV_RELATED_MIN_A': ('criteria', 'db_cov_related_min_a', int),
-            'DB_COV_RELATED_MIN_B': ('criteria', 'db_cov_related_min_b', int),
-            'DB_COV_COUNTRY_MISSING_A': (
-                'criteria', 'db_cov_country_missing_a', int),
-            'PHYLOGENY_MIN_HIT_IDENTITY': (
-                'criteria', 'phylogeny_min_hit_identity', float),
-            'PHYLOGENY_MIN_HIT_SEQUENCES': (
-                'criteria', 'phylogeny_min_hit_sequences', int),
-            'PHYLOGENY_MAX_HITS_PER_SPECIES': (
-                'criteria', 'phylogeny_max_hits_per_species', int),
-            # Input configuration
-            'FACILITY_NAME': ('inputs', 'facility_name', str),
-            'ANALYST_NAME': ('inputs', 'analyst_name', str),
-            # Report configuration
-            'REPORT_DEBUG': ('report', 'debug', self._parse_bool),
-            'BLAST_DATABASE_NAME': ('report', 'database_name', str),
-            # Database coverage
-            'DB_COVERAGE_TOI_LIMIT': ('db_coverage_toi_limit', int),
-            # External tools
-            'TAXONKIT_DATA': ('taxonkit_data', Path),
-        }
-        for env_var, config_path in env_mappings.items():
+        for env_var, config_path in mappings.ENV_VARS.items():
             env_value = os.getenv(env_var)
             if env_value is not None:
                 self._set_config_value(config_path, env_value)
@@ -224,14 +171,6 @@ class Config:
                     f"Failed to set {nested_obj_name}.{field_name} from "
                     f"env: {e}")
 
-    def _parse_bool(self, value):
-        """Parse boolean from environment variable."""
-        return value not in (None, "0", "false", "False", "FALSE", "")
-
-    def _parse_status_list(self, value):
-        """Parse GBIF status list from environment variable."""
-        return value.upper().replace(' ', '').split(',')
-
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
         # Handle special setup arguments first
@@ -250,59 +189,6 @@ class Config:
         if hasattr(args, 'bold') and args.bold:
             self.bold_flag_file.write_text('1')
 
-        # Define mapping of CLI argument names to config paths
-        arg_mappings = {
-            # BLAST configuration
-            'blast_max_target_seqs': ('blast_max_target_seqs',),
-
-            # BOLD configuration
-            'bold_database': ('bold_database',),
-
-            # GBIF configuration
-            'gbif_limit_records': ('gbif_limit_records',),
-            'gbif_max_occurrence_records': ('gbif_max_occurrence_records',),
-            'gbif_accepted_status': ('gbif_accepted_status',),
-
-            # Analysis criteria (nested in criteria object)
-            'min_alignment_length': ('criteria', 'alignment_min_nt'),
-            'min_query_coverage': ('criteria', 'alignment_min_q_coverage'),
-            'min_identity': ('criteria', 'alignment_min_identity'),
-            'min_identity_strict': (
-                'criteria', 'alignment_min_identity_strict'),
-            'median_identity_warning_factor': (
-                'criteria', 'median_identity_warning_factor'),
-            'max_candidates_analysis': (
-                'criteria', 'max_candidates_for_analysis'),
-            'min_source_count': ('criteria', 'sources_min_count'),
-            'phylogeny_min_sequences': (
-                'criteria', 'phylogeny_min_hit_sequences'),
-            'phylogeny_max_per_species': (
-                'criteria', 'phylogeny_max_hits_per_species'),
-
-            # Database coverage criteria
-            'db_cov_target_min_a': ('criteria', 'db_cov_target_min_a'),
-            'db_cov_target_min_b': ('criteria', 'db_cov_target_min_b'),
-            'db_cov_related_min_a': ('criteria', 'db_cov_related_min_a'),
-            'db_cov_related_min_b': ('criteria', 'db_cov_related_min_b'),
-            'db_cov_country_missing_a': (
-                'criteria', 'db_cov_country_missing_a'),
-
-            # Database coverage settings
-            'db_coverage_toi_limit': ('db_coverage_toi_limit',),
-            'db_coverage_max_candidates': ('db_coverage_max_candidates',),
-
-            # Input validation settings
-            'fasta_max_sequences': ('inputs', 'fasta_max_sequences'),
-            'fasta_min_length': ('inputs', 'fasta_min_length_nt'),
-            'fasta_max_length': ('inputs', 'fasta_max_length_nt'),
-
-            # Report settings
-            'report_debug': ('report', 'debug'),
-            'database_name': ('report', 'database_name'),
-            'facility_name': ('inputs', 'facility_name'),
-            'analyst_name': ('inputs', 'analyst_name'),
-        }
-
         # Iterate through all CLI arguments
         for arg_name, arg_value in vars(args).items():
             # Skip None values (arguments not provided by user)
@@ -310,10 +196,10 @@ class Config:
                 continue
 
             # Skip arguments that don't have config mappings
-            if arg_name not in arg_mappings:
+            if arg_name not in mappings.CLI_ARGS:
                 continue
 
-            config_path = arg_mappings[arg_name]
+            config_path = mappings.CLI_ARGS[arg_name]
 
             try:
                 if len(config_path) == 1:
@@ -461,7 +347,7 @@ class Config:
             return value
 
         data = {}
-        with self.inputs.metadata_path.open() as f:
+        with self.inputs.metadata_csv.open() as f:
             reader = csv.DictReader(f)
             header = self.inputs.metadata_csv_header.copy()
             header.update({
@@ -561,7 +447,7 @@ class Config:
     def read_query_fasta(self, index=None) -> list[SeqIO.SeqRecord]:
         """Read query FASTA file."""
         if not hasattr(self, "query_sequences"):
-            with open(self.inputs.fasta_filepath) as f:
+            with open(self.inputs.query_fasta) as f:
                 self.query_sequences = list(SeqIO.parse(f, "fasta"))
         if index is not None:
             return self.query_sequences[int(index)]

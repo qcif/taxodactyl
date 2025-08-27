@@ -3,7 +3,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     label 'daff_tax_assign'
 
     tag "$query_folder"
-    
+
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(candididate_json_file) // Query folder name and candidate JSON file
@@ -23,7 +23,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     # Run the source diversity Python script
     python /app/scripts/p4_source_diversity.py \
     $query_folder \
-    --output_dir ./ \
+    --output-dir ./ \
     ${min_source_count_arg}
     """
 }

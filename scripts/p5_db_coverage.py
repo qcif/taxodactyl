@@ -18,6 +18,7 @@ import sys
 from src.coverage import assess_coverage
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -47,65 +48,67 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir", type=existing_path, help="Path to query output directory")
+        "query_dir",  # Not mapped to config
+        type=existing_path,
+        help="Path to query output directory")
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        "--bold",
+        "--bold",  # Not mapped to config
         action="store_true",
         help="Reference the BOLD database instead of GenBank.")
     parser.add_argument(
-        "--db-coverage-toi-limit",
+        f"--{ARGUMENTS.DB_COVERAGE_TOI_LIMIT}",
         type=int,
         help="Limit for taxa of interest in coverage analysis",
     )
     parser.add_argument(
-        "--db-coverage-max-candidates",
+        f"--{ARGUMENTS.DB_COVERAGE_MAX_CANDIDATES}",
         type=int,
         help="Maximum candidates for coverage assessment",
     )
     parser.add_argument(
-        "--gbif-limit-records",
+        f"--{ARGUMENTS.GBIF_LIMIT_RECORDS}",
         type=int,
         help="Limit for GBIF taxonomy records",
     )
     parser.add_argument(
-        "--gbif-max-occurrence-records",
+        f"--{ARGUMENTS.GBIF_MAX_OCCURRENCE_RECORDS}",
         type=int,
         help="Maximum GBIF occurrence records",
     )
     parser.add_argument(
-        "--gbif-accepted-status",
+        f"--{ARGUMENTS.GBIF_ACCEPTED_STATUS}",
         type=str,
         help="Comma-separated list of accepted taxonomic statuses",
     )
     parser.add_argument(
-        "--db-cov-target-min-a",
+        f"--{ARGUMENTS.DB_COV_TARGET_MIN_A}",
         type=int,
         help="Minimum reference database record count for target species flag"
              " 5.1A.",
     )
     parser.add_argument(
-        "--db-cov-target-min-b",
+        f"--{ARGUMENTS.DB_COV_TARGET_MIN_B}",
         type=int,
         help="Minimum database coverage record count for target species flag"
              " 5.1B.",
     )
     parser.add_argument(
-        "--db-cov-related-min-a",
+        f"--{ARGUMENTS.DB_COV_RELATED_MIN_A}",
         type=int,
         help="Minimum database species coverage for target genus flag 5.2A.",
     )
     parser.add_argument(
-        "--db-cov-related-min-b",
+        f"--{ARGUMENTS.DB_COV_RELATED_MIN_B}",
         type=int,
         help="Minimum database species coverage for target genus flag 5.2B",
     )
     parser.add_argument(
-        "--db-cov-country-missing-a",
+        f"--{ARGUMENTS.DB_COV_COUNTRY_MISSING_A}",
         type=int,
         help="Threshold for missing country data (grade A)",
     )

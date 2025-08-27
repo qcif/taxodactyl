@@ -10,6 +10,7 @@ from Bio import SeqIO
 from src.bold.id_engine import BoldSearch
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -18,8 +19,8 @@ config = Config()
 def main():
     args = _parse_args()
     config.update_from_args(args)
-    logger.info(f"Searching BOLD with query {args.fasta_file}...")
-    result = BoldSearch(args.fasta_file, config.bold_database)
+    logger.info(f"Searching BOLD with query {args.query_fasta}...")
+    result = BoldSearch(args.query_fasta, config.bold_database)
     _write_hits_json(result)
     _write_hits_fasta(result)
     # _write_taxa_metadata(result)  # Not actually used downstream
@@ -29,19 +30,19 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "fasta_file",
+        "query_fasta",  # Not mapped to config
         type=existing_path,
         help="Path to the FASTA file containing sequences to search.",
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=Path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
-             f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
+             f" to '{config.output_dir}'.",
         default=config.output_dir,
     )
     parser.add_argument(
-        "--bold-database",
+        f"--{ARGUMENTS.BOLD_DATABASE}",
         type=str,
         help="BOLD database to search",
     )

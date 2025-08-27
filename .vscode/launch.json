@@ -82,10 +82,10 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 // "tests/test-data/queries.fasta",
-                // "--output_dir", "output/bold",
+                // "--output-dir", "output/bold",
 
                 "output/issues/131/query.fasta",
-                "--output_dir", "output/issues/131/bold",
+                "--output-dir", "output/issues/131/bold",
                 "--bold-database", "COX1_SPECIES_PUBLIC",
             ],
             "preLaunchTask": "clear-log-files",
@@ -104,7 +104,7 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 "output/taxids.csv",
-                "--output_dir", "output",
+                "--output-dir", "output",
             ],
             "preLaunchTask": "clear-log-files"
         },
@@ -118,12 +118,12 @@
                 "output/query_001_LC438549",
                 "--phylogeny-max-per-species", "10",
                 // "--max-candidates-analysis", "0",  // Force boxplot
-                
+
                 // For testing phylogeny hit sampling:
                 // "output/issues/c14/query_001_VE24-1067_COI",
-                // "--output_dir", "output/issues/c14",
-                // "--input-metadata", "output/issues/c14/metadata_014.csv",
-                // "--input-fasta", "output/issues/c14/query_014.fasta",
+                // "--output-dir", "output/issues/c14",
+                // "--metadata-csv", "output/issues/c14/metadata_014.csv",
+                // "--query-fasta", "output/issues/c14/query_014.fasta",
             ],
             "env": {
                 // Keep remaining env vars that aren't converted yet
@@ -148,9 +148,9 @@
 
                 // For testing issue cases:
                 "output/issues/108/query_001_VE24-1066_COI",
-                "--output_dir", "output/issues/108",
-                "--input-metadata", "output/issues/108/metadata.csv",
-                "--input-fasta", "output/issues/108/query.fasta",
+                "--output-dir", "output/issues/108",
+                "--metadata-csv", "output/issues/108/metadata.csv",
+                "--query-fasta", "output/issues/108/query.fasta",
             ],
             "env": {
                 // Keep remaining env vars that aren't converted yet
@@ -179,10 +179,10 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 // "output/bold/query_001_LC438549.1",
-                // "--output_dir", "output/bold",
+                // "--output-dir", "output/bold",
 
                 "output/issues/112/query_004_MG240613_4",
-                "--output_dir", "output/issues/112",
+                "--output-dir", "output/issues/112",
                 "--min-source-count", "5",
             ],
             "env": {
@@ -207,9 +207,9 @@
 
                 // For testing issue cases:
                 // "output/issues/31/query_001_VE24-1351_COI",
-                // "--output_dir", "output/issues/31",
-                // "--input-metadata", "output/issues/31/metadata.csv",
-                // "--input-fasta", "output/issues/31/queries.fasta",
+                // "--output-dir", "output/issues/31",
+                // "--metadata-csv", "output/issues/31/metadata.csv",
+                // "--query-fasta", "output/issues/31/queries.fasta",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
@@ -224,13 +224,13 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 // "output/bold/query_001_LC438549.1",
-                // "--output_dir", "output/bold",
+                // "--output-dir", "output/bold",
                 "--bold",
                 "--gbif-max-occurrence-records", "200",
 
                 // For testing issue cases:
                 "output/issues/112/old_work/query_004_MG240613_4",
-                "--output_dir", "output/issues/112/old_work",
+                "--output-dir", "output/issues/112/old_work",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
@@ -259,9 +259,9 @@
 
                 // For testing issue cases:
                 // "output/issues/44/query_001_VE25-1406_COI",
-                // "--output_dir", "output/issues/44",
-                // "--input-fasta", "output/issues/44/query.fasta",
-                // "--input-metadata", "output/issues/44/metadata.csv",
+                // "--output-dir", "output/issues/44",
+                // "--query-fasta", "output/issues/44/query.fasta",
+                // "--metadata-csv", "output/issues/44/metadata.csv",
             ],
             "env": {
                 // Keep remaining env vars that aren't converted yet
@@ -275,13 +275,13 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 // "output/bold/query_001_LC438549.1",
-                // "--output_dir", "output/bold",
+                // "--output-dir", "output/bold",
                 "--bold",
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
 
                 "output/issues/112/old_work/query_004_MG240613_4",
-                "--output_dir", "output/issues/112/old_work",
+                "--output-dir", "output/issues/112/old_work",
             ],
             "env": {
                 "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
@@ -306,6 +306,15 @@
                 "8002"
             ],
             "cwd": "${workspaceFolder}/cloudgene/downloader",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Generate config default.yml",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/dev/generate_default_config.py",
+            "cwd": "${workspaceFolder}/scripts",
             "console": "integratedTerminal",
             "justMyCode": true
         }

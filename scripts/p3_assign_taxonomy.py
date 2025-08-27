@@ -24,6 +24,7 @@ from Bio import SeqIO
 
 from src.utils import deduplicate, existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 from src.utils.flags import FLAGS, Flag
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
@@ -81,46 +82,48 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir", type=existing_path, help="Path to query output directory")
+        "query_dir",  # Not mapped to config
+        type=existing_path,
+        help="Path to query output directory")
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        "--bold",
+        "--bold",  # Not mapped to config
         action="store_true",
         help="Outputs are from BOLD query.")
     parser.add_argument(
-        "--min-alignment-length",
+        f"--{ARGUMENTS.MIN_ALIGNMENT_LENGTH}",
         type=int,
         help="Minimum alignment length in nucleotides")
     parser.add_argument(
-        "--min-query-coverage",
+        f"--{ARGUMENTS.MIN_QUERY_COVERAGE}",
         type=float,
         help="Minimum query coverage fraction")
     parser.add_argument(
-        "--min-identity",
+        f"--{ARGUMENTS.MIN_IDENTITY}",
         type=float,
         help="Minimum sequence identity for moderate matches")
     parser.add_argument(
-        "--min-identity-strict",
+        f"--{ARGUMENTS.MIN_IDENTITY_STRICT}",
         type=float,
         help="Minimum sequence identity for strong matches")
     parser.add_argument(
-        "--median-identity-warning-factor",
+        f"--{ARGUMENTS.MEDIAN_IDENTITY_WARNING_FACTOR}",
         type=float,
         help="Factor for median identity warnings")
     parser.add_argument(
-        "--max-candidates-analysis",
+        f"--{ARGUMENTS.MAX_CANDIDATES_ANALYSIS}",
         type=int,
         help="Maximum candidates to include in detailed analysis")
     parser.add_argument(
-        "--phylogeny-min-sequences",
+        f"--{ARGUMENTS.PHYLOGENY_MIN_SEQUENCES}",
         type=int,
         help="Minimum sequences required for phylogeny")
     parser.add_argument(
-        "--phylogeny-max-per-species",
+        f"--{ARGUMENTS.PHYLOGENY_MAX_PER_SPECIES}",
         type=int,
         help="Maximum sequences per species for phylogeny")
     return parser.parse_args()

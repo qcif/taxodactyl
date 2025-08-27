@@ -1,9 +1,30 @@
 """Pydantic schema for configuration validation."""
 
 from pathlib import Path
-from typing import List
+from typing import Annotated, List
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, AfterValidator, Field, field_validator
+
+SCRIPTS_ROOT = Path(__file__).parents[3]
+
+
+def _make_absolute(path: Path) -> Path:
+    """Convert a Path to an absolute path."""
+    if not path.is_absolute():
+        internal_abspath = (SCRIPTS_ROOT / path).resolve()
+        if internal_abspath.exists():
+            return internal_abspath
+        abspath = path.resolve()
+        if not abspath.exists():
+            raise ValueError(f"Path does not exist: {abspath}")
+        return abspath
+    return path
+
+
+AbsolutePath = Annotated[
+    Path,
+    AfterValidator(_make_absolute)
+]
 
 
 class InputsConfig(BaseModel):
@@ -39,10 +60,12 @@ class InputsConfig(BaseModel):
         default=150, description="Maximum number of sequences")
 
     # File paths (set by CLI/config)
-    fasta_filepath: Path = Field(
-        default=None, description="Input FASTA file path")
-    metadata_path: Path = Field(
-        default=None, description="Input metadata CSV path")
+    query_fasta: Path | None = Field(
+        default=None, description="Input FASTA file path"
+    )
+    metadata_csv: Path | None = Field(
+        default=None, description="Input metadata CSV path"
+    )
 
 
 class CriteriaConfig(BaseModel):
@@ -96,22 +119,26 @@ class ConfigSchema(BaseModel):
     """Main configuration schema."""
 
     # File paths and directories
-    allowed_loci_file: Path = Field(
+    output_dir: Path = Field(
+        default=Path('output'), description="Output directory")
+    query_dir: Path | None = Field(
+        default=None, description="Output directory")
+    allowed_loci_file: AbsolutePath = Field(
         default_factory=lambda: (
-            Path(__file__).parents[3] / 'scripts/config/loci.json'),
+            SCRIPTS_ROOT / 'config/loci.json'),
         description="Path to allowed loci JSON file"
     )
-    flag_details_csv_path: Path = Field(
+    flag_details_csv_path: AbsolutePath = Field(
         default_factory=lambda: (
-            Path(__file__).parents[3] / 'scripts/config/flags.csv'),
+            SCRIPTS_ROOT / 'config/flags.csv'),
         description="Path to flag details CSV file"
     )
-    placeholder_img_path: Path = Field(
+    placeholder_img_path: AbsolutePath = Field(
         default_factory=lambda: (
-            Path(__file__).parents[1] / 'report/static/img/placeholder.png'),
+            SCRIPTS_ROOT / 'src/report/static/img/placeholder.png'),
         description="Path to placeholder image file"
     )
-    taxonkit_data: Path = Field(
+    taxdb_dir: Path = Field(
         default_factory=lambda: Path('~/.taxonkit').expanduser(),
         description="Path to TaxonKit data directory"
     )
@@ -241,20 +268,6 @@ class ConfigSchema(BaseModel):
         if isinstance(v, str):
             return v.upper().replace(' ', '').split(',')
         return [status.upper() for status in v]
-
-    @field_validator(
-        'allowed_loci_file', 'flag_details_csv_path', mode='before')
-    @classmethod
-    def validate_paths(cls, v):
-        """Convert string paths to Path objects and resolve relative paths."""
-        if isinstance(v, str):
-            path = Path(v)
-            # If path is relative, resolve it relative to scripts directory
-            if not path.is_absolute():
-                scripts_dir = Path(__file__).parents[2]  # Go up to scripts dir
-                path = scripts_dir / path
-            return path
-        return v
 
     class Config:
         """Pydantic configuration."""

@@ -9,6 +9,7 @@ from pathlib import Path
 from src.blast.parse_xml import parse_blast_xml
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -28,19 +29,19 @@ def _parse_args():
         description="Parse BLAST XML output file."
     )
     parser.add_argument(
-        "blast_xml_path",
+        "blast_xml_path",  # Not mapped to config
         type=existing_path,
         help="Path to the BLAST XML file to parse.",
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=Path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
     )
     parser.add_argument(
-        "--blast-max-target-seqs",
+        f"--{ARGUMENTS.BLAST_MAX_TARGET_SEQS}",
         type=int,
         help="Maximum number of target sequences for BLAST",
     )

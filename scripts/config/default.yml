@@ -1,7 +1,7 @@
-allowed_loci_file: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/config/loci.json
-flag_details_csv_path: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/config/flags.csv
-placeholder_img_path: /home/cameron/dev/daff-biosecurity/wf2-nextflow/scripts/src/report/static/img/placeholder.png
-taxonkit_data: /home/cameron/.taxonkit
+allowed_loci_file: config/loci.json
+flag_details_csv_path: config/flags.csv
+placeholder_img_path: src/report/static/img/placeholder.png
+taxdb_dir: /home/cameron/.taxonkit
 timestamp_filename: timestamp.txt
 accessions_filename: accessions.txt
 taxonomy_file: taxonomy.csv
@@ -69,8 +69,8 @@ inputs:
   fasta_max_length_nt: 3000
   fasta_min_length_nt: 20
   fasta_max_sequences: 150
-  fasta_filepath: null
-  metadata_path: null
+  query_fasta: null
+  metadata_csv: null
 criteria:
   alignment_min_nt: 300
   alignment_min_q_coverage: 0.85
