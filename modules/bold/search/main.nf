@@ -5,6 +5,7 @@ process BOLD_SEARCH {
     input:
     path(env_var_file) // Environment variables file
     path(fasta)        // Input FASTA file
+    path(metadata_file) // Copied metadata file
     val ready          // Readiness flag
 
     output:
@@ -23,6 +24,8 @@ process BOLD_SEARCH {
     python /app/scripts/p1_bold_search.py \
         --output-dir ./ \
         ${bold_database_arg} \
+        --query-fasta ${fasta} \
+        --metadata-csv ${metadata_file} \
         ${fasta}
     """
 }
