@@ -29,11 +29,6 @@ def _parse_args():
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
-        f"--{ARGUMENTS.OUTPUT_DIR}",
-        type=existing_path,
-        default=config.output_dir,
-        help=f"Path to output directory. Defaults to {config.output_dir}.")
-    parser.add_argument(
         "--bold",  # Not mapped to config
         action="store_true",
         help="If set, will enable the 'bold' logic for rendering the report."
@@ -47,6 +42,23 @@ def _parse_args():
         "--versions_yml",  # Not mapped to config
         type=existing_path,
         help="Path to versions YAML file."
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.OUTPUT_DIR}",
+        type=existing_path,
+        default=config.output_dir,
+        help=f"Path to output directory. Defaults to {config.output_dir}.")
+    parser.add_argument(
+        f"--{ARGUMENTS.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
     )
     parser.add_argument(
         f"--{ARGUMENTS.REPORT_DEBUG}",

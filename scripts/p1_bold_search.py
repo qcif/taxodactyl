@@ -46,6 +46,18 @@ def _parse_args():
         type=str,
         help="BOLD database to search",
     )
+    parser.add_argument(
+        f"--{ARGUMENTS.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
     return parser.parse_args()
 
 
