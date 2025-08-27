@@ -41,6 +41,18 @@ def _parse_args():
         default=config.output_dir,
     )
     parser.add_argument(
+        f"--{ARGUMENTS.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
+    parser.add_argument(
         f"--{ARGUMENTS.BLAST_MAX_TARGET_SEQS}",
         type=int,
         help="Maximum number of target sequences for BLAST",

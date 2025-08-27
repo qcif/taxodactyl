@@ -58,6 +58,18 @@ def _parse_args():
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
+        f"--{ARGUMENTS.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
+    parser.add_argument(
         f"--{ARGUMENTS.MIN_SOURCE_COUNT}",
         type=int,
         help="Minimum number of independent sources required",

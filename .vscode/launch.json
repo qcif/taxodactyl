@@ -116,14 +116,15 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 "output/query_001_LC438549",
-                "--phylogeny-max-per-species", "10",
-                // "--max-candidates-analysis", "0",  // Force boxplot
 
                 // For testing phylogeny hit sampling:
                 // "output/issues/c14/query_001_VE24-1067_COI",
                 // "--output-dir", "output/issues/c14",
                 // "--metadata-csv", "output/issues/c14/metadata_014.csv",
                 // "--query-fasta", "output/issues/c14/query_014.fasta",
+
+                "--phylogeny-max-per-species", "10",
+                // "--max-candidates-analysis", "0",  // Force boxplot
             ],
             "env": {
                 // Keep remaining env vars that aren't converted yet
@@ -143,14 +144,15 @@
                 // "output/bold/query_004_JQ585746.1",
                 // "output/bold/query_005_LC547004.1",
                 // "output/bold/query_006_VE24-1086_COI",
-                "--bold",
-                // "--max-candidates-analysis", "0",  // Force boxplot
 
                 // For testing issue cases:
                 "output/issues/108/query_001_VE24-1066_COI",
                 "--output-dir", "output/issues/108",
                 "--metadata-csv", "output/issues/108/metadata.csv",
                 "--query-fasta", "output/issues/108/query.fasta",
+
+                // "--max-candidates-analysis", "0",  // Force boxplot
+                "--bold",
             ],
             "env": {
                 // Keep remaining env vars that aren't converted yet
@@ -199,17 +201,18 @@
             "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549",
-                "--gbif-max-occurrence-records", "200",
+                // "output/query_001_LC438549",
                 // "output/query_002_ON075825",
                 // "output/query_003_PP466915"
                 // "output/query_006_VE24-1086_COI"
 
                 // For testing issue cases:
-                // "output/issues/31/query_001_VE24-1351_COI",
-                // "--output-dir", "output/issues/31",
-                // "--metadata-csv", "output/issues/31/metadata.csv",
-                // "--query-fasta", "output/issues/31/queries.fasta",
+                "output/issues/31/query_001_VE24-1351_COI",
+                "--output-dir", "output/issues/31",
+                "--metadata-csv", "output/issues/31/metadata.csv",
+                "--query-fasta", "output/issues/31/queries.fasta",
+
+                "--gbif-max-occurrence-records", "200",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
@@ -225,12 +228,13 @@
             "args": [
                 // "output/bold/query_001_LC438549.1",
                 // "--output-dir", "output/bold",
-                "--bold",
-                "--gbif-max-occurrence-records", "200",
 
                 // For testing issue cases:
                 "output/issues/112/old_work/query_004_MG240613_4",
                 "--output-dir", "output/issues/112/old_work",
+
+                "--bold",
+                "--gbif-max-occurrence-records", "200",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
@@ -276,12 +280,13 @@
             "args": [
                 // "output/bold/query_001_LC438549.1",
                 // "--output-dir", "output/bold",
-                "--bold",
-                "--versions_yml", "tests/test-data/versions.yml",
-                "--params_json", "tests/test-data/params.json",
 
                 "output/issues/112/old_work/query_004_MG240613_4",
                 "--output-dir", "output/issues/112/old_work",
+
+                "--bold",
+                "--versions_yml", "tests/test-data/versions.yml",
+                "--params_json", "tests/test-data/params.json",
             ],
             "env": {
                 "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
