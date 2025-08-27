@@ -8,7 +8,8 @@ process EXTRACT_CANDIDATES {
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(hits_json_file), path(hits_fasta_file) // Query folder, hits JSON, and hits FASTA
     path(taxonomy_file) // Taxonomy file
-    path(metadata) // Metadata file
+    path(sequences_file) // Copied sequences file
+    path(metadata_file) // Metadata file
 
     output:
     tuple val(query_folder), path("$query_folder/candidates_count.txt"),
@@ -55,6 +56,8 @@ process EXTRACT_CANDIDATES {
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
+    --query-fasta ${sequences_file} \
+    --metadata-csv ${metadata_file} \
     --output-dir ./ \
     ${bold_flag} \
     ${min_alignment_length_arg} \

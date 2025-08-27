@@ -7,6 +7,8 @@ process EXTRACT_HITS {
     input:
     path(env_var_file) // Environment variables file
     path(blast_xml)    // BLAST XML results file
+    path(sequences_file) // Copied sequences file
+    path(metadata_file) // Copied metadata file
 
     output:
     path(params.accessions_filename), emit: accessions // Output: accessions file
@@ -22,6 +24,11 @@ process EXTRACT_HITS {
     # Source environment variables
     source ${env_var_file}
     # Run the BLAST hit parsing Python script
-    python /app/scripts/p1_parse_blast.py ${blast_xml} --output-dir ./ ${blast_max_target_seqs_arg}
+    python /app/scripts/p1_parse_blast.py \
+        --query-fasta ${sequences_file} \
+        --metadata-csv ${metadata_file} \
+        --output-dir ./ \
+        ${blast_max_target_seqs_arg} \
+        ${blast_xml} 
     """
 }
