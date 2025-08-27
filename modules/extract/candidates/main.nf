@@ -11,9 +11,9 @@ process EXTRACT_CANDIDATES {
     path(metadata) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder/candidates_count.txt"), 
+    tuple val(query_folder), path("$query_folder/candidates_count.txt"),
         path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_source_diversity_all // Output for source diversity
-    tuple val(query_folder), path("$query_folder/$params.candidates_phylogeny_fasta_filename"), 
+    tuple val(query_folder), path("$query_folder/$params.candidates_phylogeny_fasta_filename"),
         emit: candidates_for_alignment // Output for alignment
     tuple val(query_folder), path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_db_coverage // Output for DB coverage
     path("$query_folder/1.flag") // Flag file
@@ -22,13 +22,13 @@ process EXTRACT_CANDIDATES {
     path("$query_folder/$params.candidates_fasta_filename") // Candidates FASTA
     path("$query_folder/$params.boxplot_img_filename"), optional: true // Optional boxplot image
 
-    publishDir "${params.outdir}", mode: 'copy', 
+    publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename" // Publish phylogeny FASTA
-    publishDir "${params.outdir}", mode: 'copy', 
+    publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_fasta_filename"            // Publish candidates FASTA
-    publishDir "${params.outdir}", mode: 'copy', 
+    publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_csv_filename"              // Publish candidates CSV
-    publishDir "${params.outdir}", mode: 'copy', 
+    publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.boxplot_img_filename"                 // Publish boxplot image
 
     script:
@@ -55,7 +55,7 @@ process EXTRACT_CANDIDATES {
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
-    --output_dir ./ \
+    --output-dir ./ \
     ${bold_flag} \
     ${min_alignment_length_arg} \
     ${min_query_coverage_arg} \

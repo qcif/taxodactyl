@@ -25,9 +25,9 @@ process VALIDATE_INPUT {
     source ${env_var_file}
     # Run the input validation Python script
     python /app/scripts/p0_validation.py \
-    --taxdb_dir ${file(params.taxdb)} \
-    --query_fasta ${sequences_file} \
-    --metadata_csv ${metadata_file} \
+    --taxdb-dir ${file(params.taxdb)} \
+    --query-fasta ${sequences_file} \
+    --metadata-csv ${metadata_file} \
     ${bold_flag}
     ${allowed_loci_arg} \
     ${input_fasta_arg} \

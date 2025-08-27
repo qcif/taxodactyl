@@ -17,7 +17,7 @@ process EXTRACT_TAXONOMY {
     source ${env_var_file}
     # Run the taxonomy extraction Python script
     python /app/scripts/p2_extract_taxonomy.py \
-        --output_dir ./ \
-        ${taxids_csv} 
+        --output-dir ./ \
+        ${taxids_csv}
     """
 }

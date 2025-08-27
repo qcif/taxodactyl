@@ -8,7 +8,7 @@ process REPORT {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder),  
+    tuple val(query_folder),
         path(hits_query_folder, stageAs: 'hits_query_folder'),                // Folder with BLAST/BOLD hits
         path(nwk_file, stageAs: 'tree.nwk'),                                 // Newick tree file
         path(candidates_query_folder, stageAs: 'candidates_query_folder'),    // Folder with candidate data
@@ -36,7 +36,7 @@ process REPORT {
     """
     # Source environment variables
     source ${env_var_file}
-    
+
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
     # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
@@ -60,7 +60,7 @@ process REPORT {
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             ${query_folder} \
-            --output_dir ./ \
+            --output-dir ./ \
             --versions_yml ${versions_file} \
             --params_json ${params_file} \
             ${bold_flag} \

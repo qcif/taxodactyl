@@ -16,6 +16,7 @@ import logging
 from src.sources import collect
 from src.utils import existing_path, serialize
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 from src.utils.flags import FLAGS, Flag
 
 logger = logging.getLogger(__name__)
@@ -48,14 +49,16 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir", type=existing_path, help="Path to query output directory")
+        "query_dir",  # Not mapped to config
+        type=existing_path,
+        help="Path to query output directory")
     parser.add_argument(
-        "--output_dir",
+        f"--{ARGUMENTS.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        "--min-source-count",
+        f"--{ARGUMENTS.MIN_SOURCE_COUNT}",
         type=int,
         help="Minimum number of independent sources required",
     )

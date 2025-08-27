@@ -13,10 +13,10 @@ from pathlib import Path
 import yaml
 
 # Add src to path to import modules
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
+SCRIPTS_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(SCRIPTS_ROOT))
 
-# Import after modifying sys.path (flake8: noqa)
-from utils.config_schema import ConfigSchema  # noqa: E402
+from src.utils.config.schema import ConfigSchema  # noqa: E402
 
 
 def generate_default_config():
@@ -24,19 +24,42 @@ def generate_default_config():
     # Create default instance to get all default values
     config = ConfigSchema()
 
+    # Get the scripts directory to calculate relative paths from
+    scripts_dir = SCRIPTS_ROOT
+
+    # Fields that should be relative to the scripts directory
+    RELATIVE_PATH_FIELDS = (
+        'allowed_loci_file',
+        'flag_details_csv_path',
+        'placeholder_img_path',
+    )
+
     # Convert to dict, excluding computed fields and converting Path objects
     config_dict = {}
 
-    for field_name, field_info in ConfigSchema.model_fields.items():
+    for field_name, _ in ConfigSchema.model_fields.items():
         value = getattr(config, field_name)
 
         # Convert Path objects to strings for YAML serialization
         if isinstance(value, Path):
-            config_dict[field_name] = str(value)
+            if field_name in RELATIVE_PATH_FIELDS:
+                # Convert to relative path from scripts directory
+                try:
+                    relative_path = value.relative_to(scripts_dir)
+                    relative_str = str(relative_path)
+                    # Remove redundant 'scripts/' prefix if present
+                    if relative_str.startswith('scripts/'):
+                        relative_str = relative_str[8:]  # len('scripts/') = 8
+                    config_dict[field_name] = relative_str
+                except ValueError:
+                    # If can't make relative, use absolute path
+                    config_dict[field_name] = str(value)
+            else:
+                config_dict[field_name] = str(value)
         elif hasattr(value, 'model_dump'):
             # Handle nested Pydantic models
             nested_dict = {}
-            for nested_field_name, nested_field_info in (
+            for nested_field_name, _ in (
                 value.__class__.model_fields.items()
             ):
                 nested_value = getattr(value, nested_field_name)

@@ -12,7 +12,7 @@ process EVALUATE_DATABASE_COVERAGE {
     path(metadata) // Metadata file
 
     output:
-    tuple val(query_folder), 
+    tuple val(query_folder),
         path("$query_folder"), emit: db_coverage_for_alternative_report // Output: query folder with results
 
     script:
@@ -37,7 +37,7 @@ process EVALUATE_DATABASE_COVERAGE {
     # Run the database coverage Python script
     python /app/scripts/p5_db_coverage.py \
         $query_folder \
-        --output_dir ./ \
+        --output-dir ./ \
         ${bold_flag} \
         ${db_coverage_toi_limit_arg} \
         ${db_coverage_max_candidates_arg} \

@@ -11,6 +11,7 @@ from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
 from src.utils.config import Config
+from src.utils.config.mappings import ARGUMENTS
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
@@ -42,55 +43,45 @@ def _parse_args():
         description="Validate user input."
     )
     parser.add_argument(
-        "--metadata_csv",
+        f"--{ARGUMENTS.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        "--query_fasta",
+        f"--{ARGUMENTS.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        "--taxdb_dir",
+        f"--{ARGUMENTS.TAXDB_DIR}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        "--bold",
+        "--bold",  # doesn't map to config
         action="store_true",
         help="Validate inputs for a BOLD analysis (accept blank locus field).",
     )
     parser.add_argument(
-        "--allowed-loci-file",
+        f"--{ARGUMENTS.ALLOWED_LOCI_FILE}",
         type=existing_path,
         help="Path to JSON file containing allowed loci definitions",
     )
     parser.add_argument(
-        "--input-fasta",
-        type=existing_path,
-        help="Path to input FASTA file containing query sequences",
-    )
-    parser.add_argument(
-        "--input-metadata",
-        type=existing_path,
-        help="Path to input metadata CSV file",
-    )
-    parser.add_argument(
-        "--fasta-max-sequences",
+        f"--{ARGUMENTS.FASTA_MAX_SEQUENCES}",
         type=int,
         help="Maximum number of sequences allowed",
     )
     parser.add_argument(
-        "--fasta-min-length",
+        f"--{ARGUMENTS.FASTA_MIN_LENGTH}",
         type=int,
         help="Minimum sequence length in nucleotides",
     )
     parser.add_argument(
-        "--fasta-max-length",
+        f"--{ARGUMENTS.FASTA_MAX_LENGTH}",
         type=int,
         help="Maximum sequence length in nucleotides",
     )
