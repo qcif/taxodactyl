@@ -30,9 +30,16 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_fasta",  # Not mapped to config
+        f"--{ARGUMENTS.QUERY_FASTA}",
         type=existing_path,
-        help="Path to the FASTA file containing sequences to search.",
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{ARGUMENTS.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
     )
     parser.add_argument(
         f"--{ARGUMENTS.OUTPUT_DIR}",
@@ -45,18 +52,6 @@ def _parse_args():
         f"--{ARGUMENTS.BOLD_DATABASE}",
         type=str,
         help="BOLD database to search",
-    )
-    parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=True,
     )
     return parser.parse_args()
 
