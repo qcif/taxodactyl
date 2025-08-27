@@ -9,7 +9,8 @@ process EVALUATE_DATABASE_COVERAGE {
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(candidate_json_file) // Query folder name and candidate JSON file
-    path(metadata) // Metadata file
+    path(sequences_file) // Copied sequences file
+    path(metadata_file) // Metadata file
 
     output:
     tuple val(query_folder),
@@ -38,6 +39,8 @@ process EVALUATE_DATABASE_COVERAGE {
     python /app/scripts/p5_db_coverage.py \
         $query_folder \
         --output-dir ./ \
+        --query-fasta ${sequences_file} \
+        --metadata-csv ${metadata_file} \
         ${bold_flag} \
         ${db_coverage_toi_limit_arg} \
         ${db_coverage_max_candidates_arg} \

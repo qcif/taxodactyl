@@ -180,13 +180,16 @@ workflow TAXODACTYL {
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
         ch_env_var_file,
-        ch_candidates_for_source_diversity_filtered
+        ch_candidates_for_source_diversity_filtered,
+        ch_sequences,
+        ch_metadata
     )
 
     // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
         ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+        ch_sequences,
         ch_metadata
     )
 

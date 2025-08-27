@@ -7,6 +7,8 @@ process EVALUATE_SOURCE_DIVERSITY {
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(candididate_json_file) // Query folder name and candidate JSON file
+    path(sequences_file) // Copied sequences file
+    path(metadata_file) // Metadata file
 
     output:
     tuple val(query_folder), path("$query_folder/$params.independent_sources_json_filename"), emit: independent_sources // Output: independent sources JSON
@@ -23,6 +25,8 @@ process EVALUATE_SOURCE_DIVERSITY {
     # Run the source diversity Python script
     python /app/scripts/p4_source_diversity.py \
     $query_folder \
+    --query-fasta ${sequences_file} \
+    --metadata-csv ${metadata_file} \
     --output-dir ./ \
     ${min_source_count_arg}
     """
