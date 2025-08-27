@@ -60,6 +60,8 @@ process REPORT {
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             ${query_folder} \
+            --query-fasta ${sequences_file} \
+            --metadata-csv ${metadata_file} \
             --output-dir ./ \
             --versions_yml ${versions_file} \
             --params_json ${params_file} \
