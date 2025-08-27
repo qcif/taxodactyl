@@ -71,6 +71,8 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 "tests/test-data/output.xml",
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
             ],
             "preLaunchTask": "clear-log-files"
         },
@@ -81,10 +83,13 @@
             "program": "${workspaceFolder}/scripts/p1_bold_search.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "tests/test-data/queries.fasta",
                 // "--output-dir", "output/bold",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
-                "output/issues/131/query.fasta",
+                "--query-fasta", "output/issues/131/query.fasta",
                 "--output-dir", "output/issues/131/bold",
                 "--bold-database", "COX1_SPECIES_PUBLIC",
             ],
@@ -116,6 +121,8 @@
             "cwd": "${workspaceFolder}/scripts",
             "args": [
                 "output/query_001_LC438549",
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
 
                 // For testing phylogeny hit sampling:
                 // "output/issues/c14/query_001_VE24-1067_COI",
@@ -144,6 +151,8 @@
                 // "output/bold/query_004_JQ585746.1",
                 // "output/bold/query_005_LC547004.1",
                 // "output/bold/query_006_VE24-1086_COI",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
                 // For testing issue cases:
                 "output/issues/108/query_001_VE24-1066_COI",
@@ -166,10 +175,12 @@
             "program": "${workspaceFolder}/scripts/p4_source_diversity.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549.1"
+                "output/query_001_LC438549.1",
                 // "output/query_002_ON075825.1",
                 // "output/query_003_PP466915.1"
                 // "output/query_006_VE24-1086_COI"
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
             ],
             "preLaunchTask": "clear-log-files"
         },
@@ -182,15 +193,17 @@
             "args": [
                 // "output/bold/query_001_LC438549.1",
                 // "--output-dir", "output/bold",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
                 "output/issues/112/query_004_MG240613_4",
                 "--output-dir", "output/issues/112",
                 "--min-source-count", "5",
+                "--metadata-csv", "output/issues/112/metadata.csv",
+                "--query-fasta", "output/issues/112/query.fasta",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
-                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
-                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -201,16 +214,18 @@
             "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                // "output/query_001_LC438549",
+                "output/query_001_LC438549.1",
                 // "output/query_002_ON075825",
                 // "output/query_003_PP466915"
                 // "output/query_006_VE24-1086_COI"
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
 
                 // For testing issue cases:
-                "output/issues/31/query_001_VE24-1351_COI",
-                "--output-dir", "output/issues/31",
-                "--metadata-csv", "output/issues/31/metadata.csv",
-                "--query-fasta", "output/issues/31/queries.fasta",
+                // "output/issues/31/query_001_VE24-1351_COI",
+                // "--output-dir", "output/issues/31",
+                // "--metadata-csv", "output/issues/31/metadata.csv",
+                // "--query-fasta", "output/issues/31/queries.fasta",
 
                 "--gbif-max-occurrence-records", "200",
             ],
@@ -228,18 +243,20 @@
             "args": [
                 // "output/bold/query_001_LC438549.1",
                 // "--output-dir", "output/bold",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
                 // For testing issue cases:
                 "output/issues/112/old_work/query_004_MG240613_4",
                 "--output-dir", "output/issues/112/old_work",
+                "--metadata-csv", "output/issues/112/metadata.csv",
+                "--query-fasta", "output/issues/112/queries.fasta",
 
                 "--bold",
                 "--gbif-max-occurrence-records", "200",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
-                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
-                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -254,12 +271,14 @@
                 // "output/query_002_ON075825.1",
                 // "output/query_003_PP466915.1",
                 // "output/query_005_LC547004",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
-                "--report-debug",
                 "--facility-name", "Cairns Airport",
                 "--analyst-name", "John Doe",
+                "--report-debug",
 
                 // For testing issue cases:
                 // "output/issues/44/query_001_VE25-1406_COI",
@@ -267,9 +286,6 @@
                 // "--query-fasta", "output/issues/44/query.fasta",
                 // "--metadata-csv", "output/issues/44/metadata.csv",
             ],
-            "env": {
-                // Keep remaining env vars that aren't converted yet
-            },
         },
         {
             "type": "debugpy",
@@ -280,18 +296,18 @@
             "args": [
                 // "output/bold/query_001_LC438549.1",
                 // "--output-dir", "output/bold",
+                // "--metadata-csv", "tests/test-data/metadata.csv",
+                // "--query-fasta", "tests/test-data/queries.fasta",
 
                 "output/issues/112/old_work/query_004_MG240613_4",
                 "--output-dir", "output/issues/112/old_work",
+                "--metadata-csv", "output/issues/112/metadata.csv",
+                "--query-fasta", "output/issues/112/queries.fasta",
 
                 "--bold",
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
             ],
-            "env": {
-                "INPUT_FASTA_FILEPATH": "output/issues/112/query.fasta",
-                "INPUT_METADATA_CSV_FILEPATH": "output/issues/112/metadata.csv",
-            },
         },
         {
             "type": "debugpy",

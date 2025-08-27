@@ -10,7 +10,7 @@ from Bio import SeqIO
 from src.bold.id_engine import BoldSearch
 from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import ARGUMENTS
+from src.utils.config import arguments
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -30,26 +30,26 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.OUTPUT_DIR}",
+        f"--{arguments.OUTPUT_DIR}",
         type=Path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to '{config.output_dir}'.",
         default=config.output_dir,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.BOLD_DATABASE}",
+        f"--{arguments.BOLD_DATABASE}",
         type=str,
         help="BOLD database to search",
     )

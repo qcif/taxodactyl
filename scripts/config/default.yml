@@ -6,11 +6,11 @@ timestamp_filename: timestamp.txt
 accessions_filename: accessions.txt
 taxonomy_file: taxonomy.csv
 query_title_file: query_title.txt
-hits_json: hits.json
-hits_fasta: hits.fasta
+hits_json: all_hits.json
+hits_fasta: all_hits.fasta
 taxonomy_id_csv: assigned_taxonomy.csv
 candidates_fasta: candidates.fasta
-phylogeny_fasta: phylogeny.fasta
+phylogeny_fasta: candidates_phylogeny.fasta
 candidates_csv: candidates.csv
 candidates_json: candidates.json
 candidates_count_file: candidates_count.txt

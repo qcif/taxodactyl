@@ -16,7 +16,7 @@ import logging
 from src.sources import collect
 from src.utils import existing_path, serialize
 from src.utils.config import Config
-from src.utils.config.mappings import ARGUMENTS
+from src.utils.config import arguments
 from src.utils.flags import FLAGS, Flag
 
 logger = logging.getLogger(__name__)
@@ -53,24 +53,24 @@ def _parse_args():
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
-        f"--{ARGUMENTS.OUTPUT_DIR}",
+        f"--{arguments.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{ARGUMENTS.METADATA_CSV}",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.QUERY_FASTA}",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{ARGUMENTS.MIN_SOURCE_COUNT}",
+        f"--{arguments.MIN_SOURCE_COUNT}",
         type=int,
         help="Minimum number of independent sources required",
     )
