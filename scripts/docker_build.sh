@@ -2,6 +2,7 @@
 
 set -e
 
+PUSH=false
 IMAGE=neoformit/taxodactyl
 
 # Check for -t argument and set TAG if provided
@@ -9,6 +10,9 @@ while getopts "t:" opt; do
   case $opt in
     t)
       TAG=$OPTARG
+      ;;
+    p)
+      PUSH=true
       ;;
     *)
       ;;
@@ -25,12 +29,10 @@ if [[ -z $TAG ]]; then
   TAG=$(cat ../VERSION)
 fi
 
-# Build the Docker image
 docker build -t $IMAGE:$TAG .
 docker tag $IMAGE:$TAG $IMAGE:latest
 
-# if -p in args, push the image to the registry
-if [[ $* == *-p* ]]; then
+if [ "$PUSH" = true ]; then
   docker push $IMAGE:$TAG
   docker push $IMAGE:latest
 fi
