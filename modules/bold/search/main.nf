@@ -5,7 +5,7 @@ process BOLD_SEARCH {
     input:
     path(env_var_file) // Environment variables file
     path(fasta)        // Input FASTA file
-    path(metadata_csv) // Input metadata CSV file
+    path(metadata)     // Input metadata CSV file
     val ready          // Readiness flag
 
     output:
@@ -25,6 +25,6 @@ process BOLD_SEARCH {
         --output-dir ./ \
         ${bold_database_arg} \
         --query-fasta ${fasta} \
-        --metadata-csv ${metadata_csv}
+        --metadata-csv ${metadata}
     """
 }

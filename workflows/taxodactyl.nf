@@ -98,7 +98,9 @@ workflow TAXODACTYL {
 
         EXTRACT_HITS (
             ch_env_var_file,
-            ch_blast_output
+            ch_blast_output,
+            ch_sequences,
+            ch_metadata
         )
         ch_hits = EXTRACT_HITS.out.hits
 
@@ -108,7 +110,9 @@ workflow TAXODACTYL {
 
         EXTRACT_TAXONOMY (
             ch_env_var_file,
-            BLAST_BLASTDBCMD.out.taxids
+            BLAST_BLASTDBCMD.out.taxids,
+            ch_sequences,
+            ch_metadata
         )
 
         ch_taxonomy_file = EXTRACT_TAXONOMY.out
@@ -138,6 +142,7 @@ workflow TAXODACTYL {
         ch_env_var_file,
         ch_hits_to_filter,
         ch_taxonomy_file,
+        ch_sequences,
         ch_metadata
     )
     
@@ -175,13 +180,16 @@ workflow TAXODACTYL {
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
         ch_env_var_file,
-        ch_candidates_for_source_diversity_filtered
+        ch_candidates_for_source_diversity_filtered,
+        ch_sequences,
+        ch_metadata
     )
 
     // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
         ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+        ch_sequences,
         ch_metadata
     )
 
