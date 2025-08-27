@@ -319,19 +319,24 @@ class Config:
 
     @property
     def start_time(self) -> datetime:
+        ts_format = "%Y%m%d %H%M%S"
         path = self.output_dir / self.timestamp_filename
         if path.exists():
             ts = path.read_text().strip(' \\n')
-            return datetime.strptime(ts, "%Y%m%d %H%M%S")
-        now = datetime.now()
-        timestamp = now.strftime("%Y%m%d %H%M%S")
-        path.write_text(timestamp)
-        return now
+            try:
+                return datetime.strptime(ts, ts_format)
+            except Exception:
+                logger.warning(
+                    f"Invalid timestamp '{ts}' in {path} (expected format"
+                    f" {ts_format})")
 
     @property
     def timestamp(self) -> str:
         """Return the timestamp as a string."""
-        return self.start_time.strftime("%Y%m%d_%H%M%S")
+        start_time = self.start_time
+        if start_time:
+            return start_time.strftime("%Y%m%d_%H%M%S")
+        return "Unknown"
 
     @cached_property
     def metadata(self) -> dict[str, dict]:
