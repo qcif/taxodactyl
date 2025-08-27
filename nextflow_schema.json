@@ -225,6 +225,13 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'db_cov_related_min_b' must be an integer between 1 and 100. Default: 10."
                 },
+                "db_coverage_max_candidates": {
+                    "type": "integer",
+                    "default": 3,
+                    "minimum": 1,
+                    "description": "Maximum number of candidate species to analyse for database coverage.",
+                    "errorMessage": "Parameter 'db_coverage_max_candidates' must be an integer >= 1. Default: 3."
+                },
                 "db_coverage_toi_limit": {
                     "type": "integer",
                     "default": 10,
