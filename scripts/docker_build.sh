@@ -5,8 +5,7 @@ set -e
 PUSH=false
 IMAGE=neoformit/taxodactyl
 
-# Check for -t argument and set TAG if provided
-while getopts "t:" opt; do
+while getopts "t:p" opt; do
   case $opt in
     t)
       TAG=$OPTARG
@@ -20,13 +19,12 @@ while getopts "t:" opt; do
 done
 
 if [[ -z $TAG ]]; then
-  # Prompt for the tag if not provided
-  read -p "Have you updated the VERSION file? [y/n] > " REPLY
+  TAG=$(cat ../VERSION)
+  read -p "Have you updated the VERSION file? (read '${TAG}') [y/n] > " REPLY
   if [[ $REPLY != "y" ]]; then
     echo "Please update the VERSION file before building."
     exit 1
   fi
-  TAG=$(cat ../VERSION)
 fi
 
 docker build -t $IMAGE:$TAG .
