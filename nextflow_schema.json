@@ -57,6 +57,27 @@
                     "description": "FASTA file containing input sequences for analysis.",
                     "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fna, or .fasta extension. Default: 'sequences.fasta'."
                 },
+                "fasta_max_sequences": {
+                    "type": "integer",
+                    "default": 150,
+                    "minimum": 1,
+                    "description": "Maximum number of sequences allowed in the input FASTA file.",
+                    "errorMessage": "Parameter 'fasta_max_sequences' must be an integer >= 1. Default: 150."
+                },
+                "fasta_max_length": {
+                    "type": "integer",
+                    "default": 3000,
+                    "minimum": 1,
+                    "description": "Maximum allowed length for any sequence in the input FASTA file.",
+                    "errorMessage": "Parameter 'fasta_max_length' must be an integer >= 1. Default: 3000."
+                },
+                "fasta_min_length": {
+                    "type": "integer",
+                    "default": 20,
+                    "minimum": 1,
+                    "description": "Minimum allowed length for any sequence in the input FASTA file.",
+                    "errorMessage": "Parameter 'fasta_min_length' must be an integer >= 1. Default: 20."
+                },
                 "taxdb": {
                     "type": "string",
                     "format": "directory-path",
