@@ -69,6 +69,7 @@ workflow TAXODACTYL {
         BOLD_SEARCH (
             ch_env_var_file,
             ch_sequences,
+            ch_metadata,
             VALIDATE_INPUT.out
         )
         ch_hits = BOLD_SEARCH.out.hits
