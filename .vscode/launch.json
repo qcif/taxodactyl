@@ -293,6 +293,21 @@
             "request": "launch",
             "name": "Render docs",
             "program": "${workspaceFolder}/scripts/dev/render_docs.py",
+        },
+        {
+            "name": "FastAPI server (uvicorn)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app:app",
+                "--reload",
+                "--port",
+                "8002"
+            ],
+            "cwd": "${workspaceFolder}/cloudgene/downloader",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

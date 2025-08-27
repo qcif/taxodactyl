@@ -4,7 +4,7 @@ process REPORT {
 
     tag "$query_folder"
 
-    containerOptions "--bind ${file(params.sequences).parent}  --bind ${file(params.allowed_loci_file).parent}"
+    containerOptions "--bind ${file(params.allowed_loci_file).parent}"
 
     input:
     path(env_var_file) // Environment variables file
@@ -19,6 +19,7 @@ process REPORT {
         path(timestamp_file)                                                  // File with timestamps
     path(taxonomy_file) // Taxonomy file
     path(metadata_file) // Metadata file
+    path(sequences_file) // Sequences file
 
     output:
     path("$query_folder/*.html") // Output: final HTML report
@@ -35,6 +36,11 @@ process REPORT {
     """
     # Source environment variables
     source ${env_var_file}
+    
+    # Override INPUT_FASTA_FILEPATH to use local sequences file
+    export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
+    # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
+    export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})
     # Ensure the query folder exists
     mkdir -p ${query_folder}
     # Move tree file into the query folder with the correct name

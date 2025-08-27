@@ -1,0 +1,31 @@
+[Unit]
+Description=Report bundler (FastAPI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/mnt/data/taxodactyl/cloudgene/downloader
+Environment=HOST=127.0.0.1
+Environment=PORT=8002
+ExecStart=/mnt/data/taxodactyl/cloudgene/downloader/venv/bin/uvicorn app:app --host=${HOST} --port=${PORT} --workers=2
+Restart=on-failure
+RestartSec=2
+# Basic hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/mnt/data/taxodactyl/cloudgene/downloader
+AmbientCapabilities=
+CapabilityBoundingSet=
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,123 @@
+---
+- name: Create SFTP group
+  group:
+    name: "{{ sftp_group }}"
+    state: present
+
+- name: Create SFTP user home directory
+  file:
+    path: "{{ sftp_home_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create SFTP user with restricted shell
+  user:
+    name: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    home: "/home/{{ sftp_username }}"
+    shell: /bin/false
+    create_home: yes
+    state: present
+
+- name: Create SFTP user subdirectory for user files
+  file:
+    path: "{{ sftp_home_dir }}/uploads"
+    state: directory
+    owner: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    mode: '0755'
+
+- name: Create .ssh directory for SFTP user (in real home dir, not chroot)
+  file:
+    path: "/home/{{ sftp_username }}/.ssh"
+    state: directory
+    owner: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    mode: '0700'
+
+- name: Copy public key to authorized_keys
+  copy:
+    src: cloudgene_sftp.pub
+    dest: "/home/{{ sftp_username }}/.ssh/authorized_keys"
+    owner: "{{ sftp_username }}"
+    group: "{{ sftp_group }}"
+    mode: '0600'
+
+- name: Ensure chroot directory parent paths exist with correct ownership
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - "/mnt"
+    - "/mnt/data"
+
+- name: Set ownership of chroot directory to root (required for chroot)
+  file:
+    path: "{{ sftp_home_dir }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Configure SSH for SFTP chroot
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+
+      # SFTP chroot configuration
+      Match Group {{ sftp_group }}
+          ChrootDirectory {{ sftp_home_dir }}
+          ForceCommand internal-sftp
+          AllowTcpForwarding no
+          X11Forwarding no
+          PermitTunnel no
+          PermitTTY no
+          MaxAuthTries 3
+          PasswordAuthentication no
+          PubkeyAuthentication yes
+    marker: "# {mark} ANSIBLE MANAGED SFTP CONFIG"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: restart ssh
+
+- name: Install fail2ban
+  package:
+    name: fail2ban
+    state: present
+
+- name: Create fail2ban SSH jail configuration
+  copy:
+    dest: /etc/fail2ban/jail.local
+    content: |
+      [DEFAULT]
+      bantime = 3600
+      findtime = 600
+      maxretry = 5
+      
+      [sshd]
+      enabled = true
+      port = ssh
+      filter = sshd
+      logpath = /var/log/auth.log
+      maxretry = 5
+      bantime = 3600
+      findtime = 600
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart fail2ban
+
+- name: Ensure fail2ban service is enabled and started
+  systemd:
+    name: fail2ban
+    enabled: yes
+    state: started
+
+- name: Ensure SSH service is enabled and started
+  systemd:
+    name: ssh
+    enabled: yes
+    state: started
