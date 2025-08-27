@@ -2,7 +2,7 @@ process EXTRACT_HITS {
 
     label 'daff_tax_assign'
 
-    containerOptions "--bind ${file(params.sequences).parent}"
+    // No longer need to bind original file parent directory since we use copied files
 
     input:
     path(env_var_file) // Environment variables file

@@ -1,0 +1,46 @@
+<div class="container">
+  <div class=mb-5>
+    <h1>Barcode assembly from nanopore sequencing reads</h1>
+
+      <p>
+        This workflow assembles consensus sequences from Nanopore sequencing reads. It requires <code>.fastq.gz</code> files containing the reads and a CSV file with sample metadata. The <code>.fastq.gz</code> file names must match the pattern provided in the metadata CSV file <code>fastq_path</code> field. The <code>target_size</code> describes the expected size of the amplicon in nucleotides.
+      </p>
+
+      <h5 class="mt-5 my-3">Example metadata CSV</h5>
+
+      <table class="table table-bordered my-3">
+          <thead>
+            <tr>
+              <th>sampleid</th>
+              <th>fastq_path</th>
+              <th>target_size</th>
+              <th>target_organism</th>
+              <th>target_gene</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>barcode02_VE24-1280_COI</code></td>
+              <td><code>barcode02_VE24-1280_COI*.fastq.gz</code></td>
+              <td>380</td>
+              <td>Polerovirus</td>
+              <td>capsid</td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                <em class="text-muted">(up to 100 rows)</em>
+              </td>
+            </tr>
+          </tbody>
+      </table>
+
+      <p>
+        The following uploaded FASTQ files would then be associated with the sample in row 1:
+        <ul>
+          <li><code>barcode02_VE24-1280_COI_1.fastq.gz</code></li>
+          <li><code>barcode02_VE24-1280_COI_2.fastq.gz</code></li>
+        </ul>
+      </p>
+    </section>
+  </div>
+</div>

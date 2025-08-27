@@ -7,7 +7,8 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { dumpParametersToJSON } from '../subworkflows/nf-core/utils_nextflow_pipeline'
-include { BLAST_BLASTN } from '../modules/blast/blastn/main' 
+include { BLAST_BLASTN } from '../modules/blast/blastn/main'
+include { MOCK_BLASTN } from '../modules/mock/blastn/main' 
 include { MAFFT_ALIGN } from '../modules/mafft/align/main'
 include { EXTRACT_HITS } from '../modules/extract/hits/main'
 include { BLAST_BLASTDBCMD } from '../modules/blast/blastdbcmd/main'
@@ -20,6 +21,7 @@ include { FASTME } from '../modules/fastme/main'
 include { REPORT } from '../modules/report/main'
 include { VALIDATE_INPUT } from '../modules/validate/input/main'
 include { BOLD_SEARCH } from '../modules/bold/search/main'
+include { PREPARE_INPUTS } from '../modules/prepare/inputs/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,14 +39,28 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true)
 
+    // Copy input files to work directory first to ensure availability
+    PREPARE_INPUTS (
+        file(params.sequences),
+        file(params.metadata)
+    )
+    
+    ch_sequences = PREPARE_INPUTS.out.sequences
+    ch_metadata = PREPARE_INPUTS.out.metadata
+
     // Set up environment variables
-    CONFIGURE_ENVIRONMENT ()
+    CONFIGURE_ENVIRONMENT (
+        ch_sequences,
+        ch_metadata
+    )
 	 
     ch_env_var_file = CONFIGURE_ENVIRONMENT.out
 
     // Validate input files and parameters
     VALIDATE_INPUT (
         ch_env_var_file,
+        ch_sequences,
+        ch_metadata
     )
 
     // Run BOLD or BLAST search depending on db_type
@@ -52,22 +68,36 @@ workflow TAXODACTYL {
         // BOLD search branch
         BOLD_SEARCH (
             ch_env_var_file,
-            file(params.sequences),
+            ch_sequences,
             VALIDATE_INPUT.out
         )
         ch_hits = BOLD_SEARCH.out.hits
 
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
-        // BLAST search branch
-        BLAST_BLASTN (
-            file(params.sequences),
-            VALIDATE_INPUT.out
-        )
+        // BLAST search branch - use mock or real BLAST based on params.mock_blast
+        if (params.mock_blast) {
+            // Mock BLAST for testing
+            MOCK_BLASTN (
+                ch_sequences,
+                VALIDATE_INPUT.out,
+                file("${projectDir}/scripts/tests/test-data/one_output.xml")
+            )
+            ch_blast_output = MOCK_BLASTN.out.blast_output
+            ch_blast_versions = MOCK_BLASTN.out.versions
+        } else {
+            // Real BLAST
+            BLAST_BLASTN (
+                ch_sequences,
+                VALIDATE_INPUT.out
+            )
+            ch_blast_output = BLAST_BLASTN.out.blast_output
+            ch_blast_versions = BLAST_BLASTN.out.versions
+        }
 
         EXTRACT_HITS (
             ch_env_var_file,
-            BLAST_BLASTN.out.blast_output
+            ch_blast_output
         )
         ch_hits = EXTRACT_HITS.out.hits
 
@@ -89,20 +119,32 @@ workflow TAXODACTYL {
         .flatten()
         .map { file-> [file.parent.name, file] }
         .groupTuple()
-        .map { folder, files -> [folder, files[0], files[1] ]} 
+        .map { folder, files -> 
+            // Handle cases where FASTA file may be missing (no hits found)
+            def jsonFile = files.find { it.name.endsWith('.json') }
+            def fastaFile = files.find { it.name.endsWith('.fasta') }
+            
+            // If no FASTA file exists, create an empty placeholder
+            if (fastaFile == null) {
+                fastaFile = file("${folder}/${params.hits_fasta_filename}", checkIfExists: false)
+            }
+            
+            [folder, jsonFile, fastaFile]
+        } 
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
         ch_env_var_file,
         ch_hits_to_filter,
         ch_taxonomy_file,
-        file(params.metadata)
+        ch_metadata
     )
+    
 
     // Prepare query sequences for alignment
-    ch_query_fasta = Channel.fromPath(file(params.sequences))
+    ch_query_fasta = ch_sequences
         .splitFasta(record: [id: true, sequence: true])
-        .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
+        .map { tuple -> [tuple.id.replaceFirst(/\.\d+$/, ""), tuple.sequence.replaceAll(/\n/, "")] }
 
     // Combine candidate and query sequences for alignment
     ch_seqs_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
@@ -139,7 +181,7 @@ workflow TAXODACTYL {
     EVALUATE_DATABASE_COVERAGE (
         ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-        file(params.metadata)
+        ch_metadata
     )
 
     // Prepare hits for report
@@ -179,7 +221,7 @@ workflow TAXODACTYL {
 
     } else {
 
-        ch_versions = BLAST_BLASTN.out.versions
+        ch_versions = ch_blast_versions
             .mix(BLAST_BLASTDBCMD.out.versions)
             .mix(MAFFT_ALIGN.out.versions)
             .mix(FASTME.out.versions)
@@ -208,7 +250,8 @@ workflow TAXODACTYL {
         ch_env_var_file,
         ch_files_for_report,
         ch_taxonomy_file,
-        file(params.metadata)
+        ch_metadata,
+        ch_sequences
     )
 
 }
