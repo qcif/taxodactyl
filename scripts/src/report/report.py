@@ -110,7 +110,7 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'workflow_versions': _read_versions_yml(versions_yml),
         'facility': config.inputs.facility_name,
         'analyst_name': config.inputs.analyst_name,
-        'start_time': config.start_time.strftime("%Y-%m-%d %H:%M:%S"),
+        'start_time': config.timestamp,
         'end_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'wall_time': _get_walltime(),
         'metadata': _get_metadata(query_ix),
@@ -169,6 +169,8 @@ def _get_walltime():
     """Return wall time since start of the workflow.
     Returns a dict of hours, minutes, seconds.
     """
+    if not config.start_time:
+        return {}
     seconds = (datetime.now() - config.start_time).total_seconds()
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)

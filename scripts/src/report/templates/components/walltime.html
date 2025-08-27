@@ -19,8 +19,12 @@
     <td class="fw-bold">Wall time</td>
     <td>
       <code>
+        {% if wall_time %}
         {{ wall_time.hours }}:{{ wall_time.minutes }}:{{ wall_time.seconds}}
         hours
+        {% else %}
+        <span class="text-muted">Unknown</span>
+        {% endif %}
       </code>
     </td>
   </tr>
