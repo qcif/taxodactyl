@@ -135,20 +135,79 @@ CLI_ARGS = {
 }
 
 ENV_VARS = {
-    'OUTPUT_DIR': ('output_dir', Path),
     # Input file paths
+    'OUTPUT_DIR': ('output_dir', Path),
     'INPUT_FASTA_FILEPATH': ('inputs', 'query_fasta', Path),
     'INPUT_METADATA_CSV_FILEPATH': ('inputs', 'metadata_csv', Path),
+
+    # Input metadata
+    'FACILITY_NAME': ('inputs', 'facility_name', str),
+    'ANALYST_NAME': ('inputs', 'analyst_name', str),
+
+    # Input validation
+    'FASTA_MAX_LENGTH_NT': ('inputs', 'fasta_max_length_nt', int),
+    'FASTA_MIN_LENGTH_NT': ('inputs', 'fasta_min_length_nt', int),
+    'FASTA_MAX_SEQUENCES': ('inputs', 'fasta_max_sequences', int),
+
+    # File paths
+    'ALLOWED_LOCI_FILE': ('allowed_loci_file', Path),
+    'FLAG_DETAILS_CSV_PATH': ('flag_details_csv_path', Path),
+    'PLACEHOLDER_IMG_PATH': ('placeholder_img_path', Path),
+    'TAXONKIT_DATA': ('taxdb_dir', Path),
+    'TIMESTAMP_FILENAME': ('timestamp_filename', str),
+    'ACCESSIONS_FILENAME': ('accessions_filename', str),
+    'TAXONOMY_FILE': ('taxonomy_file', str),
+    'QUERY_TITLE_FILE': ('query_title_file', str),
+    'HITS_JSON': ('hits_json', str),
+    'HITS_FASTA': ('hits_fasta', str),
+    'TAXONOMY_ID_CSV': ('taxonomy_id_csv', str),
+    'CANDIDATES_FASTA': ('candidates_fasta', str),
+    'PHYLOGENY_FASTA': ('phylogeny_fasta', str),
+    'CANDIDATES_CSV': ('candidates_csv', str),
+    'CANDIDATES_JSON': ('candidates_json', str),
+    'CANDIDATES_COUNT_FILE': ('candidates_count_file', str),
+    'CANDIDATES_SOURCES_JSON': ('candidates_sources_json', str),
+    'INDEPENDENT_SOURCES_JSON': ('independent_sources_json', str),
+    'TOI_DETECTED_CSV': ('toi_detected_csv', str),
+    'PMI_MATCH_CSV': ('pmi_match_csv', str),
+    'BOXPLOT_IMG_FILENAME': ('boxplot_img_filename', str),
+    'TREE_NWK_FILENAME': ('tree_nwk_filename', str),
+    'DB_COVERAGE_JSON': ('db_coverage_json', str),
+    'LOG_FILENAME': ('log_filename', str),
+    'QUERY_LOG_FILENAME': ('query_log_filename', str),
+    'SQLITE_FILE': ('sqlite_file', str),
+    'ENTREZ_CACHE_DIRNAME': ('entrez_cache_dirname', str),
+    'ERRORS_DIR': ('errors_dir', str),
+    'TEMP_DIR_NAME': ('temp_dir_name', str),
+
     # BLAST configuration
     'BLAST_MAX_TARGET_SEQS': ('blast_max_target_seqs', int),
+
     # BOLD configuration
     'BOLD_DATABASE': ('bold_database', str),
+    'BOLD_FLAG': ('bold_flag', str),
+    'BOLD_TAXON_COUNT_JSON': ('bold_taxon_count_json', str),
+    'BOLD_TAXON_COLLECTORS_JSON': ('bold_taxon_collectors_json', str),
+    'BOLD_TAXONOMY_JSON': ('bold_taxonomy_json', str),
+
     # GBIF configuration
     'GBIF_LIMIT_RECORDS': ('gbif_limit_records', int),
     'GBIF_MAX_OCCURRENCE_RECORDS': (
         'gbif_max_occurrence_records', int),
     'GBIF_ACCEPTED_STATUS': (
         'gbif_accepted_status', _parse_status_list),
+
+    # Database coverage
+    'DB_COVERAGE_TOI_LIMIT': ('db_coverage_toi_limit', int),
+    'DB_COVERAGE_MAX_CANDIDATES': ('db_coverage_max_candidates', int),
+
+    # Other configuration
+    'HMMSEARCH_MIN_EVALUE': ('hmmsearch_min_evalue', float),
+    'FLAG_FILE_TEMPLATE': ('flag_file_template', str),
+    'CACHE_TIMEOUT_HOURS': ('cache_timeout_hours', int),
+    'MAX_API_RETRIES': ('max_api_retries', int),
+    'TEMP_CLEAN_AFTER_DAYS': ('temp_clean_after_days', int),
+
     # Analysis criteria
     'MIN_NT': ('criteria', 'alignment_min_nt', int),
     'MIN_Q_COVERAGE': ('criteria', 'alignment_min_q_coverage', float),
@@ -172,14 +231,9 @@ ENV_VARS = {
         'criteria', 'phylogeny_min_hit_sequences', int),
     'PHYLOGENY_MAX_HITS_PER_SPECIES': (
         'criteria', 'phylogeny_max_hits_per_species', int),
-    # Input configuration
-    'FACILITY_NAME': ('inputs', 'facility_name', str),
-    'ANALYST_NAME': ('inputs', 'analyst_name', str),
+
     # Report configuration
+    'REPORT_TITLE': ('report', 'title', str),
     'REPORT_DEBUG': ('report', 'debug', _parse_bool),
     'BLAST_DATABASE_NAME': ('report', 'database_name', str),
-    # Database coverage
-    'DB_COVERAGE_TOI_LIMIT': ('db_coverage_toi_limit', int),
-    # External tools
-    'TAXONKIT_DATA': ('taxdb_dir', Path),
 }
