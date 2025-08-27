@@ -98,7 +98,9 @@ workflow TAXODACTYL {
 
         EXTRACT_HITS (
             ch_env_var_file,
-            ch_blast_output
+            ch_blast_output,
+            ch_sequences,
+            ch_metadata
         )
         ch_hits = EXTRACT_HITS.out.hits
 
@@ -108,7 +110,9 @@ workflow TAXODACTYL {
 
         EXTRACT_TAXONOMY (
             ch_env_var_file,
-            BLAST_BLASTDBCMD.out.taxids
+            BLAST_BLASTDBCMD.out.taxids,
+            ch_sequences,
+            ch_metadata
         )
 
         ch_taxonomy_file = EXTRACT_TAXONOMY.out
