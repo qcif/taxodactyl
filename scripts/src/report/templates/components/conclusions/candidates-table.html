@@ -14,7 +14,7 @@
   </thead>
   <tbody>
     {% if candidates.species %}
-    {% for candidate in candidates.species %}
+    {% for candidate in candidates.species[:5] %}
     <tr>
       <td><em>{{ candidate.species }}</em></td>
       <td>{{ candidate.hit_count }}</td>
@@ -33,12 +33,12 @@
         {% if db_coverage.summary.get('candidate', {}).get(taxon, {}).get('related') is not none %}
         {% set coverage_percent = db_coverage.summary.candidate[taxon].related %}
         <span
-        {% if flag %}
-        data-bs-toggle="tooltip"
-        data-bs-placement="bottom"
-        title="{{ flag.outcome }}"
-        class="badge bg-{{ flag.bs_class }}"
-        {% endif %}
+          {% if flag %}
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{{ flag.outcome }}"
+          class="badge bg-{{ flag.bs_class }}"
+          {% endif %}
         >
           {{ "%.0f" | format(coverage_percent * 100) }}%
         </span>
@@ -48,6 +48,13 @@
       </td>
     </tr>
     {% endfor %}
+    {% if candidate.species | length > 5 %}
+    <tr>
+      <td colspan="6" class="text-center">
+        <em>+ {{ candidate.species | length - 5 }} more species...</em>
+      </td>
+    </tr>
+    {% endif %}
     {% else %}
     <tr>
       <td colspan="6" class="text-center text-muted">No candidates identified</td>
