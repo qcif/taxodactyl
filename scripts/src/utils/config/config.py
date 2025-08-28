@@ -322,7 +322,7 @@ class Config:
         ts_format = "%Y%m%d %H%M%S"
         path = self.output_dir / self.timestamp_filename
         if path.exists():
-            ts = path.read_text().strip(' \\n')
+            ts = path.read_text().strip(' \n')
             try:
                 return datetime.strptime(ts, ts_format)
             except Exception:
