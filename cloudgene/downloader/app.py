@@ -2,6 +2,7 @@
 import os
 import re
 import tempfile
+import traceback
 import zipfile
 from pathlib import Path
 from urllib.parse import urlparse
@@ -51,8 +52,10 @@ def download_page():
 
 @app.post("/reports.zip")
 def download_reports(payload: dict = Body(...)):
+    print("Request received")
     raw = payload.get("input", "")
     if not raw:
+        print("No input field, returning 400")
         raise HTTPException(400, "Missing 'input' field.")
     urls = extract_report_urls(raw)
 
@@ -69,21 +72,27 @@ def download_reports(payload: dict = Body(...)):
             for url in urls:
                 p = urlparse(url)
                 if p.scheme != "https" or p.netloc != HOST:
+                    print(f"Skipping invalid URL: {url}")
                     continue  # strict allow-list to avoid SSRF
+                print(f"Fetching {url}")
                 parent = os.path.basename(os.path.dirname(p.path))
                 fname = os.path.basename(p.path)
                 # keeps files distinct and meaningful
                 arcname = f"{parent}_{fname}"
                 with requests.get(url, stream=True, timeout=30) as r:
+                    print(f"HTTP {r.status_code} for {url}")
                     r.raise_for_status()
+                    print(f"Compressing response to {arcname}")
                     with zf.open(arcname, "w") as dest:
                         for chunk in r.iter_content(8192):
                             if chunk:
                                 dest.write(chunk)
+        print(f"Serving {zip_path}")
         return FileResponse(
             zip_path,
             filename="reports.zip",
             media_type="application/zip",
         )
     except Exception as e:
+        print(f"Error bundling {url}: {e}\n{traceback.format_exc()}")
         raise HTTPException(502, f"Bundling failed for url {url}: {e}")
