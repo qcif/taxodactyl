@@ -48,10 +48,10 @@
       </td>
     </tr>
     {% endfor %}
-    {% if candidate.species | length > 5 %}
+    {% if candidates.species | length > 5 %}
     <tr>
       <td colspan="6" class="text-center">
-        <em>+ {{ candidate.species | length - 5 }} more species...</em>
+        <em>+ {{ candidates.species | length - 5 }} more species...</em>
       </td>
     </tr>
     {% endif %}
