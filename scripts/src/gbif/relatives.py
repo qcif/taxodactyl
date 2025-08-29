@@ -99,7 +99,7 @@ class RelatedTaxaGBIF:
         res = throttle.with_retry(
             pygbif.species.name_suggest,
             kwargs=kwargs,
-            with_cache=False,
+            with_cache=True,
         )
         logger.debug(
             "pygbif.species.name_suggest response:\n"
@@ -149,7 +149,7 @@ class RelatedTaxaGBIF:
             res = throttle.with_retry(
                 pygbif.species.name_lookup,
                 kwargs=kwargs,
-                with_cache=False,
+                with_cache=True,
             )
             new_records = self._filter_records(res['results'])
             if i > 5:
@@ -186,7 +186,7 @@ class RelatedTaxaGBIF:
             res = throttle.with_retry(
                 pygbif.occurrences.search,
                 kwargs=kwargs,
-                with_cache=False,
+                with_cache=True,
             )
             records += res['results']
             try:
