@@ -32,7 +32,7 @@ process REPORT {
     def database_name_arg = params.blast_database_name_for_report ? "--database-name '${params.blast_database_name_for_report}'" : ''
     def facility_name_arg = params.facility_name ? "--facility-name '${params.facility_name}'" : ''
     def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
-    def flag_details_csv_arg = params.flag_details_csv ? "--flag-details-csv ${file(params.flag_details_csv)}" : ''
+    
     """
     # Source environment variables
     source ${env_var_file}
@@ -69,7 +69,6 @@ process REPORT {
             ${report_debug_arg} \
             ${database_name_arg} \
             ${facility_name_arg} \
-            ${analyst_name_arg} \
-            ${flag_details_csv_arg}
+            ${analyst_name_arg}
     """
 }
