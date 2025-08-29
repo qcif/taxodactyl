@@ -82,11 +82,11 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir",  # Not mapped to config
+        f"{arguments.QUERY_DIR}",
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
-        "--bold",  # Not mapped to config
+        "--bold",
         action="store_true",
         help="Outputs are from BOLD query.")
     parser.add_argument(

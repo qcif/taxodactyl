@@ -94,6 +94,11 @@ parameters = [
         create=True,
     ),
     PathMapping(
+        'query_dir',
+        cli_name=arguments.QUERY_DIR,
+        env_name=env_vars.QUERY_DIR,
+    ),
+    PathMapping(
         'query_fasta',
         namespace='inputs',
         cli_name=arguments.QUERY_FASTA,

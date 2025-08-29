@@ -1,5 +1,14 @@
 """CLI arguments."""
 
+# File paths and validation settings
+OUTPUT_DIR = 'output-dir'
+QUERY_DIR = 'query_dir'
+METADATA_CSV = 'metadata-csv'
+QUERY_FASTA = 'query-fasta'
+TAXDB_DIR = 'taxdb-dir'
+ALLOWED_LOCI_FILE = 'allowed-loci-file'
+FLAG_DETAILS_CSV = 'flag-details-csv'
+
 # BLAST configuration
 BLAST_MAX_TARGET_SEQS = 'blast-max-target-seqs'
 
@@ -43,11 +52,3 @@ REPORT_DEBUG = 'report-debug'
 DATABASE_NAME = 'database-name'
 FACILITY_NAME = 'facility-name'
 ANALYST_NAME = 'analyst-name'
-
-# File paths and validation settings
-OUTPUT_DIR = 'output-dir'
-METADATA_CSV = 'metadata-csv'
-QUERY_FASTA = 'query-fasta'
-TAXDB_DIR = 'taxdb-dir'
-ALLOWED_LOCI_FILE = 'allowed-loci-file'
-FLAG_DETAILS_CSV = 'flag-details-csv'
