@@ -3,7 +3,13 @@
 from pathlib import Path
 from typing import Annotated, List
 
-from pydantic import BaseModel, AfterValidator, Field, field_validator
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+)
 
 SCRIPTS_ROOT = Path(__file__).parents[3]
 
@@ -269,8 +275,7 @@ class ConfigSchema(BaseModel):
             return v.upper().replace(' ', '').split(',')
         return [status.upper() for status in v]
 
-    class Config:
-        """Pydantic configuration."""
-        # Allow environment variable overrides with BIOSEC_ prefix
-        env_prefix = 'BIOSEC_'
-        env_nested_delimiter = '__'
+    model_config = ConfigDict(
+        env_prefix="BIOSEC_",
+        env_nested_delimiter="__",
+    )
