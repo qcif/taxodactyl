@@ -2,7 +2,6 @@
 
 import logging
 from functools import cached_property
-from pprint import pformat
 
 import pygbif
 
@@ -100,10 +99,6 @@ class RelatedTaxaGBIF:
             pygbif.species.name_suggest,
             kwargs=kwargs,
             with_cache=True,
-        )
-        logger.debug(
-            "pygbif.species.name_suggest response:\n"
-            + f"{pformat(res, indent=2)}"
         )
         for record in res:
             if self._is_accepted(record):
