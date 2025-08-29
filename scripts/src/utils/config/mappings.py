@@ -28,6 +28,14 @@ class AbstractMapping(ABC):
         self.env_name = env_name
         self.namespace = namespace
 
+    def set_value(self, config, value):
+        """Set the value in the config object."""
+        if self.namespace:
+            namespace = getattr(config, self.namespace)
+            setattr(namespace, self.name, self.cast(value))
+        else:
+            setattr(config, self.name, self.cast(value))
+
     @abstractmethod
     def cast(self, value):
         """Cast the value to the appropriate type."""
@@ -452,8 +460,8 @@ CLI_ARGS = {
     for mapping in parameters
     if mapping.cli_name is not None
 }
-ENV_VARS = {
-    mapping.env_name: mapping
+ENV_VARS = [
+    mapping
     for mapping in parameters
     if mapping.env_name is not None
-}
+]

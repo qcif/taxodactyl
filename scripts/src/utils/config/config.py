@@ -144,43 +144,18 @@ class Config:
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
-        for env_var, config_path in mappings.ENV_VARS.items():
-            env_value = os.getenv(env_var)
-            if env_value is not None:
-                self._set_config_value(config_path, env_value)
-
-    def _set_config_value(self, config_path, env_value):
-        """Set a config value from environment variable."""
-        if len(config_path) == 2:
-            # Simple attribute: (field_name, converter)
-            field_name, converter = config_path
-            try:
-                converted_value = converter(env_value)
-                setattr(self, field_name, converted_value)
-            except (ValueError, TypeError) as e:
-                logger.warning(f"Failed to set {field_name} from env: {e}")
-        elif len(config_path) == 3:
-            # Nested attribute: (nested_obj_name, field_name, converter)
-            nested_obj_name, field_name, converter = config_path
-            try:
-                converted_value = converter(env_value)
-                nested_obj = getattr(self, nested_obj_name)
-                setattr(nested_obj, field_name, converted_value)
-            except (ValueError, TypeError, AttributeError) as e:
-                logger.warning(
-                    f"Failed to set {nested_obj_name}.{field_name} from "
-                    f"env: {e}")
+        for mapper in mappings.ENV_VARS:
+            value = os.getenv(mapper.env_name)
+            if value is not None:
+                try:
+                    mapper.set_value(self, value)
+                except (AttributeError, TypeError) as e:
+                    logger.warning(
+                        f"Failed to update config from CLI arg "
+                        f"{mapper.env_name}={value}: {e}")
 
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
-        # Handle special setup arguments first
-        if hasattr(args, 'output_dir') and args.output_dir:
-            self.output_dir = Path(args.output_dir)
-            self.output_dir.mkdir(exist_ok=True, parents=True)
-
-        if hasattr(args, 'query_dir') and args.query_dir:
-            self.query_dir = Path(args.query_dir)
-
         # Setup logging
         conf = get_logging_config(self.output_dir / self.log_filename)
         dictConfig(conf)
@@ -189,10 +164,8 @@ class Config:
         if hasattr(args, 'bold') and args.bold:
             self.bold_flag_file.write_text('1')
 
-        # Iterate through all CLI arguments
-        for arg_name, arg_value in vars(args).items():
-            # Skip None values (arguments not provided by user)
-            if arg_value is None:
+        for arg_name, value in vars(args).items():
+            if value is None:
                 continue
 
             mapper = mappings.get_mapper(arg_name, cli=True)
@@ -200,15 +173,11 @@ class Config:
                 continue
 
             try:
-                if mapper.namespace:
-                    nested_obj = getattr(self, mapper.namespace)
-                    setattr(nested_obj, mapper.name, mapper.cast(arg_value))
-                else:
-                    setattr(self, mapper.name, mapper.cast(arg_value))
+                mapper.set_value(self, value)
             except (AttributeError, TypeError) as e:
                 logger.warning(
                     f"Failed to update config from CLI arg "
-                    f"{arg_name}={arg_value}: {e}")
+                    f"{arg_name}={value}: {e}")
                 continue
 
     def create_query_dir(self, query_ix, query_title):
