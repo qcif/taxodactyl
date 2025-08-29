@@ -221,13 +221,24 @@
                 "--metadata-csv", "tests/test-data/metadata.csv",
                 "--query-fasta", "tests/test-data/queries.fasta",
 
+                "--db-coverage-toi-limit", "10",
+                "--db-coverage-max-candidates", "3",
+                "--gbif-limit-records", "500",
+                "--gbif-max-occurrence-records", "5000",
+                "--gbif-accepted-status", "accepted,doubtful",
+                "--db-cov-target-min-a", "5",
+                "--db-cov-target-min-b", "1",
+                "--db-cov-related-min-a", "90",
+                "--db-cov-related-min-b", "10",
+                "--db-cov-country-missing-a", "1",
+
                 // For testing issue cases:
                 // "output/issues/31/query_001_VE24-1351_COI",
                 // "--output-dir", "output/issues/31",
                 // "--metadata-csv", "output/issues/31/metadata.csv",
                 // "--query-fasta", "output/issues/31/queries.fasta",
 
-                "--gbif-max-occurrence-records", "200",
+                // "--gbif-max-occurrence-records", "200",
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
