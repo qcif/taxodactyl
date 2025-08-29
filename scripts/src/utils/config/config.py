@@ -195,22 +195,16 @@ class Config:
             if arg_value is None:
                 continue
 
-            # Skip arguments that don't have config mappings
-            if arg_name not in mappings.CLI_ARGS:
+            mapper = mappings.get_mapper(arg_name, cli=True)
+            if not mapper:
                 continue
 
-            config_path = mappings.CLI_ARGS[arg_name]
-
             try:
-                if len(config_path) == 1:
-                    # Simple attribute: set directly on config
-                    setattr(self, config_path[0], arg_value)
-                elif len(config_path) == 2:
-                    # Nested attribute: set on nested object
-                    nested_obj_name, field_name = config_path
-                    nested_obj = getattr(self, nested_obj_name)
-                    setattr(nested_obj, field_name, arg_value)
-
+                if mapper.namespace:
+                    nested_obj = getattr(self, mapper.namespace)
+                    setattr(nested_obj, mapper.name, mapper.cast(arg_value))
+                else:
+                    setattr(self, mapper.name, mapper.cast(arg_value))
             except (AttributeError, TypeError) as e:
                 logger.warning(
                     f"Failed to update config from CLI arg "
