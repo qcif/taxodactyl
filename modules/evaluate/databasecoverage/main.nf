@@ -4,7 +4,7 @@ process EVALUATE_DATABASE_COVERAGE {
 
     tag "$query_folder"
 
-    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent}"
+    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --writable-tmpfs"
 
     input:
     path(env_var_file) // Environment variables file
