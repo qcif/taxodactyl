@@ -13,7 +13,7 @@ process EXTRACT_HITS {
     output:
     path(params.accessions_filename), emit: accessions // Output: accessions file
     tuple path("query_*/$params.hits_json_filename"), path("query_*/$params.hits_fasta_filename"), emit: hits // Output: tuple of hits JSON and FASTA files
-    path("run.log"), emit: extract_hits_log // Output: log file
+    path("run.log", optional: true), emit: extract_hits_log // Output: log file (optional)
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/$params.hits_fasta_filename" // Publish hit FASTA files to output directory
@@ -25,10 +25,10 @@ process EXTRACT_HITS {
     source ${env_var_file}
     # Run the BLAST hit parsing Python script
     python /app/scripts/p1_parse_blast.py \
+        ${blast_xml} \
         --query-fasta ${sequences_file} \
         --metadata-csv ${metadata_file} \
         --output-dir ./ \
         ${blast_max_target_seqs_arg} \
-        ${blast_xml} 
     """
 }
