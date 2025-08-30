@@ -163,15 +163,13 @@ workflow TAXODACTYL {
     // Validate that we got alignments for all candidates
     ch_candidates_for_join.count()
         .combine(ch_seqs_for_alignment.count())
-        .map { candidate_count, alignment_count ->
+        .subscribe { candidate_count, alignment_count ->
             if (alignment_count == 0) {
-                error "ERROR: No sequences matched for alignment. Check sequence ID format compatibility between candidates and queries."
+                exit 1, "ERROR: No sequences matched for alignment. Check sequence ID format compatibility between candidates and queries."
             } else if (alignment_count < candidate_count) {
-                log.warn "WARNING: Only ${alignment_count}/${candidate_count} candidate sequences matched query sequences for alignment."
+                exit 1, "ERROR: Only ${alignment_count}/${candidate_count} candidate sequences matched query sequences for alignment. This is most likely a bug in the workflow - please report it."
             }
-            return alignment_count
         }
-        .subscribe()
 
     // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
