@@ -152,11 +152,26 @@ workflow TAXODACTYL {
         .splitFasta(record: [id: true, sequence: true])
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
-    // Combine candidate and query sequences for alignment
-    ch_seqs_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
+    // Combine candidate and query sequences for alignment  
+    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+
+    ch_seqs_for_alignment = ch_candidates_for_join
         .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
+
+    // Validate that we got alignments for all candidates
+    ch_candidates_for_join.count()
+        .combine(ch_seqs_for_alignment.count())
+        .map { candidate_count, alignment_count ->
+            if (alignment_count == 0) {
+                error "ERROR: No sequences matched for alignment. Check sequence ID format compatibility between candidates and queries."
+            } else if (alignment_count < candidate_count) {
+                log.warn "WARNING: Only ${alignment_count}/${candidate_count} candidate sequences matched query sequences for alignment."
+            }
+            return alignment_count
+        }
+        .subscribe()
 
     // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
