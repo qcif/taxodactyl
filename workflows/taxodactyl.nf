@@ -129,9 +129,11 @@ workflow TAXODACTYL {
             def jsonFile = files.find { it.name.endsWith('.json') }
             def fastaFile = files.find { it.name.endsWith('.fasta') }
             
-            // If no FASTA file exists, create an empty placeholder
+            // If no FASTA file exists, create an empty placeholder with proper path
             if (fastaFile == null) {
-                fastaFile = file("${folder}/${params.hits_fasta_filename}", checkIfExists: false)
+                // Find the JSON file's actual directory to create matching FASTA path
+                def hitDir = jsonFile.parent
+                fastaFile = file("${hitDir}/${params.hits_fasta_filename}", checkIfExists: false)
             }
             
             [folder, jsonFile, fastaFile]
