@@ -204,16 +204,14 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
       In the "Results" tab you should see a list of output folders/files. There should be a series of <code>query_XXX_[sample_id]</code> folders that contain results for each sample that you submitted. Inside each folder is a <code>report_[sample_id]_[date]_[time].html</code> file - this is the workflow report. You can click on this to open it directly in the browser.
     </p>
 
-    <h5>Bulk-download results</h5>
+    <h5>Bulk-download reports</h5>
 
     <p>
-      To quickly download all workflow reports, click the "wget" button and copy the <code>curl ... </code> command. Paste this into the dialog on the
-      <a href="/download">Download</a>
-      page to download a ZIP file of all workflow reports in that job.
+      In the Taxodactyl results, you should find a reports.zip file. You can click on this to download all workflow reports in a single archive.
     </p>
 
     <p>
-      If you have access to a Bash terminal (e.g. Linux machines, or WSL in Windows), you can also paste the <code>wget</code>/<code>curl</code> commands directly into your terminal to download all result data. Make sure you are in the directory where you want the results to be downloaded first!
+      If you have access to a Bash terminal (e.g. Linux machines, or WSL in Windows), you can also click on the "wget" button in the Results tab to get commands to download files directly. Paste the <code>wget</code>/<code>curl</code> commands directly into your terminal to download all result data. Make sure you are in the directory where you want the results to be downloaded first!
     </p>
   </section>
 
