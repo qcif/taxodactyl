@@ -15,9 +15,11 @@ if [[ -z "$DIR" ]]; then
     exit 1
 fi
 
+
 cd "$DIR"
 mkdir reports
-find . -name report*.html -exec cp {} reports/ \;
-zip -r reports.zip reports/
+find . -name report*.html -path query_* -exec cp {} reports/ \; > /dev/null
+zip -r reports.zip reports/ > /dev/null
 
-echo '::message::You can find all workflow reports in the reports.zip file under "Results"'
+echo "All workflow reports have been zipped"
+echo 'You can download all workflow reports by clicking the reports.zip file under "Results" tab.'
