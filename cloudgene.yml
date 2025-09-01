@@ -25,9 +25,9 @@ workflow:
     - name: Zip workflow reports
       type: "command"
       cmd: >
-        mkdir -p taxodactyl-reports
-        && find ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME} -name report*.html -exec mv {} taxodactyl-reports/ \;
-        && zip -r $outdir/reports.zip taxodactyl-reports/
+        /usr/bin/mkdir -p taxodactyl-reports
+        && /usr/bin/find ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME} -name report*.html -exec mv {} taxodactyl-reports/ \;
+        && /usr/bin/zip -r $outdir/reports.zip taxodactyl-reports/
 
   inputs:
     - id: metadata
