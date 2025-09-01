@@ -203,7 +203,7 @@ def _draw_conclusions(query_ix, hits):
         'hits': {
             'lowest_identity': min(
                 hit['identity'] for hit in hits
-            ),
+            ) if hits else None,
         },
     }
 
