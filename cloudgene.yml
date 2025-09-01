@@ -24,6 +24,7 @@ workflow:
       stdout: true
     - name: Zip workflow reports
       type: command
+      stdout: true
       cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/zip_reports.sh --dir $outdir
 
   inputs:
