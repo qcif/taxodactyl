@@ -18,7 +18,7 @@ fi
 
 cd "$DIR"
 mkdir reports
-find . -name report*.html -path *query_* -exec cp {} reports/ \; > /dev/null
+cp query_*/report*.html reports
 zip -r reports.zip reports/ > /dev/null
 
 echo "All workflow reports have been zipped"
