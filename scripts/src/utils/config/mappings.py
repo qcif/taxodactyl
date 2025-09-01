@@ -59,7 +59,7 @@ class FloatMapping(AbstractMapping):
 
 class BoolMapping(AbstractMapping):
     def cast(self, value):
-        return value not in (None, "0", "false", "False", "FALSE", "")
+        return str(value).lower() not in ("none", "0", "false", "")
 
 
 class PathMapping(AbstractMapping):
