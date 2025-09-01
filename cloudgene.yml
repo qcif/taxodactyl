@@ -22,6 +22,12 @@ workflow:
       type: "command"
       cmd: "/usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME}"
       stdout: "true"
+    - name: Zip workflow reports
+      type: "command"
+      cmd: |
+        mkdir -p taxodactyl-reports
+        && find ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME} -name report*.html -exec mv {} taxodactyl-reports/ \;
+        && zip -r $outdir/reports.zip taxodactyl-reports/
 
   inputs:
     - id: metadata
