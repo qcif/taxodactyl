@@ -15,6 +15,7 @@ if [[ -z "$DIR" ]]; then
     exit 1
 fi
 
+cd "$DIR"
 mkdir reports
-find "$DIR" -name report*.html -exec cp {} reports/ \;
-zip -r "$DIR/reports.zip" reports/
+find . -name report*.html -exec cp {} reports/ \;
+zip -r reports.zip reports/
