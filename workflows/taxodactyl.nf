@@ -82,7 +82,8 @@ workflow TAXODACTYL {
             MOCK_BLASTN (
                 ch_sequences,
                 VALIDATE_INPUT.out,
-                file("${projectDir}/scripts/tests/test-data/one_output.xml")
+                // file("${projectDir}/scripts/tests/test-data/one_output.xml")
+                file("${projectDir}/assets/Shaun_20250703_blast_result.xml")
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
@@ -130,10 +131,11 @@ workflow TAXODACTYL {
             def jsonFile = files.find { it.name.endsWith('.json') }
             def fastaFile = files.find { it.name.endsWith('.fasta') }
 
+
             // If no FASTA file exists, create an empty placeholder in a work folder
             if (fastaFile == null) {
-                fastaFile = file("${workflow.workDir}/${params.hits_fasta_filename}")
-                fastaFile.text = ""
+                fastaFile = "${workflow.workDir}/${params.hits_fasta_filename}"
+                new File(fastaFile).createNewFile()      
             }
 
             [folder, jsonFile, fastaFile]
