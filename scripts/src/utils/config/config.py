@@ -298,7 +298,7 @@ class Config:
         """Return the timestamp as a string."""
         start_time = self.start_time
         if start_time:
-            return start_time.strftime("%Y%m%d_%H%M%S")
+            return start_time.strftime("%Y-%m-%d %H:%M:%S")
         return "Unknown"
 
     @cached_property
