@@ -282,8 +282,8 @@
                 // "output/query_002_ON075825.1",
                 // "output/query_003_PP466915.1",
                 // "output/query_005_LC547004",
-                // "--metadata-csv", "tests/test-data/metadata.csv",
-                // "--query-fasta", "tests/test-data/queries.fasta",
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
 
                 "--versions_yml", "tests/test-data/versions.yml",
                 "--params_json", "tests/test-data/params.json",
