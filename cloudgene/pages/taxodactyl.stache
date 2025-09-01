@@ -53,7 +53,7 @@
     <h5 class="mt-5 my-3">Metadata CSV format</h5>
 
     <table class="table table-bordered my-3">
-      <thead>
+      <thead style="background: #eee;">
         <tr>
           <th>Field name</th>
           <th>Description</th>
@@ -111,7 +111,7 @@
     <h5 class="mt-5 my-3">Example metadata CSV</h5>
 
     <table class="table table-bordered my-3">
-      <thead>
+      <thead style="background: #eee;">
         <tr>
           <th>sample_id</th>
           <th>locus</th>
@@ -170,6 +170,11 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
         Go to <em>Run</em> > <em>Taxodactyl</em> in the navigation bar.
       </li>
       <li>
+        You can set a job name to identify your job later.
+        <strong>Please don't use spaces in the job name</strong>,
+        this is a known issue in Cloudgene.
+      </li>
+      <li>
         Select your Metadata and FASTA input files.
       </li>
       <li>
@@ -207,7 +212,7 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
     <h5>Bulk-download reports</h5>
 
     <p>
-      In the Taxodactyl results, you should find a reports.zip file. You can click on this to download all workflow reports in a single archive.
+      In the Taxodactyl results, you should find a <code>reports.zip</code> file. You can click on this to download all workflow reports in a single archive.
     </p>
 
     <p>
