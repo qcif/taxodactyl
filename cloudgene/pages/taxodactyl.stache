@@ -252,7 +252,7 @@ ACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC
   <hr class="my-3">
 
   <section class="my-5" id="issues">
-    <h1>Reporting issues</h1>
+    <h2>Reporting issues</h2>
 
     <p>
       If you encounter issues running a workflow, or have a suggestion for improvement, please post an issue on the
