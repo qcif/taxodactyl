@@ -19,3 +19,5 @@ cd "$DIR"
 mkdir reports
 find . -name report*.html -exec cp {} reports/ \;
 zip -r reports.zip reports/
+
+echo '::message::You can find all workflow reports in the reports.zip file under "Results"'
