@@ -132,12 +132,12 @@ workflow TAXODACTYL {
 
             // If no FASTA file exists, create an empty placeholder in a work folder
             if (fastaFile == null) {
-                fastaFile = "${workflow.workDir}/${params.hits_fasta_filename}"
-                new File(fastaFile)      
+                fastaFile = file("${workflow.workDir}/${params.hits_fasta_filename}")
+                fastaFile.text = ""
             }
-            
+
             [folder, jsonFile, fastaFile]
-        } 
+        }
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
