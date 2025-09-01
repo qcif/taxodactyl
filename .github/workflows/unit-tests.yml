@@ -24,6 +24,7 @@ jobs:
           pip install -r scripts/requirements.txt
       - name: Run unit tests
         env:
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
           GENBANK_CONCURRENCY_TEST: 0  # replicate launch config setting
           PYTHONPATH: scripts          # adjust as needed
         run: |
