@@ -99,6 +99,7 @@
       </tr>
     </table>
 
+    {% if conclusions.hits.lowest_identity %}
     <p class="my-3 text-center">
       Lowest identity of all
       {{ hits | length }}
@@ -107,6 +108,7 @@
         {{ "%.1f" | format(conclusions.hits.lowest_identity * 100) }}%
       </span>
     </p>
+    {% endif %}
 
   </div>
 </div>
