@@ -4,7 +4,6 @@ import logging
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 from p0_validation import (
     TAXDB_EXPECT_FILES,
@@ -19,7 +18,6 @@ from p0_validation import (
     _validate_taxdbs,
 )
 
-from src.utils.config import Config
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 logging.disable(logging.CRITICAL)
@@ -117,7 +115,6 @@ class ValidationTestCase(unittest.TestCase):
     def test_it_can_validate_metadata_host(self):
         _validate_metadata_host('Cut flowers Rosa')
 
-    @patch.object(Config, 'TAXONKIT_DATA', new=MOCK_TAXONKIT_DIR)
     def test_it_can_validate_taxdbs_path(self):
         for required_file in TAXDB_EXPECT_FILES:
             path = MOCK_TAXONKIT_DIR / required_file

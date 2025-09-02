@@ -12,6 +12,7 @@ from src.taxonomy import extract
 from src.taxonomy.extract import TAXONOMIC_RANKS
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config import arguments
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -19,7 +20,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir)
+    config.update_from_args(args)
     with args.taxids_csv.open() as taxids_file:
         accession_taxids = {
             row[0]: row[1]
@@ -33,23 +34,35 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'taxids_csv',
+        'taxids_csv',  # Not mapped to config
         type=existing_path,
         help='CSV file with columns (accession,taxid) to extract taxonomy'
              ' information for.',
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{arguments.OUTPUT_DIR}",
         type=existing_path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
     )
+    parser.add_argument(
+        f"--{arguments.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
     return parser.parse_args()
 
 
 def _write_csv(taxonomies, accession_taxids):
-    path = config.output_dir / config.TAXONOMY_FILE
+    path = config.output_dir / config.taxonomy_file
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('w') as output_file:
         writer = csv.DictWriter(

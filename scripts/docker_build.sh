@@ -2,13 +2,20 @@
 
 set -e
 
+PUSH=false
 IMAGE=neoformit/taxodactyl
+DOCKERFILE="Dockerfile"
 
-# Check for -t argument and set TAG if provided
-while getopts "t:" opt; do
+while getopts "t:pu" opt; do
   case $opt in
     t)
-      TAG=$OPTARG
+      TAG=$OPTARG  # Tag to use for the build
+      ;;
+    p)
+      PUSH=true  # Whether to push the image after building
+      ;;
+    u)
+      DOCKERFILE="Dockerfile.update"  # Code update only
       ;;
     *)
       ;;
@@ -16,21 +23,18 @@ while getopts "t:" opt; do
 done
 
 if [[ -z $TAG ]]; then
-  # Prompt for the tag if not provided
-  read -p "Have you updated the VERSION file? [y/n] > " REPLY
+  TAG=$(cat ../VERSION)
+  read -p "Have you updated the VERSION file? (read '${TAG}') [y/n] > " REPLY
   if [[ $REPLY != "y" ]]; then
     echo "Please update the VERSION file before building."
     exit 1
   fi
-  TAG=$(cat ../VERSION)
 fi
 
-# Build the Docker image
-docker build -t $IMAGE:$TAG .
+docker build -t $IMAGE:$TAG -f $DOCKERFILE .
 docker tag $IMAGE:$TAG $IMAGE:latest
 
-# if -p in args, push the image to the registry
-if [[ $* == *-p* ]]; then
+if [ "$PUSH" = true ]; then
   docker push $IMAGE:$TAG
   docker push $IMAGE:latest
 fi

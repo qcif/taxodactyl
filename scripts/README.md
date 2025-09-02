@@ -161,20 +161,19 @@ MAFFT, FastME) are actioned with other tools, but most steps require invoking on
 of the Python scripts included in this repository. For ease of reference, the
 scripts are enumerated as P1-P6.
 
+Each script can also accept an optional argument `-c config.yml` that can be used
+in place of CLI arguments, though CLI arguments will override any parameters
+provided by the config file. See the
+[configuration section](#application-configuration) for more info on
+configuration options.
+
 ## Environment variables
 
-Throughout execution of these scripts, access to input files is required.
-To avoid repeated passing of these files, they are just set as environment
-variables:
+Some environment variables that can be useful in development. These can all be passed as CLI params to the relevant scripts, or declared in a config.yml file, but sometimes this might be easier:
 
 ```sh
 INPUT_FASTA_FILEPATH="/my/input/folder/query.fasta"
 INPUT_METADATA_CSV_FILEPATH="/my/input/folder/metadata.csv"
-```
-
-Some other environment variables that can be useful in development:
-
-```sh
 LOGGING_DEBUG=0  # 1 to enable additional logging to help with debugging
 SKIP_ORIENTATION=0  # 1 to skip orientation of BOLD sequences (requires setup)
 GBIF_MAX_OCCURRENCE_RECORDS=200  # Reduce to 200 for testing/dev to speed up p5. Default 5000.
@@ -201,21 +200,39 @@ sequence lengths and required metadata.csv fields.
 ```
 $ python p0_validation.py -h
 
-usage: p0_validation.py [-h] --metadata_csv METADATA_CSV --query_fasta
-                        QUERY_FASTA --taxdb_dir TAXDB_DIR [--bold]
+usage: p0_validation.py [-h] --metadata-csv METADATA_CSV --query-fasta
+                        QUERY_FASTA --taxdb-dir TAXDB_DIR [--bold]
+                        [--allowed-loci-file ALLOWED_LOCI_FILE]
+                        [--input-fasta INPUT_FASTA]
+                        [--input-metadata INPUT_METADATA]
+                        [--fasta-max-sequences FASTA_MAX_SEQUENCES]
+                        [--fasta-min-length FASTA_MIN_LENGTH]
+                        [--fasta-max-length FASTA_MAX_LENGTH]
 
 Validate user input.
 
 options:
   -h, --help            show this help message and exit
-  --metadata_csv METADATA_CSV
+  --metadata-csv METADATA_CSV
                         Path to metadata.csv input file.
-  --query_fasta QUERY_FASTA
+  --query-fasta QUERY_FASTA
                         Path to queries.fasta input file.
-  --taxdb_dir TAXDB_DIR
+  --taxdb-dir TAXDB_DIR
                         Path to queries.fasta input file.
   --bold                Validate inputs for a BOLD analysis (accept blank
                         locus field).
+  --allowed-loci-file ALLOWED_LOCI_FILE
+                        Path to JSON file containing allowed loci definitions
+  --input-fasta INPUT_FASTA
+                        Path to input FASTA file containing query sequences
+  --input-metadata INPUT_METADATA
+                        Path to input metadata CSV file
+  --fasta-max-sequences FASTA_MAX_SEQUENCES
+                        Maximum number of sequences allowed
+  --fasta-min-length FASTA_MIN_LENGTH
+                        Minimum sequence length in nucleotides
+  --fasta-max-length FASTA_MAX_LENGTH
+                        Maximum sequence length in nucleotides
 ```
 
 
@@ -236,9 +253,11 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --input-db INPUT_DB   Database path to use for retrieving taxon ID.
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Directory to save parsed output files (JSON and FASTA).
+                        Defaults to env variable 'OUTPUT_DIR' or 'output'.
+  --blast-max-target-seqs BLAST_MAX_TARGET_SEQS
+                        Maximum number of target sequences for BLAST
 ```
 
 Output is in per-query directories corresponding to the sequence index in
@@ -257,6 +276,28 @@ output/
 │   └── query_title.txt
 ├── ...
 ...
+```
+
+## P1 BOLD search
+
+This script uses the BOLD API to search for similar sequences to query sequences.
+It's an alternative to BLAST when using the BOLD database for taxonomic identification.
+
+```
+$ python scripts/p1_bold_search.py -h
+
+Use the BOLD API to search for similar sequences to query.
+
+positional arguments:
+  fasta_file            Path to the FASTA file containing sequences to search.
+
+options:
+  -h, --help            show this help message and exit
+  --output-dir OUTPUT_DIR
+                        Directory to save parsed output files (JSON and FASTA).
+                        Defaults to env variable 'OUTPUT_DIR' or 'output'.
+  --bold-database BOLD_DATABASE
+                        BOLD database to search
 ```
 
 ## BLASTDBCMD
@@ -297,7 +338,7 @@ positional arguments:
 options:
   -h, --help           show this help message and exit
   --output OUTPUT_CSV  CSV file where taxonomy data will be written. Defaults to taxonomy.csv
-  --taxdb TAXDB_PATH   Path to directory containing NCBI taxdump files for taxonkit. Defaults to /home/ubuntu/.taxonkit
+  --taxdb TAXDB_PATH   Path to directory containing NCBI taxdump files for taxonkit. Defaults to $HOME/.taxonkit
   ```
 
 
@@ -314,7 +355,16 @@ represented by those hits. It generates several reportable outcomes:
 
 ```
 $ python p3_assign_taxonomy.py -h
-usage: p3_assign_taxonomy.py [-h] [--output_dir OUTPUT_DIR] [--bold] query_dir
+usage: p3_assign_taxonomy.py [-h] [--output-dir OUTPUT_DIR] [--bold]
+                             [--min-alignment-length MIN_ALIGNMENT_LENGTH]
+                             [--min-query-coverage MIN_QUERY_COVERAGE]
+                             [--min-identity MIN_IDENTITY]
+                             [--min-identity-strict MIN_IDENTITY_STRICT]
+                             [--median-identity-warning-factor MEDIAN_IDENTITY_WARNING_FACTOR]
+                             [--max-candidates-analysis MAX_CANDIDATES_ANALYSIS]
+                             [--phylogeny-min-sequences PHYLOGENY_MIN_SEQUENCES]
+                             [--phylogeny-max-per-species PHYLOGENY_MAX_PER_SPECIES]
+                             query_dir
 
 Run logic for pipeline phase 1-2. - Attempt species ID from BLAST results.json (flag 1) - Detect Taxa of Interest (flag 2) Taxa of Interest output has the following CSV
 fields: Taxon of interest: The provided TOI that matched a candidate species Match rank: The taxonomic rank of the match (TOI rank may be above species) Match taxon: The taxon
@@ -325,9 +375,25 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Outputs are from BOLD query.
+  --min-alignment-length MIN_ALIGNMENT_LENGTH
+                        Minimum alignment length in nucleotides
+  --min-query-coverage MIN_QUERY_COVERAGE
+                        Minimum query coverage fraction
+  --min-identity MIN_IDENTITY
+                        Minimum sequence identity for moderate matches
+  --min-identity-strict MIN_IDENTITY_STRICT
+                        Minimum sequence identity for strong matches
+  --median-identity-warning-factor MEDIAN_IDENTITY_WARNING_FACTOR
+                        Factor for median identity warnings
+  --max-candidates-analysis MAX_CANDIDATES_ANALYSIS
+                        Maximum candidates to include in detailed analysis
+  --phylogeny-min-sequences PHYLOGENY_MIN_SEQUENCES
+                        Minimum sequences required for phylogeny
+  --phylogeny-max-per-species PHYLOGENY_MAX_PER_SPECIES
+                        Maximum sequences per species for phylogeny
 ```
 
 
@@ -344,7 +410,9 @@ publication author, journal and title for each publication.
 ```
 $ python p4_source_diversity.py -h
 
-usage: p4_source_diversity.py [-h] [--output_dir OUTPUT_DIR] query_dir
+usage: p4_source_diversity.py [-h] [--output-dir OUTPUT_DIR]
+                               [--min-source-count MIN_SOURCE_COUNT]
+                               query_dir
 
 Analyze the diversity of reference sequence sources oer target. A source is
 defined as a publication or set of authors that are linked to the genbank
@@ -359,8 +427,10 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
+  --min-source-count MIN_SOURCE_COUNT
+                        Minimum number of independent sources required
 ```
 
 
@@ -378,7 +448,18 @@ each target taxon.
 ```
 $ python p5_db_coverage.py -h
 
-usage: p5_db_coverage.py [-h] [--output_dir OUTPUT_DIR] [--bold] query_dir
+usage: p5_db_coverage.py [-h] [--output-dir OUTPUT_DIR] [--bold]
+                         [--db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT]
+                         [--db-coverage-max-candidates DB_COVERAGE_MAX_CANDIDATES]
+                         [--gbif-limit-records GBIF_LIMIT_RECORDS]
+                         [--gbif-max-occurrence-records GBIF_MAX_OCCURRENCE_RECORDS]
+                         [--gbif-accepted-status GBIF_ACCEPTED_STATUS]
+                         [--db-cov-target-min-a DB_COV_TARGET_MIN_A]
+                         [--db-cov-target-min-b DB_COV_TARGET_MIN_B]
+                         [--db-cov-related-min-a DB_COV_RELATED_MIN_A]
+                         [--db-cov-related-min-b DB_COV_RELATED_MIN_B]
+                         [--db-cov-country-missing-a DB_COV_COUNTRY_MISSING_A]
+                         query_dir
 
 Analyze the database coverage of target species at the given locus. Database coverage is analysed at three levels: 1. Target species coverage: The number of records for the
 target species 2. Related species coverage: The number of records for species related to the target species 3. Related species from sample country of origin: as for (2), but
@@ -389,9 +470,29 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                Reference the BOLD database instead of GenBank.
+  --db-coverage-toi-limit DB_COVERAGE_TOI_LIMIT
+                        Limit for taxa of interest in coverage analysis
+  --db-coverage-max-candidates DB_COVERAGE_MAX_CANDIDATES
+                        Maximum candidates for coverage assessment
+  --gbif-limit-records GBIF_LIMIT_RECORDS
+                        Limit for GBIF taxonomy records
+  --gbif-max-occurrence-records GBIF_MAX_OCCURRENCE_RECORDS
+                        Maximum GBIF occurrence records
+  --gbif-accepted-status GBIF_ACCEPTED_STATUS
+                        Comma-separated list of accepted taxonomic statuses
+  --db-cov-target-min-a DB_COV_TARGET_MIN_A
+                        Minimum records for target species (grade A)
+  --db-cov-target-min-b DB_COV_TARGET_MIN_B
+                        Minimum records for target species (grade B)
+  --db-cov-related-min-a DB_COV_RELATED_MIN_A
+                        Minimum records for related species (grade A)
+  --db-cov-related-min-b DB_COV_RELATED_MIN_B
+                        Minimum records for related species (grade B)
+  --db-cov-country-missing-a DB_COV_COUNTRY_MISSING_A
+                        Threshold for missing country data (grade A)
 ```
 
 The code for these analyses is fairly abstract in order to accomodate the range
@@ -440,7 +541,12 @@ by the user. The report is a single HTML file rendered from many templates
 
 ```
 $ python p6_report.py -h
-usage: p6_report.py [-h] [--output_dir OUTPUT_DIR] [--bold] [--params_json PARAMS_JSON] [--versions_yml VERSIONS_YML] query_dir
+usage: p6_report.py [-h] [--output-dir OUTPUT_DIR] [--bold]
+                    [--params_json PARAMS_JSON] [--versions_yml VERSIONS_YML]
+                    [--report-debug] [--database-name DATABASE_NAME]
+                    [--facility-name FACILITY_NAME] [--analyst-name ANALYST_NAME]
+                    [--flag-details-csv FLAG_DETAILS_CSV]
+                    query_dir
 
 Build the workflow report.
 
@@ -449,13 +555,22 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Path to output directory. Defaults to output.
   --bold                If set, will enable the 'bold' logic for rendering the report.
   --params_json PARAMS_JSON
                         Path to params JSON file.
   --versions_yml VERSIONS_YML
                         Path to versions YAML file.
+  --report-debug        Enable debug mode for report generation
+  --database-name DATABASE_NAME
+                        Name of the reference database
+  --facility-name FACILITY_NAME
+                        Name of the analysis facility
+  --analyst-name ANALYST_NAME
+                        Name of the analyst
+  --flag-details-csv FLAG_DETAILS_CSV
+                        Path to CSV file containing flag definitions
 ```
 
 The entrypoint for the
@@ -501,37 +616,26 @@ This will prompt the github.io docs pages to rebuild, which takes 2-3 minutes.
 
 ## Application configuration
 
-The [config.py] module provides all of the configuration for the application at
-runtime, and pulls a lot of configuration from environment variables set by the
-user or Nextflow. The idea is that any module should be able to import config
-and easily access a set of global constants/variables:
+The application uses a flexible YAML-based configuration system with Pydantic validation. Configuration is defined in [config_schema.py](./src/utils/config_schema.py) and loaded via the [config.py](./src/utils/config.py) module, which provides a singleton Config object for runtime access.
 
 ```py
 from src.utils.config import Config
 
-config = Config()
-```
-
-The `Config` object has a lot of properties/methods for convenient access to
-analysis context, for example:
-
-```py
-query_ix = 0
+config = Config()  # Returns a singleton, shared across all modules
 sample_id = config.get_sample_id(query_ix)
-locus = config.get_locus_for_query(query_ix)
 ```
 
-You do have to be careful when mutating config attributes - just because you
-change a config attribute in one script, doesn't mean that it has changed in
-an imported module! We have special methods for mutating config, one of which
-is called at the beginning of most scripts:
+The configuration system supports cascading files and CLI argument overrides. For detailed configuration usage, examples, and the full schema documentation, see: **[./config/README.md](./config/README.md)**
 
-```py
-# Set the output dir and query dir globally so the entire codebase
-# can use the config object to build reliable and reproducible file paths.
-# Otherwise we'd be passing these variables throughout the entire codebase:
-config.configure(args.output_dir, query_dir=args.query_dir)
+### For developers: Maintaining configuration
+
+When modifying the Pydantic configuration schema, you **must** regenerate the default configuration file:
+
+```bash
+python dev/generate_default_config.py
 ```
+
+This ensures `config/default.yml` stays synchronized with the schema defined in `config_schema.py`. This step is critical for maintaining consistency between the code and configuration files.
 
 
 ## Handling errors
@@ -618,30 +722,45 @@ HTML report, so any text updates here will propagate to the report generation.
 Some of the criteria for calling flags is declared in `config.CRITERIA` - refer
 the [config section](#application-configuration).
 
-During the analysis (P3-P5) flag files are written. I'm not super happy with how
-these are structured, but they needed to be written as a separate file for each
-script that can be collected by Nextflow and then passed to the P6 script for
-rendering the report. So I decided to write one file per flag, encode the flag
-metadata in the file name, and then write only the value to the file. These files
-can then all be read from the output directory to get a complete "Flag set" for
-the report. A complete set of flag files might look like this, though the
-number of flag 4/5s depends on how many candidates and TOIs exist:
+During the analysis (P3-P5) flag files are written in JSON format. These should
+be collected by Nextflow and then all passed to p6 script for report generation
+at the end. The flag files
+can then all be read from the output directory to get a complete "flag set" for
+the report. A complete set of flag files should look like this:
 
 ```
 1.flag
 2.flag
-4-Anneissia_japonica.flag
-4-Anneissia_sp._NIBGE_MOT(~)03651.flag
-5.1-candidate-Anneissia_japonica.flag
-5.1-pmi-Tortricidae.flag
-5.1-toi-Acanthaster_planci.flag
-5.2-candidate-Anneissia_japonica.flag
-5.2-pmi-Tortricidae.flag
-5.2-toi-Acanthaster_planci.flag
-5.3-candidate-Anneissia_japonica.flag
-5.3-pmi-Tortricidae.flag
-5.3-toi-Acanthaster_planci.flag
+4.flag
+5.1.flag
+5.2.flag
+5.3.flag
 7.flag
+```
+
+Example flag file content:
+
+```json
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Anneissia japonica",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Acanthaster planci",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Asterias rubens",
+    "target_type": "pmi"
+  }
+]
 ```
 
 Flags have caused a few bugs because sometimes a non-fatal error (usually an

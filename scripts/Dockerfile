@@ -9,19 +9,19 @@ RUN wget https://github.com/shenwei356/taxonkit/releases/latest/download/taxonki
     && rm taxonkit_linux_amd64.tar.gz
 
 # Install HMMSearch
-RUN wget http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz \
-    && tar -xzf hmmer-3.4.tar.gz \
-    && rm hmmer-3.4.tar.gz \
-    && cd hmmer-3.4 \
-    && ./configure --prefix=/opt/hmmer \
-    && make \
-    && make install \
-    && strip /opt/hmmer/bin/hmmsearch \
-    && find /opt/hmmer/bin ! -name 'hmmsearch' -type f -delete \
-    && cp /opt/hmmer/bin/hmmsearch /usr/local/bin \
-    && strip /usr/local/bin/hmmsearch \
-    && cd .. \
-    && rm -rf hmmer-3.4/
+# RUN wget http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz \
+#     && tar -xzf hmmer-3.4.tar.gz \
+#     && rm hmmer-3.4.tar.gz \
+#     && cd hmmer-3.4 \
+#     && ./configure --prefix=/opt/hmmer \
+#     && make \
+#     && make install \
+#     && strip /opt/hmmer/bin/hmmsearch \
+#     && find /opt/hmmer/bin ! -name 'hmmsearch' -type f -delete \
+#     && cp /opt/hmmer/bin/hmmsearch /usr/local/bin \
+#     && strip /usr/local/bin/hmmsearch \
+#     && cd .. \
+#     && rm -rf hmmer-3.4/
 
 COPY . /app/scripts
 
