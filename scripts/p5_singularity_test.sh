@@ -6,7 +6,7 @@ QUERY_DIR=test-data/query_1/
 OUTPUT_DIR=test-data/
 
 singularity exec \
-    docker://neoformit/daff-taxonomic-assignment \
+    docker://neoformit/taxodactyl \
     python /app/scripts/p5_db_coverage.py \
     $QUERY_DIR \
     --output-dir $OUTPUT_DIR

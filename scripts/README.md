@@ -108,10 +108,10 @@ Update the image path before running if required. You will need to have push acc
 
 ```sh
 # nano docker_build.sh
-IMAGE=neoformit/daff-taxonomic-assignment
+IMAGE=neoformit/taxodactyl
 ```
 
-Now to build image `neoformit/daff-taxonomic-assignment:v1.2.0`:
+Now to build image `neoformit/taxodactyl:v1.2.0`:
 
 ```sh
 # Build an image from the current working directory:
