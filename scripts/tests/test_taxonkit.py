@@ -116,12 +116,29 @@ class TestNcbiTaxonomy(unittest.TestCase):
             any_order=True,
         )
 
-call().write('accession,taxid,superkingdom,kingdom,phylum,class,order,family,genus,species\r\n'),
-call().write('ACC1,1529436,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia japonica\r\n'),
-call().write('ACC2,2711157,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia pinguis\r\n'),
-call().write('ACC3,1529435,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia bennetti\r\n')
 
-call().write('accession,taxid,domain,superkingdom,kingdom,phylum,class,order,family,genus,species\r\n'),
-call().write('ACC1,1529436,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia japonica\r\n'),
-call().write('ACC2,2711157,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia pinguis\r\n'),
-call().write('ACC3,1529435,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,Comatulidae,Anneissia,Anneissia bennetti\r\n')
+call().write(
+    'accession,taxid,superkingdom,kingdom,phylum,class,order,family,genus,'
+    'species\r\n')
+call().write(
+    'ACC1,1529436,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia japonica\r\n')
+call().write(
+    'ACC2,2711157,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia pinguis\r\n')
+call().write(
+    'ACC3,1529435,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia bennetti\r\n')
+
+call().write(
+    'accession,taxid,domain,superkingdom,kingdom,phylum,class,order,family,'
+    'genus,species\r\n')
+call().write(
+    'ACC1,1529436,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia japonica\r\n')
+call().write(
+    'ACC2,2711157,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia pinguis\r\n')
+call().write(
+    'ACC3,1529435,,Eukaryota,Metazoa,Echinodermata,Crinoidea,Comatulida,'
+    'Comatulidae,Anneissia,Anneissia bennetti\r\n')

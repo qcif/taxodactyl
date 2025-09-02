@@ -75,14 +75,14 @@ def write(
              report e.g. 'target'.
     """
     parent = query_dir or config.output_dir
-    next_path = parent / config.ERRORS_DIR / 'next.txt'
+    next_path = parent / config.errors_dir / 'next.txt'
     if next_path.exists():
         i = int(next_path.read_text())
     else:
         next_path.parent.mkdir(parents=True, exist_ok=True)
         i = 1
     next_path.write_text(str(i + 1))
-    path = parent / config.ERRORS_DIR / f'{i}.json'
+    path = parent / config.errors_dir / f'{i}.json'
     with path.open('w') as f:
         json.dump({
             "location": location,
@@ -122,7 +122,7 @@ class ErrorLog:
         """Read all error files from given error directory."""
         errors = []
         parent = self.query_dir or config.output_dir
-        for path in (parent / config.ERRORS_DIR).glob('*.json'):
+        for path in (parent / config.errors_dir).glob('*.json'):
             with path.open() as f:
                 errors.append(json.load(f))
         return errors

@@ -30,6 +30,16 @@ def serialize(obj):
         return f'method:{obj.__name__}'
     if isinstance(obj, Path):
         return f"Path({obj})"
+    if hasattr(obj, 'model_dump'):
+        # Serialize Pydantic models directly
+        return obj.model_dump()
+    if (
+        hasattr(obj, '__dict__')
+        and hasattr(obj, '__module__')
+        and 'pydantic' in str(obj.__class__)
+    ):
+        # Fallback for older Pydantic versions
+        return dict(obj)
     raise TypeError(f"Object of type {type(obj).__name__} is not JSON"
                     " serializable")
 

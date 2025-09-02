@@ -142,7 +142,7 @@ def get(key_hash):
         try:
             with _get_connection(sqlite_path) as conn:
                 cutoff_time = datetime.now() - timedelta(
-                    hours=config.CACHE_TIMEOUT_HOURS
+                    hours=config.cache_timeout_hours
                 )
 
                 # Use atomic transaction to avoid race conditions

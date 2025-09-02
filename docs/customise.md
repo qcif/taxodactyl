@@ -6,7 +6,7 @@ Any settings in your local or custom config file will override the defaults set 
 
 The pipeline’s default configuration files are located in the `conf` folder. For example, [conf/process.config](../conf/process.config) contains the default resource settings (such as CPUs, memory, and time) and container images for each process in the pipeline.
 
-For more details, see the [technical documentation for this pipeline](detailled_tech.md) and the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html).
+For more details, see the [technical documentation for this pipeline](detailed_tech.md) and the [Nextflow configuration documentation](https://www.nextflow.io/docs/latest/config.html).
 
 The following sections provide practical examples of how to customise your pipeline configuration:
 
@@ -43,7 +43,7 @@ process {
     errorStrategy = 'ignore'
 }
 ```
-Replace `ignore` with the desired error handling strategy, such as `terminate`, `retry`, or `finish`, depending on the desired behavior. See [Nextflow documentation](https://www.nextflow.io/docs/latest/reference/process.html#process-error-strategy) for details. 
+Replace `ignore` with the desired error handling strategy, such as `terminate`, `retry`, or `finish`, depending on the desired behavior. See [Nextflow documentation](https://www.nextflow.io/docs/latest/reference/process.html#process-error-strategy) for details.
 
 The `ignore` error strategy is used in conjunction with the `workflow.failOnIgnore = true` for the workflow to fail at the end if any tasks resulted in errors. 
 
@@ -62,7 +62,7 @@ params {
 }
   ```
 
-Any parameter set in your config file will override the pipeline defaults (see `conf/params.config` for all available parameters and their default values).  
+Any parameter set in your config file will override the pipeline defaults (see `conf/params.config` for all available parameters and their default values).
 You can combine both methods: parameters set on the command line will override those in the config file.
 
 ### Example

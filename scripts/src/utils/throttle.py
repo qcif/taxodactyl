@@ -205,7 +205,7 @@ class Throttle:
         return within_per_second_limit and within_per_minute_limit
 
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
-        retries = config.MAX_API_RETRIES
+        retries = config.max_api_retries
         if with_cache:
             cache_key = cache.keyhash(func, args, kwargs)
             cached_data = cache.get(cache_key)
@@ -232,11 +232,11 @@ class Throttle:
                     logger.warning(
                         "API rate limit exceeded. Waiting 10 minutes before"
                         " next retry.")
-                    retries = config.MAX_API_RETRIES
+                    retries = config.max_api_retries
                 elif retries <= 0:
                     raise APIError(
                         'Failed to fetch data from API after'
-                        f' {config.MAX_API_RETRIES} retries. Please try'
+                        f' {config.max_api_retries} retries. Please try'
                         f' resuming this job at a later time.'
                         f'\nException: {exc}'
                     )

@@ -9,6 +9,7 @@ from pathlib import Path
 from src.blast.parse_xml import parse_blast_xml
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config import arguments
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -16,7 +17,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir)
+    config.update_from_args(args)
     hits, fastas = parse_blast_xml(args.blast_xml_path)
     _write_hits(hits)
     _write_fastas(fastas)
@@ -28,16 +29,33 @@ def _parse_args():
         description="Parse BLAST XML output file."
     )
     parser.add_argument(
-        "blast_xml_path",
+        "blast_xml_path",  # Not mapped to config
         type=existing_path,
         help="Path to the BLAST XML file to parse.",
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{arguments.OUTPUT_DIR}",
         type=Path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
+    )
+    parser.add_argument(
+        f"--{arguments.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.BLAST_MAX_TARGET_SEQS}",
+        type=int,
+        help="Maximum number of target sequences for BLAST",
     )
     return parser.parse_args()
 
@@ -46,7 +64,7 @@ def _write_hits(hits):
     """Write a JSON file of BLAST hits for each query sequence."""
     for i, query_hits in enumerate(hits):
         query_dir = config.create_query_dir(i, query_hits['query_title'])
-        path = query_dir / config.HITS_JSON
+        path = query_dir / config.hits_json
         with path.open("w") as f:
             json.dump(query_hits, f, indent=2)
             logger.info(f"BLAST hits for query [{i}] written to {path}")
@@ -57,7 +75,7 @@ def _write_fastas(query_fastas):
     for i, fastas in enumerate(query_fastas):
         if not fastas:
             continue
-        path = config.get_query_dir(i) / config.HITS_FASTA
+        path = config.get_query_dir(i) / config.hits_fasta
         with open(path, "w") as f:
             SeqIO.write(fastas, f, "fasta")
             logger.info(
@@ -69,7 +87,7 @@ def _write_accessions(hits):
 
     These will be used for extracting taxonomy data.
     """
-    hit_accesssions_path = config.output_dir / config.ACCESSIONS_FILENAME
+    hit_accesssions_path = config.output_dir / config.accessions_filename
     all_accessions = list({
         hit["accession"]
         for query in hits

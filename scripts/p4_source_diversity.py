@@ -16,6 +16,7 @@ import logging
 from src.sources import collect
 from src.utils import existing_path, serialize
 from src.utils.config import Config
+from src.utils.config import arguments
 from src.utils.flags import FLAGS, Flag
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir, query_dir=args.query_dir)
+    config.update_from_args(args)
     species, hits = _read_candidate_hits(args.query_dir)
     candidate_hits = [
         hit for hit in hits
@@ -48,17 +49,36 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir", type=existing_path, help="Path to query output directory")
+        "query_dir",  # Not mapped to config
+        type=existing_path,
+        help="Path to query output directory")
     parser.add_argument(
-        "--output_dir",
+        f"--{arguments.OUTPUT_DIR}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
+    parser.add_argument(
+        f"--{arguments.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.QUERY_FASTA}",
+        type=existing_path,
+        help="Path to queries.fasta input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.MIN_SOURCE_COUNT}",
+        type=int,
+        help="Minimum number of independent sources required",
+    )
     return parser.parse_args()
 
 
 def _read_candidate_hits(query_dir):
-    candidates = config.read_json(query_dir / config.CANDIDATES_JSON)
+    candidates = config.read_json(query_dir / config.candidates_json)
     species = candidates["species"]
     hits = candidates["hits"]
     return species, hits
@@ -70,7 +90,7 @@ def _set_flags(species_sources, query_dir):
         flag_value = (
             FLAGS.A
             if species['independent_sources']
-            > config.CRITERIA.SOURCES_MIN_COUNT
+            > config.criteria.sources_min_count
             else FLAGS.B
         )
         Flag.write(
@@ -82,14 +102,14 @@ def _set_flags(species_sources, query_dir):
 
 
 def _write_candidates(candidates, query_dir):
-    path = query_dir / config.CANDIDATES_SOURCES_JSON
+    path = query_dir / config.candidates_sources_json
     with path.open('w') as f:
         json.dump(candidates, f, default=serialize, indent=2)
     logger.info(f"Candidate hits with source diversity data written to {path}")
 
 
 def _write_sources(sources, query_dir):
-    path = query_dir / config.INDEPENDENT_SOURCES_JSON
+    path = query_dir / config.independent_sources_json
     with path.open('w') as f:
         json.dump(sources, f, default=serialize, indent=2)
     logger.info(f"Aggregated reference sequence sources written to {path}")

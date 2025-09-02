@@ -69,6 +69,7 @@ workflow TAXODACTYL {
         BOLD_SEARCH (
             ch_env_var_file,
             ch_sequences,
+            ch_metadata,
             VALIDATE_INPUT.out
         )
         ch_hits = BOLD_SEARCH.out.hits
@@ -81,7 +82,8 @@ workflow TAXODACTYL {
             MOCK_BLASTN (
                 ch_sequences,
                 VALIDATE_INPUT.out,
-                file("${projectDir}/scripts/tests/test-data/one_output.xml")
+                // file("${projectDir}/scripts/tests/test-data/one_output.xml")
+                file("${projectDir}/assets/Shaun_20250703_blast_result.xml")
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
@@ -97,7 +99,9 @@ workflow TAXODACTYL {
 
         EXTRACT_HITS (
             ch_env_var_file,
-            ch_blast_output
+            ch_blast_output,
+            ch_sequences,
+            ch_metadata
         )
         ch_hits = EXTRACT_HITS.out.hits
 
@@ -107,7 +111,9 @@ workflow TAXODACTYL {
 
         EXTRACT_TAXONOMY (
             ch_env_var_file,
-            BLAST_BLASTDBCMD.out.taxids
+            BLAST_BLASTDBCMD.out.taxids,
+            ch_sequences,
+            ch_metadata
         )
 
         ch_taxonomy_file = EXTRACT_TAXONOMY.out
@@ -119,24 +125,28 @@ workflow TAXODACTYL {
         .flatten()
         .map { file-> [file.parent.name, file] }
         .groupTuple()
+        // .view()
         .map { folder, files -> 
             // Handle cases where FASTA file may be missing (no hits found)
             def jsonFile = files.find { it.name.endsWith('.json') }
             def fastaFile = files.find { it.name.endsWith('.fasta') }
-            
-            // If no FASTA file exists, create an empty placeholder
+
+
+            // If no FASTA file exists, create an empty placeholder in a work folder
             if (fastaFile == null) {
-                fastaFile = file("${folder}/${params.hits_fasta_filename}", checkIfExists: false)
+                fastaFile = "${workflow.workDir}/${params.hits_fasta_filename}"
+                new File(fastaFile).createNewFile()      
             }
-            
+
             [folder, jsonFile, fastaFile]
-        } 
+        }
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
         ch_env_var_file,
         ch_hits_to_filter,
         ch_taxonomy_file,
+        ch_sequences,
         ch_metadata
     )
     
@@ -144,13 +154,26 @@ workflow TAXODACTYL {
     // Prepare query sequences for alignment
     ch_query_fasta = ch_sequences
         .splitFasta(record: [id: true, sequence: true])
-        .map { tuple -> [tuple.id.replaceFirst(/\.\d+$/, ""), tuple.sequence.replaceAll(/\n/, "")] }
+        .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
-    // Combine candidate and query sequences for alignment
-    ch_seqs_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
+    // Combine candidate and query sequences for alignment  
+    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
+
+    ch_seqs_for_alignment = ch_candidates_for_join
         .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
+
+    // Validate that we got alignments for all candidates
+    ch_candidates_for_join.count()
+        .combine(ch_seqs_for_alignment.count())
+        .subscribe { candidate_count, alignment_count ->
+            if (alignment_count == 0) {
+                exit 1, "ERROR: No sequences matched for alignment. Check sequence ID format compatibility between candidates and queries."
+            } else if (alignment_count < candidate_count) {
+                exit 1, "ERROR: Only ${alignment_count}/${candidate_count} candidate sequences matched query sequences for alignment. This is most likely a bug in the workflow - please report it."
+            }
+        }
 
     // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
@@ -174,13 +197,16 @@ workflow TAXODACTYL {
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
         ch_env_var_file,
-        ch_candidates_for_source_diversity_filtered
+        ch_candidates_for_source_diversity_filtered,
+        ch_sequences,
+        ch_metadata
     )
 
     // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
         ch_env_var_file,
         EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
+        ch_sequences,
         ch_metadata
     )
 
