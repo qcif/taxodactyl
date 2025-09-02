@@ -11,6 +11,7 @@ from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
 from src.utils.config import Config
+from src.utils.config import arguments
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
@@ -31,6 +32,7 @@ TAXDB_EXPECT_FILES = {
 
 def main():
     args = _parse_args()
+    config.update_from_args(args)
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)
     _validate_metadata(args.metadata_csv, ids, bold=args.bold)
@@ -41,27 +43,47 @@ def _parse_args():
         description="Validate user input."
     )
     parser.add_argument(
-        "--metadata_csv",
+        f"--{arguments.METADATA_CSV}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        "--query_fasta",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        "--taxdb_dir",
+        f"--{arguments.TAXDB_DIR}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        "--bold",
+        "--bold",  # doesn't map to config
         action="store_true",
         help="Validate inputs for a BOLD analysis (accept blank locus field).",
+    )
+    parser.add_argument(
+        f"--{arguments.ALLOWED_LOCI_FILE}",
+        type=existing_path,
+        help="Path to JSON file containing allowed loci definitions",
+    )
+    parser.add_argument(
+        f"--{arguments.FASTA_MAX_SEQUENCES}",
+        type=int,
+        help="Maximum number of sequences allowed",
+    )
+    parser.add_argument(
+        f"--{arguments.FASTA_MIN_LENGTH}",
+        type=int,
+        help="Minimum sequence length in nucleotides",
+    )
+    parser.add_argument(
+        f"--{arguments.FASTA_MAX_LENGTH}",
+        type=int,
+        help="Maximum sequence length in nucleotides",
     )
     return parser.parse_args()
 
@@ -107,24 +129,24 @@ def _validate_fasta(path: Path) -> list[str]:
                 raise FASTAFormatError(
                     f'invalid DNA in sequence ##{count}'
                 ) from exc
-            if count > config.INPUTS.FASTA_MAX_SEQUENCES:
+            if count > config.inputs.fasta_max_sequences:
                 raise FASTAFormatError(
                     f"too many query sequences provided. A maximum of"
-                    f" {config.INPUTS.FASTA_MAX_SEQUENCES} sequences is"
+                    f" {config.inputs.fasta_max_sequences} sequences is"
                     " allowed."
                 )
             length = len(seq.seq)
-            if length < config.INPUTS.FASTA_MIN_LENGTH_NT:
+            if length < config.inputs.fasta_min_length_nt:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp does not meet the"
                     " minimum allowed length of"
-                    f" {config.INPUTS.FASTA_MAX_LENGTH_NT}bp (sequence"
+                    f" {config.inputs.fasta_min_length_nt}bp (sequence"
                     f" ##{count})"
                 )
-            if length > config.INPUTS.FASTA_MAX_LENGTH_NT:
+            if length > config.inputs.fasta_max_length_nt:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp exceeds the maximum"
-                    f" allowed length of {config.INPUTS.FASTA_MAX_LENGTH_NT}bp"
+                    f" allowed length of {config.inputs.fasta_max_length_nt}bp"
                     f" (sequence ##{count})"
                 )
 
@@ -141,7 +163,7 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
     TOI list column should be pipe-delimited if multiple - validate chars?
     """
     sample_ids = []
-    columns = config.INPUTS.METADATA_CSV_HEADER
+    columns = config.inputs.metadata_csv_header
     with path.open() as f:
         reader = csv.DictReader(f)
         rows = list(reader)  # skip header row
@@ -159,7 +181,7 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
             )
         for col_id, colname in columns.items():
             if (
-                col_id in config.INPUTS.METADATA_CSV_REQUIRED_FIELDS
+                col_id in config.inputs.metadata_csv_required_fields
                 and not row[colname].strip()
             ):
                 msg = (

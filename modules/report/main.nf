@@ -8,7 +8,7 @@ process REPORT {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder),  
+    tuple val(query_folder),
         path(hits_query_folder, stageAs: 'hits_query_folder'),                // Folder with BLAST/BOLD hits
         path(nwk_file, stageAs: 'tree.nwk'),                                 // Newick tree file
         path(candidates_query_folder, stageAs: 'candidates_query_folder'),    // Folder with candidate data
@@ -28,10 +28,15 @@ process REPORT {
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
+    def report_debug_arg = params.report_debug ? "--report-debug" : ''
+    def database_name_arg = params.blast_database_name_for_report ? "--database-name '${params.blast_database_name_for_report}'" : ''
+    def facility_name_arg = params.facility_name ? "--facility-name '${params.facility_name}'" : ''
+    def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
+    
     """
     # Source environment variables
     source ${env_var_file}
-    
+
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
     # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
@@ -55,9 +60,15 @@ process REPORT {
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             ${query_folder} \
-            --output_dir ./ \
+            --query-fasta ${sequences_file} \
+            --metadata-csv ${metadata_file} \
+            --output-dir ./ \
             --versions_yml ${versions_file} \
             --params_json ${params_file} \
-            ${bold_flag} 
+            ${bold_flag} \
+            ${report_debug_arg} \
+            ${database_name_arg} \
+            ${facility_name_arg} \
+            ${analyst_name_arg}
     """
 }

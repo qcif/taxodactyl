@@ -10,8 +10,8 @@ class TestGetAccessionsForPhylogeny(unittest.TestCase):
     def setUp(self):
         # Set a low limit so we can exercise sampling
         patcher = mock.patch.object(
-            p3_assign_taxonomy.config.CRITERIA,
-            "PHYLOGENY_MAX_HITS_PER_SPECIES",
+            p3_assign_taxonomy.config.criteria,
+            "phylogeny_max_hits_per_species",
             5,
             create=True,
         )
