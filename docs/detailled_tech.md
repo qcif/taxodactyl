@@ -128,7 +128,7 @@ You can also change the container for a process but we cannot guarantee the comp
 
 | Process / Label         | Container Image                                                                                   |
 |------------------------ |--------------------------------------------------------------------------------------------------|
-| `daff_tax_assign` label (`EXTRACT_HITS`, `EXTRACT_TAXONOMY`, `BOLD_SEARCH`, `EXTRACT_CANDIDATES`, `EVALUATE_SOURCE_DIVERSITY`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`) | `docker://neoformit/daff-taxonomic-assignment:v1.0.0`                                            |
+| `daff_tax_assign` label (`EXTRACT_HITS`, `EXTRACT_TAXONOMY`, `BOLD_SEARCH`, `EXTRACT_CANDIDATES`, `EVALUATE_SOURCE_DIVERSITY`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`) | `docker://neoformit/taxodactyl:v1.0.0`                                            |
 | `blast` label (`BLAST_BLASTN`, `BLAST_BLASTDBCMD`)          | `docker://ncbi/blast:2.16.0`                                                                     |
 | `MAFFT_ALIGN`           | `quay.io/biocontainers/mulled-v2-12eba4a074f913c639117640936668f5a6a01da6:425707898cf4f85051b77848be253b88f1d2298a-0` |
 | `FASTME`                | `quay.io/biocontainers/fastme:2.1.6.3--h7b50bb2_1`                                               |
