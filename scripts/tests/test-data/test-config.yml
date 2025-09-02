@@ -1,0 +1,33 @@
+# Integration test configuration file
+# This file contains settings used during integration testing
+
+inputs:
+  facility_name: "Integration Testing"
+  analyst_name: "UnitTest Analyst"
+
+criteria:
+  # Use more permissive settings for faster test execution
+  alignment_min_nt: 200
+  alignment_min_q_coverage: 0.80
+  alignment_min_identity: 0.90
+  sources_min_count: 3
+  max_candidates_for_analysis: 5
+  phylogeny_min_hit_sequences: 10
+  phylogeny_max_hits_per_species: 20
+
+# BLAST configuration for testing
+blast_max_target_seqs: 1000
+
+# GBIF configuration for testing (smaller limits for faster execution)
+gbif_limit_records: 100
+gbif_max_occurrence_records: 200
+
+# Database coverage limits for testing
+db_coverage_toi_limit: 5
+db_coverage_max_candidates: 5
+
+# Report configuration
+report:
+  debug: true
+  title: "Integration Test Report"
+  database_name: "Test NCBI Database"

@@ -10,6 +10,7 @@ from Bio import SeqIO
 from src.bold.id_engine import BoldSearch
 from src.utils import existing_path
 from src.utils.config import Config
+from src.utils.config import arguments
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -17,9 +18,9 @@ config = Config()
 
 def main():
     args = _parse_args()
-    config.configure(args.output_dir, bold=True)
-    logger.info(f"Searching BOLD with query {args.fasta_file}...")
-    result = BoldSearch(args.fasta_file, config.BOLD_DATABASE)
+    config.update_from_args(args)
+    logger.info(f"Searching BOLD with query {args.query_fasta}...")
+    result = BoldSearch(args.query_fasta, config.bold_database)
     _write_hits_json(result)
     _write_hits_fasta(result)
     # _write_taxa_metadata(result)  # Not actually used downstream
@@ -29,16 +30,28 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "fasta_file",
+        f"--{arguments.QUERY_FASTA}",
         type=existing_path,
-        help="Path to the FASTA file containing sequences to search.",
+        help="Path to queries.fasta input file.",
+        required=True,
     )
     parser.add_argument(
-        "--output_dir",
+        f"--{arguments.METADATA_CSV}",
+        type=existing_path,
+        help="Path to metadata.csv input file.",
+        required=True,
+    )
+    parser.add_argument(
+        f"--{arguments.OUTPUT_DIR}",
         type=Path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
-             f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
+             f" to '{config.output_dir}'.",
         default=config.output_dir,
+    )
+    parser.add_argument(
+        f"--{arguments.BOLD_DATABASE}",
+        type=str,
+        help="BOLD database to search",
     )
     return parser.parse_args()
 
@@ -48,7 +61,7 @@ def _write_hits_json(result: BoldSearch):
     for query_title, hits in result.hits.items():
         query_ix = hits['query_index']
         query_dir = config.create_query_dir(query_ix, query_title)
-        path = query_dir / config.HITS_JSON
+        path = query_dir / config.hits_json
         with path.open("w") as f:
             json.dump(hits, f, indent=2)
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
@@ -59,7 +72,7 @@ def _write_hits_fasta(result: BoldSearch):
     for query_title, hits in result.hits.items():
         query_ix = hits['query_index']
         query_dir = config.get_query_dir(query_ix)
-        path = query_dir / config.HITS_FASTA
+        path = query_dir / config.hits_fasta
         with path.open("w") as f:
             SeqIO.write(result.hit_sequences[query_title], f, "fasta")
             logger.info(f"BOLD hits for query [{query_ix}] written to {path}")
@@ -67,17 +80,17 @@ def _write_hits_fasta(result: BoldSearch):
 
 def _write_taxa_metadata(result: BoldSearch):
     """Write BOLD taxon record metadata to JSON files."""
-    path = config.output_dir / config.BOLD_TAXON_COUNT_JSON
+    path = config.output_dir / config.bold_taxon_count_json
     with path.open("w") as f:
         json.dump(result.taxon_count, f, indent=2)
         logger.info(f"BOLD taxon count written to {path}")
 
-    path = config.output_dir / config.BOLD_TAXON_COLLECTORS_JSON
+    path = config.output_dir / config.bold_taxon_collectors_json
     with path.open("w") as f:
         json.dump(result.taxon_collectors, f, indent=2)
         logger.info(f"BOLD taxon collectors written to {path}")
 
-    path = config.output_dir / config.BOLD_TAXONOMY_JSON
+    path = config.output_dir / config.bold_taxonomy_json
     with path.open("w") as f:
         json.dump(result.taxon_taxonomy, f, indent=2)
         logger.info(f"BOLD taxonomies written to {path}")

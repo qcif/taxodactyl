@@ -22,7 +22,13 @@ class TestUtils(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.query_dir)
 
-    def test_flags(self):
+    @patch('src.utils.flags.config.locus_was_provided_for')
+    @patch('src.utils.flags.config.get_query_dir')
+    def test_flags(self, mock_get_query_dir, mock_locus_was_provided_for):
+        # Mock the config methods to avoid file system dependencies
+        mock_get_query_dir.return_value = self.query_dir
+        mock_locus_was_provided_for.return_value = True
+
         Flag.write(self.query_dir, FLAGS.POSITIVE_ID, FLAGS.A)
         Flag.write(self.query_dir, FLAGS.TOI, FLAGS.B)
         for flag_id in (
