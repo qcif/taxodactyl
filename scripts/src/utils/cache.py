@@ -285,7 +285,7 @@ def get(key_hash: str):
         Cached data if found, None otherwise
     """
     sqlite_path = config.cache_sqlite_path
-    if not sqlite_path.exists():
+    if config.cache_disabled or not sqlite_path.exists():
         return None
 
     max_retries = 3
@@ -344,6 +344,8 @@ def put(key_hash, value):
     """
     config = Config()
     sqlite_path = config.cache_sqlite_path
+    if config.cache_disabled:
+        return
 
     try:
         _ensure_cache_table(sqlite_path)

@@ -338,6 +338,10 @@ parameters = [
         'cache_timeout_hours',
         env_name=env_vars.CACHE_TIMEOUT_HOURS,
     ),
+    BoolMapping(
+        'cache_disabled',
+        env_name=env_vars.CACHE_DISABLED,
+    ),
     IntMapping(
         'max_api_retries',
         env_name=env_vars.MAX_API_RETRIES,
