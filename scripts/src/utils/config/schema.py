@@ -251,6 +251,8 @@ class ConfigSchema(BaseModel):
         default='entrez_cache', description="Entrez cache directory name")
     cache_timeout_hours: int = Field(
         default=168, description="Cache timeout in hours")
+    cache_disabled: bool = Field(
+        default=False, description="Disable caching of API responses")
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")
