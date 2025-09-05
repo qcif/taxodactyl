@@ -36,6 +36,7 @@ which shows CLI arguments and environment variables for each script.
     7. [P5 Analysis of database coverage](#p5-analysis-of-database-coverage)
     8. [P6 Report generation](#p6-report-generation)
 1. [Building the docs](#building-the-docs)
+1. [Version release](#version-release)
 1. [Application features](#application-features)
     1. [Configuration](#application-configuration)
     2. [Handling errors](#handling-errors)
@@ -610,6 +611,29 @@ git push
 ```
 
 This will prompt the github.io docs pages to rebuild, which takes 2-3 minutes.
+
+
+# Version release
+
+There (annoyingly) are 4 places where the version must be updated:
+
+```
+# cloudgene.yml
+version: 1.3.3
+
+# conf/manifest.config
+    version         = '1.3.3'
+
+# scripts/VERSION
+1.3.3
+
+# scripts/pyproject.toml
+version = "1.3.3"
+```
+
+Then you can create a branch like `release_1.3.3`, and create GitHub release v1.3.3 with `release_1.3.3` as the target.
+The docker image (for python scripts) will be built on version release. If you need to make a pre-release to obtain a build, you should make a pre-release version like `1.3.3-dev` before releasing `1.3.3`.
+
 
 # Application features
 
