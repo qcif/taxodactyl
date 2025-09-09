@@ -20,7 +20,7 @@ workflow:
         facility_name: QCIF
     - name: Check for errors
       type: command
-      cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME}
+      cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_ID}
       stdout: true
     - name: Zip workflow reports
       type: command
