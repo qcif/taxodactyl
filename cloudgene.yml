@@ -17,7 +17,6 @@ workflow:
         taxdb: /mnt/data/taxdump
         ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
         analyst_name: ${CLOUDGENE_USER_FULL_NAME}
-        facility_name: QCIF
     - name: Check for errors
       type: command
       cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_NAME}
@@ -46,7 +45,7 @@ workflow:
     - id: facility_name
       description: Your facility/site name
       type: string
-      value: QCIF
+      required: false
       details: Included in the workflow report.
 
   outputs:
