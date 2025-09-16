@@ -1,8 +1,8 @@
 <!-- <p class="alert alert-info">
   The server is currently running on limited resources - jobs will run more slowly than usual.
 </p> -->
-<!-- <p class="alert alert-info">
-  The service will be temporarily suspended for maintenance on September 30. Any jobs running at this time will be cancelled.
+<!-- <p class="alert alert-info text-center mb-0">
+  The service will be temporarily suspended for maintenance at 16:00 AEST. Please do not run any further jobs.
 </p> -->
 
 <div class="jumbotron jumbotron-fluid text-white" style="background: #343a40;">
@@ -76,7 +76,7 @@
 
       <tr>
         <td>
-          <a href="/#!pages/taxodactyl">Taxodactyl</a>
+          <a href="/#!pages/taxodactyl">#2 Taxodactyl</a>
         </td>
         <td>
           Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).
