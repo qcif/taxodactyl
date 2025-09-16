@@ -16,6 +16,10 @@
         Please be aware that the SFTP server has just one directory (<code>uploads/</code>) that is shared by all users. Any files that you upload will be visible to all other DAFF users on the system.
       </p>
 
+      <p class="alert alert-warning">
+        Please be aware that the SFTP server will delete files older than 30 days. If this is an issue, please contact the QCIF team to lift this restriction.
+      </p>
+
       <ol>
         <li>
           Connect to the server using your preferred SFTP client and the provided credentials.
