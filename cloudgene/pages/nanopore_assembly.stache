@@ -18,20 +18,23 @@
 
       <ol>
         <li>
-          Connect to the server using your SFTP client and the provided credentials.
+          Connect to the server using your preferred SFTP client and the provided credentials.
         </li>
         <li>
-          Create a directory in the <code>uploads/</code> folder with your name separated by an underscore (e.g. <code>uploads/jane_smith/</code>). This ensures that you don't accidentally overwrite someone else's files.
+          Create a directory in the <code>uploads/</code> folder with your name separated by an underscore (e.g. <code>uploads/jane_smith/</code>), to ensure that nobody accidentally interferes with your files.
         </li>
         <li>
-          Upload your files in a way that makes sense to you. Subdirectories can be used to separate files by sample ID, batch or project. Just make sure that the path used in your metadata CSV matches the actual path on the server (see below).
+          Structure your uploaded files any way that makes sense to you, within your directory. Subdirectories can be used to separate files by sample ID, batch or project. Just make sure that the path used in your metadata CSV matches the actual path on the server (see below).
+        </li>
+        <li>
+          If you want to share uploaded data with other users, they can simply specify the path to your files in the SFTP directory in their metadata CSV. The service does not distinguish ownership of different users' files.
         </li>
       </ol>
 
       <h5 class="mt-5 my-3">Example metadata CSV</h5>
 
       <p class="alert alert-info">
-        When adding a file pattern to <code>fastq_path</code>, please make sure that the path starts with <code>uploads/</code> (the root directory of the SFTP server). The path can include wildcards (e.g. <code>*</code>) to match multiple files. The workflow will associate all matching files with the sample.
+        When adding a file pattern to <code>fastq_path</code>, please make sure that the path starts with <code>uploads/</code> (the root directory of the SFTP server). The path can include wildcards (e.g. <code>mydir/*.fq.gz</code>) to match multiple files. The workflow will associate all matching files with the sample.
       </p>
 
       <table class="table table-bordered my-3">
