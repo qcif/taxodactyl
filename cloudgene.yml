@@ -33,10 +33,12 @@ workflow:
       accept: .csv
       details: |
         Ensure sample IDs match those in the FASTA file.
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/metadata.csv
     - id: sequences
       description: Sample DNA sequences in FASTA format
       type: file
       accept: .fasta, .fa, .fna, .fsa, .fas
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/query.fasta
     - id: ncbi_api_key
       type: string
       required: false
