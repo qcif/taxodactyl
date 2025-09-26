@@ -27,18 +27,20 @@ workflow:
       cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/zip_reports.sh --dir $outdir
 
   inputs:
+    - id: sequences
+      description: Sample DNA sequences in FASTA format
+      type: file
+      accept: .fasta, .fa, .fna, .fsa, .fas
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/sequences_example.fasta
+      details: |
+        Click on '?' for an example file. Right click and 'Save Link As...' to download.
     - id: metadata
       description: Input metadata CSV
       type: file
       accept: .csv
       details: |
-        Ensure sample IDs match those in the FASTA file.
-      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/metadata.csv
-    - id: sequences
-      description: Sample DNA sequences in FASTA format
-      type: file
-      accept: .fasta, .fa, .fna, .fsa, .fas
-      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/query.fasta
+        Click on '?' for an example file. Right click and 'Save Link As...' to download. Ensure sample IDs match those in the FASTA file. 
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/metadata_example.csv
     - id: ncbi_api_key
       type: string
       required: false
