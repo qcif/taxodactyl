@@ -1,0 +1,16 @@
+sample_id,locus,preliminary_id,taxa_of_interest,host,country,custom_column_1,custom_column_2,custom_column_3
+Scenario_02,CO1,Diptera,Liriomyza trifolii,Solanum lycopersicum,NA,minION_rapid,30x,
+Scenario_03,CO1,Lepidoptera,Lepidoptera,Lotus pedunculatus,,P2_whole_mtDNA,50x,
+Scenario_04,COI,Bruchophagus,Bruchophagus abnormis|Bruchophagus abscedus|Bruchophagus muli,NA,Australia,minION_rapid,15x,NA
+Scenario_05,COI,Aedes scutellaris,Aedes scutellaris,,Timor-Leste,minION_rapid,30x,NA
+Scenario_06,COI,Bactrocera aquilonis,Bactrocera aquilonis,,Australia,minION_rapid,30x,NA
+VE25-1425_28S,28S rRNA,Pseudococcidae,Pseudococcus longispinus,Blueberries,New Zealand,,,
+VE25-1428_16S,16S mitochondrial rRNA,Trogoderma,Trogoderma granarium ,Rice,Pakistan,,,
+Bac1_16S,16S rRNA,Bacteria,,rockmelon (Cucumis melo var. cantalupensis),Australia,nanopore,30x,
+Bac1_gyrB,gyrB,Bacteria,,rockmelon (Cucumis melo var. cantalupensis),Australia,nanopore,30x,
+FungusA_ITS,ITS,Fungi,,Cannabis sativa,Australia,nanopore,30x,
+MP23-0431_matK,matK,Planta,Nicotiana tabacum,NA,Indonesia,,,
+MP23-0431_rbcL,rbcL,Planta,Nicotiana tabacum,NA,Indonesia,,,
+barcode_79_AR21a_1_1_1,28s,Pulvinaria,Pulvinaria,NA,NA,,,
+barcode_55_1991-08_Fabavirus_cluster_0_RC5417,NA,Fabavirus,Fabavirus,NA,NA,NA,NA,
+barcode_56_1916-01_Grapevine_virus_B_cluster_0_RC7855,NA,Grapevine virus,Grapevine virus,NA,NA,NA,NA,
