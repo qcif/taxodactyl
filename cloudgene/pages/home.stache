@@ -68,7 +68,9 @@
             </li>
           </ul>
         </td>
-        <td></td>
+        <td>
+          <a class="btn btn-primary btn-sm" href="/#!run/ont_amplicon_assembly">Run</a>
+        </td>
       </tr>
 
       <tr>
