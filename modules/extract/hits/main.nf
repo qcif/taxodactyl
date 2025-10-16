@@ -2,6 +2,7 @@ process EXTRACT_HITS {
 
     label 'daff_tax_assign'
 
+    containerOptions "--bind ${file(params.outdir)}"
     // No longer need to bind original file parent directory since we use copied files
 
     input:

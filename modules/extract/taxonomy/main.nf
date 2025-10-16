@@ -2,7 +2,7 @@ process EXTRACT_TAXONOMY {
 
     label 'daff_tax_assign'
 
-    containerOptions "--bind ${file(params.taxdb)}" // Bind the taxonomy database directory
+    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.outdir)}"
 
     input:
     path(env_var_file) // Environment variables file
