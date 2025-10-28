@@ -352,10 +352,12 @@ class Config:
         for locus in self.allowed_loci:
             if name in locus:
                 return locus.rename(name)
+        loci_list = '\n- '.join([str(locus) for locus in self.allowed_loci])
         raise ValueError(
             f"Unrecognized locus '{name}' for query {query}. This should have"
-            " been raised in p0_validation.py. Allowed loci are:\n- 'NA'\n- "
-            f"{'\n- '.join([str(locus) for locus in self.allowed_loci])}"
+            " been raised in p0_validation.py. Allowed loci are:\n"
+            "- 'NA'\n"
+            f"- {loci_list}"
         )
 
     def locus_was_provided_for(self, query) -> bool:
