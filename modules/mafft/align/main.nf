@@ -5,7 +5,7 @@ process MAFFT_ALIGN {
     tuple val(query_folder), path(candidate_fasta_file), val(query_sequence) // Input: query folder, candidate FASTA, and query sequence
 
     output:
-    tuple val(query_folder), path("$query_folder/$params.candidates_msa_filename"), emit: aligned_sequences // Output: aligned sequences in PHYLIP format
+    tuple val(query_folder), path("$query_folder/$params.candidates_msa_filename"), path("$query_folder/id_mapping.tsv"), emit: aligned_sequences // Output: aligned sequences in PHYLIP format and id mapping file
     path "versions.yml"                 , emit: versions // Output: MAFFT version info
 
     publishDir "${params.outdir}", mode: 'copy',
@@ -19,13 +19,34 @@ process MAFFT_ALIGN {
     """
     # Create the query folder if it doesn't exist
     mkdir -p $query_folder
+
+    # Strip everything after the first space in header lines
+    sed '/^>/s/ .*//' $candidate_fasta_file > stripped_${candidate_fasta_file}
+
+    # Create an ID mapping file for candidate sequences
+    awk '/^>/ {
+        id = substr(\$0, 2);  # remove leading ">"
+        printf "HIT%d\\t%s\\n", ++count, id
+    }' stripped_${candidate_fasta_file} > id_mapping.tsv
+    mv id_mapping.tsv $query_folder/id_mapping.tsv
+
+    # Rename candidate sequence headers to HIT1, HIT2, etc.
+    awk '/^>/ {
+        print ">HIT" ++count
+        next
+    }
+    { print }' stripped_${candidate_fasta_file} > renamed_${candidate_fasta_file}
+
     # Move candidate FASTA file into the query folder
     mv $candidate_fasta_file $query_folder/
+    mv renamed_${candidate_fasta_file} $query_folder/
+
     # Write the query sequence to a temporary FASTA file
     echo ">QUERY" > $query_folder/temp.fasta
     echo $query_sequence >> $query_folder/temp.fasta
+
     # Append candidate sequences to the temporary FASTA file
-    cat $query_folder/$candidate_fasta_file >> $query_folder/temp.fasta
+    cat $query_folder/renamed_${candidate_fasta_file} >> $query_folder/temp.fasta
     # Run MAFFT to perform multiple sequence alignment and output in PHYLIP format
     mafft \\
         --thread ${task.cpus} \\
