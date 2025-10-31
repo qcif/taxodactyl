@@ -2,7 +2,7 @@ process FASTME {
     tag "$query_folder"
 
     input:
-    tuple val(query_folder), path(infile) // Input: query folder name and PHYLIP alignment file
+    tuple val(query_folder), path(infile), path(id_mapping_file) // Input: query folder name and PHYLIP alignment file and ID mapping file
 
     output:
     tuple val(query_folder), path("*.nwk")       , emit: nwk    // Output: Newick tree file
