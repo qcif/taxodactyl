@@ -256,6 +256,8 @@ class ConfigSchema(BaseModel):
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")
+    temp_root: str | None = Field(
+        default=None, description="Temporary directory root dir")
     temp_dir_name: str = Field(
         default='biosecurity', description="Temporary directory name")
     temp_clean_after_days: int = Field(
