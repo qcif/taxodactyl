@@ -1,7 +1,7 @@
 <table class="table tight border centered-columns">
   <thead>
     <tr>
-      <th colspan="6" class="text-center text-light bg-secondary bg-gradient">Candidate species</th>
+      <th colspan="7" class="text-center text-light bg-secondary bg-gradient">Candidate species</th>
     </tr>
     <tr class="bg-gray-100">
       <th>Candidate Species</th>
@@ -10,6 +10,7 @@
       <th>Max Identity</th>
       <th>Min Identity</th>
       <th>Genus Coverage</th>
+      <th>BLAST link</th>
     </tr>
   </thead>
   <tbody>
@@ -44,6 +45,24 @@
         </span>
         {% else %}
         -
+        {% endif %}
+      </td>
+      <td>
+        {% if candidate.ncbi_blast_url %}
+        <a
+          href="{{ candidate.ncbi_blast_url }}"
+          target="_blank"
+          title="BLAST your query sequence against this species on NCBI"
+          data-bs-toggle="tooltip"
+        >
+          NCBI BLAST
+        </a>
+        {% else %}
+        <span
+          class="text-muted"
+          title="Could not build URL due to missing taxon information."
+          data-bs-toggle="tooltip"
+        >NA</span>
         {% endif %}
       </td>
     </tr>
