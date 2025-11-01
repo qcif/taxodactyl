@@ -9,6 +9,7 @@ import logging
 from pprint import pformat
 
 from src.gbif.maps import draw_occurrence_map
+from src.gbif.relatives import RANK
 from src.utils import errors
 from src.utils.config import Config
 from src.utils.flags import FLAGS, Flag
@@ -157,6 +158,14 @@ def _draw_occurrence_maps(
                 f" '{target}'. Occurrence map will not be generated for this"
                 " target.")
             continue
+        if gbif_target.rank > RANK.GENUS:
+            rank_str = RANK.to_string(gbif_target.rank)
+            logger.info(
+                f'Skipping occurrence map for target {gbif_target.taxon} -'
+                f' rank {rank_str} above Genus level.'
+            )
+            continue
+
         path = query_dir / config.get_map_filename_for_target(target)
         logger.info(
             f"Writing occurrence map for"
