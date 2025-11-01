@@ -11,6 +11,7 @@ from pprint import pformat
 from src.gbif.maps import draw_occurrence_map
 from src.utils import errors
 from src.utils.config import Config
+from src.utils.blast import build_blast_url
 from src.utils.flags import FLAGS, Flag
 
 from .fetch import (
@@ -137,6 +138,10 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
                     'country': None,
                 }
     _set_flags(results, query_dir, higher_taxon_targets)
+    results['ncbi_blast_urls'] = {
+        taxon: build_blast_url(taxon, taxid, config)
+        for taxid, taxon in taxid_to_taxon.items()
+    }
     return results, is_error
 
 

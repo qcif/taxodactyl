@@ -23,6 +23,7 @@ from pathlib import Path
 from Bio import SeqIO
 
 from src.utils import deduplicate, existing_path
+from src.utils.blast import build_blast_url
 from src.utils.config import Config
 from src.utils.config import arguments
 from src.utils.flags import FLAGS, Flag
@@ -157,6 +158,7 @@ def _filter_hits(hits):
             hit['taxonomy'] = tax
             hit["species"] = tax.get('species')
             hit['taxid'] = tax.get('taxid')
+            hit['ncbi_blast_url'] = _build_blast_url(hit)
         else:
             hit['taxonomy'] = None
             hit["species"] = None
@@ -186,6 +188,17 @@ def _filter_hits_bold(hits):
         if hit["similarity"] >= config.criteria.alignment_min_identity_strict
     ]
     return candidate_hits, candidate_hits_strict
+
+
+def _build_blast_url(hit):
+    """Return the NCBI URL to BLAST against the hit taxon."""
+    if not (hit['taxid'] and hit['species']):
+        return None
+    return build_blast_url(
+        hit['species'],
+        hit['taxid'],
+        config,
+    )
 
 
 def _assign_species_id(
