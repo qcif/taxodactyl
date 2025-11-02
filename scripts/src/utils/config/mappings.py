@@ -231,6 +231,10 @@ parameters = [
         'temp_dir_name',
         env_name=env_vars.TEMP_DIR_NAME,
     ),
+    StringMapping(
+        'temp_root',
+        env_name=env_vars.TEMP_ROOT,
+    ),
 
     # Input validation
     IntMapping(
