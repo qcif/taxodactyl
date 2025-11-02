@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from src.utils.config import Config  # noqa: E402
 
+CUSTOM_TEMP_ROOT = '/tmp/test_root_dir/'
 ENV_VARS_TO_CLEAR = [
     'OUTPUT_DIR',
     'INPUT_FASTA_FILEPATH',
@@ -141,7 +142,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
                 'fasta_max_sequences': 200,
                 'fasta_min_length_nt': 50,
                 'fasta_max_length_nt': 2500
-            }
+            },
+            'temp_root': str(CUSTOM_TEMP_ROOT),
         }
 
         with open(self.test_config, 'w') as f:
@@ -171,6 +173,12 @@ class TestConfigYAMLLoading(unittest.TestCase):
             self.assertEqual(config.inputs.fasta_max_sequences, 200)
             self.assertEqual(config.inputs.fasta_min_length_nt, 50)
             self.assertEqual(config.inputs.fasta_max_length_nt, 2500)
+
+            # Verify custom temp root has been set
+            self.assertEqual(
+                config.tempdir,
+                Path(CUSTOM_TEMP_ROOT) / 'biosecurity',
+            )
 
     def test_default_config_values(self):
         """Test that default configuration values are loaded correctly."""
@@ -266,6 +274,12 @@ class TestConfigYAMLLoading(unittest.TestCase):
             # Should have default values
             self.assertEqual(config.blast_max_target_seqs, 2000)
             self.assertEqual(config.criteria.alignment_min_identity, 0.935)
+
+            # Verify default temp root
+            self.assertEqual(
+                config.tempdir,
+                Path(tempfile.gettempdir()) / config.temp_dir_name,
+            )
 
     def test_pydantic_validation(self):
         """Test that Pydantic validation works correctly."""

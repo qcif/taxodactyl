@@ -261,8 +261,16 @@ class Config:
         return self.output_dir / self.entrez_cache_dirname
 
     @property
+    def temp_root_dir(self):
+        return Path(
+            self.temp_root
+            if self.temp_root
+            else tempfile.gettempdir()
+        )
+
+    @property
     def tempdir(self):
-        tempdir = Path(tempfile.gettempdir()) / self.temp_dir_name
+        tempdir = self.temp_root_dir / self.temp_dir_name
         tempdir.mkdir(exist_ok=True, parents=True)
         return tempdir
 
