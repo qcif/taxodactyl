@@ -4,6 +4,8 @@ process EVALUATE_SOURCE_DIVERSITY {
 
     tag "$query_folder"
 
+    containerOptions "--bind ${file(params.outdir)}"
+
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(candididate_json_file) // Query folder name and candidate JSON file

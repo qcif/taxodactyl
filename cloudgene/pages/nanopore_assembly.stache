@@ -1,0 +1,80 @@
+<div class="container">
+  <div class=mb-5>
+    <h1>Barcode assembly from nanopore sequencing reads</h1>
+
+      <p>
+        This workflow assembles consensus sequences from Nanopore sequencing reads. It requires <code>.fastq.gz</code> files containing the reads and a CSV file with sample metadata. The <code>.fastq.gz</code> files must be uploaded before job sumission via SFTP, and file names must match the pattern provided in the metadata CSV file <code>fastq_path</code> field. The <code>target_size</code> describes the expected size of the amplicon in nucleotides.
+      </p>
+
+      <h5 class="mt-5 my-3">Uploading FASTQ files</h5>
+
+      <p>
+        Since FASTQ files can be large, they must be uploaded via SFTP before job submission. You can use an SFTP client such as FileZilla or Cyberduck to upload your files to the server. The server address, username, and a key file will be provided to you separately (contact Bradley Pease).
+      </p>
+
+      <p class="alert alert-warning">
+        Please be aware that the SFTP server has just one directory (<code>uploads/</code>) that is shared by all users. Any files that you upload will be visible to all other DAFF users on the system.
+      </p>
+
+      <p class="alert alert-warning">
+        Please be aware that the SFTP server will delete files older than 30 days. If this is an issue, please contact the QCIF team to lift this restriction.
+      </p>
+
+      <ol>
+        <li>
+          Connect to the server using your preferred SFTP client and the provided credentials.
+        </li>
+        <li>
+          Create a directory in the <code>uploads/</code> folder with your name separated by an underscore (e.g. <code>uploads/jane_smith/</code>), to ensure that nobody accidentally interferes with your files.
+        </li>
+        <li>
+          Structure your uploaded files any way that makes sense to you, within your directory. Subdirectories can be used to separate files by sample ID, batch or project. Just make sure that the path used in your metadata CSV matches the actual path on the server (see below).
+        </li>
+        <li>
+          If you want to share uploaded data with other users, they can simply specify the path to your files in the SFTP directory in their metadata CSV. The service does not distinguish ownership of different users' files.
+        </li>
+      </ol>
+
+      <h5 class="mt-5 my-3">Example metadata CSV</h5>
+
+      <p class="alert alert-info">
+        When adding a file pattern to <code>fastq_path</code>, please make sure that the path starts with <code>uploads/</code> (the root directory of the SFTP server). The path can include wildcards (e.g. <code>mydir/*.fq.gz</code>) to match multiple files. The workflow will associate all matching files with the sample.
+      </p>
+
+      <table class="table table-bordered my-3">
+          <thead>
+            <tr>
+              <th>sampleid</th>
+              <th>fastq_path</th>
+              <th>target_size</th>
+              <th>target_organism</th>
+              <th>target_gene</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>barcode02_VE24-1280_COI</code></td>
+              <td><code>uploads/bradley_pease/barcode02_VE24-1280_COI/*.fastq.gz</code></td>
+              <td>380</td>
+              <td>Polerovirus</td>
+              <td>capsid</td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                <em class="text-muted">(up to 100 rows)</em>
+              </td>
+            </tr>
+          </tbody>
+      </table>
+
+      <p>
+        The following uploaded FASTQ files would then be associated with the sample in row 1:
+        <ul>
+          <li><code>uploads/bradley_pease/barcode02_VE24-1280_COI/1.fastq.gz</code></li>
+          <li><code>uploads/bradley_pease/barcode02_VE24-1280_COI/2.fastq.gz</code></li>
+          <li><code>uploads/bradley_pease/barcode02_VE24-1280_COI/N.fastq.gz</code></li>
+        </ul>
+      </p>
+    </section>
+  </div>
+</div>
