@@ -1,3 +1,5 @@
+{% from 'macros/blast-link.html' import render_blast_link %}
+
 <table class="table tight border centered-columns">
   <thead>
     <tr>
@@ -48,22 +50,7 @@
         {% endif %}
       </td>
       <td>
-        {% if candidate.ncbi_blast_url %}
-        <a
-          href="{{ candidate.ncbi_blast_url }}"
-          target="_blank"
-          title="BLAST your query sequence against this species on NCBI"
-          data-bs-toggle="tooltip"
-        >
-          NCBI BLAST
-        </a>
-        {% else %}
-        <span
-          class="text-muted"
-          title="Could not build URL due to missing taxon information."
-          data-bs-toggle="tooltip"
-        >NA</span>
-        {% endif %}
+        {{ render_blast_link(candidate.ncbi_blast_url) }}
       </td>
     </tr>
     {% endfor %}

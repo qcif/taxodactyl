@@ -1,0 +1,18 @@
+{% macro render_blast_link(ncbi_blast_url) %}
+  {% if ncbi_blast_url %}
+  <a
+    href="{{ ncbi_blast_url }}"
+    target="_blank"
+    title="BLAST your query sequence against this species on NCBI"
+    data-bs-toggle="tooltip"
+  >
+    NCBI BLAST
+  </a>
+  {% else %}
+  <span
+    class="text-muted"
+    title="Could not build URL due to missing taxon information."
+    data-bs-toggle="tooltip"
+  >NA</span>
+  {% endif %}
+{% endmacro %}

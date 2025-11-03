@@ -1,3 +1,5 @@
+{% from 'macros/blast-link.html' import render_blast_link %}
+
 {% set flags = conclusions.flags %}
 {% set taxon = metadata.preliminary_id %}
 {% set target_id = 'pmi-' + taxon | css_hash %}
@@ -5,7 +7,7 @@
 <table class="table tight border align-middle centered-columns">
   <thead>
     <tr>
-      <th colspan="5" class="text-center text-light bg-secondary bg-gradient">Preliminary ID</th>
+      <th colspan="6" class="text-center text-light bg-secondary bg-gradient">Preliminary ID</th>
     </tr>
     <tr class="bg-gray-100">
       <th>Species</th>
@@ -13,6 +15,7 @@
       <th>DB records</th>
       <th>Genus coverage</th>
       <th>Coverage report</th>
+      <th>BLAST link</th>
     </tr>
   </thead>
   <tbody>
@@ -83,9 +86,12 @@
           </button>
         </div>
       </td>
+      <td>
+        {{ render_blast_link(db_coverage.ncbi_blast_urls[taxon]) }}
+      </td>
     </tr>
     <tr>
-      <td class="py-2" colspan="5">
+      <td class="py-2" colspan="6">
         <small>
           {% if '7' in conclusions.flags %}
           {{ render_flag(conclusions.flags['7'], tooltip=conclusions.summary.pmi.tooltip) }}
