@@ -22,37 +22,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r scripts/requirements.txt
-      - name: Debug cache environment
-        env:
-          PYTHONPATH: scripts
-        run: |
-          python -c "
-          from src.utils.config import Config
-          from src.utils import cache
-          import os
-          import logging
-
-          # Enable debug logging
-          logging.basicConfig(level=logging.DEBUG)
-
-          config = Config()
-          print('=== Cache Configuration ===')
-          print('Cache disabled:', config.cache_disabled)
-          print('Cache path:', config.cache_sqlite_path)
-          print('Temp dir:', config.tempdir)
-          print('Temp dir exists:', config.tempdir.exists())
-          print('Temp dir writable:', os.access(config.tempdir, os.W_OK))
-
-          print('\n=== Testing Cache Operations ===')
-          test_key = cache.keyhash('test_debug')
-          print('Putting test data...')
-          cache.put(test_key, {'test': 'debug_data'})
-          print('Cache file exists after put:', config.cache_sqlite_path.exists())
-          print('Getting test data...')
-          result = cache.get(test_key)
-          print('Retrieved:', result)
-          print('Success:', result is not None)
-          "
       - name: Run unit tests
         env:
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
