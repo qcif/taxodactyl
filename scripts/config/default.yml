@@ -52,6 +52,7 @@ cache_disabled: false
 max_api_retries: 3
 errors_dir: errors
 temp_dir_name: biosecurity
+temp_root: null  # use os default
 temp_clean_after_days: 7
 inputs:
   facility_name: Not provided

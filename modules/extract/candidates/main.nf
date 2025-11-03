@@ -4,6 +4,8 @@ process EXTRACT_CANDIDATES {
 
     tag "$query_folder"
 
+    containerOptions "--bind ${file(params.outdir)}"
+
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder), path(hits_json_file), path(hits_fasta_file) // Query folder, hits JSON, and hits FASTA

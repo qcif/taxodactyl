@@ -270,7 +270,7 @@ After running the pipeline, the output directory will contain a separate folder 
 <p align="center">
     <img src="docs/images/DAFF-inline-black.png" alt="Department of Agriculture, Fisheries and Forestry" height="60"/>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="docs/images/qcif-1.jpg" alt="QCIF" height="60"/>
+    <img src="docs/images/qcif.svg" alt="QCIF" height="60"/>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <img src="docs/images/Australian-Biocommons-Logo-Horizontal-RGB.png" alt="Australian BioCommons" height="60"/>
 </p>

@@ -3,7 +3,7 @@
 id: taxodactyl
 name: Taxodactyl
 description: Per-sample taxonomic classification from assembled DNA barcodes
-version: 1.3.3
+version: 1.3.3-1
 website: https://github.com/qcif/taxodactyl
 author: Magdalena Antczak, Cameron Hyde and Daisy Li
 logo: https://github.com/qcif/taxodactyl/blob/main/docs/images/taxodactyl_logo.png?raw=true
@@ -27,16 +27,20 @@ workflow:
       cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/zip_reports.sh --dir $outdir
 
   inputs:
+    - id: sequences
+      description: Sample DNA sequences in FASTA format
+      type: file
+      accept: .fasta, .fa, .fna, .fsa, .fas
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/sequences_example.fasta
+      details: |
+        Click on '?' for an example file. Right click and 'Save Link As...' to download.
     - id: metadata
       description: Input metadata CSV
       type: file
       accept: .csv
       details: |
-        Ensure sample IDs match those in the FASTA file.
-    - id: sequences
-      description: Sample DNA sequences in FASTA format
-      type: file
-      accept: .fasta, .fa, .fna, .fsa, .fas
+        Click on '?' for an example file. Right click and 'Save Link As...' to download. Ensure sample IDs match those in the FASTA file. 
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/metadata_example.csv
     - id: ncbi_api_key
       type: string
       required: false
