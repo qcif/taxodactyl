@@ -38,14 +38,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        class="text-muted"
-        title="This workflow is coming soon."
-        data-toggle="tooltip"
-        data-placement="left"
-      >
+      <tr>
         <td>
-          #1 Barcode assembly
+          <a href="/#!pages/nanopore_assembly">
+            #1 Barcode assembly
+          </a>
         </td>
         <td>
           Assembly of barcode consensus sequence from Nanopore sequencing reads (one sample per run).
@@ -71,12 +68,16 @@
             </li>
           </ul>
         </td>
-        <td></td>
+        <td>
+          <a class="btn btn-primary btn-sm" href="/#!run/ont_amplicon_assembly">Run</a>
+        </td>
       </tr>
 
       <tr>
         <td>
-          <a href="/#!pages/taxodactyl">Taxodactyl</a>
+          <a href="/#!pages/taxodactyl">
+            #2 Taxodactyl
+          </a>
         </td>
         <td>
           Taxonomic classification of sample DNA sequences (up to 100 sequences per-run).

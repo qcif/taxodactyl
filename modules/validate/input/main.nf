@@ -2,7 +2,7 @@ process VALIDATE_INPUT {
 
     label 'daff_tax_assign'
 
-    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent}"
+    containerOptions  "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
 
     input:
     path(env_var_file) // Environment variables file
