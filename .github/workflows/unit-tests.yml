@@ -28,4 +28,4 @@ jobs:
           GENBANK_CONCURRENCY_TEST: 0  # replicate launch config setting
           PYTHONPATH: scripts          # adjust as needed
         run: |
-          python -m unittest discover -s scripts/tests -p 'test*.py' -b
+          python -m unittest discover -s scripts/tests -p 'test*.py' -v
