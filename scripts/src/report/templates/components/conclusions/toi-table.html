@@ -1,10 +1,12 @@
+{% from 'macros/blast-link.html' import render_blast_link %}
+
 {% set flags = conclusions.flags %}
 
 {% if conclusions.summary.toi %}
 <table class="table tight border align-middle centered-columns">
   <thead>
     <tr>
-      <th colspan="5" class="text-center text-light bg-secondary bg-gradient">Taxa of Interest</th>
+      <th colspan="6" class="text-center text-light bg-secondary bg-gradient">Taxa of Interest</th>
     </tr>
     <tr class="bg-gray-100">
       <th>Taxon</th>
@@ -12,6 +14,7 @@
       <th>DB Records</th>
       <th>Genus Coverage</th>
       <th>Coverage report</th>
+      <th>BLAST link</th>
     </t>
   </thead>
   <tbody>
@@ -86,12 +89,15 @@
         </div>
         {% endif %}
       </td>
+      <td>
+        {{ render_blast_link(db_coverage.ncbi_blast_urls[taxon]) }}
+      </td>
     </tr>
     {% endfor %}
 
     {% if '2' in conclusions.flags %}
     <tr>
-      <td class="py-2" colspan="5">
+      <td class="py-2" colspan="6">
         <small>
           {{ render_flag(conclusions.flags['2']) }}
         </small>
@@ -101,7 +107,7 @@
 
     {% else %}
     <tr>
-      <td colspan="3" class="text-center text-muted">No taxa of interest provided</td>
+      <td colspan="6" class="text-center text-muted">No taxa of interest provided</td>
     </tr>
     {% endif %}
   </tbody>
