@@ -108,8 +108,7 @@ class RelatedTaxaGBIF:
                 return record
         raise GBIFRecordNotFound(
             f"No GBIF record found for '{taxon}'. Taxonomic records cannot"
-            " be retrieved. Please check that this species name is correct."
-            f" Response data: {res}")
+            " be retrieved. Please check that this species name is correct.")
 
     def _is_accepted(self, record):
         status_key = 'status' if 'status' in record else 'taxonomicStatus'

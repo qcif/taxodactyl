@@ -120,7 +120,7 @@
             "program": "${workspaceFolder}/scripts/p3_assign_taxonomy.py",
             "cwd": "${workspaceFolder}/scripts",
             "args": [
-                "output/query_001_LC438549",
+                "output/query_001_LC438549.1",
                 "--metadata-csv", "tests/test-data/metadata.csv",
                 "--query-fasta", "tests/test-data/queries.fasta",
 
