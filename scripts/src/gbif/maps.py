@@ -24,7 +24,7 @@ NATURALEARTH_LOWRES_URL = (
 
 
 def draw_occurrence_map(taxon_key: str, path: Path):
-    '''Fetch GBIF API to get species world map by using taxonomy ID.'''
+    """Fetch GBIF API to get species world map by using taxonomy ID."""
     all_results = []
     offset = 0
     throttle = Throttle(ENDPOINTS.GBIF_SLOW)
@@ -102,6 +102,32 @@ def draw_occurrence_map(taxon_key: str, path: Path):
             transform=ax.transAxes,
         )
         hb = None
+
+    ax.set_axis_off()
+
+    plt.savefig(path, bbox_inches='tight', dpi=300)
+    plt.close()
+
+
+def draw_placeholder_map(path: Path, message: str):
+    """Draw a placeholder map with a message."""
+    with fsspec.open(f"simplecache::{NATURALEARTH_LOWRES_URL}") as file:
+        world = gpd.read_file(file)
+
+    fig, ax = plt.subplots(figsize=(16, 12))
+    fig.patch.set_facecolor('#0d1017')
+    ax.set_facecolor('#0d1017')
+    world.plot(ax=ax, color='#32363c')
+
+    ax.text(
+        0.5, 0.5,
+        message,
+        color="yellow",
+        fontsize=18,
+        ha="center",
+        va="center",
+        transform=ax.transAxes,
+    )
 
     ax.set_axis_off()
 

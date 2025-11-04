@@ -33,7 +33,7 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "A",  // Optional, run a specific test case
+                "RUN_TEST_CASE": "75",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
                 // Note: PHYLOGENY_MAX_HITS_PER_SPECIES and GBIF_MAX_OCCURRENCE_RECORDS
@@ -216,7 +216,7 @@
             "args": [
                 "output/query_001_LC438549.1",
                 // "output/query_002_ON075825",
-                // "output/query_003_PP466915"
+                // "output/query_003_PP466915.3"
                 // "output/query_006_VE24-1086_COI"
                 "--metadata-csv", "tests/test-data/metadata.csv",
                 "--query-fasta", "tests/test-data/queries.fasta",
