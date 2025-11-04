@@ -52,7 +52,10 @@ process MAFFT_ALIGN {
         --thread ${task.cpus} \\
         --phylipout \\
         $query_folder/temp.fasta \\
-        > $query_folder/$params.candidates_msa_filename
+        > $query_folder/temp.msa
+
+    # Replace HIT IDs with original sequence IDs in the alignment
+    awk -F'\t' '{ printf "s/\\\\<%s\\\\>/%s/g\\n", \$1, \$2 }' $query_folder/id_mapping.tsv | sed -f - $query_folder/temp.msa > $query_folder/$params.candidates_msa_filename
 
     # Record the MAFFT version used for reproducibility
     cat <<-END_VERSIONS > versions.yml
