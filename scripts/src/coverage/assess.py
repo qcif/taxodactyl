@@ -8,7 +8,7 @@ file is used to limit the number of concurrent requests.
 import logging
 from pprint import pformat
 
-from src.gbif.maps import draw_occurrence_map
+from src.gbif.maps import draw_occurrence_map, draw_placeholder_map
 from src.gbif.relatives import RANK
 from src.utils import errors
 from src.utils.config import Config
@@ -158,32 +158,39 @@ def _draw_occurrence_maps(
                 f" '{target}'. Occurrence map will not be generated for this"
                 " target.")
             continue
+
+        path = query_dir / config.get_map_filename_for_target(target)
         if gbif_target.rank > RANK.GENUS:
             rank_str = RANK.to_string(gbif_target.rank)
             logger.info(
                 f'Skipping occurrence map for target {gbif_target.taxon} -'
                 f' rank {rank_str} above Genus level.'
             )
-            continue
-
-        path = query_dir / config.get_map_filename_for_target(target)
-        logger.info(
-            f"Writing occurrence map for"
-            f" '{target}' (taxon key: {gbif_target.key}) to file"
-            f" '{path}'..."
-        )
-        try:
-            draw_occurrence_map(gbif_target.key, path)
-        except Exception as e:
-            msg = ("Taxon distribution map could not be generated due to an"
-                   " error in the GBIF occurrence.")
-            logger.error(f'{msg} Target: "{target}" Exception: {e}')
-            errors.write(
-                errors.LOCATIONS.DB_COVERAGE,
-                msg,
-                exc=e,
-                context={'target': target},
+            draw_placeholder_map(
+                path,
+                message=(
+                    "Occurrence maps are only generated for taxa at rank"
+                    " genus or species."
+                )
             )
+        else:
+            logger.info(
+                f"Writing occurrence map for"
+                f" '{target}' (taxon key: {gbif_target.key}) to file"
+                f" '{path}'..."
+            )
+            try:
+                draw_occurrence_map(gbif_target.key, path)
+            except Exception as e:
+                msg = ("Taxon distribution map could not be generated due to"
+                       " an error in the GBIF occurrence.")
+                logger.error(f'{msg} Target: "{target}" Exception: {e}')
+                errors.write(
+                    errors.LOCATIONS.DB_COVERAGE,
+                    msg,
+                    exc=e,
+                    context={'target': target},
+                )
 
 
 def _set_flags(db_coverage, query_dir, higher_taxon_targets):
