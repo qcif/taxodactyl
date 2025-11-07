@@ -1,7 +1,9 @@
+{% from 'macros/blast-link.html' import render_blast_link %}
+
 <table class="table tight border centered-columns">
   <thead>
     <tr>
-      <th colspan="6" class="text-center text-light bg-secondary bg-gradient">Candidate species</th>
+      <th colspan="7" class="text-center text-light bg-secondary bg-gradient">Candidate species</th>
     </tr>
     <tr class="bg-gray-100">
       <th>Candidate Species</th>
@@ -10,6 +12,7 @@
       <th>Max Identity</th>
       <th>Min Identity</th>
       <th>Genus Coverage</th>
+      <th>BLAST link</th>
     </tr>
   </thead>
   <tbody>
@@ -45,6 +48,9 @@
         {% else %}
         -
         {% endif %}
+      </td>
+      <td>
+        {{ render_blast_link(candidate.ncbi_blast_url) }}
       </td>
     </tr>
     {% endfor %}

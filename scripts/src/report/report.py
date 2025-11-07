@@ -384,17 +384,21 @@ def _read_db_coverage(query_ix):
         return {}
     with path.open() as f:
         data = json.load(f)
-    for target_type, targets in data.items():
+    coverage_data = data['coverage']
+    ncbi_blast_urls = data['ncbi_blast_urls']
+    for target_type, targets in coverage_data.items():
         for target in targets:
             path = (
                 config.get_query_dir(query_ix)
                 / config.get_map_filename_for_target(target)
             )
-            data[target_type][target]['map_exists'] = path.exists()
-            data[target_type][target]['map_src_base64'] = _get_img_src(path)
+            coverage_data[target_type][target]['map_exists'] = path.exists()
+            coverage_data[target_type][target][
+                'map_src_base64'] = _get_img_src(path)
     return {
-        'full': data,
-        'summary': _get_db_cov_summary(data),
+        'full': coverage_data,
+        'summary': _get_db_cov_summary(coverage_data),
+        'ncbi_blast_urls': ncbi_blast_urls,
     }
 
 
