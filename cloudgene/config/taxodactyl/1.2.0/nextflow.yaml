@@ -1,2 +1,0 @@
-work: /mnt/data/jobs/${CLOUDGENE_APP_ID}/${CLOUDGENE_JOB_ID}
-profile: singularity
