@@ -117,7 +117,7 @@ def _validate_fasta(path: Path) -> list[str]:
             if seq.id in seq_ids:
                 raise FASTAFormatError(
                     f"Duplicate sequence ID: '{seq.id}' (sequence"
-                    f" ##{count + 1})."
+                    f" #{count + 1} {seq.id})."
                     " Sequences must have unique identifiers that match a row"
                     " in the metadata CSV input."
                 )
@@ -127,7 +127,7 @@ def _validate_fasta(path: Path) -> list[str]:
                 assert_dna(seq.seq)
             except FASTAFormatError as exc:
                 raise FASTAFormatError(
-                    f'invalid DNA in sequence ##{count}'
+                    f'invalid DNA in sequence #{count} {seq.id}: {exc}'
                 ) from exc
             if count > config.inputs.fasta_max_sequences:
                 raise FASTAFormatError(
@@ -141,13 +141,13 @@ def _validate_fasta(path: Path) -> list[str]:
                     f"sequence of length {length}bp does not meet the"
                     " minimum allowed length of"
                     f" {config.inputs.fasta_min_length_nt}bp (sequence"
-                    f" ##{count})"
+                    f" #{count} {seq.id})"
                 )
             if length > config.inputs.fasta_max_length_nt:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp exceeds the maximum"
                     f" allowed length of {config.inputs.fasta_max_length_nt}bp"
-                    f" (sequence ##{count})"
+                    f" (sequence #{count} {seq.id})"
                 )
 
     return seq_ids
