@@ -164,17 +164,6 @@ workflow TAXODACTYL {
         .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
 
-    // Validate that we got alignments for all candidates
-    ch_candidates_for_join.count()
-        .combine(ch_seqs_for_alignment.count())
-        .subscribe { candidate_count, alignment_count ->
-            if (alignment_count == 0) {
-                exit 1, "ERROR: No sequences matched for alignment. Check sequence ID format compatibility between candidates and queries."
-            } else if (alignment_count < candidate_count) {
-                exit 1, "ERROR: Only ${alignment_count}/${candidate_count} candidate sequences matched query sequences for alignment. This is most likely a bug in the workflow - please report it."
-            }
-        }
-
     // Multiple sequence alignment with MAFFT
     MAFFT_ALIGN (
         ch_seqs_for_alignment
