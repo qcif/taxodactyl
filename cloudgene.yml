@@ -1,0 +1,58 @@
+# Could possible store API keys in a local file and index them by user email
+
+id: taxodactyl
+name: Taxodactyl
+description: Per-sample taxonomic classification from assembled DNA barcodes
+version: 1.3.3-1
+website: https://github.com/qcif/taxodactyl
+author: Magdalena Antczak, Cameron Hyde and Daisy Li
+logo: https://github.com/qcif/taxodactyl/blob/main/docs/images/taxodactyl_logo.png?raw=true
+
+workflow:
+  steps:
+    - name: Run taxonomic classification
+      params:
+        db_type: blast_core_nt
+        blastdb: /mnt/data/blast/core_nt/core_nt
+        taxdb: /mnt/data/taxdump
+        ncbi_user_email: ${CLOUDGENE_USER_EMAIL}
+        analyst_name: ${CLOUDGENE_USER_FULL_NAME}
+    - name: Check for errors
+      type: command
+      cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/collect_errors.sh --dir ${CLOUDGENE_WORKSPACE_HOME}/${CLOUDGENE_JOB_ID}
+      stdout: true
+    - name: Zip workflow reports
+      type: command
+      stdout: true
+      cmd: /usr/bin/bash ${CLOUDGENE_APP_LOCATION}/bin/zip_reports.sh --dir $outdir
+
+  inputs:
+    - id: sequences
+      description: Sample DNA sequences in FASTA format
+      type: file
+      accept: .fasta, .fa, .fna, .fsa, .fas
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/sequences_example.fasta
+      details: |
+        Click on '?' for an example file. Right click and 'Save Link As...' to download.
+    - id: metadata
+      description: Input metadata CSV
+      type: file
+      accept: .csv
+      details: |
+        Click on '?' for an example file. Right click and 'Save Link As...' to download. Ensure sample IDs match those in the FASTA file. 
+      help: https://raw.githubusercontent.com/qcif/taxodactyl/refs/heads/main/test/metadata_example.csv
+    - id: ncbi_api_key
+      type: string
+      required: false
+      description: Your NCBI API key
+      details: Not required, but will make your run go faster.
+    - id: facility_name
+      description: Your facility/site name
+      type: string
+      required: false
+      details: Included in the workflow report.
+
+  outputs:
+    - id: outdir
+      description: Outputs
+      type: folder
