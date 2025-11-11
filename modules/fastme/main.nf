@@ -22,6 +22,7 @@ process FASTME {
         -o temp.nwk \\
         -T $task.cpus
 
+    # Workaround for https://github.com/qcif/taxodactyl/issues/24
     # Rename the tree tips using the provided ID mapping file
     # sed with word boundaries to avoid partial matches
     awk -F'\t' '{ printf "s/\\\\<%s\\\\>/%s/g\\n", \$1, \$2 }' "$id_mapping_file" | sed -f - temp.nwk > $params.tree_nwk_filename

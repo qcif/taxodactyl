@@ -20,6 +20,7 @@ process MAFFT_ALIGN {
     # Create the query folder if it doesn't exist
     mkdir -p $query_folder
 
+    # Workaround for https://github.com/qcif/taxodactyl/issues/24
     # Strip everything after the first space in header lines
     sed '/^>/s/ .*//' $candidate_fasta_file > stripped_${candidate_fasta_file}
 
@@ -54,8 +55,17 @@ process MAFFT_ALIGN {
         $query_folder/temp.fasta \\
         > $query_folder/temp.msa
 
-    # Replace HIT IDs with original sequence IDs in the alignment
-    awk -F'\t' '{ printf "s/\\\\<%s\\\\>/%s/g\\n", \$1, \$2 }' $query_folder/id_mapping.tsv | sed -f - $query_folder/temp.msa > $query_folder/$params.candidates_msa_filename
+    # Workaround for https://github.com/qcif/taxodactyl/issues/24
+    # Replace HIT IDs with original sequence IDs in the alignment,
+    # padding the original ID to 11 chars (or adding one space if longer)
+    awk -F'\t' '{
+        rep = \$2;
+        gsub("/", "\\/", rep);                     # escape any slashes in replacement
+        n = 11 - length(rep);
+        if (n > 0) rep = rep sprintf("%*s", n, "");# pad to 11 characters
+        else rep = rep " ";                        # otherwise add single trailing space
+        printf "s/\\\\<%s\\\\>[[:space:]]*/%s/g\\n", \$1, rep
+    }' $query_folder/id_mapping.tsv | sed -f - $query_folder/temp.msa > $query_folder/$params.candidates_msa_filename
 
     # Record the MAFFT version used for reproducibility
     cat <<-END_VERSIONS > versions.yml
