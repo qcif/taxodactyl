@@ -83,7 +83,8 @@ workflow TAXODACTYL {
                 ch_sequences,
                 VALIDATE_INPUT.out,
                 // file("${projectDir}/scripts/tests/test-data/one_output.xml")
-                file("${projectDir}/assets/Shaun_20250703_blast_result.xml")
+                // file("${projectDir}/assets/Shaun_202507D03_blast_result.xml")
+                file("/mnt/data/tests-wf-2/input/daff/scenarios_20250905_blast_result.xml")
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
@@ -256,9 +257,9 @@ workflow TAXODACTYL {
         .combine(ch_candidates_for_report, by: 0) 
         .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
         .combine(ch_source_diversity_for_report, by: 0)
-        .combine(ch_collated_versions)
-        .combine(ch_params_json)
-        .combine(ch_workflow_timestamp)
+            .combine(ch_collated_versions)
+            .combine(ch_params_json)
+            .combine(ch_workflow_timestamp)
          
     // Generate the final report
     REPORT (
@@ -268,6 +269,21 @@ workflow TAXODACTYL {
         ch_metadata,
         ch_sequences
     )
+
+    ch_homology_trees = FASTME.out.nwk
+    ch_db_coverage = EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report
+    ch_html_report = REPORT.out.html_report
+
+    emit:
+    ch_hits_for_report
+    ch_candidates_for_report
+    ch_db_coverage
+    ch_source_diversity_for_report
+    ch_homology_trees
+    ch_html_report
+    ch_collated_versions
+    ch_params_json
+    ch_workflow_timestamp
 
 }
 

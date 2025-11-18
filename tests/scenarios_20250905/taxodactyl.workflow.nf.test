@@ -1,0 +1,37 @@
+nextflow_workflow {
+
+    name "Test Workflow TAXODACTYL"
+    script "workflows/taxodactyl.nf"
+    workflow "TAXODACTYL"
+
+    test("Scenarios 20250905") {
+
+        when {
+            workflow {
+            }
+        }
+
+        then {
+            def db_coverage_stable_files = []
+            file(workflow.out.ch_db_coverage.get(0).get(1)).eachFileRecurse{ file -> if (!file.isDirectory() && !["db_coverage.json"].find {file.toString().endsWith(it)}) {db_coverage_stable_files.add(file)} }
+            def db_coverage_unstable_files = []
+            file(workflow.out.ch_db_coverage.get(0).get(1)).eachFileRecurse{ file -> if (["db_coverage.json"].find {file.toString().endsWith(it)}) {db_coverage_unstable_files.add(file)} }
+
+            assertAll(
+                { assert snapshot(
+                    workflow.out.ch_hits_for_report,
+                    workflow.out.ch_candidates_for_report,
+                    db_coverage_stable_files,
+                    workflow.out.ch_source_diversity_for_report,
+                    workflow.out.ch_homology_trees
+                ).match() },
+                { assert workflow.out.ch_html_report.size() == 6 },
+                { assert workflow.out.ch_collated_versions.size() == 1 },
+                { assert workflow.out.ch_params_json.size() == 1 },
+                { assert workflow.out.ch_workflow_timestamp.size() == 1 },
+                { assert db_coverage_unstable_files.size() == 6}
+            )
+        }
+    }
+                    
+}
