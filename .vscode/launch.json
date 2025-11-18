@@ -130,7 +130,7 @@
                 // "--metadata-csv", "output/issues/c14/metadata_014.csv",
                 // "--query-fasta", "output/issues/c14/query_014.fasta",
 
-                "--phylogeny-max-per-species", "10",
+                "--phylogeny-species-max-seqs", "10",
                 // "--max-candidates-analysis", "0",  // Force boxplot
             ],
             "env": {
