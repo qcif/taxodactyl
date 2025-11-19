@@ -168,18 +168,30 @@ def _draw_occurrence_maps(
             continue
 
         path = query_dir / config.get_map_filename_for_target(target)
-        if gbif_target.rank > RANK.GENUS:
+        if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             rank_str = RANK.to_string(gbif_target.rank)
-            logger.info(
-                f'Skipping occurrence map for target {gbif_target.taxon} -'
-                f' rank {rank_str} above Genus level.'
-            )
+            if gbif_target.rank:
+                msg = (
+                    f'Skipping occurrence map for target {gbif_target.taxon} -'
+                    f' rank {rank_str} above Genus level.'
+                )
+                img_msg = (
+                    f"Occurrence maps are only generated for taxa at rank"
+                    f" genus or species. Target rank is {rank_str}."
+                )
+            else:
+                msg = (
+                    f'Skipping occurrence map for target {gbif_target.taxon} -'
+                    ' rank is unknown.'
+                )
+                img_msg = (
+                    "Occurrence maps are only generated for taxa at rank"
+                    " genus or species. Target rank is unknown."
+                )
+            logger.info(msg)
             draw_placeholder_map(
                 path,
-                message=(
-                    "Occurrence maps are only generated for taxa at rank"
-                    " genus or species."
-                )
+                message=img_msg,
             )
         else:
             logger.info(
