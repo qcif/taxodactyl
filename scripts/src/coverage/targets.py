@@ -100,7 +100,7 @@ def fetch_target_taxa(targets, query_dir):
                 " genus).")
             logger.warning(msg)
             errors.write(
-                errors.LOCATIONS.DB_COVERAGE_NO_GBIF_RANK,
+                errors.LOCATIONS.DB_COVERAGE,
                 msg,
                 query_dir=query_dir,
                 context={"target": target},
