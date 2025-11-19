@@ -124,6 +124,16 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'hits_taxonomy': (
             _load_taxonomies_bold(hits) if bold else _load_taxonomies(hits)
         ),
+        'taxonomic_ranks': [
+            'domain',
+            'kingdom',
+            'phylum',
+            'class',
+            'order',
+            'family',
+            'genus',
+            'species',
+        ],
         'candidates_boxplot_src': _get_boxplot_src(query_ix),
         'toi_rows': _read_toi_rows(query_ix),
         'tois_detected': _read_toi_detected(query_ix),
