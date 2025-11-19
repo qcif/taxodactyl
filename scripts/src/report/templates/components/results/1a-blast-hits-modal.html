@@ -144,18 +144,6 @@
   </div>
 
   <script>
-    const HITS = {{ hits | tojson }};
-    const TAXONOMY = {{ hits_taxonomy | tojson }};
-    const TAXONOMY_ORDER = [
-      'kingdom',
-      'phylum',
-      'class',
-      'order',
-      'family',
-      'genus',
-      'species',
-    ];
-
     function showBlastHit(index) {
       const hit = HITS[index];
       showBlastAlignment(hit);
