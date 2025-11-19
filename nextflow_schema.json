@@ -155,25 +155,39 @@
                 },
                 "phylogeny_min_hit_identity": {
                     "type": "number",
-                    "default": 0.95,
+                    "default": 0.935,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "Minimum hit identity to be included into phylogenetic tree.",
                     "errorMessage": "Parameter 'phylogeny_min_hit_identity' must be a number between 0 and 1. Default: 0.95."
                 },
-                "phylogeny_min_hit_sequences": {
+                "phylogeny_min_seqs": {
                     "type": "integer",
                     "default": 10,
                     "minimum": 1,
                     "description": "The minimum number of sequences to be included (non-candidate sequences will be included until this limit is reached).",
-                    "errorMessage": "Parameter 'phylogeny_min_hit_sequences' must be an integer >= 1. Default: 10."
+                    "errorMessage": "Parameter 'phylogeny_min_seqs' must be an integer >= 1. Default: 10."
                 },
-                "phylogeny_max_hits_per_species": {
+                "phylogeny_max_seqs": {
                     "type": "integer",
-                    "default": 30,
+                    "default": 50,
+                    "minimum": 1,
+                    "description": "The absolute maximum number of sequences to be included across all species. Any unsampled candidate sequences will be excluded once this limit is reached - typically only when there are 10+ candidate species.",
+                    "errorMessage": "Parameter 'phylogeny_min_seqs' must be an integer >= 1. Default: 10."
+                },
+                "phylogeny_species_max_seqs": {
+                    "type": "integer",
+                    "default": 3,
                     "minimum": 1,
                     "description": "The maximum number of hits per species to be included into phylogenetic tree.",
-                    "errorMessage": "Parameter 'phylogeny_max_hits_per_species' must be an integer >= 1. Default: 30."
+                    "errorMessage": "Parameter 'phylogeny_species_max_seqs' must be an integer >= 1. Default: 3."
+                },
+                "phylogeny_candidate_max_seqs": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "description": "The maximum number of sequences per candidate species to be included into phylogenetic tree.",
+                    "errorMessage": "Parameter 'phylogeny_candidate_max_seqs' must be an integer >= 1. Default: 5."
                 },
                 "allowed_loci_file": {
                     "type": "string",
