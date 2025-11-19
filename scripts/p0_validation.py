@@ -168,7 +168,10 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
         reader = csv.DictReader(f)
         rows = list(reader)  # skip header row
     for i, row in enumerate(rows):
-        missing_cols = set(columns.values()) - set(row.keys())
+        missing_cols = (
+            set(config.inputs.metadata_csv_required_fields)
+            - set(row.keys())
+        )
         if missing_cols:
             raise MetadataFormatError(
                 "missing required column(s):" + ', '.join(missing_cols) + '.')
@@ -197,9 +200,10 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
         _validate_metadata_sample_id(row[columns['sample_id']])
         _validate_metadata_locus(row[columns['locus']], bold=bold)
         _validate_metadata_preliminary_id(row[columns['preliminary_id']])
-        _validate_metadata_taxa_of_interest(row[columns['taxa_of_interest']])
-        _validate_metadata_country(row[columns['country']])
-        _validate_metadata_host(row[columns['host']])
+        _validate_metadata_taxa_of_interest(
+            row.get(columns['taxa_of_interest']))
+        _validate_metadata_country(row.get(columns['country']))
+        _validate_metadata_host(row.get(columns['host']))
         sample_ids.append(sample_id)
 
     missing_ids = set(seq_ids) - set(sample_ids)
@@ -265,6 +269,8 @@ def _validate_metadata_preliminary_id(value):
 
 
 def _validate_metadata_taxa_of_interest(value):
+    if value is None:
+        return None
     value = value.strip()
     invalid_chars = re.search('[^A-z| ]', value)
     if invalid_chars:
@@ -277,9 +283,9 @@ def _validate_metadata_taxa_of_interest(value):
 
 
 def _validate_metadata_country(value):
-    value = value.strip()
-    if not value:
+    if value is None or not value.strip():
         return None
+    value = value.strip()
     country_code = countries.get_code(value)
     if not country_code:
         raise MetadataFormatError(
