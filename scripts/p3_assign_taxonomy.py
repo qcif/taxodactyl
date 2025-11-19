@@ -354,7 +354,8 @@ def _get_accessions_for_phylogeny(
 
     sorted_hits = sorted(
         filtered_hits,
-        key=lambda x: x[identity_key]
+        key=lambda x: x[identity_key],
+        reverse=True,
     )
 
     min_hits = config.criteria.phylogeny_min_seqs

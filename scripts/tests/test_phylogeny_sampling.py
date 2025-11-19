@@ -1,4 +1,6 @@
+import json
 import unittest
+from pathlib import Path
 from unittest import mock
 
 from scripts import p3_assign_taxonomy
@@ -7,26 +9,99 @@ from scripts import p3_assign_taxonomy
 class TestGetAccessionsForPhylogeny(unittest.TestCase):
     """Unit-tests for sampling of hits for phylogenetic subject sequences."""
 
-    def setUp(self):
-        # Set a low limit so we can exercise sampling
-        patcher = mock.patch.object(
-            p3_assign_taxonomy.config.criteria,
-            "phylogeny_species_max_seqs",
-            5,
-            create=True,
-        )
-        patcher.start()
-        self.addCleanup(patcher.stop)
+    CRITERIA_CONFIG = {
+        'phylogeny_min_hit_identity': 0.935,
+        'phylogeny_min_seqs': 20,
+        'phylogeny_max_seqs': 50,
+        'phylogeny_species_max_seqs': 3,
+        'phylogeny_candidate_max_seqs': 5,
+    }
 
-    def test_all_hits_returned_when_below_limit(self):
-        hits = [
-            {"species": "Pan troglodytes", "acc": "PT1", "identity": 0.98},
-            {"species": "Pan troglodytes", "acc": "PT2", "identity": 0.95},
-        ]
-        result = p3_assign_taxonomy._get_accessions_for_phylogeny(
+    def setUp(self):
+        for k, v in self.CRITERIA_CONFIG.items():
+            patcher = mock.patch.object(
+                p3_assign_taxonomy.config.criteria,
+                k,
+                v,
+                create=True,
+            )
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+        # Load 32 hits across 4 species (8 each), identities 0.921-0.999
+        # ~ Candidates:
+        # Homo (0.980-0.999)
+        # ~ Non-candidates:
+        # Pan (0.921-0.930)
+        # Gorilla (0.940-0.949),
+        # Pongo (0.960-0.969)
+
+        test_data_path = (
+            Path(__file__).parent / "test-data" / "test_phylogeny_hits.json"
+        )
+        with open(test_data_path) as f:
+            hits = json.load(f)
+        self.result = p3_assign_taxonomy._get_accessions_for_phylogeny(
             hits, id_key="acc", identity_key="identity"
         )
-        self.assertCountEqual(result, ["PT1", "PT2"])
+
+    def test_accession_selection_with_strict_candidate(self):
+        results_enumerated = {
+            key: len([
+                x for x in self.result
+                if x[:2] == key
+            ])
+            for key in (
+                'HS',
+                'GG',
+                'PP',
+                'PT',
+            )
+        }
+        self.assertIn('HS1', self.result)
+        self.assertIn('HS8', self.result)
+        self.assertIn('GG1', self.result)
+        self.assertIn('GG8', self.result)
+        self.assertIn('PP1', self.result)
+        self.assertIn('PP8', self.result)
+        self.assertIn('PT1', self.result)
+        self.assertIn('PT5', self.result)
+        self.assertIn('PT8', self.result)
+        self.assertEqual(results_enumerated['HS'], 5)
+        self.assertEqual(results_enumerated['GG'], 3)
+        self.assertEqual(results_enumerated['PP'], 3)
+        self.assertEqual(results_enumerated['PT'], 3)
+
+    def test_accession_selection_with_moderate_candidate(self):
+        """Remove strong candidate to make all species candidates."""
+        result = [
+            x for x in self.results.copy()
+            if not x.startswith('HS')
+        ]
+        results_enumerated = {
+            key: len([
+                x for x in result
+                if x[:2] == key
+            ])
+            for key in (
+                'HS',
+                'GG',
+                'PP',
+                'PT',
+            )
+        }
+        self.assertIn('HS1', result)
+        self.assertIn('HS8', result)
+        self.assertIn('GG1', result)
+        self.assertIn('GG8', result)
+        self.assertIn('PP1', result)
+        self.assertIn('PP8', result)
+        self.assertIn('PT1', result)
+        self.assertIn('PT5', result)
+        self.assertIn('PT8', result)
+        self.assertEqual(results_enumerated['GG'], 5)
+        self.assertEqual(results_enumerated['PP'], 5)
+        self.assertEqual(results_enumerated['PT'], 5)
 
     def test_sampling_when_above_limit(self):
         # 13 hits for one species → sampling branch
@@ -41,28 +116,7 @@ class TestGetAccessionsForPhylogeny(unittest.TestCase):
         result = p3_assign_taxonomy._get_accessions_for_phylogeny(
             hits, id_key="acc", identity_key="identity"
         )
-        # should pick indices [0, 6, 12] → A0, A6, A12
         self.assertEqual(len(result), 5)
-        self.assertCountEqual(result, ["A0", "A3", "A6", "A9", "A12"])
-
-    def test_mixed_species(self):
-        # 12 cat hits (sampled down to 3) + 1 dog hit (kept as-is) → 13 inputs
-        cat_hits = [
-            {
-                "species": "Felis catus",
-                "acc": f"C{i}",
-                "identity": 0.80 + i * 0.015,
-            }
-            for i in range(12)
-        ]
-        dog_hit = {"species": "Canis lupus", "acc": "D0", "identity": 0.90}
-        hits = cat_hits + [dog_hit]
-        result = p3_assign_taxonomy._get_accessions_for_phylogeny(
-            hits, id_key="acc", identity_key="identity"
-        )
-        # cat picks at [0,6,11] → C0, C6, C11 plus "D0"
-        self.assertEqual(len(result), 6)
-        self.assertCountEqual(result, ["C0", "C3", "C6", "C8", "C11", "D0"])
 
 
 if __name__ == "__main__":
