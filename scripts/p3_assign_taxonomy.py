@@ -318,7 +318,6 @@ def _assign_species_id(
         selected_species,
         selected_species_hits,
         filtered_hits,
-        filtered_hits,
         bold=bold,
     )
     if len(selected_species) > config.criteria.max_candidates_for_analysis:
