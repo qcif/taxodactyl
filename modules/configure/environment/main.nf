@@ -56,8 +56,8 @@ process CONFIGURE_ENVIRONMENT {
     fi
     if [ ${params.outdir} != null ]; then echo 'export OUTPUT_DIR=${params.outdir}' >> env_vars.sh; fi
     if [ ${params.phylogeny_min_hit_identity} != null ]; then echo 'export PHYLOGENY_MIN_HIT_IDENTITY=${params.phylogeny_min_hit_identity}' >> env_vars.sh; fi
-    if [ ${params.phylogeny_min_seqs} != null ]; then echo 'export PHYLOGENY_MIN_HIT_SEQUENCES=${params.phylogeny_min_seqs}' >> env_vars.sh; fi
-    if [ ${params.phylogeny_max_seqs} != null ]; then echo 'export PHYLOGENY_MAX_HIT_SEQUENCES=${params.phylogeny_max_seqs}' >> env_vars.sh; fi
+    if [ ${params.phylogeny_min_seqs} != null ]; then echo 'export PHYLOGENY_MIN_SEQS=${params.phylogeny_min_seqs}' >> env_vars.sh; fi
+    if [ ${params.phylogeny_max_seqs} != null ]; then echo 'export PHYLOGENY_MAX_SEQS=${params.phylogeny_max_seqs}' >> env_vars.sh; fi
     if [ ${params.phylogeny_species_max_seqs} != null ]; then echo 'export PHYLOGENY_SPECIES_MAX_SEQS=${params.phylogeny_species_max_seqs}' >> env_vars.sh; fi
     if [ ${params.phylogeny_candidate_max_seqs} != null ]; then echo 'export PHYLOGENY_CANDIDATE_MAX_SEQS=${params.phylogeny_candidate_max_seqs}' >> env_vars.sh; fi
     if [ ${params.report_debug} != null ]; then echo 'export REPORT_DEBUG=${params.report_debug}' >> env_vars.sh; fi

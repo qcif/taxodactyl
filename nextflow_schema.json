@@ -173,7 +173,7 @@
                     "default": 50,
                     "minimum": 1,
                     "description": "The absolute maximum number of sequences to be included across all species. Any unsampled candidate sequences will be excluded once this limit is reached - typically only when there are 10+ candidate species.",
-                    "errorMessage": "Parameter 'phylogeny_min_seqs' must be an integer >= 1. Default: 10."
+                    "errorMessage": "Parameter 'phylogeny_max_seqs' must be an integer >= 1. Default: 10."
                 },
                 "phylogeny_species_max_seqs": {
                     "type": "integer",
