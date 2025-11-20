@@ -163,10 +163,10 @@
                 },
                 "phylogeny_min_seqs": {
                     "type": "integer",
-                    "default": 10,
+                    "default": 20,
                     "minimum": 1,
                     "description": "The minimum number of sequences to be included (non-candidate sequences will be included until this limit is reached).",
-                    "errorMessage": "Parameter 'phylogeny_min_seqs' must be an integer >= 1. Default: 10."
+                    "errorMessage": "Parameter 'phylogeny_min_seqs' must be an integer >= 1. Default: 20."
                 },
                 "phylogeny_max_seqs": {
                     "type": "integer",
