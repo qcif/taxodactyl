@@ -105,11 +105,23 @@ class CriteriaConfig(BaseModel):
 
     # Phylogeny criteria
     phylogeny_min_hit_identity: float = Field(
-        default=0.95, description="Phylogeny minimum hit identity")
-    phylogeny_min_hit_sequences: int = Field(
-        default=20, description="Phylogeny minimum hit sequences")
-    phylogeny_max_hits_per_species: int = Field(
-        default=30, description="Phylogeny maximum hits per species")
+        default=0.935, description="Phylogeny minimum hit identity")
+    phylogeny_min_seqs: int = Field(
+        default=20, description="Minimum number of sequences to collect")
+    phylogeny_max_seqs: int = Field(
+        default=50, description="Maximum number of sequences to collect")
+    phylogeny_species_max_seqs: int = Field(
+        default=3,
+        description=(
+            "Maximum number of sequences collected for each (non-candidate)"
+            " species."),
+    )
+    phylogeny_candidate_max_seqs: int = Field(
+        default=5,
+        description=(
+            "Maximum number of sequences collected for each candidate"
+            " species."),
+    )
 
 
 class ReportConfig(BaseModel):

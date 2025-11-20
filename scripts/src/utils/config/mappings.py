@@ -398,22 +398,34 @@ parameters = [
         cli_name=arguments.MIN_SOURCE_COUNT,
         env_name=env_vars.MIN_SOURCE_COUNT,
     ),
-    IntMapping(
-        'phylogeny_min_hit_sequences',
-        namespace='criteria',
-        cli_name=arguments.PHYLOGENY_MIN_SEQUENCES,
-        env_name=env_vars.PHYLOGENY_MIN_HIT_SEQUENCES,
-    ),
-    IntMapping(
-        'phylogeny_max_hits_per_species',
-        namespace='criteria',
-        cli_name=arguments.PHYLOGENY_MAX_PER_SPECIES,
-        env_name=env_vars.PHYLOGENY_MAX_HITS_PER_SPECIES,
-    ),
     FloatMapping(
         'phylogeny_min_hit_identity',
         namespace='criteria',
         env_name=env_vars.PHYLOGENY_MIN_HIT_IDENTITY,
+    ),
+    IntMapping(
+        'phylogeny_min_seqs',
+        namespace='criteria',
+        cli_name=arguments.PHYLOGENY_MIN_SEQS,
+        env_name=env_vars.PHYLOGENY_MIN_SEQS,
+    ),
+    IntMapping(
+        'phylogeny_max_seqs',
+        namespace='criteria',
+        cli_name=arguments.PHYLOGENY_MAX_SEQS,
+        env_name=env_vars.PHYLOGENY_MAX_SEQS,
+    ),
+    IntMapping(
+        'phylogeny_species_max_seqs',
+        namespace='criteria',
+        cli_name=arguments.PHYLOGENY_SPECIES_MAX_SEQS,
+        env_name=env_vars.PHYLOGENY_SPECIES_MAX_SEQS,
+    ),
+    IntMapping(
+        'phylogeny_candidate_max_seqs',
+        namespace='criteria',
+        cli_name=arguments.PHYLOGENY_CANDIDATE_MAX_SEQS,
+        env_name=env_vars.PHYLOGENY_CANDIDATE_MAX_SEQS,
     ),
 
     # Database coverage criteria
