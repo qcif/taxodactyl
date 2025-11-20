@@ -33,10 +33,10 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "75",  // Optional, run a specific test case
+                "RUN_TEST_CASE": "161",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
-                // Note: PHYLOGENY_MAX_HITS_PER_SPECIES and GBIF_MAX_OCCURRENCE_RECORDS
+                // Note: PHYLOGENY_SPECIES_MAX_SEQS and GBIF_MAX_OCCURRENCE_RECORDS
                 // are now passed as CLI arguments in the Python scripts
             },
             "console": "integratedTerminal",
@@ -130,7 +130,7 @@
                 // "--metadata-csv", "output/issues/c14/metadata_014.csv",
                 // "--query-fasta", "output/issues/c14/query_014.fasta",
 
-                "--phylogeny-max-per-species", "10",
+                "--phylogeny-species-max-seqs", "10",
                 // "--max-candidates-analysis", "0",  // Force boxplot
             ],
             "env": {

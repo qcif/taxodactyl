@@ -28,8 +28,11 @@ MIN_IDENTITY_STRICT = 'min-identity-strict'
 MEDIAN_IDENTITY_WARNING_FACTOR = 'median-identity-warning-factor'
 MAX_CANDIDATES_ANALYSIS = 'max-candidates-analysis'
 MIN_SOURCE_COUNT = 'min-source-count'
-PHYLOGENY_MIN_SEQUENCES = 'phylogeny-min-sequences'
-PHYLOGENY_MAX_PER_SPECIES = 'phylogeny-max-per-species'
+PHYLOGENY_MIN_HIT_IDENTITY = 'phylogeny-min-hit-identity'
+PHYLOGENY_MIN_SEQS = 'phylogeny-min-seqs'
+PHYLOGENY_MAX_SEQS = 'phylogeny-max-seqs'
+PHYLOGENY_SPECIES_MAX_SEQS = 'phylogeny-species-max-seqs'
+PHYLOGENY_CANDIDATE_MAX_SEQS = 'phylogeny-candidate-max-seqs'
 
 # Database coverage criteria
 DB_COV_TARGET_MIN_A = 'db-cov-target-min-a'

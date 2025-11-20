@@ -86,9 +86,11 @@ criteria:
   db_cov_related_min_a: 90
   db_cov_related_min_b: 10
   db_cov_country_missing_a: 1
-  phylogeny_min_hit_identity: 0.95
-  phylogeny_min_hit_sequences: 20
-  phylogeny_max_hits_per_species: 30
+  phylogeny_min_hit_identity: 0.935
+  phylogeny_min_seqs: 20
+  phylogeny_max_seqs: 50
+  phylogeny_species_max_seqs: 3
+  phylogeny_candidate_max_seqs: 5
 report:
   title: Taxonomic identification report
   debug: false

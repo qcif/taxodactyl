@@ -42,8 +42,11 @@ process EXTRACT_CANDIDATES {
     def min_identity_strict_arg = params.min_identity_strict ? "--min-identity-strict ${params.min_identity_strict}" : ''
     def median_identity_warning_factor_arg = params.median_identity_warning_factor ? "--median-identity-warning-factor ${params.median_identity_warning_factor}" : ''
     def max_candidates_analysis_arg = params.max_candidates_for_analysis ? "--max-candidates-analysis ${params.max_candidates_for_analysis}" : ''
-    def phylogeny_min_sequences_arg = params.phylogeny_min_hit_sequences ? "--phylogeny-min-sequences ${params.phylogeny_min_hit_sequences}" : ''
-    def phylogeny_max_per_species_arg = params.phylogeny_max_hits_per_species ? "--phylogeny-max-per-species ${params.phylogeny_max_hits_per_species}" : ''
+    def phylogeny_min_hit_identity_arg = params.phylogeny_min_hit_identity ? "--phylogeny-min-hit-identity ${params.phylogeny_min_hit_identity}" : ''
+    def phylogeny_min_seqs_arg = params.phylogeny_min_seqs ? "--phylogeny-min-seqs ${params.phylogeny_min_seqs}" : ''
+    def phylogeny_max_seqs_arg = params.phylogeny_max_seqs ? "--phylogeny-max-seqs ${params.phylogeny_max_seqs}" : ''
+    def phylogeny_species_max_seqs_arg = params.phylogeny_species_max_seqs ? "--phylogeny-species-max-seqs ${params.phylogeny_species_max_seqs}" : ''
+    def phylogeny_candidate_max_seqs_arg = params.phylogeny_candidate_max_seqs ? "--phylogeny-candidate-max-seqs ${params.phylogeny_candidate_max_seqs}" : ''
     """
     # Source environment variables
     source ${env_var_file}
@@ -68,7 +71,9 @@ process EXTRACT_CANDIDATES {
     ${min_identity_strict_arg} \
     ${median_identity_warning_factor_arg} \
     ${max_candidates_analysis_arg} \
-    ${phylogeny_min_sequences_arg} \
-    ${phylogeny_max_per_species_arg}
+    ${phylogeny_min_seqs_arg} \
+    ${phylogeny_max_seqs_arg} \
+    ${phylogeny_species_max_seqs_arg} \
+    ${phylogeny_candidate_max_seqs_arg}
     """
 }
