@@ -4,7 +4,7 @@
 > make x.x.x release when Nextflow has been tested with new Python container
 
 - [ ] Ensure that [scripts/VERSION](https://github.com/qcif/taxodactyl/blob/main/scripts/VERSION) file has been updated
-- [ ] Filter issues to `milestone:release_x.x.x` to see high-level changes since last version
+- [ ] Filter issues/pull-requests to `milestone:release_x.x.x` to see high-level changes since last version
 - [ ] Click on "Generate release notes" to get a detailed changelog
 - [ ] Use the above to fill out the sections below
 
