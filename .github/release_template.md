@@ -1,24 +1,36 @@
 # {{ version }}
 
->[!NOTE] First make a x.x.x-dev release to trigger Python container build, then
-> make x.x.x release when Nextflow has been tested with new Python container
+## If this is a Python scripts release:
 
-- [ ] Ensure that [scripts/VERSION](https://github.com/qcif/taxodactyl/blob/main/scripts/VERSION) file has been updated
+- [ ] The release should be tagged like `x.x.x-dev`
+- [ ] Replace the `{{ version }}` placeholders in this template
+- [ ] Ensure that [./scripts/VERSION](https://github.com/qcif/taxodactyl/blob/main/scripts/VERSION) file has been updated
+- [ ] Ensure that [./scripts/pyproject.toml](https://github.com/qcif/taxodactyl/blob/main/scripts/VERSION) file has been updated
 - [ ] Filter issues/pull-requests to `milestone:release_x.x.x` to see high-level changes since last version
 - [ ] Click on "Generate release notes" to get a detailed changelog
 - [ ] Use the above to fill out the sections below
 
+
+## If this is a workflow (Nextflow) release:
+
+- [ ] The release should be tagged like `x.x.x` (identical version to Python release)
+- [ ] Replace the `{{ version }}` placeholders in this template
+- [ ] Copy the release notes from the Python release
+- [ ] Ensure that version is updated in `conf/manifest.config`
+
+---
+
 ### Summary
 
-- Provide a brief overview of the content of this release
+Provide a brief overview of the content of this release
 
 ### Major changes
 
+(list major features implemented)
 
 ### Minor changes
 
 (list commits/PRs)
-
 
 ### Bug fixes
 
