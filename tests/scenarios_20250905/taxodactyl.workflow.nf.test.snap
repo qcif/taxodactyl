@@ -154,14 +154,10 @@
                 ]
             ],
             [
-                "1.json:md5,544f67413497f1194782c55d8c602637",
-                "next.txt:md5,c81e728d9d4c2f636f067f89cc14862c",
-                "5.2.flag:md5,1634abe5017e4305f686af58730773f5",
-                "candidates.json:md5,3f948ae0d89165d33355b43d9e4871b0",
-                "map_Spodoptera_frugiperda.png:md5,e4429d4e0f20181c0fed0a0c36fdbc83",
-                "5.1.flag:md5,613a12c0462f26f5c2148cd2a0f65f49",
-                "map_Spodoptera_exigua.png:md5,e7007c776bbcb88a98618d48177efd9f",
-                "5.3.flag:md5,2e7309432054858d01cf70c7fc84b1c1"
+                
+            ],
+            [
+                
             ],
             [
                 [
@@ -244,6 +240,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-18T07:38:09.073505518"
+        "timestamp": "2025-11-21T06:51:25.589230868"
     }
 }

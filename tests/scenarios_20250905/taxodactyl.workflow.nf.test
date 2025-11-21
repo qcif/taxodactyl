@@ -12,16 +12,25 @@ nextflow_workflow {
         }
 
         then {
-            def db_coverage_stable_files = []
-            file(workflow.out.ch_db_coverage.get(0).get(1)).eachFileRecurse{ file -> if (!file.isDirectory() && !["db_coverage.json"].find {file.toString().endsWith(it)}) {db_coverage_stable_files.add(file)} }
-            def db_coverage_unstable_files = []
-            file(workflow.out.ch_db_coverage.get(0).get(1)).eachFileRecurse{ file -> if (["db_coverage.json"].find {file.toString().endsWith(it)}) {db_coverage_unstable_files.add(file)} }
 
+
+            def actual_db_coverage_json = workflow.out.ch_db_coverage_json.collect { query, filepath -> [query, path(filepath).json] }
+            def expected_db_coverage_json = [
+            ['query_001_Scenario_01', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_001_Scenario_01/db_coverage.json').json], 
+            ['query_002_Scenario_02', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_002_Scenario_02/db_coverage.json').json],
+            ['query_003_Scenario_03', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_003_Scenario_03/db_coverage.json').json],
+            ['query_004_Scenario_04', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_004_Scenario_04/db_coverage.json').json],
+            ['query_005_Scenario_05', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_005_Scenario_05/db_coverage.json').json],
+            ['query_006_Scenario_06', path('/mnt/data/tests-wf-2/taxodactyl/nf-tests/tests/scenarios_20250905/query_006_Scenario_06/db_coverage.json').json]
+            ]
+
+    
             assertAll(
                 { assert snapshot(
                     workflow.out.ch_hits_for_report,
                     workflow.out.ch_candidates_for_report,
-                    db_coverage_stable_files,
+                    workflow.out.ch_db_coverage_maps,
+                    workflow.out.ch_db_coverage_flags,
                     workflow.out.ch_source_diversity_for_report,
                     workflow.out.ch_homology_trees
                 ).match() },
@@ -29,8 +38,7 @@ nextflow_workflow {
                 { assert workflow.out.ch_collated_versions.size() == 1 },
                 { assert workflow.out.ch_params_json.size() == 1 },
                 { assert workflow.out.ch_workflow_timestamp.size() == 1 },
-                { assert db_coverage_unstable_files.size() == 6}
-            )
+                { assertContainsInAnyOrder(actual_db_coverage_json, expected_db_coverage_json) })
         }
     }
                     

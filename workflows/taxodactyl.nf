@@ -271,13 +271,17 @@ workflow TAXODACTYL {
     )
 
     ch_homology_trees = FASTME.out.nwk
-    ch_db_coverage = EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report
+    ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
+    ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
+    ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
     ch_html_report = REPORT.out.html_report
 
     emit:
     ch_hits_for_report
     ch_candidates_for_report
-    ch_db_coverage
+    ch_db_coverage_json
+    ch_db_coverage_flags
+    ch_db_coverage_maps
     ch_source_diversity_for_report
     ch_homology_trees
     ch_html_report
