@@ -36,23 +36,48 @@
 
       {% include "components/heading.html" %}
 
-      <section id="overview">
-        {% include "components/overview.html" %}
-        {{ render_subjective_input(1) }}
-      </section>
+      <ul class="nav nav-tabs my-5" id="mainTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+            1. Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="candidate-species-tab" data-bs-toggle="tab" data-bs-target="#results-candidate-species" type="button" role="tab" aria-controls="results-candidate-species" aria-selected="false">
+            2. Candidate Species
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="taxa-of-interest-tab" data-bs-toggle="tab" data-bs-target="#results-taxa-of-interest" type="button" role="tab" aria-controls="results-taxa-of-interest" aria-selected="false">
+            3. Taxa of Interest
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="taxonomy-check-tab" data-bs-toggle="tab" data-bs-target="#taxonomy-check" type="button" role="tab" aria-controls="taxonomy-check" aria-selected="false">
+            4. Taxonomy Check
+          </button>
+        </li>
+      </ul>
 
-      <section id="results-candidate-species">
-        {% include "components/results/1-candidate-species.html" %}
-      </section>
+      <div class="tab-content my-3 py-3" id="mainTabsContent">
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          {% include "components/overview.html" %}
+          {{ render_subjective_input(1) }}
+        </div>
 
-      <section id="results-taxa-of-interest">
-        {% include "components/results/2-taxa-of-interest.html" %}
-      </section>
+        <div class="tab-pane fade" id="results-candidate-species" role="tabpanel" aria-labelledby="candidate-species-tab">
+          {% include "components/results/1-candidate-species.html" %}
+        </div>
 
-      <section>
-        <h2>Taxonomy Check</h2>
-        {% include "components/taxonomy-check.html" %}
-      </section>
+        <div class="tab-pane fade" id="results-taxa-of-interest" role="tabpanel" aria-labelledby="taxa-of-interest-tab">
+          {% include "components/results/2-taxa-of-interest.html" %}
+        </div>
+
+        <div class="tab-pane fade" id="taxonomy-check" role="tabpanel" aria-labelledby="taxonomy-check-tab">
+          <h2>Taxonomy Check</h2>
+          {% include "components/taxonomy-check.html" %}
+        </div>
+      </div>
     </div>
 
     <footer>
