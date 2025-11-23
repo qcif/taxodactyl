@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE GBSet PUBLIC "-//NCBI//NCBI GBSeq/EN" "https://www.ncbi.nlm.nih.gov/dtd/NCBI_GBSeq.dtd">
+<GBSet>
+  <GBSeq>
+    <GBSeq_locus>NM_001126</GBSeq_locus>
+    <GBSeq_length>2555</GBSeq_length>
+    <GBSeq_primary-accession>NM_001126</GBSeq_primary-accession>
+    <GBSeq_definition>Homo sapiens adenylosuccinate synthase 2 (ADSS2), transcript variant 1, mRNA</GBSeq_definition>
+    <GBSeq_references>
+      <GBReference>
+        <GBReference_reference>1</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Huttlin,E.L.</GBAuthor>
+          <GBAuthor>Bruckner,R.J.</GBAuthor>
+          <GBAuthor>Navarrete-Perea,J.</GBAuthor>
+          <GBAuthor>Cannon,J.R.</GBAuthor>
+          <GBAuthor>Baltier,K.</GBAuthor>
+          <GBAuthor>Gebreab,F.</GBAuthor>
+          <GBAuthor>Gygi,M.P.</GBAuthor>
+          <GBAuthor>Thornock,A.</GBAuthor>
+          <GBAuthor>Zarraga,G.</GBAuthor>
+          <GBAuthor>Tam,S.</GBAuthor>
+          <GBAuthor>Szpyt,J.</GBAuthor>
+          <GBAuthor>Gassaway,B.M.</GBAuthor>
+          <GBAuthor>Panov,A.</GBAuthor>
+          <GBAuthor>Parzen,H.</GBAuthor>
+          <GBAuthor>Fu,S.</GBAuthor>
+          <GBAuthor>Golbazi,A.</GBAuthor>
+          <GBAuthor>Maenpaa,E.</GBAuthor>
+          <GBAuthor>Stricker,K.</GBAuthor>
+          <GBAuthor>Guha Thakurta,S.</GBAuthor>
+          <GBAuthor>Zhang,T.</GBAuthor>
+          <GBAuthor>Rad,R.</GBAuthor>
+          <GBAuthor>Pan,J.</GBAuthor>
+          <GBAuthor>Nusinow,D.P.</GBAuthor>
+          <GBAuthor>Paulo,J.A.</GBAuthor>
+          <GBAuthor>Schweppe,D.K.</GBAuthor>
+          <GBAuthor>Vaites,L.P.</GBAuthor>
+          <GBAuthor>Harper,J.W.</GBAuthor>
+          <GBAuthor>Gygi,S.P.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Dual proteome-scale networks reveal cell-specific remodeling of the human interactome</GBReference_title>
+        <GBReference_journal>Cell 184 (11), 3022-3040 (2021)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>2</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Huttlin,E.L.</GBAuthor>
+          <GBAuthor>Bruckner,R.J.</GBAuthor>
+          <GBAuthor>Paulo,J.A.</GBAuthor>
+          <GBAuthor>Cannon,J.R.</GBAuthor>
+          <GBAuthor>Ting,L.</GBAuthor>
+          <GBAuthor>Baltier,K.</GBAuthor>
+          <GBAuthor>Colby,G.</GBAuthor>
+          <GBAuthor>Gebreab,F.</GBAuthor>
+          <GBAuthor>Gygi,M.P.</GBAuthor>
+          <GBAuthor>Parzen,H.</GBAuthor>
+          <GBAuthor>Szpyt,J.</GBAuthor>
+          <GBAuthor>Tam,S.</GBAuthor>
+          <GBAuthor>Zarraga,G.</GBAuthor>
+          <GBAuthor>Pontano-Vaites,L.</GBAuthor>
+          <GBAuthor>Swarup,S.</GBAuthor>
+          <GBAuthor>White,A.E.</GBAuthor>
+          <GBAuthor>Schweppe,D.K.</GBAuthor>
+          <GBAuthor>Rad,R.</GBAuthor>
+          <GBAuthor>Erickson,B.K.</GBAuthor>
+          <GBAuthor>Obar,R.A.</GBAuthor>
+          <GBAuthor>Guruharsha,K.G.</GBAuthor>
+          <GBAuthor>Li,K.</GBAuthor>
+          <GBAuthor>Artavanis-Tsakonas,S.</GBAuthor>
+          <GBAuthor>Gygi,S.P.</GBAuthor>
+          <GBAuthor>Harper,J.W.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Architecture of the human interactome defines protein communities and disease networks</GBReference_title>
+        <GBReference_journal>Nature 545 (7655), 505-509 (2017)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>3</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Baresova,V.</GBAuthor>
+          <GBAuthor>Krijt,M.</GBAuthor>
+          <GBAuthor>Skopova,V.</GBAuthor>
+          <GBAuthor>Souckova,O.</GBAuthor>
+          <GBAuthor>Kmoch,S.</GBAuthor>
+          <GBAuthor>Zikanova,M.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>CRISPR-Cas9 induced mutations along de novo purine synthesis in HeLa cells result in accumulation of individual enzyme substrates and affect purinosome formation</GBReference_title>
+        <GBReference_journal>Mol Genet Metab 119 (3), 270-277 (2016)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>4</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Chen,K.</GBAuthor>
+          <GBAuthor>Ma,H.</GBAuthor>
+          <GBAuthor>Li,L.</GBAuthor>
+          <GBAuthor>Zang,R.</GBAuthor>
+          <GBAuthor>Wang,C.</GBAuthor>
+          <GBAuthor>Song,F.</GBAuthor>
+          <GBAuthor>Shi,T.</GBAuthor>
+          <GBAuthor>Yu,D.</GBAuthor>
+          <GBAuthor>Yang,M.</GBAuthor>
+          <GBAuthor>Xue,W.</GBAuthor>
+          <GBAuthor>Dai,J.</GBAuthor>
+          <GBAuthor>Li,S.</GBAuthor>
+          <GBAuthor>Zheng,H.</GBAuthor>
+          <GBAuthor>Wu,C.</GBAuthor>
+          <GBAuthor>Zhang,Y.</GBAuthor>
+          <GBAuthor>Wu,X.</GBAuthor>
+          <GBAuthor>Li,D.</GBAuthor>
+          <GBAuthor>Xue,F.</GBAuthor>
+          <GBAuthor>Li,H.</GBAuthor>
+          <GBAuthor>Jiang,Z.</GBAuthor>
+          <GBAuthor>Liu,J.</GBAuthor>
+          <GBAuthor>Liu,Y.</GBAuthor>
+          <GBAuthor>Li,P.</GBAuthor>
+          <GBAuthor>Tan,W.</GBAuthor>
+          <GBAuthor>Han,J.</GBAuthor>
+          <GBAuthor>Jie,J.</GBAuthor>
+          <GBAuthor>Hao,Q.</GBAuthor>
+          <GBAuthor>Hu,Z.</GBAuthor>
+          <GBAuthor>Lin,D.</GBAuthor>
+          <GBAuthor>Ma,D.</GBAuthor>
+          <GBAuthor>Jia,W.</GBAuthor>
+          <GBAuthor>Shen,H.</GBAuthor>
+          <GBAuthor>Wei,Q.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Genome-wide association study identifies new susceptibility loci for epithelial ovarian cancer in Han Chinese women</GBReference_title>
+        <GBReference_journal>Nat Commun 5, 4682 (2014)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>5</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Stepinski,J.</GBAuthor>
+          <GBAuthor>Pawelczyk,T.</GBAuthor>
+          <GBAuthor>Bizon,D.</GBAuthor>
+          <GBAuthor>Angielski,S.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Purine nucleotide cycle in rat renal cortex and medulla under conditions that mimic normal and low oxygen supply</GBReference_title>
+        <GBReference_journal>Kidney Int 50 (4), 1195-1201 (1996)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>6</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Powell,S.M.</GBAuthor>
+          <GBAuthor>Zalkin,H.</GBAuthor>
+          <GBAuthor>Dixon,J.E.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Cloning and characterization of the cDNA encoding human adenylosuccinate synthetase</GBReference_title>
+        <GBReference_journal>FEBS Lett 303 (1), 4-10 (1992)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>7</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Zalkin,H.</GBAuthor>
+          <GBAuthor>Dixon,J.E.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>De novo purine nucleotide biosynthesis</GBReference_title>
+        <GBReference_journal>Prog Nucleic Acid Res Mol Biol 42, 259-287 (1992)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>8</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Lai,L.W.</GBAuthor>
+          <GBAuthor>Hart,I.M.</GBAuthor>
+          <GBAuthor>Patterson,D.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>A gene correcting the defect in the CHO mutant Ade -H, deficient in a branch point enzyme (adenylosuccinate synthetase) of de novo purine biosynthesis, is located on the long arm of chromosome 1</GBReference_title>
+        <GBReference_journal>Genomics 9 (2), 322-328 (1991)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>9</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Ogawa,H.</GBAuthor>
+          <GBAuthor>Shiraki,H.</GBAuthor>
+          <GBAuthor>Matsuda,Y.</GBAuthor>
+          <GBAuthor>Nakagawa,H.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Interaction of adenylosuccinate synthetase with F-actin</GBReference_title>
+        <GBReference_journal>Eur J Biochem 85 (2), 331-337 (1978)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>10</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Van der Weyden,M.B.</GBAuthor>
+          <GBAuthor>Kelly,W.N.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Human adenylosuccinate synthetase. Partial purification, kinetic and regulatory properties of the enzyme from placenta</GBReference_title>
+        <GBReference_journal>J Biol Chem 249 (22), 7282-7289 (1974)</GBReference_journal>
+      </GBReference>
+    </GBSeq_references>
+  </GBSeq>
+</GBSet>
