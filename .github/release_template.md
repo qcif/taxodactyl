@@ -9,6 +9,7 @@
 - [ ] Filter issues/pull-requests to `milestone:release_x.x.x` to see high-level changes since last version
 - [ ] Click on "Generate release notes" to get a detailed changelog
 - [ ] Use the above to fill out the sections below
+- [ ] Ensure that any feature updates have been documented
 
 
 ## If this is a workflow (Nextflow) release:
@@ -17,6 +18,7 @@
 - [ ] Replace the `{{ version }}` placeholders in this template
 - [ ] Copy the release notes from the Python release
 - [ ] Ensure that version is updated in `conf/manifest.config`
+- [ ] Ensure that any feature updates have been documented
 
 ---
 
