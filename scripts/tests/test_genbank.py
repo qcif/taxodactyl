@@ -27,6 +27,8 @@ EXPECT_RECORDS_JSON = DATA_DIR / 'genbank_expect_ids.json'
 EXPECT_SINGLE_SOURCE_JSON = DATA_DIR / 'genbank_single_source.json'
 EXPECT_MULTIPLE_SOURCES_JSON = DATA_DIR / 'genbank_multiple_sources.json'
 ACCESSIONS_LIST_FILE = DATA_DIR / 'accessions.txt'
+MOCK_NM_001126_XML = DATA_DIR / 'mock_nm_001126.xml'
+MOCK_HQ621368_XML = DATA_DIR / 'mock_hq621368.xml'
 
 ACCESSION_1 = "NM_001126"
 ACCESSION_2 = "HQ621368"
@@ -49,6 +51,24 @@ MAX_ACCESSIONS = 20  # Limit number of accessions to request
 BATCH_SIZE = 10  # Number of accessions per request, in PERFORMANCE mode
 
 
+def mock_fetch_entrez(**kwargs):
+    """Mock fetch_entrez to return deterministic XML data."""
+    accession_id = kwargs.get('id', '')
+
+    # Map accessions to their mock XML files
+    mock_data_map = {
+        ACCESSION_1: MOCK_NM_001126_XML,
+        ACCESSION_2: MOCK_HQ621368_XML,
+    }
+
+    if accession_id in mock_data_map:
+        xml_content = mock_data_map[accession_id].read_bytes()
+        return xml_content
+
+    # Return empty GBSet for unknown accessions
+    return b'<?xml version="1.0"?><GBSet></GBSet>'
+
+
 class TestFetchRecords(unittest.TestCase):
 
     def setUp(self):
@@ -67,13 +87,15 @@ class TestFetchRecords(unittest.TestCase):
         missing_ids = set(MOCK_ENTREZ_IDS['IdList']) - set(result)
         self.assertEqual(len(missing_ids), 0)
 
-    def test_fetch_single_source(self):
+    @patch("src.entrez.genbank.fetch_entrez", side_effect=mock_fetch_entrez)
+    def test_fetch_single_source(self, _mock_fetch):
         result = fetch_sources(SINGLE_ACCESSION)
         expected = EXPECT_SINGLE_SOURCE_JSON.read_text()
         observed = json.dumps(result, default=serialize)
         self.assertEqual(observed, expected)
 
-    def test_fetch_multiple_source(self):
+    @patch("src.entrez.genbank.fetch_entrez", side_effect=mock_fetch_entrez)
+    def test_fetch_multiple_source(self, _mock_fetch):
         result = fetch_sources(MULTIPLE_ACCESSIONS)
         expected = json.loads(EXPECT_MULTIPLE_SOURCES_JSON.read_text())
         observed = json.loads(json.dumps(result, default=serialize))
