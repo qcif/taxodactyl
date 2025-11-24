@@ -132,13 +132,27 @@ def _parse_args():
         type=int,
         help="Maximum candidates to include in detailed analysis")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MIN_SEQUENCES}",
-        type=int,
-        help="Minimum sequences required for phylogeny")
+        f"--{arguments.PHYLOGENY_MIN_HIT_IDENTITY}",
+        type=float,
+        help="Minimum hit identity for collecting phylogeny sequences")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MAX_PER_SPECIES}",
+        f"--{arguments.PHYLOGENY_MIN_SEQS}",
         type=int,
-        help="Maximum sequences per species for phylogeny")
+        help="Minimum number of sequences to collect for phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences to collect for phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_SPECIES_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences per species to collect for"
+             " phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_CANDIDATE_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences per candidate species to collect for"
+             " phylogeny")
     return parser.parse_args()
 
 
