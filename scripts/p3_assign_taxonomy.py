@@ -365,6 +365,9 @@ def _get_accessions_for_phylogeny(
         idx = [round(i * step) for i in range(n - 1)] + [N - 1]
         return [data[i] for i in idx]
 
+    if not filtered_hits:
+        return []
+
     sorted_hits = sorted(
         filtered_hits,
         key=lambda x: x[identity_key],
