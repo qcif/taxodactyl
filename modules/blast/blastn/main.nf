@@ -2,10 +2,9 @@ process BLAST_BLASTN {
 
     label 'blast'
 
-    containerOptions "--bind ${file(params.blastdb).parent}"
-
     input:
     path(fasta) // Input FASTA file (can be gzipped)
+    tuple path(core_nt_dir), val(blastdb_name)
     val ready   // Readiness flag
 
     output:
@@ -15,7 +14,7 @@ process BLAST_BLASTN {
     publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename" // Publish BLAST XML to output directory
     
     when:
-    task.ext.when == null || task.ext.when 
+    task.ext.when == null || task.ext.when
 
     script:
     def is_compressed = fasta.getExtension() == "gz" ? true : false
@@ -30,7 +29,7 @@ process BLAST_BLASTN {
     # Run BLASTN with specified parameters
     blastn \\
         -num_threads ${task.cpus} \\
-        -db ${file(params.blastdb)} \\
+        -db ${core_nt_dir}/${blastdb_name} \\
         -query ${fasta_name} \\
         -outfmt 5 \\
         -out $params.blast_xml_filename \\
@@ -47,4 +46,3 @@ process BLAST_BLASTN {
     END_VERSIONS
     """
 }
-
