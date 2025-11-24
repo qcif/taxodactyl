@@ -2,7 +2,7 @@
 
 ## If this is a Python scripts release:
 
-- [ ] The release should be tagged like `x.x.x-dev`
+- [ ] The release should be tagged like `x.x.x-dev` (and make sure VERSION file matches!)
 - [ ] Set this as a pre-release
 - [ ] Replace the `{{ version }}` placeholders in this template
 - [ ] Ensure that [./scripts/VERSION](https://github.com/qcif/taxodactyl/blob/main/scripts/VERSION) file has been updated
