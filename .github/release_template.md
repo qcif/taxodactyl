@@ -21,6 +21,7 @@
 - [ ] Copy the release notes from the Python release
 - [ ] Ensure that version is updated in `conf/manifest.config`
 - [ ] Ensure that any feature updates have been documented
+- [ ] Ensure that tests pass (especially for any feature updates)
 - [ ] Delete this checklist
 
 ---
