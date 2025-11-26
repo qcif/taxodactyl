@@ -12,5 +12,5 @@ def build_blast_url(taxon: str, taxid: int, config: Config) -> str:
         '&PAGE_TYPE=BlastSearch&'
         f'EQ_MENU={taxon.replace(' ', '%20')}'
         f'%20(taxid:{taxid})'
-        f'&DATABASE=core_nt&QUERY={query_seq}'
+        f'&QUERY={query_seq}'
     )
