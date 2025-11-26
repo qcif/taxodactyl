@@ -12,6 +12,7 @@ be aware of the potential reduced credibility of these annotation.
 import argparse
 import json
 import logging
+from pathlib import Path
 
 from src.sources import collect
 from src.utils import existing_path, serialize
@@ -35,21 +36,13 @@ def main():
         species, candidate_hits)
     _set_flags(species, args.query_dir)
     _write_sources(aggregated_sources, args.query_dir)
-
-    # Current unused output:
-    # candidates = {
-    #     "species": species,
-    #     "hits": hits,
-    # }
-    # _write_candidates(candidates, args.query_dir)
-
     config.cleanup()
 
 
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "query_dir",  # Not mapped to config
+        arguments.QUERY_DIR,
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
@@ -73,6 +66,18 @@ def _parse_args():
         f"--{arguments.MIN_SOURCE_COUNT}",
         type=int,
         help="Minimum number of independent sources required",
+    )
+    parser.add_argument(
+        f"--{arguments.TEMP_ROOT}",
+        type=Path,
+        help="Path to temp root directory (defaults to"
+             f" '{config.temp_root_dir}')",
+    )
+    parser.add_argument(
+        f"--{arguments.TEMP_DIR_NAME}",
+        type=str,
+        help="The name of the temp dir to create within the temp root"
+             f" (defaults to '{config.temp_dir_name}')",
     )
     return parser.parse_args()
 
@@ -99,13 +104,6 @@ def _set_flags(species_sources, query_dir):
             flag_value,
             target=species['species'],
         )
-
-
-def _write_candidates(candidates, query_dir):
-    path = query_dir / config.candidates_sources_json
-    with path.open('w') as f:
-        json.dump(candidates, f, default=serialize, indent=2)
-    logger.info(f"Candidate hits with source diversity data written to {path}")
 
 
 def _write_sources(sources, query_dir):

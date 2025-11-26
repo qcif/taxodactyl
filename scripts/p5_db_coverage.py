@@ -14,6 +14,7 @@ import argparse
 import json
 import logging
 import sys
+from pathlib import Path
 
 from src.coverage import assess_coverage
 from src.utils import existing_path
@@ -123,6 +124,18 @@ def _parse_args():
         f"--{arguments.DB_COV_COUNTRY_MISSING_A}",
         type=int,
         help="Threshold for missing country data (grade A)",
+    )
+    parser.add_argument(
+        f"--{arguments.TEMP_ROOT}",
+        type=Path,
+        help="Path to temp root directory (defaults to"
+             f" '{config.temp_root_dir}')",
+    )
+    parser.add_argument(
+        f"--{arguments.TEMP_DIR_NAME}",
+        type=str,
+        help="The name of the temp dir to create within the temp root"
+             f" (defaults to '{config.temp_dir_name}')",
     )
     return parser.parse_args()
 
