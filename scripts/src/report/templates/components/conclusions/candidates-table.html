@@ -19,7 +19,17 @@
     {% if candidates.species %}
     {% for candidate in candidates.species[:5] %}
     <tr>
-      <td><em>{{ candidate.species }}</em></td>
+      <td>
+        <a
+            href="javascript:void(0)"
+            role="button"
+            title="See taxonomic lineage"
+            data-bs-toggle="tooltip"
+            onclick="showCandidateTaxonomy('{{ candidate.accession }}');"
+          >
+            <em>{{ candidate.species }}</em>
+          </a>
+      </td>
       <td>{{ candidate.hit_count }}</td>
       <td>
         {% if aggregated_sources[candidate.species] %}
