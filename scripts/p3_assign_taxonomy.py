@@ -352,7 +352,7 @@ def _get_accessions_for_phylogeny(
     """
     def _systematic_sample(seq, n, key=None):
         """Return `n` elements spaced as evenly as possible through `seq`."""
-        data = sorted(seq, key=key)
+        data = sorted(seq, key=key, reverse=True)
         N = len(data)
         if n <= 0:
             return []
@@ -389,9 +389,9 @@ def _get_accessions_for_phylogeny(
     )
 
     accessions = []
-    phylo_species = {
+    phylo_species = deduplicate([
         hit['species'] for hit in sorted_hits
-    }
+    ])
     hits_by_species = {
         species: [
             hit for hit in sorted_hits
@@ -399,12 +399,12 @@ def _get_accessions_for_phylogeny(
         ]
         for species in phylo_species
     }
-    for hits in hits_by_species.values():
+    for species in phylo_species:
+        hits = hits_by_species[species]
         is_candidate_sp = hits[0][identity_key] > candidate_id_threshold
         max_seqs = candidate_max_seqs if is_candidate_sp else species_max_seqs
         if (
-            not is_candidate_sp
-            and len(accessions) >= max_hits
+            len(accessions) >= max_hits
             or (
                 len(accessions) > min_hits
                 and hits[0][identity_key] < min_identity
