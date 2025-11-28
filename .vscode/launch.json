@@ -66,6 +66,19 @@
         {
             "type": "debugpy",
             "request": "launch",
+            "name": "P0 Validate inputs",
+            "program": "${workspaceFolder}/scripts/p0_validation.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "--metadata-csv", "tests/test-data/metadata.csv",
+                "--query-fasta", "tests/test-data/queries.fasta",
+                "--taxdb-dir", "~/.taxonkit",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
             "name": "P1 BLAST Parser",
             "program": "${workspaceFolder}/scripts/p1_parse_blast.py",
             "cwd": "${workspaceFolder}/scripts",
