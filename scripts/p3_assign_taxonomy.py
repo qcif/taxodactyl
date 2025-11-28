@@ -388,6 +388,10 @@ def _get_accessions_for_phylogeny(
         else config.criteria.alignment_min_identity
     )
 
+    if sorted_hits[0][identity_key] < min_identity:
+        # No hits meet the minimum identity threshold
+        return []
+
     accessions = []
     phylo_species = deduplicate([
         hit['species'] for hit in sorted_hits
@@ -401,7 +405,7 @@ def _get_accessions_for_phylogeny(
     }
     for species in phylo_species:
         hits = hits_by_species[species]
-        is_candidate_sp = hits[0][identity_key] > candidate_id_threshold
+        is_candidate_sp = hits[0][identity_key] >= candidate_id_threshold
         max_seqs = candidate_max_seqs if is_candidate_sp else species_max_seqs
         if (
             len(accessions) >= max_hits
