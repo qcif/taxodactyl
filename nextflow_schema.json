@@ -17,6 +17,14 @@
                     "description": "Name of the analyst running the workflow.",
                     "errorMessage": "Parameter 'analyst_name' must be a string."
                 },
+                "blast_xml": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.xml$",
+                    "exists": "true",
+                    "description": "Path to a pre-existing BLAST XML results file to skip the BLAST search step.",
+                    "errorMessage": "Parameter 'blast_xml' must be a valid file path."
+                },
                 "db_type": {
                     "type": "string",
                     "default": "blast_core_nt",
@@ -342,6 +350,19 @@
                     "description": "If true, use mock BLAST for testing purposes instead of running actual BLAST.",
                     "hidden": true,
                     "errorMessage": "Parameter 'mock_blast' must be true or false. Default: false."
+                },
+                "temp_root_dir": {
+                    "type": "string",
+                    "default": "output",
+                    "format": "directory-path",
+                    "description": "Directory where temporary files will be saved.",
+                    "errorMessage": "Parameter 'temp_root_dir' must be a valid directory path. If not specified, defaults to the system's temporary directory."
+                },
+                "temp_dir_name": {
+                    "type": "string",
+                    "pattern": "^\\S+$",
+                    "description": "Name of the temporary directory within the temp_root_dir.",
+                    "errorMessage": "Parameter 'temp_dir_name' must be a string."
                 },
                 "accessions_filename": {
                     "type": "string",
