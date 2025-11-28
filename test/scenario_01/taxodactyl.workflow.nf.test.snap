@@ -1,5 +1,5 @@
 {
-    "Scenarios 20250905": {
+    "scenario_01": {
         "content": [
             [
                 [
@@ -154,10 +154,54 @@
                 ]
             ],
             [
-                
-            ],
-            [
-                
+                [
+                    "query_001_Scenario_01",
+                    [
+                        "5.1.flag:md5,613a12c0462f26f5c2148cd2a0f65f49",
+                        "5.2.flag:md5,1634abe5017e4305f686af58730773f5",
+                        "5.3.flag:md5,2e7309432054858d01cf70c7fc84b1c1"
+                    ]
+                ],
+                [
+                    "query_002_Scenario_02",
+                    [
+                        "5.1.flag:md5,e35372d9ad711c48b99911d5e99f66dc",
+                        "5.2.flag:md5,cb748cb598f89458032c091cf70c8f35",
+                        "5.3.flag:md5,e8992436028d5a716317a8a4626e5a5b"
+                    ]
+                ],
+                [
+                    "query_003_Scenario_03",
+                    [
+                        "5.1.flag:md5,c979be5df639d9feec513d072ac0f6b9",
+                        "5.2.flag:md5,e5c70ae53515545330f538f98d02de51",
+                        "5.3.flag:md5,015ebd8fc9b7b03491037d0d95fe32e9"
+                    ]
+                ],
+                [
+                    "query_004_Scenario_04",
+                    [
+                        "5.1.flag:md5,78cdda31840e3a2477c00abb189fe7a8",
+                        "5.2.flag:md5,4cdf3e03da8e9f7c065de1075c267ae4",
+                        "5.3.flag:md5,93677b871a9051418b21050a009aed9b"
+                    ]
+                ],
+                [
+                    "query_005_Scenario_05",
+                    [
+                        "5.1.flag:md5,751452441eadd5d60c3bdf9a738b4116",
+                        "5.2.flag:md5,5a8fcc4aaea111971e3de4a3abf782b3",
+                        "5.3.flag:md5,a15f8c4f71c526d2a9b023e1a391ef02"
+                    ]
+                ],
+                [
+                    "query_006_Scenario_06",
+                    [
+                        "5.1.flag:md5,5fb55c4f2989d64244dff1220bdc237a",
+                        "5.2.flag:md5,79e0b0ac0f2e75e334ebc48a26b4d1cc",
+                        "5.3.flag:md5,bfbe7444f50fc7b3b94567d81e1ab53c"
+                    ]
+                ]
             ],
             [
                 [
@@ -240,6 +284,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-21T06:51:25.589230868"
+        "timestamp": "2025-11-28T07:29:38.649158714"
     }
 }
