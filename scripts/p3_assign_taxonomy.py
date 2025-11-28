@@ -25,7 +25,7 @@ from Bio import SeqIO
 from src.utils import deduplicate, existing_path
 from src.utils.blast import build_blast_url
 from src.utils.config import Config
-from src.utils.config import arguments
+from src.utils.config.mappings import CLI_ARGS
 from src.utils.flags import FLAGS, Flag
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
@@ -83,7 +83,7 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        f"{arguments.QUERY_DIR}",
+        f"{CLI_ARGS['query_dir'].cli_name}",
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
@@ -91,65 +91,65 @@ def _parse_args():
         action="store_true",
         help="Outputs are from BOLD query.")
     parser.add_argument(
-        f"--{arguments.OUTPUT_DIR}",
+        f"--{CLI_ARGS['output_dir'].cli_name}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{arguments.METADATA_CSV}",
+        f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.QUERY_FASTA}",
+        f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.MIN_ALIGNMENT_LENGTH}",
+        f"--{CLI_ARGS['alignment_min_nt'].cli_name}",
         type=int,
         help="Minimum alignment length in nucleotides")
     parser.add_argument(
-        f"--{arguments.MIN_QUERY_COVERAGE}",
+        f"--{CLI_ARGS['alignment_min_q_coverage'].cli_name}",
         type=float,
         help="Minimum query coverage fraction")
     parser.add_argument(
-        f"--{arguments.MIN_IDENTITY}",
+        f"--{CLI_ARGS['alignment_min_identity'].cli_name}",
         type=float,
         help="Minimum sequence identity for moderate matches")
     parser.add_argument(
-        f"--{arguments.MIN_IDENTITY_STRICT}",
+        f"--{CLI_ARGS['alignment_min_identity_strict'].cli_name}",
         type=float,
         help="Minimum sequence identity for strong matches")
     parser.add_argument(
-        f"--{arguments.MEDIAN_IDENTITY_WARNING_FACTOR}",
+        f"--{CLI_ARGS['median_identity_warning_factor'].cli_name}",
         type=float,
         help="Factor for median identity warnings")
     parser.add_argument(
-        f"--{arguments.MAX_CANDIDATES_ANALYSIS}",
+        f"--{CLI_ARGS['max_candidates_for_analysis'].cli_name}",
         type=int,
         help="Maximum candidates to include in detailed analysis")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MIN_HIT_IDENTITY}",
+        f"--{CLI_ARGS['phylogeny_min_hit_identity'].cli_name}",
         type=float,
         help="Minimum hit identity for collecting phylogeny sequences")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MIN_SEQS}",
+        f"--{CLI_ARGS['phylogeny_min_seqs'].cli_name}",
         type=int,
         help="Minimum number of sequences to collect for phylogeny")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MAX_SEQS}",
+        f"--{CLI_ARGS['phylogeny_max_seqs'].cli_name}",
         type=int,
         help="Maximum number of sequences to collect for phylogeny")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_SPECIES_MAX_SEQS}",
+        f"--{CLI_ARGS['phylogeny_species_max_seqs'].cli_name}",
         type=int,
         help="Maximum number of sequences per species to collect for"
              " phylogeny")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_CANDIDATE_MAX_SEQS}",
+        f"--{CLI_ARGS['phylogeny_candidate_max_seqs'].cli_name}",
         type=int,
         help="Maximum number of sequences per candidate species to collect for"
              " phylogeny")

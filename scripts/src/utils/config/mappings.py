@@ -401,6 +401,7 @@ PARAMS = {
     'phylogeny_min_hit_identity': FloatMapping(
         'phylogeny_min_hit_identity',
         namespace='criteria',
+        cli_name='phylogeny-min-hit-identity',
         env_name='PHYLOGENY_MIN_HIT_IDENTITY',
     ),
     'phylogeny_min_seqs': IntMapping(

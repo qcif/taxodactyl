@@ -11,7 +11,7 @@ from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
 from src.utils.config import Config
-from src.utils.config import arguments
+from src.utils.config.mappings import CLI_ARGS
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
@@ -43,19 +43,19 @@ def _parse_args():
         description="Validate user input."
     )
     parser.add_argument(
-        f"--{arguments.METADATA_CSV}",
+        f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.QUERY_FASTA}",
+        f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.TAXDB_DIR}",
+        f"--{CLI_ARGS['taxdb_dir'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
@@ -66,22 +66,22 @@ def _parse_args():
         help="Validate inputs for a BOLD analysis (accept blank locus field).",
     )
     parser.add_argument(
-        f"--{arguments.ALLOWED_LOCI_FILE}",
+        f"--{CLI_ARGS['allowed_loci_file'].cli_name}",
         type=existing_path,
         help="Path to JSON file containing allowed loci definitions",
     )
     parser.add_argument(
-        f"--{arguments.FASTA_MAX_SEQUENCES}",
+        f"--{CLI_ARGS['fasta_max_sequences'].cli_name}",
         type=int,
         help="Maximum number of sequences allowed",
     )
     parser.add_argument(
-        f"--{arguments.FASTA_MIN_LENGTH}",
+        f"--{CLI_ARGS['fasta_min_length'].cli_name}",
         type=int,
         help="Minimum sequence length in nucleotides",
     )
     parser.add_argument(
-        f"--{arguments.FASTA_MAX_LENGTH}",
+        f"--{CLI_ARGS['fasta_max_length'].cli_name}",
         type=int,
         help="Maximum sequence length in nucleotides",
     )
