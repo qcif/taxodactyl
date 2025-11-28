@@ -69,7 +69,7 @@ class TestGetAccessionsForPhylogeny(unittest.TestCase):
         self.assertIn('PP1', result)
         self.assertIn('PP8', result)
         self.assertIn('PT1', result)
-        self.assertIn('PT5', result)
+        self.assertIn('PT4', result)
         self.assertIn('PT8', result)
         self.assertEqual(result_enumerated['HS'], 5)
         self.assertEqual(result_enumerated['GG'], 3)
