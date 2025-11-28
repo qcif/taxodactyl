@@ -111,7 +111,7 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         else _load_taxonomies(hits)
     )
     tree_accessions = {
-        acc: hits_taxonomy[acc].get('species')
+        acc: hits_taxonomy.get(acc, {}).get('species')
         for acc in _get_phylogeny_accessions(query_ix, hits, id_key)
     }
     return {
