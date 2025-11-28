@@ -230,10 +230,12 @@ parameters = [
     StringMapping(
         'temp_dir_name',
         env_name=env_vars.TEMP_DIR_NAME,
+        cli_name=arguments.TEMP_DIR_NAME,
     ),
     StringMapping(
         'temp_root',
         env_name=env_vars.TEMP_ROOT,
+        cli_name=arguments.TEMP_ROOT,
     ),
 
     # Input validation
