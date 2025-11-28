@@ -168,9 +168,10 @@ class Config:
             if value is None:
                 continue
 
-            mapper = mappings.get_mapper(arg_name, cli=True)
-            if not mapper:
+            param_name = arg_name.replace('-', '_')
+            if param_name not in mappings.CLI_ARGS:
                 continue
+            mapper = mappings.CLI_ARGS[param_name]
 
             try:
                 mapper.set_value(self, value)
