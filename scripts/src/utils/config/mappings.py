@@ -484,6 +484,9 @@ CLI_ARGS = {
     k: v for k, v in PARAMS.items()
     if v.cli_name is not None
 }
+CLI_TO_ATTR_NAME = {
+    v.cli_name.replace('-', '_'): k for k, v in CLI_ARGS.items()
+}
 ENV_VARS = {
     k: v for k, v in PARAMS.items()
     if v.env_name is not None

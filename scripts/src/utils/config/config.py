@@ -167,9 +167,8 @@ class Config:
         for arg_name, value in vars(args).items():
             if value is None:
                 continue
-
-            param_name = arg_name.replace('-', '_')
-            if param_name not in mappings.CLI_ARGS:
+            param_name = mappings.CLI_TO_ATTR_NAME.get(arg_name)
+            if not param_name:
                 continue
             mapper = mappings.CLI_ARGS[param_name]
 
