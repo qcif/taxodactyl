@@ -77,7 +77,7 @@ workflow TAXODACTYL {
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
         // BLAST search branch - use mock or real BLAST based on params.mock_blast
-        if (params.mock_blast and params.blast_xml) {
+        if (params.mock_blast && params.blast_xml) {
             // Mock BLAST for testing
             MOCK_BLASTN (
                 ch_sequences,
