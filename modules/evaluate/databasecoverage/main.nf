@@ -15,7 +15,13 @@ process EVALUATE_DATABASE_COVERAGE {
     output:
     tuple val(query_folder),
         path("$query_folder"), emit: db_coverage_for_alternative_report // Output: query folder with results
-
+    tuple val(query_folder),
+        path("$query_folder/db_coverage.json"), emit: db_coverage_json // Output: db_coverage.json file
+    tuple val(query_folder),
+        path("$query_folder/*flag"), emit: db_coverage_flags // Output: flag files
+    tuple val(query_folder),
+        path("$query_folder/map*png"), emit: db_coverage_maps, optional: true // Output: coverage map PNG files
+    
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : '' // Set --bold flag if using BOLD database
     def db_coverage_toi_limit_arg = params.db_coverage_toi_limit ? "--db-coverage-toi-limit ${params.db_coverage_toi_limit}" : ''
