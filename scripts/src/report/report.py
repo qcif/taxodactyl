@@ -10,9 +10,10 @@ from datetime import datetime
 from pathlib import Path
 
 import yaml
+from Bio import SeqIO
 from jinja2 import Environment, FileSystemLoader
 
-from src.utils import config, serialize
+from src.utils import config, deduplicate, serialize
 from src.utils.errors import ErrorLog, LOCATIONS
 from src.utils.flags import FLAGS, Flag, level_to_bs_class
 
@@ -98,11 +99,21 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
     """Build the context for the report template."""
     query_fasta_str = config.read_query_fasta(query_ix).format('fasta')
     hits = config.read_hits_json(query_ix)['hits']
+    id_key = "hit_id" if bold else "accession"
     html_title = (
         'BOLD - ' + config.report.title
         if bold
         else config.report.title
     )
+    hits_taxonomy = (
+        _load_taxonomies_bold(hits)
+        if bold
+        else _load_taxonomies(hits)
+    )
+    tree_accessions = {
+        acc: hits_taxonomy.get(acc, {}).get('species')
+        for acc in _get_phylogeny_accessions(query_ix, hits, id_key)
+    }
     return {
         'title': config.report.title,
         'html_title': html_title,
@@ -121,9 +132,17 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'conclusions': _draw_conclusions(query_ix, hits),
         'hits': hits,
         'candidates': _get_candidates(query_ix),
-        'hits_taxonomy': (
-            _load_taxonomies_bold(hits) if bold else _load_taxonomies(hits)
-        ),
+        'hits_taxonomy': hits_taxonomy,
+        'taxonomic_ranks': [
+            'domain',
+            'kingdom',
+            'phylum',
+            'class',
+            'order',
+            'family',
+            'genus',
+            'species',
+        ],
         'candidates_boxplot_src': _get_boxplot_src(query_ix),
         'toi_rows': _read_toi_rows(query_ix),
         'tois_detected': _read_toi_detected(query_ix),
@@ -131,6 +150,8 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         'db_coverage': _read_db_coverage(query_ix),
         'tree_nwk_str': (config.get_query_dir(query_ix)
                          / config.tree_nwk_filename).read_text().strip(),
+        'tree_accessions': tree_accessions,
+        'tree_species': deduplicate(tree_accessions.values()),
         'error_log': ErrorLog(config.get_query_dir(query_ix)),
         'bold': bold,
         # rendering functions:
@@ -423,6 +444,28 @@ def _get_db_cov_summary(db_coverage_data):
                 'country': _coverage_percent(data['country']),
             }
     return summary
+
+
+def _get_phylogeny_accessions(query_ix, hits, id_key):
+    """Read the phylogeny accessions from the FASTA file.
+
+    Sort them so they match their appearance in hits list.
+    """
+    path = config.get_query_dir(query_ix) / config.phylogeny_fasta
+    if not path.exists():
+        logger.warning(f'No phylogeny accessions file found at {path}')
+        return []
+    with path.open() as f:
+        accessions = [
+            seq.id
+            for seq in SeqIO.parse(f, "fasta")
+        ]
+    sorted_hits = []
+    for hit in hits:
+        acc = hit.get(id_key)
+        if acc in accessions and acc not in sorted_hits:
+            sorted_hits.append(acc)
+    return sorted_hits
 
 
 if __name__ == '__main__':

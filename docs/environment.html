@@ -204,23 +204,37 @@
               fetching related species (comma-separated).
             </td>
           </tr>
-          <!-- <tr>
-            <td><code><strong>PHYLOGENY_MIN_HIT_IDENTITY</strong></code></td>
-            <td><code>0.95</code></td>
-            <td>Minimum hit identity to be included into phylogenetic tree.</td>
-          </tr> -->
           <tr>
-            <td><code><strong>PHYLOGENY_MIN_HIT_SEQUENCES</strong></code></td>
+            <td><code><strong>PHYLOGENY_MIN_HIT_IDENTITY</strong></code></td>
+            <td><code>0.935</code></td>
+            <td>Minimum hit identity to be included into phylogenetic tree.</td>
+          </tr>
+          <tr>
+            <td><code><strong>PHYLOGENY_MIN_SEQS</strong></code></td>
             <td><code>20</code></td>
             <td>
               The minimum number of sequences to be included across all species (non-candidate sequences will be included until this limit is reached).
             </td>
           </tr>
           <tr>
-            <td><code><strong>PHYLOGENY_MAX_HITS_PER_SPECIES</strong></code></td>
-            <td><code>30</code></td>
+            <td><code><strong>PHYLOGENY_MAX_SEQS</strong></code></td>
+            <td><code>50</code></td>
             <td>
-              Maximum number of hits to be included for each species. This is useful where candidate species have 30+ candidate hits - more than is required for building the tree. Reducing this parameter to 10-30 increases tree clarity while also dramatically reducing run time. In this case, a systematic sample of sequences (based on identity) is taken to represent the range of diversity present in each species' sequences.
+              The absolute maximum number of sequences to be included across all species. Any unsampled candidate sequences will be excluded once this limit is reached - typically only when there are 10+ candidate species.
+            </td>
+          </tr>
+          <tr>
+            <td><code><strong>PHYLOGENY_SPECIES_MAX_SEQS</strong></code></td>
+            <td><code>3</code></td>
+            <td>
+              Maximum number of hits to be included for each non-candidate species. This is useful where candidate species have 30+ candidate hits - more than is required for building the tree. Reducing this parameter to 10-30 increases tree clarity while also dramatically reducing run time. In this case, a systematic sample of sequences (based on identity) is taken to represent the range of diversity present in each species' sequences.
+            </td>
+          </tr>
+          <tr>
+            <td><code><strong>PHYLOGENY_CANDIDATE_MAX_SEQS</strong></code></td>
+            <td><code>5</code></td>
+            <td>
+              As above, but for candidate species, for which we want a bit better representation.
             </td>
           </tr>
           <tr>

@@ -12,8 +12,11 @@ criteria:
   alignment_min_identity: 0.90
   sources_min_count: 3
   max_candidates_for_analysis: 5
-  phylogeny_min_hit_sequences: 10
-  phylogeny_max_hits_per_species: 20
+  phylogeny_min_hit_identity: 0.935
+  phylogeny_min_seqs: 20
+  phylogeny_max_seqs: 50
+  phylogeny_species_max_seqs: 3
+  phylogeny_candidate_max_seqs: 5
 
 # BLAST configuration for testing
 blast_max_target_seqs: 1000

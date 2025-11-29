@@ -1,0 +1,162 @@
+[
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT1",
+    "identity": 0.921
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT2",
+    "identity": 0.923
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT3",
+    "identity": 0.925
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT4",
+    "identity": 0.926
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT5",
+    "identity": 0.927
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT6",
+    "identity": 0.928
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT7",
+    "identity": 0.929
+  },
+  {
+    "species": "Pan troglodytes",
+    "acc": "PT8",
+    "identity": 0.930
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG1",
+    "identity": 0.940
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG2",
+    "identity": 0.942
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG3",
+    "identity": 0.944
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG4",
+    "identity": 0.945
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG5",
+    "identity": 0.946
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG6",
+    "identity": 0.947
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG7",
+    "identity": 0.948
+  },
+  {
+    "species": "Gorilla gorilla",
+    "acc": "GG8",
+    "identity": 0.949
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP1",
+    "identity": 0.960
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP2",
+    "identity": 0.962
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP3",
+    "identity": 0.964
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP4",
+    "identity": 0.965
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP5",
+    "identity": 0.966
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP6",
+    "identity": 0.967
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP7",
+    "identity": 0.968
+  },
+  {
+    "species": "Pongo pygmaeus",
+    "acc": "PP8",
+    "identity": 0.969
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS1",
+    "identity": 0.980
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS2",
+    "identity": 0.984
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS3",
+    "identity": 0.988
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS4",
+    "identity": 0.990
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS5",
+    "identity": 0.993
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS6",
+    "identity": 0.995
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS7",
+    "identity": 0.997
+  },
+  {
+    "species": "Homo sapiens",
+    "acc": "HS8",
+    "identity": 0.999
+  }
+]
