@@ -77,14 +77,12 @@ workflow TAXODACTYL {
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
     } else {
         // BLAST search branch - use mock or real BLAST based on params.mock_blast
-        if (params.mock_blast) {
+        if (params.mock_blast and params.blast_xml) {
             // Mock BLAST for testing
             MOCK_BLASTN (
                 ch_sequences,
                 VALIDATE_INPUT.out,
-                // file("${projectDir}/scripts/tests/test-data/one_output.xml")
-                // file("${projectDir}/assets/Shaun_202507D03_blast_result.xml")
-                file("/mnt/data/tests-wf-2/input/daff/scenarios_20250905_blast_result.xml")
+                file(params.blast_xml)
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions

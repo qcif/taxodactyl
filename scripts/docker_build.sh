@@ -23,7 +23,7 @@ while getopts "t:pu" opt; do
 done
 
 if [[ -z $TAG ]]; then
-  TAG=$(cat ../VERSION)
+  TAG="v$(cat VERSION)"
   read -p "Have you updated the VERSION file? (read '${TAG}') [y/n] > " REPLY
   if [[ $REPLY != "y" ]]; then
     echo "Please update the VERSION file before building."

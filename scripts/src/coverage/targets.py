@@ -92,7 +92,20 @@ def fetch_target_taxa(targets, query_dir):
                 context={"target": target},
             )
             continue
-        if gbif_target.rank and gbif_target.rank > RANK.GENUS:
+        if not gbif_target.rank:
+            msg = (
+                f"GBIF record for target taxon '{target}' has no rank,"
+                " which can result from a GBIF API error. Processing has"
+                " been attempted assuming a higher taxonomic rank (above"
+                " genus).")
+            logger.warning(msg)
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                msg,
+                query_dir=query_dir,
+                context={"target": target},
+            )
+        if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             # These get processed differently - broad GB record count only
             higher_taxon_targets[target] = gbif_target
         else:

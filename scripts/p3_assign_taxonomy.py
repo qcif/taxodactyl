@@ -1,6 +1,6 @@
 """Run logic for pipeline phase 1-2.
 
-- Attempt species ID from BLAST results.json (flag 1)
+- Attempt species ID from BLAST all_hits.json (flag 1)
 - Detect Taxa of Interest (flag 2)
 
 Taxa of Interest output has the following CSV fields:
@@ -132,13 +132,27 @@ def _parse_args():
         type=int,
         help="Maximum candidates to include in detailed analysis")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MIN_SEQUENCES}",
-        type=int,
-        help="Minimum sequences required for phylogeny")
+        f"--{arguments.PHYLOGENY_MIN_HIT_IDENTITY}",
+        type=float,
+        help="Minimum hit identity for collecting phylogeny sequences")
     parser.add_argument(
-        f"--{arguments.PHYLOGENY_MAX_PER_SPECIES}",
+        f"--{arguments.PHYLOGENY_MIN_SEQS}",
         type=int,
-        help="Maximum sequences per species for phylogeny")
+        help="Minimum number of sequences to collect for phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences to collect for phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_SPECIES_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences per species to collect for"
+             " phylogeny")
+    parser.add_argument(
+        f"--{arguments.PHYLOGENY_CANDIDATE_MAX_SEQS}",
+        type=int,
+        help="Maximum number of sequences per candidate species to collect for"
+             " phylogeny")
     return parser.parse_args()
 
 
@@ -317,6 +331,7 @@ def _assign_species_id(
         hit_counts,
         selected_species,
         selected_species_hits,
+        filtered_hits,
         bold=bold,
     )
     if len(selected_species) > config.criteria.max_candidates_for_analysis:
@@ -327,17 +342,17 @@ def _assign_species_id(
 
 
 def _get_accessions_for_phylogeny(
-    phylo_hits: list[dict],
+    filtered_hits: list[dict],
     id_key: str,
     identity_key: str,
 ) -> list[str]:
     """Remove surplus sequences if there are too many per species.
-    Sample hits in a systematic manner (by identity) to ensure a sample
-    that is representative of sequence diversity.
+    Sample hits systematically (by identity) to ensure the sample represents
+    genetic diversity of hit sequences.
     """
     def _systematic_sample(seq, n, key=None):
         """Return `n` elements spaced as evenly as possible through `seq`."""
-        data = sorted(seq, key=key)
+        data = sorted(seq, key=key, reverse=True)
         N = len(data)
         if n <= 0:
             return []
@@ -350,26 +365,64 @@ def _get_accessions_for_phylogeny(
         idx = [round(i * step) for i in range(n - 1)] + [N - 1]
         return [data[i] for i in idx]
 
+    if not filtered_hits:
+        return []
+
+    sorted_hits = sorted(
+        filtered_hits,
+        key=lambda x: x[identity_key],
+        reverse=True,
+    )
+
+    min_hits = config.criteria.phylogeny_min_seqs
+    max_hits = config.criteria.phylogeny_max_seqs
+    min_identity = config.criteria.phylogeny_min_hit_identity
+    species_max_seqs = config.criteria.phylogeny_species_max_seqs
+    candidate_max_seqs = config.criteria.phylogeny_candidate_max_seqs
+    candidate_id_threshold = (
+        config.criteria.alignment_min_identity_strict
+        if (
+            sorted_hits[0][identity_key]
+            >= config.criteria.alignment_min_identity_strict
+        )
+        else config.criteria.alignment_min_identity
+    )
+
+    if sorted_hits[0][identity_key] < min_identity:
+        # No hits meet the minimum identity threshold
+        return []
+
     accessions = []
-    max_hits = config.criteria.phylogeny_max_hits_per_species
-    phylo_species = {
-        hit['species'] for hit in phylo_hits
-    }
+    phylo_species = deduplicate([
+        hit['species'] for hit in sorted_hits
+    ])
     hits_by_species = {
         species: [
-            hit for hit in phylo_hits
+            hit for hit in sorted_hits
             if hit['species'] == species
         ]
         for species in phylo_species
     }
-    for hits in hits_by_species.values():
-        if len(hits) > max_hits:
+    for species in phylo_species:
+        hits = hits_by_species[species]
+        is_candidate_sp = hits[0][identity_key] >= candidate_id_threshold
+        max_seqs = candidate_max_seqs if is_candidate_sp else species_max_seqs
+        if (
+            len(accessions) >= max_hits
+            or (
+                len(accessions) > min_hits
+                and hits[0][identity_key] < min_identity
+            )
+        ):
+            # We've collected enough sequences
+            break
+        if len(hits) > max_seqs:
             # Take a sample representative of sequence diversity
             accessions += [
                 hit[id_key]
                 for hit in _systematic_sample(
                     hits,
-                    max_hits,
+                    max_seqs,
                     key=lambda x: x[identity_key],
                 )
             ]
@@ -411,6 +464,7 @@ def _write_candidates(
     hit_counts: dict[str, dict[str, int]],
     candidate_species: list[str],
     candidate_species_hits: list[dict],
+    filtered_hits: list[dict],
     bold: bool = False,
 ):
     """Write candidates hits and species to file."""
@@ -421,7 +475,12 @@ def _write_candidates(
         candidate_species,
     )
     _write_candidates_csv(query_dir, candidate_species_hits, bold)
-    _write_candidates_fasta(query_dir, candidate_species_hits, bold)
+    _write_candidates_fasta(
+        query_dir,
+        candidate_species_hits,
+        filtered_hits,
+        bold,
+    )
     _write_candidates_count(query_dir, candidate_species)
 
 
@@ -450,7 +509,7 @@ def _write_candidates_csv(query_dir, hits, bold=False):
     logger.info(f"Written candidate species to {path}")
 
 
-def _write_candidates_fasta(query_dir, hits, bold=False):
+def _write_candidates_fasta(query_dir, hits, filtered_hits, bold=False):
     """Write FASTA sequences for each candidate species to file.
 
     Writes two FASTA files:
@@ -465,21 +524,11 @@ def _write_candidates_fasta(query_dir, hits, bold=False):
     accessions = [
         hit[id_key] for hit in hits
     ]
-    phylogeny_hits = []
-    for hit in sorted(
-        hits,
-        key=lambda x: x[identity_key]
-    ):
-        if len(phylogeny_hits) > config.criteria.phylogeny_min_hit_sequences:
-            break
-        phylogeny_hits.append(hit)
-
     phylogeny_accessions = _get_accessions_for_phylogeny(
-        phylogeny_hits,
+        filtered_hits,
         id_key,
         identity_key,
     )
-
     candidate_fastas = [
         fasta for fasta in fastas
         if fasta.id in accessions

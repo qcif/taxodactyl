@@ -47,6 +47,7 @@ class GBIFRecordNotFound(Exception):
 
 
 class RANK:
+    NONE = 0
     SPECIES = 1
     GENUS = 2
     FAMILY = 3
@@ -58,7 +59,7 @@ class RANK:
 
     @classmethod
     def from_string(cls, rank: str) -> str:
-        return getattr(cls, rank.upper(), None)
+        return getattr(cls, rank.upper(), cls.NONE)
 
     @classmethod
     def to_string(cls, rank: int) -> str:

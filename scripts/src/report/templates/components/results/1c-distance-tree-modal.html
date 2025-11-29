@@ -80,17 +80,17 @@
       "#5F9EA0", "#4682B4", "#7FFF00", "#D2691E",
     ];
     const speciesColors = {
-      {%- for hit in candidates.species %}
-      {{ hit.species | tojson }}: colors[{{ loop.index0 }}] || "black",
-      {%- endfor %}
+      {% for species in tree_species %}
+      {{ species | tojson }}: colors[{{ loop.index0 }}] || "black",
+      {% endfor %}
     };
     const leafNames = {
-      {%- for hit in candidates.hits %}
-      {{ hit.accession | tojson }}: {
-        label: {{ (hit.species + " " + hit.accession) | tojson }},
-        fillColour: speciesColors[{{ hit.species | tojson }}] || "black",
+      {% for acc, species in tree_accessions.items() %}
+      {{ acc | tojson }}: {
+        label: {{ (species + " " + acc) | tojson }},
+        fillColour: speciesColors[{{ species | tojson }}] || "black",
       },
-      {%- endfor %}
+      {% endfor %}
     };
     const leafStyles = {
       QUERY: {

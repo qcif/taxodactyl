@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE GBSet PUBLIC "-//NCBI//NCBI GBSeq/EN" "https://www.ncbi.nlm.nih.gov/dtd/NCBI_GBSeq.dtd">
+<GBSet>
+  <GBSeq>
+    <GBSeq_locus>HQ621368</GBSeq_locus>
+    <GBSeq_length>399</GBSeq_length>
+    <GBSeq_primary-accession>HQ621368</GBSeq_primary-accession>
+    <GBSeq_definition>Opuntia decumbens voucher Martinez &amp; Eggli 146a (ZSS) ribosomal protein L16 (rpl16) gene, partial cds; chloroplast</GBSeq_definition>
+    <GBSeq_references>
+      <GBReference>
+        <GBReference_reference>1</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Arakaki,M.</GBAuthor>
+          <GBAuthor>Christin,P.A.</GBAuthor>
+          <GBAuthor>Nyffeler,R.</GBAuthor>
+          <GBAuthor>Lendel,A.</GBAuthor>
+          <GBAuthor>Eggli,U.</GBAuthor>
+          <GBAuthor>Ogburn,R.M.</GBAuthor>
+          <GBAuthor>Spriggs,E.</GBAuthor>
+          <GBAuthor>Moore,M.J.</GBAuthor>
+          <GBAuthor>Edwards,E.J.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Contemporaneous and recent radiations of the world's major succulent plant lineages</GBReference_title>
+        <GBReference_journal>Proc. Natl. Acad. Sci. U.S.A. 108 (20), 8379-8384 (2011)</GBReference_journal>
+      </GBReference>
+      <GBReference>
+        <GBReference_reference>2</GBReference_reference>
+        <GBReference_authors>
+          <GBAuthor>Arakaki,M.</GBAuthor>
+          <GBAuthor>Christin,P.-A.</GBAuthor>
+          <GBAuthor>Nyffeler,R.</GBAuthor>
+          <GBAuthor>Eggli,U.</GBAuthor>
+          <GBAuthor>Ogburn,R.M.</GBAuthor>
+          <GBAuthor>Spriggs,E.</GBAuthor>
+          <GBAuthor>Moore,M.J.</GBAuthor>
+          <GBAuthor>Edwards,E.J.</GBAuthor>
+        </GBReference_authors>
+        <GBReference_title>Direct Submission</GBReference_title>
+        <GBReference_journal>Submitted (15-NOV-2010) Department of Ecology and Evolutionary Biology, Brown University, 80 Waterman St., Providence, RI 02912, USA</GBReference_journal>
+      </GBReference>
+    </GBSeq_references>
+  </GBSeq>
+</GBSet>

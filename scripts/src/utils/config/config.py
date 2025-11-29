@@ -313,8 +313,14 @@ class Config:
     def metadata(self) -> dict[str, dict]:
         """Read metadata from CSV file."""
         def _get_value_for_key(key, row, colname):
-            value = row[colname].strip()
+            value = (
+                row[colname].strip()
+                if colname in row
+                else None
+            )
             if 'interest' in key.lower():
+                if not value:
+                    return []
                 return [
                     x.strip()
                     for x in value.split('|')

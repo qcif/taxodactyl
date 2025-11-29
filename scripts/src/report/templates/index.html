@@ -17,6 +17,9 @@
     <script>
       const SAMPLE_ID = "{{ metadata.sample_id }}";
       const DB_COVERAGE = {{ db_coverage.full | tojson }};
+      const HITS = {{ hits | tojson }};
+      const TAXONOMY = {{ hits_taxonomy | tojson }};
+      const TAXONOMY_ORDER = {{ taxonomic_ranks | tojson }};
     </script>
 
     {% for script in static.js %}
@@ -51,6 +54,10 @@
         {% include "components/taxonomy-check.html" %}
       </section>
     </div>
+
+    <footer>
+      {% include "components/footer.html" %}
+    </footer>
 
     {% include "components/save-modal.html" %}
     {% include "components/flags-modal.html" %}

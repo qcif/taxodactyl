@@ -4,7 +4,7 @@ process EVALUATE_DATABASE_COVERAGE {
 
     tag "$query_folder"
 
-    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)} --writable-tmpfs"
+    containerOptions "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)} --bind ${file(params.temp_root_dir)} --writable-tmpfs"
 
     input:
     path(env_var_file) // Environment variables file
@@ -34,6 +34,8 @@ process EVALUATE_DATABASE_COVERAGE {
     def db_cov_related_min_a_arg = params.db_cov_related_min_a ? "--db-cov-related-min-a ${params.db_cov_related_min_a}" : ''
     def db_cov_related_min_b_arg = params.db_cov_related_min_b ? "--db-cov-related-min-b ${params.db_cov_related_min_b}" : ''
     def db_cov_country_missing_a_arg = params.db_cov_country_missing_a ? "--db-cov-country-missing-a ${params.db_cov_country_missing_a}" : ''
+    def temp_root_dir_arg = params.temp_root_dir ? "--temp-root ${params.temp_root_dir}" : ''
+    def temp_dir_name_arg = params.temp_dir_name ? "--temp-dir-name ${params.temp_dir_name}" : ''
     """
     # Source environment variables
     source ${env_var_file}
@@ -57,6 +59,8 @@ process EVALUATE_DATABASE_COVERAGE {
         ${db_cov_target_min_b_arg} \
         ${db_cov_related_min_a_arg} \
         ${db_cov_related_min_b_arg} \
-        ${db_cov_country_missing_a_arg}
+        ${db_cov_country_missing_a_arg} \
+        ${temp_root_dir_arg} \
+        ${temp_dir_name_arg}
     """
 }
