@@ -22,13 +22,17 @@ process MOCK_BLASTN {
     echo "MOCK: Input fasta: ${fasta}"
     echo "MOCK: Copying test output file to ${params.blast_xml_filename}"
     
-    # Copy the test output file to the expected output location
-    cp ${test_output} ${params.blast_xml_filename}
-    
-    # Verify the file was copied successfully
+    # Copy the test output file to the expected output location only if it doesn't exist
     if [ ! -f ${params.blast_xml_filename} ]; then
-        echo "ERROR: Failed to copy mock BLAST output file" >&2
-        exit 1
+        cp ${test_output} ${params.blast_xml_filename}
+        
+        # Verify the file was copied successfully
+        if [ ! -f ${params.blast_xml_filename} ]; then
+            echo "ERROR: Failed to copy mock BLAST output file" >&2
+            exit 1
+        fi
+    else
+        echo "MOCK: Output file already exists, skipping copy"
     fi
     
     echo "MOCK: Successfully copied test BLAST output (\$(wc -l < ${params.blast_xml_filename}) lines)"

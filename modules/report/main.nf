@@ -22,7 +22,7 @@ process REPORT {
     path(sequences_file) // Sequences file
 
     output:
-    path("$query_folder/*.html") // Output: final HTML report
+    path("$query_folder/*.html"), emit: html_report // Output: final HTML report
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 

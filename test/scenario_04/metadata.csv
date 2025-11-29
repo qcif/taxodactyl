@@ -1,0 +1,49 @@
+sample_id,locus,preliminary_id,taxa_of_interest,host,country,sequencing_platform,sequencing_read_coverage
+barcode84_contig1_PE250203-B_REP1_KAPA,COI,Lycaenidae,Chilades pandava,NA,Australia,nanopore,30x
+barcode88_contig1_PE250203-A_REP1_KAPA,COI,Lycaenidae,Chilades pandava,NA,Australia,nanopore,30x
+MG220521_3,COI,Pseudococcus,Pseudococcus,Causonis trifolia,Australia,nanopore,30x
+MG240613_4,COI,Empoascanara,Empoascanara,Urina,Australia,nanopore,30x
+KDD0161,COI,Tetranychus,Tetranychus,Aibika,Australia,nanopore,30x
+LMJ1993,ITS,Fungi,Fungi,Musa,Solomon Islands,,
+VE24-1284_COI,COI,Pseudococcidae,Planococcus citri,Nursery stock - Citrus,Spain,,
+VE24-1351_COI,COI,Sciaridae,Lycoriella ingenua,Lilium bulbs,Netherlands,,
+VE25-1406_COI,COI,Muscidae,Atherigona orientalis ,Dragon Fruit,Vietnam,,
+VE25-1425_28S,28S rRNA,Pseudococcidae,Pseudococcus longispinus,Blueberries,New Zealand,,
+VE25-1428_16S,16S mitochondrial rRNA,Trogoderma,Trogoderma granarium ,Rice,Pakistan,,
+VE25-1434_COI,COI,Phoridae,Megaselia scalaris,Fish meal,India,,
+VE24-1066_COI,COI,Aphididae,Aphis spiraecola|Aphididae,Cut flower Paenonia,Netherlands,,
+VE24-1067_COI,COI,Aphididae,Aphis gossypii|Aphididae,Cut flower Paenonia,China,,
+VE24-1068_COI,COI,Aphididae,Aphidius ervi|Aphididae,Cut flower Rosa,Kenya,,
+VE24-1075_COI,COI,Aphididae,Myzus persicae|Aphididae,Cut flower Rosa,Ecuador,,
+VE24-1079_COI,COI,Miridae,Lygus pratensis,Cut flower Paenonia,Netherlands,,
+VE24-1086_COI,COI,Tortricidae,Archips machlopis,Cut flower Orchidaceae,Malaysia,,
+Bac1_16S,16S rRNA,Bacteria,,rockmelon (Cucumis melo var. cantalupensis),Australia,nanopore,30x
+Bac1_gyrB,gyrB,Bacteria,,rockmelon (Cucumis melo var. cantalupensis),Australia,nanopore,30x
+Bac2_16S,16S rRNA,Bacteria,,potato (Solanum tuberosum),Australia,nanopore,30x
+Bac2_dnaX,dnaX,Bacteria,,potato (Solanum tuberosum),Australia,nanopore,30x
+FungusA_ITS,ITS,Fungi,,Cannabis sativa,Australia,nanopore,30x
+FungusB_ITS,ITS,Fungi,,Vitis vinifera,Australia,nanopore,30x
+FungusB_Btub,ß-tub,Fungi,,Vitis vinifera,Australia,nanopore,30x
+MP23-0431_matK,matK,Planta,Nicotiana tabacum,NA,Indonesia,,
+MP23-0431_rbcL,rbcL,Planta,Nicotiana tabacum,NA,Indonesia,,
+MP23-0432_matK,matK,Planta,Nicotiana tabacum,NA,Indonesia,,
+MP23-0432_rbcL,rbcL,Planta,Nicotiana tabacum,NA,Indonesia,,
+BISS_502833,COI,Tortricidae,Ctenopseustis herana,,New Zealand,,
+barcode_79_AR21a_1_1_1,28s,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_80_AR8_1_1,28s,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_81_AR21a_1_1_1_KAPA,CO1,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_82_AR8_1_1_KAPA,CO1,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_83_AR21a_1_1_1_MyFi,CO1,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_84_AR8-1_1_MyFi,CO1,Pulvinaria,Pulvinaria,NA,NA,,
+barcode_85_MG250214_4_1_1_KAPA,CO1,Lepidoptera,Lepidoptera,NA,NA,,
+barcode_86_ICS192-1_1_1_KAPA,CO1,Gracillariidae,Gracillariidae,NA,NA,,
+barcode_87_MG250214_4_1_1_MyFi,CO1,Lepidoptera,Lepidoptera,NA,NA,,
+barcode_88_ICS192_1_1_1_MyFi,CO1,Gracillariidae,Gracillariidae,NA,NA,,
+barcode_89_RID8931_1_1_MJ,NA,potyvirus,potyvirus,NA,NA,,
+barcode_90_RID8931_1_1_Ci,NA,potyvirus,potyvirus,NA,NA,,
+barcode_91_RID8931_1_1_NLB,NA,potyvirus,potyvirus,NA,NA,,
+barcode_93_MG250402_3_2_KAPA,CO1,Luthrodes pandava,Luthrodes pandava,NA,NA,,
+barcode_94_MG250402_3_1_KAPA,CO1,Luthrodes pandava,Luthrodes pandava,NA,NA,,
+barcode_95_MG250402_3_2_MyFi,CO1,Luthrodes pandava,Luthrodes pandava,NA,NA,,
+B6_SME25-101_Alana,CO1,Agromyzidae,Agromyzidae,NA,NA,,
+512503_1_Andrew,CO1,Bulimulus Sporadicus,Bulimulus sporadicus,NA,NA,,
