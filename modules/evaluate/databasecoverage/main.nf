@@ -20,7 +20,7 @@ process EVALUATE_DATABASE_COVERAGE {
     tuple val(query_folder),
         path("$query_folder/*flag"), emit: db_coverage_flags // Output: flag files
     tuple val(query_folder),
-        path("$query_folder/map*png"), emit: db_coverage_maps // Output: coverage map PNG files
+        path("$query_folder/map*png"), emit: db_coverage_maps, optional: true // Output: coverage map PNG files
     
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : '' // Set --bold flag if using BOLD database
