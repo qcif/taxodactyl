@@ -3,8 +3,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from . import arguments, env_vars
-
 
 def get_mapper(
     name: str,
@@ -85,410 +83,411 @@ class UppercaseListMapping(AbstractMapping):
         return value.upper().replace(' ', '').split(',') if value else []
 
 
-parameters = [
-    # File paths
-    PathMapping(
+PARAMS = {
+    'output_dir': PathMapping(
         'output_dir',
-        cli_name=arguments.OUTPUT_DIR,
-        env_name=env_vars.OUTPUT_DIR,
+        cli_name='output-dir',
+        env_name='OUTPUT_DIR',
         create=True,
     ),
-    PathMapping(
+
+    'query_dir': PathMapping(
         'query_dir',
-        cli_name=arguments.QUERY_DIR,
-        env_name=env_vars.QUERY_DIR,
+        cli_name='query_dir',
+        env_name='QUERY_DIR',
     ),
-    PathMapping(
+    'query_fasta': PathMapping(
         'query_fasta',
         namespace='inputs',
-        cli_name=arguments.QUERY_FASTA,
-        env_name=env_vars.INPUT_FASTA_FILEPATH,
+        cli_name='query-fasta',
+        env_name='INPUT_FASTA_FILEPATH',
     ),
-    PathMapping(
+    'metadata_csv': PathMapping(
         'metadata_csv',
         namespace='inputs',
-        cli_name=arguments.METADATA_CSV,
-        env_name=env_vars.INPUT_METADATA_CSV_FILEPATH,
+        cli_name='metadata-csv',
+        env_name='INPUT_METADATA_CSV_FILEPATH',
     ),
-    PathMapping(
+    'taxdb_dir': PathMapping(
         'taxdb_dir',
-        cli_name=arguments.TAXDB_DIR,
-        env_name=env_vars.TAXONKIT_DATA,
+        cli_name='taxdb-dir',
+        env_name='TAXONKIT_DATA',
     ),
-    PathMapping(
+    'allowed_loci_file': PathMapping(
         'allowed_loci_file',
-        cli_name=arguments.ALLOWED_LOCI_FILE,
-        env_name=env_vars.ALLOWED_LOCI_FILE,
+        cli_name='allowed-loci-file',
+        env_name='ALLOWED_LOCI_FILE',
     ),
-    PathMapping(
+    'flag_details_csv_path': PathMapping(
         'flag_details_csv_path',
-        cli_name=arguments.FLAG_DETAILS_CSV,
-        env_name=env_vars.FLAG_DETAILS_CSV_PATH,
+        cli_name='flag-details-csv',
+        env_name='FLAG_DETAILS_CSV_PATH',
     ),
-    PathMapping(
+    'placeholder_img_path': PathMapping(
         'placeholder_img_path',
-        env_name=env_vars.PLACEHOLDER_IMG_PATH,
+        env_name='PLACEHOLDER_IMG_PATH',
     ),
 
     # String filenames/paths
-    StringMapping(
+    'timestamp_filename': StringMapping(
         'timestamp_filename',
-        env_name=env_vars.TIMESTAMP_FILENAME,
+        env_name='TIMESTAMP_FILENAME',
     ),
-    StringMapping(
+    'accessions_filename': StringMapping(
         'accessions_filename',
-        env_name=env_vars.ACCESSIONS_FILENAME,
+        env_name='ACCESSIONS_FILENAME',
     ),
-    StringMapping(
+    'taxonomy_file': StringMapping(
         'taxonomy_file',
-        env_name=env_vars.TAXONOMY_FILE,
+        env_name='TAXONOMY_FILE',
     ),
-    StringMapping(
+    'query_title_file': StringMapping(
         'query_title_file',
-        env_name=env_vars.QUERY_TITLE_FILE,
+        env_name='QUERY_TITLE_FILE',
     ),
-    StringMapping(
+    'hits_json': StringMapping(
         'hits_json',
-        env_name=env_vars.HITS_JSON,
+        env_name='HITS_JSON',
     ),
-    StringMapping(
+    'hits_fasta': StringMapping(
         'hits_fasta',
-        env_name=env_vars.HITS_FASTA,
+        env_name='HITS_FASTA',
     ),
-    StringMapping(
+    'taxonomy_id_csv': StringMapping(
         'taxonomy_id_csv',
-        env_name=env_vars.TAXONOMY_ID_CSV,
+        env_name='TAXONOMY_ID_CSV',
     ),
-    StringMapping(
+    'candidates_fasta': StringMapping(
         'candidates_fasta',
-        env_name=env_vars.CANDIDATES_FASTA,
+        env_name='CANDIDATES_FASTA',
     ),
-    StringMapping(
+    'phylogeny_fasta': StringMapping(
         'phylogeny_fasta',
-        env_name=env_vars.PHYLOGENY_FASTA,
+        env_name='PHYLOGENY_FASTA',
     ),
-    StringMapping(
+    'candidates_csv': StringMapping(
         'candidates_csv',
-        env_name=env_vars.CANDIDATES_CSV,
+        env_name='CANDIDATES_CSV',
     ),
-    StringMapping(
+    'candidates_json': StringMapping(
         'candidates_json',
-        env_name=env_vars.CANDIDATES_JSON,
+        env_name='CANDIDATES_JSON',
     ),
-    StringMapping(
+    'candidates_count_file': StringMapping(
         'candidates_count_file',
-        env_name=env_vars.CANDIDATES_COUNT_FILE,
+        env_name='CANDIDATES_COUNT_FILE',
     ),
-    StringMapping(
+    'candidates_sources_json': StringMapping(
         'candidates_sources_json',
-        env_name=env_vars.CANDIDATES_SOURCES_JSON,
+        env_name='CANDIDATES_SOURCES_JSON',
     ),
-    StringMapping(
+    'independent_sources_json': StringMapping(
         'independent_sources_json',
-        env_name=env_vars.INDEPENDENT_SOURCES_JSON,
+        env_name='INDEPENDENT_SOURCES_JSON',
     ),
-    StringMapping(
+    'toi_detected_csv': StringMapping(
         'toi_detected_csv',
-        env_name=env_vars.TOI_DETECTED_CSV,
+        env_name='TOI_DETECTED_CSV',
     ),
-    StringMapping(
+    'pmi_match_csv': StringMapping(
         'pmi_match_csv',
-        env_name=env_vars.PMI_MATCH_CSV,
+        env_name='PMI_MATCH_CSV',
     ),
-    StringMapping(
+    'boxplot_img_filename': StringMapping(
         'boxplot_img_filename',
-        env_name=env_vars.BOXPLOT_IMG_FILENAME,
+        env_name='BOXPLOT_IMG_FILENAME',
     ),
-    StringMapping(
+    'tree_nwk_filename': StringMapping(
         'tree_nwk_filename',
-        env_name=env_vars.TREE_NWK_FILENAME,
+        env_name='TREE_NWK_FILENAME',
     ),
-    StringMapping(
+    'db_coverage_json': StringMapping(
         'db_coverage_json',
-        env_name=env_vars.DB_COVERAGE_JSON,
+        env_name='DB_COVERAGE_JSON',
     ),
-    StringMapping(
+    'log_filename': StringMapping(
         'log_filename',
-        env_name=env_vars.LOG_FILENAME,
+        env_name='LOG_FILENAME',
     ),
-    StringMapping(
+    'query_log_filename': StringMapping(
         'query_log_filename',
-        env_name=env_vars.QUERY_LOG_FILENAME,
+        env_name='QUERY_LOG_FILENAME',
     ),
-    StringMapping(
+    'sqlite_file': StringMapping(
         'sqlite_file',
-        env_name=env_vars.SQLITE_FILE,
+        env_name='SQLITE_FILE',
     ),
-    StringMapping(
+    'entrez_cache_dirname': StringMapping(
         'entrez_cache_dirname',
-        env_name=env_vars.ENTREZ_CACHE_DIRNAME,
+        env_name='ENTREZ_CACHE_DIRNAME',
     ),
-    StringMapping(
+    'errors_dir': StringMapping(
         'errors_dir',
-        env_name=env_vars.ERRORS_DIR,
+        env_name='ERRORS_DIR',
     ),
-    StringMapping(
+    'temp_dir_name': StringMapping(
         'temp_dir_name',
-        env_name=env_vars.TEMP_DIR_NAME,
-        cli_name=arguments.TEMP_DIR_NAME,
+        env_name='TEMP_DIR_NAME',
+        cli_name='temp-dir-name',
     ),
-    StringMapping(
+    'temp_root': StringMapping(
         'temp_root',
-        env_name=env_vars.TEMP_ROOT,
-        cli_name=arguments.TEMP_ROOT,
+        env_name='TEMP_ROOT',
+        cli_name='temp-root',
     ),
 
     # Input validation
-    IntMapping(
+    'fasta_max_sequences': IntMapping(
         'fasta_max_sequences',
         namespace='inputs',
-        cli_name=arguments.FASTA_MAX_SEQUENCES,
-        env_name=env_vars.FASTA_MAX_SEQUENCES,
+        cli_name='fasta-max-sequences',
+        env_name='FASTA_MAX_SEQUENCES',
     ),
-    IntMapping(
+    'fasta_min_length_nt': IntMapping(
         'fasta_min_length_nt',
         namespace='inputs',
-        cli_name=arguments.FASTA_MIN_LENGTH,
-        env_name=env_vars.FASTA_MIN_LENGTH_NT,
+        cli_name='fasta-min-length',
+        env_name='FASTA_MIN_LENGTH_NT',
     ),
-    IntMapping(
+    'fasta_max_length_nt': IntMapping(
         'fasta_max_length_nt',
         namespace='inputs',
-        cli_name=arguments.FASTA_MAX_LENGTH,
-        env_name=env_vars.FASTA_MAX_LENGTH_NT,
+        cli_name='fasta-max-length',
+        env_name='FASTA_MAX_LENGTH_NT',
     ),
 
     # Input metadata
-    StringMapping(
+    'facility_name': StringMapping(
         'facility_name',
         namespace='inputs',
-        cli_name=arguments.FACILITY_NAME,
-        env_name=env_vars.FACILITY_NAME,
+        cli_name='facility-name',
+        env_name='FACILITY_NAME',
     ),
-    StringMapping(
+    'analyst_name': StringMapping(
         'analyst_name',
         namespace='inputs',
-        cli_name=arguments.ANALYST_NAME,
-        env_name=env_vars.ANALYST_NAME,
+        cli_name='analyst-name',
+        env_name='ANALYST_NAME',
     ),
 
     # BLAST configuration
-    IntMapping(
+    'blast_max_target_seqs': IntMapping(
         'blast_max_target_seqs',
-        cli_name=arguments.BLAST_MAX_TARGET_SEQS,
-        env_name=env_vars.BLAST_MAX_TARGET_SEQS,
+        cli_name='blast-max-target-seqs',
+        env_name='BLAST_MAX_TARGET_SEQS',
     ),
 
     # BOLD configuration
-    StringMapping(
+    'bold_database': StringMapping(
         'bold_database',
-        cli_name=arguments.BOLD_DATABASE,
-        env_name=env_vars.BOLD_DATABASE,
+        cli_name='bold-database',
+        env_name='BOLD_DATABASE',
     ),
-    StringMapping(
+    'bold_flag': StringMapping(
         'bold_flag',
-        env_name=env_vars.BOLD_FLAG,
+        env_name='BOLD_FLAG',
     ),
-    StringMapping(
+    'bold_taxon_count_json': StringMapping(
         'bold_taxon_count_json',
-        env_name=env_vars.BOLD_TAXON_COUNT_JSON,
+        env_name='BOLD_TAXON_COUNT_JSON',
     ),
-    StringMapping(
+    'bold_taxon_collectors_json': StringMapping(
         'bold_taxon_collectors_json',
-        env_name=env_vars.BOLD_TAXON_COLLECTORS_JSON,
+        env_name='BOLD_TAXON_COLLECTORS_JSON',
     ),
-    StringMapping(
+    'bold_taxonomy_json': StringMapping(
         'bold_taxonomy_json',
-        env_name=env_vars.BOLD_TAXONOMY_JSON,
+        env_name='BOLD_TAXONOMY_JSON',
     ),
 
     # GBIF configuration
-    IntMapping(
+    'gbif_limit_records': IntMapping(
         'gbif_limit_records',
-        cli_name=arguments.GBIF_LIMIT_RECORDS,
-        env_name=env_vars.GBIF_LIMIT_RECORDS,
+        cli_name='gbif-limit-records',
+        env_name='GBIF_LIMIT_RECORDS',
     ),
-    IntMapping(
+    'gbif_max_occurrence_records': IntMapping(
         'gbif_max_occurrence_records',
-        cli_name=arguments.GBIF_MAX_OCCURRENCE_RECORDS,
-        env_name=env_vars.GBIF_MAX_OCCURRENCE_RECORDS,
+        cli_name='gbif-max-occurrence-records',
+        env_name='GBIF_MAX_OCCURRENCE_RECORDS',
     ),
-    UppercaseListMapping(
+    'gbif_accepted_status': UppercaseListMapping(
         'gbif_accepted_status',
-        cli_name=arguments.GBIF_ACCEPTED_STATUS,
-        env_name=env_vars.GBIF_ACCEPTED_STATUS,
+        cli_name='gbif-accepted-status',
+        env_name='GBIF_ACCEPTED_STATUS',
     ),
 
     # Database coverage
-    IntMapping(
+    'db_coverage_toi_limit': IntMapping(
         'db_coverage_toi_limit',
-        cli_name=arguments.DB_COVERAGE_TOI_LIMIT,
-        env_name=env_vars.DB_COVERAGE_TOI_LIMIT,
+        cli_name='db-coverage-toi-limit',
+        env_name='DB_COVERAGE_TOI_LIMIT',
     ),
-    IntMapping(
+    'db_coverage_max_candidates': IntMapping(
         'db_coverage_max_candidates',
-        cli_name=arguments.DB_COVERAGE_MAX_CANDIDATES,
-        env_name=env_vars.DB_COVERAGE_MAX_CANDIDATES,
+        cli_name='db-coverage-max-candidates',
+        env_name='DB_COVERAGE_MAX_CANDIDATES',
     ),
 
     # Other configuration
-    FloatMapping(
+    'hmmsearch_min_evalue': FloatMapping(
         'hmmsearch_min_evalue',
-        env_name=env_vars.HMMSEARCH_MIN_EVALUE,
+        env_name='HMMSEARCH_MIN_EVALUE',
     ),
-    StringMapping(
+    'flag_file_template': StringMapping(
         'flag_file_template',
-        env_name=env_vars.FLAG_FILE_TEMPLATE,
+        env_name='FLAG_FILE_TEMPLATE',
     ),
-    IntMapping(
+    'cache_timeout_hours': IntMapping(
         'cache_timeout_hours',
-        env_name=env_vars.CACHE_TIMEOUT_HOURS,
+        env_name='CACHE_TIMEOUT_HOURS',
     ),
-    BoolMapping(
+    'cache_disabled': BoolMapping(
         'cache_disabled',
-        env_name=env_vars.CACHE_DISABLED,
+        env_name='CACHE_DISABLED',
     ),
-    IntMapping(
+    'max_api_retries': IntMapping(
         'max_api_retries',
-        env_name=env_vars.MAX_API_RETRIES,
+        env_name='MAX_API_RETRIES',
     ),
-    IntMapping(
+    'temp_clean_after_days': IntMapping(
         'temp_clean_after_days',
-        env_name=env_vars.TEMP_CLEAN_AFTER_DAYS,
+        env_name='TEMP_CLEAN_AFTER_DAYS',
     ),
 
     # Analysis criteria (nested in criteria object)
-    IntMapping(
+    'alignment_min_nt': IntMapping(
         'alignment_min_nt',
         namespace='criteria',
-        cli_name=arguments.MIN_ALIGNMENT_LENGTH,
-        env_name=env_vars.MIN_NT,
+        cli_name='min-alignment-length',
+        env_name='MIN_NT',
     ),
-    FloatMapping(
+    'alignment_min_q_coverage': FloatMapping(
         'alignment_min_q_coverage',
         namespace='criteria',
-        cli_name=arguments.MIN_QUERY_COVERAGE,
-        env_name=env_vars.MIN_Q_COVERAGE,
+        cli_name='min-query-coverage',
+        env_name='MIN_Q_COVERAGE',
     ),
-    FloatMapping(
+    'alignment_min_identity': FloatMapping(
         'alignment_min_identity',
         namespace='criteria',
-        cli_name=arguments.MIN_IDENTITY,
-        env_name=env_vars.MIN_IDENTITY,
+        cli_name='min-identity',
+        env_name='MIN_IDENTITY',
     ),
-    FloatMapping(
+    'alignment_min_identity_strict': FloatMapping(
         'alignment_min_identity_strict',
         namespace='criteria',
-        cli_name=arguments.MIN_IDENTITY_STRICT,
-        env_name=env_vars.MIN_IDENTITY_STRICT,
+        cli_name='min-identity-strict',
+        env_name='MIN_IDENTITY_STRICT',
     ),
-    FloatMapping(
+    'median_identity_warning_factor': FloatMapping(
         'median_identity_warning_factor',
         namespace='criteria',
-        cli_name=arguments.MEDIAN_IDENTITY_WARNING_FACTOR,
-        env_name=env_vars.MEDIAN_IDENTITY_WARNING_FACTOR,
+        cli_name='median-identity-warning-factor',
+        env_name='MEDIAN_IDENTITY_WARNING_FACTOR',
     ),
-    IntMapping(
+    'max_candidates_for_analysis': IntMapping(
         'max_candidates_for_analysis',
         namespace='criteria',
-        cli_name=arguments.MAX_CANDIDATES_ANALYSIS,
-        env_name=env_vars.MAX_CANDIDATES_FOR_ANALYSIS,
+        cli_name='max-candidates-analysis',
+        env_name='MAX_CANDIDATES_FOR_ANALYSIS',
     ),
-    IntMapping(
+    'sources_min_count': IntMapping(
         'sources_min_count',
         namespace='criteria',
-        cli_name=arguments.MIN_SOURCE_COUNT,
-        env_name=env_vars.MIN_SOURCE_COUNT,
+        cli_name='min-source-count',
+        env_name='MIN_SOURCE_COUNT',
     ),
-    FloatMapping(
+    'phylogeny_min_hit_identity': FloatMapping(
         'phylogeny_min_hit_identity',
         namespace='criteria',
-        env_name=env_vars.PHYLOGENY_MIN_HIT_IDENTITY,
+        cli_name='phylogeny-min-hit-identity',
+        env_name='PHYLOGENY_MIN_HIT_IDENTITY',
     ),
-    IntMapping(
+    'phylogeny_min_seqs': IntMapping(
         'phylogeny_min_seqs',
         namespace='criteria',
-        cli_name=arguments.PHYLOGENY_MIN_SEQS,
-        env_name=env_vars.PHYLOGENY_MIN_SEQS,
+        cli_name='phylogeny-min-seqs',
+        env_name='PHYLOGENY_MIN_SEQS',
     ),
-    IntMapping(
+    'phylogeny_max_seqs': IntMapping(
         'phylogeny_max_seqs',
         namespace='criteria',
-        cli_name=arguments.PHYLOGENY_MAX_SEQS,
-        env_name=env_vars.PHYLOGENY_MAX_SEQS,
+        cli_name='phylogeny-max-seqs',
+        env_name='PHYLOGENY_MAX_SEQS',
     ),
-    IntMapping(
+    'phylogeny_species_max_seqs': IntMapping(
         'phylogeny_species_max_seqs',
         namespace='criteria',
-        cli_name=arguments.PHYLOGENY_SPECIES_MAX_SEQS,
-        env_name=env_vars.PHYLOGENY_SPECIES_MAX_SEQS,
+        cli_name='phylogeny-species-max-seqs',
+        env_name='PHYLOGENY_SPECIES_MAX_SEQS',
     ),
-    IntMapping(
+    'phylogeny_candidate_max_seqs': IntMapping(
         'phylogeny_candidate_max_seqs',
         namespace='criteria',
-        cli_name=arguments.PHYLOGENY_CANDIDATE_MAX_SEQS,
-        env_name=env_vars.PHYLOGENY_CANDIDATE_MAX_SEQS,
+        cli_name='phylogeny-candidate-max-seqs',
+        env_name='PHYLOGENY_CANDIDATE_MAX_SEQS',
     ),
 
     # Database coverage criteria
-    IntMapping(
+    'db_cov_target_min_a': IntMapping(
         'db_cov_target_min_a',
         namespace='criteria',
-        cli_name=arguments.DB_COV_TARGET_MIN_A,
-        env_name=env_vars.DB_COV_MIN_A,
+        cli_name='db-cov-target-min-a',
+        env_name='DB_COV_MIN_A',
     ),
-    IntMapping(
+    'db_cov_target_min_b': IntMapping(
         'db_cov_target_min_b',
         namespace='criteria',
-        cli_name=arguments.DB_COV_TARGET_MIN_B,
-        env_name=env_vars.DB_COV_MIN_B,
+        cli_name='db-cov-target-min-b',
+        env_name='DB_COV_MIN_B',
     ),
-    IntMapping(
+    'db_cov_related_min_a': IntMapping(
         'db_cov_related_min_a',
         namespace='criteria',
-        cli_name=arguments.DB_COV_RELATED_MIN_A,
-        env_name=env_vars.DB_COV_RELATED_MIN_A,
+        cli_name='db-cov-related-min-a',
+        env_name='DB_COV_RELATED_MIN_A',
     ),
-    IntMapping(
+    'db_cov_related_min_b': IntMapping(
         'db_cov_related_min_b',
         namespace='criteria',
-        cli_name=arguments.DB_COV_RELATED_MIN_B,
-        env_name=env_vars.DB_COV_RELATED_MIN_B,
+        cli_name='db-cov-related-min-b',
+        env_name='DB_COV_RELATED_MIN_B',
     ),
-    IntMapping(
+    'db_cov_country_missing_a': IntMapping(
         'db_cov_country_missing_a',
         namespace='criteria',
-        cli_name=arguments.DB_COV_COUNTRY_MISSING_A,
-        env_name=env_vars.DB_COV_COUNTRY_MISSING_A,
+        cli_name='db-cov-country-missing-a',
+        env_name='DB_COV_COUNTRY_MISSING_A',
     ),
 
     # Report settings
-    BoolMapping(
+    'debug': BoolMapping(
         'debug',
         namespace='report',
-        cli_name=arguments.REPORT_DEBUG,
-        env_name=env_vars.REPORT_DEBUG,
+        cli_name='report-debug',
+        env_name='REPORT_DEBUG',
     ),
-    StringMapping(
+    'database_name': StringMapping(
         'database_name',
         namespace='report',
-        cli_name=arguments.DATABASE_NAME,
-        env_name=env_vars.BLAST_DATABASE_NAME,
+        cli_name='database-name',
+        env_name='BLAST_DATABASE_NAME',
     ),
-    StringMapping(
+    'title': StringMapping(
         'title',
         namespace='report',
-        env_name=env_vars.REPORT_TITLE,
+        env_name='REPORT_TITLE',
     ),
-]
-
-CLI_ARGS = {
-    mapping.cli_name.replace('-', '_'): mapping
-    for mapping in parameters
-    if mapping.cli_name is not None
 }
-ENV_VARS = [
-    mapping
-    for mapping in parameters
-    if mapping.env_name is not None
-]
+CLI_ARGS = {
+    k: v for k, v in PARAMS.items()
+    if v.cli_name is not None
+}
+CLI_TO_ATTR_NAME = {
+    v.cli_name.replace('-', '_'): k for k, v in CLI_ARGS.items()
+}
+ENV_VARS = {
+    k: v for k, v in PARAMS.items()
+    if v.env_name is not None
+}

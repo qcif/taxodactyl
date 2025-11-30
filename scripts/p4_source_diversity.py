@@ -17,7 +17,7 @@ from pathlib import Path
 from src.sources import collect
 from src.utils import existing_path, serialize
 from src.utils.config import Config
-from src.utils.config import arguments
+from src.utils.config.mappings import CLI_ARGS
 from src.utils.flags import FLAGS, Flag
 
 logger = logging.getLogger(__name__)
@@ -42,39 +42,39 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        arguments.QUERY_DIR,
+        CLI_ARGS['query_dir'].cli_name,
         type=existing_path,
         help="Path to query output directory")
     parser.add_argument(
-        f"--{arguments.OUTPUT_DIR}",
+        f"--{CLI_ARGS['output_dir'].cli_name}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{arguments.METADATA_CSV}",
+        f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.QUERY_FASTA}",
+        f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.MIN_SOURCE_COUNT}",
+        f"--{CLI_ARGS['sources_min_count'].cli_name}",
         type=int,
         help="Minimum number of independent sources required",
     )
     parser.add_argument(
-        f"--{arguments.TEMP_ROOT}",
+        f"--{CLI_ARGS['temp_root'].cli_name}",
         type=Path,
         help="Path to temp root directory (defaults to"
              f" '{config.temp_root_dir}')",
     )
     parser.add_argument(
-        f"--{arguments.TEMP_DIR_NAME}",
+        f"--{CLI_ARGS['temp_dir_name'].cli_name}",
         type=str,
         help="The name of the temp dir to create within the temp root"
              f" (defaults to '{config.temp_dir_name}')",
