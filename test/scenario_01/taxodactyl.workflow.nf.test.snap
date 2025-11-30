@@ -62,9 +62,9 @@
                         "all_hits.json:md5,c1475284ea6bcc7a9b5e418cf2eca37c",
                         "candidates.csv:md5,c571a0bf0715049896936e0949e0e23b",
                         "candidates.fasta:md5,1be93213422e4e536eff2cfd342891a7",
-                        "candidates.json:md5,3f948ae0d89165d33355b43d9e4871b0",
+                        "candidates.json:md5,6e87d54ec237cb01f2655b43b3f579ec",
                         "candidates_count.txt:md5,eccbc87e4b5ce2fe28308fd9f2a7baf3",
-                        "candidates_phylogeny.fasta:md5,84d02b6a67383ae014e6bb513d038ce7",
+                        "candidates_phylogeny.fasta:md5,5561dcc85a331e59a244bf1eb25ddd0f",
                         "taxa_of_concern_detected.csv:md5,265affe18c28efd1aeef009635a4d53e"
                     ]
                 ],
@@ -79,9 +79,9 @@
                         "assigned_taxonomy.csv:md5,1e363e0c3388a2e9b8182a621fa115ad",
                         "candidates.csv:md5,49d48214cb7a190da4254e417fd38ee2",
                         "candidates.fasta:md5,8ae79be726db77ff78a10a7397bcf0bf",
-                        "candidates.json:md5,cc734aaa7d2dac1d9d090b8372f2b5d8",
+                        "candidates.json:md5,51513b8da434517625fb3d5d087615ee",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
-                        "candidates_phylogeny.fasta:md5,8ae79be726db77ff78a10a7397bcf0bf",
+                        "candidates_phylogeny.fasta:md5,59f5587ce7dd94418e18fb9d6f1e1a23",
                         "taxa_of_concern_detected.csv:md5,664dd579bb7573f8568e5ae7d49230f4"
                     ]
                 ],
@@ -95,10 +95,10 @@
                         "all_hits.json:md5,ccd54035a018a6eac882204160b8298a",
                         "candidates.csv:md5,7c0029941c8a1ad7cbc29e7460d26f3e",
                         "candidates.fasta:md5,34d360c825a0f2f1ff40d15e85b1d670",
-                        "candidates.json:md5,3361b4fd7102aec679a4881f76e8bab0",
+                        "candidates.json:md5,31da9098c6c28f6cb968bdd878e78da1",
                         "candidates_count.txt:md5,e4da3b7fbbce2345d7772b0674a318d5",
                         "candidates_identity_boxplot.png:md5,30f5dd79e7dac43e8c51d024df162cce",
-                        "candidates_phylogeny.fasta:md5,1c3bcafcaf1cfcc7f5df79b699130ce6",
+                        "candidates_phylogeny.fasta:md5,eb0be8848ea8ecc3e4554e31ecce857f",
                         "taxa_of_concern_detected.csv:md5,d5a5d8b6795e949e833da75721ae4a69"
                     ]
                 ],
@@ -114,7 +114,7 @@
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "candidates.json:md5,15366e771f76228c6526a2d74ff8e689",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
-                        "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "candidates_phylogeny.fasta:md5,96332d5820fdca23dbfa5154d246d528",
                         "taxa_of_concern_detected.csv:md5,c6b1e7bb1f2faf89618e6eeabc96e04b"
                     ]
                 ],
@@ -128,10 +128,10 @@
                         "all_hits.json:md5,8aa744aa492e8c3a9b6813a94e08d5e3",
                         "candidates.csv:md5,a1af7ba7a2b09c957ab7027c55312179",
                         "candidates.fasta:md5,953553351ceb40819388a8dc81895031",
-                        "candidates.json:md5,61667ae87c6047bab1175c73c8ba8444",
+                        "candidates.json:md5,a5646f8c742da0704a962bc170a852b9",
                         "candidates_count.txt:md5,6f4922f45568161a8cdf4ad2299f6d23",
                         "candidates_identity_boxplot.png:md5,21ef79b31d9038a6589dc034d4433fe8",
-                        "candidates_phylogeny.fasta:md5,e3a8d81c9da32017398a72fe8745d427",
+                        "candidates_phylogeny.fasta:md5,0d0a6601f55e43949c59bc24e3cc8249",
                         "taxa_of_concern_detected.csv:md5,e45c7972589aa0f88ce1daf7d5ae39f2"
                     ]
                 ],
@@ -145,10 +145,10 @@
                         "all_hits.json:md5,97da7c89ec7563e44a317919270df9bf",
                         "candidates.csv:md5,269c48556397fba0a1f8ec5a7d0042f5",
                         "candidates.fasta:md5,4c6d510664c7f590efa87895033b5eba",
-                        "candidates.json:md5,82fcd94fddd0496bc153171d917dc15f",
+                        "candidates.json:md5,4441c89a46c01ae287f5ba6a0274fe51",
                         "candidates_count.txt:md5,1679091c5a880faf6fb5e6087eb1b2dc",
                         "candidates_identity_boxplot.png:md5,a0f70153e643277817a58dacd4025388",
-                        "candidates_phylogeny.fasta:md5,66ea8c5d50cb03187a50c385429ff928",
+                        "candidates_phylogeny.fasta:md5,e2853225b83b5449bda66415ab4332b5",
                         "taxa_of_concern_detected.csv:md5,4bd7dc18516a7c321071859cd2d689aa"
                     ]
                 ]
@@ -209,7 +209,7 @@
                     [
                         "4.flag:md5,dbf16dfd24d456e9fe9bc0261d9fa441",
                         "aggregated_sources.json:md5,b2a2b88a07ace60c2d1ebc757c78527f",
-                        "candidates.json:md5,3f948ae0d89165d33355b43d9e4871b0"
+                        "candidates.json:md5,6e87d54ec237cb01f2655b43b3f579ec"
                     ]
                 ],
                 [
@@ -217,7 +217,7 @@
                     [
                         "4.flag:md5,5a34cf25137221614401e52932ce5b60",
                         "aggregated_sources.json:md5,92fbe5102bee7561f1f8d1af79c446cd",
-                        "candidates.json:md5,cc734aaa7d2dac1d9d090b8372f2b5d8"
+                        "candidates.json:md5,51513b8da434517625fb3d5d087615ee"
                     ]
                 ],
                 [
@@ -256,27 +256,27 @@
             [
                 [
                     "query_001_Scenario_01",
-                    "candidates_phylogeny.nwk:md5,ddf90816c0662862fee31aea1b807ddd"
+                    "candidates_phylogeny.nwk:md5,d91698e4172075c63bb66f101648e537"
                 ],
                 [
                     "query_002_Scenario_02",
-                    "candidates_phylogeny.nwk:md5,58d9fa2ac04bbf047ee718a5d8a2a2d0"
+                    "candidates_phylogeny.nwk:md5,75f39c59fadd7f357862bb6490a27bce"
                 ],
                 [
                     "query_003_Scenario_03",
-                    "candidates_phylogeny.nwk:md5,7455fdea8a4b18338453f70dfa14ed42"
+                    "candidates_phylogeny.nwk:md5,9e3eb8b86bd4605b82205b8abbbf042d"
                 ],
                 [
                     "query_004_Scenario_04",
-                    "candidates_phylogeny.nwk:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "candidates_phylogeny.nwk:md5,fa9ed1c8456dd9b913453f0fdb060606"
                 ],
                 [
                     "query_005_Scenario_05",
-                    "candidates_phylogeny.nwk:md5,433f5875e0d47fedb891de679db9f286"
+                    "candidates_phylogeny.nwk:md5,1249108e2e98b4af35f99bcc1f048421"
                 ],
                 [
                     "query_006_Scenario_06",
-                    "candidates_phylogeny.nwk:md5,4e86ca8a79ba1ba1929b0bba9e23ed38"
+                    "candidates_phylogeny.nwk:md5,ddee24b36d500b30397577131ac16598"
                 ]
             ]
         ],
@@ -284,6 +284,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-28T07:29:38.649158714"
+        "timestamp": "2025-11-29T19:35:15.8859746"
     }
 }
