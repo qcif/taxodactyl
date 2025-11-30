@@ -19,7 +19,7 @@ from pathlib import Path
 from src.coverage import assess_coverage
 from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config import arguments
+from src.utils.config.mappings import CLI_ARGS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -57,82 +57,82 @@ def _parse_args():
         action="store_true",
         help="Reference the BOLD database instead of GenBank.")
     parser.add_argument(
-        f"--{arguments.OUTPUT_DIR}",
+        f"--{CLI_ARGS['output_dir'].cli_name}",
         type=existing_path,
         default=config.output_dir,
         help=f"Path to output directory. Defaults to {config.output_dir}.")
     parser.add_argument(
-        f"--{arguments.METADATA_CSV}",
+        f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.QUERY_FASTA}",
+        f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.DB_COVERAGE_TOI_LIMIT}",
+        f"--{CLI_ARGS['db_coverage_toi_limit'].cli_name}",
         type=int,
         help="Limit for taxa of interest in coverage analysis",
     )
     parser.add_argument(
-        f"--{arguments.DB_COVERAGE_MAX_CANDIDATES}",
+        f"--{CLI_ARGS['db_coverage_max_candidates'].cli_name}",
         type=int,
         help="Maximum candidates for coverage assessment",
     )
     parser.add_argument(
-        f"--{arguments.GBIF_LIMIT_RECORDS}",
+        f"--{CLI_ARGS['gbif_limit_records'].cli_name}",
         type=int,
         help="Limit for GBIF taxonomy records",
     )
     parser.add_argument(
-        f"--{arguments.GBIF_MAX_OCCURRENCE_RECORDS}",
+        f"--{CLI_ARGS['gbif_max_occurrence_records'].cli_name}",
         type=int,
         help="Maximum GBIF occurrence records",
     )
     parser.add_argument(
-        f"--{arguments.GBIF_ACCEPTED_STATUS}",
+        f"--{CLI_ARGS['gbif_accepted_status'].cli_name}",
         type=str,
         help="Comma-separated list of accepted taxonomic statuses",
     )
     parser.add_argument(
-        f"--{arguments.DB_COV_TARGET_MIN_A}",
+        f"--{CLI_ARGS['db_cov_target_min_a'].cli_name}",
         type=int,
         help="Minimum reference database record count for target species flag"
              " 5.1A.",
     )
     parser.add_argument(
-        f"--{arguments.DB_COV_TARGET_MIN_B}",
+        f"--{CLI_ARGS['db_cov_target_min_b'].cli_name}",
         type=int,
         help="Minimum database coverage record count for target species flag"
              " 5.1B.",
     )
     parser.add_argument(
-        f"--{arguments.DB_COV_RELATED_MIN_A}",
+        f"--{CLI_ARGS['db_cov_related_min_a'].cli_name}",
         type=int,
         help="Minimum database species coverage for target genus flag 5.2A.",
     )
     parser.add_argument(
-        f"--{arguments.DB_COV_RELATED_MIN_B}",
+        f"--{CLI_ARGS['db_cov_related_min_b'].cli_name}",
         type=int,
         help="Minimum database species coverage for target genus flag 5.2B",
     )
     parser.add_argument(
-        f"--{arguments.DB_COV_COUNTRY_MISSING_A}",
+        f"--{CLI_ARGS['db_cov_country_missing_a'].cli_name}",
         type=int,
         help="Threshold for missing country data (grade A)",
     )
     parser.add_argument(
-        f"--{arguments.TEMP_ROOT}",
+        f"--{CLI_ARGS['temp_root'].cli_name}",
         type=Path,
         help="Path to temp root directory (defaults to"
              f" '{config.temp_root_dir}')",
     )
     parser.add_argument(
-        f"--{arguments.TEMP_DIR_NAME}",
+        f"--{CLI_ARGS['temp_dir_name'].cli_name}",
         type=str,
         help="The name of the temp dir to create within the temp root"
              f" (defaults to '{config.temp_dir_name}')",

@@ -12,7 +12,7 @@ from src.taxonomy import extract
 from src.taxonomy.extract import TAXONOMIC_RANKS
 from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config import arguments
+from src.utils.config.mappings import CLI_ARGS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -40,20 +40,20 @@ def _parse_args():
              ' information for.',
     )
     parser.add_argument(
-        f"--{arguments.OUTPUT_DIR}",
+        f"--{CLI_ARGS['output_dir'].cli_name}",
         type=existing_path,
         help="Directory to save parsed output files (JSON and FASTA). Defaults"
              f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
         default=config.output_dir,
     )
     parser.add_argument(
-        f"--{arguments.METADATA_CSV}",
+        f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
         required=True,
     )
     parser.add_argument(
-        f"--{arguments.QUERY_FASTA}",
+        f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
         required=True,

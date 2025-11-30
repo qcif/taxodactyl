@@ -144,7 +144,7 @@ class Config:
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
-        for mapper in mappings.ENV_VARS:
+        for mapper in mappings.ENV_VARS.values():
             value = os.getenv(mapper.env_name)
             if value is not None:
                 try:
@@ -167,10 +167,10 @@ class Config:
         for arg_name, value in vars(args).items():
             if value is None:
                 continue
-
-            mapper = mappings.get_mapper(arg_name, cli=True)
-            if not mapper:
+            param_name = mappings.CLI_TO_ATTR_NAME.get(arg_name)
+            if not param_name:
                 continue
+            mapper = mappings.CLI_ARGS[param_name]
 
             try:
                 mapper.set_value(self, value)
