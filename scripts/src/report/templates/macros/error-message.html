@@ -10,8 +10,9 @@
       <br>
       <small>
         <strong>Exception:</strong>
-        <code class="text-danger">
-          {{ error.exception }}
+        <code class="text-danger exception-text">
+          <span class="exception-content">{{ error.exception }}</span>
+          <a href="#" class="text-primary show-more-link" style="display: none; text-decoration: underline; margin-left: 0.5em;">Show more</a>
         </code>
       </small>
       {% endif %}
@@ -19,6 +20,56 @@
     {% endfor %}
   </ul>
 </div>
+
+<script>
+  // Exception message collapse/expand functionality
+  (function() {
+    if (window.exceptionCollapseInitialized) return;
+    window.exceptionCollapseInitialized = true;
+
+    const MAX_EXCEPTION_LENGTH = 150;
+
+    function initExceptionCollapse() {
+      document.querySelectorAll('.exception-text').forEach(function(codeElement) {
+        const contentSpan = codeElement.querySelector('.exception-content');
+        const showMoreLink = codeElement.querySelector('.show-more-link');
+
+        if (!contentSpan || !showMoreLink) return;
+        if (codeElement.dataset.initialized) return;
+        codeElement.dataset.initialized = 'true';
+
+        const fullText = contentSpan.innerText;
+
+        if (fullText && fullText.length > MAX_EXCEPTION_LENGTH) {
+          const truncatedText = fullText.substring(0, MAX_EXCEPTION_LENGTH) + '...';
+          contentSpan.textContent = truncatedText;
+          showMoreLink.style.display = 'inline';
+
+          let isExpanded = false;
+
+          showMoreLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            isExpanded = !isExpanded;
+
+            if (isExpanded) {
+              contentSpan.textContent = fullText;
+              showMoreLink.textContent = 'Show less';
+            } else {
+              contentSpan.textContent = truncatedText;
+              showMoreLink.textContent = 'Show more';
+            }
+          });
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initExceptionCollapse);
+    } else {
+      initExceptionCollapse();
+    }
+  })();
+</script>
 
 {% endmacro %}
 
