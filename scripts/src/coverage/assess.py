@@ -177,7 +177,7 @@ def _draw_occurrence_maps(
                 )
                 img_msg = (
                     f"Occurrence maps are only generated for taxa at rank"
-                    f" genus or species. Target rank is {rank_str}."
+                    f" genus or species.\nTarget rank is {rank_str}."
                 )
             else:
                 msg = (
@@ -186,7 +186,7 @@ def _draw_occurrence_maps(
                 )
                 img_msg = (
                     "Occurrence maps are only generated for taxa at rank"
-                    " genus or species. Target rank is unknown."
+                    " genus or species.\nTarget rank is unknown."
                 )
             logger.info(msg)
             draw_placeholder_map(

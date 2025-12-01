@@ -33,7 +33,7 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "161",  // Optional, run a specific test case
+                "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
                 // Note: PHYLOGENY_SPECIES_MAX_SEQS and GBIF_MAX_OCCURRENCE_RECORDS
