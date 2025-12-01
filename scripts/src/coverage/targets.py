@@ -105,6 +105,20 @@ def fetch_target_taxa(targets, query_dir):
                 query_dir=query_dir,
                 context={"target": target},
             )
+        if gbif_target.from_synonym:
+            msg = (
+                f"Target taxon '{target}' is listed as a synonym in GBIF."
+                " This taxon has been processed using the accepted name"
+                f" '{gbif_target.record['canonicalName']}'.")
+            logger.info(msg)
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                msg,
+                query_dir=query_dir,
+                context={
+                    "target": target,
+                },
+            )
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             # These get processed differently - broad GB record count only
             higher_taxon_targets[target] = gbif_target

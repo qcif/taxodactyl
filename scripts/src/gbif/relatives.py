@@ -75,6 +75,7 @@ class RelatedTaxaGBIF:
     INCLUDE_EXTINCT = False
 
     def __init__(self, taxon):
+        self.from_synonym = False
         self.taxon = taxon
         self.record = self._get_taxon_record(taxon)
         self.key = self.record.get('key')
@@ -102,20 +103,47 @@ class RelatedTaxaGBIF:
             with_cache=True,
         )
         for record in res:
+            synonym = False
+            if record.get('status') == 'SYNONYM':
+                # Replace the synonym record with its accepted name record
+                res = throttle.with_retry(
+                    pygbif.species.name_usage,
+                    kwargs={
+                        'key': self._get_synonym_key(record),
+                        'limit': 1,
+                    },
+                    with_cache=True,
+                )
+                if res:
+                    record = res
+                    synonym = True
+                    logger.info(
+                        f"Taxon '{taxon}' is a SYNONYM."
+                        " Using accepted name"
+                        f" '{record.get('canonicalName')}'."
+                    )
+                else:
+                    record = None
+
             if self._is_accepted(record):
                 logger.info(f"Record found for taxon"
                             f" '{taxon}' - rank:{record['rank']}"
                             f" genusKey:{record.get('genusKey')}")
+                if synonym:
+                    self.from_synonym = True
                 return record
+
         raise GBIFRecordNotFound(
             f"No GBIF record found for '{taxon}'. Taxonomic records cannot"
             " be retrieved. Please check that this species name is correct.")
 
     def _is_accepted(self, record):
         status_key = 'status' if 'status' in record else 'taxonomicStatus'
-        return (
-            record[status_key] in config.gbif_accepted_status
+        return bool(
+            record
+            and record[status_key] in config.gbif_accepted_status
             and (self.INCLUDE_EXTINCT or record.get('isExtinct') is not True)
+            and RANK.from_string(record.get('rank'))
         )
 
     def _filter_records(self, records):
@@ -124,6 +152,19 @@ class RelatedTaxaGBIF:
             if self._is_accepted(r)
             and 'canonicalName' in r
         ]
+
+    def _get_synonym_key(self, record):
+        for key in (
+            'speciesKey',
+            'genusKey',
+            'familyKey',
+            'orderKey',
+            'classKey',
+            'phylumKey',
+            'kingdomKey',
+        ):
+            if record.get(key):
+                return record[key]
 
     @cached_property
     def relatives(self):
