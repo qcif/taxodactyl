@@ -112,7 +112,7 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
     )
     tree_accessions = {
         acc: (
-            None
+            'Unknown'
             if hits_taxonomy.get(acc) is None
             else hits_taxonomy.get(acc, {}).get('species')
         )
