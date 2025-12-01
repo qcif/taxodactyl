@@ -124,7 +124,10 @@ class ErrorLog:
         parent = self.query_dir or config.output_dir
         for path in (parent / config.errors_dir).glob('*.json'):
             with path.open() as f:
-                errors.append(json.load(f))
+                err = json.load(f)
+                if err not in errors:
+                    errors.append(err)
+
         return errors
 
     def filter(
