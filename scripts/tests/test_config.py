@@ -140,8 +140,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
             },
             'inputs': {
                 'fasta_max_sequences': 200,
-                'fasta_min_length_nt': 50,
-                'fasta_max_length_nt': 2500
+                'fasta_min_length': 50,
+                'fasta_max_length': 2500
             },
             'temp_root': str(CUSTOM_TEMP_ROOT),
         }
@@ -171,8 +171,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
 
             # Verify input attributes loaded from YAML
             self.assertEqual(config.inputs.fasta_max_sequences, 200)
-            self.assertEqual(config.inputs.fasta_min_length_nt, 50)
-            self.assertEqual(config.inputs.fasta_max_length_nt, 2500)
+            self.assertEqual(config.inputs.fasta_min_length, 50)
+            self.assertEqual(config.inputs.fasta_max_length, 2500)
 
             # Verify custom temp root has been set
             self.assertEqual(
@@ -197,8 +197,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
 
             # Verify input default values
             self.assertEqual(config.inputs.fasta_max_sequences, 150)
-            self.assertEqual(config.inputs.fasta_min_length_nt, 20)
-            self.assertEqual(config.inputs.fasta_max_length_nt, 3000)
+            self.assertEqual(config.inputs.fasta_min_length, 20)
+            self.assertEqual(config.inputs.fasta_max_length, 3000)
 
     def test_cascading_config_loading(self):
         """Test loading multiple config files with cascading override."""

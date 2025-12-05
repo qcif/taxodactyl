@@ -68,8 +68,8 @@ inputs:
   - sample_id
   - locus
   - preliminary_id
-  fasta_max_length_nt: 3000
-  fasta_min_length_nt: 20
+  fasta_max_length: 3000
+  fasta_min_length: 20
   fasta_max_sequences: 150
   query_fasta: null
   metadata_csv: null
