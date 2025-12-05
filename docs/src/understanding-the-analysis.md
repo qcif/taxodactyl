@@ -71,11 +71,11 @@ See [Checking taxa of interest](#checking-taxa-of-interest)
 ### BLAST
 
 The reference data used by the workflow depends entirely on the deployment - ask your platform administrator if you are unsure.
-For the BLAST version of the workflow, the reference data will be a BLAST database of sequence records that is held on the analysis server - by default this is `{{ config.REPORT.DATABASE_NAME }}`, but it is possible to run with a different reference database. The workflow report specifies the database name in the database coverage report (admins can set this manually with `BLAST_DATABASE_NAME`).
+For the BLAST version of the workflow, the reference data will be a BLAST database of sequence records that is held on the analysis server - by default this is `{{ config.report.database_name }}`, but it is possible to run with a different reference database. The workflow report specifies the database name in the database coverage report (admins can set this manually with `BLAST_DATABASE_NAME`).
 
 ### BOLD
 
-By default this is set to `{{ config.BOLD_DATABASE }}` (admins can override this by setting `BOLD_DATABASE`).
+By default this is set to `{{ config.bold_database }}` (admins can override this by setting `BOLD_DATABASE`).
 
 ## Input files
 
@@ -85,9 +85,9 @@ A FASTA file containing sample sequences to be analysed. Multiple sequences per 
 
 - Seq IDs must be unique
 - Seq IDs must match `metadata.csv` input
-- Maximum query sequences: `{{ config.INPUTS.FASTA_MAX_SEQUENCES }}`
-- Minimum seq length: `{{ config.INPUTS.FASTA_MIN_LENGTH_NT }}nt`
-- Max length of any sequence: `{{ config.INPUTS.FASTA_MAX_LENGTH_NT }}nt`
+- Maximum query sequences: `{{ config.inputs.fasta_max_sequences }}`
+- Minimum seq length: `{{ config.inputs.fasta_min_length }}nt`
+- Max length of any sequence: `{{ config.inputs.fasta_max_length }}nt`
 - All residues must be valid nucleotide (ambiguous IUPAC DNA: `ATGCRYSWKMBDHVN`)
 
 ### Metadata CSV file
@@ -240,7 +240,7 @@ To orientate each query sequence, we then use the `hmmsearch` tool (part of the 
 - `pf00116.hmm` - [Cytochrome C oxidase subunit II, periplasmic domain](https://www.ebi.ac.uk/interpro/entry/pfam/PF00116/)
 - `pf02790.hmm` - [Cytochrome C oxidase subunit II, transmembrane domain](https://www.ebi.ac.uk/interpro/entry/pfam/PF02790/)
 
-A match is accepted when the E-value is below `{{ config.HMMSEARCH_MIN_EVALUE }}`. The first frame which is predicted to encode one of these domains dictates the orientation that will then be submitted to BOLD. For query sequences with no matches, both the forward and reverse orientations are submitted to BOLD and the one which returns hit(s) is assumed to be in the correct orientation (the other orientation's result is discarded).
+A match is accepted when the E-value is below `{{ config.hmmsearch_min_evalue }}`. The first frame which is predicted to encode one of these domains dictates the orientation that will then be submitted to BOLD. For query sequences with no matches, both the forward and reverse orientations are submitted to BOLD and the one which returns hit(s) is assumed to be in the correct orientation (the other orientation's result is discarded).
 
 ### Submitting to ID Engine
 
@@ -279,13 +279,13 @@ The phylum given above is used to fetch a the associated phylum record from the 
 
 This is a critical stage in the analysis. Hits returned from BLAST/BOLD are filtered and a list of candidate species is extracted from those hits. Filtering is applied as follows. For BOLD search, the process is identical, with similarity being used in place of identity.
 
-- All hits which are below `{{ config.CRITERIA.ALIGNMENT_MIN_NT }}nt` AND `{{ config.CRITERIA.ALIGNMENT_MIN_Q_COVERAGE * 100 }}%` query coverage are excluded from the entire analysis. These are referred to as "filtered hits".
+- All hits which are below `{{ config.criteria.alignment_min_nt }}nt` AND `{{ config.criteria.alignment_min_q_coverage * 100 }}%` query coverage are excluded from the entire analysis. These are referred to as "filtered hits".
 - The identity threshold for candidate hits is either:
-    - `{{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT * 100 }}%` (if any filtered hits meet this threshold) - defined as a **STRONG MATCH**
-    - OR `{{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY * 100 }}%` - defined as a **MODERATE MATCH**
+    - `{{ config.criteria.alignment_min_identity_strict * 100 }}%` (if any filtered hits meet this threshold) - defined as a **STRONG MATCH**
+    - OR `{{ config.criteria.alignment_min_identity * 100 }}%` - defined as a **MODERATE MATCH**
 - Resulting candidate hits are then aggregated by species and the top hit per-species is identified. These species are what you see reported in the "Candidates" section of the workflow report.
 - The "No. hits" shown for each candidate includes all filtered hits, not just the candidate hits.
-- The "Median identity" shown in the "Candidate species" table is derived from the identity (%) of all filtered hits. If there is a wide distribution of hit identities, the median will be reduced. If the median drops below the candidate threshold, the badge will turn from green to yellow. If it drops to less than `{{ config.CRITERIA.MEDIAN_IDENTITY_WARNING_FACTOR * 100 }}%` of the threshold (i.e. `<{{ (config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT * 100 * config.CRITERIA.MEDIAN_IDENTITY_WARNING_FACTOR) | round(1) }}%` for a threshold of `{{ config.CRITERIA.ALIGNMENT_MIN_IDENTITY_STRICT * 100 }}%`), the badge will turn red.
+- The "Median identity" shown in the "Candidate species" table is derived from the identity (%) of all filtered hits. If there is a wide distribution of hit identities, the median will be reduced. If the median drops below the candidate threshold, the badge will turn from green to yellow. If it drops to less than `{{ config.criteria.median_identity_warning_factor * 100 }}%` of the threshold (i.e. `<{{ (config.criteria.alignment_min_identity_strict * 100 * config.criteria.median_identity_warning_factor) | round(1) }}%` for a threshold of `{{ config.criteria.alignment_min_identity_strict * 100 }}%`), the badge will turn red.
 
 The candidate species identified above are then cross-checked against the Preliminary Morphology ID and Taxa of Interest (if provided).
 
@@ -299,7 +299,7 @@ This process is identical to that described above, except that a little more inf
 
 ### Boxplot of identity distribution
 
-When the analysis identifies more than {{ config.MAX_CANDIDATES_FOR_ANALYSIS }} candidate species, the analyst is prompted to make a subjective genus-level taxonomic assignment. To assist in this, a boxplot which shows the distribution of hit identities per-species is included in the report.
+When the analysis identifies more than {{ config.max_candidates_for_analysis }} candidate species, the analyst is prompted to make a subjective genus-level taxonomic assignment. To assist in this, a boxplot which shows the distribution of hit identities per-species is included in the report.
 
 
 ## Phylogenetic analysis
@@ -307,9 +307,9 @@ When the analysis identifies more than {{ config.MAX_CANDIDATES_FOR_ANALYSIS }} 
 Subject sequences are selected from filtered hits [extracted previously](#assigning-taxonomic-identity).
 The selection process is a little complex, as it aims to strike a balance between reasonable coverage of the genetic diversity present in BLAST/BOLD hit subjects, while also trying to minimize the number of sequences that need to go through alignment and analysis. Building trees with 100+ sequences is SLOW and the resulting tree is often ugly, so we do our best to avoid that.
 
-1. Hits are collected in order of descending identity until at least {{ config.CRITERIA.PHYLOGENY_MIN_HIT_SEQUENCES }} hits have been collected. This means that candidate hits are always collected for sampling, and filtered hits are included if there aren't enough to form a good tree.
-2. Next, if there are more than {{ config.CRITERIA.PHYLOGENY_CANDIDATE_MAX_SEQS }} hits for a candidate species, these hits are strategically sampled to ensure that sequence diversity is accurately represented.
-3. Non-candidate species are also collected, if they are above {{ config.CRITERIA.PHYLOGENY_MIN_HIT_IDENTITY }}% identity. Only {{ config.CRITERIA.PHYLOGENY_SPECIES_MAX_SEQS }} are sampled from non-candidates since they are really just providing context to the candidate species.
+1. Hits are collected in order of descending identity until at least {{ config.criteria.phylogeny_min_hit_sequences }} hits have been collected. This means that candidate hits are always collected for sampling, and filtered hits are included if there aren't enough to form a good tree.
+2. Next, if there are more than {{ config.criteria.phylogeny_candidate_max_seqs }} hits for a candidate species, these hits are strategically sampled to ensure that sequence diversity is accurately represented.
+3. Non-candidate species are also collected, if they are above {{ config.criteria.phylogeny_min_hit_identity }}% identity. Only {{ config.criteria.phylogeny_species_max_seqs }} are sampled from non-candidates since they are really just providing context to the candidate species.
 
 **Stratified sampling method:**
 
@@ -321,7 +321,7 @@ This sampling strategy is illustrated below for clarity, assuming a species wher
 ![systematic sampling of hits](https://github.com/qcif/taxodactyl/blob/main/docs/images/systematic-sample.png?raw=true)
 
 <p class="alert alert-info">
-    The workflow restricts the number of sequences to {{ config.CRITERIA.PHYLOGENY_CANDIDATE_MAX_SEQS }} per candidate species by default, which strikes a balance between reasonable run time and representation of genetic diversity. Setting this sample size too low would result in poor quality trees that may give a false impression of genetic diversity to the user. Setting it too high would result in very long run times and large trees that are difficult to interpret. Please refer to the
+    The workflow restricts the number of sequences to {{ config.criteria.phylogeny_candidate_max_seqs }} per candidate species by default, which strikes a balance between reasonable run time and representation of genetic diversity. Setting this sample size too low would result in poor quality trees that may give a false impression of genetic diversity to the user. Setting it too high would result in very long run times and large trees that are difficult to interpret. Please refer to the
     <a href="https://github.com/qcif/taxodactyl/blob/main/docs/params.md">
       Nextflow docs
     </a>
@@ -359,9 +359,9 @@ The analysis involves clusting of GenBank publication records based on the provi
 
 An analysis of taxonomic coverage of the reference database is carried out for each of the following taxa:
 
-- Candidate species (only when `n ≤ {{ config.CRITERIA.MAX_CANDIDATES_FOR_ANALYSIS }}`)
+- Candidate species (only when `n ≤ {{ config.criteria.max_candidates_for_analysis }}`)
 - Preliminary ID taxon (provided in [metadata.csv](#metadata-csv-file))
-- Taxa of interest (provided in [metadata.csv](#metadata-csv-file); only when `n ≤ {{ config.DB_COVERAGE_TOI_LIMIT }}`)
+- Taxa of interest (provided in [metadata.csv](#metadata-csv-file); only when `n ≤ {{ config.db_coverage_toi_limit }}`)
 
 Each of these is referred to as a "target taxon" or, more concisely, "target".
 For each target, three analyses may be performed:
@@ -380,7 +380,7 @@ To obtain "species in genus" in analyses `5.2` and `5.3`, we use the GBIF API:
 
 1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
 1. The genus key from the target record is then used to fetch all matching records at rank "species" from the [/species/match](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API endpoint.
-1. Returned speces records are filtered to exclude extinct species, and include only those where status is one of `{{ config.GBIF_ACCEPTED_STATUS }}`.
+1. Returned speces records are filtered to exclude extinct species, and include only those where status is one of `{{ config.gbif_accepted_status }}`.
 
 ### Enumerating GenBank records
 
@@ -413,4 +413,4 @@ The response returned from Entrez includes a `count` field - this is the data th
 
 ### Occurrence maps
 
-In addition to the analyses above, a geographic distribution map is also generated based on occurrence records fetched from the GBIF occurrence API. The number of occurrence records fetched is limited to {{ config.GBIF_MAX_OCCURRENCE_RECORDS }}, because some taxa (e.g. "arthropoda") have far too many occurrence records to fetch in a reasonable length of time.
+In addition to the analyses above, a geographic distribution map is also generated based on occurrence records fetched from the GBIF occurrence API. The number of occurrence records fetched is limited to {{ config.gbif_max_occurrence_records }}, because some taxa (e.g. "arthropoda") have far too many occurrence records to fetch in a reasonable length of time.
