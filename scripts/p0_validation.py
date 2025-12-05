@@ -136,17 +136,17 @@ def _validate_fasta(path: Path) -> list[str]:
                     " allowed."
                 )
             length = len(seq.seq)
-            if length < config.inputs.fasta_min_length_nt:
+            if length < config.inputs.fasta_min_length:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp does not meet the"
                     " minimum allowed length of"
-                    f" {config.inputs.fasta_min_length_nt}bp (sequence"
+                    f" {config.inputs.fasta_min_length}bp (sequence"
                     f" #{count} {seq.id})"
                 )
-            if length > config.inputs.fasta_max_length_nt:
+            if length > config.inputs.fasta_max_length:
                 raise FASTAFormatError(
                     f"sequence of length {length}bp exceeds the maximum"
-                    f" allowed length of {config.inputs.fasta_max_length_nt}bp"
+                    f" allowed length of {config.inputs.fasta_max_length}bp"
                     f" (sequence #{count} {seq.id})"
                 )
 
