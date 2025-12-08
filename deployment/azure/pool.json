@@ -1,0 +1,18 @@
+{
+  "startTask": {
+    "commandLine": "/bin/bash setup.sh",
+    "resourceFiles": [
+      {
+        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh",
+        "filePath": "start.sh"
+      }
+    ],
+    "waitForSuccess": true,
+    "userIdentity": {
+      "autoUser": {
+        "scope": "pool",
+        "elevationLevel": "admin"
+      }
+    }
+  }
+}
