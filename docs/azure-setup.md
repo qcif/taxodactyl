@@ -2,7 +2,7 @@
 
 First set up a billing account "DASS development", and subscription "DAFF Biosecurity" to contain these resources.
 
-After creating the subscription, it takes a little while for the necessary resources to spawn. To wait for them to come online:
+After creating the subscription, it can take an hour or more for the necessary resources to spawn. To wait for them to come online:
 
 ```sh
 # Wait until this shows "Registered" or you will get "Subscription not found" error when you continue
@@ -86,7 +86,7 @@ For development, don't worry about pools and just set NF config as:
     }
 ```
 
-This will auto-create a single pool with max one node for each workflow invocation. This means that invocations are completely independent, and have to stage reference data every time.
+This will auto-create a single pool with max one node for each workflow invocation. This means that invocations are completely independent, and have to stage reference data every time (not great for production).
 
 To create and manage a persistent node:
 
@@ -124,14 +124,29 @@ Before anything can be run, we need to upload our reference data to premium blob
 
 For large data uploads, azcopy is faster and more reliable than `az storage blob upload-batch` .
 
-```sh
-# TODO: Replace with azcopy
 
-az storage blob upload-batch \
-  --account-name $STORAGE_ACCOUNT_PREM \
-  --account-key <account key returned above>
-  --source ./core_nt \
-  --destination $STORAGE_CONTAINER_REF/core_nt
+### Set up user role for azcopy
+
+```sh
+# Get your user principal
+az login
+USER_OBJECT_ID=$(az ad signed-in-user show --query id -o tsv)
+SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+
+# Assign the "Blob Data Contributor" role
+az role assignment create \
+  --role "Storage Blob Data Contributor" \
+  --assignee "$USER_OBJECT_ID" \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$STORAGE_ACCOUNT_PREM"
+
+# Wait a few minutes to propagate
+
+azcopy copy \
+  "./core_nt" \
+  "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/core_nt/" \
+  --recursive \
+  --overwrite=ifSourceNewer \
+  --log-level INFO
 ```
 
 ## Staging reference data
@@ -151,7 +166,7 @@ az storage blob upload \
 Now set the start task for the pool to use this script. We need to define the start task in a JSON file:
 
 ```json
-// spec.json
+// pool.json
 
 {
   "startTask": {
