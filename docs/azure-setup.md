@@ -21,11 +21,12 @@ STORAGE_CONTAINER_REF=refdata
 STORAGE_CONTAINER_WORK=workdata
 STORAGE_CONTAINER_SCRIPTS=scripts
 BATCH_ACCOUNT=daffbatch
+ACCOUNT_ENDPOINT=daffbatch.australiaeast.batch.azure.com
 POOL_ID=taxodactyl
 DEDICATED_NODES=0
 NODE_AGENT_SKU="batch.node.ubuntu 20.04"
 IMAGE_TAG=Canonical:ubuntu-2404-lts:server:latest
-VM_TYPE=Standard_L4s_v3
+VM_SKU=Standard_L4s
 
 az account set --subscription "$SUBSCRIPTION"
 az group create -n $RESOURCE_GROUP -l $REGION
@@ -72,49 +73,111 @@ az batch account keys list -g daff-biosecurity -n daffbatch
 
 ## Managing pools
 
-For development, don't worry about pools and just set NF config as:
+>[!NOTE]
+>Since our workflow requires reference data, it's important that we don't use
+>Nextflow's `autoPoolMode`, because we have to set up the pool to stage ref
+>data for each node spawn event. If Nextflow creates its own pool, there won't
+>be any reference data there!
+
+For development, we can create a pool and submit jobs with a "keep warm" option
+to ensure that nodes do not have to be re-staged between job/process
+submissions.
+
+[az pool docs](https://learn.microsoft.com/en-us/cli/azure/batch/pool?view=azure-cli-latest)
+
+Create a pool for development:
+
+```sh
+az batch pool create \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --id $POOL_ID \
+  --vm-size $VM_SKU \
+  --node-agent-sku-id "$NODE_AGENT_SKU" \
+  --image $IMAGE_TAG
+
+az batch pool autoscale enable \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --auto-scale-formula "
+    $pendingTasks = $PendingTasks.GetSample(1);
+    $TargetDedicatedNodes = ($pendingTasks > 0) ? 1 : 0;" \
+  --auto-scale-evaluation-interval PT5M
+```
+
+To list available VM SKUs:
+
+```sh
+az batch location list-skus --location $REGION
+```
+
+(Read about the [autoscale formula](https://learn.microsoft.com/en-us/azure/batch/batch-automatic-scaling))
+
+And now configure Nextflow to submit jobs to that pool:
 
 ```
-    batch {
-        location = 'australiaeast'
-        accountName = 'daffbatch'
-        autoPoolMode = true
-        allowPoolCreation = true
-        vmType = 'Standard_L4s_v3'
-        vmCount = 1
-        maxNodes = 1
-    }
+  batch {
+    location          = 'australiaeast'
+    accountName       = 'daffbatch'
+    poolId            = 'taxodactyl'
+    autoPoolMode      = false
+    allowPoolCreation = false
+
+    // Keep nodes warm for 30 minutes after tasks complete:
+    queueOptions      = '--retain 30m'
+  }
 ```
 
-This will auto-create a single pool with max one node for each workflow invocation. This means that invocations are completely independent, and have to stage reference data every time (not great for production).
+This way, we can benefit from re-using staged ref data between workflow runs,
+but don't need to worry about shutting down the node when we're done for the
+day.
 
-To create and manage a persistent node:
+### Persistent nodes
+
+For production, a persistent node is a more expensive option that eliminates
+staging time (15 mins) on the node for each job. To create and manage a
+persistent node:
 
 ```sh
 # Create a pool to submit jobs to
 az batch pool create \
   --id $POOL_ID \
-  --vm-size $VM_TYPE \
-  --node-agent-sku-id $NODE_AGENT_SKU \
+  --vm-size $VM_SKU \
+  --node-agent-sku-id "$NODE_AGENT_SKU" \
   --image $IMAGE_TAG \
   --target-dedicated-nodes $DEDICATED_NODES
 ```
 
+>[!WARNING]
+>Warning: a persistent node will stay alive until manual shutdown. During this
+>time the instance will continue billing to your account at the machine's
+>hourly rate. Don't forget to shut it down!
+
 Then we can force Nextflow to send jobs to the persistent node with:
 
 ```
-    batch {
-        location = 'australiaeast'
-        accountName = 'daffbatch'
-        poolId = 'taxodactyl'
-        autoPoolMode = false
-        allowPoolCreation = false
-    }
+  batch {
+      location = 'australiaeast'
+      accountName = 'daffbatch'
+      poolId = 'taxodactyl'
+      autoPoolMode = false
+      allowPoolCreation = false
+  }
 ```
+
+For higher throughput, the number of nodes could be increased (with a linear
+cost increase).
 
 To resize the batch pool in future (e.g. to change the number of persistent nodes):
 
 ```sh
+az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node count>
+```
+
+To re-create the node (e.g. to force config update):
+
+```sh
+az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node count>
 ```
 
