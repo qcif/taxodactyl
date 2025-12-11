@@ -24,8 +24,8 @@ BATCH_ACCOUNT=daffbatch
 ACCOUNT_ENDPOINT=daffbatch.australiaeast.batch.azure.com
 POOL_ID=taxodactyl
 DEDICATED_NODES=0
-NODE_AGENT_SKU="batch.node.ubuntu 20.04"
-IMAGE_TAG=Canonical:ubuntu-2404-lts:server:latest
+NODE_AGENT_SKU="batch.node.ubuntu 24.04"
+IMAGE_TAG=canonical:ubuntu-24_04-lts:server
 VM_SKU=Standard_L4s
 
 az account set --subscription "$SUBSCRIPTION"
@@ -57,7 +57,7 @@ az batch account create \
   --storage-account $STORAGE_ACCOUNT_STD
 ```
 
-Now get credentials required for NF config:
+Now let's get credentials required for NF config:
 
 ```sh
 az batch account login \
@@ -70,6 +70,31 @@ az storage account keys list -g daff-biosecurity -n daffstandard
 az storage account keys list -g daff-biosecurity -n daffpremium
 az batch account keys list -g daff-biosecurity -n daffbatch
 ```
+
+## Set batch account quota
+
+Now, finally set a reasonable resource quota on the batch account. New
+subscriptions start with zero pools in the Batch account quota, as this is
+considered a high risk resource by Azure (I guess you can run up a huge bill if
+you aren't careful).
+I couldn't find a reliable way to do this over the CLI so had to
+[do this manually on the
+Azure portal](https://learn.microsoft.com/en-us/azure/quotas/quickstart-increase-quota-portal).
+
+(In case you can't find the right page, I went through the following at [this horrible URL](https://portal.azure.com/#@qcif.edu.au/resource/subscriptions/73d25025-7bc9-44f5-a163-3727fc0121a8/resourceGroups/daff-biosecurity/providers/Microsoft.Batch/batchAccounts/daffbatch/accountQuotas))
+
+1. Sign into Azure Portal
+1. Search for "quotas"
+1. Click on "request a quota increase"
+1. Quota type: "Batch" (click Next)
+1. Enter your details in the form, and click "Enter details"
+1. Fill out the form
+1. "Select quotas to update":
+  - "LS series" (or your chosen VM series)
+  - "Pools per Batch account"
+1. Enter a new (reasonable) limit for each of the above (don't put 100 unless you want to pay for that!)
+1. Save and continue
+1. Wait for your request to be approved?
 
 ## Managing pools
 
@@ -254,7 +279,7 @@ Now set the start task for the pool to use this script. We need to define the st
 And then update the pool with this config:
 
 ```sh
-az batch pool set --pool-id $POOL_ID --json-file spec.json
+az batch pool set --pool-id $POOL_ID --json-file pool.json
 ```
 
 If you want an existing persistent node to use the updated start task, it will need to be re-created:
