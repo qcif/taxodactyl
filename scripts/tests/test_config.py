@@ -140,8 +140,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
             },
             'inputs': {
                 'fasta_max_sequences': 200,
-                'fasta_min_length_nt': 50,
-                'fasta_max_length_nt': 2500
+                'fasta_min_length': 50,
+                'fasta_max_length': 2500
             },
             'temp_root': str(CUSTOM_TEMP_ROOT),
         }
@@ -171,8 +171,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
 
             # Verify input attributes loaded from YAML
             self.assertEqual(config.inputs.fasta_max_sequences, 200)
-            self.assertEqual(config.inputs.fasta_min_length_nt, 50)
-            self.assertEqual(config.inputs.fasta_max_length_nt, 2500)
+            self.assertEqual(config.inputs.fasta_min_length, 50)
+            self.assertEqual(config.inputs.fasta_max_length, 2500)
 
             # Verify custom temp root has been set
             self.assertEqual(
@@ -197,8 +197,8 @@ class TestConfigYAMLLoading(unittest.TestCase):
 
             # Verify input default values
             self.assertEqual(config.inputs.fasta_max_sequences, 150)
-            self.assertEqual(config.inputs.fasta_min_length_nt, 20)
-            self.assertEqual(config.inputs.fasta_max_length_nt, 3000)
+            self.assertEqual(config.inputs.fasta_min_length, 20)
+            self.assertEqual(config.inputs.fasta_max_length, 3000)
 
     def test_cascading_config_loading(self):
         """Test loading multiple config files with cascading override."""
@@ -420,6 +420,86 @@ class TestConfigCLIArgumentUpdate(unittest.TestCase):
 
             # Should not raise an exception
             config.update_from_args(cli_args)
+
+    def test_all_cli_args_propagate_to_config(self):
+        """Test that all CLI_ARGS properly update their config attributes."""
+        from src.utils.config.mappings import (
+            CLI_ARGS,
+            IntMapping,
+            FloatMapping,
+            BoolMapping,
+            PathMapping,
+            ListMapping,
+            UppercaseListMapping,
+            StringMapping,
+        )
+
+        with patch('sys.argv', ['test_script']):
+            config = Config()
+
+            # Create test values for each CLI argument based on its type
+            cli_args_dict = {}
+            for attr_name, mapping in CLI_ARGS.items():
+                # Convert CLI name (hyphenated) to argparse name (underscored)
+                arg_name = mapping.cli_name.replace('-', '_')
+
+                # Generate appropriate test value based on mapping type
+                if isinstance(mapping, IntMapping):
+                    test_value = 9999
+                elif isinstance(mapping, FloatMapping):
+                    test_value = 0.9876
+                elif isinstance(mapping, BoolMapping):
+                    test_value = True
+                elif isinstance(mapping, PathMapping):
+                    # Use a temporary path that won't be created
+                    test_value = Path('/tmp/test_cli_args_path')
+                elif isinstance(mapping, UppercaseListMapping):
+                    test_value = 'ACCEPTED,DOUBTFUL'
+                elif isinstance(mapping, ListMapping):
+                    test_value = 'item1,item2,item3'
+                elif isinstance(mapping, StringMapping):
+                    test_value = 'test_string_value'
+                else:
+                    # Fallback for any unknown mapping types
+                    test_value = 'test_value'
+
+                cli_args_dict[arg_name] = test_value
+
+            # Create argparse Namespace from the dictionary
+            cli_args = Namespace(**cli_args_dict)
+
+            # Update config from CLI args
+            config.update_from_args(cli_args)
+
+            # Verify each CLI argument properly updated its config attribute
+            for attr_name, mapping in CLI_ARGS.items():
+                arg_name = mapping.cli_name.replace('-', '_')
+                expected_value = cli_args_dict[arg_name]
+
+                # Get the actual value from config
+                if mapping.namespace:
+                    namespace_obj = getattr(config, mapping.namespace)
+                    actual_value = getattr(namespace_obj, mapping.name)
+                else:
+                    actual_value = getattr(config, mapping.name)
+
+                # Cast expected value through the mapping's cast method
+                expected_casted = mapping.cast(expected_value)
+
+                namespace_prefix = (
+                    f"{mapping.namespace}." if mapping.namespace else ""
+                )
+                error_msg = (
+                    f"CLI arg '--{mapping.cli_name}' (attr: {attr_name}) "
+                    f"did not properly update config.{namespace_prefix}"
+                    f"{mapping.name}. "
+                    f"Expected {expected_casted}, got {actual_value}"
+                )
+                self.assertEqual(
+                    actual_value,
+                    expected_casted,
+                    error_msg
+                )
 
 
 class TestConfigPathResolution(unittest.TestCase):

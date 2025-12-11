@@ -58,9 +58,9 @@ class InputsConfig(BaseModel):
     )
 
     # FASTA validation limits
-    fasta_max_length_nt: int = Field(
+    fasta_max_length: int = Field(
         default=3000, description="Maximum sequence length")
-    fasta_min_length_nt: int = Field(
+    fasta_min_length: int = Field(
         default=20, description="Minimum sequence length")
     fasta_max_sequences: int = Field(
         default=150, description="Maximum number of sequences")
