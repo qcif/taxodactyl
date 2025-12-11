@@ -35,7 +35,14 @@
         {% if aggregated_sources[candidate.species] %}
         {{ aggregated_sources[candidate.species] | length }}
         {% else %}
-        0
+        <span
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="Not analyzed due to number of candidates"
+          class="text-muted"
+        >
+          NA
+        </span>
         {% endif %}
       </td>
       <td>{{ "%.1f" | format(candidate.identity * 100) }}%</td>
