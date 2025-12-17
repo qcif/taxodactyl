@@ -1,0 +1,150 @@
+sample_id,locus,preliminary_id,taxa_of_interest,country
+VEC_BG linen_D2_CO1_1,CO1,Anopheles,Anopheles annulipes,Australia
+NBS459523_459523NC_CO1_1,CO1,Solenopsis,,Namibia
+BISS387367_101876VA_CO1_1,CO1,Sirex,,Germany
+BISS411684_149958QA-1_CO1_1,CO1,Oxychilus,,India
+BISS350981_111068QA_CO2_1,CO2,Halyomorpha halys,,Italy
+BISS350981_111068QA_CO1_1,CO1,Halyomorpha halys,,Italy
+BISSSA22001505a_024172SA_CO1_1,CO1,Camponotus,,Namibia
+BISSNA23041582a_207198NA_CO1_1,CO1,Camponotus,,Malaysia
+BISS305126_167779NA_CO1_1,CO1,Pentatomidae,,Italy
+BISS350958_130311QA-1_CO1_1,CO1,Nysius,,New Zealand
+BISS419815_107161VA_CO1_1,CO1,Noctuidae,,Ecuador
+BISS431112_108078VA_CO1_1,CO1,Hemiptera,,Kenya
+NBS480068__CO1_1,CO1,Agromyzidae,,Australia
+NBS461021-1__16S_1,16S,Agromyzidae,,Australia
+NBS461021-2__16S_1,16S,Agromyzidae,,Australia
+NBS461021-1__CO1_1,CO1,Agromyzidae,,Australia
+NBS461021-2__CO1_1,CO1,Agromyzidae,,Australia
+BISS420070_101513VA_CO1_1,CO1,Diptera,,Netherlands
+BISS410394-1_122971QA_16S_1,16S,Trogoderma,,Namibia
+BISS410394-2_122971QA_16S_1,16S,Trogoderma,,Namibia
+SurvR_5141QA_CO1_1,CO1,Flatidae,Dworena,Australia
+NBSW0214-1__CO1_1,CO1,Pheidole,,Namibia
+NBSW0214-2__CO1_1,CO1,Pheidole,,Namibia
+NBS359169_1000CC_CO1_1,CO1,Nylanderia,,Australia
+NBS409360__CO1_1,CO1,Nylanderia,Nylanderia glabrior,Australia
+NBS507137_507137NC_CO1_1,CO1,Dolichoderinae,,Australia
+NBS507245_507245NC_CO1_1,CO1,Nylanderia,,Australia
+BISS481663__CO1_1,CO1,Nylanderia,0,Australia
+NBS334363-1_TBA_CO1_1,CO1,Paraparatrechina,0,Australia
+NBS334363-2_TBA_CO1_1,CO1,Paraparatrechina,0,Australia
+NBS333276_TBA_16S_1,16S,Paraparatrechina minutula,,Australia
+NBS333276_TBA_CO1_1,CO1,Paraparatrechina minutula,,Australia
+NBS409034__CO1_1,CO1,Nylanderia,,Australia
+BISS431116_108091VA_CO1_1,CO1,Noctuidae,,Taiwan
+BISS420010_103449VA_CO1_1,CO1,Theridiidae,,Thailand
+BISS378310_108413VA_CO1_1,CO1,Lasius,,France
+BISS483958_123099VA_CO1_1,CO1,Theridion,,Mauritius
+BISS448323_121438VA_CO1_1,CO1,Theridiidae,,Taiwan
+BISS389392_067822WA_CO1_1,CO1,Liriomyza huidobrensis,,Malaysia
+BISSQA18012519a_103525QA_CO1_1,CO1,Tephritidae,,Bangladesh
+BISS459342_119336VA_CO1_1,CO1,Grapholita molesta,,China
+BISS461885_114198VA_CO1_1,CO1,Acari,,China
+BISSVA23036229b_123438VA_CO1_1,CO1,Drosophila,,India
+BISS406909_175729NA_CO1_1,CO1,Hemerobiidae,,New Zealand
+NBS415397_0999VC_CO1_1,CO1,Tapinoma,,Australia
+BISS486477_121975VA_CO1_1,CO1,Noctuidae,,Mexico
+BISS52285-1_030583WA-1_CO1_1,CO1,Noctuidae,,Peru
+BISS52338_031085WA-1_CO1_1,CO1,Noctuidae,,Peru
+BISS187398-2_042500VA-1_CO1_1,CO1,Spodoptera,,Philippines
+BISS52288_031221WA-1_CO1_1,CO1,Spodoptera,,Thailand
+BISS460294_113946VA_CO1_1,CO1,Noctuidae,,Mexico
+BISS52285-2_030583WA-1_CO1_1,CO1,Noctuidae,,Peru
+BISS187398-1_042500VA-1_CO1_1,CO1,Spodoptera,,Philippines
+SurvR_5107QA_CO1_1,CO1,Glaucias,,Australia
+SurvR_5107QA_16S_1,16S,Glaucias,,Australia
+SurvR_5108QA_CO1_1,CO1,Glaucias,,Australia
+SurvR_5108QA_16S_1,16S,Glaucias,,Australia
+BISS389426_106296VA_16S_1,16S,Trogoderma simplex,,United States
+BISS399566_137750QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS425278_137730QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS425252_137875QA-1_CO1_1,CO1,Isotenes,Isotenes miserana,New Zealand
+BISS359979_112561QA_CO1_1,CO1,Tortricidae,,New Zealand
+BISS329395_112452QA_CO1_1,CO1,Tortricidae,,New Zealand
+BISS434940_106117VA_CO1_1,CO1,Phoridae,,New Zealand
+BISS442164_147214QA_16S_1,16S,Tortricidae,0,New Zealand
+BISS257195_083932QA_CO1_1,CO1,Tortricidae,,New Zealand
+BISS491016_125814VA_CO1_1,CO1,Chironomidae,,New Zealand
+BISS439114_148597QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS440315_148565QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS440492_119671VA_CO1_1,CO1,Sciaridae,,Chile
+BISS442164_147214QA_CO1_1,CO1,Tortricidae,0,New Zealand
+BISS329098_101472QA_CO1_1,CO1,Tortricidae,,New Zealand
+BISS477525_157831QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS477525_157831QA-1_CO1_2,CO1,Tortricidae,,New Zealand
+BISS417837_AM21-6_CO1_1,CO1,Sciaridae,0,New Zealand
+BISS476516_157264QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS457249_NBS_CO1_1,CO1,Agromyzidae,,Australia
+BISS457250_NBS_CO1_1,CO1,Agromyzidae,,Australia
+BISS329701_068317WA_J1_CO1_1,CO1,Pyralidae,,India
+BISS329701_068317WA_J4_CO1_1,CO1,Pyralidae,,India
+BISS448575_024429SA_CO1_1,CO1,Agromyzidae,,Australia
+BISS438995_201947NA_CO1_1,CO1,Agromyzidae,,Australia
+BISS438993_024432SA_CO1_1,CO1,Agromyzidae,,Australia
+BISS441553_203149NA_CO1_1,CO1,Agromyzidae,,Australia
+BISS441556_024601SA_CO1_1,CO1,Agromyzidae,,Australia
+BISS474126_123912VA_CO1_1,CO1,Noctuidae,,Fiji
+BISS473635_151105QA-1_16S_1,16S,Trogoderma,,Italy
+BISS473635_151105QA-2_16S_1,16S,Trogoderma,,Italy
+BISSNA23042550a_207300NA_CO1_1,CO1,Selenops,,Nepal
+BISS413026-a_067215WA_E13_CO1_1,CO1,Sipophilus,Sipophilus oryzae,Thailand
+BISS413026-b_067215WA_E14_CO1_1,CO1,Sipophilus,Sipophilus zeamais,Thailand
+TJP033-2__CO1_1,CO1,Kalotermitidae,,Timor-Leste
+TJP033__16S_1,16S,Kalotermitidae,,Timor-Leste
+BISS415568_122139VA_CO1_1,CO1,Camponotus,,Malaysia
+BISS281025_012403TA_CO1_1,CO1,Bostrichidae,,China
+BISS414138_140269QA-1_CO1_1,CO1,Blattodea (Isoptera),,China
+BISS397779_151844QA-1_CO1_1,CO1,Leptophloeus,,Namibia
+BISS346059_23575SA_CO1_1,CO1,Bostrichidae,,China
+BISSQA22007926e_150628QA-1_CO1_1,CO1,Rhinotermitidae,Parrhinotermes,Thailand
+BISSQA22007926e_150629QA-1_CO1_1,CO1,Termitidae,Nasutitermes,Thailand
+BISS384938_129292QA-1_CO1_1,CO1,Cerambycidae,,China
+BISS441163_151227QA-1_16S_1,16S,Bostrichidae,,China
+BISS441163_151227QA-1_CO1_1,CO1,Bostrichidae,,China
+BISS441163_151228QA-1_16S_1,16S,Cerambycidae,,China
+BISS441163_151228QA-1_CO1_1,CO1,Cerambycidae,,China
+BISS412650_AM21-10_CO1_1,CO1,Pyralidae,0,Namibia
+BISSQA22015362a_152126QA-1_CO1_1,CO1,Pseudoscorpionidae,,Indonesia
+BISS426994_149753QA-1_CO1_1,CO1,Piophila casei,,Italy
+BISS434732_110753VA_CO1_1,CO1,Crambidae,,Thailand
+BISSQA20013711a_132378QA-1_CO1_1,CO1,Lepidoptera,,New Zealand
+BISS416599_019069CA_CO1_1,CO1,Araneus/Neoscona,,China
+BISS387729_068448WA_J3_CO1_1,CO1,Drosophilidae,,Germany
+BISS387729_068316WA_J2_CO1_1,CO1,Drosophilidae,,Germany
+BISS377495_147576QA_16S_1,16S,Trogoderma,Trogoderma granarium,Italy
+BISS377477_147581QA_16S_1,16S,Trogoderma,Trogoderma granarium,Italy
+BISS469279_156038QA-1_16S_1,16S,Trogoderma variabile,Trogoderma granarium,Italy
+BISS468479_153276QA-1_16S_1,16S,Trogoderma,Trogoderma granarium,Italy
+BISS427332_121979VA_CO1_1,CO1,Aleyrodidae,,India
+BISS432394_117630VA_CO1_1,CO1,Plataspidae,,India
+BISS438437_117393VA_CO1_1,CO1,Hemiptera,,India
+BISS474899_125006VA_CO1_1,CO1,Pseudococcidae,,India
+BISS459420_118616VA_28S_1,28S,Pseudococcidae,,India
+BISS474148_125703VA_CO1_1,CO1,Curculionidae,,India
+BISS 432214_112030VA_CO1_1,CO1,Diptera,,India
+BISS456766_162330QA_CO1_1,CO1,Aedes,,Australia
+BISS449659_112700VA_CO1_1,CO1,Cerambycidae,,China
+BISS193500_081514QA-1_CO1_1,CO1,Lepidoptera,,United States
+BISSNA22035908a_200613NA_CO1_1,CO1,Trogoderma granarium,,India
+BISS443001_110660VA_16S_1,16S,Coptotermes,,China
+BISS462926_122189VA_CO1_1,CO1,Lepidoptera,,New Zealand
+BISS462926_121874VA-1_CO1_1,CO1,Lepidoptera,,New Zealand
+BISS471552_159799QA-2_CO1_1,CO1,Tortricidae,,New Zealand
+BISS471552_159799QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS395950_140297QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS397900_138543QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS399549_141692QA-1_16S_1,16S,Tortricidae,,New Zealand
+BISS399549_141692QA-1_CO1_1,CO1,Tortricidae,,New Zealand
+BISS438904_148645QA-1_CO1_1,CO1,Miridae,,New Zealand
+BISS447366_206418NA_CO1_1,CO1,Unidentified,,New Zealand
+BISS427823_148399QA_CO1_1,CO1,Hymenoptera,,New Zealand
+SurvRDNQB2162__16S_1,16S,Halyomorpha,,Timor-Leste
+DNQB2162__CO1_1,CO1,Pentatomidae,,Timor-Leste
+BISS418499_152018QA-1_CO1_1,CO1,Monacha,,Germany
+BISS413664_068251WA_H4_CO1_1,CO1,Incisitermes,,United States
+BISS413664_068251WA_H4_16S_1,16S,Incisitermes,,United States
+BISS413664_068331WA_H5_CO1_1,CO1,Coptotermes,0,United States
+BISS413664_068251WA_I1_CO1_1,CO1,Incisitermes,,United States
+BISS413664_068251WA_I2_CO1_1,CO1,Incisitermes,,United States
+BISS413664_068251WA_I3_CO1_1,CO1,Incisitermes,,United States
