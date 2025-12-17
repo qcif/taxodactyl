@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+aiofiles
+python-dotenv
+biopython
+pycountry
+pyyaml
