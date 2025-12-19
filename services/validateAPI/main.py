@@ -47,10 +47,25 @@ async def validate(
     """
     tmp_files = []
     try:
-        metadata_path = save_upload_to_tempfile(metadata_csv)
+        # Use uploaded file or edited CSV
+        if metadata_text:
+            fd, metadata_path = tempfile.mkstemp(suffix='.csv')
+            os.close(fd)
+            with open(metadata_path, 'w', encoding='utf-8') as f:
+                f.write(metadata_text)
+        elif metadata_csv:
+            metadata_path = save_upload_to_tempfile(metadata_csv)
+        else:
+            return JSONResponse(status_code=400,
+                                content={
+                                    "ok": False,
+                                    "error": "No metadata CSV provided"
+                                    }
+                                )
+        tmp_files.append(metadata_path)
+
         query_path = save_upload_to_tempfile(query_fasta)
-        tmp_files.extend([metadata_path, query_path])
-        # taxdb_path = Path(taxdb_dir) if taxdb_dir else None
+        tmp_files.append(query_path)
 
         rc, out, err = run_p0_validation(
             VALIDATION_SCRIPT,
@@ -60,7 +75,12 @@ async def validate(
             # taxdb_path
             )
         if rc == 0:
-            return {"ok": True, "message": "Validation passed"}
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+            return {
+                "ok": True,
+                "message": "Validation passed",
+                "metadata_csv": csv_text}
         parsed = parse_errors(err)
 
         if parsed.get("type") == "taxa_zero":
@@ -81,14 +101,15 @@ async def validate(
                         ),
                     },
                     "rows": rows,
-                    "metadata_csv": csv_text,  # ✅ REQUIRED for editor
+                    "metadata_csv": csv_text,
                 },
             )
 
         if parsed.get("type") == "metadata_missing_sample":
             bad_sample_id = parsed.get("sample_id")
 
-            if bad_sample_id and " " in bad_sample_id:
+            # if bad_sample_id and " " in bad_sample_id:
+            if bad_sample_id:
                 fixed_sample_id = fix_sample_id_spaces(
                     metadata_path,
                     query_path,
@@ -116,8 +137,36 @@ async def validate(
                         "metadata_csv": csv_text
                     }
 
-                # still failing → return new parsed error
                 parsed = parse_errors(err2)
+
+        # Handle taxa_of_interest == 0
+        if parsed.get("type") == "invalid_taxa_of_interest":
+            rows = find_taxa_zero_rows(metadata_path)
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed,
+                    "rows": rows,
+                    "metadata_csv": csv_text
+                }
+            )
+
+        if parsed.get("type") == "invalid_preliminary_id":
+            rows = find_invalid_pmi_brackets(metadata_path)
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed,
+                    "rows": rows,
+                    "metadata_csv": csv_text,
+                }
+            )
 
         with open(metadata_path, 'r', encoding='utf-8') as f:
             csv_text = f.read()
@@ -133,50 +182,3 @@ async def validate(
                 os.remove(p)
             except Exception:
                 pass
-
-
-@app.post('/revalidate')
-async def revalidate(
-    metadata_text: str = Form(...),
-    query_fasta: UploadFile = File(...),
-    # taxdb_dir: str | None = Form(None)
-):
-    """
-    Accepts edited metadata CSV text and original FASTA (or reupload),
-    writes temp csv and re-runs validation."""
-    tmp_files = []
-    try:
-        fd, metadata_path = tempfile.mkstemp(suffix='.csv')
-        os.close(fd)
-        with open(metadata_path, 'w', encoding='utf-8') as f:
-            f.write(metadata_text)
-        tmp_files.append(metadata_path)
-
-        query_path = save_upload_to_tempfile(query_fasta)
-        tmp_files.append(query_path)
-
-        # taxdb_path = Path(taxdb_dir) if taxdb_dir else None
-        rc, out, err = run_p0_validation(
-            VALIDATION_SCRIPT,
-            Path(metadata_path),
-            query_path,
-            TAXONKIT_DB
-            # taxdb_path
-            )
-        if rc == 0:
-            return {"ok": True, "message": "Validation passed"}
-        parsed = parse_errors(err)
-        return JSONResponse(status_code=400, content={
-            "ok": False,
-            "error": parsed})
-    finally:
-        for p in tmp_files:
-            try:
-                os.remove(p)
-            except Exception:
-                pass
-
-
-@app.get('/health')
-def health():
-    return {"ok": True}
