@@ -54,28 +54,32 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
     # common patterns
     # MetadataFormatError: sample ID "VEC_BG linen_D2_CO1_1" listed in
     # metadata CSV file is not present in FASTA sequence IDs.
-    m = re.search(
+    validate_err_msg = re.search(
         r'sample ID "(?P<sample_id>[^"]+)" '
         r'listed in metadata CSV file is not present',
         stderr)
-    if m:
+    if validate_err_msg:
         return {
             "type": "metadata_missing_sample",
             "message": stderr.strip(),
-            "sample_id": m.group('sample_id')
+            "sample_id": validate_err_msg.group('sample_id')
         }
 
-    m2 = re.search(r'Invalid sample ID "(?P<sample_id>[^"]+)"', stderr)
-    if m2:
+    validate_err_msg2 = re.search(
+        r'Invalid sample ID "(?P<sample_id>[^"]+)"',
+        stderr)
+    if validate_err_msg2:
         return {
             "type": "invalid_sample_id",
             "message": stderr.strip(),
-            "sample_id": m2.group('sample_id')
+            "sample_id": validate_err_msg2.group('sample_id')
         }
 
-    m3 = re.search(r'Invalid Taxa of Interest: "(?P<value>[^"]+)"', stderr)
-    if m3:
-        value = m3.group("value")
+    validate_err_msg3 = re.search(
+        r'Invalid Taxa of Interest: "(?P<value>[^"]+)"',
+        stderr)
+    if validate_err_msg3:
+        value = validate_err_msg3.group("value")
         # If value is "0", return structured error for UI
         return {
             "type": "invalid_taxa_of_interest",
@@ -127,13 +131,18 @@ def fix_sample_id_spaces(
     changed = False
     for rec in records:
         print("[DEBUG] rec.id:", repr(rec.id))
+        print("[DEBUG] rec.name:", repr(rec.name))
         print("[DEBUG] rec.description.strip():",
               repr(rec.description.strip()))
-        if rec.description.strip() == bad_sample_id:
-            rec.id = fixed_sample_id
-            rec.name = fixed_sample_id
-            rec.description = fixed_sample_id
+        if " " in rec.description.strip():
+            new_id = rec.description.strip().replace(" ", "_")
+            rec.id = new_id
+            rec.name = new_id
+            rec.description = new_id
             changed = True
+            print("[DEBUG] rec.id:", repr(rec.id))
+            print("[DEBUG] rec.description.strip():",
+                  repr(rec.description.strip()))
 
     if not changed:
         print(f"[WARN] No FASTA record matched '{bad_sample_id}'")

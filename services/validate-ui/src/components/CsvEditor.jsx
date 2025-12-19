@@ -1,56 +1,58 @@
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-export default function CsvEditor({ csvText, onSave, errorRows }) {
+export default function CsvEditor({ csvText, errorRows, onChange }) {
   const [rows, setRows] = useState([]);
   const [header, setHeader] = useState([]);
   const [fullRows, setFullRows] = useState([]);
 
   useEffect(() => {
-    const parsed = Papa.parse(csvText, { header: true });
+    const parsed = Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true
+    });
+
     setHeader(parsed.meta.fields || []);
     setFullRows(parsed.data);
+
     if (errorRows && errorRows.length > 0) {
       const filtered = parsed.data.filter((_, idx) =>
-        errorRows.some(r => r._row_number === idx + 2) // backend row numbers start at 2
+        errorRows.includes(idx)
       );
       setRows(filtered);
     } else {
-    setRows(parsed.data);
+      setRows(parsed.data);
     }
   }, [csvText, errorRows]);
 
   const handleCellChange = (rowIndex, column, value) => {
-    const newRows = [...rows];
-    newRows[rowIndex][column] = value;
-    setRows(newRows);
+    const updatedRows = [...rows];
+    updatedRows[rowIndex] = {
+      ...updatedRows[rowIndex],
+      [column]: value
+    };
+    setRows(updatedRows);
+
+    // merge edits back into full CSV immediately
+    const merged = [...fullRows];
+    errorRows.forEach((csvIdx, i) => {
+      merged[csvIdx] = updatedRows[i];
+    });
+
+    const newCsvText = Papa.unparse(merged);
+    onChange(newCsvText); // push edited CSV up
   };
 
-  // const handleSave = () => {
-  //   const csv = Papa.unparse(rows);
-  //   onSave(csv);
-  // };
-  const handleSave = () => {
-    let mergedRows = [...fullRows];
-    rows.forEach(row => {
-      const idx = mergedRows.findIndex(r => r._row_number === row._row_number);
-      if (idx !== -1) mergedRows[idx] = row;
-    });
-    
-    const csv = Papa.unparse({
-      fields: header,
-      data: rows
-    });
-    onSave(csv);
-  };
-
+  if (!rows.length) return null;
 
   return (
-    <div style={{ marginTop: '20px' }}>
+    <div style={{ marginTop: 20 }}>
       <table border="1" cellPadding="5">
         <thead>
           <tr>
-            {header.map(col => <th key={col}>{col}</th>)}
+            {header.map(col => (
+              <th key={col}>{col}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -59,8 +61,10 @@ export default function CsvEditor({ csvText, onSave, errorRows }) {
               {header.map(col => (
                 <td key={col}>
                   <input
-                    value={row[col]}
-                    onChange={e => handleCellChange(i, col, e.target.value)}
+                    value={row[col] ?? ''}
+                    onChange={e =>
+                      handleCellChange(i, col, e.target.value)
+                    }
                   />
                 </td>
               ))}
@@ -68,7 +72,6 @@ export default function CsvEditor({ csvText, onSave, errorRows }) {
           ))}
         </tbody>
       </table>
-      <button onClick={handleSave} style={{ marginTop: '10px' }}>Save & Revalidate</button>
     </div>
   );
 }
