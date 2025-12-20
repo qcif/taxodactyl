@@ -90,6 +90,22 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
             )
         }
 
+    validate_err_msg4 = re.search(
+        r'Invalid Preliminary Morphology ID taxon "(?P<value>[^"]+)"',
+        stderr
+    )
+    if validate_err_msg4:
+        value = validate_err_msg4.group("value")
+        return {
+            "type": "invalid_pmi_brackets",
+            "value": value,
+            "message": (
+                "The Preliminary Morphology ID is invalid,"
+                "Only letters (A–Z) and spaces are allowed. "
+                "Please fix this in the metadata CSV."
+            )
+        }
+
     # Generic FASTA errors
     if 'FASTAFormatError' in stderr:
         return {"type": "fasta_error", "message": stderr.strip()}
@@ -165,3 +181,21 @@ def find_taxa_zero_rows(metadata_csv_path: Path) -> List[int]:
                 bad_rows.append(idx)
 
     return bad_rows
+
+
+def find_invalid_pmi_brackets(metadata_csv_path: Path) -> List[int]:
+    """
+    Return indexes (0-based, data rows only) where preliminary_id
+    contains invalid characters (anything not A-z or space)
+    """
+    brackets_rows: list[int] = []
+
+    with open(metadata_csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        col_name = 'preliminary_id'
+        for idx, row in enumerate(reader):
+            value = row.get(col_name, "").strip()
+            if re.search(r'[^A-z ]', value):
+                brackets_rows.append(idx)
+
+    return brackets_rows

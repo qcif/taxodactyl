@@ -7,9 +7,10 @@ from utils import (
     run_p0_validation,
     parse_errors,
     fix_sample_id_spaces,
-    find_taxa_zero_rows)
+    find_taxa_zero_rows,
+    find_invalid_pmi_brackets
+)
 import tempfile
-# import shutil
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,9 +38,9 @@ if not TAXONKIT_DB.exists():
 
 @app.post('/validate')
 async def validate(
-    metadata_csv: UploadFile = File(...),
+    metadata_csv: UploadFile | None = File(None),
     query_fasta: UploadFile = File(...),
-    taxdb_dir: str | None = Form(None)
+    metadata_text: str | None = Form(None)
 ):
     """
     Accepts uploaded metadata CSV and FASTA,
@@ -72,7 +73,6 @@ async def validate(
             metadata_path,
             query_path,
             TAXONKIT_DB
-            # taxdb_path
             )
         if rc == 0:
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -154,7 +154,7 @@ async def validate(
                 }
             )
 
-        if parsed.get("type") == "invalid_preliminary_id":
+        if parsed.get("type") == "invalid_pmi_brackets":
             rows = find_invalid_pmi_brackets(metadata_path)
             with open(metadata_path, "r", encoding="utf-8") as f:
                 csv_text = f.read()
