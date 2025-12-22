@@ -8,6 +8,11 @@ from typing import List, Tuple, Dict, Any
 import csv
 from Bio import SeqIO
 
+sys.path.append(
+    str(Path(__file__).resolve().parents[2] / "scripts")
+)
+from p0_validation import validate_inputs
+
 
 def save_upload_to_tempfile(upload_file) -> Path:
     # upload_file is Starlette UploadFile
@@ -31,18 +36,24 @@ def run_p0_validation(
     and return (rc, stdout, stderr).
     script_path: path to scripts/p0_validation.py
     """
-    cmd = [sys.executable, str(script_path),
-           "--metadata-csv", str(metadata_csv),
-           "--query-fasta", str(query_fasta)]
-    if taxdb_dir:
-        cmd += ["--taxdb-dir", str(taxdb_dir)]
-    cmd += extra_args
-    proc = subprocess.Popen(cmd,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            text=True)
-    out, err = proc.communicate()
-    return proc.returncode, out, err
+    # cmd = [sys.executable, str(script_path),
+    #        "--metadata-csv", str(metadata_csv),
+    #        "--query-fasta", str(query_fasta)]
+    # if taxdb_dir:
+    #     cmd += ["--taxdb-dir", str(taxdb_dir)]
+    # cmd += extra_args
+    # proc = subprocess.Popen(cmd,
+    #                         stdout=subprocess.PIPE,
+    #                         stderr=subprocess.PIPE,
+    #                         text=True)
+    # out, err = proc.communicate()
+    # return proc.returncode, out, err
+
+    return validate_inputs(
+        metadata_csv=metadata_csv,
+        query_fasta=query_fasta,
+        ignore_seq_count=True,
+    )
 
 
 def parse_errors(stderr: str) -> Dict[str, Any]:

@@ -97,7 +97,7 @@ def _parse_args():
     return parser.parse_args()
 
 
-def _validate_fasta(path: Path) -> list[str]:
+def _validate_fasta(path: Path, ignore_seq_count=False) -> list[str]:
     """Assert that input FASTA file is valid.
 
     - Must be nucleotide (ambiguous IUPAC DNA)
@@ -132,7 +132,10 @@ def _validate_fasta(path: Path) -> list[str]:
                 raise FASTAFormatError(
                     f'invalid DNA in sequence #{count} {seq.id}: {exc}'
                 ) from exc
-            if count > config.inputs.fasta_max_sequences:
+            if (
+                count > config.inputs.fasta_max_sequences
+                and not ignore_seq_count
+            ):
                 raise FASTAFormatError(
                     f"too many query sequences provided. A maximum of"
                     f" {config.inputs.fasta_max_sequences} sequences is"
