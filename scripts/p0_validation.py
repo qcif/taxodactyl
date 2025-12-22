@@ -38,6 +38,27 @@ def main():
     _validate_metadata(args.metadata_csv, ids, bold=args.bold)
 
 
+def validate_inputs(
+    metadata_csv: Path,
+    query_fasta: Path,
+    bold: bool = False,
+    ignore_seq_count: bool = False,
+):
+    """Validate user inputs provided programatically."""
+    args = argparse.Namespace(
+        metadata_csv=metadata_csv,
+        query_fasta=query_fasta,
+        bold=bold,
+    )
+    config.update_from_args(args)
+    ids = _validate_fasta(args.query_fasta, ignore_seq_count=ignore_seq_count)
+    _validate_metadata(
+        args.metadata_csv,
+        ids,
+        bold=args.bold,
+    )
+
+
 def _parse_args():
     parser = argparse.ArgumentParser(
         description="Validate user input."
@@ -88,7 +109,7 @@ def _parse_args():
     return parser.parse_args()
 
 
-def _validate_fasta(path: Path) -> list[str]:
+def _validate_fasta(path: Path, ignore_seq_count=False) -> list[str]:
     """Assert that input FASTA file is valid.
 
     - Must be nucleotide (ambiguous IUPAC DNA)
@@ -129,7 +150,10 @@ def _validate_fasta(path: Path) -> list[str]:
                 raise FASTAFormatError(
                     f'invalid DNA in sequence #{count} {seq.id}: {exc}'
                 ) from exc
-            if count > config.inputs.fasta_max_sequences:
+            if (
+                count > config.inputs.fasta_max_sequences
+                and not ignore_seq_count
+            ):
                 raise FASTAFormatError(
                     f"too many query sequences provided. A maximum of"
                     f" {config.inputs.fasta_max_sequences} sequences is"
@@ -153,7 +177,11 @@ def _validate_fasta(path: Path) -> list[str]:
     return seq_ids
 
 
-def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
+def _validate_metadata(
+    path: Path,
+    seq_ids: list[str],
+    bold=False,
+):
     """Assert that input metadata CSV is valid.
 
     Each row['sample_id'] must match a sequence ID
