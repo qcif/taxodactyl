@@ -3,12 +3,13 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from utils import (
+    find_invalid_country_rows,
     save_upload_to_tempfile,
     run_p0_validation,
     parse_errors,
     fix_sample_id_spaces,
     find_taxa_zero_rows,
-    find_invalid_pmi_brackets
+    find_invalid_pmi
 )
 import tempfile
 import os
@@ -50,9 +51,10 @@ async def validate(
     try:
         # Use uploaded file or edited CSV
         if metadata_text:
-            fd, metadata_path = tempfile.mkstemp(suffix='.csv')
+            fd, metadata_path_str = tempfile.mkstemp(suffix='.csv')
             os.close(fd)
-            with open(metadata_path, 'w', encoding='utf-8') as f:
+            metadata_path = Path(metadata_path_str)
+            with metadata_path.open('w', encoding='utf-8') as f:
                 f.write(metadata_text)
         elif metadata_csv:
             metadata_path = save_upload_to_tempfile(metadata_csv)
@@ -139,7 +141,6 @@ async def validate(
 
                 parsed = parse_errors(err2)
 
-        # Handle taxa_of_interest == 0
         if parsed.get("type") == "invalid_taxa_of_interest":
             rows = find_taxa_zero_rows(metadata_path)
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -154,8 +155,24 @@ async def validate(
                 }
             )
 
-        if parsed.get("type") == "invalid_pmi_brackets":
-            rows = find_invalid_pmi_brackets(metadata_path)
+        if parsed.get("type") == "invalid_pmi":
+            rows = find_invalid_pmi(metadata_path)
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed,
+                    "rows": rows,
+                    "metadata_csv": csv_text,
+                }
+            )
+
+        if parsed.get("type") == "invalid_country":
+            rows = find_invalid_country_rows(
+                metadata_path,
+                parsed.get("value"))
             with open(metadata_path, "r", encoding="utf-8") as f:
                 csv_text = f.read()
             return JSONResponse(

@@ -1,5 +1,4 @@
 import tempfile
-import subprocess
 import sys
 import os
 import re
@@ -36,35 +35,22 @@ def run_p0_validation(
     and return (rc, stdout, stderr).
     script_path: path to scripts/p0_validation.py
     """
-    # cmd = [sys.executable, str(script_path),
-    #        "--metadata-csv", str(metadata_csv),
-    #        "--query-fasta", str(query_fasta)]
-    # if taxdb_dir:
-    #     cmd += ["--taxdb-dir", str(taxdb_dir)]
-    # cmd += extra_args
-    # proc = subprocess.Popen(cmd,
-    #                         stdout=subprocess.PIPE,
-    #                         stderr=subprocess.PIPE,
-    #                         text=True)
-    # out, err = proc.communicate()
-    # return proc.returncode, out, err
-
-    return validate_inputs(
-        metadata_csv=metadata_csv,
-        query_fasta=query_fasta,
-        ignore_seq_count=True,
-    )
+    try:
+        validate_inputs(
+            metadata_csv=metadata_csv,
+            query_fasta=query_fasta,
+            ignore_seq_count=True,
+        )
+        return 0, "Validation passed", ""
+    except Exception as exc:
+        # Capture exception message in stderr
+        return 1, "", str(exc)
 
 
 def parse_errors(stderr: str) -> Dict[str, Any]:
     """Try to parse known errors emitted by p0_validation
     and return structured info.
-    Returns dict with keys: `type` (e.g. 'metadata', 'fasta'), `message`,
-    and optional `sample_id` or `row`.
     """
-    # common patterns
-    # MetadataFormatError: sample ID "VEC_BG linen_D2_CO1_1" listed in
-    # metadata CSV file is not present in FASTA sequence IDs.
     validate_err_msg = re.search(
         r'sample ID "(?P<sample_id>[^"]+)" '
         r'listed in metadata CSV file is not present',
@@ -91,7 +77,6 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
         stderr)
     if validate_err_msg3:
         value = validate_err_msg3.group("value")
-        # If value is "0", return structured error for UI
         return {
             "type": "invalid_taxa_of_interest",
             "value": value,
@@ -108,13 +93,37 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
     if validate_err_msg4:
         value = validate_err_msg4.group("value")
         return {
-            "type": "invalid_pmi_brackets",
+            "type": "invalid_pmi",
             "value": value,
             "message": (
                 "The Preliminary Morphology ID is invalid,"
                 "Only letters (A–Z) and spaces are allowed. "
                 "Please fix this in the metadata CSV."
             )
+        }
+
+    validate_err_msg5 = re.search(
+        r'The country provided could not be recognised: "(?P<value>[^"]+)"',
+        stderr
+    )
+    if validate_err_msg5:
+        value = validate_err_msg5.group("value")
+        suggestions = {
+            "turkey": 'Use ISO alpha-2 code "TR".',
+            "türkiye": 'Use ISO alpha-2 code "TR".',
+            "hawaii": 'Hawaii is a US state. Please use "US".',
+        }
+        hint = suggestions.get(value.lower())
+        message = (
+            f'Country "{value}" is not recognised. '
+            + (hint if hint else
+                'Please replace it with a valid country name '
+                'or ISO alpha-2 code.')
+        )
+        return {
+            "type": "invalid_country",
+            "value": value,
+            "message": message
         }
 
     # Generic FASTA errors
@@ -143,8 +152,9 @@ def fix_sample_id_spaces(
 
     changed = False
     for row in rows:
-        if row.get("sample_id") == bad_sample_id:
-            row["sample_id"] = fixed_sample_id
+        space_in_id = row.get("sample_id", "")
+        if " " in space_in_id:
+            row["sample_id"] = space_in_id.replace(" ", "_")
             changed = True
 
     if changed:
@@ -194,7 +204,7 @@ def find_taxa_zero_rows(metadata_csv_path: Path) -> List[int]:
     return bad_rows
 
 
-def find_invalid_pmi_brackets(metadata_csv_path: Path) -> List[int]:
+def find_invalid_pmi(metadata_csv_path: Path) -> List[int]:
     """
     Return indexes (0-based, data rows only) where preliminary_id
     contains invalid characters (anything not A-z or space)
@@ -210,3 +220,22 @@ def find_invalid_pmi_brackets(metadata_csv_path: Path) -> List[int]:
                 brackets_rows.append(idx)
 
     return brackets_rows
+
+
+def find_invalid_country_rows(
+    metadata_csv_path: Path,
+    bad_value: str
+) -> List[int]:
+    """
+    Return indexes (0-based, data rows only) where country == bad_value
+    """
+    bad_rows: list[int] = []
+
+    with open(metadata_csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for idx, row in enumerate(reader):
+            value = (row.get("country") or "").strip()
+            if value.lower() == bad_value.lower():
+                bad_rows.append(idx)
+
+    return bad_rows
