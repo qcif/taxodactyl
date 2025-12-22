@@ -26,7 +26,7 @@ POOL_ID=taxodactyl
 DEDICATED_NODES=0
 NODE_AGENT_SKU="batch.node.ubuntu 24.04"
 IMAGE_TAG=canonical:ubuntu-24_04-lts:server
-VM_SKU=Standard_L4s
+VM_SKU=Standard_L8as_v3
 
 az account set --subscription "$SUBSCRIPTION"
 az group create -n $RESOURCE_GROUP -l $REGION
@@ -94,7 +94,7 @@ Azure portal](https://learn.microsoft.com/en-us/azure/quotas/quickstart-increase
   - "Pools per Batch account"
 1. Enter a new (reasonable) limit for each of the above (don't put 100 unless you want to pay for that!)
 1. Save and continue
-1. Wait for your request to be approved?
+1. Wait for your request to be approved? (mine was eventually approved after some deliberation on what SKUs are actually available in Australia East region)
 
 ## Managing pools
 
@@ -121,22 +121,23 @@ az batch pool create \
   --node-agent-sku-id "$NODE_AGENT_SKU" \
   --image $IMAGE_TAG
 
+# Autoscale the nodes to spawn one only when a job is in the queue (note this is NOT the same as autopool)
 az batch pool autoscale enable \
   --account-name $BATCH_ACCOUNT \
   --account-endpoint $ACCOUNT_ENDPOINT \
-  --auto-scale-formula "
-    $pendingTasks = $PendingTasks.GetSample(1);
-    $TargetDedicatedNodes = ($pendingTasks > 0) ? 1 : 0;" \
+  --pool-id $POOL_ID \
+  --auto-scale-formula \
+    '$TargetDedicatedNodes = (max($PendingTasks.GetSample(TimeInterval_Minute * 5)) > 0) ? 1 : 0;' \
   --auto-scale-evaluation-interval PT5M
 ```
+
+(Read about the [autoscale formula](https://learn.microsoft.com/en-us/azure/batch/batch-automatic-scaling))
 
 To list available VM SKUs:
 
 ```sh
 az batch location list-skus --location $REGION
 ```
-
-(Read about the [autoscale formula](https://learn.microsoft.com/en-us/azure/batch/batch-automatic-scaling))
 
 And now configure Nextflow to submit jobs to that pool:
 
@@ -196,6 +197,7 @@ cost increase).
 To resize the batch pool in future (e.g. to change the number of persistent nodes):
 
 ```sh
+# To terminate all nodes, just set the target to zero
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node count>
 ```
 
@@ -205,6 +207,30 @@ To re-create the node (e.g. to force config update):
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node count>
 ```
+
+To see what nodes are currently active in the pool:
+
+```sh
+az batch pool show \
+  --account-name "$BATCH_ACCOUNT" \
+  --account-endpoint "$ACCOUNT_ENDPOINT" \
+  --pool-id "$POOL_ID" \
+  --query "{
+    dedicated: currentDedicatedNodes,
+    lowPriority: currentLowPriorityNodes,
+    resizing: resizeOperationStatus
+  }"
+```
+
+If everything goes horribly wrong, and you want to delete the pool (and any nodes that are consuming $$$):
+
+```sh
+az batch pool delete \
+  --account-name "$BATCH_ACCOUNT" \
+  --account-endpoint "$ACCOUNT_ENDPOINT" \
+  --pool-id "$POOL_ID"
+```
+
 
 ## Uploading reference data
 
