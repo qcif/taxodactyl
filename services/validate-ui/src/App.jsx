@@ -58,20 +58,6 @@ function App() {
     }
   };
 
-  const downloadFile = (content, filename, mime) => {
-    const blob = new Blob([content], { type: mime });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   const splitFasta = (fastaText, seqsPerFile = 150) => {
     const records = fastaText
       .split(/^>/m)
@@ -86,8 +72,7 @@ function App() {
     return chunks;
   };
 
-
-  const downloadCsvAsZip = async (csvText, rowsPerFile = MAX_SEQ_LIMIT) => {
+  const downloadCsvFastaAsZip = async (csvText, fastaText, rowsPerFile = MAX_SEQ_LIMIT) => {
     const parsed = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true
@@ -95,17 +80,14 @@ function App() {
 
     const header = parsed.meta.fields;
     const rows = parsed.data;
-
     const zip = new JSZip();
 
     for (let i = 0; i < rows.length; i += rowsPerFile) {
       const chunk = rows.slice(i, i + rowsPerFile);
-
       const csvChunk = Papa.unparse({
         fields: header,
         data: chunk
       });
-
       const fileIndex = Math.floor(i / rowsPerFile) + 1;
       zip.file(
         `validated_metadata_part${fileIndex}.csv`,
@@ -114,7 +96,6 @@ function App() {
     }
 
     const fastaChunks = splitFasta(fastaText, rowsPerFile);
-
     fastaChunks.forEach((chunk, i) => {
       zip.file(
         `query_part${i + 1}.fasta`,
@@ -176,7 +157,7 @@ function App() {
           )}
           
           <button
-            onClick={() => downloadCsvAsZip(csvText, 150)}
+            onClick={() => downloadCsvFastaAsZip(csvText, fastaText, 150)}
           >
             Download validated CSVs and FASTAs (ZIP)
           </button>
