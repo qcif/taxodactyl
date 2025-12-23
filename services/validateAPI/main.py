@@ -79,10 +79,14 @@ async def validate(
         if rc == 0:
             with open(metadata_path, "r", encoding="utf-8") as f:
                 csv_text = f.read()
+            with open(query_path, "r", encoding="utf-8") as f:
+                fasta_text = f.read()
             return {
                 "ok": True,
                 "message": "Validation passed",
-                "metadata_csv": csv_text}
+                "metadata_csv": csv_text,
+                "query_fasta": fasta_text
+            }
         parsed = parse_errors(err)
 
         if parsed.get("type") == "taxa_zero":
@@ -129,14 +133,16 @@ async def validate(
                 if rc2 == 0:
                     with open(metadata_path, "r", encoding="utf-8") as f:
                         csv_text = f.read()
-
+                    with open(query_path, "r", encoding="utf-8") as f:
+                        fasta_text = f.read()
                     return {
                         "ok": True,
                         "message": (
                             f'Validation passed. Auto-fixed sample_id: '
                             f'"{bad_sample_id}" → "{fixed_sample_id}"'
                         ),
-                        "metadata_csv": csv_text
+                        "metadata_csv": csv_text,
+                        "query_fasta": fasta_text
                     }
 
                 parsed = parse_errors(err2)
