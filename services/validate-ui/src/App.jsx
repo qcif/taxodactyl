@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import JSZip from "jszip";
+import Papa from "papaparse";
 import CsvEditor from './components/CsvEditor';
 
 function App() {
@@ -11,6 +13,7 @@ function App() {
   const [validated, setValidated] = useState(false);
   const [errorRows, setErrorRows] = useState([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  const MAX_SEQ_LIMIT = 149
   
   const handleValidate = async () => {
     if (!fastaFile) {
@@ -69,6 +72,70 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  const splitFasta = (fastaText, seqsPerFile = 150) => {
+    const records = fastaText
+      .split(/^>/m)
+      .filter(r => r.trim() !== "")
+      .map(r => ">" + r.trim());
+
+    const chunks = [];
+    for (let i = 0; i < records.length; i += seqsPerFile) {
+      chunks.push(records.slice(i, i + seqsPerFile));
+    }
+
+    return chunks;
+  };
+
+
+  const downloadCsvAsZip = async (csvText, rowsPerFile = MAX_SEQ_LIMIT) => {
+    const parsed = Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true
+    });
+
+    const header = parsed.meta.fields;
+    const rows = parsed.data;
+
+    const zip = new JSZip();
+
+    for (let i = 0; i < rows.length; i += rowsPerFile) {
+      const chunk = rows.slice(i, i + rowsPerFile);
+
+      const csvChunk = Papa.unparse({
+        fields: header,
+        data: chunk
+      });
+
+      const fileIndex = Math.floor(i / rowsPerFile) + 1;
+      zip.file(
+        `validated_metadata_part${fileIndex}.csv`,
+        csvChunk
+      );
+    }
+
+    const fastaChunks = splitFasta(fastaText, rowsPerFile);
+
+    fastaChunks.forEach((chunk, i) => {
+      zip.file(
+        `query_part${i + 1}.fasta`,
+        chunk.join("\n")
+      );
+    });
+
+
+    const blob = await zip.generateAsync({ type: "blob" });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "validated_taxon_files.zip";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+
   return (
     <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
       <h1>TAXON p0 Validator</h1>
@@ -89,40 +156,29 @@ function App() {
         <div style={{ marginTop: '20px' }}>
           <div style={{ color: 'green', marginTop: '20px' }}>
           ✔ Validation Passed
-        </div>
-
-        {showDownloadWarning && (
-          <div
-            style={{
-              background: "#fff3cd",
-              color: "#856404",
-              padding: "10px",
-              border: "1px solid #ffeeba",
-              borderRadius: "4px",
-              marginBottom: "10px"
-            }}
-          >
-            ⚠ <strong>Important:</strong> The uploaded files were 
-            corrected during validation. Please download and use the validated CSV
-            and FASTA files for future use.
           </div>
-        )}
-        
-        <button
-            onClick={() =>
-              downloadFile(csvText, "validated_metadata.csv", "text/csv")
-            }
-          >
-            Download validated CSV
-          </button>
 
+          {showDownloadWarning && (
+            <div
+              style={{
+                background: "#fff3cd",
+                color: "#856404",
+                padding: "10px",
+                border: "1px solid #ffeeba",
+                borderRadius: "4px",
+                marginBottom: "10px"
+              }}
+            >
+              ⚠ <strong>Important:</strong> The uploaded files were 
+              corrected during validation. Please download and use the validated CSV
+              and FASTA files for future use.
+            </div>
+          )}
+          
           <button
-            style={{ marginLeft: 10 }}
-            onClick={() =>
-              downloadFile(fastaText, "validated_query.fasta", "text/plain")
-            }
+            onClick={() => downloadCsvAsZip(csvText, 150)}
           >
-            Download validated FASTA
+            Download validated CSVs and FASTAs (ZIP)
           </button>
         </div>
       )}
