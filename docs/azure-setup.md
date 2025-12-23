@@ -12,6 +12,8 @@ watch -n 30 'az provider show -n Microsoft.Storage --subscription "DAFF Biosecur
 ## Resources
 
 ```sh
+# Add these vars to a .env.azure file for quick reference like:
+# $ set -a && source .env && set +a
 SUBSCRIPTION="DAFF Biosecurity"
 REGION=australiaeast
 RESOURCE_GROUP=daff-biosecurity
@@ -24,9 +26,10 @@ BATCH_ACCOUNT=daffbatch
 ACCOUNT_ENDPOINT=daffbatch.australiaeast.batch.azure.com
 POOL_ID=taxodactyl
 DEDICATED_NODES=0
-NODE_AGENT_SKU="batch.node.ubuntu 24.04"
-IMAGE_TAG=canonical:ubuntu-24_04-lts:server
+NODE_AGENT_SKU="batch.node.ubuntu 20.04"
+IMAGE_TAG=canonical:ubuntu-20_04-lts:server
 VM_SKU=Standard_L8as_v3
+VM_CPUS=8
 
 az account set --subscription "$SUBSCRIPTION"
 az group create -n $RESOURCE_GROUP -l $REGION
@@ -76,7 +79,7 @@ az batch account keys list -g daff-biosecurity -n daffbatch
 Now, finally set a reasonable resource quota on the batch account. New
 subscriptions start with zero pools in the Batch account quota, as this is
 considered a high risk resource by Azure (I guess you can run up a huge bill if
-you aren't careful).
+you aren't careful). There will also probably be zero quota for the VM SKU that you want to use (probably an L series).
 I couldn't find a reliable way to do this over the CLI so had to
 [do this manually on the
 Azure portal](https://learn.microsoft.com/en-us/azure/quotas/quickstart-increase-quota-portal).
@@ -96,7 +99,14 @@ Azure portal](https://learn.microsoft.com/en-us/azure/quotas/quickstart-increase
 1. Save and continue
 1. Wait for your request to be approved? (mine was eventually approved after some deliberation on what SKUs are actually available in Australia East region)
 
+>[!NOTE]
+>The VM series that I decided to use was (confusingly) not listed in the quota request form. I had to ask for it in a support ticket, after some deliberating over what SKUs are currently available in my region.
+
 ## Managing pools
+
+For development, we can create a pool and submit jobs with a "keep warm" option
+to ensure that nodes do not have to be re-staged between job/process
+submissions.
 
 >[!NOTE]
 >Since our workflow requires reference data, it's important that we don't use
@@ -104,13 +114,41 @@ Azure portal](https://learn.microsoft.com/en-us/azure/quotas/quickstart-increase
 >data for each node spawn event. If Nextflow creates its own pool, there won't
 >be any reference data there!
 
-For development, we can create a pool and submit jobs with a "keep warm" option
-to ensure that nodes do not have to be re-staged between job/process
-submissions.
-
 [az pool docs](https://learn.microsoft.com/en-us/cli/azure/batch/pool?view=azure-cli-latest)
 
-Create a pool for development:
+Let's start by creating a pool for development. This first requires a JSON file to be written which defines the pool resources. We have to use Ubuntu 20.04 for Docker container compatibility:
+
+```json
+// pool.json
+
+{
+  "id": "taxodactyl",
+  "vmSize": "standard_l8as_v3",
+  "taskSchedulingPolicy": {
+    "nodeFillType": "spread"
+  },
+  "taskSlotsPerNode": 8,
+  "targetDedicatedNodes": 0,
+  "virtualMachineConfiguration": {
+    "imageReference": {
+      "publisher": "microsoft-azure-batch",
+      "offer": "ubuntu-server-container",
+      "sku": "20-04-lts"
+    },
+    "nodeAgentSKUId": "batch.node.ubuntu 20.04",
+    "containerConfiguration": {
+      "type": "dockerCompatible",
+      "containerImageNames": [
+        "docker.io/library/ubuntu:20.04"
+      ]
+    }
+  }
+}
+```
+>[!NOTE]
+>N.B. I haven't yet discovered whether Nextflow's containers will also need to be added to `containerImageNames`. I imagine they probably will - for example when running BLAST, an `ncbi/blast` image will replace the `ubuntu:20.04` image used for testing above.
+
+Now we can use this config to create a pool:
 
 ```sh
 az batch pool create \
@@ -119,15 +157,20 @@ az batch pool create \
   --id $POOL_ID \
   --vm-size $VM_SKU \
   --node-agent-sku-id "$NODE_AGENT_SKU" \
-  --image $IMAGE_TAG
+  --image $IMAGE_TAG \
+  --json-file deployment/azure/pool.json
 
 # Autoscale the nodes to spawn one only when a job is in the queue (note this is NOT the same as autopool)
 az batch pool autoscale enable \
   --account-name $BATCH_ACCOUNT \
   --account-endpoint $ACCOUNT_ENDPOINT \
   --pool-id $POOL_ID \
-  --auto-scale-formula \
-    '$TargetDedicatedNodes = (max($PendingTasks.GetSample(TimeInterval_Minute * 5)) > 0) ? 1 : 0;' \
+  --auto-scale-formula '
+    initialNodes=0;
+    maxNodes=1;
+    demand =
+      avg($ActiveTasks.GetSample(TimeInterval_Minute * 1));
+    $TargetDedicatedNodes = min(max(demand, initialNodes), maxNodes);' \
   --auto-scale-evaluation-interval PT5M
 ```
 
@@ -137,6 +180,24 @@ To list available VM SKUs:
 
 ```sh
 az batch location list-skus --location $REGION
+```
+
+To show provisioned vmsize/slots for pools in the batch account:
+
+```sh
+az batch pool list \
+  --account-name "$BATCH_ACCOUNT" \
+  --account-endpoint "$ACCOUNT_ENDPOINT" \
+  --query "[].{id: id, vmSize: vmSize, taskSlotsPerNode: taskSlotsPerNode}"
+```
+
+Or to see running tasks (including queued):
+
+```sh
+az batch pool list \
+  --account-name "$BATCH_ACCOUNT" \
+  --account-endpoint "$ACCOUNT_ENDPOINT" \
+  --query "[].{id: id, state: state, vmSize: vmSize, runningTasks: runningTasksCount, startTime: nodeAgentInfo.lastUpdateTime}"
 ```
 
 And now configure Nextflow to submit jobs to that pool:
@@ -280,7 +341,7 @@ az storage blob upload \
 Now set the start task for the pool to use this script. We need to define the start task in a JSON file:
 
 ```json
-// pool.json
+// Add this to pool.json
 
 {
   "startTask": {
@@ -288,7 +349,7 @@ Now set the start task for the pool to use this script. We need to define the st
     "resourceFiles": [
       {
         "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh",
-        "filePath": "start.sh"
+        "filePath": "setup.sh"
       }
     ],
     "waitForSuccess": true,
@@ -301,6 +362,9 @@ Now set the start task for the pool to use this script. We need to define the st
   }
 }
 ```
+
+>[!NOTE]
+>Any config that we apply with `--json-file` overwrites the existing config. Make sure that you append this to your existing config if you already have a pool.json file for this pool.
 
 And then update the pool with this config:
 

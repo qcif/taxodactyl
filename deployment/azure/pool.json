@@ -1,18 +1,23 @@
 {
-  "startTask": {
-    "commandLine": "/bin/bash setup.sh",
-    "resourceFiles": [
-      {
-        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh",
-        "filePath": "start.sh"
-      }
-    ],
-    "waitForSuccess": true,
-    "userIdentity": {
-      "autoUser": {
-        "scope": "pool",
-        "elevationLevel": "admin"
-      }
+  "id": "taxodactyl",
+  "vmSize": "standard_l8as_v3",
+  "taskSchedulingPolicy": {
+    "nodeFillType": "spread"
+  },
+  "taskSlotsPerNode": 8,
+  "targetDedicatedNodes": 0,
+  "virtualMachineConfiguration": {
+    "imageReference": {
+      "publisher": "microsoft-azure-batch",
+      "offer": "ubuntu-server-container",
+      "sku": "20-04-lts"
+    },
+    "nodeAgentSKUId": "batch.node.ubuntu 20.04",
+    "containerConfiguration": {
+      "type": "dockerCompatible",
+      "containerImageNames": [
+        "docker.io/library/ubuntu:20.04"
+      ]
     }
   }
 }
