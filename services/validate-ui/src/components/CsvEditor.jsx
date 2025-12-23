@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 
-export default function CsvEditor({ csvText, errorRows, onChange }) {
+export default function CsvEditor({ csvText, errorRows, onChange, highlightColumns = [] }) {
   const [rows, setRows] = useState([]);
   const [header, setHeader] = useState([]);
   const [fullRows, setFullRows] = useState([]);
@@ -59,7 +59,7 @@ export default function CsvEditor({ csvText, errorRows, onChange }) {
           {rows.map((row, i) => (
             <tr key={i}>
               {header.map(col => (
-                <td key={col}>
+                <td key={col} style={{ backgroundColor: highlightColumns.includes(col) ? '#fff3cd' : 'inherit' }}> 
                   <input
                     value={row[col] ?? ''}
                     onChange={e =>
