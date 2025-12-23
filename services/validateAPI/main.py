@@ -13,8 +13,6 @@ from utils import (
 )
 import tempfile
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 
 app = FastAPI(title="TAXON p0 validator API")
@@ -28,13 +26,6 @@ app.add_middleware(
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 VALIDATION_SCRIPT = REPO_ROOT / 'scripts' / 'p0_validation.py'
-TAXONKIT_DB = os.getenv("TAXONKIT_DB")
-if not TAXONKIT_DB:
-    raise RuntimeError("TAXONKIT_DB environment variable not set")
-
-TAXONKIT_DB = Path(TAXONKIT_DB)
-if not TAXONKIT_DB.exists():
-    raise RuntimeError(f"TAXONKIT_DB does not exist: {TAXONKIT_DB}")
 
 
 @app.post('/validate')
@@ -73,8 +64,7 @@ async def validate(
         rc, out, err = run_p0_validation(
             VALIDATION_SCRIPT,
             metadata_path,
-            query_path,
-            TAXONKIT_DB
+            query_path
             )
         if rc == 0:
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -88,28 +78,6 @@ async def validate(
                 "query_fasta": fasta_text
             }
         parsed = parse_errors(err)
-
-        if parsed.get("type") == "taxa_zero":
-            rows = find_taxa_zero_rows(metadata_path)
-
-            with open(metadata_path, "r", encoding="utf-8") as f:
-                csv_text = f.read()
-
-            return JSONResponse(
-                status_code=400,
-                content={
-                    "ok": False,
-                    "error": {
-                        "type": "taxa_zero",
-                        "message": (
-                            "Invalid value '0' found in "
-                            "taxa_of_interest column"
-                        ),
-                    },
-                    "rows": rows,
-                    "metadata_csv": csv_text,
-                },
-            )
 
         if parsed.get("type") == "metadata_missing_sample":
             bad_sample_id = parsed.get("sample_id")
@@ -126,8 +94,7 @@ async def validate(
                 rc2, out2, err2 = run_p0_validation(
                     VALIDATION_SCRIPT,
                     metadata_path,
-                    query_path,
-                    TAXONKIT_DB
+                    query_path
                 )
 
                 if rc2 == 0:

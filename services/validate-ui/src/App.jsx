@@ -13,6 +13,7 @@ function App() {
   const [validated, setValidated] = useState(false);
   const [errorRows, setErrorRows] = useState([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  const [highlightColumns, setHighlightColumns] = useState([]);
   const MAX_SEQ_LIMIT = 149
   
   const handleValidate = async () => {
@@ -23,9 +24,9 @@ function App() {
 
     const formData = new FormData();
     if (editedCsvText) {
-      formData.append("metadata_text", editedCsvText); // edited CSV
+      formData.append("metadata_text", editedCsvText);
     } else if (metadataFile) {
-      formData.append("metadata_csv", metadataFile); // initial upload
+      formData.append("metadata_csv", metadataFile);
     } else {
       alert("Please select a CSV file");
       return;
@@ -47,6 +48,7 @@ function App() {
       setCsvText(data.metadata_csv || "");
       setFastaText(data.query_fasta || "");
       setErrorRows([]);
+      setHighlightColumns([]);
       setShowDownloadWarning(
         data.message?.toLowerCase().includes("auto-fixed")
   );
@@ -55,6 +57,16 @@ function App() {
       setCsvText(data.metadata_csv || "");
       setEditedCsvText(data.metadata_csv);
       setErrorRows(data.rows || []);
+      // Highlight column based on error type
+      if (data.error?.type === "invalid_taxa_of_interest") {
+        setHighlightColumns(["taxa_of_interest"]);
+      } else if (data.error?.type === "invalid_pmi") {
+        setHighlightColumns(["preliminary_id"]);
+      } else if (data.error?.type === "invalid_country") {
+        setHighlightColumns(["country"]);
+      } else {
+        setHighlightColumns([]); 
+      }
     }
   };
 
@@ -73,6 +85,8 @@ function App() {
   };
 
   const downloadCsvFastaAsZip = async (csvText, fastaText, rowsPerFile = MAX_SEQ_LIMIT) => {
+    
+    // Split CSV files and zip
     const parsed = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true
@@ -95,6 +109,7 @@ function App() {
       );
     }
 
+    // Split FASTA file and zip
     const fastaChunks = splitFasta(fastaText, rowsPerFile);
     fastaChunks.forEach((chunk, i) => {
       zip.file(
@@ -173,6 +188,7 @@ function App() {
             onSave={handleValidate} 
             errorRows={errorRows}
             onChange={setEditedCsvText}
+            highlightColumns={highlightColumns}
           />
         </div>
       )}
