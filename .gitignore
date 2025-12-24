@@ -12,3 +12,6 @@ null/
 vault_password.txt
 .env
 .env.*
+node_modules/
+venv/
+__pycache__/
