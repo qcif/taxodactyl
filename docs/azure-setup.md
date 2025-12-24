@@ -146,6 +146,9 @@ Let's start by creating a pool for development. This first requires a JSON file 
 }
 ```
 >[!NOTE]
+>Some of the properties above (vmSize, targetDedicatedNodes) can only be provided at pool create, not when updating a pool with pool set. If these need to be modified, you'll need to delete and re-create the pool.
+
+>[!NOTE]
 >N.B. I haven't yet discovered whether Nextflow's containers will also need to be added to `containerImageNames`. I imagine they probably will - for example when running BLAST, an `ncbi/blast` image will replace the `ubuntu:20.04` image used for testing above.
 
 Now we can use this config to create a pool:
@@ -338,6 +341,21 @@ az storage blob upload \
   --name setup.sh
 ```
 
+Unless it's a public access storage container, we also need to create a SAS token for this file to be accessed by other resources:
+
+```sh
+az storage blob generate-sas \
+  --account-name $STORAGE_ACCOUNT_STD \
+  --container-name $STORAGE_CONTAINER_SCRIPTS \
+  --name setup.sh \
+  --permissions r \
+  --expiry $(date -u -d "+1 year" '+%Y-%m-%dT%H:%MZ') \
+  --https-only \
+  --output tsv
+
+# Copy this token and use it in the next section
+```
+
 Now set the start task for the pool to use this script. We need to define the start task in a JSON file:
 
 ```json
@@ -348,7 +366,7 @@ Now set the start task for the pool to use this script. We need to define the st
     "commandLine": "/bin/bash setup.sh",
     "resourceFiles": [
       {
-        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh",
+        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh?<SASS_TOKEN>",
         "filePath": "setup.sh"
       }
     ],
