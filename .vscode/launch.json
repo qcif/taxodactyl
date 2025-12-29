@@ -354,7 +354,10 @@
                 "TAXONKIT_DB": "${env:HOME}/.taxonkit",
             },
             "cwd": "${workspaceFolder}/services/validateAPI",
-            "python": "${workspaceFolder}/services/validateAPI/venv/bin/python",
+            // Linux
+            // "python": "${workspaceFolder}/services/validateAPI/venv/bin/python",
+            // Windows
+            "python": "${workspaceFolder}/services/validateAPI/venv/Scripts/python",
             "console": "integratedTerminal",
             "justMyCode": true
         },
