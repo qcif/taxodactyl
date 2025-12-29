@@ -21,11 +21,11 @@
     }
   },
   "startTask": {
-    "commandLine": "/bin/bash setup.sh",
+    "commandLine": "/bin/bash start-task-test.sh",
     "resourceFiles": [
       {
-        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh",
-        "filePath": "setup.sh"
+        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/start-task-test.sh?<TEST_SCRIPT_SAS_TOKEN>",
+        "filePath": "start-task-test.sh"
       }
     ],
     "waitForSuccess": true,
