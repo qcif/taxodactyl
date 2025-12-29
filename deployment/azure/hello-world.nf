@@ -64,6 +64,10 @@ process checkRefData {
     echo "Date: \$(date)" >> refdata_check.txt
     echo "" >> refdata_check.txt
 
+    echo "Contents of /mnt/nvme/refdata:" >> refdata_check.txt
+    ls -lh /mnt/nvme/refdata >> refdata_check.txt 2>&1
+    echo "" >> refdata_check.txt
+
     if [ -d "${params.refdata_path}" ]; then
         echo "SUCCESS: Directory exists" >> refdata_check.txt
         echo "" >> refdata_check.txt

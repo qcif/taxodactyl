@@ -329,21 +329,51 @@ azcopy copy \
 
 ## Staging reference data
 
-Persistent ref data is held on premium blob, where it can be staged to the node's local NVME (est. 5-20 mins) on node spawn. This can be done with a "Start task".
+Persistent ref data is held on premium blob, where it can be staged to the node's local NVME on node spawn. This can be done with a "Start task".
 
-First we must write a shell script that defines our start task (see [deployment/azure/setup.sh](../deployment/azure/setup.sh)) and upload that to our storage account:
+**Performance**: Our 225GB reference dataset downloads in **2.3 minutes** (~1.6 GB/second) thanks to:
+- Premium blob storage
+- NVMe local storage (high write speed)
+- azcopy's parallel transfers
+- Optimized settings (no MD5 validation, unlimited bandwidth)
+
+### Uploading the Start Task Script
+
+First we must write a shell script that defines our start task (see [deployment/azure/setup.sh](../deployment/azure/setup.sh)) and upload that to our storage account.
+
+**Authentication**: The `az storage blob upload` command requires authentication. We use the storage account key method:
+
+1. Ensure `AZURE_STORAGE_ACCOUNT_KEY` is set in `.env.azure` (or the environment)
+2. The Azure CLI will automatically use this key for authentication
 
 ```sh
+# Upload the setup script to blob storage
+# Note: --overwrite ensures the script is updated if it already exists
 az storage blob upload \
   --account-name $STORAGE_ACCOUNT_STD \
   --container-name $STORAGE_CONTAINER_SCRIPTS \
   --file deployment/azure/setup.sh \
-  --name setup.sh
+  --name setup.sh \
+  --overwrite
 ```
 
-Unless it's a public access storage container, we also need to create a SAS token for this file to be accessed by other resources:
+**Important**: If you see warnings about credentials, you can either:
+- Set `AZURE_STORAGE_ACCOUNT_KEY` environment variable (recommended for automation)
+- Use `--connection-string` parameter with the full connection string
+- Use `--auth-mode login` for Azure AD authentication (requires RBAC roles)
+
+### Generating SAS Token for Start Task
+
+Since our storage account has public blob access disabled (for security), we need to create a SAS (Shared Access Signature) token for the start task script. This token allows Azure Batch nodes to download the script.
+
+**SAS Token Requirements:**
+- **Permissions**: Read only (`r`)
+- **Protocol**: HTTPS only (required by Azure Batch)
+- **Expiry**: Set far enough in future (e.g., 1 year)
+- **Output**: TSV format for easy copying
 
 ```sh
+# Generate a SAS token with read permission
 az storage blob generate-sas \
   --account-name $STORAGE_ACCOUNT_STD \
   --container-name $STORAGE_CONTAINER_SCRIPTS \
@@ -353,20 +383,34 @@ az storage blob generate-sas \
   --https-only \
   --output tsv
 
-# Copy this token and use it in the next section
+# Example output (this is what you'll use in the next section):
+# se=2026-12-29T04%3A33Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=RsDV8g%2FRxSXe6Pn2PvGXYqf6bPR27UrX%2BSFhn4SVPxk%3D
 ```
 
-Now set the start task for the pool to use this script. We need to define the start task in a JSON file:
+**Important Notes:**
+- The SAS token expires on the date specified in `--expiry`
+- Keep the SAS token secure - anyone with this token can read the blob
+- You'll need to regenerate the token before expiry and update your pool configuration
+- The token is URL-encoded and ready to append to the blob URL
+
+### Configuring the Pool Start Task
+
+Now set the start task for the pool to use this script. We need to define the start task in a JSON file.
+
+**Important**: The httpUrl must include the full SAS token as a query parameter. Replace `<SAS_TOKEN>` with the actual token generated above.
 
 ```json
-// Add this to pool.json
+// Add this to pool.json (or create a separate file like pool-setup-sas-token.json)
 
 {
+  "id": "taxodactyl",
+  "vmSize": "standard_l8as_v3",
+  ... (other pool configuration) ...
   "startTask": {
     "commandLine": "/bin/bash setup.sh",
     "resourceFiles": [
       {
-        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh?<SASS_TOKEN>",
+        "httpUrl": "https://daffstandard.blob.core.windows.net/scripts/setup.sh?<SAS_TOKEN>",
         "filePath": "setup.sh"
       }
     ],
@@ -380,6 +424,16 @@ Now set the start task for the pool to use this script. We need to define the st
   }
 }
 ```
+
+**Key Configuration Points:**
+- `commandLine`: The command to execute (runs the downloaded script)
+- `resourceFiles[].httpUrl`: Full URL including SAS token query parameters
+- `resourceFiles[].filePath`: Where the file will be downloaded on the node
+- `waitForSuccess`: Prevents tasks from running until start task succeeds
+- `userIdentity.elevationLevel: "admin"`: Gives the script root privileges
+- `userIdentity.scope: "pool"`: Script runs in pool context
+
+**Security Note**: Since the SAS token is sensitive, store pool configuration files containing tokens in a gitignored location (e.g., `pool-setup-sas-token.json`). Never commit SAS tokens to version control.
 
 >[!NOTE]
 >Any config that we apply with `--json-file` overwrites the existing config. Make sure that you append this to your existing config if you already have a pool.json file for this pool.
@@ -395,4 +449,153 @@ If you want an existing persistent node to use the updated start task, it will n
 ```sh
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 1
+```
+
+## Start Task Implementation Notes
+
+### What's Working
+
+The start task ([deployment/azure/setup.sh](../deployment/azure/setup.sh)) successfully:
+
+1. **Detects NVMe device**: Identifies `/dev/nvme0n1` (1.8TB) on Standard_L8as_v3 VMs
+2. **Formats and mounts NVMe**: Creates ext4 filesystem and mounts to `/mnt/nvme` (1.7TB available)
+3. **Creates directory structure**: Sets up `/mnt/nvme/refdata` for reference data
+4. **Comprehensive logging**: All output goes to stderr for debugging via `startup/stderr.txt`
+5. **Runs as root**: Script executes with admin privileges (no sudo needed)
+
+### Key Learnings
+
+**Script execution environment:**
+- Working directory: `/mnt/batch/tasks/startup/wd`
+- User: `root` (with admin elevation level)
+- Logs available at: `startup/stdout.txt` and `startup/stderr.txt`
+
+**NVMe detection:**
+- Device appears as `/dev/nvme0n1` (block device)
+- Character device `/dev/nvme0` also exists
+- `lsblk` successfully detects it as type "disk"
+- Fallback detection using `-b /dev/nvme0n1` works if lsblk fails
+
+**Storage layout on Standard_L8as_v3:**
+- `/dev/sdb` (30G): OS disk mounted at `/`
+- `/dev/sda` (80G): Temporary storage mounted at `/mnt`
+- `/dev/nvme0n1` (1.8T): NVMe local storage (needs formatting/mounting)
+
+**Debugging tips:**
+- Use `set -x` for verbose command logging (goes to stderr)
+- Redirect informational messages to stderr: `echo "message" >&2`
+- Start task fails fast with `set -euo pipefail`
+- Download logs with: `az batch node file download --file-path startup/stderr.txt`
+
+### azcopy Installation (Implemented)
+
+The updated [deployment/azure/setup.sh](../deployment/azure/setup.sh) now includes automatic azcopy installation in the `install_azcopy()` function.
+
+**How it works:**
+1. Checks if azcopy is already installed (skips installation on warm nodes)
+2. Downloads the latest azcopy from Microsoft's CDN
+3. Extracts and installs to `/usr/local/bin/`
+4. Makes the binary executable
+5. Cleans up temporary files
+
+**Primary installation method** (lightweight and fast):
+```bash
+wget -q -O azcopy.tar.gz https://aka.ms/downloadazcopy-v10-linux
+tar -xf azcopy.tar.gz --strip-components=1
+mv azcopy /usr/local/bin/
+chmod +x /usr/local/bin/azcopy
+rm -f azcopy.tar.gz
+```
+
+**Alternative method** (commented out, available as fallback):
+The script includes a commented-out alternative that uses apt package manager. This can be uncommented if the primary method fails:
+```bash
+# Install via apt (requires more time for package updates)
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+apt-get update
+apt-get install azcopy -y
+```
+
+### Reference Data Download (Implemented)
+
+The `stage_refdata()` function now:
+
+1. **Checks for existing data**: Skips download if `/mnt/nvme/refdata` already contains files (warm nodes)
+2. **Uses azcopy for download**: Fast, parallel downloads from premium blob storage
+3. **Optimized for performance**:
+   - `--recursive`: Downloads entire directory structure
+   - `--check-md5 NoCheck`: Skips MD5 validation for maximum speed
+   - `--cap-mbps 0`: Unlimited bandwidth (no throttling)
+4. **Reports progress**: Shows download size and directory listing after completion
+
+**Measured Performance** (225GB dataset, 429 files):
+- **Duration**: 2 minutes 20 seconds (2.33 minutes)
+- **Average throughput**: 1.6 GB/second
+- **Breakdown**:
+  - Start time: 05:57:25 UTC
+  - End time: 05:59:45 UTC
+  - Data transferred: 241,803,166,593 bytes (225 GB)
+  - Files transferred: 429
+  - Failures: 0
+
+This exceptional performance is achieved through:
+- Premium blob storage with high IOPS
+- Standard_L8as_v3 VM with NVMe SSD (extremely fast local writes)
+- azcopy's parallel transfer engine
+- No bottlenecks from MD5 validation or bandwidth throttling
+
+**Authentication for azcopy:**
+The `BLOB_URL` in the script points to premium blob storage. For azcopy to access private blob storage, you need one of:
+- **SAS token in URL** (recommended): Append SAS token to `BLOB_URL`
+- **Storage account key**: Set `AZCOPY_AUTO_LOGIN_TYPE=SPN` and provide credentials
+- **Managed identity**: If Azure Batch nodes have managed identity enabled
+
+**Example with SAS token:**
+```bash
+BLOB_URL="https://daffpremium.blob.core.windows.net/refdata?<SAS_TOKEN>"
+```
+
+**Note**: The BLOB_URL should point to the container or directory path, not a non-existent subdirectory. For example:
+- ✅ `https://daffpremium.blob.core.windows.net/refdata` (container root)
+- ✅ `https://daffpremium.blob.core.windows.net/refdata/core_nt` (specific directory)
+- ❌ `https://daffpremium.blob.core.windows.net/refdata/data` (if 'data' directory doesn't exist)
+
+### Accessing Start Task Logs
+
+To debug start task issues:
+
+```bash
+# Get node ID
+NODE_ID=$(az batch node list \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --pool-id $POOL_ID \
+  --query "[0].id" -o tsv)
+
+# Check start task status
+az batch node list \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --pool-id $POOL_ID \
+  --query "[].{id: id, state: state, startTaskState: startTaskInfo.state, startTaskResult: startTaskInfo.result, exitCode: startTaskInfo.exitCode}" \
+  -o table
+
+# Download stderr (main output with set -x enabled)
+az batch node file download \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --pool-id $POOL_ID \
+  --node-id $NODE_ID \
+  --file-path startup/stderr.txt \
+  --destination /tmp/start-task-stderr.txt
+
+# Download stdout (filesystem creation output)
+az batch node file download \
+  --account-name $BATCH_ACCOUNT \
+  --account-endpoint $ACCOUNT_ENDPOINT \
+  --pool-id $POOL_ID \
+  --node-id $NODE_ID \
+  --file-path startup/stdout.txt \
+  --destination /tmp/start-task-stdout.txt
 ```
