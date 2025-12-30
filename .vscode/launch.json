@@ -353,11 +353,11 @@
             "env": {
                 "TAXONKIT_DB": "${env:HOME}/.taxonkit",
             },
-            "cwd": "${workspaceFolder}/services/validateAPI",
+            "cwd": "${workspaceFolder}/services/input_validation/api",
             // Linux
-            // "python": "${workspaceFolder}/services/validateAPI/venv/bin/python",
+            // "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python",
             // Windows
-            "python": "${workspaceFolder}/services/validateAPI/venv/Scripts/python",
+            "python": "${workspaceFolder}/services/input_validation/api/venv/Scripts/python",
             "console": "integratedTerminal",
             "justMyCode": true
         },
@@ -365,7 +365,7 @@
             "name": "Validate client server",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/services/validate-ui/node_modules/.bin/vite",
+            "program": "${workspaceFolder}/services/input_validation/client/node_modules/.bin/vite",
             "cwd": "${workspaceFolder}/services/validate-ui",
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"]

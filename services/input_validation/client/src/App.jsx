@@ -134,7 +134,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <h1>TAXON p0 Validator</h1>
+      <h1>Taxodactyl input validation</h1>
 
       <div>
         <label>Metadata CSV</label>
