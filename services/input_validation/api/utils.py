@@ -3,16 +3,34 @@ import sys
 import os
 import re
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
+from typing import List
 import csv
 from Bio import SeqIO
+from dataclasses import dataclass
+from typing import Optional
 import logging
 logger = logging.getLogger("taxon.validate")
 
 sys.path.append(
-    str(Path(__file__).resolve().parents[2] / "scripts")
+    str(Path(__file__).resolve().parents[3] / "scripts")
 )
 from p0_validation import validate_inputs
+
+
+@dataclass
+class ValidationResult:
+    ok: bool
+    message: str
+    error: Optional[str] = None
+    exc: Optional[Exception] = None
+
+
+@dataclass
+class ParsedError:
+    type: str
+    message: str
+    sample_id: Optional[str] = None
+    value: Optional[str] = None
 
 
 def save_upload_to_tempfile(upload_file) -> Path:
@@ -28,11 +46,8 @@ def save_upload_to_tempfile(upload_file) -> Path:
 
 
 def run_p0_validation(
-        script_path: Path,
         metadata_csv: Path,
-        query_fasta: Path,
-        taxdb_dir: Path | None = None,
-        extra_args: list[str] = []) -> Tuple[int, str, str]:
+        query_fasta: Path) -> ValidationResult:
     """
     Run the p0_validation.py script as a subprocess
     and return (rc, stdout, stderr).
@@ -49,17 +64,25 @@ def run_p0_validation(
             query_fasta=query_fasta,
             ignore_seq_count=True,
         )
-        return 0, "Validation passed", ""
+        return ValidationResult(
+            ok=True,
+            message="Validation passed",
+        )
     except Exception as exc:
         # Capture exception message in stderr
         logger.error(
             "p0 validation exception",
             exc_info=True,
         )
-        return 1, "", str(exc)
+        return ValidationResult(
+            ok=False,
+            message="Validation failed",
+            error=str(exc),
+            exc=exc,
+        )
 
 
-def parse_errors(stderr: str) -> Dict[str, Any]:
+def parse_errors(stderr: str) -> ParsedError:
     """Try to parse known errors emitted by p0_validation
     and return structured info.
     """
@@ -69,23 +92,25 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
         r'listed in metadata CSV file is not present',
         stderr)
     if validate_err_msg:
-        logger.info("Parsed error: metadata_missing_sample | %s", validate_err_msg.group("sample_id"))
-        return {
-            "type": "metadata_missing_sample",
-            "message": stderr.strip(),
-            "sample_id": validate_err_msg.group('sample_id')
-        }
+        logger.info("Parsed error: metadata_missing_sample | %s",
+                    validate_err_msg.group("sample_id"))
+        return ParsedError(
+            type="metadata_missing_sample",
+            message=stderr.strip(),
+            sample_id=validate_err_msg.group("sample_id"),
+        )
 
     validate_err_msg2 = re.search(
         r'Invalid sample ID "(?P<sample_id>[^"]+)"',
         stderr)
     if validate_err_msg2:
-        logger.info("Parsed error: invalid_sample_id | %s", validate_err_msg2.group("sample_id"))
-        return {
-            "type": "invalid_sample_id",
-            "message": stderr.strip(),
-            "sample_id": validate_err_msg2.group('sample_id')
-        }
+        logger.info("Parsed error: invalid_sample_id | %s",
+                    validate_err_msg2.group("sample_id"))
+        return ParsedError(
+            type="invalid_sample_id",
+            message=stderr.strip(),
+            sample_id=validate_err_msg2.group("sample_id"),
+        )
 
     validate_err_msg3 = re.search(
         r'Invalid Taxa of Interest: "(?P<value>[^"]+)"',
@@ -93,14 +118,13 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
     if validate_err_msg3:
         value = validate_err_msg3.group("value")
         logger.info("Parsed error: invalid_taxa_of_interest | %s", value)
-        return {
-            "type": "invalid_taxa_of_interest",
-            "value": value,
-            "message": (
-                f'Taxa of Interest "{value}" is invalid. '
-                "Please provide a valid taxonomic name or remove it."
-            )
-        }
+        message = f'Taxa of Interest "{value}" is invalid. '
+        "Please provide a valid taxonomic name or remove it.",
+        return ParsedError(
+            type="invalid_taxa_of_interest",
+            value=value,
+            message=message,
+        )
 
     validate_err_msg4 = re.search(
         r'Invalid Preliminary Morphology ID taxon "(?P<value>[^"]+)"',
@@ -109,15 +133,14 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
     if validate_err_msg4:
         value = validate_err_msg4.group("value")
         logger.info("Parsed error: invalid_pmi | %s", value)
-        return {
-            "type": "invalid_pmi",
-            "value": value,
-            "message": (
-                "The Preliminary Morphology ID is invalid,"
-                "Only letters (A–Z) and spaces are allowed. "
-                "Please fix this in the metadata CSV."
-            )
-        }
+        message = "The Preliminary Morphology ID is invalid,"
+        "Only letters (A–Z) and spaces are allowed. "
+        "Please fix this in the metadata CSV."
+        return ParsedError(
+            type="invalid_pmi",
+            value=value,
+            message=message,
+        )
 
     validate_err_msg5 = re.search(
         r'The country provided could not be recognised: "(?P<value>[^"]+)"',
@@ -138,11 +161,11 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
                 'Please replace it with a valid country name '
                 'or ISO alpha-2 code.')
         )
-        return {
-            "type": "invalid_country",
-            "value": value,
-            "message": message
-        }
+        return ParsedError(
+            type="invalid_country",
+            value=value,
+            message=message
+        )
 
     # Generic FASTA errors
     if 'FASTAFormatError' in stderr:
@@ -151,7 +174,10 @@ def parse_errors(stderr: str) -> Dict[str, Any]:
 
     # Fallback
     logger.error("Unknown validation error")
-    return {"type": "unknown", "message": stderr.strip()}
+    return ParsedError(
+        type="unknown",
+        message=stderr.strip(),
+    )
 
 
 def fix_sample_id_spaces(

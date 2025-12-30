@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 
-app = FastAPI(title="TAXON p0 validator API")
+app = FastAPI(title="Taxodactyl input validation API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,8 +31,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-VALIDATION_SCRIPT = REPO_ROOT / 'scripts' / 'p0_validation.py'
+
+def parsed_error_to_dict(err):
+    return {
+        "type": err.type,
+        "message": err.message,
+        "sample_id": err.sample_id,
+        "value": err.value,
+    }
 
 
 @app.post('/validate')
@@ -79,13 +85,12 @@ async def validate(
         )
 
         logger.info("Running p0 validation")
-        rc, out, err = run_p0_validation(
-            VALIDATION_SCRIPT,
+        result = run_p0_validation(
             metadata_path,
             query_path
             )
-        logger.info("p0 validation finished | rc=%s", rc)
-        if rc == 0:
+        logger.info("p0 validation finished | rc=%s", result.ok)
+        if result.ok:
             logger.info("Validation passed successfully")
             with open(metadata_path, "r", encoding="utf-8") as f:
                 csv_text = f.read()
@@ -97,21 +102,20 @@ async def validate(
                 "metadata_csv": csv_text,
                 "query_fasta": fasta_text
             }
-        parsed = parse_errors(err)
+        parsed = parse_errors(result.error or "")
         logger.warning(
             "Validation failed | type=%s | message=%s",
-            parsed.get("type"),
-            parsed.get("message"),
+            parsed.type,
+            parsed.message,
         )
 
-        if parsed.get("type") == "metadata_missing_sample":
-            bad_sample_id = parsed.get("sample_id")
+        if parsed.type == "metadata_missing_sample":
+            bad_sample_id = parsed.sample_id
             logger.warning(
                 "Missing sample_id detected | sample_id=%s",
                 bad_sample_id,
             )
 
-            # if bad_sample_id and " " in bad_sample_id:
             if bad_sample_id:
                 fixed_sample_id = fix_sample_id_spaces(
                     metadata_path,
@@ -126,14 +130,13 @@ async def validate(
 
                 # re-run validation after auto-fix
                 logger.info("Re-running validation after sample_id fix")
-                rc2, out2, err2 = run_p0_validation(
-                    VALIDATION_SCRIPT,
+                rerun_result = run_p0_validation(
                     metadata_path,
                     query_path
                 )
-                logger.info("Re-run finished | rc=%s", rc2)
+                logger.info("Re-run finished | rc=%s", rerun_result.ok)
 
-                if rc2 == 0:
+                if rerun_result.ok:
                     with open(metadata_path, "r", encoding="utf-8") as f:
                         csv_text = f.read()
                     with open(query_path, "r", encoding="utf-8") as f:
@@ -148,9 +151,9 @@ async def validate(
                         "query_fasta": fasta_text
                     }
 
-                parsed = parse_errors(err2)
+                parsed = parse_errors(rerun_result.error or "")
 
-        if parsed.get("type") == "invalid_taxa_of_interest":
+        if parsed.type == "invalid_taxa_of_interest":
             rows = find_taxa_zero_rows(metadata_path)
             logger.warning(
                 "Invalid taxa_of_interest detected | rows=%s",
@@ -162,13 +165,13 @@ async def validate(
                 status_code=400,
                 content={
                     "ok": False,
-                    "error": parsed,
+                    "error": parsed_error_to_dict(parsed),
                     "rows": rows,
                     "metadata_csv": csv_text
                 }
             )
 
-        if parsed.get("type") == "invalid_pmi":
+        if parsed.type == "invalid_pmi":
             rows = find_invalid_pmi(metadata_path)
             logger.warning(
                 "Invalid PMI detected | rows=%s",
@@ -180,19 +183,19 @@ async def validate(
                 status_code=400,
                 content={
                     "ok": False,
-                    "error": parsed,
+                    "error": parsed_error_to_dict(parsed),
                     "rows": rows,
                     "metadata_csv": csv_text,
                 }
             )
 
-        if parsed.get("type") == "invalid_country":
+        if parsed.type == "invalid_country":
             rows = find_invalid_country_rows(
                 metadata_path,
-                parsed.get("value"))
+                parsed.value)
             logger.warning(
                 "Invalid country detected | value=%s | rows=%s",
-                parsed.get("value"),
+                parsed.value,
                 rows,
             )
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -201,7 +204,7 @@ async def validate(
                 status_code=400,
                 content={
                     "ok": False,
-                    "error": parsed,
+                    "error": parsed_error_to_dict(parsed),
                     "rows": rows,
                     "metadata_csv": csv_text,
                 }
@@ -213,7 +216,7 @@ async def validate(
         logger.error("Unhandled validation error | %s", parsed)
         return JSONResponse(status_code=400, content={
             "ok": False,
-            "error": parsed,
+            "error": parsed_error_to_dict(parsed),
             "metadata_csv": csv_text})
 
     finally:
