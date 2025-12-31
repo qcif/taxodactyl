@@ -61,6 +61,8 @@ az batch pool create \
   --json-file deployment/azure/pool.json
 ```
 
+**Helper equivalent:** `az_pool_create deployment/azure/pool.json`
+
 ### Enable Autoscaling
 
 Configure the pool to automatically scale based on workload:
@@ -149,6 +151,8 @@ az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node 
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 ```
 
+**Helper equivalent:** `az_pool_resize 1` or `az_pool_resize 0`
+
 ### Re-create Nodes
 
 To force a configuration update:
@@ -157,6 +161,8 @@ To force a configuration update:
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes <int: new node count>
 ```
+
+**Helper equivalent:** `az_pool_resize 0 --yes && az_pool_resize 1`
 
 ### View Pool Status
 
@@ -174,6 +180,8 @@ az batch pool show \
   }"
 ```
 
+**Helper equivalent:** `az_pool_show`
+
 List all pools with configuration:
 
 ```sh
@@ -183,6 +191,8 @@ az batch pool list \
   --query "[].{id: id, vmSize: vmSize, taskSlotsPerNode: taskSlotsPerNode}"
 ```
 
+**Helper equivalent:** `az_pool_list`
+
 View running tasks:
 
 ```sh
@@ -191,6 +201,8 @@ az batch pool list \
   --account-endpoint "$ACCOUNT_ENDPOINT" \
   --query "[].{id: id, state: state, vmSize: vmSize, runningTasks: runningTasksCount, startTime: nodeAgentInfo.lastUpdateTime}"
 ```
+
+**Helper equivalent:** `az_pool_list` (shows running tasks)
 
 ### Delete a Pool
 
@@ -202,6 +214,8 @@ az batch pool delete \
   --account-endpoint "$ACCOUNT_ENDPOINT" \
   --pool-id "$POOL_ID"
 ```
+
+**Helper equivalent:** `az_pool_delete`
 
 ## Next Steps
 

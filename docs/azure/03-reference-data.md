@@ -105,6 +105,8 @@ az storage blob generate-sas \
   --output tsv
 ```
 
+**Helper equivalent:** `az_sas_generate core_nt daffpremium refdata 365`
+
 Use this token in the start task script's `BLOB_URL`:
 
 ```bash
