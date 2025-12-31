@@ -62,7 +62,7 @@ _check_env_vars() {
 
     if [[ ${#missing[@]} -gt 0 ]]; then
         _error "Missing required environment variables: ${missing[*]}"
-        _info "Run 'azure_load_env' to load from .env.azure"
+        _info "Run 'az_load_env' to load from .env.azure"
         return 1
     fi
 
@@ -73,7 +73,7 @@ _check_env_vars() {
 # Environment Management
 #
 
-azure_load_env() {
+az_load_env() {
     local env_file="${1:-.env.azure}"
 
     if [[ ! -f "$env_file" ]]; then
@@ -97,7 +97,7 @@ azure_load_env() {
 # Pool Management
 #
 
-azure_pool_create() {
+az_pool_create() {
     local pool_json=""
     local enable_autoscale="true"
     local skip_confirm=false
@@ -123,7 +123,7 @@ azure_pool_create() {
     _check_env_vars || return 1
 
     if [[ -z "$pool_json" ]]; then
-        _error "Usage: azure_pool_create <pool-config.json> [enable_autoscale=true] [--yes]"
+        _error "Usage: az_pool_create <pool-config.json> [enable_autoscale=true] [--yes]"
         return 1
     fi
 
@@ -181,7 +181,7 @@ azure_pool_create() {
     fi
 }
 
-azure_pool_delete() {
+az_pool_delete() {
     local pool_id=""
     local skip_confirm=false
 
@@ -237,7 +237,7 @@ azure_pool_delete() {
     fi
 }
 
-azure_pool_resize() {
+az_pool_resize() {
     local target_nodes=""
     local pool_id=""
     local skip_confirm=false
@@ -266,7 +266,7 @@ azure_pool_resize() {
     _check_env_vars || return 1
 
     if [[ -z "$target_nodes" ]]; then
-        _error "Usage: azure_pool_resize <0|1> [pool_id] [--yes]"
+        _error "Usage: az_pool_resize <0|1> [pool_id] [--yes]"
         return 1
     fi
 
@@ -313,7 +313,7 @@ azure_pool_resize() {
     fi
 }
 
-azure_pool_update() {
+az_pool_update() {
     local pool_json=""
     local pool_id=""
     local skip_confirm=false
@@ -342,7 +342,7 @@ azure_pool_update() {
     _check_env_vars || return 1
 
     if [[ -z "$pool_json" ]]; then
-        _error "Usage: azure_pool_update <pool-config.json> [pool_id] [--yes]"
+        _error "Usage: az_pool_update <pool-config.json> [pool_id] [--yes]"
         return 1
     fi
 
@@ -371,14 +371,14 @@ azure_pool_update() {
 
         _success "Pool '$pool_id' updated successfully"
         _warning "If you updated the start task, existing nodes need to be recreated"
-        _info "To recreate nodes: azure_pool_resize 0 && azure_pool_resize 1"
+        _info "To recreate nodes: az_pool_resize 0 && az_pool_resize 1"
     else
         _error "Failed to update pool"
         return 1
     fi
 }
 
-azure_pool_list() {
+az_pool_list() {
     _check_env_vars || return 1
 
     _info "Listing all pools..."
@@ -390,7 +390,7 @@ azure_pool_list() {
         -o table
 }
 
-azure_pool_show() {
+az_pool_show() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
 
     _check_env_vars || return 1
@@ -418,7 +418,7 @@ azure_pool_show() {
 # Node Management
 #
 
-azure_node_list() {
+az_node_list() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
 
     _check_env_vars || return 1
@@ -433,7 +433,7 @@ azure_node_list() {
         -o table
 }
 
-azure_node_get_id() {
+az_node_get_id() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
     local index="${2:-0}"
 
@@ -455,7 +455,7 @@ azure_node_get_id() {
     echo "$node_id"
 }
 
-azure_node_logs() {
+az_node_logs() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
     local log_type="${2:-stderr}"
     local output_dir="${3:-/tmp}"
@@ -463,7 +463,7 @@ azure_node_logs() {
     _check_env_vars || return 1
 
     local node_id
-    node_id=$(azure_node_get_id "$pool_id") || return 1
+    node_id=$(az_node_get_id "$pool_id") || return 1
 
     _info "Pool: $pool_id"
     _info "Node: $node_id"
@@ -500,7 +500,7 @@ azure_node_logs() {
 # Job Management
 #
 
-azure_jobs_list() {
+az_jobs_list() {
     _check_env_vars || return 1
 
     _info "Listing recent jobs..."
@@ -512,7 +512,7 @@ azure_jobs_list() {
         -o table
 }
 
-azure_job_get_latest() {
+az_job_get_latest() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
 
     _check_env_vars || return 1
@@ -532,13 +532,13 @@ azure_job_get_latest() {
     echo "$job_id"
 }
 
-azure_job_logs() {
+az_job_logs() {
     local pool_id="${1:-$DEFAULT_POOL_ID}"
 
     _check_env_vars || return 1
 
     local job_id
-    job_id=$(azure_job_get_latest "$pool_id")
+    job_id=$(az_job_get_latest "$pool_id")
 
     if [[ -z "$job_id" ]]; then
         _error "No jobs found for pool '$pool_id'"
@@ -560,7 +560,7 @@ azure_job_logs() {
 # Storage Management
 #
 
-azure_storage_upload() {
+az_storage_upload() {
     local src_file=""
     local dest_path=""
     local storage_account=""
@@ -596,8 +596,8 @@ azure_storage_upload() {
     _check_env_vars || return 1
 
     if [[ -z "$src_file" ]] || [[ -z "$dest_path" ]]; then
-        _error "Usage: azure_storage_upload <src_file> <dest_path> [storage_account] [container] [--yes]"
-        _info "Example: azure_storage_upload ./setup.sh setup.sh"
+        _error "Usage: az_storage_upload <src_file> <dest_path> [storage_account] [container] [--yes]"
+        _info "Example: az_storage_upload ./setup.sh setup.sh"
         return 1
     fi
 
@@ -637,7 +637,7 @@ azure_storage_upload() {
     fi
 }
 
-azure_storage_download() {
+az_storage_download() {
     local blob_name="${1}"
     local dest_file="${2}"
     local storage_account="${3:-$STORAGE_ACCOUNT_STD}"
@@ -646,7 +646,7 @@ azure_storage_download() {
     _check_env_vars || return 1
 
     if [[ -z "$blob_name" ]] || [[ -z "$dest_file" ]]; then
-        _error "Usage: azure_storage_download <blob_name> <dest_file> [storage_account] [container]"
+        _error "Usage: az_storage_download <blob_name> <dest_file> [storage_account] [container]"
         return 1
     fi
 
@@ -666,7 +666,7 @@ azure_storage_download() {
     fi
 }
 
-azure_storage_list() {
+az_storage_list() {
     local container="${1:-$STORAGE_CONTAINER_SCRIPTS}"
     local storage_account="${2:-$STORAGE_ACCOUNT_STD}"
 
@@ -685,7 +685,7 @@ azure_storage_list() {
 # SAS Token Management
 #
 
-azure_sas_generate() {
+az_sas_generate() {
     local blob_name="${1}"
     local storage_account="${2:-$STORAGE_ACCOUNT_STD}"
     local container="${3:-$STORAGE_CONTAINER_SCRIPTS}"
@@ -694,7 +694,7 @@ azure_sas_generate() {
     _check_env_vars || return 1
 
     if [[ -z "$blob_name" ]]; then
-        _error "Usage: azure_sas_generate <blob_name> [storage_account] [container] [expiry_days]"
+        _error "Usage: az_sas_generate <blob_name> [storage_account] [container] [expiry_days]"
         return 1
     fi
 
@@ -736,42 +736,42 @@ azure_sas_generate() {
 # Utility Functions
 #
 
-azure_help() {
+az_help() {
     cat << 'EOF'
 Azure Batch Helper Functions
 =============================
 
 Environment Management:
-  azure_load_env [file]              Load environment from .env.azure (or specified file)
+  az_load_env [file]              Load environment from .env.azure (or specified file)
 
 Pool Management:
-  azure_pool_create <json> [auto] [--yes]    Create pool from JSON config (autoscale: true/false)
-  azure_pool_delete [pool_id] [--yes]        Delete pool (with confirmation)
-  azure_pool_resize <0|1> [pool_id] [--yes]  Resize pool to 0 or 1 persistent nodes
-  azure_pool_update <json> [pool_id] [--yes] Update pool configuration from JSON
-  azure_pool_list                            List all pools
-  azure_pool_show [pool_id]                  Show detailed pool information
+  az_pool_create <json> [auto] [--yes]    Create pool from JSON config (autoscale: true/false)
+  az_pool_delete [pool_id] [--yes]        Delete pool (with confirmation)
+  az_pool_resize <0|1> [pool_id] [--yes]  Resize pool to 0 or 1 persistent nodes
+  az_pool_update <json> [pool_id] [--yes] Update pool configuration from JSON
+  az_pool_list                            List all pools
+  az_pool_show [pool_id]                  Show detailed pool information
 
 Node Management:
-  azure_node_list [pool_id]         List all nodes in pool
-  azure_node_get_id [pool_id] [idx]  Get node ID (by index, default: 0)
-  azure_node_logs [pool] [type] [dir] Download start task logs (type: stderr/stdout)
+  az_node_list [pool_id]         List all nodes in pool
+  az_node_get_id [pool_id] [idx]  Get node ID (by index, default: 0)
+  az_node_logs [pool] [type] [dir] Download start task logs (type: stderr/stdout)
 
 Job Management:
-  azure_jobs_list                    List all jobs
-  azure_job_get_latest [pool_id]     Get latest job ID for pool
-  azure_job_logs [pool_id]           Show tasks for latest job in pool
+  az_jobs_list                    List all jobs
+  az_job_get_latest [pool_id]     Get latest job ID for pool
+  az_job_logs [pool_id]           Show tasks for latest job in pool
 
 Storage Management:
-  azure_storage_upload <src> <dest> [acct] [cont] [--yes]  Upload file to blob storage
-  azure_storage_download <blob> <dest> [acct] [cont]       Download file from blob storage
-  azure_storage_list [container] [account]                 List blobs in container
+  az_storage_upload <src> <dest> [acct] [cont] [--yes]  Upload file to blob storage
+  az_storage_download <blob> <dest> [acct] [cont]       Download file from blob storage
+  az_storage_list [container] [account]                 List blobs in container
 
 SAS Token Management:
-  azure_sas_generate <blob> [acct] [cont] [days]   Generate SAS token for blob
+  az_sas_generate <blob> [acct] [cont] [days]   Generate SAS token for blob
 
 Utility:
-  azure_help                         Show this help message
+  az_help                         Show this help message
 
 Default Values:
   Pool ID: taxodactyl
@@ -781,31 +781,34 @@ Default Values:
 
 Examples:
   # Load environment
-  azure_load_env
+  az_load_env
 
   # Create pool with autoscaling (interactive)
-  azure_pool_create deployment/azure/pool-setup.json.ignore
+  az_pool_create deployment/azure/pool-setup.json.ignore
 
-  # Create pool without confirmation (for scripts)
-  azure_pool_create deployment/azure/pool-setup.json.ignore true --yes
+  # Create pool with autoscaling (non-interactive, for scripts)
+  az_pool_create deployment/azure/pool-setup.json.ignore --yes
 
-  # Resize pool to 1 node
-  azure_pool_resize 1
+  # Create pool without autoscaling
+  az_pool_create deployment/azure/pool-setup.json.ignore false
 
-  # Resize pool to 0 nodes (skip confirmation)
-  azure_pool_resize 0 --yes
+  # Resize pool to 1 node (interactive)
+  az_pool_resize 1
+
+  # Resize pool to 0 nodes (non-interactive, for scripts)
+  az_pool_resize 0 --yes
 
   # Get start task logs
-  azure_node_logs
+  az_node_logs
 
-  # Upload script to blob storage
-  azure_storage_upload deployment/azure/setup.sh setup.sh
+  # Upload script to blob storage (interactive)
+  az_storage_upload deployment/azure/setup.sh setup.sh
 
   # Upload without confirmation (for scripts)
-  azure_storage_upload deployment/azure/setup.sh setup.sh --yes
+  az_storage_upload deployment/azure/setup.sh setup.sh --yes
 
   # Generate SAS token
-  azure_sas_generate setup.sh
+  az_sas_generate setup.sh
 
 EOF
 }
@@ -821,31 +824,31 @@ else
 
     # Automatically load environment if .env.azure exists
     if [[ -f ".env.azure" ]]; then
-        azure_load_env
+        az_load_env
     else
         _warning "No .env.azure file found in current directory"
-        _info "Environment variables not loaded - run 'azure_load_env <file>' to load manually"
+        _info "Environment variables not loaded - run 'az_load_env <file>' to load manually"
     fi
 
     echo ""
     echo -e "${BLUE}Available Commands:${NC}"
     echo ""
     echo "  Pool Management:"
-    echo "    azure_pool_create, azure_pool_delete, azure_pool_resize"
-    echo "    azure_pool_update, azure_pool_list, azure_pool_show"
+    echo "    az_pool_create, az_pool_delete, az_pool_resize"
+    echo "    az_pool_update, az_pool_list, az_pool_show"
     echo ""
     echo "  Node Management:"
-    echo "    azure_node_list, azure_node_get_id, azure_node_logs"
+    echo "    az_node_list, az_node_get_id, az_node_logs"
     echo ""
     echo "  Job Management:"
-    echo "    azure_jobs_list, azure_job_get_latest, azure_job_logs"
+    echo "    az_jobs_list, az_job_get_latest, az_job_logs"
     echo ""
     echo "  Storage Management:"
-    echo "    azure_storage_upload, azure_storage_download, azure_storage_list"
+    echo "    az_storage_upload, az_storage_download, az_storage_list"
     echo ""
     echo "  SAS Token Management:"
-    echo "    azure_sas_generate"
+    echo "    az_sas_generate"
     echo ""
-    echo -e "${GREEN}Run 'azure_help' for detailed usage information${NC}"
+    echo -e "${GREEN}Run 'az_help' for detailed usage information${NC}"
     echo ""
 fi

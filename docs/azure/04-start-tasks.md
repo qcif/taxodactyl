@@ -64,6 +64,8 @@ az storage blob upload \
   --overwrite
 ```
 
+**Helper equivalent:** `az_storage_upload deployment/azure/setup.sh setup.sh`
+
 **Authentication**: Requires `AZURE_STORAGE_ACCOUNT_KEY` set in environment or `.env.azure`.
 
 ## Generating SAS Tokens
@@ -87,6 +89,8 @@ az storage blob generate-sas \
   --output tsv
 ```
 
+**Helper equivalent:** `az_sas_generate setup.sh`
+
 ### Reference Data SAS Token
 
 ```sh
@@ -99,6 +103,8 @@ az storage container generate-sas \
   --https-only \
   --output tsv
 ```
+
+**Note**: For container-level SAS tokens, use the `az` command above (not available in helpers).
 
 **Important Notes**:
 - Keep SAS tokens secure - anyone with the token can access the blob
@@ -180,6 +186,8 @@ Update the pool with the new configuration:
 az batch pool set --pool-id $POOL_ID --json-file pool-setup.json.ignore
 ```
 
+**Helper equivalent:** `az_pool_update pool-setup.json.ignore`
+
 **Note**: `--json-file` overwrites the existing configuration. Make sure your file includes all desired settings.
 
 ### Force Configuration Update
@@ -190,6 +198,8 @@ To force existing nodes to use the updated start task:
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 0
 az batch pool resize --pool-id $POOL_ID --target-dedicated-nodes 1
 ```
+
+**Helper equivalent:** `az_pool_resize 0 --yes && az_pool_resize 1`
 
 ## Accessing Start Task Logs
 
@@ -232,6 +242,8 @@ az batch node file download \
 # View the logs
 cat /tmp/start-task-stderr.txt
 ```
+
+**Helper equivalent:** `az_node_logs` (downloads and displays stderr) or `az_node_logs taxodactyl stdout` (for stdout)
 
 ## Debugging Tips
 
