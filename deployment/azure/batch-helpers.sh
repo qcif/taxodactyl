@@ -99,23 +99,28 @@ az_load_env() {
 
 az_pool_create() {
     local pool_json=""
-    local enable_autoscale="true"
+    local enable_autoscale=false
     local skip_confirm=false
 
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --json)
+                pool_json="$2"
+                shift 2
+                ;;
+            --autoscale)
+                enable_autoscale=true
+                shift
+                ;;
             --yes|-y)
                 skip_confirm=true
                 shift
                 ;;
             *)
-                if [[ -z "$pool_json" ]]; then
-                    pool_json="$1"
-                else
-                    enable_autoscale="$1"
-                fi
-                shift
+                _error "Unknown argument: $1"
+                _error "Usage: az_pool_create --json <pool-config.json> [--autoscale] [--yes]"
+                return 1
                 ;;
         esac
     done
@@ -123,7 +128,7 @@ az_pool_create() {
     _check_env_vars || return 1
 
     if [[ -z "$pool_json" ]]; then
-        _error "Usage: az_pool_create <pool-config.json> [enable_autoscale=true] [--yes]"
+        _error "Usage: az_pool_create --json <pool-config.json> [--autoscale] [--yes]"
         return 1
     fi
 
@@ -159,7 +164,7 @@ az_pool_create() {
 
         _success "Pool '$pool_id' created successfully"
 
-        if [[ "$enable_autoscale" == "true" ]]; then
+        if [[ "$enable_autoscale" == true ]]; then
             _info "Enabling autoscaling..."
 
             if az batch pool autoscale enable \
@@ -316,20 +321,37 @@ az_pool_resize() {
 az_pool_update() {
     local pool_json=""
     local pool_id=""
+    local enable_autoscale=false
     local skip_confirm=false
 
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --json)
+                pool_json="$2"
+                shift 2
+                ;;
+            --pool-id)
+                pool_id="$2"
+                shift 2
+                ;;
+            --autoscale)
+                enable_autoscale=true
+                shift
+                ;;
             --yes|-y)
                 skip_confirm=true
                 shift
                 ;;
             *)
-                if [[ -z "$pool_json" ]]; then
-                    pool_json="$1"
-                else
+                # Positional argument is pool ID
+                if [[ -z "$pool_id" ]]; then
                     pool_id="$1"
+                else
+                    _error "Unknown argument: $1"
+                    _error "Usage: az_pool_update --json <pool-config.json> [--pool-id <id>] [--autoscale] [--yes]"
+                    _error "   or: az_pool_update --autoscale [pool_id] [--yes]"
+                    return 1
                 fi
                 shift
                 ;;
@@ -341,40 +363,78 @@ az_pool_update() {
 
     _check_env_vars || return 1
 
-    if [[ -z "$pool_json" ]]; then
-        _error "Usage: az_pool_update <pool-config.json> [pool_id] [--yes]"
-        return 1
-    fi
-
-    if [[ ! -f "$pool_json" ]]; then
-        _error "Pool configuration file not found: $pool_json"
+    # If no JSON and no autoscale flag, show error
+    if [[ -z "$pool_json" ]] && [[ "$enable_autoscale" == false ]]; then
+        _error "Usage: az_pool_update --json <pool-config.json> [--pool-id <id>] [--autoscale] [--yes]"
+        _error "   or: az_pool_update --autoscale [pool_id] [--yes]"
         return 1
     fi
 
     _info "Pool: $pool_id"
-    _info "Configuration file: $pool_json"
-    _warning "This will UPDATE the pool configuration"
-    _warning "Note: Some properties (vmSize, targetDedicatedNodes) cannot be updated"
+    if [[ -n "$pool_json" ]]; then
+        if [[ ! -f "$pool_json" ]]; then
+            _error "Pool configuration file not found: $pool_json"
+            return 1
+        fi
+        _info "Configuration file: $pool_json"
+    fi
+    _info "Autoscale: $enable_autoscale"
 
-    if [[ "$skip_confirm" == false ]] && ! _confirm "Update pool '$pool_id' with this configuration?"; then
+    # Build confirmation message
+    local confirm_msg="Update pool '$pool_id'"
+    if [[ -n "$pool_json" ]]; then
+        confirm_msg="$confirm_msg with configuration from $pool_json"
+    fi
+    if [[ "$enable_autoscale" == true ]]; then
+        confirm_msg="$confirm_msg and enable autoscaling"
+    fi
+    confirm_msg="$confirm_msg?"
+
+    if [[ "$skip_confirm" == false ]] && ! _confirm "$confirm_msg"; then
         _warning "Pool update cancelled"
         return 0
     fi
 
-    _info "Updating pool..."
+    # Update pool configuration if JSON provided
+    if [[ -n "$pool_json" ]]; then
+        _warning "This will UPDATE the pool configuration"
+        _warning "Note: Some properties (vmSize, targetDedicatedNodes) cannot be updated"
+        _info "Updating pool configuration..."
 
-    if az batch pool set \
-        --account-name "$AZURE_BATCH_ACCOUNT_NAME" \
-        --account-endpoint "$AZURE_BATCH_ENDPOINT" \
-        --pool-id "$pool_id" \
-        --json-file "$pool_json"; then
+        if ! az batch pool set \
+            --account-name "$AZURE_BATCH_ACCOUNT_NAME" \
+            --account-endpoint "$AZURE_BATCH_ENDPOINT" \
+            --pool-id "$pool_id" \
+            --json-file "$pool_json"; then
+
+            _error "Failed to update pool configuration"
+            return 1
+        fi
 
         _success "Pool '$pool_id' updated successfully"
+    fi
+
+    # Enable autoscaling if requested
+    if [[ "$enable_autoscale" == true ]]; then
+        _info "Enabling autoscaling..."
+
+        if az batch pool autoscale enable \
+            --account-name "$AZURE_BATCH_ACCOUNT_NAME" \
+            --account-endpoint "$AZURE_BATCH_ENDPOINT" \
+            --pool-id "$pool_id" \
+            --auto-scale-formula "$DEFAULT_AUTOSCALE_FORMULA" \
+            --auto-scale-evaluation-interval "$DEFAULT_AUTOSCALE_INTERVAL"; then
+
+            _success "Autoscaling enabled for pool '$pool_id'"
+        else
+            _error "Failed to enable autoscaling"
+            return 1
+        fi
+    fi
+
+    if [[ -n "$pool_json" ]]; then
         _warning "If you updated the start task, existing nodes need to be recreated"
-        _info "To recreate nodes: az_pool_resize 0 && az_pool_resize 1"
-    else
-        _error "Failed to update pool"
-        return 1
+        _info "To recreate nodes: az_pool_resize 0 --yes && az_pool_resize 1"
     fi
 }
 
@@ -386,7 +446,7 @@ az_pool_list() {
     az batch pool list \
         --account-name "$AZURE_BATCH_ACCOUNT_NAME" \
         --account-endpoint "$AZURE_BATCH_ENDPOINT" \
-        --query "[].{id: id, state: state, vmSize: vmSize, dedicated: currentDedicatedNodes, runningTasks: runningTasksCount}" \
+        --query "[].{Id: id, State: state, VmSize: vmSize, Dedicated: currentDedicatedNodes, RunningTasks: runningTasksCount}" \
         -o table
 }
 
@@ -745,12 +805,12 @@ Environment Management:
   az_load_env [file]              Load environment from .env.azure (or specified file)
 
 Pool Management:
-  az_pool_create <json> [auto] [--yes]    Create pool from JSON config (autoscale: true/false)
-  az_pool_delete [pool_id] [--yes]        Delete pool (with confirmation)
-  az_pool_resize <0|1> [pool_id] [--yes]  Resize pool to 0 or 1 persistent nodes
-  az_pool_update <json> [pool_id] [--yes] Update pool configuration from JSON
-  az_pool_list                            List all pools
-  az_pool_show [pool_id]                  Show detailed pool information
+  az_pool_create --json <file> [--autoscale] [--yes]         Create pool from JSON config
+  az_pool_delete [pool_id] [--yes]                           Delete pool (with confirmation)
+  az_pool_resize <0|1> [pool_id] [--yes]                     Resize pool to 0 or 1 persistent nodes
+  az_pool_update --json <file> [--pool-id <id>] [--autoscale] [--yes]  Update pool configuration
+  az_pool_list                                               List all pools
+  az_pool_show [pool_id]                                     Show detailed pool information
 
 Node Management:
   az_node_list [pool_id]         List all nodes in pool
@@ -784,13 +844,10 @@ Examples:
   az_load_env
 
   # Create pool with autoscaling (interactive)
-  az_pool_create deployment/azure/pool-setup.json.ignore
+  az_pool_create --json deployment/azure/pool-setup.json.ignore --autoscale
 
-  # Create pool with autoscaling (non-interactive, for scripts)
-  az_pool_create deployment/azure/pool-setup.json.ignore --yes
-
-  # Create pool without autoscaling
-  az_pool_create deployment/azure/pool-setup.json.ignore false
+  # Create pool without autoscaling (non-interactive, for scripts)
+  az_pool_create --json deployment/azure/pool-setup.json.ignore --yes
 
   # Resize pool to 1 node (interactive)
   az_pool_resize 1
@@ -809,6 +866,21 @@ Examples:
 
   # Generate SAS token
   az_sas_generate setup.sh
+
+  # Enable autoscaling on default pool (interactive)
+  az_pool_update --autoscale
+
+  # Enable autoscaling on specific pool (non-interactive)
+  az_pool_update --autoscale --pool-id taxodactyl --yes
+
+  # Enable autoscaling using positional pool ID
+  az_pool_update --autoscale taxodactyl
+
+  # Update pool configuration and enable autoscaling
+  az_pool_update --json deployment/azure/pool-setup.json.ignore --autoscale
+
+  # Update pool configuration only (non-interactive)
+  az_pool_update --json deployment/azure/pool-setup.json.ignore --yes
 
 EOF
 }
