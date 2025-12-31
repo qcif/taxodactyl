@@ -93,7 +93,7 @@ workflow TAXODACTYL {
             def blastdb_name = params.blastdb.tokenize('/').last()
             def blastdb_uri = params.blastdb - "/${blastdb_name}"
             def blastdb_uri_glob = "${blastdb_uri}/*"
-            ch_refdata_blastdb = Channel.fromPath(blastdb_uri_glob, enableRemote=true)
+            ch_refdata_blastdb = Channel.fromPath(blastdb_uri_glob)
             blastdb_dir_ch = ch_refdata_blastdb.collect()
             BLAST_BLASTN (
                 ch_sequences,
