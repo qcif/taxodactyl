@@ -11,6 +11,7 @@ function App() {
   const [csvText, setCsvText] = useState('');
   const [fastaText, setFastaText] = useState('');
   const [validated, setValidated] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
   const [errorRows, setErrorRows] = useState([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
   const [highlightColumns, setHighlightColumns] = useState([]);
@@ -33,40 +34,43 @@ function App() {
     }
     formData.append("query_fasta", fastaFile);
 
-    setValidated(false);
-    setErrors(null);
-    setErrorRows([]);
+    setIsValidating(true);
+    
+    try{
+      const res = await fetch("http://127.0.0.1:8000/validate", {
+        method: "POST",
+        body: formData
+      });
 
-    const res = await fetch("http://127.0.0.1:8000/validate", {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      setValidated(true);
-      setCsvText(data.metadata_csv || "");
-      setFastaText(data.query_fasta || "");
-      setErrorRows([]);
-      setHighlightColumns([]);
-      setShowDownloadWarning(
-        data.message?.toLowerCase().includes("auto-fixed")
-  );
-    } else {
-      setErrors(data.error);
-      setCsvText(data.metadata_csv || "");
-      setEditedCsvText(data.metadata_csv);
-      setErrorRows(data.rows || []);
-      // Highlight column based on error type
-      if (data.error?.type === "invalid_taxa_of_interest") {
-        setHighlightColumns(["taxa_of_interest"]);
-      } else if (data.error?.type === "invalid_pmi") {
-        setHighlightColumns(["preliminary_id"]);
-      } else if (data.error?.type === "invalid_country") {
-        setHighlightColumns(["country"]);
+      const data = await res.json();
+      if (res.ok) {
+        setValidated(true);
+        setErrors(null);
+        setErrorRows([]);
+        setCsvText(data.metadata_csv || "");
+        setFastaText(data.query_fasta || "");
+        setHighlightColumns([]);
+        setShowDownloadWarning(
+          data.message?.toLowerCase().includes("auto-fixed")
+        );
       } else {
-        setHighlightColumns([]); 
+        setErrors(data.error);
+        setCsvText(data.metadata_csv || "");
+        setEditedCsvText(data.metadata_csv);
+        setErrorRows(data.rows || []);
+        // Highlight column based on error type
+        if (data.error?.type === "invalid_taxa_of_interest") {
+          setHighlightColumns(["taxa_of_interest"]);
+        } else if (data.error?.type === "invalid_pmi") {
+          setHighlightColumns(["preliminary_id"]);
+        } else if (data.error?.type === "invalid_country") {
+          setHighlightColumns(["country"]);
+        } else {
+          setHighlightColumns([]); 
+        }
       }
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -133,66 +137,123 @@ function App() {
 
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <h1>Taxodactyl input validation</h1>
+    <>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <div className="container">
+          <a className="navbar-brand" href="#">
+            DAFF Biosecurity workflows
+          </a>
+        </div>
+      </nav>
 
-      <div>
-        <label>Metadata CSV</label>
-        <input type="file" accept=".csv" onChange={e => setMetadataFile(e.target.files[0])} />
-      </div>
+      <div className="container mt-5 pt-5">
+        <div className="row justify-content-center">
+          <div className="col-lg-9">
+            <div className="card shadow">
+              <div className="card-body">
+                <h4 className="card-title mb-4">
+                  Taxodactyl Input Validation
+                </h4>
 
-      <div>
-        <label>Query FASTA</label>
-        <input type="file" accept=".fasta,.fa" onChange={e => setFastaFile(e.target.files[0])} />
-      </div>
+                {/* Upload section */}
+                <div className="form-group">
+                  <label className="font-weight-bold">Metadata CSV</label>
+                  <input
+                    type="file"
+                    className="form-control-file"
+                    accept=".csv"
+                    onChange={e => setMetadataFile(e.target.files[0])}
+                  />
+                </div>
 
-      <button onClick={() => handleValidate()}>Validate</button>
+                <div className="form-group">
+                  <label className="font-weight-bold">Query FASTA</label>
+                  <input
+                    type="file"
+                    className="form-control-file"
+                    accept=".fasta,.fa"
+                    onChange={e => setFastaFile(e.target.files[0])}
+                  />
+                </div>
 
-      {validated && (
-        <div style={{ marginTop: '20px' }}>
-          <div style={{ color: 'green', marginTop: '20px' }}>
-          ✔ Validation Passed
-          </div>
+                <div className="text-center mb-3">
+                  <button
+                    className="btn btn-primary btn-lg"
+                    onClick={handleValidate}
+                    disabled={isValidating}
+                  >
+                    {isValidating ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm mr-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Validating...
+                      </>
+                    ) : (
+                      <>
+                        {/* <i className="fas fa-check mr-2"></i> */}
+                        Validate
+                      </>
+                    )}
+                  </button>
+                </div>
 
-          {showDownloadWarning && (
-            <div
-              style={{
-                background: "#fff3cd",
-                color: "#856404",
-                padding: "10px",
-                border: "1px solid #ffeeba",
-                borderRadius: "4px",
-                marginBottom: "10px"
-              }}
-            >
-              ⚠ <strong>Important:</strong> The uploaded files were 
-              corrected during validation. Please download and use the validated CSV
-              and FASTA files for future use.
+                {/* Success */}
+                {validated && (
+                  <>
+                    <div className="alert alert-success">
+                      <i className="fas fa-check-circle mr-2"></i>
+                      Validation passed
+                    </div>
+
+                    {showDownloadWarning && (
+                      <div className="alert alert-warning">
+                        <strong>Important:</strong> The uploaded files were
+                        auto-corrected during validation. Please download and
+                        use the validated files.
+                      </div>
+                    )}
+
+                    <div className="text-center">
+                      <button
+                        className="btn btn-success"
+                        onClick={() =>
+                          downloadCsvFastaAsZip(csvText, fastaText, 150)
+                        }
+                      >
+                        <i className="fas fa-download mr-2"></i>
+                        Download validated CSVs & FASTAs
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Errors */}
+                {errors && (
+                  <div className="alert alert-danger mt-4">
+                    <h5>Validation errors</h5>
+                    <pre className="mb-0">{errors.message}</pre>
+                  </div>
+                )}
+
+                {errors && (
+                  <CsvEditor
+                    csvText={csvText}
+                    onSave={handleValidate}
+                    errorRows={errorRows}
+                    onChange={setEditedCsvText}
+                    highlightColumns={highlightColumns}
+                  />
+                )}
+              </div>
             </div>
-          )}
-          
-          <button
-            onClick={() => downloadCsvFastaAsZip(csvText, fastaText, 150)}
-          >
-            Download validated CSVs and FASTAs (ZIP)
-          </button>
+          </div>
         </div>
-      )}
-
-      {errors && (
-        <div style={{ color: 'red', marginTop: '20px' }}>
-          <h3>Validation Errors:</h3>
-          <pre>{errors.message}</pre>
-          <CsvEditor 
-            csvText={csvText} 
-            onSave={handleValidate} 
-            errorRows={errorRows}
-            onChange={setEditedCsvText}
-            highlightColumns={highlightColumns}
-          />
-        </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 

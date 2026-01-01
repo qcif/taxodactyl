@@ -46,9 +46,9 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
   if (!rows.length) return null;
 
   return (
-    <div style={{ marginTop: 20 }}>
-      <table border="1" cellPadding="5">
-        <thead>
+    <div className="mt-4">
+      <table className="table table-sm table-bordered">
+        <thead className="thead-light">
           <tr>
             {header.map(col => (
               <th key={col}>{col}</th>
@@ -59,9 +59,17 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
           {rows.map((row, i) => (
             <tr key={i}>
               {header.map(col => (
-                <td key={col} style={{ backgroundColor: highlightColumns.includes(col) ? '#fff3cd' : 'inherit' }}> 
+                <td
+                  key={col}
+                  className={
+                    highlightColumns.includes(col)
+                      ? "bg-warning"
+                      : ""
+                  }
+                >
                   <input
-                    value={row[col] ?? ''}
+                    className="form-control form-control-sm"
+                    value={row[col] ?? ""}
                     onChange={e =>
                       handleCellChange(i, col, e.target.value)
                     }
