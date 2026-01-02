@@ -54,6 +54,13 @@ azcopy copy \
   --recursive \
   --overwrite=ifSourceNewer \
   --log-level INFO
+
+azcopy copy \
+  ./taxdump/ \
+  "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/" \
+  --recursive   \
+  --overwrite=ifSourceNewer   \
+  --log-level INFO
 ```
 
 **Important**: The blob path should include the virtual directory that matches where Nextflow will expect to find it on the NVMe mount point.
