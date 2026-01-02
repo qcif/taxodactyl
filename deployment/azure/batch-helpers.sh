@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Default values
 DEFAULT_POOL_ID="taxodactyl"
-DEFAULT_AUTOSCALE_FORMULA='initialNodes=0; maxNodes=1; demand = avg($ActiveTasks.GetSample(TimeInterval_Minute * 1)); $TargetDedicatedNodes = min(max(demand, initialNodes), maxNodes);'
+DEFAULT_AUTOSCALE_FORMULA='demand = avg($ActiveTasks.GetSample(TimeInterval_Minute * 5)) + avg($PendingTasks.GetSample(TimeInterval_Minute * 5)); $TargetDedicatedNodes = min(max(ceil(demand), 0), 1);'
 DEFAULT_AUTOSCALE_INTERVAL="PT5M"
 
 #

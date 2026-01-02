@@ -87,8 +87,8 @@ if [[ -z "${AZURE_BATCH_ACCESS_KEY:-}" ]]; then
 fi
 
 # Azure Batch node paths (staged by start task to NVMe)
-BLASTDB_PATH="/mnt/nvme/refdata/blast/core_nt"
-TAXDB_PATH="/mnt/nvme/refdata/taxdump"
+BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"
+TAXDB_PATH="/mnt/nvme/refdata/taxdump/taxdump"
 
 # Show configuration
 echo ""
@@ -121,6 +121,7 @@ nextflow run main.nf \
     --outdir "$OUTDIR" \
     -profile azure \
     --taxdb "$TAXDB_PATH" \
+    --temp_root_dir "/tmp/taxodactyl_tmp" \
     --ncbi_api_key "${NCBI_API_KEY:-}" \
     --ncbi_user_email "${NCBI_USER_EMAIL:-}" \
     --analyst_name "${ANALYST_NAME:-}" \
