@@ -89,7 +89,6 @@
                 "taxdb": {
                     "type": "string",
                     "format": "directory-path",
-                    "exists": true,
                     "description": "The directory where NCBI's taxdump files can be found.",
                     "errorMessage": "Parameter 'taxdb' must be a valid directory path."
                 },
