@@ -135,6 +135,20 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  const resetValidateInputs = () => {
+    setMetadataFile(null);
+    setFastaFile(null);
+    setEditedCsvText(null);
+    setErrors(null);
+    setCsvText("");
+    setFastaText("");
+    setValidated(false);
+    setErrorRows([]);
+    setShowDownloadWarning(false);
+    setHighlightColumns([]);
+  };
+
+
 
   return (
     <>
@@ -155,6 +169,18 @@ function App() {
                 <h4 className="card-title mb-4">
                   Taxodactyl Input Validation
                 </h4>
+
+                {(validated || errors) && (
+                  <div className="mb-3 text-right">
+                    <button
+                      className="btn btn-outline-secondary"
+                      onClick={resetValidateInputs}
+                    >
+                      <i className="fas fa-redo mr-2"></i>
+                      Upload a new dataset
+                    </button>
+                  </div>
+                )}
 
                 {/* Upload section */}
                 <div className="form-group">
@@ -190,13 +216,12 @@ function App() {
                           role="status"
                           aria-hidden="true"
                         ></span>
-                        Validating...
-                      </>
-                    ) : (
-                      <>
-                        {/* <i className="fas fa-check mr-2"></i> */}
-                        Validate
-                      </>
+                        {validated || errors ? "Continuing validation..." : "Validating..."}
+                          </>
+                        ) : (
+                          <>
+                            {validated || errors ? "Continue validation" : "Validate"}
+                          </>
                     )}
                   </button>
                 </div>
