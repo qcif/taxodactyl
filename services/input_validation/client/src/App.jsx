@@ -6,6 +6,7 @@ import CsvEditor from './components/CsvEditor';
 function App() {
   const [metadataFile, setMetadataFile] = useState(null);
   const [fastaFile, setFastaFile] = useState(null);
+  const [fileInputKey, setFileInputKey] = useState(0);
   const [editedCsvText, setEditedCsvText] = useState(null);
   const [errors, setErrors] = useState(null);
   const [csvText, setCsvText] = useState('');
@@ -146,6 +147,7 @@ function App() {
     setErrorRows([]);
     setShowDownloadWarning(false);
     setHighlightColumns([]);
+    setFileInputKey(prev => prev + 2);
   };
 
 
@@ -186,6 +188,7 @@ function App() {
                 <div className="form-group">
                   <label className="font-weight-bold">Metadata CSV</label>
                   <input
+                    key={fileInputKey}
                     type="file"
                     className="form-control-file"
                     accept=".csv"
@@ -196,6 +199,7 @@ function App() {
                 <div className="form-group">
                   <label className="font-weight-bold">Query FASTA</label>
                   <input
+                    key={fileInputKey + 1}
                     type="file"
                     className="form-control-file"
                     accept=".fasta,.fa"
