@@ -25,6 +25,37 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
     }
   }, [csvText, errorRows]);
 
+  const handleHeaderChange = (oldName, newName) => {
+    if (!newName || newName === oldName) return;
+
+    const newHeader = header.map(h =>
+      h === oldName ? newName : h
+    );
+    setHeader(newHeader);
+
+    const rebuiltRows = fullRows.map(row => {
+      const newRow = {};
+      newHeader.forEach(col => {
+        if (col === newName) {
+          newRow[col] = row[oldName];
+        } else {
+          newRow[col] = row[col];
+        }
+      });
+      return newRow;
+    });
+
+    setFullRows(rebuiltRows);
+
+    const newCsvText = Papa.unparse({
+      fields: newHeader,
+      data: rebuiltRows
+    });
+
+    onChange(newCsvText);
+  };
+
+
   const handleCellChange = (rowIndex, column, value) => {
     const updatedRows = [...rows];
     updatedRows[rowIndex] = {
@@ -51,7 +82,17 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
         <thead className="thead-light">
           <tr>
             {header.map(col => (
-              <th key={col}>{col}</th>
+              <th key={col}>
+                <input
+                  className={`form-control form-control-sm font-weight-bold ${
+                    highlightColumns.includes(col) ? 'bg-warning' : ''
+                  }`}
+                  value={col}
+                  onChange={e =>
+                    handleHeaderChange(col, e.target.value.trim())
+                  }
+                />
+              </th>
             ))}
           </tr>
         </thead>

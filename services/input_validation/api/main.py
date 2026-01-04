@@ -232,6 +232,25 @@ async def validate(
                     "metadata_csv": csv_text,
                 }
             )
+        
+        if parsed.type == "invalid_required_columns":
+            logger.warning(
+                "Missing required CSV columns | columns=%s",
+                parsed.value,
+            )
+
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed_error_to_dict(parsed),
+                    "invalid_columns": parsed.value,
+                    "metadata_csv": csv_text,
+                }
+            )
 
         with open(metadata_path, 'r', encoding='utf-8') as f:
             csv_text = f.read()

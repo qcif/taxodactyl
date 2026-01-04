@@ -177,6 +177,22 @@ def parse_errors(stderr: str) -> ParsedError:
             message=stderr.strip(),
             value=validate_err_msg6.group("dup_id"),
         )
+    
+    validate_err_msg7 = re.search(
+        r'missing required column\(s\):(?P<columns>[A-Za-z0-9_, ]+)\.',
+        stderr
+    )
+    if validate_err_msg7:
+        cols = [
+            c.strip()
+            for c in validate_err_msg7.group("columns").split(",")
+        ]
+        logger.info("Parsed error: invalid_required_columns | %s", cols)
+        return ParsedError(
+            type="invalid_required_columns",
+            message=stderr.strip(),
+            value=cols,
+        )
 
     # Generic FASTA errors
     if 'FASTAFormatError' in stderr:
