@@ -167,6 +167,17 @@ def parse_errors(stderr: str) -> ParsedError:
             message=message
         )
 
+    validate_err_msg6 = re.search(
+        r"Duplicate sequence ID: '(?P<dup_id>[^']+)'",
+        stderr
+    )
+    if validate_err_msg6:
+        return ParsedError(
+            type="duplicate_fasta_id",
+            message=stderr.strip(),
+            value=validate_err_msg6.group("dup_id"),
+        )
+
     # Generic FASTA errors
     if 'FASTAFormatError' in stderr:
         logger.error("FASTA format error")
@@ -232,6 +243,30 @@ def fix_sample_id_spaces(
     SeqIO.write(records, fasta_path, "fasta")
 
     return fixed_sample_id
+
+
+def remove_duplicate_fasta_ids(fasta_path: Path):
+    """
+    Remove duplicate sequence IDs in the FASTA file.
+    Keeps only the first occurrence of each ID.
+    Modifies the FASTA file in place.
+    """
+    records = list(SeqIO.parse(fasta_path, "fasta"))
+    seen_ids = set()
+    unique_records = []
+
+    for rec in records:
+        if rec.id in seen_ids:
+            continue  # skip duplicate
+        seen_ids.add(rec.id)
+        unique_records.append(rec)
+
+    if len(records) != len(unique_records):
+        logger.info(
+            "Removed %s duplicate FASTA IDs",
+            len(records) - len(unique_records)
+        )
+        SeqIO.write(unique_records, fasta_path, "fasta")
 
 
 def find_taxa_zero_rows(metadata_csv_path: Path) -> List[int]:
