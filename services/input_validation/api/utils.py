@@ -193,6 +193,23 @@ def parse_errors(stderr: str) -> ParsedError:
             message=stderr.strip(),
             value=cols,
         )
+    
+    validate_err_msg8 = re.search(
+        r'Locus "(?P<value>[^"]+)" is not in the list of permitted loci',
+        stderr
+    )
+    if validate_err_msg8:
+        value = validate_err_msg8.group("value")
+        logger.info("Parsed error: invalid_locus | %s", value)
+        message = (
+            f'Locus "{value}" is invalid. '
+            f'Please replace it with one of the permitted loci.'
+        )
+        return ParsedError(
+            type="invalid_locus",
+            value=value,
+            message=message,
+        )
 
     # Generic FASTA errors
     if 'FASTAFormatError' in stderr:
@@ -357,4 +374,31 @@ def find_invalid_country_rows(
                 bad_rows.append(idx)
 
     logger.info("Invalid country rows found | count=%s", len(bad_rows))
+    return bad_rows
+
+
+def find_invalid_locus_rows(
+    metadata_csv_path: Path,
+    bad_value: str
+) -> List[int]:
+    """
+    Return indexes (0-based, data rows only) where locus == bad_value
+    """
+    logger.debug("Scanning for invalid locus | %s", bad_value)
+    bad_rows: list[int] = []
+
+    with open(metadata_csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for idx, row in enumerate(reader):
+            value = (row.get("locus") or "").strip()
+            if value.lower() == bad_value.lower():
+                logger.debug(
+                    "Invalid locus | row=%s | value=%s | sample_id=%s",
+                    idx,
+                    value,
+                    row.get("sample_id"),
+                )
+                bad_rows.append(idx)
+
+    logger.info("Invalid locus rows found | count=%s", len(bad_rows))
     return bad_rows
