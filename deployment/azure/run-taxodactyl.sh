@@ -21,10 +21,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+PID=$$
+RUN_ID="$(date +"%Y%m%d_%H%M%S")$PID"
+
 # Default values
 METADATA="scripts/tests/test-data/metadata.csv"
 SEQUENCES="scripts/tests/test-data/queries.fasta"
-OUTDIR="output"
+OUTDIR="/mnt/nvme/output/$RUN_ID"
 RESUME=""
 
 # Parse command line arguments

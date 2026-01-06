@@ -93,7 +93,7 @@ workflow TAXODACTYL {
             def blastdb_name = params.blastdb.tokenize('/').last()
             def blastdb_uri = params.blastdb - "/${blastdb_name}"
             def blastdb_uri_glob = "${blastdb_uri}/*"
-            ch_refdata_blastdb = Channel.fromPath(blastdb_uri_glob)
+            ch_refdata_blastdb = channel.fromPath(blastdb_uri_glob)
             blastdb_dir_ch = ch_refdata_blastdb.collect()
             BLAST_BLASTN (
                 ch_sequences,
@@ -135,8 +135,8 @@ workflow TAXODACTYL {
         // .view()
         .map { folder, files -> 
             // Handle cases where FASTA file may be missing (no hits found)
-            def jsonFile = files.find { it.name.endsWith('.json') }
-            def fastaFile = files.find { it.name.endsWith('.fasta') }
+            def jsonFile = files.find { file -> file.name.endsWith('.json') }
+            def fastaFile = files.find { file -> file.name.endsWith('.fasta') }
 
 
             // If no FASTA file exists, create an empty placeholder in a work folder
@@ -156,7 +156,7 @@ workflow TAXODACTYL {
         ch_sequences,
         ch_metadata
     )
-    
+
 
     // Prepare query sequences for alignment
     ch_query_fasta = ch_sequences
@@ -217,7 +217,7 @@ workflow TAXODACTYL {
         .map { folderVal, filePath -> [folderVal, filePath.parent] }  
 
     // Dump pipeline parameters to JSON for report
-    ch_params_json = Channel.fromPath(dumpParametersToJSON(params.outdir))
+    ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
 
     // Prepare mock source diversity for cases with 0 or >3 candidates
     ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
