@@ -66,7 +66,11 @@ function App() {
           setHighlightColumns(["preliminary_id"]);
         } else if (data.error?.type === "invalid_country") {
           setHighlightColumns(["country"]);
-        } else {
+        } 
+        else if (data.error?.type === "invalid_locus") {
+          setHighlightColumns(["locus"]);
+        }
+        else {
           setHighlightColumns([]); 
         }
       }

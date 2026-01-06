@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from utils import (
     find_invalid_country_rows,
+    find_invalid_locus_rows,
     save_upload_to_tempfile,
     run_p0_validation,
     parse_errors,
@@ -117,7 +118,7 @@ async def validate(
                 bad_sample_id,
             )
 
-            if bad_sample_id:
+            if bad_sample_id and " " in bad_sample_id:
                 fixed_sample_id = fix_sample_id_spaces(
                     metadata_path,
                     query_path,
@@ -232,7 +233,7 @@ async def validate(
                     "metadata_csv": csv_text,
                 }
             )
-        
+
         if parsed.type == "invalid_required_columns":
             logger.warning(
                 "Missing required CSV columns | columns=%s",
@@ -248,6 +249,31 @@ async def validate(
                     "ok": False,
                     "error": parsed_error_to_dict(parsed),
                     "invalid_columns": parsed.value,
+                    "metadata_csv": csv_text,
+                }
+            )
+
+        if parsed.type == "invalid_locus":
+            rows = find_invalid_locus_rows(
+                metadata_path,
+                parsed.value
+            )
+            logger.warning(
+                "Invalid locus detected | value=%s | rows=%s",
+                parsed.value,
+                rows,
+            )
+
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed_error_to_dict(parsed),
+                    "rows": rows,
+                    # "column": "preliminary_id",
                     "metadata_csv": csv_text,
                 }
             )
