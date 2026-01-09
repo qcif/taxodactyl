@@ -10,7 +10,8 @@ process VALIDATE_INPUT {
     path(metadata_file) // Copied metadata file
 
     output:
-    val true // Output: validation success flag
+    val true, emit: ready // Output: validation success flag
+    path("output/run.log"), emit: validation_log // Output: log file
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
