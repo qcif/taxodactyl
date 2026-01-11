@@ -5,7 +5,6 @@ import re
 from pathlib import Path
 from typing import List
 import csv
-from Bio import SeqIO
 from dataclasses import dataclass
 from typing import Optional
 import logging
@@ -166,17 +165,6 @@ def parse_errors(stderr: str) -> ParsedError:
             value=value,
             message=message
         )
-
-    # validate_err_msg6 = re.search(
-    #     r"Duplicate sequence ID: '(?P<dup_id>[^']+)'",
-    #     stderr
-    # )
-    # if validate_err_msg6:
-    #     return ParsedError(
-    #         type="duplicate_fasta_id",
-    #         message=stderr.strip(),
-    #         value=validate_err_msg6.group("dup_id"),
-    #     )
 
     validate_err_msg7 = re.search(
         r'missing required column\(s\):(?P<columns>[A-Za-z0-9_, ]+)\.',

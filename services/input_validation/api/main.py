@@ -8,8 +8,6 @@ from utils import (
     save_upload_to_tempfile,
     run_p0_validation,
     parse_errors,
-    # fix_sample_id_spaces,
-    # remove_duplicate_fasta_ids,
     find_taxa_zero_rows,
     find_invalid_pmi
 )
@@ -110,28 +108,6 @@ async def validate(
             parsed.type,
             parsed.message,
         )
-
-        # if parsed.type == "duplicate_fasta_id":
-        #     logger.warning("Duplicate FASTA ID detected: %s", parsed.value)
-        #     # Auto-remove duplicates
-        #     remove_duplicate_fasta_ids(query_path)
-        #     logger.info("Duplicate FASTA IDs removed, re-running validation")
-        #     rerun_result = run_p0_validation(metadata_path, query_path)
-        #     if rerun_result.ok:
-        #         with open(metadata_path, "r", encoding="utf-8") as f:
-        #             csv_text = f.read()
-        #         with open(query_path, "r", encoding="utf-8") as f:
-        #             fasta_text = f.read()
-        #         return {
-        #             "ok": True,
-        #             "message":
-        #                 f'Validation passed after removing'
-        #                 f'duplicate FASTA ID: "{parsed.value}"',
-        #             "metadata_csv": csv_text,
-        #             "query_fasta": fasta_text,
-        #         }
-
-        #     parsed = parse_errors(rerun_result.error or "")
 
         if parsed.type == "invalid_taxa_of_interest":
             rows = find_taxa_zero_rows(metadata_path)
