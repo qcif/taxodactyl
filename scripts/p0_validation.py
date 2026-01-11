@@ -7,6 +7,13 @@ import os
 import re
 from pathlib import Path
 
+import logging
+logger = logging.getLogger("taxon.validate")
+logging.basicConfig(
+    level=logging.INFO,  # change to DEBUG when debugging
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Data import IUPACData
@@ -40,6 +47,28 @@ def main():
     config.update_from_args(args)
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)
+    _validate_metadata(args.metadata_csv, ids, bold=args.bold)
+
+
+def validate_inputs(
+    metadata_csv: Path,
+    query_fasta: Path,
+    bold: bool = False,
+    ignore_seq_count: bool = False,
+):
+    """Validate user inputs provided programatically."""
+    args = argparse.Namespace(
+        metadata_csv=metadata_csv,
+        query_fasta=query_fasta,
+        bold=bold,
+    )
+    config.update_from_args(args)
+    _autofix_sample_id_spaces(
+        metadata_path=metadata_csv,
+        fasta_path=query_fasta,
+    )
+    _autofix_duplicate_fasta_ids(query_fasta)
+    ids = _validate_fasta(args.query_fasta, ignore_seq_count=ignore_seq_count)
     _validate_metadata(
         args.metadata_csv,
         ids,
@@ -319,6 +348,97 @@ def _validate_metadata_sample_id(value):
             f' permitted in the sample ID. Must be alphanumeric, underscore or'
             ' dash.'
         )
+
+
+def _autofix_sample_id_spaces(
+    metadata_path: Path,
+    fasta_path: Path,
+) -> bool:
+    """
+    Replace spaces with underscores in sample_id
+    in BOTH metadata CSV and FASTA.
+    Returns True if any change was made.
+    """
+    changed = False
+
+    # --- CSV ---
+    with metadata_path.open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        fieldnames = reader.fieldnames
+
+    for row in rows:
+        sample_id = row.get(config.inputs.metadata_csv_header["sample_id"])
+        if sample_id and " " in sample_id:
+            row[config.inputs.metadata_csv_header["sample_id"]] = (
+                sample_id.replace(" ", "_")
+            )
+            changed = True
+
+    if changed:
+        with metadata_path.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    # --- FASTA ---
+    records = list(SeqIO.parse(fasta_path, "fasta"))
+    fasta_changed = False
+    for rec in records:
+        if " " in rec.description.strip():
+            logger.debug("[FASTA BEFORE FIX] rec.id:", repr(rec.id))
+            logger.debug(
+                "[FASTA BEFORE FIX] rec.description.strip():",
+                repr(rec.description.strip())
+            )
+            new_id = rec.description.strip().replace(" ", "_")
+            rec.id = new_id
+            rec.name = new_id
+            rec.description = new_id
+            fasta_changed = True
+            logger.info(f"[FASTA FIX] Updated sequence ID: {new_id}")
+
+    if fasta_changed:
+        SeqIO.write(records, fasta_path, "fasta")
+
+    return changed or fasta_changed
+
+
+def _autofix_duplicate_fasta_ids(fasta_path: Path) -> bool:
+    """
+    Remove duplicate FASTA sequence IDs.
+    Keeps the first occurrence.
+    Returns True if any duplicates were removed.
+    """
+    records = list(SeqIO.parse(fasta_path, "fasta"))
+    seen = set()
+    unique = []
+    duplicate_id_counts = {}
+    changed = False
+
+    for rec in records:
+        if rec.id in seen:
+            changed = True
+            duplicate_id_counts[rec.id] += 1
+            continue
+        seen.add(rec.id)
+        duplicate_id_counts[rec.id] = 1
+        unique.append(rec)
+
+    for seq_id, n in duplicate_id_counts.items():
+        if n > 1:
+            logger.warning(f"Duplicate sample id {seq_id} appears {n} times")
+
+    if changed:
+        SeqIO.write(unique, fasta_path, "fasta")
+        for seq_id, n in duplicate_id_counts.items():
+            if n > 1:
+                logger.info(
+                    f"Duplicate sample id after auto removing: "
+                    f"{seq_id}: 1 time"
+                )
+
+    return changed
 
 
 def _validate_metadata_locus(value, bold=False):

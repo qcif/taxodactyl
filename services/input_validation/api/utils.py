@@ -167,17 +167,17 @@ def parse_errors(stderr: str) -> ParsedError:
             message=message
         )
 
-    validate_err_msg6 = re.search(
-        r"Duplicate sequence ID: '(?P<dup_id>[^']+)'",
-        stderr
-    )
-    if validate_err_msg6:
-        return ParsedError(
-            type="duplicate_fasta_id",
-            message=stderr.strip(),
-            value=validate_err_msg6.group("dup_id"),
-        )
-    
+    # validate_err_msg6 = re.search(
+    #     r"Duplicate sequence ID: '(?P<dup_id>[^']+)'",
+    #     stderr
+    # )
+    # if validate_err_msg6:
+    #     return ParsedError(
+    #         type="duplicate_fasta_id",
+    #         message=stderr.strip(),
+    #         value=validate_err_msg6.group("dup_id"),
+    #     )
+
     validate_err_msg7 = re.search(
         r'missing required column\(s\):(?P<columns>[A-Za-z0-9_, ]+)\.',
         stderr
@@ -193,7 +193,7 @@ def parse_errors(stderr: str) -> ParsedError:
             message=stderr.strip(),
             value=cols,
         )
-    
+
     validate_err_msg8 = re.search(
         r'Locus "(?P<value>[^"]+)" is not in the list of permitted loci',
         stderr
@@ -224,82 +224,28 @@ def parse_errors(stderr: str) -> ParsedError:
     )
 
 
-def fix_sample_id_spaces(
-        metadata_path: Path,
-        fasta_path: Path,
-        bad_sample_id: str):
-    """
-    Replace spaces with underscores in sample_id
-    in BOTH metadata CSV and FASTA.
-    """
-    logger.info("Fixing sample_id spaces | %s", bad_sample_id)
-    fixed_sample_id = bad_sample_id.replace(" ", "_")
+# def remove_duplicate_fasta_ids(fasta_path: Path):
+#     """
+#     Remove duplicate sequence IDs in the FASTA file.
+#     Keeps only the first occurrence of each ID.
+#     Modifies the FASTA file in place.
+#     """
+#     records = list(SeqIO.parse(fasta_path, "fasta"))
+#     seen_ids = set()
+#     unique_records = []
 
-    # Fix CSV
-    with open(metadata_path, "r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-        fieldnames = reader.fieldnames
+#     for rec in records:
+#         if rec.id in seen_ids:
+#             continue  # skip duplicate
+#         seen_ids.add(rec.id)
+#         unique_records.append(rec)
 
-    changed = False
-    for row in rows:
-        space_in_id = row.get("sample_id", "")
-        if " " in space_in_id:
-            row["sample_id"] = space_in_id.replace(" ", "_")
-            changed = True
-
-    if changed:
-        with open(metadata_path, "w", encoding="utf-8", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
-        logger.info("Updated sample_id in metadata CSV")
-
-    # Fix FASTA
-    records = list(SeqIO.parse(fasta_path, "fasta"))
-    changed = False
-    for rec in records:
-        if " " in rec.description.strip():
-            new_id = rec.description.strip().replace(" ", "_")
-            logger.debug("FASTA record updated | %s → %s", rec.id, new_id)
-            rec.id = new_id
-            rec.name = new_id
-            rec.description = new_id
-            changed = True
-            print("[DEBUG] rec.id:", repr(rec.id))
-            print("[DEBUG] rec.description.strip():",
-                  repr(rec.description.strip()))
-
-    if not changed:
-        print(f"[WARN] No FASTA record matched '{bad_sample_id}'")
-
-    SeqIO.write(records, fasta_path, "fasta")
-
-    return fixed_sample_id
-
-
-def remove_duplicate_fasta_ids(fasta_path: Path):
-    """
-    Remove duplicate sequence IDs in the FASTA file.
-    Keeps only the first occurrence of each ID.
-    Modifies the FASTA file in place.
-    """
-    records = list(SeqIO.parse(fasta_path, "fasta"))
-    seen_ids = set()
-    unique_records = []
-
-    for rec in records:
-        if rec.id in seen_ids:
-            continue  # skip duplicate
-        seen_ids.add(rec.id)
-        unique_records.append(rec)
-
-    if len(records) != len(unique_records):
-        logger.info(
-            "Removed %s duplicate FASTA IDs",
-            len(records) - len(unique_records)
-        )
-        SeqIO.write(unique_records, fasta_path, "fasta")
+#     if len(records) != len(unique_records):
+#         logger.info(
+#             "Removed %s duplicate FASTA IDs",
+#             len(records) - len(unique_records)
+#         )
+#         SeqIO.write(unique_records, fasta_path, "fasta")
 
 
 def find_taxa_zero_rows(metadata_csv_path: Path) -> List[int]:
