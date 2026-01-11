@@ -23,6 +23,7 @@ process REPORT {
 
     output:
     path("$query_folder/*.html"), emit: html_report // Output: final HTML report
+    path("output/run.log"), emit: report_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 

@@ -22,6 +22,7 @@ include { REPORT } from '../modules/report/main'
 include { VALIDATE_INPUT } from '../modules/validate/input/main'
 include { BOLD_SEARCH } from '../modules/bold/search/main'
 include { PREPARE_INPUTS } from '../modules/prepare/inputs/main'
+include { PREPARE_LOG } from '../modules/prepare/log/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +71,7 @@ workflow TAXODACTYL {
             ch_env_var_file,
             ch_sequences,
             ch_metadata,
-            VALIDATE_INPUT.out
+            VALIDATE_INPUT.out.ready
         )
         ch_hits = BOLD_SEARCH.out.hits
 
@@ -81,7 +82,7 @@ workflow TAXODACTYL {
             // Mock BLAST for testing
             MOCK_BLASTN (
                 ch_sequences,
-                VALIDATE_INPUT.out,
+                VALIDATE_INPUT.out.ready,
                 file(params.blast_xml)
             )
             ch_blast_output = MOCK_BLASTN.out.blast_output
@@ -90,7 +91,7 @@ workflow TAXODACTYL {
             // Real BLAST
             BLAST_BLASTN (
                 ch_sequences,
-                VALIDATE_INPUT.out
+                VALIDATE_INPUT.out.ready
             )
             ch_blast_output = BLAST_BLASTN.out.blast_output
             ch_blast_versions = BLAST_BLASTN.out.versions
@@ -115,7 +116,7 @@ workflow TAXODACTYL {
             ch_metadata
         )
 
-        ch_taxonomy_file = EXTRACT_TAXONOMY.out
+        ch_taxonomy_file = EXTRACT_TAXONOMY.out.taxonomy
 
     }
 
@@ -266,6 +267,30 @@ workflow TAXODACTYL {
         ch_taxonomy_file,
         ch_metadata,
         ch_sequences
+    )
+
+    // Collect all run.log files from processes using p\d_ Python scripts
+    ch_all_logs = VALIDATE_INPUT.out.validation_log
+        .mix(EXTRACT_HITS.out.extract_hits_log)
+        .mix(EXTRACT_CANDIDATES.out.extract_candidates_log)
+        .mix(EVALUATE_SOURCE_DIVERSITY.out.source_diversity_log)
+        .mix(EVALUATE_DATABASE_COVERAGE.out.db_coverage_log)
+        .mix(REPORT.out.report_log)
+    
+    // Add BOLD_SEARCH log if BOLD is used
+    if (params.db_type == 'bold') {
+        ch_all_logs = ch_all_logs.mix(BOLD_SEARCH.out.bold_search_log)
+    } else {
+        // Add EXTRACT_TAXONOMY log if BLAST is used
+        ch_all_logs = ch_all_logs.mix(EXTRACT_TAXONOMY.out.extract_taxonomy_log)
+    }
+    
+    ch_all_logs = ch_all_logs
+        .map { file -> file.text + '\n---------\n' }
+        .collectFile(name: 'run.log', newLine: false)
+
+    PREPARE_LOG (
+        ch_all_logs
     )
 
     ch_homology_trees = FASTME.out.nwk

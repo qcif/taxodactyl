@@ -11,6 +11,7 @@ process BOLD_SEARCH {
     output:
     path(params.bold_taxonomy_json), emit: taxonomy // Output taxonomy JSON file
     tuple path("query_*/$params.hits_json_filename"), path("query_*/$params.hits_fasta_filename"), emit: hits // Output tuple: hits JSON and FASTA files
+    path("output/run.log"), emit: bold_search_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/$params.hits_fasta_filename" // Publish hit FASTA files to output directory
