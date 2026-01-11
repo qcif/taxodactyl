@@ -11,7 +11,8 @@ process EXTRACT_TAXONOMY {
     path(metadata_file) // Copied metadata file
 
     output:
-    path params.taxonomy_filename // Output taxonomy file
+    path params.taxonomy_filename, emit: taxonomy // Output taxonomy file
+    path("output/run.log"), emit: extract_taxonomy_log // Output: log file
 
     script:
     """

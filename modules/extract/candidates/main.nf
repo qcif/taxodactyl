@@ -24,6 +24,8 @@ process EXTRACT_CANDIDATES {
     path("$query_folder/$params.candidates_csv_filename") // Candidates CSV
     path("$query_folder/$params.candidates_fasta_filename") // Candidates FASTA
     path("$query_folder/$params.boxplot_img_filename"), optional: true // Optional boxplot image
+    path("output/run.log"),    emit: extract_candidates_log // Output run log
+    
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename" // Publish phylogeny FASTA

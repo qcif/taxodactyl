@@ -14,7 +14,7 @@ process EXTRACT_HITS {
     output:
     path(params.accessions_filename), emit: accessions // Output: accessions file
     tuple path("query_*/$params.hits_json_filename"), path("query_*/$params.hits_fasta_filename"), emit: hits // Output: tuple of hits JSON and FASTA files
-    path("run.log"), optional: true, emit: extract_hits_log // Output: log file (optional)
+    path("output/run.log"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/$params.hits_fasta_filename" // Publish hit FASTA files to output directory
