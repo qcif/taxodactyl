@@ -5,14 +5,6 @@ import csv
 import os
 import re
 from pathlib import Path
-
-import logging
-logger = logging.getLogger("taxon.validate")
-logging.basicConfig(
-    level=logging.INFO,  # change to DEBUG when debugging
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-)
-
 from Bio import SeqIO
 from Bio.Data import IUPACData
 
@@ -20,6 +12,13 @@ from src.utils import countries, existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
 from src.utils.errors import FASTAFormatError, MetadataFormatError
+
+import logging
+logger = logging.getLogger("taxon.validate")
+logging.basicConfig(
+    level=logging.INFO,  # change to DEBUG when debugging
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
 
 config = Config()
 
