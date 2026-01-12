@@ -15,7 +15,7 @@
 </p>
 
 > [!NOTE]
-> - The BOLD database search functionality is currently not operational. Please use the BLAST Core Nucleotide Database option instead.
+> The BOLD database search functionality is currently not operational. Please use the BLAST Core Nucleotide Database option instead.
 
 ### Quick links
 
