@@ -14,7 +14,7 @@
     <img src="docs/images/taxodactyl_diagram.png" alt="taxodactyl_diagram" width="350"/>
 </p>
 
-> [!NOTE]
+> [!IMPORTANT]
 > The BOLD database search functionality is currently not operational. Please use the BLAST Core Nucleotide Database option instead.
 
 ### Quick links
