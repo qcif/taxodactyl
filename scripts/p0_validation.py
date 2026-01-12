@@ -284,12 +284,12 @@ def _autofix_sample_id_spaces(
         rows = list(reader)
         fieldnames = reader.fieldnames
 
+    sample_id_col = config.inputs.metadata_csv_header["sample_id"]
     for row in rows:
-        sample_id = row.get(config.inputs.metadata_csv_header["sample_id"])
+        sample_id = row.get(sample_id_col)
         if sample_id and " " in sample_id:
-            row[config.inputs.metadata_csv_header["sample_id"]] = (
-                sample_id.replace(" ", "_")
-            )
+            fixed_sample_id = sample_id.replace(" ", "_")
+            row[sample_id_col] = fixed_sample_id
             changed = True
 
     if changed:
@@ -298,22 +298,35 @@ def _autofix_sample_id_spaces(
             writer.writeheader()
             writer.writerows(rows)
 
+    csv_sample_ids = {
+        row[sample_id_col] for row in rows if row.get(sample_id_col)
+    }
+
     # --- FASTA ---
     records = list(SeqIO.parse(fasta_path, "fasta"))
     fasta_changed = False
     for rec in records:
-        if " " in rec.description.strip():
+        description = rec.description.strip()
+        candidate_sample_id = description.replace(" ", "_")
+        if (
+            candidate_sample_id in csv_sample_ids and
+            rec.id != candidate_sample_id
+        ):
             logger.debug("[FASTA BEFORE FIX] rec.id:", repr(rec.id))
             logger.debug(
                 "[FASTA BEFORE FIX] rec.description.strip():",
-                repr(rec.description.strip())
+                repr(description)
             )
-            new_id = rec.description.strip().replace(" ", "_")
-            rec.id = new_id
-            rec.name = new_id
-            rec.description = new_id
+            logger.info(
+                f"[FASTA FIX] {rec.id} -> {candidate_sample_id}"
+            )
+            rec.id = candidate_sample_id
+            rec.name = candidate_sample_id
+            rec.description = candidate_sample_id
             fasta_changed = True
-            logger.info(f"[FASTA FIX] Updated sequence ID: {new_id}")
+            logger.info(
+                f"[FASTA FIX] Updated sequence ID: "
+                f"{candidate_sample_id}")
 
     if fasta_changed:
         SeqIO.write(records, fasta_path, "fasta")
