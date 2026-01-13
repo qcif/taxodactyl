@@ -237,7 +237,8 @@ def parse_errors(stderr: str) -> ParsedError:
         )
 
     fasta_max_length_err = re.search(
-        r'sequence of length (?P<actual>\d+)bp exceeds the maximum allowed length of (?P<max>\d+)bp '
+        r'sequence of length (?P<actual>\d+)bp exceeds '
+        r'the maximum allowed length of (?P<max>\d+)bp '
         r'\(sequence #(?P<seq_num>\d+) (?P<seq_id>[^\)]+)\)',
         stderr
     )
@@ -268,6 +269,45 @@ def parse_errors(stderr: str) -> ParsedError:
             value={
                 "actual_length": int(actual),
                 "maximum_length": int(maximum),
+            }
+        )
+
+    fasta_invalid_residues_err = re.search(
+        r"FASTA format error: "
+        r"invalid DNA in sequence #(?P<seq_num>\d+) (?P<seq_id>[\w\.\-]+): "
+        r"FASTA format error: "
+        r"Illegal DNA residue '(?P<residue>\w+)' at position (?P<pos>\d+)\.\s+"
+        r"Permitted characters: (?P<permitted>\{[^\}]+\})",
+        stderr
+    )
+    if fasta_invalid_residues_err:
+        residue = fasta_invalid_residues_err.group("residue")
+        pos = fasta_invalid_residues_err.group("pos")
+        seq_id = fasta_invalid_residues_err.group("seq_id")
+        permitted = fasta_invalid_residues_err.group("permitted")
+
+        logger.info(
+            "Parsed error: invalid_fasta (illegal residue) | "
+            "seq=%s | residue=%s | pos=%s | permitted=%s",
+            seq_id, residue, pos, permitted
+        )
+
+        message = (
+            "The uploaded FASTA file contains an invalid DNA residue.\n\n"
+            f"• Sequence ID: {seq_id}\n"
+            f"• Illegal residue: '{residue}' at position {pos}\n"
+            f"• Permitted characters: {permitted}\n\n"
+            "Please fix the sequence in your local FASTA file "
+            "and upload the corrected file again."
+        )
+
+        return ParsedError(
+            type="invalid_fasta",
+            message=message,
+            sample_id=seq_id,
+            value={
+                "residue": residue,
+                "position": int(pos),
             }
         )
 
