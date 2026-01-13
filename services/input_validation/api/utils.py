@@ -200,9 +200,76 @@ def parse_errors(stderr: str) -> ParsedError:
         )
 
     # Generic FASTA errors
-    if 'FASTAFormatError' in stderr:
-        logger.error("FASTA format error")
-        return {"type": "fasta_error", "message": stderr.strip()}
+    fasta_min_count_err = re.search(
+        r'sequence of length (?P<actual>\d+)bp does not meet '
+        r'the minimum allowed length of (?P<min>\d+)bp '
+        r'\(sequence #(?P<seq_num>\d+) (?P<seq_id>[^\)]+)\)',
+        stderr
+    )
+
+    if fasta_min_count_err:
+        actual = fasta_min_count_err.group("actual")
+        minimum = fasta_min_count_err.group("min")
+        seq_id = fasta_min_count_err.group("seq_id")
+
+        logger.info(
+            "Parsed error: invalid_fasta | seq=%s | len=%s | min=%s",
+            seq_id, actual, minimum
+        )
+
+        message = (
+            "The uploaded FASTA file contains an invalid sequence.\n\n"
+            f"• Sequence ID: {seq_id}\n"
+            f"• Sequence length: {actual} bp\n"
+            f"• Minimum required length: {minimum} bp\n\n"
+            "Please fix the sequence length in your local FASTA file "
+            "and upload the corrected file again."
+        )
+
+        return ParsedError(
+            type="invalid_fasta",
+            message=message,
+            sample_id=seq_id,
+            value={
+                "actual_length": int(actual),
+                "minimum_length": int(minimum),
+            }
+        )
+
+    fasta_max_length_err = re.search(
+        r'sequence of length (?P<actual>\d+)bp exceeds the maximum allowed length of (?P<max>\d+)bp '
+        r'\(sequence #(?P<seq_num>\d+) (?P<seq_id>[^\)]+)\)',
+        stderr
+    )
+
+    if fasta_max_length_err:
+        actual = fasta_max_length_err.group("actual")
+        maximum = fasta_max_length_err.group("max")
+        seq_id = fasta_max_length_err.group("seq_id")
+
+        logger.info(
+            "Parsed error: invalid_fasta_max | seq=%s | len=%s | max=%s",
+            seq_id, actual, maximum
+        )
+
+        message = (
+            "The uploaded FASTA file contains a sequence that is too long.\n\n"
+            f"• Sequence ID: {seq_id}\n"
+            f"• Sequence length: {actual} bp\n"
+            f"• Maximum allowed length: {maximum} bp\n\n"
+            "Please shorten the sequence in your local FASTA file "
+            "and upload the corrected file again."
+        )
+
+        return ParsedError(
+            type="invalid_fasta",
+            message=message,
+            sample_id=seq_id,
+            value={
+                "actual_length": int(actual),
+                "maximum_length": int(maximum),
+            }
+        )
 
     # Fallback
     logger.error("Unknown validation error")
@@ -210,30 +277,6 @@ def parse_errors(stderr: str) -> ParsedError:
         type="unknown",
         message=stderr.strip(),
     )
-
-
-# def remove_duplicate_fasta_ids(fasta_path: Path):
-#     """
-#     Remove duplicate sequence IDs in the FASTA file.
-#     Keeps only the first occurrence of each ID.
-#     Modifies the FASTA file in place.
-#     """
-#     records = list(SeqIO.parse(fasta_path, "fasta"))
-#     seen_ids = set()
-#     unique_records = []
-
-#     for rec in records:
-#         if rec.id in seen_ids:
-#             continue  # skip duplicate
-#         seen_ids.add(rec.id)
-#         unique_records.append(rec)
-
-#     if len(records) != len(unique_records):
-#         logger.info(
-#             "Removed %s duplicate FASTA IDs",
-#             len(records) - len(unique_records)
-#         )
-#         SeqIO.write(unique_records, fasta_path, "fasta")
 
 
 def find_taxa_zero_rows(metadata_csv_path: Path) -> List[int]:
