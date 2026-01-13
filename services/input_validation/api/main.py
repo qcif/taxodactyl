@@ -205,8 +205,22 @@ async def validate(
                     "ok": False,
                     "error": parsed_error_to_dict(parsed),
                     "rows": rows,
-                    # "column": "preliminary_id",
                     "metadata_csv": csv_text,
+                }
+            )
+
+        if parsed.type == "invalid_fasta":
+            logger.warning("Invalid FASTA detected")
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed_error_to_dict(parsed),
+                    "metadata_csv": csv_text,
+                    "fix_location": "local_fasta_file",
                 }
             )
 
