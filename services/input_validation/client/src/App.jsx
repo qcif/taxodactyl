@@ -194,27 +194,32 @@ function App() {
                 )}
 
                 {/* Upload section */}
-                <div className="form-group">
-                  <label className="font-weight-bold">Metadata CSV</label>
-                  <input
-                    key={fileInputKey}
-                    type="file"
-                    className="form-control-file"
-                    accept=".csv"
-                    onChange={e => setMetadataFile(e.target.files[0])}
-                  />
-                </div>
+                {!(validated || errors) && (
+                  <>
+                    <div className="form-group">
+                      <label className="font-weight-bold">Metadata CSV</label>
+                      <input
+                        key={fileInputKey}
+                        type="file"
+                        className="form-control-file"
+                        accept=".csv"
+                        onChange={e => setMetadataFile(e.target.files[0])}
+                      />
+                    </div>
 
-                <div className="form-group">
-                  <label className="font-weight-bold">Query FASTA</label>
-                  <input
-                    key={fileInputKey + 1}
-                    type="file"
-                    className="form-control-file"
-                    accept=".fasta,.fa"
-                    onChange={e => setFastaFile(e.target.files[0])}
-                  />
-                </div>
+                    <div className="form-group">
+                      <label className="font-weight-bold">Query FASTA</label>
+                      <input
+                        key={fileInputKey + 1}
+                        type="file"
+                        className="form-control-file"
+                        accept=".fasta,.fa"
+                        onChange={e => setFastaFile(e.target.files[0])}
+                      />
+                    </div>
+                  </>
+                )}
+                
 
                 <div className="text-center mb-3">
                   <button
