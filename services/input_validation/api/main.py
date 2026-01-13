@@ -5,6 +5,7 @@ from pathlib import Path
 from utils import (
     find_invalid_country_rows,
     find_invalid_locus_rows,
+    find_metadata_sample_mismatch_rows,
     save_upload_to_tempfile,
     run_p0_validation,
     parse_errors,
@@ -193,6 +194,32 @@ async def validate(
             logger.warning(
                 "Invalid locus detected | value=%s | rows=%s",
                 parsed.value,
+                rows,
+            )
+
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                csv_text = f.read()
+
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": parsed_error_to_dict(parsed),
+                    "rows": rows,
+                    "metadata_csv": csv_text,
+                }
+            )
+
+        if parsed.type == "metadata_missing_sample":
+            rows = find_metadata_sample_mismatch_rows(
+                metadata_path,
+                parsed.sample_id,
+            )
+
+            logger.warning(
+                "Metadata sample_id not present in FASTA | "
+                "sample_id=%s | rows=%s",
+                parsed.sample_id,
                 rows,
             )
 

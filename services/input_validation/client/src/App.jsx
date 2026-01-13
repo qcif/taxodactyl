@@ -60,11 +60,16 @@ function App() {
         setEditedCsvText(data.metadata_csv);
         setErrorRows(data.rows || []);
         // Highlight column based on error type
-        if (data.error?.type === "invalid_taxa_of_interest") {
+        if (data.error?.type === "metadata_missing_sample") {
+          setHighlightColumns(["sample_id"]);
+        }
+        else if (data.error?.type === "invalid_taxa_of_interest") {
           setHighlightColumns(["taxa_of_interest"]);
-        } else if (data.error?.type === "invalid_pmi") {
+        } 
+        else if (data.error?.type === "invalid_pmi") {
           setHighlightColumns(["preliminary_id"]);
-        } else if (data.error?.type === "invalid_country") {
+        } 
+        else if (data.error?.type === "invalid_country") {
           setHighlightColumns(["country"]);
         } 
         else if (data.error?.type === "invalid_locus") {

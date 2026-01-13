@@ -93,9 +93,15 @@ def parse_errors(stderr: str) -> ParsedError:
     if validate_err_msg:
         logger.info("Parsed error: metadata_missing_sample | %s",
                     validate_err_msg.group("sample_id"))
+        sample_id = validate_err_msg.group("sample_id")
+        message = f'Sample ID "{sample_id}" appears in the metadata CSV '
+        "but does not exist in the FASTA file.\n\n"
+        "You can fix this by editing the sample_id value "
+        "or removing this row in the table."
+        "Please provide a valid taxonomic name or remove it.",
         return ParsedError(
             type="metadata_missing_sample",
-            message=stderr.strip(),
+            message=message,
             sample_id=validate_err_msg.group("sample_id"),
         )
 
@@ -418,4 +424,36 @@ def find_invalid_locus_rows(
                 bad_rows.append(idx)
 
     logger.info("Invalid locus rows found | count=%s", len(bad_rows))
+    return bad_rows
+
+
+def find_metadata_sample_mismatch_rows(
+    metadata_csv_path: Path,
+    missing_sample_id: str
+) -> List[int]:
+    """
+    Find missing sample id in CSV and FASTA.
+    """
+    logger.debug(
+        "Scanning for metadata sample_id not in FASTA | %s",
+        missing_sample_id,
+    )
+    bad_rows: list[int] = []
+
+    with open(metadata_csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for idx, row in enumerate(reader):
+            if (row.get("sample_id") or "").strip() == missing_sample_id:
+                logger.debug(
+                    "Metadata sample mismatch | row=%s | sample_id=%s",
+                    idx,
+                    missing_sample_id,
+                )
+                bad_rows.append(idx)
+
+    logger.info(
+        "Metadata sample mismatch rows found | sample_id=%s | count=%s",
+        missing_sample_id,
+        len(bad_rows),
+    )
     return bad_rows
