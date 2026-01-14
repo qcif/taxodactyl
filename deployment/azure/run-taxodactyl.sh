@@ -22,7 +22,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 PID=$$
-RUN_ID="$(date +"%Y%m%d_%H%M%S")$PID"
+RUN_ID="$(date +"%Y%m%d_%H%M%S")_$PID"
 
 # Default values
 METADATA="scripts/tests/test-data/metadata.csv"
@@ -118,11 +118,11 @@ echo ""
 
 # Run Nextflow with Azure Batch profile
 nextflow run main.nf \
+    -profile azure \
     --metadata "$METADATA" \
     --sequences "$SEQUENCES" \
     --blastdb "$BLASTDB_PATH" \
     --outdir "$OUTDIR" \
-    -profile azure \
     --taxdb "$TAXDB_PATH" \
     --temp_root_dir "/tmp/taxodactyl_tmp" \
     --ncbi_api_key "${NCBI_API_KEY:-}" \
