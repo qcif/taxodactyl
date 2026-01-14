@@ -54,14 +54,21 @@ workflow TAXODACTYL {
         ch_sequences,
         ch_metadata
     )
-	 
+
     ch_env_var_file = CONFIGURE_ENVIRONMENT.out
+
+    // Prepare allowed loci file channel (or optional placeholder if not provided)
+    // This is required on Azure Batch because the file does not exist remotely
+    ch_allowed_loci = params.allowed_loci_file ?
+        channel.fromPath(params.allowed_loci_file) :
+        channel.fromPath("${projectDir}/assets/NO_FILE_PLACEHOLDER").ifEmpty(file('OPTIONAL_FILE'))
 
     // Validate input files and parameters
     VALIDATE_INPUT (
         ch_env_var_file,
         ch_sequences,
-        ch_metadata
+        ch_metadata,
+        ch_allowed_loci
     )
 
     // Run BOLD or BLAST search depending on db_type

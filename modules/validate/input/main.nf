@@ -8,6 +8,7 @@ process VALIDATE_INPUT {
     path(env_var_file) // Environment variables file
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Copied metadata file
+    path(allowed_loci_file, stageAs: 'loci.json') // Allowed loci configuration file
 
     output:
     val true, emit: ready // Output: validation success flag
@@ -15,10 +16,13 @@ process VALIDATE_INPUT {
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
-    def allowed_loci_arg = params.allowed_loci_file ? "--allowed-loci-file ${file(params.allowed_loci_file)}" : ''
+
     def fasta_max_sequences_arg = params.fasta_max_sequences ? "--fasta-max-sequences ${params.fasta_max_sequences}" : ''
     def fasta_min_length_arg = params.fasta_min_length ? "--fasta-min-length ${params.fasta_min_length}" : ''
     def fasta_max_length_arg = params.fasta_max_length ? "--fasta-max-length ${params.fasta_max_length}" : ''
+
+    // Staging and passing as file base name seems to resolve abspath issues with Azure Batch
+    def allowed_loci_arg = allowed_loci_file.name != 'OPTIONAL_FILE' ? "--allowed-loci-file ${allowed_loci_file.name}" : ''
     """
     # Source environment variables
     source ${env_var_file}
