@@ -96,15 +96,10 @@ workflow TAXODACTYL {
             ch_blast_output = MOCK_BLASTN.out.blast_output
             ch_blast_versions = MOCK_BLASTN.out.versions
         } else {
-            def blastdb_name = params.blastdb.tokenize('/').last()
-            def blastdb_uri = params.blastdb - "/${blastdb_name}"
-            def blastdb_uri_glob = "${blastdb_uri}/*"
-            ch_refdata_blastdb = channel.fromPath(blastdb_uri_glob)
-            blastdb_dir_ch = ch_refdata_blastdb.collect()
             BLAST_BLASTN (
                 ch_sequences,
-                blastdb_dir_ch.map { it -> [it, blastdb_name] },  // send (dir, dbname) tuple
-                VALIDATE_INPUT.out
+                params.blastdb,
+                VALIDATE_INPUT.out.ready
             )
             ch_blast_output = BLAST_BLASTN.out.blast_output
             ch_blast_versions = BLAST_BLASTN.out.versions
