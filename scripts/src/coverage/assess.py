@@ -210,6 +210,7 @@ def _draw_occurrence_maps(
                     msg,
                     exc=e,
                     context={'target': target},
+                    query_dir=query_dir,
                 )
 
 
