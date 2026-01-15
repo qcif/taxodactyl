@@ -15,8 +15,19 @@ NC='\033[0m' # No Color
 
 # Default values
 DEFAULT_POOL_ID="taxodactyl"
-DEFAULT_AUTOSCALE_FORMULA='demand = avg($ActiveTasks.GetSample(TimeInterval_Minute * 5)) + avg($PendingTasks.GetSample(TimeInterval_Minute * 5)); $TargetDedicatedNodes = min(max(ceil(demand), 0), 1);'
 DEFAULT_AUTOSCALE_INTERVAL="PT5M"
+
+# Autoscale formula: Fast scale-up (5min window), slow scale-down (30min window)
+# Scales to 1 node if ANY tasks in last 5 min OR any tasks in last 30 min
+# This ensures quick response to new tasks while keeping nodes warm
+DEFAULT_AUTOSCALE_FORMULA='immediateActivity = max($ActiveTasks.GetSample(TimeInterval_Minute * 5));
+immediatePending = max($PendingTasks.GetSample(TimeInterval_Minute * 5));
+recentActivity = max($ActiveTasks.GetSample(TimeInterval_Minute * 30));
+recentPending = max($PendingTasks.GetSample(TimeInterval_Minute * 30));
+immediateDemand = immediateActivity + immediatePending;
+recentDemand = recentActivity + recentPending;
+totalDemand = max(immediateDemand, recentDemand);
+$TargetDedicatedNodes = totalDemand > 0 ? 1 : 0;'
 
 #
 # Helper functions
@@ -793,6 +804,127 @@ az_sas_generate() {
 }
 
 #
+# Nextflow Debugging Functions
+#
+
+az_fetch_nf_logs() {
+    local nf_log="${1:-.nextflow.log}"
+    local output_dir="${2:-./nf_logs}"
+
+    _check_env_vars || return 1
+
+    if [[ ! -f "$nf_log" ]]; then
+        _error "Nextflow log file not found: $nf_log"
+        return 1
+    fi
+
+    _info "Extracting work directories from: $nf_log"
+
+    # Extract all work directories from the log
+    local work_dirs=($(grep -o "work/[a-f0-9][a-f0-9]/[a-f0-9]*" "$nf_log" | sort -u))
+
+    if [[ ${#work_dirs[@]} -eq 0 ]]; then
+        _error "No work directories found in $nf_log"
+        return 1
+    fi
+
+    _info "Found ${#work_dirs[@]} work directories"
+    _info "Output directory: $output_dir"
+
+    # Create output directory
+    mkdir -p "$output_dir"
+
+    # Download .command.out and .command.err for each work directory
+    local count=0
+    for workdir in "${work_dirs[@]}"; do
+        local short_hash=$(echo "$workdir" | grep -o '[a-f0-9]*$' | cut -c1-8)
+
+        _info "[$((++count))/${#work_dirs[@]}] Downloading logs for $short_hash..."
+
+        # Download .command.out
+        if az storage blob download \
+            --account-name daffstandard \
+            --account-key "$AZURE_STORAGE_ACCOUNT_KEY" \
+            --container-name workdata \
+            --name "$workdir/.command.out" \
+            --file "$output_dir/${short_hash}.command.out" \
+            --only-show-errors 2>&1 | grep -v "^$" > /dev/null; then
+            :
+        fi
+
+        # Download .command.err
+        if az storage blob download \
+            --account-name daffstandard \
+            --account-key "$AZURE_STORAGE_ACCOUNT_KEY" \
+            --container-name workdata \
+            --name "$workdir/.command.err" \
+            --file "$output_dir/${short_hash}.command.err" \
+            --only-show-errors 2>&1 | grep -v "^$" > /dev/null; then
+            :
+        fi
+
+        # Download .command.sh for reference
+        if az storage blob download \
+            --account-name daffstandard \
+            --account-key "$AZURE_STORAGE_ACCOUNT_KEY" \
+            --container-name workdata \
+            --name "$workdir/.command.sh" \
+            --file "$output_dir/${short_hash}.command.sh" \
+            --only-show-errors 2>&1 | grep -v "^$" > /dev/null; then
+            :
+        fi
+
+        # Download .exitcode
+        if az storage blob download \
+            --account-name daffstandard \
+            --account-key "$AZURE_STORAGE_ACCOUNT_KEY" \
+            --container-name workdata \
+            --name "$workdir/.exitcode" \
+            --file "$output_dir/${short_hash}.exitcode" \
+            --only-show-errors 2>&1 | grep -v "^$" > /dev/null; then
+            :
+        fi
+    done
+
+    _success "Downloaded logs for ${#work_dirs[@]} tasks to: $output_dir"
+    echo ""
+    _info "Files downloaded:"
+    ls -lh "$output_dir" | tail -n +2 | awk '{printf "  %s %s\n", $9, $5}'
+    echo ""
+
+    # Show summary of non-empty error files
+    _info "Tasks with errors (non-empty .command.err):"
+    local has_errors=false
+    for err_file in "$output_dir"/*.command.err; do
+        if [[ -s "$err_file" ]]; then
+            local hash=$(basename "$err_file" .command.err)
+            local size=$(du -h "$err_file" | cut -f1)
+            echo "  $hash ($size)"
+            has_errors=true
+        fi
+    done
+
+    if [[ "$has_errors" == false ]]; then
+        echo "  (none)"
+    fi
+    echo ""
+
+    # Show exit codes
+    _info "Task exit codes:"
+    for exitcode_file in "$output_dir"/*.exitcode; do
+        if [[ -f "$exitcode_file" ]]; then
+            local hash=$(basename "$exitcode_file" .exitcode)
+            local exitcode=$(cat "$exitcode_file" 2>/dev/null || echo "?")
+            if [[ "$exitcode" != "0" ]]; then
+                echo "  $hash: $exitcode [FAILED]"
+            else
+                echo "  $hash: $exitcode"
+            fi
+        fi
+    done
+}
+
+#
 # Utility Functions
 #
 
@@ -829,6 +961,9 @@ Storage Management:
 
 SAS Token Management:
   az_sas_generate <blob> [acct] [cont] [days]   Generate SAS token for blob
+
+Nextflow Debugging:
+  az_fetch_nf_logs [log_file] [output_dir]   Download all command logs from a Nextflow run
 
 Utility:
   az_help                         Show this help message
@@ -882,6 +1017,12 @@ Examples:
   # Update pool configuration only (non-interactive)
   az_pool_update --json deployment/azure/pool-setup.json.ignore --yes
 
+  # Download all command logs from a workflow run
+  az_fetch_nf_logs .nextflow.log.1 ./logs_run1
+
+  # Download logs from the latest run (default)
+  az_fetch_nf_logs
+
 EOF
 }
 
@@ -920,6 +1061,9 @@ else
     echo ""
     echo "  SAS Token Management:"
     echo "    az_sas_generate"
+    echo ""
+    echo "  Nextflow Debugging:"
+    echo "    az_fetch_nf_logs"
     echo ""
     echo -e "${GREEN}Run 'az_help' for detailed usage information${NC}"
     echo ""

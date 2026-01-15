@@ -4,7 +4,7 @@ process BLAST_BLASTN {
 
     input:
     path(fasta) // Input FASTA file (can be gzipped)
-    tuple path(core_nt_dir), val(blastdb_name)
+    val(blastdb_path)  // Path as string to avoid staging
     val ready   // Readiness flag
 
     output:
@@ -26,10 +26,16 @@ process BLAST_BLASTN {
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
+    find /mnt/nvme/refdata/ -print | while read -r path; do
+        depth=\$(echo "\$path" | tr -cd '/' | wc -c)
+        indent=\$(printf '%*s' "\$depth" '')
+        echo "\${indent}\${path##*/}"
+    done
+
     # Run BLASTN with specified parameters
     blastn \\
         -num_threads ${task.cpus} \\
-        -db ${core_nt_dir}/${blastdb_name} \\
+        -db $blastdb_path \\
         -query ${fasta_name} \\
         -outfmt 5 \\
         -out $params.blast_xml_filename \\

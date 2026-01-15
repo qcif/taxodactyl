@@ -30,6 +30,10 @@ SEQUENCES="scripts/tests/test-data/queries.fasta"
 OUTDIR="/mnt/nvme/output/$RUN_ID"
 RESUME=""
 
+# Azure Batch node paths (staged by start task to NVMe)
+BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"
+TAXDB_PATH="/mnt/nvme/refdata/taxdump/taxdump"
+
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -88,10 +92,6 @@ if [[ -z "${AZURE_BATCH_ACCESS_KEY:-}" ]]; then
     echo -e "${RED}ERROR: AZURE_BATCH_ACCESS_KEY not set in .env.azure${NC}"
     exit 1
 fi
-
-# Azure Batch node paths (staged by start task to NVMe)
-BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"
-TAXDB_PATH="/mnt/nvme/refdata/taxdump/taxdump"
 
 # Show configuration
 echo ""

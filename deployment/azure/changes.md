@@ -144,7 +144,7 @@ process BLAST_BLASTN {
 process BLAST_BLASTN {
     input:
     path(fasta)
-    tuple path(core_nt_dir), val(blastdb_name)
+    tuple val(core_nt_dir), val(blastdb_name)  // Path as string to avoid staging
     val ready
 
     script:
@@ -158,6 +158,7 @@ process BLAST_BLASTN {
 - The Azure Batch configuration now handles container volume mounting via `containerOptions = '-v /mnt/nvme/refdata:/mnt/nvme/refdata:ro'` in `conf/azure.config`
 - This approach is more flexible and allows the same module to work with both local and Azure Batch executors
 - The workflow constructs the BLAST database path from the parameter and passes it as a channel input
+- Path is passed as a `val()` to avoid staging
 
 ### 8. Updated workflow to pass BLAST DB as channel
 **File**: `workflows/taxodactyl.nf:90-98`
@@ -165,27 +166,22 @@ process BLAST_BLASTN {
 **Change**: Modified the BLAST invocation to construct and pass the database directory as a channel:
 
 ```groovy
-// Parse blastdb parameter to extract directory and database name
 def blastdb_name = params.blastdb.tokenize('/').last()
 def blastdb_uri = params.blastdb - "/${blastdb_name}"
-def blastdb_uri_glob = "${blastdb_uri}/*"
-
-// Create channel from database directory
-ch_refdata_blastdb = Channel.fromPath(blastdb_uri_glob)
-blastdb_dir_ch = ch_refdata_blastdb.collect()
-
-// Pass as tuple (directory, database_name)
+// Create a value channel with the directory path as a string (not a file object)
+// The directory exists on Azure Batch nodes, not on the local controller
+// Using a string prevents Nextflow from trying to stage the directory
+blastdb_dir_ch = channel.value(blastdb_uri)
 BLAST_BLASTN (
     ch_sequences,
-    blastdb_dir_ch.map { it -> [it, blastdb_name] },
-    VALIDATE_INPUT.out
+    blastdb_dir_ch.map { it -> [it, blastdb_name] },  // send (dir, dbname) tuple
+    VALIDATE_INPUT.out.ready
 )
 ```
 
 **Rationale**:
-- Allows Nextflow to stage the BLAST database files appropriately for different executors
-- Works seamlessly with both local filesystem and Azure Blob Storage paths
-- Maintains separation of concerns: the workflow manages data location, the process manages execution
+- Prevent Nextflow from staging the BLAST database files - they are too large
+- This may require conditional logic for running locally, where staging may involve symlinking rather than sending
 
 ## Documentation Changes
 
