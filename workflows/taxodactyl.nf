@@ -97,7 +97,6 @@ workflow TAXODACTYL {
         } else {
             BLAST_BLASTN (
                 ch_sequences,
-                params.blastdb,
                 VALIDATE_INPUT.out.ready
             )
             ch_blast_output = BLAST_BLASTN.out.blast_output
