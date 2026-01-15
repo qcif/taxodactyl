@@ -809,7 +809,7 @@ az_sas_generate() {
 
 az_fetch_nf_logs() {
     local nf_log="${1:-.nextflow.log}"
-    local output_dir="${2:-./nf_logs}"
+    local output_dir="${2:-./.nextflow_logs}"
 
     _check_env_vars || return 1
 
