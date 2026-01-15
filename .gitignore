@@ -15,3 +15,4 @@ vault_password.txt
 node_modules/
 venv/
 __pycache__/
+*.ignore
