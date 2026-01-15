@@ -27,7 +27,7 @@ RUN_ID="$(date +"%Y%m%d_%H%M%S")_$PID"
 # Default values
 METADATA="scripts/tests/test-data/metadata.csv"
 SEQUENCES="scripts/tests/test-data/queries.fasta"
-OUTDIR="/mnt/nvme/output/$RUN_ID"
+OUTDIR="output/$RUN_ID"
 RESUME=""
 
 # Azure Batch node paths (staged by start task to NVMe)
@@ -116,6 +116,8 @@ echo ""
 echo -e "${GREEN}=== Starting Taxodactyl Workflow ===${NC}"
 echo ""
 
+mkdir -p "$OUTDIR"
+
 # Run Nextflow with Azure Batch profile
 nextflow run main.nf \
     -profile azure \
@@ -124,7 +126,7 @@ nextflow run main.nf \
     --blastdb "$BLASTDB_PATH" \
     --outdir "$OUTDIR" \
     --taxdb "$TAXDB_PATH" \
-    --temp_root_dir "/tmp/taxodactyl_tmp" \
+    --temp_root_dir /mnt/batch/tasks/shared \
     --ncbi_api_key "${NCBI_API_KEY:-}" \
     --ncbi_user_email "${NCBI_USER_EMAIL:-}" \
     --analyst_name "${ANALYST_NAME:-}" \
