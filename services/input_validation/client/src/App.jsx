@@ -2,6 +2,15 @@ import { useState } from 'react';
 import JSZip from "jszip";
 import Papa from "papaparse";
 import CsvEditor from './components/CsvEditor';
+import './App.css';
+
+const ERROR_COLUMN_MAP = {
+  "metadata_missing_sample": "sample_id",
+  "invalid_taxa_of_interest": "taxa_of_interest",
+  "invalid_pmi": "preliminary_id",
+  "invalid_country": "country",
+  "invalid_locus": "locus",
+};
 
 function App() {
   const [metadataFile, setMetadataFile] = useState(null);
@@ -60,20 +69,8 @@ function App() {
         setEditedCsvText(data.metadata_csv);
         setErrorRows(data.rows || []);
         // Highlight column based on error type
-        if (data.error?.type === "metadata_missing_sample") {
-          setHighlightColumns(["sample_id"]);
-        }
-        else if (data.error?.type === "invalid_taxa_of_interest") {
-          setHighlightColumns(["taxa_of_interest"]);
-        } 
-        else if (data.error?.type === "invalid_pmi") {
-          setHighlightColumns(["preliminary_id"]);
-        } 
-        else if (data.error?.type === "invalid_country") {
-          setHighlightColumns(["country"]);
-        } 
-        else if (data.error?.type === "invalid_locus") {
-          setHighlightColumns(["locus"]);
+        if (data.error && data.error.type in ERROR_COLUMN_MAP) {
+          setHighlightColumns([ERROR_COLUMN_MAP[data.error.type]]);
         }
         else {
           setHighlightColumns([]); 
@@ -173,16 +170,12 @@ function App() {
       </nav>
 
       <div className="container mt-5 pt-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-9">
-            <div className="card shadow">
-              <div className="card-body">
                 <h4 className="card-title mb-4">
                   Taxodactyl Input Validation
                 </h4>
 
                 {(validated || errors) && (
-                  <div className="mb-3 text-right">
+                  <div className="mb-3 text-left">
                     <button
                       className="btn btn-outline-secondary"
                       onClick={resetValidateInputs}
@@ -219,30 +212,6 @@ function App() {
                     </div>
                   </>
                 )}
-                
-
-                <div className="text-center mb-3">
-                  <button
-                    className="btn btn-primary btn-lg"
-                    onClick={handleValidate}
-                    disabled={isValidating}
-                  >
-                    {isValidating ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm mr-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        {validated || errors ? "Continuing validation..." : "Validating..."}
-                          </>
-                        ) : (
-                          <>
-                            {validated || errors ? "Continue validation" : "Validate"}
-                          </>
-                    )}
-                  </button>
-                </div>
 
                 {/* Success */}
                 {validated && (
@@ -268,7 +237,7 @@ function App() {
                         }
                       >
                         <i className="fas fa-download mr-2"></i>
-                        Download validated CSVs & FASTAs
+                        Download validated files
                       </button>
                     </div>
                   </>
@@ -279,6 +248,11 @@ function App() {
                   <div className="alert alert-danger mt-4">
                     <h5>Validation errors</h5>
                     <pre className="mb-0">{errors.message}</pre>
+
+                    <p className="mt-2 mb-0">
+                      You can fix these values directly in the table below to continue
+                      validating your data.
+                    </p>
                   </div>
                 )}
 
@@ -291,11 +265,32 @@ function App() {
                     highlightColumns={highlightColumns}
                   />
                 )}
+
+                {!validated && (
+                  <div className="text-center mb-3">
+                    <button
+                      className="btn btn-primary btn-lg"
+                      onClick={handleValidate}
+                      disabled={isValidating}
+                    >
+                      {isValidating ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm mr-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          {validated || errors ? "Continuing validation..." : "Validating..."}
+                            </>
+                          ) : (
+                            <>
+                              {validated || errors ? "Continue validation" : "Validate"}
+                            </>
+                      )}
+                    </button>
+                  </div>
+                )} 
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

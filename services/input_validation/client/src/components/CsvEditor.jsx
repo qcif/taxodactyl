@@ -78,7 +78,7 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
 
   return (
     <div className="mt-4">
-      <table className="table table-sm table-bordered">
+      <table className="table table-sm table-bordered table-full">
         <thead className="thead-light">
           <tr>
             {header.map(col => (
@@ -108,8 +108,10 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
                       : ""
                   }
                 >
-                  <input
-                    className="form-control form-control-sm"
+                  <textarea
+                    className={`form-control form-control-sm ${
+                      highlightColumns.includes(col) ? 'is-invalid' : ''
+                    }`}
                     value={row[col] ?? ""}
                     onChange={e =>
                       handleCellChange(i, col, e.target.value)
