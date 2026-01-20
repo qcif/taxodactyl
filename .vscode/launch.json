@@ -354,10 +354,15 @@
                 "TAXONKIT_DB": "${env:HOME}/.taxonkit",
             },
             "cwd": "${workspaceFolder}/services/input_validation/api",
-            // Linux
-            // "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python",
-            // Windows
-            "python": "${workspaceFolder}/services/input_validation/api/venv/Scripts/python",
+            "windows": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/Scripts/python"
+            },
+            "linux": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
+            "osx": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
             "console": "integratedTerminal",
             "justMyCode": true
         },

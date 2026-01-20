@@ -138,9 +138,11 @@ def parse_errors(stderr: str) -> ParsedError:
     if validate_err_msg4:
         value = validate_err_msg4.group("value")
         logger.info("Parsed error: invalid_pmi | %s", value)
-        message = "The Preliminary Morphology ID is invalid,"
-        "Only letters (A–Z) and spaces are allowed. "
-        "Please fix this in the metadata CSV."
+        message = (
+            "The Preliminary Morphology ID is invalid,"
+            "Only letters (A–Z) and spaces are allowed. "
+            "Please fix this in the metadata CSV."
+        )
         return ParsedError(
             type="invalid_pmi",
             value=value,
