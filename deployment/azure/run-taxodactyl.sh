@@ -126,7 +126,7 @@ nextflow run main.nf \
     --blastdb "$BLASTDB_PATH" \
     --outdir "$OUTDIR" \
     --taxdb "$TAXDB_PATH" \
-    --temp_root_dir /mnt/batch/tasks/shared \
+    --temp_root_dir ./tmp \
     --ncbi_api_key "${NCBI_API_KEY:-}" \
     --ncbi_user_email "${NCBI_USER_EMAIL:-}" \
     --analyst_name "${ANALYST_NAME:-}" \
