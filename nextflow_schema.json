@@ -353,7 +353,6 @@
                 "temp_root_dir": {
                     "type": "string",
                     "default": "output",
-                    "format": "directory-path",
                     "description": "Directory where temporary files will be saved.",
                     "errorMessage": "Parameter 'temp_root_dir' must be a valid directory path. If not specified, defaults to the system's temporary directory."
                 },
