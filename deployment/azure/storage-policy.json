@@ -1,0 +1,22 @@
+{
+  "rules": [
+    {
+      "name": "delete-old-work-files",
+      "enabled": true,
+      "type": "Lifecycle",
+      "definition": {
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": ["workdata/"]
+        },
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 14
+            }
+          }
+        }
+      }
+    }
+  ]
+}
