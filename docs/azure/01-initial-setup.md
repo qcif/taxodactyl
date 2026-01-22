@@ -87,6 +87,17 @@ az batch account create \
   --storage-account $STORAGE_ACCOUNT_STD
 ```
 
+Optionally, you can set a storage policy on the work container.
+We have written one that results in work data being retained for 14 days only:
+
+```sh
+az storage account management-policy create \
+  --account-name $STORAGE_ACCOUNT_STD \
+  --resource-group $RESOURCE_GROUP \
+  --policy deployment/azure/storage-policy.json
+```
+
+
 ## Step 3: Get Credentials
 
 Retrieve credentials required for Nextflow configuration:
