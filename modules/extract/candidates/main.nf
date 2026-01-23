@@ -21,12 +21,14 @@ process EXTRACT_CANDIDATES {
     tuple val(query_folder), path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_db_coverage // Output for DB coverage
     path("$query_folder/1.flag") // Flag file
     path("$query_folder/2.flag"), optional: true // Optional flag file
+
+    // ! CAM: What about 7.flag?
+
     path("$query_folder/$params.candidates_csv_filename") // Candidates CSV
     path("$query_folder/$params.candidates_fasta_filename") // Candidates FASTA
     path("$query_folder/$params.boxplot_img_filename"), optional: true // Optional boxplot image
     path("output/run.log"),    emit: extract_candidates_log // Output run log
     
-
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename" // Publish phylogeny FASTA
     publishDir "${params.outdir}", mode: 'copy',

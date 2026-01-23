@@ -149,6 +149,11 @@ workflow TAXODACTYL {
         }
 
     // Extract candidate sequences for further analysis
+
+    // ! CAM: channels seem to break down from here, it seems like only
+    // query_001 is being channelled to remaining processes? I don't see
+    // query_002+ being allocated to any process from hereon.
+
     EXTRACT_CANDIDATES (
         ch_env_var_file,
         ch_hits_to_filter,
