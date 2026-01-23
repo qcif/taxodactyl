@@ -2,7 +2,7 @@ import { useState } from 'react';
 import JSZip from "jszip";
 import Papa from "papaparse";
 import CsvEditor from './components/CsvEditor';
-import './App.css';
+// import './App.css';
 
 const ERROR_COLUMN_MAP = {
   "metadata_missing_sample": "sample_id",
@@ -170,127 +170,135 @@ function App() {
       </nav>
 
       <div className="container mt-5 pt-5">
-                <h4 className="card-title mb-4">
-                  Taxodactyl Input Validation
-                </h4>
+        <h4 className="mb-4">
+          Taxodactyl Input Validation
+        </h4>
 
-                {(validated || errors) && (
-                  <div className="mb-3 text-left">
-                    <button
-                      className="btn btn-outline-secondary"
-                      onClick={resetValidateInputs}
-                    >
-                      <i className="fas fa-redo mr-2"></i>
-                      Upload a new dataset
-                    </button>
-                  </div>
-                )}
+        {(validated || errors) && (
+          <div className="mb-3 text-left">
+            <button
+              className="btn btn-outline-secondary"
+              onClick={resetValidateInputs}
+            >
+              <i className="fas fa-redo mr-2"></i>
+              Upload a new dataset
+            </button>
+          </div>
+        )}
 
-                {/* Upload section */}
-                {!(validated || errors) && (
-                  <>
-                    <div className="form-group">
-                      <label className="font-weight-bold">Metadata CSV</label>
-                      <input
-                        key={fileInputKey}
-                        type="file"
-                        className="form-control-file"
-                        accept=".csv"
-                        onChange={e => setMetadataFile(e.target.files[0])}
-                      />
-                    </div>
+        {/* Upload section */}
+        {!(validated || errors) && (
+          <>
+            <div className="form-group">
+              <label className="font-weight-bold">Metadata CSV</label>
+              <input
+                key={fileInputKey}
+                type="file"
+                className="form-control-file"
+                accept=".csv"
+                onChange={e => setMetadataFile(e.target.files[0])}
+              />
+            </div>
 
-                    <div className="form-group">
-                      <label className="font-weight-bold">Query FASTA</label>
-                      <input
-                        key={fileInputKey + 1}
-                        type="file"
-                        className="form-control-file"
-                        accept=".fasta,.fa"
-                        onChange={e => setFastaFile(e.target.files[0])}
-                      />
-                    </div>
-                  </>
-                )}
+            <div className="form-group">
+              <label className="font-weight-bold">Query FASTA</label>
+              <input
+                key={fileInputKey + 1}
+                type="file"
+                className="form-control-file"
+                accept=".fasta,.fa"
+                onChange={e => setFastaFile(e.target.files[0])}
+              />
+            </div>
+          </>
+        )}
 
-                {/* Success */}
-                {validated && (
-                  <>
-                    <div className="alert alert-success">
-                      <i className="fas fa-check-circle mr-2"></i>
-                      Validation passed
-                    </div>
+        {/* Success */}
+        {validated && (
+          <>
+            <div className="alert alert-success">
+              <i className="fas fa-check-circle mr-2"></i>
+              Validation passed
+            </div>
 
-                    {showDownloadWarning && (
-                      <div className="alert alert-warning">
-                        <strong>Important:</strong> The uploaded files were
-                        auto-corrected during validation. Please download and
-                        use the validated files.
-                      </div>
-                    )}
+            <p className="alert alert-info">
+              Your files have been successfully validated and are ready for
+              download. Please note that if you submitted a large number of
+              samples, your data may have been split into multiple parts. If so,
+              please submit these as separate Taxodactyl jobs to avoid hitting
+              the "Maxiumum sequences per job" limit.
+            </p>
 
-                    <div className="text-center">
-                      <button
-                        className="btn btn-success"
-                        onClick={() =>
-                          downloadCsvFastaAsZip(csvText, fastaText, 150)
-                        }
-                      >
-                        <i className="fas fa-download mr-2"></i>
-                        Download validated files
-                      </button>
-                    </div>
-                  </>
-                )}
-
-                {/* Errors */}
-                {errors && (
-                  <div className="alert alert-danger mt-4">
-                    <h5>Validation errors</h5>
-                    <pre className="mb-0">{errors.message}</pre>
-
-                    <p className="mt-2 mb-0">
-                      You can fix these values directly in the table below to continue
-                      validating your data.
-                    </p>
-                  </div>
-                )}
-
-                {errors && (
-                  <CsvEditor
-                    csvText={csvText}
-                    onSave={handleValidate}
-                    errorRows={errorRows}
-                    onChange={setEditedCsvText}
-                    highlightColumns={highlightColumns}
-                  />
-                )}
-
-                {!validated && (
-                  <div className="text-center mb-3">
-                    <button
-                      className="btn btn-primary btn-lg"
-                      onClick={handleValidate}
-                      disabled={isValidating}
-                    >
-                      {isValidating ? (
-                        <>
-                          <span
-                            className="spinner-border spinner-border-sm mr-2"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          {validated || errors ? "Continuing validation..." : "Validating..."}
-                            </>
-                          ) : (
-                            <>
-                              {validated || errors ? "Continue validation" : "Validate"}
-                            </>
-                      )}
-                    </button>
-                  </div>
-                )} 
+            {showDownloadWarning && (
+              <div className="alert alert-warning">
+                <strong>Important:</strong> The uploaded files were
+                auto-corrected during validation. Please download and
+                use the validated files.
               </div>
+            )}
+
+            <div className="text-center">
+              <button
+                className="btn btn-success"
+                onClick={() =>
+                  downloadCsvFastaAsZip(csvText, fastaText, 150)
+                }
+              >
+                <i className="fas fa-download mr-2"></i>
+                Download validated files
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Errors */}
+        {errors && (
+          <div className="alert alert-danger mt-4">
+            <h5>Validation errors</h5>
+            <pre className="mb-0">{errors.message}</pre>
+
+            <p className="mt-2 mb-0">
+              You can fix these values directly in the table below to continue
+              validating your data.
+            </p>
+          </div>
+        )}
+
+        {errors && (
+          <CsvEditor
+            csvText={csvText}
+            onSave={handleValidate}
+            errorRows={errorRows}
+            onChange={setEditedCsvText}
+            highlightColumns={highlightColumns}
+          />
+        )}
+
+        {!validated && (
+          <div className="my-5">
+            <button
+              className="btn btn-primary"
+              onClick={handleValidate}
+              disabled={isValidating}
+            >
+              {isValidating ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm mr-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  {validated || errors ? "Continuing validation..." : "Validating..."}
+                    </>
+                  ) : (
+                    <>
+                      {validated || errors ? "Continue validation" : "Validate"}
+                    </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
     </>
   );
 }
