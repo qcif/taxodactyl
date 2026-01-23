@@ -371,7 +371,7 @@
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/services/input_validation/client/node_modules/.bin/vite",
-            "cwd": "${workspaceFolder}/services/validate-ui",
+            "cwd": "${workspaceFolder}/services/input_validation/client",
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"]
         },
