@@ -156,6 +156,13 @@ function App() {
     setFileInputKey(prev => prev + 2);
   };
 
+  const isInvalidRequiredColumns =
+  errors?.type === "invalid_required_columns";
+
+  const isFastaError =
+    errors &&
+    errors.type?.startsWith("invalid_fasta");
+
 
 
   return (
@@ -175,12 +182,12 @@ function App() {
         </h4>
 
         {(validated || errors) && (
-          <div className="mb-3 text-left">
+          <div className="mb-3 text-start">
             <button
               className="btn btn-outline-secondary"
               onClick={resetValidateInputs}
             >
-              <i className="fas fa-redo mr-2"></i>
+              <i className="fas fa-redo me-2"></i>
               Upload a new dataset
             </button>
           </div>
@@ -217,7 +224,7 @@ function App() {
         {validated && (
           <>
             <div className="alert alert-success">
-              <i className="fas fa-check-circle mr-2"></i>
+              <i className="fas fa-check-circle me-2"></i>
               Validation passed
             </div>
 
@@ -244,7 +251,7 @@ function App() {
                   downloadCsvFastaAsZip(csvText, fastaText, 150)
                 }
               >
-                <i className="fas fa-download mr-2"></i>
+                <i className="fas fa-download me-2"></i>
                 Download validated files
               </button>
             </div>
@@ -255,16 +262,37 @@ function App() {
         {errors && (
           <div className="alert alert-danger mt-4">
             <h5>Validation errors</h5>
-            <pre className="mb-0">{errors.message}</pre>
+            <pre 
+              className="mb-0"
+              style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+            >
+              {errors.message}
+            </pre>
 
-            <p className="mt-2 mb-0">
-              You can fix these values directly in the table below to continue
-              validating your data.
-            </p>
+            {isFastaError && (
+              <p className="mt-2 mb-0">
+                Please fix this manually in your FASTA file and re-upload it to continue
+                validation.
+              </p>
+            )}
+
+            {isInvalidRequiredColumns && (
+              <p className="mt-2 mb-0">
+                Please fix the invalid column headers in the table below to continue
+                validation.
+              </p>
+            )}
+
+            {!isFastaError && !isInvalidRequiredColumns && (
+              <p className="mt-2 mb-0">
+                You can fix these values directly in the table below to continue
+                validating your data.
+              </p>
+            )}
           </div>
         )}
 
-        {errors && (
+        {errors && !isFastaError && (
           <CsvEditor
             csvText={csvText}
             onSave={handleValidate}
@@ -284,7 +312,7 @@ function App() {
               {isValidating ? (
                 <>
                   <span
-                    className="spinner-border spinner-border-sm mr-2"
+                    className="spinner-border spinner-border-sm me-2"
                     role="status"
                     aria-hidden="true"
                   ></span>

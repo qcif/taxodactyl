@@ -86,57 +86,49 @@ def parse_errors(stderr: str) -> ParsedError:
     and return structured info.
     """
     logger.debug("Parsing validation error output")
-    validate_err_msg = re.search(
+    missing_sample_id_msg = re.search(
         r'sample ID "(?P<sample_id>[^"]+)" '
         r'listed in metadata CSV file is not present',
         stderr)
-    if validate_err_msg:
+    if missing_sample_id_msg:
         logger.info("Parsed error: metadata_missing_sample | %s",
-                    validate_err_msg.group("sample_id"))
-        sample_id = validate_err_msg.group("sample_id")
-        message = f'Sample ID "{sample_id}" appears in the metadata CSV '
-        "but does not exist in the FASTA file.\n\n"
-        "You can fix this by editing the sample_id value "
-        "or removing this row in the table."
-        "Please provide a valid taxonomic name or remove it.",
+                    missing_sample_id_msg.group("sample_id"))
+        sample_id = missing_sample_id_msg.group("sample_id")
+        message = (
+            f'Sample ID "{sample_id}" appears in the metadata CSV '
+            "but does not exist in the FASTA file.\n\n"
+            "You can fix this by editing the sample_id value "
+            "or removing this row in the table."
+            "Please provide a valid taxonomic name or remove it."
+        )
         return ParsedError(
             type="metadata_missing_sample",
             message=message,
-            sample_id=validate_err_msg.group("sample_id"),
+            sample_id=missing_sample_id_msg.group("sample_id"),
         )
 
-    validate_err_msg2 = re.search(
-        r'Invalid sample ID "(?P<sample_id>[^"]+)"',
-        stderr)
-    if validate_err_msg2:
-        logger.info("Parsed error: invalid_sample_id | %s",
-                    validate_err_msg2.group("sample_id"))
-        return ParsedError(
-            type="invalid_sample_id",
-            message=stderr.strip(),
-            sample_id=validate_err_msg2.group("sample_id"),
-        )
-
-    validate_err_msg3 = re.search(
+    invalid_toi_msg = re.search(
         r'Invalid Taxa of Interest: "(?P<value>[^"]+)"',
         stderr)
-    if validate_err_msg3:
-        value = validate_err_msg3.group("value")
+    if invalid_toi_msg:
+        value = invalid_toi_msg.group("value")
         logger.info("Parsed error: invalid_taxa_of_interest | %s", value)
-        message = f'Taxa of Interest "{value}" is invalid. '
-        "Please provide a valid taxonomic name or remove it.",
+        message = (
+            f'Taxa of Interest "{value}" is invalid. '
+            "Please provide a valid taxonomic name or remove it."
+        )
         return ParsedError(
             type="invalid_taxa_of_interest",
             value=value,
             message=message,
         )
 
-    validate_err_msg4 = re.search(
+    invalid_pmi_msg = re.search(
         r'Invalid Preliminary Morphology ID taxon "(?P<value>[^"]+)"',
         stderr
     )
-    if validate_err_msg4:
-        value = validate_err_msg4.group("value")
+    if invalid_pmi_msg:
+        value = invalid_pmi_msg.group("value")
         logger.info("Parsed error: invalid_pmi | %s", value)
         message = (
             "The Preliminary Morphology ID is invalid,"
@@ -149,12 +141,12 @@ def parse_errors(stderr: str) -> ParsedError:
             message=message,
         )
 
-    validate_err_msg5 = re.search(
+    invalid_country_msg = re.search(
         r'The country provided could not be recognised: "(?P<value>[^"]+)"',
         stderr
     )
-    if validate_err_msg5:
-        value = validate_err_msg5.group("value")
+    if invalid_country_msg:
+        value = invalid_country_msg.group("value")
         logger.info("Parsed error: invalid_country | %s", value)
         suggestions = {
             "turkey": 'Use ISO alpha-2 code "TR".',
@@ -174,28 +166,29 @@ def parse_errors(stderr: str) -> ParsedError:
             message=message
         )
 
-    validate_err_msg7 = re.search(
+    invalid_column_msg = re.search(
         r'missing required column\(s\):(?P<columns>[A-Za-z0-9_, ]+)\.',
         stderr
     )
-    if validate_err_msg7:
+    if invalid_column_msg:
         cols = [
             c.strip()
-            for c in validate_err_msg7.group("columns").split(",")
+            for c in invalid_column_msg.group("columns").split(",")
         ]
         logger.info("Parsed error: invalid_required_columns | %s", cols)
+        message = f'Your CSV is missing required column(s): {", ".join(cols)}.'
         return ParsedError(
             type="invalid_required_columns",
-            message=stderr.strip(),
+            message=message,
             value=cols,
         )
 
-    validate_err_msg8 = re.search(
+    invalid_locus_msg = re.search(
         r'Locus "(?P<value>[^"]+)" is not in the list of permitted loci',
         stderr
     )
-    if validate_err_msg8:
-        value = validate_err_msg8.group("value")
+    if invalid_locus_msg:
+        value = invalid_locus_msg.group("value")
         logger.info("Parsed error: invalid_locus | %s", value)
         message = (
             f'Locus "{value}" is invalid. '
