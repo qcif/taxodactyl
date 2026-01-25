@@ -112,6 +112,7 @@ export default function CsvEditor({ csvText, errorRows, onChange, highlightColum
                     className={`form-control form-control-sm ${
                       highlightColumns.includes(col) ? 'is-invalid' : ''
                     }`}
+                    tabIndex={highlightColumns.includes(col) ? 0 : -1}
                     value={row[col] ?? ""}
                     onChange={e =>
                       handleCellChange(i, col, e.target.value)
