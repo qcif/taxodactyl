@@ -137,7 +137,7 @@ cd /path/to/taxodactyl_github_repo_dir
 For better diff output in snapshot comparisons:
 
 ```bash
-export NFT_DIFF_ARGS="-q -y"
+export NFT_DIFF_ARGS="--suppress-common-lines"
 ```
 
 ### Run the Test
