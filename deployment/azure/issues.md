@@ -1,5 +1,7 @@
 # Known issues with Azure deployment
 
+> Search for "! CAM" throughout the project to see issues that I've tagged in the code
+
 1. Not all required files are captured as process outputs, causing REPORT to fail
 
 1. It seems that only the first query is being passed to EXTRACT_CANDIDATES onwards - all other queries have all_hits.fasta in their output dir, nothing else. From EXTRACT_CANDIDATES onwards (where parallel processing begins) I see only query 1 being run. Perhaps this is an issue with `ch_hits`?
