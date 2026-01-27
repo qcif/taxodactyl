@@ -21,7 +21,9 @@
 
 - [Example workflow report](https://qcif.github.io/taxodactyl/example_report.html)
 - [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
+- [Running tests with nf-test](docs/nf-tests.md)
 - [Python scripts](./scripts) (for developers)
+
 
 ### Workflow Overview
 
