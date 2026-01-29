@@ -96,9 +96,7 @@ def parse_errors(stderr: str) -> ParsedError:
         sample_id = missing_sample_id_msg.group("sample_id")
         message = (
             f'Sample ID "{sample_id}" appears in the metadata CSV '
-            "but does not exist in the FASTA file.\n\n"
-            "You can fix this by editing the sample_id value "
-            "or removing this row in the table."
+            "but does not exist in the FASTA file.\n"
             "Please provide a valid taxonomic name or remove it."
         )
         return ParsedError(
@@ -257,8 +255,6 @@ def parse_errors(stderr: str) -> ParsedError:
             f"• Sequence ID: {seq_id}\n"
             f"• Sequence length: {actual} bp\n"
             f"• Maximum allowed length: {maximum} bp\n\n"
-            "Please shorten the sequence in your local FASTA file "
-            "and upload the corrected file again."
         )
 
         return ParsedError(
