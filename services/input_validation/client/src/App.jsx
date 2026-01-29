@@ -196,8 +196,8 @@ function App() {
         {/* Upload section */}
         {!(validated || errors) && (
           <>
-            <div className="form-group">
-              <label className="font-weight-bold">Metadata CSV</label>
+            <div className="form-group my-3">
+              <label className="font-weight-bold mx-3">Metadata CSV</label>
               <input
                 key={fileInputKey}
                 type="file"
@@ -207,8 +207,8 @@ function App() {
               />
             </div>
 
-            <div className="form-group">
-              <label className="font-weight-bold">Query FASTA</label>
+            <div className="form-group my-3">
+              <label className="font-weight-bold mx-3">Query FASTA</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
