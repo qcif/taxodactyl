@@ -196,23 +196,23 @@ function App() {
         {/* Upload section */}
         {!(validated || errors) && (
           <>
-            <div className="form-group my-3">
-              <label className="font-weight-bold mx-3">Metadata CSV</label>
+            <div className="mb-3">
+              <label className="form-label fw-bold">Metadata CSV</label>
               <input
                 key={fileInputKey}
                 type="file"
-                className="form-control-file"
+                className="form-control"
                 accept=".csv"
                 onChange={e => setMetadataFile(e.target.files[0])}
               />
             </div>
 
-            <div className="form-group my-3">
-              <label className="font-weight-bold mx-3">Query FASTA</label>
+            <div className="mb-3">
+              <label className="form-label fw-bold">Query FASTA</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
-                className="form-control-file"
+                className="form-control"
                 accept=".fasta,.fa"
                 onChange={e => setFastaFile(e.target.files[0])}
               />
@@ -302,7 +302,7 @@ function App() {
           />
         )}
 
-        {!validated && (
+        {!validated && !isFastaError && (
           <div className="my-5">
             <button
               className="btn btn-primary"
