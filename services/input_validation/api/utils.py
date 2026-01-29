@@ -223,8 +223,6 @@ def parse_errors(stderr: str) -> ParsedError:
             f"• Sequence ID: {seq_id}\n"
             f"• Sequence length: {actual} bp\n"
             f"• Minimum required length: {minimum} bp\n\n"
-            "Please fix the sequence length in your local FASTA file "
-            "and upload the corrected file again."
         )
 
         return ParsedError(
@@ -277,7 +275,8 @@ def parse_errors(stderr: str) -> ParsedError:
         r"FASTA format error: "
         r"invalid DNA in sequence #(?P<seq_num>\d+) (?P<seq_id>[\w\.\-]+): "
         r"FASTA format error: "
-        r"Illegal DNA residue '(?P<residue>\w+)' at position (?P<pos>\d+)\.\s+"
+        r"Illegal DNA residue '(?P<residue>[^']+)' "
+        r"at position (?P<pos>\d+)\.\s+"
         r"Permitted characters: (?P<permitted>\{[^\}]+\})",
         stderr
     )
@@ -298,8 +297,7 @@ def parse_errors(stderr: str) -> ParsedError:
             f"• Sequence ID: {seq_id}\n"
             f"• Illegal residue: '{residue}' at position {pos}\n"
             f"• Permitted characters: {permitted}\n\n"
-            "Please fix the sequence in your local FASTA file "
-            "and upload the corrected file again."
+
         )
 
         return ParsedError(
