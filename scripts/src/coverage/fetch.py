@@ -19,7 +19,6 @@ MODULE_NAME = "Database Coverage"
 
 def get_target_coverage(taxid, gbif_target, locus, is_bold):
     """Return a count of the number of accessions for the given target."""
-    # TODO: potential for caching gb count result here
     db_name = 'BOLD' if is_bold else 'Entrez'
     logger.info(
         f"Fetching {db_name} records for target taxid:"
@@ -49,14 +48,20 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
         f" '{gbif_target.taxon}' (locus: '{locus}') - {len(species_names)}"
         f" related species..."
     )
-    # TODO: potential for caching GBIF related taxa here
+
+    classification = config.get_classification_for_query(query_dir)
+
     if is_bold:
         results, err = _fetch_bold_records_for_species(
             species_names,
             rank=RANK.to_string(gbif_target.rank),
         )
     else:
-        results, err = _fetch_gb_records_for_species(species_names, locus)
+        results, err = _fetch_gb_records_for_species(
+            species_names,
+            locus,
+            classification,
+        )
     if err:
         for species, exc in err:
             msg = (
@@ -88,12 +93,14 @@ def get_related_country_coverage(
     ]
     if not species_names:
         return {}
-    # TODO: potential for caching GBIF related/country taxa here
+
     logger.info(
         f"Fetching {db_name} records for target"
         f" '{gbif_target.taxon}' (locus: '{locus}'; country: '{country}')"
         f" - {len(species_names)} related species"
     )
+
+    classification = config.get_classification_for_query(query_dir)
 
     if is_bold:
         results, err = _fetch_bold_records_for_species(
@@ -101,7 +108,11 @@ def get_related_country_coverage(
             rank=RANK.to_string(gbif_target.rank),
         )
     else:
-        results, err = _fetch_gb_records_for_species(species_names, locus)
+        results, err = _fetch_gb_records_for_species(
+            species_names,
+            locus,
+            classification,
+        )
     if err:
         for species, exc in err:
             msg = (
@@ -117,11 +128,11 @@ def get_related_country_coverage(
     return results
 
 
-def _fetch_gb_records_for_species(species_names, locus):
+def _fetch_gb_records_for_species(species_names, locus, classification):
     """Fetch a count of the number of Genbank accessions for each species in
     the list.
     """
-    taxids = extract.taxids(species_names)
+    taxids = extract.taxids(species_names, classification=classification)
     species_without_taxid = [
         k for k, v in taxids.items()
         if v is None
@@ -163,7 +174,7 @@ def _fetch_gb_records_for_species(species_names, locus):
         species: 0
         for species in species_without_taxid
     })
-    # TODO: potential for caching related species counts here
+
     return species_counts, errors
 
 

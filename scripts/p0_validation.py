@@ -204,6 +204,7 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
             row.get(columns['taxa_of_interest']))
         _validate_metadata_country(row.get(columns['country']))
         _validate_metadata_host(row.get(columns['host']))
+        _validate_metadata_classification(row.get(columns['classification']))
         sample_ids.append(sample_id)
 
     missing_ids = set(seq_ids) - set(sample_ids)
@@ -295,6 +296,17 @@ def _validate_metadata_country(value):
 
 def _validate_metadata_host(value):
     pass
+
+
+def _validate_metadata_classification(value):
+    if value is None or not value.strip():
+        return None
+    value = value.strip().lower()
+    if value not in config.HIGHER_CLASSIFICATIONS:
+        raise MetadataFormatError(
+            f'Invalid classification "{value}". Must be one of: '
+            + ', '.join(config.HIGHER_CLASSIFICATIONS)
+        )
 
 
 def _validate_taxdbs(path):

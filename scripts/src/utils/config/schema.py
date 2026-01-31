@@ -49,6 +49,7 @@ class InputsConfig(BaseModel):
             "taxa_of_interest": "taxa_of_interest",
             "country": "country",
             "host": "host",
+            "classification": "classification",
         },
         description="CSV header mapping"
     )

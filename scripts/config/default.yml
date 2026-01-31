@@ -64,6 +64,7 @@ inputs:
     taxa_of_interest: taxa_of_interest
     country: country
     host: host
+    classification: classification
   metadata_csv_required_fields:
   - sample_id
   - locus

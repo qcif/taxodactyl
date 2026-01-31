@@ -84,6 +84,77 @@ class TestNcbiTaxonomy(unittest.TestCase):
         self.assertEqual(output, TAXONOMIES_RETURN_VALUE)
 
     @patch('subprocess.run')
+    def test_taxids_with_classification_filter(self, mock_run):
+        """Test taxids() function with classification parameter."""
+        classification = {
+            'gbif': '1',
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        }
+
+        # Mock the name2taxid response
+        name2taxid_mock = MagicMock()
+        name2taxid_mock.stdout = (
+            "prunella\t39176\tgenus\nprunella\t175132\tgenus\n")
+        name2taxid_mock.returncode = 0
+        name2taxid_mock.stderr = (
+            "13:59:05.955 [WARN] multiple TaxIds found for 'prunella'")
+
+        # Mock lineage responses - different output for each taxid
+        lineage_plantae_stdout = (
+            "39176\tcellular organisms;Eukaryota;Viridiplantae;Streptophyta;"
+            "Streptophytina;Embryophyta;Tracheophyta;Euphyllophyta;"
+            "Spermatophyta;Magnoliopsida;Mesangiospermae;eudicotyledons;"
+            "Gunneridae;Pentapetalae;asterids;lamiids;Lamiales;Lamiaceae;"
+            "Nepetoideae;Mentheae;Prunellinae;Prunella\t"
+            "cellular root;domain;kingdom;phylum;subphylum;clade;clade;clade;"
+            "clade;class;clade;clade;clade;clade;clade;clade;order;family;"
+            "subfamily;tribe;subtribe;genus\n"
+        )
+        lineage_animalia_stdout = (
+            "175132\tcellular organisms;Eukaryota;Opisthokonta;Metazoa;"
+            "Eumetazoa;Bilateria;Deuterostomia;Chordata;Craniata;Vertebrata;"
+            "Gnathostomata;Teleostomi;Euteleostomi;Sarcopterygii;"
+            "Dipnotetrapodomorpha;Tetrapoda;Amniota;Sauropsida;Sauria;"
+            "Archelosauria;Archosauria;Dinosauria;Saurischia;Theropoda;"
+            "Coelurosauria;Aves;Neognathae;Neoaves;Telluraves;Australaves;"
+            "Passeriformes;Passeroidea;Prunellidae;Prunella\t"
+            "cellular root;domain;clade;kingdom;clade;clade;clade;phylum;"
+            "subphylum;clade;clade;clade;clade;superclass;clade;clade;clade;"
+            "clade;clade;clade;clade;clade;clade;clade;clade;class;infraclass;"
+            "clade;clade;clade;order;superfamily;family;genus\n"
+        )
+
+        # Configure mock to return different responses based on command
+        def run_side_effect(args, **kwargs):
+            if 'name2taxid' in args:
+                return name2taxid_mock
+            elif 'lineage' in args:
+                # Check the input to determine which lineage to return
+                input_text = kwargs.get('input', '')
+                lineage_mock = MagicMock()
+                lineage_mock.returncode = 0
+                lineage_mock.stderr = ""
+                if input_text == '39176':
+                    lineage_mock.stdout = lineage_plantae_stdout
+                elif input_text == '175132':
+                    lineage_mock.stdout = lineage_animalia_stdout
+                else:
+                    raise NotImplementedError(
+                        f"Mock not configured for: {args}, input:"
+                        f" {input_text}")
+                return lineage_mock
+            raise NotImplementedError(f"Mock not configured for: {args}")
+
+        mock_run.side_effect = run_side_effect
+
+        result = extract.taxids(['prunella'], classification=classification)
+
+        self.assertEqual(result, {'prunella': '175132'})
+
+    @patch('subprocess.run')
     @patch("p2_extract_taxonomy._parse_args")
     @patch("p2_extract_taxonomy.config")
     def test_main(self, mock_config, mock_parse_args, mock_run):

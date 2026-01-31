@@ -43,7 +43,7 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         offset += res['limit']
         if offset >= config.gbif_max_occurrence_records:
             logger.warning(
-                "Maximum number of records reached:"
+                "Maximum number of occurrence records reached:"
                 f" {config.gbif_max_occurrence_records}")
             break
 
