@@ -155,6 +155,12 @@ thead.no-wrap th {
 .bg-gray-100 {
   background-color: #eee;
 }
+.analyst-summary {
+  color: 555;
+  background-color: #f9f9f9;
+  border-radius: .5rem;
+  padding: 1rem;
+}
 
 /* BLAST hits */
 #selectedHitAlignment {

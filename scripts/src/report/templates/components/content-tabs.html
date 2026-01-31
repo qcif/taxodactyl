@@ -1,0 +1,51 @@
+<!-- Show main content in tabs -->
+
+<ul class="nav nav-tabs my-5" id="mainTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+      1. Inputs
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="results-summary-tab" data-bs-toggle="tab" data-bs-target="#results-summary" type="button" role="tab" aria-controls="results-summary" aria-selected="false">
+      2. Overview
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="candidate-species-tab" data-bs-toggle="tab" data-bs-target="#results-candidate-species" type="button" role="tab" aria-controls="results-candidate-species" aria-selected="false">
+      3. Candidates
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="taxa-of-interest-tab" data-bs-toggle="tab" data-bs-target="#results-taxa-of-interest" type="button" role="tab" aria-controls="results-taxa-of-interest" aria-selected="false">
+      4. Taxa of Interest
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="conclusions-tab" data-bs-toggle="tab" data-bs-target="#conclusions" type="button" role="tab" aria-controls="conclusions" aria-selected="false">
+      5. Conclusions
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content my-3 py-3" id="mainTabsContent">
+  <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+    {% include "components/overview.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="results-summary" role="tabpanel" aria-labelledby="results-summary-tab">
+    {% include "components/results-summary.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="results-candidate-species" role="tabpanel" aria-labelledby="candidate-species-tab">
+    {% include "components/results/1-candidate-species.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="results-taxa-of-interest" role="tabpanel" aria-labelledby="taxa-of-interest-tab">
+    {% include "components/results/2-taxa-of-interest.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="conclusions" role="tabpanel" aria-labelledby="conclusions-tab">
+    {% include "components/conclusions.html" %}
+  </div>
+</div>

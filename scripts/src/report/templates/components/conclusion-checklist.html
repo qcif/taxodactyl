@@ -1,0 +1,65 @@
+{% from 'macros/yes_no_buttons.html' import yes_no_button %}
+
+<section class="my-5">
+  <h4 class="mb-3">Taxonomic identity</h4>
+
+  {{ yes_no_button('conclusion_chk_1', 'A positive species identification has been made') }}
+
+  <ul id="conclusionChecksPositiveId" class="list-unstyled my-5 mx-5" style="display: none;">
+    <li class="mb-3">
+      {{ yes_no_button('positive_id_chk_1', 'Species ID is sufficiently genetically distinct from other candidate species') }}
+    </li>
+    <li class="mb-3">
+      {{ yes_no_button('positive_id_chk_2', 'Database coverage is sufficient to rule out other species in genus') }}
+    </li>
+    <li class="mb-3">
+      {{ yes_no_button('positive_id_chk_3', 'Species ID is based on reference data with sufficient credibility') }}
+    </li>
+    <li class="mb-3">
+      {{ yes_no_button('positive_id_chk_4', 'The taxonomy of the Species ID has been verified (see below)') }}
+    </li>
+  </ul>
+</section>
+
+<section class="my-5">
+  <h4 class="mb-3">Taxa of interest</h4>
+
+  {{ yes_no_button('toi_chk_1', 'A taxon of interest was identified') }}
+
+  <ul id="conclusionChecksToiMatched" class="list-unstyled my-5 mx-5" style="display: none;">
+    <li class="mb-3">
+      {{ yes_no_button('toi_matched_chk_1', 'The matching candidate is supported by sufficient publications') }}
+    </li>
+    <li class="mb-3">
+      {{ yes_no_button('toi_matched_chk_2', 'Database coverage is sufficient to rule-out related species as an alternative identity for the sample') }}
+    </li>
+  </ul>
+
+  <ul id="conclusionChecksToiNotMatched" class="list-unstyled my-5 mx-5" style="display: none;">
+    <li class="mb-3">
+      {{ yes_no_button('toi_not_matched_chk_1', 'Database coverage is sufficient to rule-out the TOI(s) as an identity for the sample') }}
+    </li>
+  </ul>
+</section>
+
+
+<script>
+  $('input[name="conclusion_chk_1"]').on('change', function() {
+    const checked = $('#conclusion_chk_1_yes:checked').val();
+    const list = $('#conclusionChecksPositiveId');
+    checked ? list.show() : list.hide();
+  });
+
+  $('input[name="toi_chk_1"]').on('change', function() {
+    const checked = $('#toi_chk_1_yes:checked').val();
+    const matchedList = $('#conclusionChecksToiMatched');
+    const notMatchedList = $('#conclusionChecksToiNotMatched');
+    if (checked) {
+      matchedList.show();
+      notMatchedList.hide();
+    } else {
+      matchedList.hide();
+      notMatchedList.show();
+    }
+  });
+</script>

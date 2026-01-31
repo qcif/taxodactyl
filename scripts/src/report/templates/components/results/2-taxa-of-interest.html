@@ -1,6 +1,6 @@
 {% from "macros/alert-level-icon.html" import render_level_icon %}
-{% from "macros/db-coverage-target-modal.html" import render_target_modal %}
 {% from "macros/flag-badge.html" import render_flag %}
+{% from "macros/subjective.html" import render_subjective_input %}
 
 {% set flags = conclusions.flags %}
 
@@ -43,34 +43,22 @@
       {% set target_id = 'toi-' + taxon | css_hash %}
       {% set flag = flags['5']['toi'].get(taxon, flags['5']['toi'].null) %}
 
-      <button
-        class="btn btn-{{ flag.bs_class }}"
+      <div
         data-bs-toggle="tooltip"
         data-bs-placement="bottom"
         title="{{ flag.outcome }}"
-        onclick="new bootstrap.Modal(document.getElementById('{{ target_id }}Modal')).show();"
-        type="button"
-        style="min-width: 3rem;"
       >
-        {{ render_level_icon(flag.level) }}
-      </button>
-
-      {% set modal_context = {
-        'data': db_coverage.full.toi[taxon],
-        'target_id': target_id,
-        'target_taxon': taxon,
-        'target_type': 'toi',
-        'target_type_text': "Taxon of Interest",
-        'flags': flags,
-        'metadata': metadata,
-        'error_log': error_log,
-        'error_locations': error_locations,
-        'config': config,
-        'tois_detected': tois_detected,
-        'locus_provided': locus_provided,
-      } %}
-      {{ render_target_modal(modal_context) }}
-
+        <button
+          data-bs-toggle="modal"
+          data-bs-target="#{{ target_id }}Modal"
+          class="btn btn-{{ flag.bs_class }}"
+          type="button"
+          style="min-width: 3rem;"
+        >
+          <!-- Modals are rendered in index.html -->
+          {{ render_level_icon(flag.level) }}
+        </button>
+      </div>
     </td>
     </tr>
     {% endfor %}
@@ -81,3 +69,5 @@
   No Taxa of Interest to assess.
 </div>
 {% endif %}
+
+{{ render_subjective_input(3) }}

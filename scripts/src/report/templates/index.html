@@ -1,5 +1,3 @@
-{% from "macros/subjective.html" import render_subjective_input %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,35 +31,15 @@
   <body>
 
     <div class="container">
-
       {% include "components/heading.html" %}
-
-      <section id="overview">
-        {% include "components/overview.html" %}
-        {{ render_subjective_input(1) }}
-      </section>
-
-      <section id="results-candidate-species">
-        {% include "components/results/1-candidate-species.html" %}
-      </section>
-
-      <section id="results-taxa-of-interest">
-        {% include "components/results/2-taxa-of-interest.html" %}
-      </section>
-
-      <section>
-        <h2>Taxonomy Check</h2>
-        {% include "components/taxonomy-check.html" %}
-      </section>
-    </div>
-
-    <footer>
+      {% include "components/content-tabs.html" %}
       {% include "components/footer.html" %}
-    </footer>
+    </div>
 
     {% include "components/save-modal.html" %}
     {% include "components/flags-modal.html" %}
     {% include "components/error-modal.html" %}
+    {% include "components/results/toi-modals.html" %}
 
   </body>
 

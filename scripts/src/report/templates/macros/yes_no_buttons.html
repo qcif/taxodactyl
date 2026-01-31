@@ -1,0 +1,11 @@
+{% macro yes_no_button(id, label) %}
+<div class="d-flex align-items-center">
+  <div class="btn-group me-3" role="group">
+    <input type="radio" class="btn-check" name="{{ id }}" id="{{ id }}_yes" value="yes" />
+    <label class="btn btn-outline-success btn-sm" for="{{ id }}_yes">Yes</label>
+    <input type="radio" class="btn-check" name="{{ id }}" id="{{ id }}_no" value="no" />
+    <label class="btn btn-outline-danger btn-sm" for="{{ id }}_no">No</label>
+  </div>
+  <span class="flex-grow-1">{{ label }}</span>
+</div>
+{% endmacro %}

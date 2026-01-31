@@ -76,16 +76,16 @@
           data-bs-placement="bottom"
           title="See full database coverage report"
           style="display: inline-block;"
-          >
+        >
           <button
-          class="btn btn-{{ flag.bs_class }} p-0 my-1"
-          data-bs-toggle="modal"
-          data-bs-target="#{{ target_id }}Modal"
-          type="button"
-          style="width: 4rem;"
+            class="btn btn-{{ flag.bs_class }} p-0 my-1"
+            data-bs-toggle="modal"
+            data-bs-target="#{{ target_id }}Modal"
+            type="button"
+            style="width: 4rem;"
           >
-          {{ render_level_icon(flag.level) }}
-        </button>
+            {{ render_level_icon(flag.level) }}
+          </button>
         </div>
         {% endif %}
       </td>
@@ -113,26 +113,6 @@
   </tbody>
 </table>
 
-{% for toi in toi_rows %}
-{% set taxon = toi['Taxon of interest'] %}
-{% set target_id = 'toi-' + taxon | css_hash %}
-{% set modal_context = {
-  'data': db_coverage.full.get('toi', {}).get(taxon, {}),
-  'target_id': target_id,
-  'target_taxon': taxon,
-  'target_type': 'toi',
-  'target_type_text': "Taxa of Interest",
-  'flags': flags,
-  'metadata': metadata,
-  'error_log': error_log,
-  'error_locations': error_locations,
-  'config': config,
-  'tois_detected': tois_detected,
-  'locus_provided': locus_provided,
-} %}
-{{ render_target_modal(modal_context) }}
-{% endfor %}
-
 {% else %}
 <table class="table table-striped tight">
   <thead>
@@ -147,5 +127,3 @@
   </tbody>
 </table>
 {% endif %}
-
-
