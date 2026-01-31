@@ -102,9 +102,10 @@ This file provides metadata for each query sequence, with the following fields:
 | taxa_of_interest  | no       | A pipe-delimited list of taxa to be evaluated against the sample. Can be at rank species, genus, family, order, class, phylum, kingdom or domain. |
 | country           | no       | The sample country of origin                                                                                        |
 | host              | no       | The host or commodity that the sample was extracted from                                                            |
+| category          | no       | Optional taxonomic category used to limit taxonomy search, must be one of {% for k in config.HIGHER_CLASSIFICATIONS %}*{{ k }}*{{ ", " if not loop.last else "" }}{% endfor %}                                 |
 
 <p class="alert alert-info">
-  From <code>v1.1</code> any additional fields in this file will be displayed in the workflow report
+  This file accepts additional arbitrary fields (e.g. "Sequencing platform"), which will be displayed in the workflow report of each sample.
 </p>
 
 ## BLAST - parsing the XML output
@@ -231,6 +232,9 @@ When the workflow is run in `--bold` mode, the search method changes to use the 
 </p>
 
 ### Sequence orientation
+
+>[!NOTE]
+> Orientation is no longer required for BOLD API v5, so this functionality is no longer used.
 
 Each DNA sequence is translated all three translation frames in both the forward and reverse directions. This results in six translated amino acid sequences for each query in frames `1`, `2`, `3`, `-1`, `-2`, `-3`.
 
@@ -379,12 +383,13 @@ For each target, three analyses may be performed:
 To obtain "species in genus" in analyses `5.2` and `5.3`, we use the GBIF API:
 
 1. A GBIF record is retrieved from the [/species/suggest](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API using the target taxon as the search query. If the target matches our [list of canonical taxa](https://github.com/qcif/taxodactyl/blob/main/scripts/src/gbif/relatives.py#L16), the taxonomic rank specified in that list is set as an API request parameter. This prevents the rather annoying issue of the query "Bacteria" matching the genus "Bacteria" of the Diapheromeridae (a family of Arthropoda).
+1. If a `classification` has been provided in the Metadata CSV input, results will be filtered to only those matching the provided classification (e.g. "animalia") to reduce issues with clashing taxonomies, i.e. "Diptera" is both an order of flying insects and a genus of magnolia plants.
 1. The genus key from the target record is then used to fetch all matching records at rank "species" from the [/species/match](https://techdocs.gbif.org/en/openapi/v1/species#/Searching%20names) API endpoint.
 1. Returned speces records are filtered to exclude extinct species, and include only those where status is one of `{{ config.gbif_accepted_status }}`.
 
 ### Enumerating GenBank records
 
-For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The query is dynamically generated to include all synonyms for the locus specified in the workflow's [loci.json](https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json) file. the taxid is extracted from NCBI taxonomies [using taxonkit](#blast-extracting-taxonomic-metadata).
+For each species identified, the Entrez API is used to query GenBank records that match that species at the given locus. The taxid for each species is extracted from NCBI taxonomies [using taxonkit](#blast-extracting-taxonomic-metadata) (again, we filter records to include only those matching the `classification`, if provided, to reduce clashing taxonomic names like "Diptera"). The query is dynamically generated to include all synonyms for the locus specified in the workflow's [loci.json](https://github.com/qcif/taxodactyl/blob/main/scripts/config/loci.json) file.
 
 For example, the following locus and taxon "Homo sapiens" (taxid `9606`):
 
