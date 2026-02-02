@@ -329,35 +329,8 @@
 </div>
 {% endif %}
 
+
 {{ render_subjective_input(2) }}
-
-
-<!-- Candidate Taxonomy Modal -->
-<div class="modal fade" id="candidateTaxonomyModal" tabindex="-1" aria-labelledby="candidateTaxonomyModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="candidateTaxonomyModalLabel">Taxonomic Lineage</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-sm">
-          <tbody>
-            {% for rank in taxonomic_ranks %}
-            <tr>
-              <th class="text-capitalize">{{ rank }}</th>
-              <td id="candidate-taxonomy-{{ rank }}">-</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <script>
@@ -374,13 +347,5 @@
       row.classList.toggle('hide');
       row.classList.toggle('show');
     });
-  }
-
-  function showCandidateTaxonomy(accession) {
-    TAXONOMY_ORDER.forEach((rank) => document
-      .getElementById('candidate-taxonomy-' + rank)
-      .innerText = TAXONOMY[accession][rank] || '-'
-    );
-    $('#candidateTaxonomyModal').modal('show');
   }
 </script>
