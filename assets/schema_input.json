@@ -33,19 +33,6 @@
                 "description": "Country of origin for the sample.",
                 "errorMessage": "Parameter 'country' must be a string."
             },
-            "host": {
-                "type": "string",
-                "description": "Host organism of the sample.",
-                "errorMessage": "Parameter 'host' must be a string."
-            },
-            "sequencing_platform": {
-                "type": "string",
-                "description": "Sequencing platform used for the sample.",
-                "errorMessage": "Parameter 'sequencing_platform' must be a string."
-            },
-            "sequencing_read_coverage": {
-                "description": "Sequencing read coverage for the sample."
-            },
             "classification": {
                 "type": "string",
                 "description": "High-level taxonomic classification for the sample.",
