@@ -102,7 +102,7 @@ This file provides metadata for each query sequence, with the following fields:
 | taxa_of_interest  | no       | A pipe-delimited list of taxa to be evaluated against the sample. Can be at rank species, genus, family, order, class, phylum, kingdom or domain. |
 | country           | no       | The sample country of origin                                                                                        |
 | host              | no       | The host or commodity that the sample was extracted from                                                            |
-| category          | no       | Optional taxonomic category used to limit taxonomy search, must be one of {% for k in config.HIGHER_CLASSIFICATIONS %}*{{ k }}*{{ ", " if not loop.last else "" }}{% endfor %}                                 |
+| classification          | no       | Optional taxonomic category used to limit taxonomy search, must be one of {% for k in config.HIGHER_CLASSIFICATIONS %}*{{ k }}*{{ ", " if not loop.last else "" }}{% endfor %}                                 |
 
 <p class="alert alert-info">
   This file accepts additional arbitrary fields (e.g. "Sequencing platform"), which will be displayed in the workflow report of each sample.
