@@ -45,6 +45,20 @@
             },
             "sequencing_read_coverage": {
                 "description": "Sequencing read coverage for the sample."
+            },
+            "classification": {
+                "type": "string",
+                "description": "High-level taxonomic classification for the sample.",
+                "enum": [
+                    "animalia",
+                    "plantae",
+                    "fungi",
+                    "chromista",
+                    "bacteria",
+                    "archaea",
+                    "viruses"
+                ],
+                "errorMessage": "Parameter 'classification' must be one of: animalia, plantae, fungi, chromista, bacteria, archaea, viruses."
             }
         },
         "required": ["sample_id", "locus", "preliminary_id"]
