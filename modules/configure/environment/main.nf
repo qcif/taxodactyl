@@ -1,8 +1,4 @@
 process CONFIGURE_ENVIRONMENT {
-    input:
-    path sequences_file
-    path metadata_file
-
     output:
     file 'env_vars.sh' // Output: environment variables file for downstream modules
 

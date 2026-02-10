@@ -41,18 +41,17 @@ workflow TAXODACTYL {
         .collectFile(name: 'timestamp.txt', newLine: true)
 
     // Copy input files to work directory first to ensure availability
+    def sequences_input = params.sequences ? file(params.sequences) : file("${projectDir}/assets/optional_input/NO_SEQUENCES")
     PREPARE_INPUTS (
-        file(params.sequences),
+        sequences_input,
         file(params.metadata)
     )
     
-    ch_sequences = PREPARE_INPUTS.out.sequences
-    ch_metadata = PREPARE_INPUTS.out.metadata
+    ch_sequences_prepared = PREPARE_INPUTS.out.sequences
+    ch_metadata_prepared = PREPARE_INPUTS.out.metadata
 
     // Set up environment variables
     CONFIGURE_ENVIRONMENT (
-        ch_sequences,
-        ch_metadata
     )
 	 
     ch_env_var_file = CONFIGURE_ENVIRONMENT.out
@@ -60,9 +59,11 @@ workflow TAXODACTYL {
     // Validate input files and parameters
     VALIDATE_INPUT (
         ch_env_var_file,
-        ch_sequences,
-        ch_metadata
+        ch_sequences_prepared,
+        ch_metadata_prepared
     )
+    ch_sequences = VALIDATE_INPUT.out.sequences
+    ch_metadata = VALIDATE_INPUT.out.metadata
 
     // Run BOLD or BLAST search depending on db_type
     if (params.db_type == 'bold') {
