@@ -21,7 +21,6 @@ TAXONOMIC_RANKS = [
     'genus',
     'species',
 ]
-MAX_RESULTS_TO_FILTER = 5
 
 
 class TaxonkitLineageResult:
@@ -289,9 +288,5 @@ def _parse_taxonkit_name2taxid(
                 f" error:\n{exc.stderr}"
             )
             filtered_name_results.append(name_result)
-
-        if len(filtered_name_results) == MAX_RESULTS_TO_FILTER:
-            # Break after too many, or this could take ages
-            break
 
     return filtered_name_results + no_taxid_results
