@@ -37,7 +37,7 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
     number of species which have at least one accession in the database.
     """
     db_name = 'BOLD' if is_bold else 'Entrez'
-    species_names = list({
+    species_names = sorted({
         r["canonicalName"]
         for r in gbif_target.relatives
     })
