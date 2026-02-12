@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 
 from Bio import SeqIO
+from Bio.Seq import Seq
 from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
@@ -112,6 +113,7 @@ def _validate_fasta(path: Path) -> list[str]:
 
     count = 0
     seq_ids = []
+    sanitized_sequences = []
     with path.open() as f:
         sequences = SeqIO.parse(f, 'fasta')
         for seq in sequences:
@@ -150,6 +152,19 @@ def _validate_fasta(path: Path) -> list[str]:
                     f" allowed length of {config.inputs.fasta_max_length}bp"
                     f" (sequence #{count} {seq.id})"
                 )
+            sanitized_sequences.append(
+                SeqIO.SeqRecord(
+                    Seq(_sanitize_dna(seq.seq)),
+                    id=seq.id,
+                )
+            )
+    path = config.output_dir / OUTPUT_FASTA_FILENAME
+    SeqIO.write(
+        sanitized_sequences,
+        path,
+        'fasta',
+    )
+    logger.info(f'{count} sanitized sequences written to {path}')
 
     return seq_ids
 
@@ -270,7 +285,7 @@ def _write_fasta_from_metadata(rows, columns):
             sequence = _sanitize_dna(row[columns['sequence']])
             f.write(f'>{sample_id}\n{sequence}\n')
     logger.info(
-        f'metadata.csv sequences have been written to {path.absolute()}.'
+        f'metadata.csv sequences have been written to {path.absolute()}'
     )
 
 
