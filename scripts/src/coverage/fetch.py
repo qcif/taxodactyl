@@ -1,4 +1,4 @@
-"""docstring"""
+"""Fetch database coverage information for given target and relatives."""
 
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed

@@ -144,17 +144,25 @@ class RelatedTaxaGBIF:
 
     def _is_accepted(self, record):
         status_key = 'status' if 'status' in record else 'taxonomicStatus'
+        matches_classification = (
+            record.get('kingdomKey', self.classification)
+            == self.classification
+            if self.classification
+            else True
+        )
+        if not matches_classification:
+            logger.debug(
+                f"Record '{record.get('canonicalName')}' does not match"
+                f" the expected classification '{self.classification}'"
+                f" (kingdomKey: {record.get('kingdomKey')}) - excluding from"
+                " relatives."
+            )
         return bool(
             record
+            and matches_classification
             and record[status_key] in config.gbif_accepted_status
             and (self.INCLUDE_EXTINCT or record.get('isExtinct') is not True)
             and RANK.from_string(record.get('rank'))
-            and (
-                record.get('kingdomKey', self.classification)
-                == self.classification
-                if self.classification
-                else True
-            )
         )
 
     def _filter_records(self, records):
@@ -181,6 +189,8 @@ class RelatedTaxaGBIF:
     def relatives(self):
         """Fetch related species with self.genus_key."""
         i = 0
+        record_count = 0
+        excluded_count = 0
         end_of_records = False
         records = []
         kwargs = {
@@ -199,6 +209,8 @@ class RelatedTaxaGBIF:
                 with_cache=True,
             )
             new_records = self._filter_records(res['results'])
+            record_count += len(new_records)
+            excluded_count += len(res['results']) - len(new_records)
             if i > 5:
                 first_name = new_records[0]['canonicalName']
                 if first_name == previous_first_name:
@@ -214,6 +226,12 @@ class RelatedTaxaGBIF:
             records += new_records
             end_of_records = res['endOfRecords']
             i += 1
+
+        logger.info(
+            f"Fetched {record_count} records for taxon '{self.taxon}'"
+            f" (genusKey: {self.genus_key})."
+            f" Excluded {excluded_count} records that did not meet criteria."
+        )
 
         return records
 
