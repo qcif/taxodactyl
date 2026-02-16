@@ -211,7 +211,7 @@ class RelatedTaxaGBIF:
             new_records = self._filter_records(res['results'])
             record_count += len(new_records)
             excluded_count += len(res['results']) - len(new_records)
-            if i > 5:
+            if i > 5 and new_records:
                 first_name = new_records[0]['canonicalName']
                 if first_name == previous_first_name:
                     logger.warning(
