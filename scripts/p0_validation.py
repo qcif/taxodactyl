@@ -258,10 +258,12 @@ def _validate_metadata(
             _validate_metadata_country(row.get(columns['country']))
             _validate_metadata_host(row.get(columns['host']))
             _validate_metadata_sequence(row.get(columns['sequence']))
+            _validate_metadata_classification(row.get(columns['classification']))
         except Exception as exc:
             raise MetadataFormatError(
                 f'Error in row {i + 1} (sample ID: {sample_id}): {exc}'
             ) from exc
+
         sample_ids.append(sample_id)
 
     if expect_seq_col:
@@ -383,6 +385,17 @@ def _validate_metadata_country(value):
 
 def _validate_metadata_host(value):
     pass
+
+
+def _validate_metadata_classification(value):
+    if value is None or not value.strip():
+        return None
+    value = value.strip().lower()
+    if value not in config.HIGHER_CLASSIFICATIONS:
+        raise MetadataFormatError(
+            f'Invalid classification "{value}". Must be one of: '
+            + ', '.join(config.HIGHER_CLASSIFICATIONS)
+        )
 
 
 def _validate_taxdbs(path):

@@ -1,6 +1,8 @@
 """Runtime configuration for the workflow.
 
 Read in from YAML and validate with Pydantic.
+
+To view/modify default values for config attributes, refer to default.yml.
 """
 
 import argparse
@@ -51,6 +53,59 @@ class Config:
     """Singleton configuration class using YAML with Pydantic validation."""
     _instance = None
     _initialized = False
+
+    # These are used for taxonomic filtering of GBIF/taxonkit records:
+    HIGHER_CLASSIFICATIONS = {
+        'animalia': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
+        'plantae': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'fungi': {
+            'gbif': 5,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'fungi',
+            },
+        },
+        'chromista': {
+            'gbif': 4,
+            'ncbi': {
+                'rank': 'clade',
+                'taxon': 'sar',
+            },
+        },
+        'bacteria': {
+            'gbif': 3,
+            'ncbi': {
+                'rank': 'domain',
+                'taxon': 'bacteria',
+            },
+        },
+        'archaea': {
+            'gbif': 2,
+            'ncbi': {
+                'rank': 'domain',
+                'taxon': 'archaea',
+            },
+        },
+        'viruses': {
+            'gbif': 8,
+            'ncbi': {
+                'rank': 'acellular root',
+                'taxon': 'viruses',
+            },
+        },
+    }
 
     def __new__(cls):
         if cls._instance is None:
@@ -400,6 +455,14 @@ class Config:
     def get_toi_list_for_query(self, query) -> list[str]:
         """Read taxa of interest from TOI file."""
         return self._get_metadata_for_query(query, "taxa_of_interest")
+
+    def get_classification_for_query(self, query) -> str:
+        classification = self._get_metadata_for_query(query, "classification")
+        if not (isinstance(classification, str) and classification.strip()):
+            return None
+        return self.HIGHER_CLASSIFICATIONS[
+            classification.lower().strip()
+        ]
 
     def get_report_path(self, query, bold: bool = False) -> Path:
         query_ix = self.get_query_ix(query)

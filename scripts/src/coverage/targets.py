@@ -51,13 +51,16 @@ def get_targets(query_dir):
 
 
 def get_taxids(targets, query_dir):
-    target_taxids = extract.taxids(targets)
+    classification = config.get_classification_for_query(query_dir)
+    target_taxids = extract.taxids(targets, classification=classification)
     if not all(target_taxids.values()):
         msg = (
             "Taxonkit failed to produce taxids for this taxon."
             " Database coverage for this taxon is assumed to be zero, since"
             " this likely means it is not represented in the reference"
-            " database.")
+            " database. If this seems unlikely, perhaps check that the"
+            " classification provided in the sample metadata is correct for"
+            " this sample?")
         for target in [
             k for k, v in target_taxids.items()
             if v is None
@@ -74,11 +77,15 @@ def get_taxids(targets, query_dir):
 
 
 def fetch_target_taxa(targets, query_dir):
+    classification = config.get_classification_for_query(query_dir)
     target_gbif_taxa = {}
     higher_taxon_targets = {}  # Taxa at rank 'family' or higher
     for target in targets:
         try:
-            gbif_target = RelatedTaxaGBIF(target)
+            gbif_target = RelatedTaxaGBIF(
+                target,
+                classification=classification,
+            )
         except GBIFRecordNotFound as exc:
             msg = (f"No GBIF record found for target taxon '{target}'."
                    " This target could not be evaluated.")
@@ -92,6 +99,7 @@ def fetch_target_taxa(targets, query_dir):
                 context={"target": target},
             )
             continue
+
         if not gbif_target.rank:
             msg = (
                 f"GBIF record for target taxon '{target}' has no rank,"
@@ -105,6 +113,7 @@ def fetch_target_taxa(targets, query_dir):
                 query_dir=query_dir,
                 context={"target": target},
             )
+
         if gbif_target.from_synonym:
             msg = (
                 f"Target taxon '{target}' is listed as a synonym in GBIF."
@@ -119,9 +128,11 @@ def fetch_target_taxa(targets, query_dir):
                     "target": target,
                 },
             )
+
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             # These get processed differently - broad GB record count only
             higher_taxon_targets[target] = gbif_target
+
         else:
             target_gbif_taxa[target] = gbif_target
 

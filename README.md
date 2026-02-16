@@ -127,8 +127,11 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
-3. **country** - Country of origin for the sample.
-6. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
+2. **country** - Country of origin for the sample.
+3. **classification** - High-level taxonomic classification for the sample. Must be one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`.
+4. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
+
+In addition to the above, you can include arbitrary columns (e.g., `host`, `sequencing_platform`, `sequencing_read_coverage`) which will be displayed in the workflow report's "Sample metadata" section.
 
 #### Example
 
@@ -139,8 +142,9 @@ The metadata file provides essential information about each sequence and must fo
             <th>locus</th>
             <th>preliminary_id</th>
             <th>taxa_of_interest</th>
-            <th>host</th>
             <th>country</th>
+            <th>classification</th>
+            <th>host</th>
             <th>sequencing_platform</th>
             <th>sequencing_read_coverage</th>
         </tr>
@@ -151,8 +155,9 @@ The metadata file provides essential information about each sequence and must fo
             <td>COI</td>
             <td>Aphididae</td>
             <td>Myzus persicae|Aphididae</td>
-            <td>Cut flower Rosa</td>
             <td>Ecuador</td>
+            <td>animalia</td>
+            <td>Cut flower Rosa</td>
             <td>Nanopore</td>
             <td>30x</td>
         </tr>
@@ -161,8 +166,9 @@ The metadata file provides essential information about each sequence and must fo
             <td>COI</td>
             <td>Miridae</td>
             <td>Lygus pratensis</td>
-            <td>Cut flower Paenonia</td>
             <td>Netherlands</td>
+            <td>animalia</td>
+            <td>Cut flower Paenonia</td>
             <td>Nanopore</td>
             <td>30x</td>
         </tr>
@@ -172,7 +178,7 @@ The metadata file provides essential information about each sequence and must fo
 > [!NOTE]
 > - All required columns must be present for every sample.
 > - Optional columns can be left blank or completely omitted if not applicable.
-> - Columns 4 and 5 are examples of "arbitrary columns" - add any arbitrary columns you like, and they will be included in the workflow report "Sample metadata".
+> - Arbitrary columns (such as `host`, `sequencing_platform`, `sequencing_read_coverage`) will be displayed in the workflow report "Sample metadata" section.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 > - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 

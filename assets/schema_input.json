@@ -33,12 +33,25 @@
                 "description": "Country of origin for the sample.",
                 "errorMessage": "Parameter 'country' must be a string."
             },
+            "classification": {
+                "type": "string",
+                "description": "High-level taxonomic classification for the sample.",
+                "enum": [
+                    "animalia",
+                    "plantae",
+                    "fungi",
+                    "chromista",
+                    "bacteria",
+                    "archaea",
+                    "viruses"
+                ],
+                "errorMessage": "Parameter 'classification' must be one of: animalia, plantae, fungi, chromista, bacteria, archaea, viruses."
+            },
             "sequence": {
                 "type": "string",
                 "description": "Nucleotide sequence for the sample.",
                 "errorMessage": "Parameter 'sequence' must be a string."
             }
-
         },
         "required": ["sample_id", "locus", "preliminary_id"]
     }
