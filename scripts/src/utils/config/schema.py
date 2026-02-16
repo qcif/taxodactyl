@@ -50,6 +50,7 @@ class InputsConfig(BaseModel):
             "country": "country",
             "host": "host",
             "classification": "classification",
+            "sequence": "sequence",
         },
         description="CSV header mapping"
     )

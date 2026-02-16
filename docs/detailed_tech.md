@@ -10,7 +10,7 @@ This is the pipeline entry point script. It handles parameter parsing and valida
 # Workflows
 ## [taxodactyl.nf](../workflows/taxodactyl.nf)
 
-This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata, performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
+This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata (either a separate FASTA file or a `sequence` column in the metadata), performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
 
 ---
 
@@ -48,7 +48,7 @@ This module generates an environment variables file (`env_vars.sh`) containing a
 
 ## [validate/input](../modules/validate/input/main.nf)
 
-This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA, and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).
+This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA (if provided), and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).
 
 ## [blast/blastn](../modules/blast/blastn/main.nf)
 

@@ -46,6 +46,11 @@
                     "viruses"
                 ],
                 "errorMessage": "Parameter 'classification' must be one of: animalia, plantae, fungi, chromista, bacteria, archaea, viruses."
+            },
+            "sequence": {
+                "type": "string",
+                "description": "Nucleotide sequence for the sample.",
+                "errorMessage": "Parameter 'sequence' must be a string."
             }
         },
         "required": ["sample_id", "locus", "preliminary_id"]
