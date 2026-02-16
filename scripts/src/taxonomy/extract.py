@@ -253,40 +253,59 @@ def _parse_taxonkit_name2taxid(
     if not higher_classification:
         return name_results
 
+    # Separate results with and without taxids, and group results by taxid.
+    taxid_to_results: dict[str, list[TaxonkitName2TaxidResult]] = {}
     filtered_name_results: list[TaxonkitName2TaxidResult] = []
     no_taxid_results: list[TaxonkitName2TaxidResult] = []
+
     for name_result in name_results:
         if not name_result.taxid:
             no_taxid_results.append(name_result)
             continue
-        try:
-            process = subprocess.run(
-                [
-                    'taxonkit',
-                    'lineage',
-                    '-R',
-                    '--data-dir', config.taxdb_dir,
-                ],
-                input=name_result.taxid,
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            for lineage_result in _parse_taxonkit_lineage(process.stdout):
-                for rank, taxon in lineage_result.taxonomy:
-                    if (
-                        rank.lower() == higher_classification['ncbi']['rank']
-                        and taxon.lower() ==
-                            higher_classification['ncbi']['taxon']
-                    ):
-                        filtered_name_results.append(name_result)
-                        break
+        taxid_to_results.setdefault(name_result.taxid, []).append(name_result)
 
-        except subprocess.CalledProcessError as exc:
-            logger.error(
-                f"taxonkit lineage failed for taxid {name_result.taxid} with"
-                f" error:\n{exc.stderr}"
-            )
-            filtered_name_results.append(name_result)
+    if not taxid_to_results:
+        return filtered_name_results + no_taxid_results
+
+    try:
+        process = subprocess.run(
+            [
+                'taxonkit',
+                'lineage',
+                '-R',
+                '--data-dir',
+                config.taxdb_dir,
+            ],
+            input="\n".join(taxid_to_results.keys()),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        matching_taxids: set[str] = set()
+        for lineage_result in _parse_taxonkit_lineage(process.stdout):
+            # Assume it provides the taxid corresponding to the input
+            lineage_taxid = getattr(lineage_result, "taxid", None)
+            if not lineage_taxid:
+                continue
+            for rank, taxon in lineage_result.taxonomy:
+                if (
+                    rank.lower()
+                    == higher_classification['ncbi']['rank']
+                    and taxon.lower()
+                    == higher_classification['ncbi']['taxon']
+                ):
+                    matching_taxids.add(lineage_taxid)
+                    break
+        for taxid in matching_taxids:
+            for name_result in taxid_to_results.get(taxid, []):
+                filtered_name_results.append(name_result)
+    except subprocess.CalledProcessError as exc:
+        logger.error(
+            "taxonkit lineage failed for batched taxid lookup with error:\n"
+            f"{exc.stderr}"
+        )
+        # On error, include all taxid results without filtering
+        for results in taxid_to_results.values():
+            filtered_name_results.extend(results)
 
     return filtered_name_results + no_taxid_results
