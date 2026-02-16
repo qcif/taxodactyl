@@ -14,7 +14,7 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `facility_name`| string  |                   | Name of the facility where the workflow is executed.                                             | Must be a string.                                                                             |
 | `metadata`     | string  | 'metadata.csv'    | CSV file containing sample metadata. Must have columns: `sample_id`, `locus`, `preliminary_id`.  | Must be a valid CSV file path, no spaces, `.csv` extension, required columns.                 |
 | `outdir`       | string  | 'output'          | Directory where output files will be saved.                                                      | Must be a valid directory path. Default: `output`.                                            |
-| `sequences`    | string  | 'sequences.fasta' | FASTA file containing input sequences for analysis.                                              | Must be a valid file path, no spaces, `.fa`, `.fna`, or `.fasta` extension.                   |
+| `sequences`    | string  |                   | Optional FASTA file containing input sequences for analysis. If omitted, `metadata.csv` must include a `sequence` column. | Must be a valid file path, no spaces, `.fa`, `.fna`, or `.fasta` extension.                   |
 | `taxdb`        | string  |                   | Directory where NCBI's taxdump files can be found.                                               | Must be a valid directory path. Following files should be present: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt |
 
 ---

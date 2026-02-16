@@ -73,6 +73,8 @@
                 "--metadata-csv", "tests/test-data/metadata.csv",
                 "--query-fasta", "tests/test-data/queries.fasta",
                 "--taxdb-dir", "~/.taxonkit",
+
+                // "--metadata-csv", "tests/test-data/validation/metadata_with_sequences.csv",
             ],
             "preLaunchTask": "clear-log-files"
         },

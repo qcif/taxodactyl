@@ -95,7 +95,12 @@ The command should look like this:
 
 ### Sequences file (`sequences.fasta`)
 
-You will need a FASTA file containing the query sequences (up to 100), e.g.
+You can provide query sequences in either of two ways:
+
+- Provide a FASTA file using `--sequences`.
+- Add a `sequence` column to `metadata.csv` and omit `--sequences`.
+
+If using a FASTA file, it should contain the query sequences (up to 100), e.g.
 ```
 >VE24-1075_COI
 TGGATCATCTCTTAGAATTTTAATTCGATTAGAATTAAGACAAATTAATTCTATTATTWATAATAATCAATTATATAATGTAATTGTTCACAATTCATGCTTTTATTATAATTTTTTTTATAACTATACCAATTGTAATTGGTGGATTTGGAAATTGATTAATTCCTATAATAATAGGATGTCCTGATATATCATTTCCACSTTTAAATAATATTAGATTTTGATTATTACCTCCATCATTAATAATAATAATTTGTAGATTTTTAATTAATAATGGAACAGGAACAGGATGAACAATTTAYCCHCCTTTATCAAACAATATTGCACATAATAACATTTCAGTTGATTTAACTATTTTTTCTTTACATTTAGCAGGWATCTCATCAATTTTAGGAGCAATTAACTTTATTTGTACAATTCTTAATATAATAYCAAAYAATATAAAACTAAATCAAATTCCTCTTTTTCCTTGATCAATTTTAATTACAGCTATTTTATTAATTTTATMTTTACCAGTTTTAGCTGGTGCCATTACAATATTATTAACTGATCGTAATTTAAATACATCATTTTTGATCCAGCAGGAGGAGGAGATCC
@@ -122,10 +127,8 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
-2. **host** - Host organism of the sample.
 3. **country** - Country of origin for the sample.
-4. **sequencing_platform** - Sequencing platform used for the sample.
-5. **sequencing_read_coverage** - Sequencing read coverage for the sample.
+6. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
 
 #### Example
 
@@ -188,6 +191,21 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --facility_name "QCIF" \
     -resume
 ```
+
+  To run the pipeline using sequences stored in `metadata.csv`:
+  ```bash
+  nextflow run /path/to/pipeline/taxodactyl/main.nf \
+    --metadata /path/to/metadata.csv \
+    --blastdb /path/to/blastdbs/core_nt \
+    --outdir /path/to/output \
+    -profile singularity \
+    --taxdb /path/to/.taxonkit/ \
+    --ncbi_api_key API_KEY \
+    --ncbi_user_email EMAIL \
+    --analyst_name "Magdalena Antczak" \
+    --facility_name "QCIF" \
+    -resume
+  ```
 
 To run the pipeline using the BOLD web database:
 ```bash
