@@ -137,14 +137,18 @@ class TestNcbiTaxonomy(unittest.TestCase):
                 lineage_mock = MagicMock()
                 lineage_mock.returncode = 0
                 lineage_mock.stderr = ""
-                if input_text == '39176':
-                    lineage_mock.stdout = lineage_plantae_stdout
-                elif input_text == '175132':
-                    lineage_mock.stdout = lineage_animalia_stdout
-                else:
-                    raise NotImplementedError(
-                        f"Mock not configured for: {args}, input:"
-                        f" {input_text}")
+                taxid_lines = input_text.strip().split('\n')
+                stdout_parts = []
+                for taxid in taxid_lines:
+                    if taxid == '39176':
+                        stdout_parts.append(lineage_plantae_stdout)
+                    elif taxid == '175132':
+                        stdout_parts.append(lineage_animalia_stdout)
+                    else:
+                        raise NotImplementedError(
+                            f"Mock not configured for: {args},"
+                            f" input: {input_text}")
+                lineage_mock.stdout = "".join(stdout_parts)
                 return lineage_mock
             raise NotImplementedError(f"Mock not configured for: {args}")
 
