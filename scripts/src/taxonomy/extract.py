@@ -231,7 +231,7 @@ def _parse_taxonkit_name2taxid(
     stdout: str,
     higher_classification: dict,
 ) -> list[TaxonkitName2TaxidResult]:
-    """Extract ...
+    """Extract taxids from taxonkit name2taxid output.
 
     Filter taxonkit name2taxid output lines by higher classification."""
     warn = False
@@ -247,8 +247,7 @@ def _parse_taxonkit_name2taxid(
     if warn:
         logger.warning(
             "Unexpected format in taxonkit stdout. This may result in missing"
-            " taxid information:\n"
-            + line)
+            " taxid information:\n" + line)
 
     if not higher_classification:
         return name_results
