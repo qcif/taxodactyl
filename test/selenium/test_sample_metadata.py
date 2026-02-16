@@ -74,8 +74,8 @@ def test_sample_modal(driver):
         assert modal.value_of_css_property("display") != "none", "Modal did not appear"
 
         # 4. Verify modal content dynamically from CSV
-        expected_header = report_expectations._1_sample_id
-        expected_sequence = report_expectations._2_dna_sequence
+        expected_header = getattr(report_expectations, "1_sample_id")
+        expected_sequence = getattr(report_expectations, "2_dna_sequence")
 
         modal_text = modal.text
         modal_text = modal.text

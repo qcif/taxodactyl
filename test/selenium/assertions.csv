@@ -1,8 +1,8 @@
 Component,Assertion ID,Type,1_report_SME25-218_2025-12-11_07_30_03.html,2_report_SME25-221_2025-12-11_07_30_03.html
-input_sequence_modal,_1_sample_id,,SME25-218,SME25-221
-input_sequence_modal,_2_dna_sequence,,CCAAAAAATCA,CATAAAGATATT
-overview_tab,_1_conclusion_text,,inconclusive,inconclusive
-overview_tab,_2_species_found,list,Drosophila simulans|Drosophila mauritiana,
-overview_tab,_3_toi_row_count,int,2,2
-overview_tab,_4_toi_green_tick_first_row,bool,TRUE,FALSE
-overview_tab,_5_flag_text,,Flag 2A,Flag 2B
+input_sequence_modal,1_sample_id,,SME25-218,SME25-221
+input_sequence_modal,2_dna_sequence,,CCAAAAAATCA,CATAAAGATATT
+overview_tab,1_conclusion_text,,inconclusive,inconclusive
+overview_tab,2_species_found,list,Drosophila simulans|Drosophila mauritiana,
+overview_tab,3_toi_row_count,int,2,2
+overview_tab,4_toi_green_tick_first_row,bool,TRUE,FALSE
+overview_tab,5_flag_text,,Flag 2A,Flag 2B

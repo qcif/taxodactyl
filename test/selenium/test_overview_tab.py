@@ -80,7 +80,7 @@ def test_overview_tab(driver):
         wait.until(lambda d: "show" in overview_pane.get_attribute("class"))
 
         # 1. Conclusion text
-        expected_conclusion = report_expectations._1_conclusion_text.lower()
+        expected_conclusion = getattr(report_expectations, "1_conclusion_text").lower()
         actual_overview_text = overview_pane.text.lower()
 
         assert expected_conclusion in actual_overview_text, (
@@ -88,7 +88,7 @@ def test_overview_tab(driver):
         )
 
         # 2. Species list
-        expected_species = report_expectations._2_species_found
+        expected_species = getattr(report_expectations, "2_species_found")
       
         visible_table_rows = wait.until(lambda d: [
             row for row in d.find_elements(By.CSS_SELECTOR, "#results-summary tbody tr")
@@ -104,7 +104,7 @@ def test_overview_tab(driver):
                 )
               
          # 3. TOI row count
-        expected_count = report_expectations._3_toi_row_count
+        expected_count = getattr(report_expectations,"3_toi_row_count")
 
         tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
         assert tbodies, "No tbody elements found in Overview tab"
@@ -121,7 +121,7 @@ def test_overview_tab(driver):
         assert green_tick is not None
 
         # 5. Flag 2A in second row
-        expected_flag = report_expectations._5_flag_text
+        expected_flag = getattr(report_expectations, "5_flag_text")
         
         if expected_flag is not None:
             assert expected_flag in toi_rows[-1].text, (
