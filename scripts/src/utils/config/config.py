@@ -37,6 +37,9 @@ MAP_FILENAME_TEMPLATE = "map_{taxon_str}.png"
 REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
+METADATA_IGNORE_FIELDS = (
+    'sequence',
+)
 VARS_FROM_ENV = (
     "USER_EMAIL",
     "NCBI_API_KEY",
@@ -399,6 +402,7 @@ class Config:
                     key: _get_value_for_key(key, row, colname)
                     for key, colname in header.items()
                     if key != "sample_id"
+                    and key.lower() not in METADATA_IGNORE_FIELDS
                 }
         return data
 

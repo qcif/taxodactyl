@@ -2,11 +2,13 @@
 
 import argparse
 import csv
+import logging
 import os
 import re
 from pathlib import Path
 
 from Bio import SeqIO
+from Bio.Seq import Seq
 from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
@@ -15,6 +17,7 @@ from src.utils.config.mappings import CLI_ARGS
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
+logger = logging.getLogger(__name__)
 
 DNA_CHARS = set(IUPACData.ambiguous_dna_letters)
 TAXDB_EXPECT_FILES = {
@@ -28,6 +31,8 @@ TAXDB_EXPECT_FILES = {
     "names.dmp",
     "nodes.dmp",
 }
+# If sequences are included in the metadata CSV, we split them:
+OUTPUT_FASTA_FILENAME = 'sequences.fasta'
 
 
 def main():
@@ -35,7 +40,11 @@ def main():
     config.update_from_args(args)
     _validate_taxdbs(args.taxdb_dir)
     ids = _validate_fasta(args.query_fasta)
-    _validate_metadata(args.metadata_csv, ids, bold=args.bold)
+    _validate_metadata(
+        args.metadata_csv,
+        ids,
+        bold=args.bold,
+    )
 
 
 def _parse_args():
@@ -52,12 +61,12 @@ def _parse_args():
         f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
-        required=True,
+        required=False,
     )
     parser.add_argument(
         f"--{CLI_ARGS['taxdb_dir'].cli_name}",
         type=existing_path,
-        help="Path to queries.fasta input file.",
+        help="Path to NCBI taxdump directory (for taxonkit).",
         required=True,
     )
     parser.add_argument(
@@ -98,19 +107,13 @@ def _validate_fasta(path: Path) -> list[str]:
     - Seq IDs must be unique
     - Seq IDs must match metadata CSV
     """
-    def assert_dna(sequence: str):
-        sequence = sequence.upper()
-        illegal_residues = set(sequence) - DNA_CHARS
-        if illegal_residues:
-            residue = illegal_residues.pop()
-            position = sequence.index(residue)
-            raise FASTAFormatError(
-                f"Illegal DNA residue '{residue}' at position {position}."
-                f" Permitted characters: {DNA_CHARS}"
-            )
+    if path is None:
+        # Expect sequences to be included in CSV column
+        return None
 
     count = 0
     seq_ids = []
+    sanitized_sequences = []
     with path.open() as f:
         sequences = SeqIO.parse(f, 'fasta')
         for seq in sequences:
@@ -124,7 +127,7 @@ def _validate_fasta(path: Path) -> list[str]:
             seq_ids.append(seq.id)
             count = len(seq_ids)
             try:
-                assert_dna(seq.seq)
+                _assert_is_dna(seq.seq)
             except FASTAFormatError as exc:
                 raise FASTAFormatError(
                     f'invalid DNA in sequence #{count} {seq.id}: {exc}'
@@ -149,11 +152,46 @@ def _validate_fasta(path: Path) -> list[str]:
                     f" allowed length of {config.inputs.fasta_max_length}bp"
                     f" (sequence #{count} {seq.id})"
                 )
+            sanitized_sequences.append(
+                SeqIO.SeqRecord(
+                    Seq(_sanitize_dna(seq.seq)),
+                    id=seq.id,
+                )
+            )
+    path = config.output_dir / OUTPUT_FASTA_FILENAME
+    SeqIO.write(
+        sanitized_sequences,
+        path,
+        'fasta',
+    )
+    logger.info(f'{count} sanitized sequences written to {path}')
 
     return seq_ids
 
 
-def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
+def _assert_is_dna(sequence: str):
+    sequence = _sanitize_dna(sequence)
+    illegal_residues = set(sequence) - DNA_CHARS
+    if illegal_residues:
+        residue = illegal_residues.pop()
+        position = sequence.index(residue)
+        raise FASTAFormatError(
+            f"Illegal DNA residue '{residue}' at position {position}."
+            f" Permitted characters: {DNA_CHARS}"
+        )
+
+
+def _sanitize_dna(sequence) -> str:
+    """Remove whitespace and convert to uppercase."""
+    sequence = str(sequence)
+    return re.sub(r'[\s-]+', '', sequence).upper()
+
+
+def _validate_metadata(
+    path: Path,
+    seq_ids: list[str],
+    bold=False,
+):
     """Assert that input metadata CSV is valid.
 
     Each row['sample_id'] must match a sequence ID
@@ -161,7 +199,11 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
     Must contain required columns (see config.py - colnames configurable)
       - which are required?
     TOI list column should be pipe-delimited if multiple - validate chars?
+
+    If sequence column exists, validate that it contains valid DNA sequences
+    and write them to OUTPUT_FASTA_FILENAME.
     """
+    expect_seq_col = seq_ids is None
     sample_ids = []
     columns = config.inputs.metadata_csv_header
     with path.open() as f:
@@ -175,8 +217,17 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
         if missing_cols:
             raise MetadataFormatError(
                 "missing required column(s):" + ', '.join(missing_cols) + '.')
+
+        if expect_seq_col and columns['sequence'] not in row:
+            raise MetadataFormatError(
+                'Sequence column is expected but no sequence provided.'
+                ' If you are not including sequences in the metadata CSV,'
+                ' please provide a FASTA file with your sequences and ensure'
+                ' that the sequence IDs match the sample IDs in the metadata'
+                ' CSV.'
+            )
         sample_id = row[columns['sample_id']]
-        if sample_id not in seq_ids:
+        if seq_ids and sample_id not in seq_ids:
             raise MetadataFormatError(
                 f'sample ID "{sample_id}" listed in metadata CSV file is not'
                 f' present in FASTA sequence IDs. All sample IDs must match a'
@@ -197,23 +248,61 @@ def _validate_metadata(path: Path, seq_ids: list[str], bold=False):
                         ' please enter "NA".'
                     )
                 raise MetadataFormatError(msg)
-        _validate_metadata_sample_id(row[columns['sample_id']])
-        _validate_metadata_locus(row[columns['locus']], bold=bold)
-        _validate_metadata_preliminary_id(row[columns['preliminary_id']])
-        _validate_metadata_taxa_of_interest(
-            row.get(columns['taxa_of_interest']))
-        _validate_metadata_country(row.get(columns['country']))
-        _validate_metadata_host(row.get(columns['host']))
-        _validate_metadata_classification(row.get(columns['classification']))
+
+        try:
+            _validate_metadata_sample_id(row[columns['sample_id']])
+            _validate_metadata_locus(row[columns['locus']], bold=bold)
+            _validate_metadata_preliminary_id(row[columns['preliminary_id']])
+            _validate_metadata_taxa_of_interest(
+                row.get(columns['taxa_of_interest']))
+            _validate_metadata_country(row.get(columns['country']))
+            _validate_metadata_host(row.get(columns['host']))
+            _validate_metadata_sequence(row.get(columns['sequence']))
+            _validate_metadata_classification(row.get(columns['classification']))
+        except Exception as exc:
+            raise MetadataFormatError(
+                f'Error in row {i + 1} (sample ID: {sample_id}): {exc}'
+            ) from exc
+
         sample_ids.append(sample_id)
 
-    missing_ids = set(seq_ids) - set(sample_ids)
-    if missing_ids:
+    if expect_seq_col:
+        _write_fasta_from_metadata(rows, columns)
+    else:
+        missing_ids = set(seq_ids) - set(sample_ids)
+        if missing_ids:
+            raise MetadataFormatError(
+                'FASTA Sequence ID(s) were not found in the provided metadata'
+                ' CSV file. All FASTA sequence IDs must match a sample ID in'
+                f' the provided metadata CSV: {missing_ids}'
+            )
+
+
+def _write_fasta_from_metadata(rows, columns):
+    """Write sequences from metadata CSV to FASTA file."""
+    path = config.output_dir / OUTPUT_FASTA_FILENAME
+    with path.open('w') as f:
+        for row in rows:
+            sample_id = row[columns['sample_id']]
+            sequence = _sanitize_dna(row[columns['sequence']])
+            f.write(f'>{sample_id}\n{sequence}\n')
+    logger.info(
+        f'metadata.csv sequences have been written to {path.absolute()}'
+    )
+
+
+def _validate_metadata_sequence(value):
+    if value is None:
+        return
+    value = value.strip()
+    if not value:
+        return
+    try:
+        _assert_is_dna(value)
+    except FASTAFormatError as exc:
         raise MetadataFormatError(
-            'FASTA Sequence ID(s) were not found in the provided metadata CSV'
-            ' file. All FASTA sequence IDs must match a sample ID in the'
-            f' provided metadata CSV: {missing_ids}'
-        )
+            f'Invalid DNA sequence in metadata: {exc}'
+        ) from exc
 
 
 def _validate_metadata_sample_id(value):

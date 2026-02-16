@@ -95,7 +95,12 @@ The command should look like this:
 
 ### Sequences file (`sequences.fasta`)
 
-You will need a FASTA file containing the query sequences (up to 100), e.g.
+You can provide query sequences in either of two ways:
+
+- Provide a FASTA file using `--sequences`.
+- Add a `sequence` column to `metadata.csv` and omit `--sequences`.
+
+If using a FASTA file, it should contain the query sequences (up to 100), e.g.
 ```
 >VE24-1075_COI
 TGGATCATCTCTTAGAATTTTAATTCGATTAGAATTAAGACAAATTAATTCTATTATTWATAATAATCAATTATATAATGTAATTGTTCACAATTCATGCTTTTATTATAATTTTTTTTATAACTATACCAATTGTAATTGGTGGATTTGGAAATTGATTAATTCCTATAATAATAGGATGTCCTGATATATCATTTCCACSTTTAAATAATATTAGATTTTGATTATTACCTCCATCATTAATAATAATAATTTGTAGATTTTTAATTAATAATGGAACAGGAACAGGATGAACAATTTAYCCHCCTTTATCAAACAATATTGCACATAATAACATTTCAGTTGATTTAACTATTTTTTCTTTACATTTAGCAGGWATCTCATCAATTTTAGGAGCAATTAACTTTATTTGTACAATTCTTAATATAATAYCAAAYAATATAAAACTAAATCAAATTCCTCTTTTTCCTTGATCAATTTTAATTACAGCTATTTTATTAATTTTATMTTTACCAGTTTTAGCTGGTGCCATTACAATATTATTAACTGATCGTAATTTAAATACATCATTTTTGATCCAGCAGGAGGAGGAGATCC
@@ -124,9 +129,9 @@ The metadata file provides essential information about each sequence and must fo
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
 2. **country** - Country of origin for the sample.
 3. **classification** - High-level taxonomic classification for the sample. Must be one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`.
+4. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
 
 In addition to the above, you can include arbitrary columns (e.g., `host`, `sequencing_platform`, `sequencing_read_coverage`) which will be displayed in the workflow report's "Sample metadata" section.
-
 
 #### Example
 
@@ -192,6 +197,21 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --facility_name "QCIF" \
     -resume
 ```
+
+  To run the pipeline using sequences stored in `metadata.csv`:
+  ```bash
+  nextflow run /path/to/pipeline/taxodactyl/main.nf \
+    --metadata /path/to/metadata.csv \
+    --blastdb /path/to/blastdbs/core_nt \
+    --outdir /path/to/output \
+    -profile singularity \
+    --taxdb /path/to/.taxonkit/ \
+    --ncbi_api_key API_KEY \
+    --ncbi_user_email EMAIL \
+    --analyst_name "Magdalena Antczak" \
+    --facility_name "QCIF" \
+    -resume
+  ```
 
 To run the pipeline using the BOLD web database:
 ```bash

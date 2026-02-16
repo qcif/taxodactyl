@@ -65,6 +65,7 @@ inputs:
     country: country
     host: host
     classification: classification
+    sequence: sequence
   metadata_csv_required_fields:
   - sample_id
   - locus
