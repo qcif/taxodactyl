@@ -49,12 +49,12 @@ def test_overview_tab(driver):
         overview_pane = open_tab(driver, tab_id="results-summary-tab", pane_id="results-summary")
 
         # Access component
-        component = getattr(report, "overview_tab", None)
+        component = report.overview_tab
         if component is None:
             continue
 
         # Conclusion text
-        conclusion_assertion = getattr(component, "o1_conclusion_text", None)
+        conclusion_assertion = component.o1_conclusion_text
         if conclusion_assertion and conclusion_assertion.expected:
             expected_text = conclusion_assertion.expected.lower()
             actual_text = overview_pane.text.lower()
@@ -63,7 +63,7 @@ def test_overview_tab(driver):
             )
 
         # Species list
-        species_assertion = getattr(component, "o2_species_found", None)
+        species_assertion = component.o2_species_found
         if species_assertion and species_assertion.expected:
             visible_rows = [
                 row for row in overview_pane.find_elements(By.CSS_SELECTOR, "tbody tr")
@@ -76,7 +76,7 @@ def test_overview_tab(driver):
                 )
 
         # TOI row count
-        count_assertion = getattr(component, "o3_toi_row_count", None)
+        count_assertion = component.o3_toi_row_count
         tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
         assert tbodies, "No tbody elements found in Overview tab"
         toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
@@ -86,7 +86,7 @@ def test_overview_tab(driver):
             )
 
         # Green tick in first row
-        green_tick_assertion = getattr(component, "o4_toi_green_tick_first_row", None)
+        green_tick_assertion = component.o4_toi_green_tick_first_row
         if green_tick_assertion and green_tick_assertion.expected is not None and toi_rows:
             detected_cell = toi_rows[0].find_elements(By.TAG_NAME, "td")[1]
             green_tick = detected_cell.find_elements(
@@ -100,7 +100,7 @@ def test_overview_tab(driver):
             )
 
         #  Flag text
-        flag_assertion = getattr(component, "o5_flag_text", None)
+        flag_assertion = component.o5_flag_text
         if flag_assertion and flag_assertion.expected:
             assert flag_assertion.expected in toi_rows[-1].text, (
                 f"Expected '{flag_assertion.expected}' in {report.filename}"

@@ -34,13 +34,22 @@ class Assertion:
     def _parse_value(self) -> Any:
         if pd.isna(self.raw_value):
             return None
+        
+        val = str(self.raw_value).strip()
+        
+        if val == "":
+            return [] if self.assertion_type == "list" else None
+
         if self.assertion_type == "list":
-            return str(self.raw_value).split("|")
+            return [item.strip() for item in val.split("|") if item.strip()]
+        
         if self.assertion_type == "int":
-            return int(self.raw_value)
+            return int(val)
+        
         if self.assertion_type == "bool":
-            return str(self.raw_value).strip().lower() == "true"
-        return str(self.raw_value)
+            return val.lower() == "true"
+        
+        return val
 
 class Report:
     def __init__(self, filename: str, df: pd.DataFrame, report_column: str):
@@ -55,6 +64,10 @@ class Report:
             component_ns = getattr(self, assertion.component)
             setattr(component_ns, assertion.assertion_id, assertion)
 
+    def __getattr__(self, name):
+        ns = SimpleNamespace()
+        setattr(self, name, ns)
+        return ns
 # CSV parser
 
 def parse_csv(filename: str) -> List[Report]:

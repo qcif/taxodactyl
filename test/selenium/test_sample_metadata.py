@@ -55,19 +55,19 @@ def test_sample_modal(driver):
         modal_text = modal.text
 
         # Access component and assertions
-        component = getattr(report, "input_sequence_modal", None)
+        component = report.input_sequence_modal
         if component is None:
             continue
 
         # Sample ID
-        sample_id_assertion = getattr(component, "i1_sample_id", None)
+        sample_id_assertion = component.i1_sample_id
         if sample_id_assertion and sample_id_assertion.expected:
             assert sample_id_assertion.expected in modal_text, (
                 f"Missing sample ID '{sample_id_assertion.expected}' in {report.filename}"
             )
 
         # DNA Sequence
-        dna_assertion = getattr(component, "i2_dna_sequence", None)
+        dna_assertion = component.i2_dna_sequence 
         if dna_assertion and dna_assertion.expected:
             assert dna_assertion.expected in modal_text, (
                 f"Missing DNA sequence '{dna_assertion.expected}' in {report.filename}"
