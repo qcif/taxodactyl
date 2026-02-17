@@ -54,56 +54,54 @@ def test_overview_tab(driver):
             continue
 
         # Conclusion text
-        conclusion_assertion = component.o1_conclusion_text
-        if conclusion_assertion and conclusion_assertion.expected:
-            expected_text = conclusion_assertion.expected.lower()
-            actual_text = overview_pane.text.lower()
-            assert expected_text in actual_text, (
-                f"Conclusion '{expected_text}' not found in {report.filename}"
-            )
+        component.o1_conclusion_text.assert_contains(
+            overview_pane.text,
+            context=f"[{report.filename}] Conclusion:"
+        )
+
 
         # Species list
-        species_assertion = component.o2_species_found
-        if species_assertion and species_assertion.expected:
-            visible_rows = [
-                row for row in overview_pane.find_elements(By.CSS_SELECTOR, "tbody tr")
-                if row.is_displayed() and row.text.strip()
-            ]
-            row_texts = [row.text for row in visible_rows]
-            for species in species_assertion.expected:
-                assert any(species in text for text in row_texts), (
-                    f"Species '{species}' not found in {report.filename}"
-                )
+        visible_rows = [
+            row for row in overview_pane.find_elements(By.CSS_SELECTOR, "tbody tr")
+            if row.is_displayed() and row.text.strip()
+        ]
+        row_texts = [row.text for row in visible_rows]
+
+        component.o2_species_found.assert_list_contains(
+            row_texts,
+            context=f"[{report.filename}] Species:"
+        )
+
 
         # TOI row count
-        count_assertion = component.o3_toi_row_count
         tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
         assert tbodies, "No tbody elements found in Overview tab"
+
         toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
-        if count_assertion and count_assertion.expected is not None:
-            assert len(toi_rows) == count_assertion.expected, (
-                f"Expected {count_assertion.expected} TOI rows but found {len(toi_rows)} in {report.filename}"
-            )
+
+        component.o3_toi_row_count.assert_equals(
+            len(toi_rows),
+            context=f"[{report.filename}] TOI row count:"
+        )
 
         # Green tick in first row
-        green_tick_assertion = component.o4_toi_green_tick_first_row
-        if green_tick_assertion and green_tick_assertion.expected is not None and toi_rows:
+        if toi_rows:
             detected_cell = toi_rows[0].find_elements(By.TAG_NAME, "td")[1]
             green_tick = detected_cell.find_elements(
                 By.CSS_SELECTOR,
                 ".text-success svg.bi-check-circle-fill"
             )
             tick_present = bool(green_tick)
-            assert tick_present == green_tick_assertion.expected, (
-                f"Expected green tick presence to be {green_tick_assertion.expected} "
-                f"but found {tick_present} in {report.filename}"
-            )
 
+            component.o4_toi_green_tick_first_row.assert_bool(
+                tick_present,
+                context=f"[{report.filename}] Green tick first row:"
+            )
         #  Flag text
-        flag_assertion = component.o5_flag_text
-        if flag_assertion and flag_assertion.expected:
-            assert flag_assertion.expected in toi_rows[-1].text, (
-                f"Expected '{flag_assertion.expected}' in {report.filename}"
+        if toi_rows:
+            component.o5_flag_text.assert_contains(
+                toi_rows[-1].text,
+                context=f"[{report.filename}] Flag text:"
             )
 
         print(f"All assertions passed for {report.filename}")

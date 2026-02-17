@@ -37,11 +37,11 @@ class Assertion:
         
         val = str(self.raw_value).strip()
         
-        if val == "":
-            return [] if self.assertion_type == "list" else None
-
         if self.assertion_type == "list":
             return [item.strip() for item in val.split("|") if item.strip()]
+
+        if val == "":
+            return None
         
         if self.assertion_type == "int":
             return int(val)
@@ -50,6 +50,55 @@ class Assertion:
             return val.lower() == "true"
         
         return val
+    
+    def assert_equals(self, actual, context: str = ""):
+        if self.expected is None:
+            return
+
+        assert actual == self.expected, (
+            f"{context} Expected '{self.expected}' but got '{actual}'"
+        )
+
+    def assert_contains(self, actual: str, context: str = ""):
+        if self.expected is None:
+            return
+
+        actual = actual.strip().lower()
+        expected = str(self.expected).strip().lower()
+
+        assert expected in actual, (
+            f"{context} Expected '{expected}' to be in '{actual}'"
+        )
+    
+    def assert_list_contains(self, actual_list, context: str = ""):
+        if not self.expected:
+            return
+
+        for expected_item in self.expected:
+            assert any(expected_item in item for item in actual_list), (
+                f"{context} Expected '{expected_item}' not found"
+            )
+    
+    def assert_bool(self, actual: bool, context: str = ""):
+        if self.expected is None:
+            return
+
+        assert bool(actual) == bool(self.expected), (
+            f"{context} Expected {self.expected} but got {actual}"
+        )
+
+    def assert_value(self, actual, msg=None):
+        """
+        Generic dispatcher based on assertion_type
+        """
+        if self.assertion_type == "equals":
+            self.assert_equals(actual, msg)
+        elif self.assertion_type == "contains":
+            self.assert_contains(actual, msg)
+        elif self.assertion_type == "min":
+            self.assert_min(actual, msg)
+        else:
+            raise ValueError(f"Unknown assertion type: {self.assertion_type}")
 
 class Report:
     def __init__(self, filename: str, df: pd.DataFrame, report_column: str):
@@ -59,15 +108,13 @@ class Report:
     def _parse_assertions(self, df: pd.DataFrame, report_column: str):
         for _, row in df.iterrows():
             assertion = Assertion(row, report_column)
+            
             if not hasattr(self, assertion.component):
                 setattr(self, assertion.component, SimpleNamespace())
+
             component_ns = getattr(self, assertion.component)
             setattr(component_ns, assertion.assertion_id, assertion)
 
-    def __getattr__(self, name):
-        ns = SimpleNamespace()
-        setattr(self, name, ns)
-        return ns
 # CSV parser
 
 def parse_csv(filename: str) -> List[Report]:
