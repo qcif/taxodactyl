@@ -144,11 +144,11 @@ def test_overview_tab(driver):
         matching_weak = getattr(component, "o10_matching_species_weak", None)
 
         badges_div = WebDriverWait(overview_pane, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                ".//div[contains(@class,'mb-3')][strong[text()[contains(.,'Matching species')]]]"
-            ))
-        )     
+        EC.presence_of_element_located((
+            By.XPATH,
+            ".//div[contains(@class,'mb-3')][strong[text()[contains(.,'Matching species')]]]"
+        ))
+    )     
         
         if matching_strong and matching_strong.expected is not None:
             strong_badge = badges_div.find_element(By.XPATH, ".//span[contains(@class,'bg-success')]")
