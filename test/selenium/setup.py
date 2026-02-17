@@ -34,12 +34,19 @@ class Assertion:
     def _parse_value(self) -> Any:
         if pd.isna(self.raw_value):
             return None
+        
         if self.assertion_type == "list":
             return str(self.raw_value).split("|")
+        
         if self.assertion_type == "int":
             return int(self.raw_value)
+        
+        if self.assertion_type == "float":
+            return float(self.raw_value)
+        
         if self.assertion_type == "bool":
             return str(self.raw_value).strip().lower() == "true"
+        
         return str(self.raw_value)
 
 class Report:

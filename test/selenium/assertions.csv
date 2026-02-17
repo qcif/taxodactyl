@@ -5,4 +5,58 @@ overview_tab,o1_conclusion_text,,inconclusive,inconclusive
 overview_tab,o2_species_found,list,Drosophila simulans|Drosophila mauritiana,
 overview_tab,o3_toi_row_count,int,2,2
 overview_tab,o4_toi_green_tick_first_row,bool,TRUE,FALSE
-overview_tab,o5_flag_text,,Flag 2A,Flag 2B
+overview_tab,o5_overview_flag_text,,Flag 1B,Flag 1E
+overview_tab,o6_overview_flag_text,,Flag 2A,Flag 2B
+overview_tab,o7_overview_flag_text,,Flag 7NA,Flag 7NA
+overview_tab,o8_matching_species_strong,int,2,0
+overview_tab,o9_matching_species_moderate,int,10,0
+overview_tab,o10_matching_species_weak,int,22,230
+candidate_tab,c1_tab_title,,Identification of candidate species,Identification of candidate species
+candidate_tab,c2_candidate_flag_text,,Flag 1B,Flag 1E
+candidate_tab,c3_strong_alginment_identity,float,98.5,98.5
+candidate_tab,c4_moderate_alginment_identity,float,93.5,93.5
+candidate_tab,c5_weak_alginment_identity,float,93.5,93.5
+candidate_tab,c6_strong_hits,int,71,0
+candidate_tab,c7_moderate_hits,int,218,0
+candidate_tab,c8_weak_hits,int,211,230
+candidate_tab,c9_lowest_hit,float,90.5,82.4
+candidate_tab,c10_species,,Drosophila simulans|Drosophila mauritiana,
+candidate_tab,c11_no_of_hits,list,85|8,
+candidate_tab,c12_top_identity,list,100|100,
+candidate_tab,c13_median_identity,list,100|96.6,
+candidate_tab,c14_min_identity,list,96.3|95.5,
+candidate_tab,c15_top_e_value,list,0|0,
+candidate_tab,c16_publication,list,39|1,
+candidate_tab,c17_modal_title,,Database coverage of Candidate Drosophila simulans,
+candidate_tab,c18_modal_flag_text1,,5.1A,
+candidate_tab,c18_modal_record_count,int,144,
+candidate_tab,c20_modal_record_text,,with the given locus COI,
+candidate_tab,c21_cmodal_flag_text2,,5.2B,
+candidate_tab,c22_cmodal_species_count,int,594,
+candidate_tab,c22_cmodal_species_total,int,1679,
+candidate_tab,c23_cmodal_min_bar_count,int,10,
+candidate_tab,c24_cmodal_first_bar_species,,Drosophila_affinis,
+candidate_tab,c25_cmodal_first_bar_count,int,1162,
+candidate_tab,c26_cmodal_final_text,,"A country of origin was not provided in the sample metadata, so this analysis could not be performed.",
+candidate_tab,c27_pmodal_title,,Publications supporting taxonomic association - Drosophila simulans,
+candidate_tab,c28_pmodal_source,,39 Independent Sources,
+candidate_tab,c29_pmodal_count,int,39,
+candidate_tab,c30_bmodal_title,,BLAST search results,BLAST search results
+candidate_tab,c31_bmodal_rank,int,1,1
+candidate_tab,c32_bmodal_accession,,KC244283,MG314115
+candidate_tab,c33_bmodal_subject,,"Drosophila simulans strain sm21 mitochondrion, complete genome","Eupodidae sp. BIOUG24235-D06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial"
+candidate_tab,c34_bmodal_lenght,int,682,621
+candidate_tab,c35_bmodal_identity,float,100,86.2
+candidate_tab,c36_bmodal_bitscore,float,1352.4,549.579
+candidate_tab,c37_bmodal_evalue,,0.00E+00,1.86E-151
+candidate_tab,c38_bmodal_coverage,float,96.5,90.9
+candidate_tab,c39_bmodal_salignment_text,bool,TRUE,TRUE
+candidate_tab,c40_bmodal_char_more_than_10,bool,TRUE,TRUE
+candidate_tab,c41_bmodal_domain,,No data,No data
+candidate_tab,c42_bmodal_kingdom,,Metazoa,Metazoa
+candidate_tab,c43_bmodal_phylum,,Arthropoda,Arthropoda
+candidate_tab,c44_bmodal_class,,Insecta,Arachnida
+candidate_tab,c45_bmodal_order,,Diptera,Trombidiformes
+candidate_tab,c46_bmodal_family,,Drosophilidae,Eupodidae
+candidate_tab,c47_bmodal_genus,,Drosophila,No data
+candidate_tab,c48_bmodal_species,,Drosophila simulans,Eupodidae sp. BIOUG24235-D06

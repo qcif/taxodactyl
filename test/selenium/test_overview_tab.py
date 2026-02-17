@@ -44,6 +44,8 @@ def test_overview_tab(driver):
         assert report_path.exists(), f"Report file not found: {report.filename}"
 
         driver.get(report_path.resolve().as_uri())
+        wait = WebDriverWait(driver,10)
+
 
         # Open the Overview tab using the helper
         overview_pane = open_tab(driver, tab_id="results-summary-tab", pane_id="results-summary")
@@ -99,11 +101,78 @@ def test_overview_tab(driver):
                 f"but found {tick_present} in {report.filename}"
             )
 
-        #  Flag text
-        flag_assertion = getattr(component, "o5_flag_text", None)
+        #  Flag text 1 
+        flag_assertion = getattr(component, "o5_overview_flag_text", None)
         if flag_assertion and flag_assertion.expected:
-            assert flag_assertion.expected in toi_rows[-1].text, (
-                f"Expected '{flag_assertion.expected}' in {report.filename}"
+            flag_element = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH,
+                    f"//span[contains(@class,'badge') and normalize-space(text())='{flag_assertion.expected}']"
+                ))
+            )
+            assert flag_element.is_displayed(), (
+                f"Expected flag '{flag_assertion.expected}' not visible in {report.filename}"
+            )
+            print(f"Flag '{flag_assertion.expected}' successfully found in {report.filename}")
+        #Flag text 2
+        flag_assertion2 = getattr(component, "o6_flag_text", None)
+        if flag_assertion2 and flag_assertion2.expected:
+            assert flag_assertion2.expected in toi_rows[-1].text, (
+                f"Expected '{flag_assertion2.expected}' in {report.filename}"
+            )
+        
+         #Flag text 3
+        flag_assertion = getattr(component, "o7_overview_flag_text", None)
+        if flag_assertion and flag_assertion.expected:
+            tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
+            assert tbodies, "No tbody elements found in Overview tab"
+            all_rows = [row for tbody in tbodies for row in tbody.find_elements(By.TAG_NAME, "tr")]
+
+            flag_row = None
+            for row in all_rows:
+                badge = row.find_elements(By.XPATH, f".//span[contains(@class,'badge') and normalize-space(text())='{flag_assertion.expected}']")
+                if badge:
+                    flag_row = badge[0]
+                    break
+
+            assert flag_row is not None and flag_row.is_displayed(), (
+                f"Expected flag '{flag_assertion.expected}' not visible in {report.filename}"
+            )
+        #Matching species counts
+        matching_strong = getattr(component, "o8_matching_species_strong", None)
+        matching_moderate = getattr(component, "o9_matching_species_moderate", None)
+        matching_weak = getattr(component, "o10_matching_species_weak", None)
+
+        badges_div = WebDriverWait(overview_pane, 10).until(
+            EC.presence_of_element_located((
+                By.XPATH,
+                ".//div[contains(@class,'mb-3')][strong[text()[contains(.,'Matching species')]]]"
+            ))
+        )     
+        
+        if matching_strong and matching_strong.expected is not None:
+            strong_badge = badges_div.find_element(By.XPATH, ".//span[contains(@class,'bg-success')]")
+            strong_count = int(strong_badge.text.strip().split()[-1])
+            assert strong_count == matching_strong.expected, (
+                f"Expected {matching_strong.expected} strong matches but found {strong_count} in {report.filename}"
             )
 
+        # Moderate
+        if matching_moderate and matching_moderate.expected is not None:
+            moderate_badge = badges_div.find_element(By.XPATH, ".//span[contains(@class,'bg-warning')]")
+            moderate_count = int(moderate_badge.text.strip().split()[-1])
+            assert moderate_count == matching_moderate.expected, (
+                f"Expected {matching_moderate.expected} moderate matches but found {moderate_count} in {report.filename}"
+            )
+
+        # Weak
+        if matching_weak and matching_weak.expected is not None:
+            weak_badge = badges_div.find_element(By.XPATH, ".//span[contains(@class,'bg-danger')]")
+            weak_count = int(weak_badge.text.strip().split()[-1])
+            assert weak_count == matching_weak.expected, (
+                f"Expected {matching_weak.expected} weak matches but found {weak_count} in {report.filename}"
+            )
+
+                
         print(f"All assertions passed for {report.filename}")
+
