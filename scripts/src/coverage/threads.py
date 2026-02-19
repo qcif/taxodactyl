@@ -114,14 +114,8 @@ def _collect_results(
     toi_results = {}
     pmi_results = {}
 
-    taxa = list({
-        **target_taxids,
-        **target_gbif_taxa,
-    }.keys())
-
-    for target_taxon in taxa:
+    for target_taxon, taxid in target_taxids.items():
         gbif_taxon = target_gbif_taxa.get(target_taxon)
-        taxid = target_taxids[target_taxon]
         target_result = results[get_target_coverage.__name__].get(taxid)
         related_result = results[get_related_coverage.__name__].get(
             gbif_taxon)

@@ -117,7 +117,7 @@ def taxonomies(taxids: list[str]) -> dict[str, dict[str, str]]:
 
 
 def taxids(
-    species_list: list[str],
+    taxon_names: list[str],
     classification: dict = None,
 ) -> dict[str, str]:
     """Use taxonkit name2taxid to extract taxids for given species.
@@ -131,14 +131,14 @@ def taxids(
     """
     logger.debug(
         "Extracting taxids for species using taxonkit"
-        f" name2taxid with {len(species_list)} species:\n"
-        + "\n".join(species_list[:3] + ['...'])
+        f" name2taxid with {len(taxon_names)} species:\n"
+        + "\n".join(taxon_names[:3] + ['...'])
     )
 
     # Because temporary file handling in Windows is different,
     # delete parameter need to be set to False and closed manually
     with tempfile.NamedTemporaryFile(mode='w+', delete=False) as temp_file:
-        temp_file.write("\n".join(species_list))
+        temp_file.write("\n".join(taxon_names))
         temp_file.flush()
         temp_file_name = temp_file.name
     try:
@@ -182,7 +182,10 @@ def taxids(
     taxid_data = {}
     duplicate_taxids = {}
 
-    for result in _parse_taxonkit_name2taxid(res.stdout, classification):
+    for result in _parse_and_filter_taxonkit_name2taxid(
+        res.stdout,
+        classification,
+    ):
         existing_taxid = taxid_data.get(result.species)
         if existing_taxid and existing_taxid != result.taxid:
             duplicate_taxids[result.species] = duplicate_taxids.get(
@@ -227,7 +230,7 @@ def _parse_taxonkit_lineage(output: str) -> list[TaxonkitLineageResult]:
     return results
 
 
-def _parse_taxonkit_name2taxid(
+def _parse_and_filter_taxonkit_name2taxid(
     stdout: str,
     higher_classification: dict,
 ) -> list[TaxonkitName2TaxidResult]:
