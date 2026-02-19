@@ -11,7 +11,7 @@ process VALIDATE_INPUT {
 
     output:
     val true, emit: ready // Output: validation success flag
-    path "sequences.fasta", emit: sequences // Output: validated/copied sequences file
+    path("output/sequences.fasta", emit: sequences) // Output: validated/copied sequences file
     path "metadata.csv", emit: metadata // Output: validated/cleaned metadata file
     path("output/run.log"), emit: validation_log // Output: log file
 
