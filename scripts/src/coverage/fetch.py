@@ -49,8 +49,6 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
         f" related species..."
     )
 
-    classification = config.get_classification_for_query(query_dir)
-
     if is_bold:
         results, err = _fetch_bold_records_for_species(
             species_names,
@@ -60,7 +58,6 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
         results, err = _fetch_gb_records_for_species(
             species_names,
             locus,
-            classification,
         )
     if err:
         for species, exc in err:
@@ -100,8 +97,6 @@ def get_related_country_coverage(
         f" - {len(species_names)} related species"
     )
 
-    classification = config.get_classification_for_query(query_dir)
-
     if is_bold:
         results, err = _fetch_bold_records_for_species(
             species_names,
@@ -111,7 +106,6 @@ def get_related_country_coverage(
         results, err = _fetch_gb_records_for_species(
             species_names,
             locus,
-            classification,
         )
     if err:
         for species, exc in err:
@@ -128,11 +122,11 @@ def get_related_country_coverage(
     return results
 
 
-def _fetch_gb_records_for_species(species_names, locus, classification):
+def _fetch_gb_records_for_species(species_names, locus):
     """Fetch a count of the number of Genbank accessions for each species in
     the list.
     """
-    taxids = extract.taxids(species_names, classification=classification)
+    taxids = extract.taxids(species_names)
     species_without_taxid = [
         k for k, v in taxids.items()
         if v is None
