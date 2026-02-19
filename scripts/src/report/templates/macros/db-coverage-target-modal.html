@@ -56,6 +56,13 @@
             </span>
           </p>
 
+          {% if context.metadata.classification %}
+          <p class="alert alert-info">
+            Classification provided for this sample: <em>"{{ context.metadata.classification }}"</em>.
+            This classification has been used to ensure that species records reported in this analysis are from the intended taxonomic kingdom (e.g. "drosophila" is also a genus of fungus).
+          </p>
+          {% endif %}
+
           {% set general_errors = errors.filter(
               location_lt=context.error_locations.DB_COVERAGE_TARGET,
           ) %}
