@@ -18,7 +18,7 @@ candidate_tab,c4_moderate_alginment_identity,float,93.5,93.5
 candidate_tab,c5_weak_alginment_identity,float,93.5,93.5
 candidate_tab,c6_strong_hits,int,71,0
 candidate_tab,c7_moderate_hits,int,218,0
-candidate_tab,c8_weak_hits,int,211,230
+candidate_tab,c8_weak_hits,int,211,500
 candidate_tab,c9_lowest_hit,float,90.5,82.4
 candidate_tab,c10_species,,Drosophila simulans|Drosophila mauritiana,
 candidate_tab,c11_no_of_hits,list,85|8,

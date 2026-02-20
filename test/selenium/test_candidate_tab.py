@@ -48,33 +48,73 @@ def test_candidate_tab(driver):
 
 
         # Open the candidate tab using the helper
-        candidate_pane = open_tab(driver, tab_id="candidate-species-tab", pane_id="results-candidate-species")
+        candidate_pane = open_tab(
+            driver, 
+            tab_id="candidate-species-tab", 
+            pane_id="results-candidate-species")
 
         # Access component
-        component = getattr(report, "candidate_tab", None)
+        component = report.candidate_tab
         if component is None:
             continue
 
         # Tab title
-        title_assertion = getattr(component, "c1_tab_title", None)
-        if title_assertion and title_assertion.expected:
-            expected_text = title_assertion.expected.lower()
-            actual_text = candidate_pane.text.lower()
-            assert expected_text in actual_text, (
-                f"Title is '{expected_text}' not found in {report.filename}"
-            )
-        #flag text
-        flag_assertion = getattr(component, "c2_candidate_flag_text", None)
-        if flag_assertion and flag_assertion.expected:
-            flag_element = wait.until(
-                EC.visibility_of_element_located((
-                    By.XPATH,
-                    f"//span[contains(@class,'badge') and normalize-space(text())='{flag_assertion.expected}']"
-                ))
-            )
-            print(f"actual",flag_element.text)
-            assert flag_element.is_displayed(), (
-                f"Expected flag '{flag_assertion.expected}' not visible in {report.filename}"
-            )
-            print(f"Flag '{flag_assertion.expected}' successfully found in {report.filename}")
-    
+        component.c1_tab_title.assert_contains(
+            candidate_pane.text,
+            context=f"[{report.filename}] Candidate tab title:"
+        )
+
+        # Candidate flag
+        flag_element = WebDriverWait(candidate_pane, 10).until(
+            EC.presence_of_element_located((
+                By.XPATH,
+                ".//div[contains(@class,'alert')]//span[contains(@class,'badge')]"
+            ))
+        )
+
+        component.c2_candidate_flag_text.assert_contains(
+            flag_element.text,
+            context=f"[{report.filename}] Candidate flag:"
+        )
+
+        # Alignment identity thresholds
+        rows = candidate_pane.find_elements(By.XPATH, ".//table[contains(@class,'tight')]//tbody/tr")
+
+        strong_row = rows[0]
+        moderate_row = rows[1]
+        weak_row = rows[2]
+
+        # Identity thresholds ****
+        strong_identity = strong_row.find_elements(By.TAG_NAME, "td")[1].text
+        moderate_identity = moderate_row.find_elements(By.TAG_NAME, "td")[1].text
+        weak_identity = weak_row.find_elements(By.TAG_NAME, "td")[1].text
+
+        component.c3_strong_alginment_identity.assert_contains(
+            strong_identity,
+            context=f"[{report.filename}] Strong identity:"
+        )
+
+        component.c4_moderate_alginment_identity.assert_contains(
+            moderate_identity,
+            context=f"[{report.filename}] Moderate identity:"
+        )
+
+        component.c5_weak_alginment_identity.assert_contains(
+            weak_identity,
+            context=f"[{report.filename}] Weak identity:"
+        )
+
+        # Lowest hit (float)
+        lowest_hit_span = driver.find_element(
+            By.XPATH,
+            "//p[contains(text(),'Lowest identity of all')]/span[contains(@class,'badge')]"
+        )
+        lowest_hit_value = lowest_hit_span.text.strip().replace("%", "")
+
+        # Assert using your float assertion
+        component.c9_lowest_hit.assert_float(
+            float(lowest_hit_value),
+            context=f"[{report.filename}] Lowest BLAST hit:"
+        )
+        # Candidate species table rows
+        # candidate_rows = candidate_pane.find_elements(By.CSS_SELECTOR, "div.mb-3 table tbody tr")

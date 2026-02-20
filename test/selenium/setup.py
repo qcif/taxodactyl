@@ -46,6 +46,9 @@ class Assertion:
         if self.assertion_type == "int":
             return int(val)
         
+        if self.assertion_type == "float":
+            return float(val)
+        
         if self.assertion_type == "bool":
             return val.lower() == "true"
         
@@ -89,12 +92,22 @@ class Assertion:
             f"{context} Expected {self.expected} but got {actual}"
         )
 
+    def assert_float(self, actual: float, context: str = "", tolerance: float = 0.01):
+        if self.expected is None:
+            return
+
+        assert abs(float(actual) - float(self.expected)) <= tolerance, (
+            f"{context} Expected {self.expected} but got {actual}"
+        )
+
     def assert_value(self, actual, msg=None):
         """
         Generic dispatcher based on assertion_type
         """
         if self.assertion_type == "equals":
             self.assert_equals(actual, msg)
+        elif self.assertion_type == "float":
+            self.assert_float(float(actual), msg)
         elif self.assertion_type == "contains":
             self.assert_contains(actual, msg)
         elif self.assertion_type == "min":
