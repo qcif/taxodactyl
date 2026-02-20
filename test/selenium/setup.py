@@ -4,9 +4,14 @@ from typing import List, Any
 import pandas as pd
 import pytest
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 
 # Selenium fixture
 
@@ -20,6 +25,34 @@ def driver():
     )
     yield driver
     driver.quit()
+
+# Helper function for tabs
+def open_tab(
+    driver: WebDriver,
+    tab_id: str,
+    pane_id: str,
+    expected_header: str = None,
+    timeout: int = 10
+) -> WebElement:
+    """
+    Clicks a tab, waits for its pane to appear, and optionally checks a header.
+    Returns the pane WebElement.
+    """
+    wait = WebDriverWait(driver, timeout)
+
+    # Click tab
+    tab_element = wait.until(EC.element_to_be_clickable((By.ID, tab_id)))
+    tab_element.click()
+
+    # Wait for pane
+    pane = wait.until(EC.presence_of_element_located((By.ID, pane_id)))
+    wait.until(lambda d: "show" in pane.get_attribute("class"))
+
+    # Optional header assertion
+    if expected_header:
+        assert expected_header.lower() in pane.text.lower(), f"Expected header '{expected_header}'"
+
+    return pane
 
 # Domain model
 

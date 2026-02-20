@@ -1,39 +1,8 @@
 from pathlib import Path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-from setup import driver, parse_csv
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-
-# Helper function for tabs
-def open_tab(
-    driver: WebDriver,
-    tab_id: str,
-    pane_id: str,
-    expected_header: str = None,
-    timeout: int = 10
-) -> WebElement:
-    """
-    Clicks a tab, waits for its pane to appear, and optionally checks a header.
-    Returns the pane WebElement.
-    """
-    wait = WebDriverWait(driver, timeout)
-
-    # Click tab
-    tab_element = wait.until(EC.element_to_be_clickable((By.ID, tab_id)))
-    tab_element.click()
-
-    # Wait for pane
-    pane = wait.until(EC.presence_of_element_located((By.ID, pane_id)))
-    wait.until(lambda d: "show" in pane.get_attribute("class"))
-
-    # Optional header assertion
-    if expected_header:
-        assert expected_header.lower() in pane.text.lower(), f"Expected header '{expected_header}'"
-
-    return pane
+from setup import open_tab, parse_csv, driver
 
 # Test function
 def test_overview_tab(driver):
@@ -54,7 +23,7 @@ def test_overview_tab(driver):
             continue
 
         # Conclusion text
-        component.o1_conclusion_text.assert_contains(
+        component.conclusion_text.assert_contains(
             overview_pane.text,
             context=f"[{report.filename}] Conclusion:"
         )
@@ -67,7 +36,7 @@ def test_overview_tab(driver):
         ]
         row_texts = [row.text for row in visible_rows]
 
-        component.o2_species_found.assert_list_contains(
+        component.species_found.assert_list_contains(
             row_texts,
             context=f"[{report.filename}] Species:"
         )
@@ -79,7 +48,7 @@ def test_overview_tab(driver):
 
         toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
 
-        component.o3_toi_row_count.assert_equals(
+        component.toi_row_count.assert_equals(
             len(toi_rows),
             context=f"[{report.filename}] TOI row count:"
         )
@@ -93,13 +62,13 @@ def test_overview_tab(driver):
             )
             tick_present = bool(green_tick)
 
-            component.o4_toi_green_tick_first_row.assert_bool(
+            component.toi_green_tick_first_row.assert_bool(
                 tick_present,
                 context=f"[{report.filename}] Green tick first row:"
             )
         #  Flag text
         if toi_rows:
-            component.o5_flag_text.assert_contains(
+            component.flag_text.assert_contains(
                 toi_rows[-1].text,
                 context=f"[{report.filename}] Flag text:"
             )

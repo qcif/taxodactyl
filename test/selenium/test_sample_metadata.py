@@ -59,13 +59,13 @@ def test_sample_modal(driver):
             continue
 
         # Sample ID
-        component.i1_sample_id.assert_contains(
+        component.sample_id.assert_contains(
             modal_text,
             context=f"[{report.filename}] Sample ID:"
         )
 
         # DNA Sequence
-        component.i2_dna_sequence.assert_contains(
+        component.dna_sequence.assert_contains(
             modal_text,
             context=f"[{report.filename}] DNA Sequence:"
         )
