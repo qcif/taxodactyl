@@ -51,31 +51,28 @@ def test_sample_modal(driver):
 
         # Open modal using the helper function
         modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
-
         modal_text = modal.text
 
         # Access component and assertions
-        component = getattr(report, "input_sequence_modal", None)
+        component = report.input_sequence_modal
         if component is None:
             continue
 
         # Sample ID
-        sample_id_assertion = getattr(component, "i1_sample_id", None)
-        if sample_id_assertion and sample_id_assertion.expected:
-            assert sample_id_assertion.expected in modal_text, (
-                f"Missing sample ID '{sample_id_assertion.expected}' in {report.filename}"
-            )
+        component.i1_sample_id.assert_contains(
+            modal_text,
+            context=f"[{report.filename}] Sample ID:"
+        )
 
         # DNA Sequence
-        dna_assertion = getattr(component, "i2_dna_sequence", None)
-        if dna_assertion and dna_assertion.expected:
-            assert dna_assertion.expected in modal_text, (
-                f"Missing DNA sequence '{dna_assertion.expected}' in {report.filename}"
-            )
+        component.i2_dna_sequence.assert_contains(
+            modal_text,
+            context=f"[{report.filename}] DNA Sequence:"
+        )
 
         # Close the modal
-        close_button = modal.find_element(By.XPATH, ".//button[text()='Close']")
-        close_button.click()
+        modal.find_element(By.XPATH, ".//button[text()='Close']").click()
+
         WebDriverWait(driver, 10).until(
             lambda d: modal.value_of_css_property("display") == "none"
         )
