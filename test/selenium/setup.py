@@ -120,6 +120,18 @@ class Assertion:
             f"{context} Expected {self.expected} but got {actual}"
         )
 
+    def assert_(self, actual, **kwargs):
+        if self.assertion_type == "equals":
+            self.assert_equals(actual, **kwargs)
+        elif self.assertion_type == "contains":
+            self.assert_contains(actual, **kwargs)
+        elif self.assertion_type == "min":
+            self.assert_min(actual, **kwargs)
+        elif self.assertion_type == "bool":
+            self.assert_bool(actual, **kwargs)
+        else:
+            raise ValueError(f"Unknown assertion type: {self.assertion_type}")
+            
     def assert_value(self, actual, msg=None):
         """
         Generic dispatcher based on assertion_type
