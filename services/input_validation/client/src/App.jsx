@@ -285,8 +285,8 @@ function App() {
 
             {!isFastaError && !isInvalidRequiredColumns && (
               <p className="mt-2 mb-0">
-                You can fix these values directly in the table below to continue
-                validating your data.
+                Please check check your .csv and .fasta file. You can fix these values directly in the table below to continue
+                validating your data, or add these vaules into your .fasta file and upload file again.
               </p>
             )}
           </div>
