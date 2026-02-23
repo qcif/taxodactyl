@@ -198,6 +198,27 @@ def parse_errors(stderr: str) -> ParsedError:
             message=message,
         )
 
+    invalid_classification_msg = re.search(
+        r'Invalid classification "(?P<value>[^"]+)"',
+        stderr
+    )
+
+    if invalid_classification_msg:
+        value = invalid_classification_msg.group("value")
+        logger.info("Parsed error: invalid_classification | %s", value)
+
+        message = (
+            f'Classification "{value}" is invalid. '
+            "Please replace it with one of the permitted values "
+            "(animalia, plantae, fungi, chromista, bacteria, archaea, viruses)."
+        )
+
+        return ParsedError(
+            type="invalid_classification",
+            value=value,
+            message=message,
+        )
+
     # Generic FASTA errors
     fasta_min_count_err = re.search(
         r'sequence of length (?P<actual>\d+)bp does not meet '
@@ -443,6 +464,37 @@ def find_metadata_sample_mismatch_rows(
     logger.info(
         "Metadata sample mismatch rows found | sample_id=%s | count=%s",
         missing_sample_id,
+        len(bad_rows),
+    )
+    return bad_rows
+
+
+def find_invalid_classification_rows(
+    metadata_csv_path: Path,
+    bad_value: str
+) -> List[int]:
+    """
+    Return indexes (0-based, data rows only)
+    where classification == bad_value
+    """
+    logger.debug("Scanning for invalid classification | %s", bad_value)
+    bad_rows: list[int] = []
+
+    with open(metadata_csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for idx, row in enumerate(reader):
+            value = (row.get("classification") or "").strip()
+            if value.lower() == bad_value.lower():
+                logger.debug(
+                    "Invalid classification | row=%s | value=%s | sample_id=%s",
+                    idx,
+                    value,
+                    row.get("sample_id"),
+                )
+                bad_rows.append(idx)
+
+    logger.info(
+        "Invalid classification rows found | count=%s",
         len(bad_rows),
     )
     return bad_rows
