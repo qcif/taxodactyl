@@ -2,8 +2,6 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-from setup import driver, parse_csv
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -40,41 +38,34 @@ def open_modal(
 
 
 # Test function
-def test_sample_modal(driver):
-    reports = parse_csv(Path("assertions.csv"))
+def check_sample_modal(driver, report):
 
-    for report in reports:
-        report_path = Path("reports") / report.filename
-        assert report_path.exists(), f"Missing report: {report.filename}"
+    # Open modal using the helper function
+    modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
+    modal_text = modal.text
 
-        driver.get(report_path.resolve().as_uri())
+    # Access component and assertions
+    component = report.input_sequence_modal
+    if component is None:
+        return
 
-        # Open modal using the helper function
-        modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
-        modal_text = modal.text
+    # Sample ID
+    component.sample_id.assert_contains(
+        modal_text,
+        context=f"[{report.filename}] Sample ID:"
+    )
 
-        # Access component and assertions
-        component = report.input_sequence_modal
-        if component is None:
-            continue
+    # DNA Sequence
+    component.dna_sequence.assert_contains(
+        modal_text,
+        context=f"[{report.filename}] DNA Sequence:"
+    )
 
-        # Sample ID
-        component.sample_id.assert_contains(
-            modal_text,
-            context=f"[{report.filename}] Sample ID:"
-        )
+    # Close the modal
+    modal.find_element(By.XPATH, ".//button[text()='Close']").click()
 
-        # DNA Sequence
-        component.dna_sequence.assert_contains(
-            modal_text,
-            context=f"[{report.filename}] DNA Sequence:"
-        )
+    WebDriverWait(driver, 10).until(
+        lambda d: modal.value_of_css_property("display") == "none"
+    )
 
-        # Close the modal
-        modal.find_element(By.XPATH, ".//button[text()='Close']").click()
-
-        WebDriverWait(driver, 10).until(
-            lambda d: modal.value_of_css_property("display") == "none"
-        )
-
-        print(f"All assertions passed for {report.filename}")
+    print(f"All assertions passed for {report.filename}")
