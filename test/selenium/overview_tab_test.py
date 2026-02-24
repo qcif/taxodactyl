@@ -3,9 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 from setup import open_tab
-
-# Test function
-def check_overview_tab(driver, report):
+def run_overview_tab(driver, report):
     # Open the Overview tab using the helper
     overview_pane = open_tab(driver, tab_id="results-summary-tab", pane_id="results-summary")
 
@@ -15,11 +13,7 @@ def check_overview_tab(driver, report):
         return
 
     # Conclusion text
-    component.conclusion_text.assert_contains(
-        overview_pane.text,
-        context=f"[{report.filename}] Conclusion:"
-    )
-
+    component.conclusion_text.assert_(overview_pane.text)
 
     # Species list
     visible_rows = [
@@ -28,10 +22,7 @@ def check_overview_tab(driver, report):
     ]
     row_texts = [row.text for row in visible_rows]
 
-    component.species_found.assert_list_contains(
-        row_texts,
-        context=f"[{report.filename}] Species:"
-    )
+    component.species_found.assert_(row_texts)
 
 
     # TOI row count
@@ -40,10 +31,7 @@ def check_overview_tab(driver, report):
 
     toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
 
-    component.toi_row_count.assert_equals(
-        len(toi_rows),
-        context=f"[{report.filename}] TOI row count:"
-    )
+    component.toi_row_count.assert_(len(toi_rows))
 
     # Green tick in first row
     if toi_rows:
@@ -52,18 +40,12 @@ def check_overview_tab(driver, report):
             By.CSS_SELECTOR,
             ".text-success svg.bi-check-circle-fill"
         )
-        tick_present = bool(green_tick)
-
-        component.toi_green_tick_first_row.assert_bool(
-            tick_present,
-            context=f"[{report.filename}] Green tick first row:"
-        )
+        component.toi_green_tick_first_row.assert_(green_tick)
+        
     #  Flag text
     if toi_rows:
-        component.flag_text.assert_contains(
-            toi_rows[-1].text,
-            context=f"[{report.filename}] Flag text:"
-        )
+        component.flag_text.assert_(
+            toi_rows[-1].text)
 
 
     print(f"All assertions passed for {report.filename}")

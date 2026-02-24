@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from setup import driver, parse_csv
+import pdb; 
 
 # Helper function to open a modal
 def open_modal(
@@ -38,8 +40,7 @@ def open_modal(
 
 
 # Test function
-def check_sample_modal(driver, report):
-
+def run_sample_modal(driver, report):
     # Open modal using the helper function
     modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
     modal_text = modal.text
@@ -50,20 +51,15 @@ def check_sample_modal(driver, report):
         return
 
     # Sample ID
-    component.sample_id.assert_contains(
-        modal_text,
-        context=f"[{report.filename}] Sample ID:"
-    )
+    component.sample_id.assert_(modal_text)
+
 
     # DNA Sequence
-    component.dna_sequence.assert_contains(
-        modal_text,
-        context=f"[{report.filename}] DNA Sequence:"
-    )
+    component.dna_sequence.assert_(modal_text)
+
 
     # Close the modal
     modal.find_element(By.XPATH, ".//button[text()='Close']").click()
-
     WebDriverWait(driver, 10).until(
         lambda d: modal.value_of_css_property("display") == "none"
     )

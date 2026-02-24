@@ -13,8 +13,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-# Selenium fixture
-
 @pytest.fixture
 def driver():
     options = Options()
@@ -26,7 +24,7 @@ def driver():
     yield driver
     driver.quit()
 
-# Helper function for tabs
+# Helper function for open tabs
 def open_tab(
     driver: WebDriver,
     tab_id: str,
@@ -54,15 +52,19 @@ def open_tab(
 
     return pane
 
-# Domain model
-
 class Assertion:
-    def __init__(self, row, report_column: str):
+    def __init__(self, row, report_column: str, filename: str):
+        self.filename = filename
         self.component = row['Component']
         self.assertion_id = row['Assertion ID']
-        self.assertion_type = row['Type']
+        self.assertion_type = (
+                    str(row['Type']).strip().lower()
+                    if pd.notna(row['Type'])
+                    else "contains"
+                )        
+        self.label = self.assertion_id.replace("Conclusion: ", "").strip()
         self.raw_value = row[report_column]
-        self.expected = self._parse_value()
+        self.expected = self._parse_value()   
 
     def _parse_value(self) -> Any:
         if pd.isna(self.raw_value):
@@ -125,26 +127,15 @@ class Assertion:
             self.assert_equals(actual, **kwargs)
         elif self.assertion_type == "contains":
             self.assert_contains(actual, **kwargs)
-        elif self.assertion_type == "min":
-            self.assert_min(actual, **kwargs)
+        elif self.assertion_type == "list":
+            self.assert_list_contains(actual, **kwargs)
         elif self.assertion_type == "bool":
             self.assert_bool(actual, **kwargs)
+        elif self.assertion_type == "int":
+            self.assert_equals(actual, **kwargs)
         else:
             raise ValueError(f"Unknown assertion type: {self.assertion_type}")
             
-    def assert_value(self, actual, msg=None):
-        """
-        Generic dispatcher based on assertion_type
-        """
-        if self.assertion_type == "equals":
-            self.assert_equals(actual, msg)
-        elif self.assertion_type == "contains":
-            self.assert_contains(actual, msg)
-        elif self.assertion_type == "min":
-            self.assert_min(actual, msg)
-        else:
-            raise ValueError(f"Unknown assertion type: {self.assertion_type}")
-
 class Report:
     def __init__(self, filename: str, df: pd.DataFrame, report_column: str):
         self.filename = filename
@@ -152,15 +143,12 @@ class Report:
 
     def _parse_assertions(self, df: pd.DataFrame, report_column: str):
         for _, row in df.iterrows():
-            assertion = Assertion(row, report_column)
-            
+            assertion = Assertion(row, report_column, self.filename)            
             if not hasattr(self, assertion.component):
                 setattr(self, assertion.component, SimpleNamespace())
 
             component_ns = getattr(self, assertion.component)
             setattr(component_ns, assertion.assertion_id, assertion)
-
-# CSV parser
 
 def parse_csv(filename: str) -> List[Report]:
     df = pd.read_csv(filename)
@@ -170,7 +158,7 @@ def parse_csv(filename: str) -> List[Report]:
     report_columns = [col for col in df.columns if col.endswith(".html")]
 
     for report_col in report_columns:
-        report = Report(report_col, df, report_col)  # pass only this column
+        report = Report(report_col, df, report_col) 
         reports.append(report)
 
     return reports

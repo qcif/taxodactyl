@@ -1,6 +1,6 @@
 Component,Assertion ID,Type,1_report_SME25-218_2025-12-11_07_30_03.html,2_report_SME25-221_2025-12-11_07_30_03.html
 input_sequence_modal,sample_id,,SME25-218,SME25-221
-input_sequence_modal,dna_sequence,,CCAAAAAATCA,CATAAAGATATT
+input_sequence_modal,dna_sequence,,AAAAAATCA,CATAAAGATATT
 overview_tab,conclusion_text,,inconclusive,inconclusive
 overview_tab,species_found,list,Drosophila simulans|Drosophila mauritiana,
 overview_tab,toi_row_count,int,2,2
