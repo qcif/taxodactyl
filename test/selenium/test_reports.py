@@ -8,15 +8,17 @@ from overview_tab_test import run_overview_tab
 import pytest
 
 
-def test_reports(driver):
-    reports = parse_csv(Path("assertions.csv"))
-    for report in reports:
-        report_path = Path("reports") / report.filename
-        assert report_path.exists()
+reports = parse_csv(Path("assertions.csv"))
 
-        driver.get(report_path.resolve().as_uri())
-        
-        run_sample_modal(driver, report)
-        run_overview_tab(driver, report)
+@pytest.mark.parametrize("report", reports, ids=lambda r: r.filename)
+
+def test_reports(driver, report):
+    report_path = Path("reports") / report.filename
+    assert report_path.exists()
+
+    driver.get(report_path.resolve().as_uri())
+    
+    run_sample_modal(driver, report)
+    run_overview_tab(driver, report)
 
        
