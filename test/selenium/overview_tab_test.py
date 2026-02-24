@@ -10,7 +10,7 @@ def run_overview_tab(driver, report):
     # Access component
     component = report.overview_tab
     if component is None:
-        return
+        raise ValueError(f"Component 'Overview_tab' is missing in report: {report.filename}")
 
     # Conclusion text
     component.conclusion_text.assert_(overview_pane.text)
@@ -46,6 +46,3 @@ def run_overview_tab(driver, report):
     if toi_rows:
         component.flag_text.assert_(
             toi_rows[-1].text)
-
-
-    print(f"All assertions passed for {report.filename}")

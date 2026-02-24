@@ -48,7 +48,7 @@ def run_sample_modal(driver, report):
     # Access component and assertions
     component = report.input_sequence_modal
     if component is None:
-        return
+        raise ValueError(f"Component 'input_sequence_modal' is missing in report: {report.filename}")
 
     # Sample ID
     component.sample_id.assert_(modal_text)
@@ -63,5 +63,3 @@ def run_sample_modal(driver, report):
     WebDriverWait(driver, 10).until(
         lambda d: modal.value_of_css_property("display") == "none"
     )
-
-    print(f"All assertions passed for {report.filename}")

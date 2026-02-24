@@ -137,8 +137,8 @@ class Assertion:
             raise ValueError(f"Unknown assertion type: {self.assertion_type}")
             
 class Report:
-    def __init__(self, filename: str, df: pd.DataFrame, report_column: str):
-        self.filename = filename
+    def __init__(self, report_column: str, df: pd.DataFrame):
+        self.filename = report_column
         self._parse_assertions(df, report_column)
 
     def _parse_assertions(self, df: pd.DataFrame, report_column: str):
@@ -158,7 +158,8 @@ def parse_csv(filename: str) -> List[Report]:
     report_columns = [col for col in df.columns if col.endswith(".html")]
 
     for report_col in report_columns:
-        report = Report(report_col, df, report_col) 
+
+        report = Report(report_col, df)
         reports.append(report)
 
     return reports
