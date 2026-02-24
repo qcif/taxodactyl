@@ -158,7 +158,6 @@ def parse_csv(filename: str) -> List[Report]:
     report_columns = [col for col in df.columns if col.endswith(".html")]
 
     for report_col in report_columns:
-
         report = Report(report_col, df)
         reports.append(report)
 
