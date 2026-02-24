@@ -13,7 +13,7 @@ def run_overview_tab(driver, report):
         raise ValueError(f"Component 'Overview_tab' is missing in report: {report.filename}")
 
     # Conclusion text
-    component.conclusion_text.assert_(overview_pane.text)
+    component.conclusion_text.assert_value(overview_pane.text)
 
     # Species list
     visible_rows = [
@@ -22,7 +22,7 @@ def run_overview_tab(driver, report):
     ]
     row_texts = [row.text for row in visible_rows]
 
-    component.species_found.assert_(row_texts)
+    component.species_found.assert_value(row_texts)
 
 
     # TOI row count
@@ -31,7 +31,7 @@ def run_overview_tab(driver, report):
 
     toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
 
-    component.toi_row_count.assert_(len(toi_rows))
+    component.toi_row_count.assert_value(len(toi_rows))
 
     # Green tick in first row
     if toi_rows:
@@ -40,9 +40,9 @@ def run_overview_tab(driver, report):
             By.CSS_SELECTOR,
             ".text-success svg.bi-check-circle-fill"
         )
-        component.toi_green_tick_first_row.assert_(green_tick)
+        component.toi_green_tick_first_row.assert_value(green_tick)
         
     #  Flag text
     if toi_rows:
-        component.flag_text.assert_(
+        component.flag_text.assert_value(
             toi_rows[-1].text)

@@ -122,7 +122,7 @@ class Assertion:
             f"{context} Expected {self.expected} but got {actual}"
         )
 
-    def assert_(self, actual, **kwargs):
+    def assert_value(self, actual, **kwargs):
         if self.assertion_type == "equals":
             self.assert_equals(actual, **kwargs)
         elif self.assertion_type == "contains":

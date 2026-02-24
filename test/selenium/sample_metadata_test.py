@@ -51,11 +51,11 @@ def run_sample_modal(driver, report):
         raise ValueError(f"Component 'input_sequence_modal' is missing in report: {report.filename}")
 
     # Sample ID
-    component.sample_id.assert_(modal_text)
+    component.sample_id.assert_value(modal_text)
 
 
     # DNA Sequence
-    component.dna_sequence.assert_(modal_text)
+    component.dna_sequence.assert_value(modal_text)
 
 
     # Close the modal
