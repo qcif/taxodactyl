@@ -38,7 +38,7 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
     """
     db_name = 'BOLD' if is_bold else 'Entrez'
     species_names = sorted({
-        r["canonicalName"]
+        r.canonical_name
         for r in gbif_target.relatives
     })
     if not species_names:
@@ -85,7 +85,7 @@ def get_related_country_coverage(
     if not country:
         return FLAGS.NA
     species_names = [
-        r["canonicalName"]
+        r.canonical_name
         for r in gbif_target.for_country(country)
     ]
     if not species_names:

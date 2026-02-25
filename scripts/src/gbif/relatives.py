@@ -46,6 +46,41 @@ class GBIFRecordNotFound(Exception):
     pass
 
 
+class GBIFRecord:
+    """Wrap a GBIF API record dict with typed attribute access."""
+
+    def __init__(self, data: dict):
+        self.data = data
+        self.key = data.get('key')
+        self.rank = data.get('rank')
+        self.status = data.get(
+            'status',
+            data.get('taxonomicStatus'),
+        )
+        self.genus_key = data.get('genusKey')
+        self.kingdom_key = data.get('kingdomKey')
+        self.species_key = data.get('speciesKey')
+        self.is_extinct = data.get('isExtinct')
+        self.canonical_name = _get_scientific_name(data)
+
+    def get(self, key, default=None):
+        """Delegate to underlying data dict for ad-hoc access."""
+        return self.data.get(key, default)
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def __contains__(self, key):
+        return key in self.data
+
+    def to_json(self):
+        """Return the original API dict for JSON serialization."""
+        return self.data
+
+    def __repr__(self):
+        return f"GBIFRecord({self.canonical_name})"
+
+
 class RANK:
     NONE = 0
     SPECIES = 1
@@ -83,9 +118,10 @@ class RelatedTaxaGBIF:
         self.from_synonym = False
         self.taxon = taxon
         self.record = self._get_taxon_record(taxon)
-        self.key = self.record.get('key')
-        self.genus_key = self.record.get('genusKey')
-        self.rank = RANK.from_string(self.record.get('rank'))
+        self.key = self.record.key
+        self.genus_key = self.record.genus_key
+        self.rank = RANK.from_string(self.record.rank)
+        self.canonical_name = self.record.canonical_name
 
     def __str__(self):
         return f"{self.__class__.__name__}: {self.taxon} ({self.rank})"
@@ -107,33 +143,35 @@ class RelatedTaxaGBIF:
             kwargs=kwargs,
             with_cache=True,
         )
-        for record in res_name:
+        for raw_record in res_name:
             synonym = False
-            if record.get('status') == 'SYNONYM':
+            if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
                 res_usage = throttle.with_retry(
                     pygbif.species.name_usage,
                     kwargs={
-                        'key': self._get_synonym_key(record),
+                        'key': self._get_synonym_key(raw_record),
                         'limit': 1,
                     },
                     with_cache=True,
                 )
                 if res_usage:
-                    record = res_usage
+                    raw_record = res_usage
                     synonym = True
                     logger.info(
                         f"Taxon '{taxon}' is a SYNONYM."
                         " Using accepted name"
-                        f" '{record.get('canonicalName')}'."
+                        f" '{_get_scientific_name(raw_record)}'."
                     )
                 else:
-                    record = None
+                    raw_record = None
 
-            if self._is_accepted(record):
-                logger.info(f"Record found for taxon"
-                            f" '{taxon}' - rank:{record['rank']}"
-                            f" genusKey:{record.get('genusKey')}")
+            record = GBIFRecord(raw_record) if raw_record else None
+            if record and self._is_accepted(record):
+                logger.info(
+                    f"Record found for taxon"
+                    f" '{taxon}' - rank:{record.rank}"
+                    f" genusKey:{record.genus_key}")
                 if synonym:
                     self.from_synonym = True
                 return record
@@ -143,33 +181,38 @@ class RelatedTaxaGBIF:
             " be retrieved. Please check that this species name is correct.")
 
     def _is_accepted(self, record):
-        status_key = 'status' if 'status' in record else 'taxonomicStatus'
+        if not record:
+            return False
+        kingdom_key = record.kingdom_key
         matches_classification = (
-            record.get('kingdomKey', self.classification)
+            (kingdom_key if kingdom_key is not None else self.classification)
             == self.classification
             if self.classification
             else True
         )
         if not matches_classification:
             logger.debug(
-                f"Record '{record.get('canonicalName')}' does not match"
+                f"Record '{record.canonical_name}' does not match"
                 f" the expected classification '{self.classification}'"
-                f" (kingdomKey: {record.get('kingdomKey')}) - excluding from"
+                f" (kingdomKey: {kingdom_key}) - excluding from"
                 " relatives."
             )
         return bool(
-            record
-            and matches_classification
-            and record[status_key] in config.gbif_accepted_status
-            and (self.INCLUDE_EXTINCT or record.get('isExtinct') is not True)
-            and RANK.from_string(record.get('rank'))
+            matches_classification
+            and record.status in config.gbif_accepted_status
+            and (self.INCLUDE_EXTINCT or record.is_extinct is not True)
+            and RANK.from_string(record.rank)
         )
 
     def _filter_records(self, records):
+        wrapped = [
+            r if isinstance(r, GBIFRecord) else GBIFRecord(r)
+            for r in records
+        ]
         return [
-            r for r in records
+            r for r in wrapped
             if self._is_accepted(r)
-            and 'canonicalName' in r
+            and r.canonical_name
         ]
 
     def _get_synonym_key(self, record):
@@ -193,6 +236,7 @@ class RelatedTaxaGBIF:
         excluded_count = 0
         end_of_records = False
         records = []
+        excluded_records = []
         kwargs = {
             'rank': 'species',
             'higherTaxonKey': self.genus_key,
@@ -211,8 +255,15 @@ class RelatedTaxaGBIF:
             new_records = self._filter_records(res['results'])
             record_count += len(new_records)
             excluded_count += len(res['results']) - len(new_records)
+            canonical_names = [
+                r.canonical_name for r in new_records
+            ]
+            excluded_records += [
+                r for r in res['results']
+                if _get_scientific_name(r) not in canonical_names
+            ]
             if i > 5 and new_records:
-                first_name = new_records[0]['canonicalName']
+                first_name = new_records[0].canonical_name
                 if first_name == previous_first_name:
                     logger.warning(
                         'GBIF API claims endofRecords=False after >5 requests,'
@@ -232,6 +283,11 @@ class RelatedTaxaGBIF:
             f" (genusKey: {self.genus_key})."
             f" Excluded {excluded_count} records that did not meet criteria."
         )
+        if record_count == 0:
+            excluded_records_str = '\n'.join([
+                _get_scientific_name(r) for r in excluded_records
+            ])
+            logger.debug(f"Excluded records:\n{excluded_records_str}")
 
         return records
 
@@ -279,5 +335,17 @@ class RelatedTaxaGBIF:
 
         return [
             r for r in self.relatives
-            if r['speciesKey'] in species_keys
+            if r.species_key in species_keys
         ]
+
+
+def _get_scientific_name(record: dict) -> str:
+    """Return either the canonicalName, scientificName or species field."""
+    for k in (
+        'canonicalName',
+        'scientificName',
+        'species',
+    ):
+        if record.get(k):
+            return record[k]
+    return None

@@ -118,7 +118,7 @@ def fetch_target_taxa(targets, query_dir):
             msg = (
                 f"Target taxon '{target}' is listed as a synonym in GBIF."
                 " This taxon has been processed using the accepted name"
-                f" '{gbif_target.record['canonicalName']}'.")
+                f" '{gbif_target.canonical_name}'.")
             logger.info(msg)
             errors.write(
                 errors.LOCATIONS.DB_COVERAGE,
