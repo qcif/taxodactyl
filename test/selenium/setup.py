@@ -153,6 +153,11 @@ class Report:
 
             component_ns = getattr(self, component)
             setattr(component_ns, assertion.assertion_id, assertion)
+    
+    def __getattr__(self, name):
+        if name.startswith("_"):
+            raise AttributeError(f"{self.__class__.__name__!r} object has no attribute {name!r}")
+        raise AttributeError(f"Component '{name}' is missing in report: {self.filename}")
 
 def parse_assertions(df, report_col, filename):
     assertions = []

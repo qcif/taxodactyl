@@ -47,8 +47,6 @@ def run_sample_modal(driver, report):
 
     # Access component and assertions
     component = report.input_sequence_modal
-    if component is None:
-        raise ValueError(f"Component 'input_sequence_modal' is missing in report: {report.filename}")
 
     # Sample ID
     component.sample_id.assert_value(modal_text)
