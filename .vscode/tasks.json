@@ -29,8 +29,10 @@
             "type": "shell",
             "command": "bash",
             "args": [
-                "${workspaceFolder}/scripts/output/issues/225/run_in_container.sh",
-                "sample_3"
+                "${workspaceFolder}/scripts/run_in_singularity.sh",
+                "scripts/output/issues/225/sample_3",
+                "query_001_barcode_55_1991-08_Fabavirus_cluster_0_RC5417",
+                "${workspaceFolder}/scripts/output/issues/225/taxodactyl-v1.4.4-dev.sif"
             ],
             "isBackground": true,
             "problemMatcher": {
@@ -39,7 +41,7 @@
                 },
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": "^Starting Singularity",
+                    "beginsPattern": ".*Starting Singularity",
                     "endsPattern": "^$"
                 }
             },
@@ -52,7 +54,7 @@
             "label": "stop-singularity-debug",
             "type": "shell",
             "command": "pkill",
-            "args": ["-f", "singularity exec.*run_in_container"],
+            "args": ["-f", "singularity exec.*run_in_singularity.sh"],
             "presentation": {
                 "reveal": "silent"
             },

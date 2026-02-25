@@ -163,16 +163,18 @@ attached. This uses `debugpy` for remote debugging.
 A launch configuration and helper script are provided for debugging inside the
 container.
 
-1. **Update the `.sif` image path** in
-   `scripts/output/issues/225/run_in_container.sh` if your image has a
-   different tag or location.
+1. **Update the task arguments** in `.vscode/tasks.json` under the
+   `start-singularity-debug` task. The script takes three arguments:
+   - `<sample_dir>` - path to the sample directory (relative to project root)
+   - `<sample_id>` - the query directory name (e.g. `query_001_barcode_55...`)
+   - `<sif_image>` - path to the `.sif` Singularity image
 
 2. **Start the debug session** by selecting **"Attach to Singularity
    container"** from the VSCode Run and Debug panel (F5). This will:
    - Launch the Singularity container as a pre-launch task (installing
      `debugpy` at runtime via `--writable-tmpfs`)
    - Wait for the VSCode debugger to attach on port 5678
-   - Run the target script (currently `p5_db_coverage.py` with sample_3 data)
+   - Run the target script (currently `p5_db_coverage.py`)
    - Kill the container process when the debug session ends
 
 3. **Set breakpoints** in the scripts as normal - the `pathMappings` in the
@@ -180,20 +182,17 @@ container.
 
 Alternatively, you can start the container manually from a terminal:
 ```sh
-bash scripts/output/issues/225/run_in_container.sh sample_3
+bash scripts/run_in_singularity.sh <sample_dir> <sample_id> <sif_image>
 ```
 Then attach the VSCode debugger using the **"Attach to Singularity container"**
 launch config.
 
 ## Adapting for other scripts/samples
 
-Edit `scripts/output/issues/225/run_in_container.sh` to change:
-- The Python script and arguments being executed
-- The sample directory (passed as the first argument)
-- Bind mounts for additional data directories
-
-The VSCode task in `.vscode/tasks.json` (`start-singularity-debug`) can also
-be updated to pass a different sample directory.
+Update the arguments in `.vscode/tasks.json` (`start-singularity-debug` task)
+to point to a different sample directory, query ID or container image. To change
+the Python script being executed or its arguments, edit
+`scripts/run_in_singularity.sh`.
 
 
 # Running tests
