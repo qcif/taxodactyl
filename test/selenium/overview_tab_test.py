@@ -19,16 +19,12 @@ def run_overview_tab(driver, report):
         if row.is_displayed() and row.text.strip()
     ]
     row_texts = [row.text for row in visible_rows]
-
     component.species_found.assert_value(row_texts)
-
 
     # TOI row count
     tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
     assert tbodies, "No tbody elements found in Overview tab"
-
     toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
-
     component.toi_row_count.assert_value(len(toi_rows))
 
     # Green tick in first row

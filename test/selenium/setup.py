@@ -51,6 +51,7 @@ def open_tab(
         assert expected_header.lower() in pane.text.lower(), f"Expected header '{expected_header}'"
 
     return pane
+
 class Assertion:
     def __init__(self, row, report_column: str, filename: str):
         self.report_filename = filename

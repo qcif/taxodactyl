@@ -51,10 +51,8 @@ def run_sample_modal(driver, report):
     # Sample ID
     component.sample_id.assert_value(modal_text)
 
-
     # DNA Sequence
     component.dna_sequence.assert_value(modal_text)
-
 
     # Close the modal
     modal.find_element(By.XPATH, ".//button[text()='Close']").click()

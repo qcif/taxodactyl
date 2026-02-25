@@ -7,7 +7,6 @@ from sample_metadata_test import run_sample_modal
 from overview_tab_test import run_overview_tab
 import pytest
 
-
 reports = parse_csv(Path("assertions.csv"))
 
 @pytest.mark.parametrize("report", reports, ids=lambda r: r.filename)
