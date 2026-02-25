@@ -22,6 +22,7 @@ which shows CLI arguments and environment variables for each script.
     1. [How to update the workflow report?](#how-to-update-the-workflow-report)
 1. [Developer setup](#developer-setup)
 1. [Building a Docker image](#building-a-docker-image)
+1. [Debugging in Singularity](#debugging-in-singularity)
 1. [Running tests](#running-tests)
     1. [Units tests](#unit-tests)
     2. [Integration tests](#integration-tests)
@@ -122,6 +123,77 @@ Now to build image `neoformit/taxodactyl:v1.2.0`:
 ./docker_build.sh -t v1.2.0 -p
 ```
 
+
+
+# Debugging in Singularity
+
+When debugging issues that only reproduce inside the container environment,
+you can run scripts inside a Singularity container with the VSCode debugger
+attached. This uses `debugpy` for remote debugging.
+
+## Prerequisites
+
+1. **Install Singularity** (v3.7+):
+   Follow the [Singularity Quick Start Guide](https://docs.sylabs.io/guides/3.7/user-guide/quick_start.html).
+
+2. **Build a Singularity image from the Docker image:**
+   ```sh
+   # Save Docker image to tar (required if Singularity is too old to talk
+   # to the Docker daemon directly)
+   docker save neoformit/taxodactyl:<tag> -o /tmp/taxodactyl.tar
+
+   # Build .sif from the tar archive
+   singularity build scripts/output/issues/225/taxodactyl-<tag>.sif \
+       docker-archive:///tmp/taxodactyl.tar
+
+   # Clean up
+   rm /tmp/taxodactyl.tar
+   ```
+
+   If your Singularity version supports it, you can build directly:
+   ```sh
+   singularity build taxodactyl-<tag>.sif docker-daemon://neoformit/taxodactyl:<tag>
+   ```
+
+3. **Ensure taxonkit data is available** at `~/.taxonkit` (see
+   [Developer setup](#developer-setup)).
+
+## Running with the VSCode debugger
+
+A launch configuration and helper script are provided for debugging inside the
+container.
+
+1. **Update the `.sif` image path** in
+   `scripts/output/issues/225/run_in_container.sh` if your image has a
+   different tag or location.
+
+2. **Start the debug session** by selecting **"Attach to Singularity
+   container"** from the VSCode Run and Debug panel (F5). This will:
+   - Launch the Singularity container as a pre-launch task (installing
+     `debugpy` at runtime via `--writable-tmpfs`)
+   - Wait for the VSCode debugger to attach on port 5678
+   - Run the target script (currently `p5_db_coverage.py` with sample_3 data)
+   - Kill the container process when the debug session ends
+
+3. **Set breakpoints** in the scripts as normal - the `pathMappings` in the
+   launch config maps `scripts/` to `/app/scripts/` inside the container.
+
+Alternatively, you can start the container manually from a terminal:
+```sh
+bash scripts/output/issues/225/run_in_container.sh sample_3
+```
+Then attach the VSCode debugger using the **"Attach to Singularity container"**
+launch config.
+
+## Adapting for other scripts/samples
+
+Edit `scripts/output/issues/225/run_in_container.sh` to change:
+- The Python script and arguments being executed
+- The sample directory (passed as the first argument)
+- Bind mounts for additional data directories
+
+The VSCode task in `.vscode/tasks.json` (`start-singularity-debug`) can also
+be updated to pass a different sample directory.
 
 
 # Running tests

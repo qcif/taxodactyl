@@ -362,6 +362,24 @@
             "cwd": "${workspaceFolder}/scripts",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Attach to Singularity container",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/scripts",
+                    "remoteRoot": "/app/scripts"
+                }
+            ],
+            "justMyCode": false,
+            "preLaunchTask": "start-singularity-debug",
+            "postDebugTask": "stop-singularity-debug"
         }
     ]
 }

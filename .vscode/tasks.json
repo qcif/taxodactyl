@@ -23,6 +23,40 @@
                 "command": "bash",
                 "args": ["${workspaceFolder}/.vscode/tasks/clear_log_files.sh"]
             }
+        },
+        {
+            "label": "start-singularity-debug",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/scripts/output/issues/225/run_in_container.sh",
+                "sample_3"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^Starting Singularity",
+                    "endsPattern": "^$"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "stop-singularity-debug",
+            "type": "shell",
+            "command": "pkill",
+            "args": ["-f", "singularity exec.*run_in_container"],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
         }
     ]
 }
