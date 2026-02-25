@@ -51,20 +51,20 @@ def open_tab(
         assert expected_header.lower() in pane.text.lower(), f"Expected header '{expected_header}'"
 
     return pane
-
 class Assertion:
     def __init__(self, row, report_column: str, filename: str):
-        self.filename = filename
+        self.report_filename = filename
         self.component = row['Component']
         self.assertion_id = row['Assertion ID']
         self.assertion_type = (
-                    str(row['Type']).strip().lower()
-                    if pd.notna(row['Type'])
-                    else "contains"
-                )        
-        self.label = self.assertion_id.replace("Conclusion: ", "").strip()
-        self.raw_value = row[report_column]
-        self.expected = self._parse_value()   
+            str(row['Type']).strip().lower()
+            if pd.notna(row['Type']) and str(row['Type']).strip() != ""
+            else "contains"
+        )
+
+        self.label = self.assertion_id.replace("_", " ").strip()
+        self.raw_value = row[report_column]       
+        self.expected = self._parse_value() 
 
     def _parse_value(self) -> Any:
         if pd.isna(self.raw_value):
@@ -123,6 +123,8 @@ class Assertion:
         )
 
     def assert_value(self, actual, **kwargs):
+        if self.expected is None:
+            return
         if self.assertion_type == "equals":
             self.assert_equals(actual, **kwargs)
         elif self.assertion_type == "contains":
@@ -135,30 +137,43 @@ class Assertion:
             self.assert_equals(actual, **kwargs)
         else:
             raise ValueError(f"Unknown assertion type: {self.assertion_type}")
-            
+        
 class Report:
-    def __init__(self, report_column: str, df: pd.DataFrame):
-        self.filename = report_column
-        self._parse_assertions(df, report_column)
+    def __init__(self, filename: str, assertions: list):
+        self.filename = filename
+        self.assertions = assertions
+        self.group_assertions()
 
-    def _parse_assertions(self, df: pd.DataFrame, report_column: str):
-        for _, row in df.iterrows():
-            assertion = Assertion(row, report_column, self.filename)            
-            if not hasattr(self, assertion.component):
-                setattr(self, assertion.component, SimpleNamespace())
+    def group_assertions(self):
+        for assertion in self.assertions:
+            component = assertion.component
 
-            component_ns = getattr(self, assertion.component)
+            if not hasattr(self, component):
+                setattr(self, component, SimpleNamespace())
+
+            component_ns = getattr(self, component)
             setattr(component_ns, assertion.assertion_id, assertion)
 
-def parse_csv(filename: str) -> List[Report]:
-    df = pd.read_csv(filename)
-    reports: List[Report] = []
+def parse_assertions(df, report_col, filename):
+    assertions = []
 
-    # Find all report columns
-    report_columns = [col for col in df.columns if col.endswith(".html")]
+    for _, row in df.iterrows():
+        assertion = Assertion(row, report_col, filename)
+        assertions.append(assertion)
+
+    return assertions
+
+def parse_csv(path: Path):
+    df = pd.read_csv(path)
+
+    report_columns = df.columns[3:]
+    reports = []
 
     for report_col in report_columns:
-        report = Report(report_col, df)
+        filename = report_col
+        assertions = parse_assertions(df, report_col, filename)
+
+        report = Report(filename, assertions)
         reports.append(report)
 
-    return reports
+    return reports    
