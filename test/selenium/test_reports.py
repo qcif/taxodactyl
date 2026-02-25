@@ -11,7 +11,6 @@ import pytest
 reports = parse_csv(Path("assertions.csv"))
 
 @pytest.mark.parametrize("report", reports, ids=lambda r: r.filename)
-
 def test_reports(driver, report):
     report_path = Path("reports") / report.filename
     assert report_path.exists()
