@@ -44,6 +44,40 @@ def save_upload_to_tempfile(upload_file) -> Path:
     return Path(path)
 
 
+def create_fasta_from_csv_sequence(metadata_csv: Path) -> Path:
+    """
+    Create a temporary FASTA file from a metadata CSV
+    that contains a 'sequence' column.
+    Returns the Path to the created FASTA file.
+    """
+    fd, fasta_path = tempfile.mkstemp(suffix=".fasta")
+    os.close(fd)
+
+    fasta_path = Path(fasta_path)
+
+    with metadata_csv.open("r", encoding="utf-8") as f_csv, \
+         fasta_path.open("w", encoding="utf-8") as f_fasta:
+
+        reader = csv.DictReader(f_csv)
+
+        for row in reader:
+            sample_id = row.get("sample_id")
+            sequence = row.get("sequence")
+
+            if sample_id and sequence:
+                f_fasta.write(f">{sample_id}\n")
+
+                for i in range(0, len(sequence), 80):
+                    f_fasta.write(sequence[i:i+80] + "\n")
+
+    logger.debug(
+        "Temporary FASTA created from CSV sequences: %s",
+        fasta_path
+    )
+
+    return fasta_path
+
+
 def run_p0_validation(
         metadata_csv: Path,
         query_fasta: Path) -> ValidationResult:
@@ -210,7 +244,8 @@ def parse_errors(stderr: str) -> ParsedError:
         message = (
             f'Classification "{value}" is invalid. '
             "Please replace it with one of the permitted values "
-            "(animalia, plantae, fungi, chromista, bacteria, archaea, viruses)."
+            "(animalia, plantae, fungi, chromista, "
+            "bacteria, archaea, viruses)."
         )
 
         return ParsedError(
@@ -486,7 +521,8 @@ def find_invalid_classification_rows(
             value = (row.get("classification") or "").strip()
             if value.lower() == bad_value.lower():
                 logger.debug(
-                    "Invalid classification | row=%s | value=%s | sample_id=%s",
+                    "Invalid classification | row=%s "
+                    "| value=%s | sample_id=%s",
                     idx,
                     value,
                     row.get("sample_id"),

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from utils import (
+    create_fasta_from_csv_sequence,
     find_invalid_classification_rows,
     find_invalid_country_rows,
     find_invalid_locus_rows,
@@ -46,7 +47,7 @@ def parsed_error_to_dict(err):
 @app.post('/validate')
 async def validate(
     metadata_csv: UploadFile | None = File(None),
-    query_fasta: UploadFile = File(...),
+    query_fasta: UploadFile | None = File(None),
     metadata_text: str | None = Form(None)
 ):
     """
@@ -78,12 +79,44 @@ async def validate(
                                 )
         tmp_files.append(metadata_path)
 
-        query_path = save_upload_to_tempfile(query_fasta)
-        tmp_files.append(query_path)
+        with open(metadata_path, "r", encoding="utf-8") as f:
+            header_line = f.readline().strip()
+
+        headers = [h.strip().lower() for h in header_line.split(",")]
+        has_sequence_column = "sequence" in headers
+
+        logger.info(
+            "Metadata columns detected | has_sequence=%s",
+            has_sequence_column,
+        )
+
+        query_path = None
+
+        if query_fasta:
+            query_path = save_upload_to_tempfile(query_fasta)
+            tmp_files.append(query_path)
+            logger.info("FASTA uploaded: %s", query_fasta.filename)
+
+        elif has_sequence_column:
+            logger.info("Creating temporary FASTA from CSV sequences")
+            query_path = create_fasta_from_csv_sequence(metadata_path)
+            tmp_files.append(query_path)
+        else:
+            # FASTA required if no sequence column
+            logger.warning("FASTA file required but not provided")
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "ok": False,
+                    "error": "FASTA file is required when "
+                    "metadata does not contain a sequence column."
+                }
+            )
+
         logger.info(
             "Files prepared | metadata=%s | fasta=%s",
             metadata_path.name,
-            query_path.name,
+            query_path.name if query_path else "None (sequence-column mode)",
         )
 
         logger.info("Running p0 validation")
@@ -96,8 +129,9 @@ async def validate(
             logger.info("Validation passed successfully")
             with open(metadata_path, "r", encoding="utf-8") as f:
                 csv_text = f.read()
-            with open(query_path, "r", encoding="utf-8") as f:
-                fasta_text = f.read()
+            if query_path:
+                with open(query_path, "r", encoding="utf-8") as f:
+                    fasta_text = f.read()
             return {
                 "ok": True,
                 "message": "Validation passed",

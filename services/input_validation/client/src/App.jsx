@@ -25,11 +25,12 @@ function App() {
   const [errorRows, setErrorRows] = useState([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
   const [highlightColumns, setHighlightColumns] = useState([]);
+  const [globalError, setGlobalError] = useState("");
   const MAX_SEQ_LIMIT = 149
   
   const handleValidate = async () => {
-    if (!fastaFile) {
-      alert("Please select FASTA file");
+    if (!fastaFile && !editedCsvText && !metadataFile) {
+      alert("Please select a CSV file");
       return;
     }
 
@@ -42,7 +43,9 @@ function App() {
       alert("Please select a CSV file");
       return;
     }
-    formData.append("query_fasta", fastaFile);
+    if (fastaFile) {
+      formData.append("query_fasta", fastaFile);
+    }
 
     setIsValidating(true);
     
@@ -64,7 +67,14 @@ function App() {
           data.message?.toLowerCase().includes("auto-fixed")
         );
       } else {
-        setErrors(data.error);
+        if (res.status === 400 && typeof data.error === "string") {
+          setErrors({
+            type: "file_required",
+            message: data.error
+          });
+        } else {
+          setErrors(data.error);
+        }
         setCsvText(data.metadata_csv || "");
         setEditedCsvText(data.metadata_csv);
         setErrorRows(data.rows || []);
@@ -163,7 +173,7 @@ function App() {
     errors &&
     errors.type?.startsWith("invalid_fasta");
 
-
+  const isFileRequired = errors?.type === "file_required";
 
   return (
     <>
@@ -208,7 +218,7 @@ function App() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Query FASTA</label>
+              <label className="form-label fw-bold">Query FASTA (optional if CSV contains sequence column)</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
@@ -283,7 +293,20 @@ function App() {
               </p>
             )}
 
-            {!isFastaError && !isInvalidRequiredColumns && (
+            {isFileRequired && (
+              <p className="mt-2 mb-0">
+                <strong>File Required.</strong><br />
+                Please upload:
+                <br />
+                • One <code>.csv</code> file and one <code>.fasta</code> file
+                <br />
+                OR
+                <br />
+                • One <code>.csv</code> file that includes a <code>sequence</code> column.
+              </p>
+            )}
+
+            {!isFileRequired && !isFastaError && !isInvalidRequiredColumns && (
               <p className="mt-2 mb-0">
                 Please check check your .csv and .fasta file. You can fix these values directly in the table below to continue
                 validating your data, or add these vaules into your .fasta file and upload file again.
