@@ -98,35 +98,35 @@
             <table id="selectedHitTaxonomy" class="table tight font-small">
               <tr>
                 <th>Domain</th>
-                <td></td>
+                <td data-rank="domain"></td>
               </tr>
               <tr>
                 <th>Kingdom</th>
-                <td></td>
+                <td data-rank="kingdom"></td>
               </tr>
               <tr>
                 <th>Phylum</th>
-                <td></td>
+                <td data-rank="phylum"></td>
               </tr>
               <tr>
                 <th>Class</th>
-                <td></td>
+                <td data-rank="class"></td>
               </tr>
               <tr>
                 <th>Order</th>
-                <td></td>
+                <td data-rank="order"></td>
               </tr>
               <tr>
                 <th>Family</th>
-                <td></td>
+                <td data-rank="family"></td>
               </tr>
               <tr>
                 <th>Genus</th>
-                <td></td>
+                <td data-rank="genus"></td>
               </tr>
               <tr>
                 <th>Species</th>
-                <td></td>
+                <td data-rank="species"></td>
               </tr>
             </table>
           </div>
@@ -147,8 +147,9 @@
     function showBlastHit(index) {
       const hit = HITS[index];
       showBlastAlignment(hit);
-      $('#selectedHitTaxonomy td').each((i, el) => {
-        const value = TAXONOMY[hit.accession][TAXONOMY_ORDER[i]] || 'No data';
+      $('#selectedHitTaxonomy td[data-rank]').each((i, el) => {
+        const rank = $(el).data('rank');
+        const value = TAXONOMY[hit.accession][rank] || 'No data';
         $(el).text(value);
       });
       $('tr.interactive').removeClass('active');
