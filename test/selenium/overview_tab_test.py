@@ -1,11 +1,15 @@
-from pathlib import Path
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 
 from setup import open_tab
+
+
 def run_overview_tab(driver, report):
     # Open the Overview tab using the helper
-    overview_pane = open_tab(driver, tab_id="results-summary-tab", pane_id="results-summary")
+    overview_pane = open_tab(
+        driver,
+        tab_id="results-summary-tab",
+        pane_id="results-summary",
+    )
 
     # Access component
     component = report.overview_tab
@@ -35,7 +39,7 @@ def run_overview_tab(driver, report):
             ".text-success svg.bi-check-circle-fill"
         )
         component.toi_green_tick_first_row.assert_value(green_tick)
-        
+
     #  Flag text
     if toi_rows:
         component.flag_text.assert_value(
