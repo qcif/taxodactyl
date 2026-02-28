@@ -2,7 +2,6 @@ import { useState } from 'react';
 import JSZip from "jszip";
 import Papa from "papaparse";
 import CsvEditor from './components/CsvEditor';
-// import './App.css';
 
 const ERROR_COLUMN_MAP = {
   "metadata_missing_sample": "sample_id",
@@ -177,12 +176,87 @@ function App() {
 
   return (
     <>
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <div className="container">
-          <a className="navbar-brand" href="#">
-            DAFF Biosecurity workflows
-          </a>
+      <nav className="navbar navbar-expand-md fixed-top navbar-dark" style={{ background: "rgb(52, 58, 64)" }}>
+        <div className="container d-flex justify-content-between">
+          <a className="navbar-brand" href="/#!pages/home">DAFF Biosecurity workflows</a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <a className="nav-link" href="/#!pages/home">Home <span className="sr-only">(current)</span></a>
+              </li>
+
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="dropdown01"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  >Run</a
+                >
+                <div className="dropdown-menu" aria-labelledby="dropdown01">
+                  <a className="dropdown-item" href="/#!run/ont_amplicon_assembly"
+                    >Nanopore Amplicon Assembly</a>
+                </div>
+
+                <div className="dropdown-menu" aria-labelledby="dropdown01">
+                  <a className="dropdown-item" href="/#!run/taxodactyl"
+                    >Taxodactyl</a>
+                </div>
+              </li>
+
+              <li className="nav-item">
+                <a className="nav-link" href="/#!pages/jobs">Jobs</a>
+              </li>
+
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="docs">Docs</a>
+                <div className="dropdown-menu" aria-labelledby="docs">
+                    <a className="dropdown-item" href="/#!pages/taxodactyl">Taxodactyl</a>
+                </div>
+                <div className="dropdown-menu" aria-labelledby="docs">
+                    <a className="dropdown-item" href="/#!pages/ont_amplicon_assembly">Nanopore Amplicon Assembly</a>
+                </div>
+              </li>
+
+              <li className="nav-item">
+                <a className="nav-link" href="/#!pages/contact">Contact</a>
+              </li>
+            </ul>
+
+            <ul className="navbar-nav my-2 my-lg-0">
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="dropdown02"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  ><i className="fas fa-user"></i> User</a
+                >
+                <div className="dropdown-menu" aria-labelledby="dropdown02">
+                  <a className="dropdown-item" href="/#!pages/profile">Profile</a>
+                  <div className="dropdown-divider"></div>
+
+                  <a className="dropdown-item" href="/#!pages/logout">Logout</a>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
 
@@ -196,12 +270,12 @@ function App() {
         </p>
 
         {(validated || errors) && (
-          <div className="mb-3 text-start">
+          <div className="mb-3 text-left">
             <button
               className="btn btn-outline-secondary"
               onClick={resetValidateInputs}
             >
-              <i className="fas fa-redo me-2"></i>
+              <i className="fas fa-redo mr-2"></i>
               Upload a new dataset
             </button>
           </div>
@@ -211,22 +285,24 @@ function App() {
         {!(validated || errors) && (
           <>
             <div className="mb-3">
-              <label className="form-label fw-bold">Metadata CSV</label>
+              <label className="font-weight-bold">Metadata CSV</label>
               <input
                 key={fileInputKey}
                 type="file"
                 className="form-control"
                 accept=".csv"
                 onChange={e => setMetadataFile(e.target.files[0])}
+                style={{ height: 'auto' }}
               />
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Query FASTA (optional if CSV contains sequence column)</label>
+              <label className="font-weight-bold">Query FASTA (optional if CSV contains sequence column)</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
                 className="form-control"
+                style={{ height: 'auto' }}
                 accept=".fasta,.fa"
                 onChange={e => setFastaFile(e.target.files[0])}
               />
@@ -238,7 +314,7 @@ function App() {
         {validated && (
           <>
             <div className="alert alert-success">
-              <i className="fas fa-check-circle me-2"></i>
+              <i className="fas fa-check-circle mr-2"></i>
               Validation passed
             </div>
 
@@ -265,7 +341,7 @@ function App() {
                   downloadCsvFastaAsZip(csvText, fastaText, 150)
                 }
               >
-                <i className="fas fa-download me-2"></i>
+                <i className="fas fa-download mr-2"></i>
                 Download validated files
               </button>
             </div>
@@ -339,7 +415,7 @@ function App() {
               {isValidating ? (
                 <>
                   <span
-                    className="spinner-border spinner-border-sm me-2"
+                    className="spinner-border spinner-border-sm mr-2"
                     role="status"
                     aria-hidden="true"
                   ></span>
