@@ -191,6 +191,10 @@ function App() {
           Taxodactyl Input Validation
         </h4>
 
+        <p>
+          Use this tool to validate your input data before running Taxodactyl. You can upload a metadata CSV file and an optional query FASTA file, and the tool will check for common formatting issues and missing values. If any errors are found, you can fix them directly in the table or update your files manually (e.g. in Excel) and re-upload. Once your data is validated, you can download the corrected files for use in Taxodactyl.
+        </p>
+
         {(validated || errors) && (
           <div className="mb-3 text-start">
             <button
