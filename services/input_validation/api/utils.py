@@ -15,6 +15,12 @@ sys.path.append(
 )
 from p0_validation import validate_inputs
 
+COUNTRY_SUGGESTIONS = {
+    "turkey": 'Use ISO alpha-2 code "TR".',
+    "türkiye": 'Use ISO alpha-2 code "TR".',
+    "hawaii": 'Hawaii is a US state. Please use "US".',
+}
+
 
 @dataclass
 class ValidationResult:
@@ -164,7 +170,7 @@ def parse_errors(stderr: str) -> ParsedError:
         logger.info("Parsed error: invalid_pmi | %s", value)
         message = (
             "The Preliminary Morphology ID is invalid,"
-            "Only letters (A–Z) and spaces are allowed. "
+            "Only letters (A-Z) and spaces are allowed. "
             "Please fix this in the metadata CSV."
         )
         return ParsedError(
@@ -180,18 +186,11 @@ def parse_errors(stderr: str) -> ParsedError:
     if invalid_country_msg:
         value = invalid_country_msg.group("value")
         logger.info("Parsed error: invalid_country | %s", value)
-        suggestions = {
-            "turkey": 'Use ISO alpha-2 code "TR".',
-            "türkiye": 'Use ISO alpha-2 code "TR".',
-            "hawaii": 'Hawaii is a US state. Please use "US".',
-        }
-        hint = suggestions.get(value.lower())
-        message = (
-            f'Country "{value}" is not recognised. '
-            + (hint if hint else
-                'Please replace it with a valid country name '
-                'or ISO alpha-2 code.')
+        hint = COUNTRY_SUGGESTIONS.get(
+            value.lower(),
+            'Please replace it with a valid country name or ISO alpha-2 code.',
         )
+        message = f'Country "{value}" is not recognised. {hint}'
         return ParsedError(
             type="invalid_country",
             value=value,
