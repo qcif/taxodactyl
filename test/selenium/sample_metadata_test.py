@@ -39,12 +39,12 @@ def open_modal(
 
 def run_sample_modal(driver, report):
     modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
-    modal_text = modal.text
+    modal_content = modal.text
     
     component = report.input_sequence_modal
 
-    component.sample_id.assert_value(modal_text)
-    component.dna_sequence.assert_value(modal_text)
+    component.sample_id.assert_value(modal_content)
+    component.dna_sequence.assert_value(modal_content)
     modal.find_element(By.XPATH, ".//button[text()='Close']").click()
     # Wait until the modal is fully hidden before continuing
     WebDriverWait(driver, 10).until(

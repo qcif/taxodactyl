@@ -72,21 +72,25 @@ class Assertion:
         if pd.isna(self.raw_value):
             return None
 
-        val = str(self.raw_value).strip()
+        raw_str = str(self.raw_value).strip()
 
         if self.assertion_type == "list":
-            return [item.strip() for item in val.split("|") if item.strip()]
+            return [
+                item.strip()
+                for item in raw_str.split("|")
+                if item.strip()
+            ]
 
-        if val == "":
+        if raw_str == "":
             return None
 
         if self.assertion_type == "int":
-            return int(val)
+            return int(raw_str)
 
         if self.assertion_type == "bool":
-            return val.lower() == "true"
+            return raw_str.lower() == "true"
 
-        return val
+        return raw_str
 
     def assert_equals(self, actual, context: str = ""):
         if self.expected is None:
@@ -107,12 +111,12 @@ class Assertion:
             f"{context} Expected '{expected}' to be in '{actual}'"
         )
 
-    def assert_list_contains(self, actual_list, context: str = ""):
+    def assert_list_contains(self, observed_values, context: str = ""):
         if not self.expected:
             return
 
         for expected_item in self.expected:
-            assert any(expected_item in item for item in actual_list), (
+            assert any(expected_item in item for item in observed_values), (
                 f"{context} Expected '{expected_item}' not found"
             )
 
@@ -182,13 +186,13 @@ def parse_csv(path: Path):
     df = pd.read_csv(path)
 
     report_columns = df.columns[3:]
-    reports = []
+    parsed_reports = []
 
     for report_col in report_columns:
-        filename = report_col
-        assertions = parse_assertions(df, report_col, filename)
+        report_name = report_col
+        assertions = parse_assertions(df, report_col, report_name)
 
-        report = Report(filename, assertions)
-        reports.append(report)
+        report = Report(report_name, assertions)
+        parsed_reports.append(report)
 
-    return reports
+    return parsed_reports

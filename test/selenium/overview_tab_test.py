@@ -17,11 +17,11 @@ def run_overview_tab(driver, report):
     component.conclusion_text.assert_value(overview_pane.text)
 
     # Test species list
-    visible_rows = [
+    visible_species_rows = [
         row for row in overview_pane.find_elements(By.CSS_SELECTOR, "tbody tr")
         if row.is_displayed() and row.text.strip()
     ]
-    row_texts = [row.text for row in visible_rows]
+    row_texts = [row.text for row in visible_species_rows]
     component.species_found.assert_value(row_texts)
 
     # Count rows in TOI table
