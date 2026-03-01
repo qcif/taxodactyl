@@ -24,6 +24,7 @@ def driver():
     )
     yield driver
     driver.quit()
+# Helper function for open tabs
 
 
 def open_tab(
@@ -33,10 +34,6 @@ def open_tab(
     expected_header: str = None,
     timeout: int = 10
 ) -> WebElement:
-    """
-    Click a tab, wait for its pane to appear, and optionally checks a header.
-    Returns the pane WebElement.
-    """
     wait = WebDriverWait(driver, timeout)
 
     # Click tab
@@ -49,8 +46,9 @@ def open_tab(
 
     # Optional header assertion
     if expected_header:
-        assert expected_header.lower() in pane.text.lower(
-        ), f"Expected header '{expected_header}'"
+        assert expected_header.lower() in pane.text.lower(), (
+            f"Expected header '{expected_header}'"
+        )
 
     return pane
 
@@ -129,6 +127,7 @@ class Assertion:
     def assert_value(self, actual, **kwargs):
         if self.expected is None:
             return
+
         if self.assertion_type == "equals":
             self.assert_equals(actual, **kwargs)
         elif self.assertion_type == "contains":
@@ -165,7 +164,8 @@ class Report:
                 f"{self.__class__.__name__!r} object has no attribute {name!r}"
             )
         raise AttributeError(
-            f"Component '{name}' is missing in report: {self.filename}")
+            f"Component '{name}' is missing in report: {self.filename}"
+        )
 
 
 def parse_assertions(df, report_col, filename):

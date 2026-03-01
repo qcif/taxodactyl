@@ -1,7 +1,6 @@
 
 from pathlib import Path
-
-from setup import parse_csv
+from conftest import parse_csv
 from sample_metadata_test import run_sample_modal
 from overview_tab_test import run_overview_tab
 import pytest

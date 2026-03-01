@@ -20,18 +20,14 @@ def open_modal(
     """
     wait = WebDriverWait(driver, timeout)
 
-    # 1. Wait for the button to be clickable and click it
     button = wait.until(
         EC.element_to_be_clickable((By.LINK_TEXT, button_text))
     )
     button.click()
 
-    # 2. Wait for the modal to appear
     modal = wait.until(EC.visibility_of_element_located((By.ID, modal_id)))
     assert modal.value_of_css_property(
         "display") != "none", f"Modal {modal_id} did not appear"
-
-    # 3. Optionally assert modal title
     if modal_title:
         title_element = modal.find_element(By.CLASS_NAME, "modal-title")
         assert modal_title in title_element.text, (
@@ -41,23 +37,16 @@ def open_modal(
     return modal
 
 
-# Test function
 def run_sample_modal(driver, report):
-    # Open modal using the helper function
     modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
     modal_text = modal.text
-
-    # Access component and assertions
+    
     component = report.input_sequence_modal
 
-    # Sample ID
     component.sample_id.assert_value(modal_text)
-
-    # DNA Sequence
     component.dna_sequence.assert_value(modal_text)
-
-    # Close the modal
     modal.find_element(By.XPATH, ".//button[text()='Close']").click()
+    # Wait until the modal is fully hidden before continuing
     WebDriverWait(driver, 10).until(
         lambda d: modal.value_of_css_property("display") == "none"
     )
