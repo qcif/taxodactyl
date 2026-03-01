@@ -40,7 +40,7 @@ def open_modal(
 def run_sample_modal(driver, report):
     modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
     modal_content = modal.text
-    
+
     component = report.input_sequence_modal
 
     component.sample_id.assert_value(modal_content)
