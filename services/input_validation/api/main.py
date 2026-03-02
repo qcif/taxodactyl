@@ -1,3 +1,4 @@
+import csv
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,9 +81,10 @@ async def validate(
         tmp_files.append(metadata_path)
 
         with open(metadata_path, "r", encoding="utf-8") as f:
-            header_line = f.readline().strip()
+            reader = csv.reader(f)
+            headers = next(reader)
 
-        headers = [h.strip().lower() for h in header_line.split(",")]
+        headers = [h.strip().lower() for h in headers]
         has_sequence_column = "sequence" in headers
 
         logger.info(
