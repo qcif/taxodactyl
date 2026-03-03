@@ -6,23 +6,18 @@ process PREPARE_INPUTS {
     path metadata_file
     
     output:
-    path "sequences.fasta", emit: sequences
+    path "sequences.fasta", emit: sequences, optional: true
     path "metadata.csv", emit: metadata
     
     script:
+    def sequences_source = sequences_file ? sequences_file[0] : null
     """
     # Copy input files to work directory to ensure they remain available
-    # throughout the workflow execution
-    # Use different temporary names first to avoid same-file copy errors
+    # throughout the workflow execution.
+    # If no sequences file is provided, do not emit sequences.fasta.
     
-    if [ "${sequences_file}" != "sequences.fasta" ]; then
-        cp "${sequences_file}" sequences.fasta
-    else
-        # File already has correct name, just ensure it exists
-        if [ ! -f sequences.fasta ]; then
-            echo "ERROR: Sequences file not found" >&2
-            exit 1
-        fi
+    if [ -n "${sequences_source ?: ''}" ]; then
+        cp "${sequences_source}" sequences.fasta
     fi
     
     if [ "${metadata_file}" != "metadata.csv" ]; then
@@ -36,7 +31,11 @@ process PREPARE_INPUTS {
     fi
     
     echo "Successfully prepared input files in work directory"
-    echo "Sequences file: \$(wc -l < sequences.fasta) lines"
+    if [ -f sequences.fasta ]; then
+        echo "Sequences file: \$(wc -l < sequences.fasta) lines"
+    else
+        echo "Sequences file: not provided"
+    fi
     echo "Metadata file: \$(wc -l < metadata.csv) lines"
     """
 }

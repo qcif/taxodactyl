@@ -41,13 +41,14 @@ workflow TAXODACTYL {
         .collectFile(name: 'timestamp.txt', newLine: true)
 
     // Copy input files to work directory first to ensure availability
-    def sequences_input = params.sequences ? file(params.sequences) : file("${projectDir}/assets/optional_input/NO_SEQUENCES")
+    // Pass sequences as an optional list input: one file when provided, empty list when absent
+    def sequences_input = params.sequences ? [file(params.sequences)] : []
     PREPARE_INPUTS (
         sequences_input,
         file(params.metadata)
     )
     
-    ch_sequences_prepared = PREPARE_INPUTS.out.sequences
+    ch_sequences_prepared = PREPARE_INPUTS.out.sequences.ifEmpty([])
     ch_metadata_prepared = PREPARE_INPUTS.out.metadata
 
     // Set up environment variables
