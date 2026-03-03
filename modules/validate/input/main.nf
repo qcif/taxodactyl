@@ -18,7 +18,7 @@ process VALIDATE_INPUT {
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     def allowed_loci_arg = params.allowed_loci_file ? "--allowed-loci-file ${file(params.allowed_loci_file)}" : ''
-    def query_fasta_arg = (sequences_file.name != 'NO_SEQUENCES' && sequences_file.size() > 0)
+    def query_fasta_arg = (sequences_file.size() > 0)
         ? "--query-fasta ${sequences_file}"
         : ''
     def fasta_max_sequences_arg = params.fasta_max_sequences ? "--fasta-max-sequences ${params.fasta_max_sequences}" : ''
