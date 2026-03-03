@@ -136,17 +136,23 @@ def _collect_results(
             candidate_results[target_taxon]['target'] = target_result
             candidate_results[target_taxon]['related'] = related_result
             candidate_results[target_taxon]['country'] = country_result
+            if gbif_taxon:
+                candidate_results[target_taxon]['genus'] = gbif_taxon.genus
         if target_taxon in toi_list:
             toi_results[target_taxon] = toi_results.get(target_taxon, {})
             toi_results[target_taxon]['target'] = target_result
             toi_results[target_taxon]['related'] = related_result
             toi_results[target_taxon]['country'] = country_result
+            if gbif_taxon:
+                toi_results[target_taxon]['genus'] = gbif_taxon.genus
         if target_taxon == pmi:
             pmi_results[target_taxon] = {
                 'target': target_result,
                 'related': related_result,
                 'country': country_result,
             }
+            if gbif_taxon:
+                pmi_results[target_taxon]['genus'] = gbif_taxon.genus
 
     return {
         TARGETS.CANDIDATE: candidate_results,
