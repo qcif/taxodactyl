@@ -30,8 +30,8 @@
             },
             "country": {
                 "type": "string",
-                "description": "Country of origin for the sample.",
-                "errorMessage": "Parameter 'country' must be a string."
+                "description": "Country of origin for the sample. If unknown, leave empty (do not use 'NA', which is the country code for Namibia).",
+                "errorMessage": "Parameter 'country' must be a string. If country is unknown, leave it empty and do not use 'NA'."
             },
             "classification": {
                 "type": "string",

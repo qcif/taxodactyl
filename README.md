@@ -85,7 +85,9 @@ API Key is used to authenticate with the NCBI Entrez API for an increased rate l
 
 ### TaxonKit
 
-[Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder.
+[Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder. 
+> [!NOTE]
+> - The current version of TAXODACTYL is not compatible with `taxonkit/taxdump` files downloaded before `June 2025`; this affects viruses, and evaluating database coverage for viruses will likely return an error.
 
 ### BLAST Core Nucleotide Database
 
@@ -128,7 +130,7 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
-2. **country** - Country of origin for the sample.
+2. **country** - Country of origin for the sample. If unknown, leave this field empty (do not use `NA`, which is the country code for Namibia).
 3. **classification** - High-level taxonomic classification for the sample. Must be one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`.
 4. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
 
