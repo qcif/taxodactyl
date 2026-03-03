@@ -109,6 +109,7 @@ AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGAC
 ```
 > [!NOTE]
 > - Example can be downloaded from [`test/query.fasta`](test/query.fasta).
+> - Supported FASTA file extensions are `.fa`, `.fas`, `.fna`, and `.fasta`.
 
 
 ### Metadata file (`metadata.csv`)
