@@ -24,7 +24,6 @@ def driver():
     )
     yield driver
     driver.quit()
-# Helper function for open tabs
 
 
 def open_tab(
@@ -36,11 +35,9 @@ def open_tab(
 ) -> WebElement:
     wait = WebDriverWait(driver, timeout)
 
-    # Click tab
     tab_element = wait.until(EC.element_to_be_clickable((By.ID, tab_id)))
     tab_element.click()
 
-    # Wait for pane
     pane = wait.until(EC.presence_of_element_located((By.ID, pane_id)))
     wait.until(lambda d: "show" in pane.get_attribute("class"))
 

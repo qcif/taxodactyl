@@ -4,14 +4,12 @@ from conftest import open_tab
 
 
 def run_overview_tab(driver, report):
-    # Open the Overview tab using the helper
     overview_pane = open_tab(
         driver,
         tab_id="results-summary-tab",
         pane_id="results-summary",
     )
 
-    # Access component
     component = report.overview_tab
 
     component.conclusion_text.assert_value(overview_pane.text)
