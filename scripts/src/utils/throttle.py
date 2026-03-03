@@ -2,7 +2,9 @@ import logging
 import random
 import sqlite3
 import time
+from dataclasses import dataclass
 from pprint import pformat
+from typing import Optional
 
 from .cache import FileLock
 from .config import Config
@@ -13,26 +15,43 @@ config = Config()
 logger = logging.getLogger(__name__)
 
 
+@dataclass(frozen=True)
+class Endpoint:
+    """Configuration for a throttled API endpoint."""
+
+    name: str
+    requests_per_second: Optional[int] = None
+    requests_per_minute: Optional[int] = None
+    backoff_factor: Optional[int] = None
+
+    def __post_init__(self):
+        if not (self.requests_per_second or self.requests_per_minute):
+            raise ValueError(
+                "Endpoint must specify either 'requests_per_second'"
+                " or 'requests_per_minute'."
+            )
+
+
 class ENDPOINTS:
-    GBIF_SLOW = {
-        'requests_per_second': 1,
-        'name': 'gbif_slow',
-        'backoff_factor': 2,
-    }
-    GBIF_FAST = {
-        'requests_per_second': 10,
-        'name': 'gbif_fast',
-        'backoff_factor': 2,
-    }
-    ENTREZ = {
-        'requests_per_second': 10,
-        'name': 'entrez',
-    }
-    BOLD = {
-        'requests_per_second': 5,
-        'requests_per_minute': 50,
-        'name': 'bold',
-    }
+    GBIF_SLOW = Endpoint(
+        name='gbif_slow',
+        requests_per_second=1,
+        backoff_factor=2,
+    )
+    GBIF_FAST = Endpoint(
+        name='gbif_fast',
+        requests_per_second=10,
+        backoff_factor=2,
+    )
+    ENTREZ = Endpoint(
+        name='entrez',
+        requests_per_second=10,
+    )
+    BOLD = Endpoint(
+        name='bold',
+        requests_per_second=5,
+        requests_per_minute=50,
+    )
 
 
 class Throttle:
@@ -43,18 +62,6 @@ class Throttle:
     allow for request rates to be set per-service, and to for throttles to be
     managed independently.
 
-    The endpoint arg should be a dict of:
-        {
-          'requests_per_second': int,  # Max requests per second
-          // AND/OR
-          'requests_per_minute': int,  # Max requests per minute
-          'name': str,                 # Name to identify this endpoint
-          'backoff_factor': int,       # Optional. Divide RPS by this factor
-                                       # on each 429 response. 429s within a
-                                       # 10s window are debounced. Backoff
-                                       # state expires after 2 hours.
-        }
-
     To be conservative, the throttle will limit per-second requests in 2-second
     blocks and per-minute requests in 90-second blocks.
     """
@@ -62,21 +69,16 @@ class Throttle:
     FIELD_NAME = 'timestamp'
     PER_SECOND_BLOCK_MS = 2000
     PER_MINUTE_BLOCK_MS = 12000
-    BACKOFF_DEBOUNCE_MS = 10000
-    BACKOFF_EXPIRY_MS = 7200000
+    BACKOFF_DEBOUNCE_MS = 30_000  # 30s
+    BACKOFF_EXPIRY_MS = 7_200_000  # 2 hours
     BACKOFF_MIN_RPS = 0.1
 
     def __init__(
         self,
-        endpoint: dict,
+        endpoint: Endpoint,
     ):
-        self.rps = endpoint.get('requests_per_second')
-        self.rpm = endpoint.get('requests_per_minute')
-        if not (self.rps or self.rpm):
-            raise ValueError(
-                "Endpoint must specify either 'requests_per_second' or"
-                " 'requests_per_minute'."
-            )
+        self.rps = endpoint.requests_per_second
+        self.rpm = endpoint.requests_per_minute
         self.per_second_limit = bool(self.rps)
         self.per_minute_limit = bool(self.rpm)
         self.window_length_ms = (
@@ -84,9 +86,9 @@ class Throttle:
             if self.rpm
             else self.PER_SECOND_BLOCK_MS
         )
-        self.backoff_factor = endpoint.get('backoff_factor')
+        self.backoff_factor = endpoint.backoff_factor
         self.db_path = config.throttle_sqlite_path
-        self.name = endpoint['name']
+        self.name = endpoint.name
         self.table_name = f"throttle_{self.name}"
         self.backoff_table = f"backoff_{self.name}"
         self._initialize_db()
