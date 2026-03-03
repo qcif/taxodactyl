@@ -58,12 +58,12 @@
                 "sequences": {
                     "type": "string",
                     "default": "sequences.fasta",
-                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "format": "file-path",
                     "exists": "true",
                     "mimeType": "text/plain",
                     "description": "Optional FASTA file containing input sequences for analysis. If omitted, metadata.csv must include a 'sequence' column.",
-                    "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fna, or .fasta extension."
+                    "errorMessage": "Parameter 'sequences' must be a valid file path, be in plain text format, file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension."
                 },
                 "fasta_max_sequences": {
                     "type": "integer",
@@ -384,9 +384,9 @@
                     "type": "string",
                     "default": "all_hits.fasta",
                     "hidden": true,
-                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "description": "Filename for the FASTA file containing all BLAST hits.",
-                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fna, or .fasta extension. Default: 'all_hits.fasta'."
+                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'all_hits.fasta'."
                 },
                 "hits_json_filename": {
                     "type": "string",
@@ -416,17 +416,17 @@
                     "type": "string",
                     "default": "candidates.fasta",
                     "hidden": true,
-                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "description": "Filename for the FASTA file of candidate sequences.",
-                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fna, or .fasta extension. Default: 'candidates.fasta'."
+                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'candidates.fasta'."
                 },
                 "candidates_phylogeny_fasta_filename": {
                     "type": "string",
                     "default": "candidates_phylogeny.fasta",
                     "hidden": true,
-                    "pattern": "^\\S+\\.fn?a(sta)?$",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "description": "Filename for the FASTA file of candidate sequences that will be used to generate the phylogenetic tree.",
-                    "errorMessage": "Parameter 'candidates_phylogeny_fasta_filename' file name cannot contain spaces and must have .fa, .fna, or .fasta extension. Default: 'candidates.fasta'."
+                    "errorMessage": "Parameter 'candidates_phylogeny_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'candidates.fasta'."
                 },
                 "candidates_json_filename": {
                     "type": "string",
