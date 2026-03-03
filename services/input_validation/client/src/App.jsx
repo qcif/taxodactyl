@@ -297,7 +297,7 @@ function App() {
             </div>
 
             <div className="mb-3">
-              <label className="font-weight-bold">Query FASTA (optional if CSV contains sequence column)</label>
+              <label className="font-weight-bold">Query FASTA</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
@@ -306,6 +306,7 @@ function App() {
                 accept=".fasta,.fa"
                 onChange={e => setFastaFile(e.target.files[0])}
               />
+              <small className="form-text text-muted">Not required if your metadata CSV contains a <code>sequence</code> column.</small>
             </div>
           </>
         )}
