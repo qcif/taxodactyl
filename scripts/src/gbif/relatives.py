@@ -120,6 +120,7 @@ class RelatedTaxaGBIF:
         self.record = self._get_taxon_record(taxon)
         self.key = self.record.key
         self.genus_key = self.record.genus_key
+        self.genus = self.record.get('genus')
         self.rank = RANK.from_string(self.record.rank)
         self.canonical_name = self.record.canonical_name
 
