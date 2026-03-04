@@ -22,10 +22,10 @@ from pathlib import Path
 
 from Bio import SeqIO
 
-from src.utils import deduplicate, existing_path
+from src.utils import deduplicate
 from src.utils.blast import build_blast_url
 from src.utils.config import Config
-from src.utils.config.mappings import CLI_ARGS
+from src.utils.config.mappings import PARAMS
 from src.utils.flags import FLAGS, Flag
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
@@ -60,7 +60,7 @@ def main():
     args = _parse_args()
     config.update_from_args(args)
     result = config.read_hits_json(args.query_dir)
-    if args.bold:
+    if args.is_bold:
         filtered_hits = result['hits']
         candidate_hits, candidate_hits_strict = _filter_hits_bold(
             filtered_hits)
@@ -75,7 +75,7 @@ def main():
         filtered_hits,
         candidate_hits,
         candidate_hits_strict,
-        bold=args.bold,
+        bold=args.is_bold,
     )
     _detect_taxa_of_interest(candidate_species, args.query_dir)
 
@@ -83,76 +83,26 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        f"{CLI_ARGS['query_dir'].cli_name}",
-        type=existing_path,
-        help="Path to query output directory")
-    parser.add_argument(
-        "--bold",
-        action="store_true",
-        help="Outputs are from BOLD query.")
-    parser.add_argument(
-        f"--{CLI_ARGS['output_dir'].cli_name}",
-        type=existing_path,
-        default=config.output_dir,
-        help=f"Path to output directory. Defaults to {config.output_dir}.")
-    parser.add_argument(
-        f"--{CLI_ARGS['metadata_csv'].cli_name}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
+        PARAMS['query_dir'].cli_name,
+        type=PARAMS['query_dir'].cast,
+        help=PARAMS['query_dir'].help_text,
     )
-    parser.add_argument(
-        f"--{CLI_ARGS['query_fasta'].cli_name}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['alignment_min_nt'].cli_name}",
-        type=int,
-        help="Minimum alignment length in nucleotides")
-    parser.add_argument(
-        f"--{CLI_ARGS['alignment_min_q_coverage'].cli_name}",
-        type=float,
-        help="Minimum query coverage fraction")
-    parser.add_argument(
-        f"--{CLI_ARGS['alignment_min_identity'].cli_name}",
-        type=float,
-        help="Minimum sequence identity for moderate matches")
-    parser.add_argument(
-        f"--{CLI_ARGS['alignment_min_identity_strict'].cli_name}",
-        type=float,
-        help="Minimum sequence identity for strong matches")
-    parser.add_argument(
-        f"--{CLI_ARGS['median_identity_warning_factor'].cli_name}",
-        type=float,
-        help="Factor for median identity warnings")
-    parser.add_argument(
-        f"--{CLI_ARGS['max_candidates_for_analysis'].cli_name}",
-        type=int,
-        help="Maximum candidates to include in detailed analysis")
-    parser.add_argument(
-        f"--{CLI_ARGS['phylogeny_min_hit_identity'].cli_name}",
-        type=float,
-        help="Minimum hit identity for collecting phylogeny sequences")
-    parser.add_argument(
-        f"--{CLI_ARGS['phylogeny_min_seqs'].cli_name}",
-        type=int,
-        help="Minimum number of sequences to collect for phylogeny")
-    parser.add_argument(
-        f"--{CLI_ARGS['phylogeny_max_seqs'].cli_name}",
-        type=int,
-        help="Maximum number of sequences to collect for phylogeny")
-    parser.add_argument(
-        f"--{CLI_ARGS['phylogeny_species_max_seqs'].cli_name}",
-        type=int,
-        help="Maximum number of sequences per species to collect for"
-             " phylogeny")
-    parser.add_argument(
-        f"--{CLI_ARGS['phylogeny_candidate_max_seqs'].cli_name}",
-        type=int,
-        help="Maximum number of sequences per candidate species to collect for"
-             " phylogeny")
+    parser = config.add_cli_args(parser, [
+        PARAMS['is_bold'],
+        PARAMS['metadata_csv'].required(),
+        PARAMS['query_fasta'].required(),
+        PARAMS['alignment_min_nt'],
+        PARAMS['alignment_min_q_coverage'],
+        PARAMS['alignment_min_identity'],
+        PARAMS['alignment_min_identity_strict'],
+        PARAMS['median_identity_warning_factor'],
+        PARAMS['max_candidates_for_analysis'],
+        PARAMS['phylogeny_min_hit_identity'],
+        PARAMS['phylogeny_min_seqs'],
+        PARAMS['phylogeny_max_seqs'],
+        PARAMS['phylogeny_species_max_seqs'],
+        PARAMS['phylogeny_candidate_max_seqs'],
+    ])
     return parser.parse_args()
 
 

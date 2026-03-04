@@ -3,14 +3,12 @@
 import argparse
 import json
 import logging
-from pathlib import Path
 
 from Bio import SeqIO
 
 from src.bold.id_engine import BoldSearch
-from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import CLI_ARGS
+from src.utils.config.mappings import PARAMS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -29,30 +27,11 @@ def main():
 
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        f"--{CLI_ARGS['query_fasta'].cli_name}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['metadata_csv'].cli_name}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['output_dir'].cli_name}",
-        type=Path,
-        help="Directory to save parsed output files (JSON and FASTA). Defaults"
-             f" to '{config.output_dir}'.",
-        default=config.output_dir,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['bold_database'].cli_name}",
-        type=str,
-        help="BOLD database to search",
-    )
+    parser = config.add_cli_args(parser, [
+        PARAMS['query_fasta'].required(),
+        PARAMS['metadata_csv'].required(),
+        PARAMS['bold_database'],
+    ])
     return parser.parse_args()
 
 

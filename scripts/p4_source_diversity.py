@@ -12,12 +12,11 @@ be aware of the potential reduced credibility of these annotation.
 import argparse
 import json
 import logging
-from pathlib import Path
 
 from src.sources import collect
-from src.utils import existing_path, serialize
+from src.utils import serialize
 from src.utils.config import Config
-from src.utils.config.mappings import CLI_ARGS
+from src.utils.config.mappings import PARAMS
 from src.utils.flags import FLAGS, Flag
 
 logger = logging.getLogger(__name__)
@@ -42,43 +41,17 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        CLI_ARGS['query_dir'].cli_name,
-        type=existing_path,
-        help="Path to query output directory")
-    parser.add_argument(
-        f"--{CLI_ARGS['output_dir'].cli_name}",
-        type=existing_path,
-        default=config.output_dir,
-        help=f"Path to output directory. Defaults to {config.output_dir}.")
-    parser.add_argument(
-        f"--{CLI_ARGS['metadata_csv'].cli_name}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
+        PARAMS['query_dir'].cli_name,
+        type=PARAMS['query_dir'].cast,
+        help=PARAMS['query_dir'].help_text,
     )
-    parser.add_argument(
-        f"--{CLI_ARGS['query_fasta'].cli_name}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['sources_min_count'].cli_name}",
-        type=int,
-        help="Minimum number of independent sources required",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['temp_root'].cli_name}",
-        type=Path,
-        help="Path to temp root directory (defaults to"
-             f" '{config.temp_root_dir}')",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['temp_dir_name'].cli_name}",
-        type=str,
-        help="The name of the temp dir to create within the temp root"
-             f" (defaults to '{config.temp_dir_name}')",
-    )
+    parser = config.add_cli_args(parser, [
+        PARAMS['metadata_csv'].required(),
+        PARAMS['query_fasta'].required(),
+        PARAMS['sources_min_count'],
+        PARAMS['temp_root'],
+        PARAMS['temp_dir_name'],
+    ])
     return parser.parse_args()
 
 

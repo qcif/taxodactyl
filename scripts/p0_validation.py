@@ -11,9 +11,9 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Data import IUPACData
 
-from src.utils import countries, existing_path
+from src.utils import countries
 from src.utils.config import Config
-from src.utils.config.mappings import CLI_ARGS
+from src.utils.config.mappings import PARAMS
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 config = Config()
@@ -43,7 +43,7 @@ def main():
     _validate_metadata(
         args.metadata_csv,
         ids,
-        bold=args.bold,
+        bold=args.is_bold,
     )
 
 
@@ -51,49 +51,16 @@ def _parse_args():
     parser = argparse.ArgumentParser(
         description="Validate user input."
     )
-    parser.add_argument(
-        f"--{CLI_ARGS['metadata_csv'].cli_name}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['query_fasta'].cli_name}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=False,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['taxdb_dir'].cli_name}",
-        type=existing_path,
-        help="Path to NCBI taxdump directory (for taxonkit).",
-        required=True,
-    )
-    parser.add_argument(
-        "--bold",  # doesn't map to config
-        action="store_true",
-        help="Validate inputs for a BOLD analysis (accept blank locus field).",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['allowed_loci_file'].cli_name}",
-        type=existing_path,
-        help="Path to JSON file containing allowed loci definitions",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['fasta_max_sequences'].cli_name}",
-        type=int,
-        help="Maximum number of sequences allowed",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['fasta_min_length'].cli_name}",
-        type=int,
-        help="Minimum sequence length in nucleotides",
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['fasta_max_length'].cli_name}",
-        type=int,
-        help="Maximum sequence length in nucleotides",
-    )
+    parser = config.add_cli_args(parser, [
+        PARAMS['metadata_csv'].required(),
+        PARAMS['query_fasta'],
+        PARAMS['taxdb_dir'].required(),
+        PARAMS['allowed_loci_file'],
+        PARAMS['fasta_max_sequences'],
+        PARAMS['fasta_min_length'],
+        PARAMS['fasta_max_length'],
+        PARAMS['is_bold'],
+    ])
     return parser.parse_args()
 
 

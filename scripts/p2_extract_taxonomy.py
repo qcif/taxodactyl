@@ -10,9 +10,8 @@ import logging
 
 from src.taxonomy import extract
 from src.taxonomy.extract import TAXONOMIC_RANKS
-from src.utils import existing_path
 from src.utils.config import Config
-from src.utils.config.mappings import CLI_ARGS
+from src.utils.config.mappings import PARAMS
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -34,30 +33,14 @@ def main():
 def _parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'taxids_csv',  # Not mapped to config
-        type=existing_path,
-        help='CSV file with columns (accession,taxid) to extract taxonomy'
-             ' information for.',
+        PARAMS['taxids_csv'].cli_name,
+        type=PARAMS['taxids_csv'].cast,
+        help=PARAMS['taxids_csv'].help_text,
     )
-    parser.add_argument(
-        f"--{CLI_ARGS['output_dir'].cli_name}",
-        type=existing_path,
-        help="Directory to save parsed output files (JSON and FASTA). Defaults"
-             f" to env variable 'OUTPUT_DIR' or '{config.output_dir}'.",
-        default=config.output_dir,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['metadata_csv'].cli_name}",
-        type=existing_path,
-        help="Path to metadata.csv input file.",
-        required=True,
-    )
-    parser.add_argument(
-        f"--{CLI_ARGS['query_fasta'].cli_name}",
-        type=existing_path,
-        help="Path to queries.fasta input file.",
-        required=True,
-    )
+    parser = config.add_cli_args(parser, [
+        PARAMS['metadata_csv'].required(),
+        PARAMS['query_fasta'].required(),
+    ])
     return parser.parse_args()
 
 

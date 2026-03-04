@@ -212,6 +212,18 @@ class Config:
                         f"Failed to update config from CLI arg "
                         f"{mapper.env_name}={value}: {e}")
 
+    def add_cli_args(
+        self,
+        parser: argparse.ArgumentParser,
+        args: list[mappings.AbstractMapping],
+    ) -> argparse.ArgumentParser:
+        """Add global CLI arguments to an argument parser."""
+        for mapper in args:
+            args, kwargs = mapper.as_argparse()
+            parser.add_argument(*args, **kwargs)
+
+        return parser
+
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
         # Setup logging
@@ -219,7 +231,7 @@ class Config:
         dictConfig(conf)
 
         # Handle BOLD flag
-        if hasattr(args, 'bold') and args.bold:
+        if hasattr(args, 'is_bold') and args.is_bold:
             self.bold_flag_file.write_text('1')
 
         for arg_name, value in vars(args).items():
