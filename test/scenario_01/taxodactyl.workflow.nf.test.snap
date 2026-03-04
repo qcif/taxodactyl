@@ -62,7 +62,7 @@
                         "all_hits.json:md5,c1475284ea6bcc7a9b5e418cf2eca37c",
                         "candidates.csv:md5,c571a0bf0715049896936e0949e0e23b",
                         "candidates.fasta:md5,1be93213422e4e536eff2cfd342891a7",
-                        "candidates.json:md5,6e87d54ec237cb01f2655b43b3f579ec",
+                        "candidates.json:md5,92b0787b67e6d60248ead76d4871d120",
                         "candidates_count.txt:md5,eccbc87e4b5ce2fe28308fd9f2a7baf3",
                         "candidates_phylogeny.fasta:md5,5561dcc85a331e59a244bf1eb25ddd0f",
                         "taxa_of_concern_detected.csv:md5,265affe18c28efd1aeef009635a4d53e"
@@ -79,7 +79,7 @@
                         "assigned_taxonomy.csv:md5,1e363e0c3388a2e9b8182a621fa115ad",
                         "candidates.csv:md5,49d48214cb7a190da4254e417fd38ee2",
                         "candidates.fasta:md5,8ae79be726db77ff78a10a7397bcf0bf",
-                        "candidates.json:md5,51513b8da434517625fb3d5d087615ee",
+                        "candidates.json:md5,7d60c980bbcbddd73fb2645fbc68b300",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
                         "candidates_phylogeny.fasta:md5,59f5587ce7dd94418e18fb9d6f1e1a23",
                         "taxa_of_concern_detected.csv:md5,664dd579bb7573f8568e5ae7d49230f4"
@@ -95,7 +95,7 @@
                         "all_hits.json:md5,ccd54035a018a6eac882204160b8298a",
                         "candidates.csv:md5,7c0029941c8a1ad7cbc29e7460d26f3e",
                         "candidates.fasta:md5,34d360c825a0f2f1ff40d15e85b1d670",
-                        "candidates.json:md5,31da9098c6c28f6cb968bdd878e78da1",
+                        "candidates.json:md5,618b6546b9e74becbc6db04fd87b1609",
                         "candidates_count.txt:md5,e4da3b7fbbce2345d7772b0674a318d5",
                         "candidates_identity_boxplot.png:md5,30f5dd79e7dac43e8c51d024df162cce",
                         "candidates_phylogeny.fasta:md5,eb0be8848ea8ecc3e4554e31ecce857f",
@@ -128,7 +128,7 @@
                         "all_hits.json:md5,8aa744aa492e8c3a9b6813a94e08d5e3",
                         "candidates.csv:md5,a1af7ba7a2b09c957ab7027c55312179",
                         "candidates.fasta:md5,953553351ceb40819388a8dc81895031",
-                        "candidates.json:md5,a5646f8c742da0704a962bc170a852b9",
+                        "candidates.json:md5,0fc5f849777ae6ad4682c61ef1844a16",
                         "candidates_count.txt:md5,6f4922f45568161a8cdf4ad2299f6d23",
                         "candidates_identity_boxplot.png:md5,21ef79b31d9038a6589dc034d4433fe8",
                         "candidates_phylogeny.fasta:md5,ffb24948e2532d706ad5dbacaae89105",
@@ -145,7 +145,7 @@
                         "all_hits.json:md5,97da7c89ec7563e44a317919270df9bf",
                         "candidates.csv:md5,269c48556397fba0a1f8ec5a7d0042f5",
                         "candidates.fasta:md5,4c6d510664c7f590efa87895033b5eba",
-                        "candidates.json:md5,4441c89a46c01ae287f5ba6a0274fe51",
+                        "candidates.json:md5,b354ac0a7bff9b63dc49a0541331f419",
                         "candidates_count.txt:md5,1679091c5a880faf6fb5e6087eb1b2dc",
                         "candidates_identity_boxplot.png:md5,a0f70153e643277817a58dacd4025388",
                         "candidates_phylogeny.fasta:md5,e2853225b83b5449bda66415ab4332b5",
@@ -157,59 +157,9 @@
                 [
                     "query_001_Scenario_01",
                     [
-                        "5.1.flag:md5,613a12c0462f26f5c2148cd2a0f65f49",
-                        "5.2.flag:md5,1634abe5017e4305f686af58730773f5",
-                        "5.3.flag:md5,2e7309432054858d01cf70c7fc84b1c1"
-                    ]
-                ],
-                [
-                    "query_002_Scenario_02",
-                    [
-                        "5.1.flag:md5,e35372d9ad711c48b99911d5e99f66dc",
-                        "5.2.flag:md5,cb748cb598f89458032c091cf70c8f35",
-                        "5.3.flag:md5,e8992436028d5a716317a8a4626e5a5b"
-                    ]
-                ],
-                [
-                    "query_003_Scenario_03",
-                    [
-                        "5.1.flag:md5,c979be5df639d9feec513d072ac0f6b9",
-                        "5.2.flag:md5,e5c70ae53515545330f538f98d02de51",
-                        "5.3.flag:md5,015ebd8fc9b7b03491037d0d95fe32e9"
-                    ]
-                ],
-                [
-                    "query_004_Scenario_04",
-                    [
-                        "5.1.flag:md5,78cdda31840e3a2477c00abb189fe7a8",
-                        "5.2.flag:md5,4cdf3e03da8e9f7c065de1075c267ae4",
-                        "5.3.flag:md5,93677b871a9051418b21050a009aed9b"
-                    ]
-                ],
-                [
-                    "query_005_Scenario_05",
-                    [
-                        "5.1.flag:md5,751452441eadd5d60c3bdf9a738b4116",
-                        "5.2.flag:md5,5a8fcc4aaea111971e3de4a3abf782b3",
-                        "5.3.flag:md5,a15f8c4f71c526d2a9b023e1a391ef02"
-                    ]
-                ],
-                [
-                    "query_006_Scenario_06",
-                    [
-                        "5.1.flag:md5,5fb55c4f2989d64244dff1220bdc237a",
-                        "5.2.flag:md5,79e0b0ac0f2e75e334ebc48a26b4d1cc",
-                        "5.3.flag:md5,bfbe7444f50fc7b3b94567d81e1ab53c"
-                    ]
-                ]
-            ],
-            [
-                [
-                    "query_001_Scenario_01",
-                    [
                         "4.flag:md5,dbf16dfd24d456e9fe9bc0261d9fa441",
                         "aggregated_sources.json:md5,b2a2b88a07ace60c2d1ebc757c78527f",
-                        "candidates.json:md5,6e87d54ec237cb01f2655b43b3f579ec"
+                        "candidates.json:md5,92b0787b67e6d60248ead76d4871d120"
                     ]
                 ],
                 [
@@ -217,7 +167,7 @@
                     [
                         "4.flag:md5,5a34cf25137221614401e52932ce5b60",
                         "aggregated_sources.json:md5,92fbe5102bee7561f1f8d1af79c446cd",
-                        "candidates.json:md5,51513b8da434517625fb3d5d087615ee"
+                        "candidates.json:md5,7d60c980bbcbddd73fb2645fbc68b300"
                     ]
                 ],
                 [
@@ -281,9 +231,9 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
+            "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-30T20:49:55.779142738"
+        "timestamp": "2026-03-04T01:38:04.988311402"
     }
 }
