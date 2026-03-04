@@ -1,7 +1,7 @@
-sample_id,locus,preliminary_id,taxa_of_interest,host,country,sequencing_platform,sequencing_read_coverage
-Scenario_01,CO1,Spodoptera frugiperda,Spodoptera frugiperda,flowering plant,Australia,minION_rapid,30x
-Scenario_02,CO1,Diptera,Liriomyza trifolii,Solanum lycopersicum,Australia,minION_rapid,30x
-Scenario_03,CO1,Lepidoptera,Lepidoptera,Lotus pedunculatus,Australia,P2_whole_mtDNA,50x
-Scenario_04,CO1,Bruchophagus,Bruchophagus abnormis|Bruchophagus abscedus|Bruchophagus muli,finger lime,Australia,minION_rapid,15x
-Scenario_05,CO1,Aedes scutellaris,Aedes scutellaris,some ento,Timor-Leste,minION_rapid,30x
-Scenario_06,CO1,Bactrocera aquilonis,Bactrocera aquilonis,Mango,Australia,minION_rapid,30x
+sample_id,locus,preliminary_id,taxa_of_interest,host,country,sequencing_platform,sequencing_read_coverage,classification
+Scenario_01,CO1,Spodoptera frugiperda,Spodoptera frugiperda,flowering plant,Australia,minION_rapid,30x,animalia
+Scenario_02,CO1,Diptera,Liriomyza trifolii,Solanum lycopersicum,Australia,minION_rapid,30x,animalia
+Scenario_03,CO1,Lepidoptera,Lepidoptera,Lotus pedunculatus,Australia,P2_whole_mtDNA,50x,animalia
+Scenario_04,CO1,Bruchophagus,Bruchophagus abnormis|Bruchophagus abscedus|Bruchophagus muli,finger lime,Australia,minION_rapid,15x,animalia
+Scenario_05,CO1,Aedes scutellaris,Aedes scutellaris,some ento,Timor-Leste,minION_rapid,30x,animalia
+Scenario_06,CO1,Bactrocera aquilonis,Bactrocera aquilonis,Mango,Australia,minION_rapid,30x,animalia

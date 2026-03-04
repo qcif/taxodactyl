@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Bruchophagus muli",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Bruchophagus abscedus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Bruchophagus abnormis",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Bruchophagus",
+    "target_type": "pmi"
+  }
+]

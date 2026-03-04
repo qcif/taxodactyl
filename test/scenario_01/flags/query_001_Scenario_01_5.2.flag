@@ -1,0 +1,32 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Spodoptera sp. frugiperda 1 BOLD-2018",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Spodoptera frugiperda",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Spodoptera exigua",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Spodoptera frugiperda",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Spodoptera frugiperda",
+    "target_type": "pmi"
+  }
+]
