@@ -146,8 +146,8 @@ Execute the test with:
 
 ```bash
 nf-test test test/scenario_01/taxodactyl.workflow.nf.test \
-  > /path/to/test_execution_dir/scenario_01.log \
-  2> /path/to/test_execution_dir/scenario_01.err
+  > /path/to/test_execution_dir/tests/scenario_01/nf-test_results.txt \
+  2> /path/to/test_execution_dir/tests/scenario_01/nf-test_errors.txt
 ```
 
 ## Understanding Test Results
@@ -162,14 +162,14 @@ When you run the test:
 
 ### Test Hash
 
-The test generates a unique hash (e.g., `9550e06b15180ad4857afa5ae5d07ed3`) used to organize test artifacts.
+The test generates a unique hash (`NF_TEST_HASH`, e.g., `9550e06b15180ad4857afa5ae5d07ed3`) used to organize test artifacts.
 
 ### Test Artifacts Location
 
 After running the test, artifacts are stored in:
 
 ```
-/path/to/test_execution_dir/tests/[TEST_HASH]/
+/path/to/test_execution_dir/tests/[NF_TEST_HASH]/
 ```
 
 For example:
@@ -198,7 +198,50 @@ The test validates:
   - 1 params JSON file
   - 1 workflow timestamp
   - 6 database coverage maps
+  - 11 total database coverage map files (flattened)
   - 6 database coverage JSON files
+  - 6 database coverage flag groups
+  - 18 total flag files (flattened)
+
+## Flag Comparison Test (baseline vs evaluated)
+
+In addition to nf-test assertions, a post-run flag comparison can be performed using
+`collect_flags.sh` and `test_flags.py`.
+
+This compares:
+- baseline flags in `test/<scenario>/flags`
+- evaluated flags collected from a specific nf-test run hash
+
+### Variables used for flag comparison
+
+Example variables:
+
+```bash
+test_case=scenario_01
+NF_TEST_HASH=<nf_test_run_hash>
+
+taxo_fold=/path/to/taxodactyl_github_repo_dir
+tests_fold=/path/to/test_execution_dir
+
+baseline_dir=${taxo_fold}/test/${test_case}/flags
+evaluated_dir=${tests_fold}/tests/${NF_TEST_HASH}
+```
+
+### Flag comparison commands
+
+```bash
+mkdir -p ${tests_fold}/tests/${test_case}/flags/evaluated
+bash collect_flags.sh "$evaluated_dir" "${tests_fold}/tests/${test_case}/flags/evaluated"
+
+python3 test_flags.py "$baseline_dir" "${tests_fold}/tests/${test_case}/flags/evaluated" \
+  > "${tests_fold}/tests/${test_case}/flags_results.txt" \
+  2> "${tests_fold}/tests/${test_case}/flags_errors.txt"
+```
+
+### Output files from flag comparison
+
+- `${tests_fold}/tests/${test_case}/flags_results.txt`
+- `${tests_fold}/tests/${test_case}/flags_errors.txt`
 
 ### Check Test Results
 
@@ -206,18 +249,18 @@ After the test completes, review the execution logs:
 
 ```bash
 # View standard output
-cat /path/to/test_execution_dir/scenario_01.log
+cat /path/to/test_execution_dir/tests/scenario_01/nf-test_results.txt
 
 # View errors (if any)
-cat /path/to/test_execution_dir/scenario_01.err
+cat /path/to/test_execution_dir/tests/scenario_01/nf-test_errors.txt
 
 # Or tail the logs during execution
-tail -f /path/to/test_execution_dir/scenario_01.log
+tail -f /path/to/test_execution_dir/tests/scenario_01/nf-test_results.txt
 ```
 
 A successful test will show all assertions passing with output similar to:
 ```
-✅ Test [hash] scenario_01 PASSED
+✅ Test [NF_TEST_HASH] scenario_01 PASSED
 ```
 
 ## Updating Snapshots
@@ -249,12 +292,15 @@ To run a different test scenario (e.g., scenario_02):
    nf-test test test/scenario_02/taxodactyl.workflow.nf.test
    ```
 
+3. If you need to validate generated flags against baseline files, set `NF_TEST_HASH`
+  to the produced test hash and run the flag comparison commands above.
+
 ## Troubleshooting
 
 ### Test Fails
 
 1. Check the execution logs in the test artifacts directory
-2. Review the trace file: `[workDir]/tests/[TEST_HASH]/meta/trace.csv`
+2. Review the trace file: `[workDir]/tests/[NF_TEST_HASH]/meta/trace.csv`
 3. Examine the work directory for process-level outputs
 
 ## Additional Resources
