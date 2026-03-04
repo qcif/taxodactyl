@@ -87,7 +87,7 @@ API Key is used to authenticate with the NCBI Entrez API for an increased rate l
 
 [Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder. 
 > [!NOTE]
-> - The current version of TAXODACTYL is not compatible with `taxonkit/taxdump` files downloaded before `June 2025`; this affects viruses, and evaluating database coverage for viruses will likely return an error.
+> - The current version of TAXODACTYL is not compatible with `taxonkit/taxdump` files downloaded before `April 2025`; this affects viruses, and evaluating database coverage for viruses will likely return an error.
 
 ### BLAST Core Nucleotide Database
 
