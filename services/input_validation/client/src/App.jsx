@@ -297,7 +297,7 @@ function App() {
             </div>
 
             <div className="mb-3">
-              <label className="font-weight-bold">Query FASTA (optional if CSV contains sequence column)</label>
+              <label className="font-weight-bold">Query FASTA</label>
               <input
                 key={fileInputKey + 1}
                 type="file"
@@ -306,6 +306,7 @@ function App() {
                 accept=".fasta,.fa"
                 onChange={e => setFastaFile(e.target.files[0])}
               />
+              <small className="form-text text-muted">Not required if your metadata CSV contains a <code>sequence</code> column.</small>
             </div>
           </>
         )}
@@ -388,8 +389,8 @@ function App() {
 
             {!isFileRequired && !isFastaError && !isInvalidRequiredColumns && (
               <p className="mt-2 mb-0">
-                Please check check your <code>.csv</code> and <code>.fasta</code> file. You can fix these values directly in the table below to continue
-                validating your data, or add these values into your <code>.fasta</code> file and upload file again.
+                Please check your <code>.csv</code> and <code>.fasta</code> file. You can fix these values directly in the table below to continue
+                validating your data, or manually update these values in your <code>.csv</code> file and upload again.
               </p>
             )}
           </div>
