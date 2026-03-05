@@ -84,6 +84,26 @@ def create_fasta_from_csv_sequence(metadata_csv: Path) -> Path:
     return fasta_path
 
 
+def remove_sequence_from_csv(metadata_csv: Path) -> str:
+    """
+    Remove 'sequence' column from validated metadata CSV
+    and return the cleaned CSV text.
+    """
+    with metadata_csv.open("r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+
+    fields = [f for f in reader.fieldnames if f.lower() != "sequence"]
+
+    output = []
+    output.append(",".join(fields))
+
+    for row in rows:
+        output.append(",".join(row.get(f, "") for f in fields))
+
+    return "\n".join(output)
+
+
 def run_p0_validation(
         metadata_csv: Path,
         query_fasta: Path) -> ValidationResult:

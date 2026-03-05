@@ -9,6 +9,7 @@ from utils import (
     find_invalid_country_rows,
     find_invalid_locus_rows,
     find_metadata_sample_mismatch_rows,
+    remove_sequence_from_csv,
     save_upload_to_tempfile,
     run_p0_validation,
     parse_errors,
@@ -129,8 +130,11 @@ async def validate(
         logger.info("p0 validation finished | rc=%s", result.ok)
         if result.ok:
             logger.info("Validation passed successfully")
-            with open(metadata_path, "r", encoding="utf-8") as f:
-                csv_text = f.read()
+            if has_sequence_column:
+                csv_text = remove_sequence_from_csv(metadata_path)
+            else:
+                with open(metadata_path, "r", encoding="utf-8") as f:
+                    csv_text = f.read()
             if query_path:
                 with open(query_path, "r", encoding="utf-8") as f:
                     fasta_text = f.read()
