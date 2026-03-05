@@ -50,7 +50,15 @@ TEMP_FILES = (
 
 
 class Config:
-    """Singleton configuration class using YAML with Pydantic validation."""
+    """Singleton configuration class for global config state.
+
+    Config can be read from:
+
+    - CLI arguments
+    - YAML with Pydantic validation.
+    - Env variables
+    """
+
     _instance = None
     _initialized = False
 
@@ -63,7 +71,35 @@ class Config:
                 'taxon': 'metazoa',
             },
         },
+        'animal': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
+        'animals': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
         'plantae': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'plant': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'plants': {
             'gbif': 6,
             'ncbi': {
                 'rank': 'kingdom',
@@ -99,6 +135,13 @@ class Config:
             },
         },
         'viruses': {
+            'gbif': 8,
+            'ncbi': {
+                'rank': 'acellular root',
+                'taxon': 'viruses',
+            },
+        },
+        'virus': {
             'gbif': 8,
             'ncbi': {
                 'rank': 'acellular root',
