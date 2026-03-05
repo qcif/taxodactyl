@@ -19,7 +19,6 @@ import json
 import logging
 from pathlib import Path
 
-
 from Bio import SeqIO
 
 from src.utils import deduplicate, existing_path
