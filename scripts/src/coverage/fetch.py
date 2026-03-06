@@ -21,8 +21,8 @@ def get_target_coverage(taxid, gbif_target, locus, is_bold):
     """Return a count of the number of accessions for the given target."""
     db_name = 'BOLD' if is_bold else 'Entrez'
     logger.info(
-        f"Fetching {db_name} records for target taxid:"
-        f"{taxid}, locus: '{locus}'..."
+        f"Fetching {db_name} records for target '{gbif_target.taxon}'; taxid:"
+        f"{taxid}; locus: '{locus}'..."
     )
     if is_bold:
         return fetch_bold_records_count(
@@ -44,8 +44,8 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
     if not species_names:
         return {}
     logger.info(
-        f"Fetching {db_name} records for target"
-        f" '{gbif_target.taxon}' (locus: '{locus}') - {len(species_names)}"
+        f"Fetching {db_name} records for target '{gbif_target.taxon}';"
+        f" locus: '{locus}' - {len(species_names)}"
         f" related species..."
     )
 
@@ -92,8 +92,8 @@ def get_related_country_coverage(
         return {}
 
     logger.info(
-        f"Fetching {db_name} records for target"
-        f" '{gbif_target.taxon}' (locus: '{locus}'; country: '{country}')"
+        f"Fetching {db_name} records for target '{gbif_target.taxon}';"
+        f" locus: '{locus}'; country: '{country}'"
         f" - {len(species_names)} related species"
     )
 
