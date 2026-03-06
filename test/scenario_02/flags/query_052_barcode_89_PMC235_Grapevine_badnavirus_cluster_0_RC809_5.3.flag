@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Badnavirus vitis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Grapevine badnavirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Grapevine badnavirus",
+    "target_type": "pmi"
+  }
+]

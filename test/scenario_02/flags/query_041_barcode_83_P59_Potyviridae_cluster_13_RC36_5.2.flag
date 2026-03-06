@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Potyvirus batataplumei",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Potyviridae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Potyviridae",
+    "target_type": "pmi"
+  }
+]

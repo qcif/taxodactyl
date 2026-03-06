@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Lepidoptera",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Lepidoptera",
+    "target_type": "pmi"
+  }
+]

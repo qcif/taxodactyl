@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Agromyzinae sp. 3705",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Agromyzidae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Agromyzidae",
+    "target_type": "pmi"
+  }
+]

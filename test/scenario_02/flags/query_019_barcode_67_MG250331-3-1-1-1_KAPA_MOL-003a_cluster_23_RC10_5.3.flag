@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Homo sapiens",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Psylloidea",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Psylloidea",
+    "target_type": "pmi"
+  }
+]

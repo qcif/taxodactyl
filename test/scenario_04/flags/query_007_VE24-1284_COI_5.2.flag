@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Planococcus citri",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Planococcus ficus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Planococcus citri",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Pseudococcidae",
+    "target_type": "pmi"
+  }
+]

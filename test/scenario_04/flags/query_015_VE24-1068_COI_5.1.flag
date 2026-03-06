@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Aphidius ervi",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "NA",
+    "target": "Aphididae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "NA",
+    "target": "Aphididae",
+    "target_type": "pmi"
+  }
+]

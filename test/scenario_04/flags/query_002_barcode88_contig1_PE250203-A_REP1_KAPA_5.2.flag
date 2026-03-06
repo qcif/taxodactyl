@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Luthrodes pandava",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "Chilades pandava",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Lycaenidae",
+    "target_type": "pmi"
+  }
+]

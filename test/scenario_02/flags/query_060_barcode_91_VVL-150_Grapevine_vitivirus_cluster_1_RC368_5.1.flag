@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Vitivirus gammavitis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "pmi"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Tetranychus marianae",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Tetranychus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Tetranychus",
+    "target_type": "pmi"
+  }
+]
