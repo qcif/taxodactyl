@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Coptotermes acinaciformis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Rhinotermitidae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Rhinotermitidae",
+    "target_type": "pmi"
+  }
+]

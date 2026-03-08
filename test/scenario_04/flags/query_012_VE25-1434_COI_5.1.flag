@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Dohrniphora cornuta",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Megaselia scalaris",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "NA",
+    "target": "Phoridae",
+    "target_type": "pmi"
+  }
+]

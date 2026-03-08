@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Luthrodes pandava",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "pmi"
+  }
+]

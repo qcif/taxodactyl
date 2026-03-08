@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Pseudococcus longispinus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Pseudococcus nr. microadonidum TM-2009",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Pseudococcus longispinus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "NA",
+    "target": "Pseudococcidae",
+    "target_type": "pmi"
+  }
+]

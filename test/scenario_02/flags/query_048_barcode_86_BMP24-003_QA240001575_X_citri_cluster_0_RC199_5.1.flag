@@ -1,0 +1,32 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Xanthomonas axonopodis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Xanthomonas citri",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Xanthomonas sp. WG16",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Xanthomonas citri",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Xanthomonas citri",
+    "target_type": "pmi"
+  }
+]

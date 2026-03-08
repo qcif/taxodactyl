@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Argentina anserina",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Crinivirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Crinivirus",
+    "target_type": "pmi"
+  }
+]

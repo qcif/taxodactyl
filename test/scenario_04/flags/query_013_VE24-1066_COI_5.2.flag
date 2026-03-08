@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Aphis spiraecola",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Aphididae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Aphididae",
+    "target_type": "pmi"
+  }
+]

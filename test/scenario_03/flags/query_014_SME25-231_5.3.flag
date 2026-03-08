@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Myzus persicae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Aphididae",
+    "target_type": "pmi"
+  }
+]

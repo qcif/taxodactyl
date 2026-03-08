@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Citrus sinensis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Citrus x limon",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Candidatus Liberibacter",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Candidatus Liberibacter",
+    "target_type": "pmi"
+  }
+]
