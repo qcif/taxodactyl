@@ -362,8 +362,8 @@ function App() {
 
             {isFastaError && (
               <p className="mt-2 mb-0">
-                Please fix this manually in your FASTA file and re-upload it to continue
-                validation. If you include sequence in your CSV file, fix CSAV file and re-upload it.
+                Please fix this manually in your CSV/FASTA file and upload again to continue
+                validation.
               </p>
             )}
 
