@@ -247,13 +247,13 @@ PARAMS = {
         'fasta_min_length',
         namespace='inputs',
         cli_name='fasta-min-length',
-        env_name='FASTA_MIN_LENGTH_NT',
+        env_name='FASTA_MIN_LENGTH',
     ),
     'fasta_max_length': IntMapping(
         'fasta_max_length',
         namespace='inputs',
         cli_name='fasta-max-length',
-        env_name='FASTA_MAX_LENGTH_NT',
+        env_name='FASTA_MAX_LENGTH',
     ),
 
     # Input metadata
