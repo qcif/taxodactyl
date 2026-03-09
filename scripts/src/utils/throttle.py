@@ -92,7 +92,7 @@ class Throttle:
         self.backoff_factor = endpoint.backoff_factor
         self.db_path = (
             config.throttle_sqlite_global_path
-            if self.endpoint.global_rate_limit
+            if endpoint.global_rate_limit
             else config.throttle_sqlite_path
         )
         self.name = endpoint.name
