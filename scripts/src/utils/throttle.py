@@ -190,6 +190,8 @@ class Throttle:
             for attempt in range(max_retries):
                 try:
                     with self._get_connection() as conn:
+                        conn.execute("PRAGMA journal_mode=WAL;")
+                        conn.commit()
                         conn.execute(f"""
                             CREATE TABLE IF NOT EXISTS {self.table_name} (
                                 {self.FIELD_NAME} INTEGER
@@ -209,7 +211,6 @@ class Throttle:
                                 " VALUES (1, ?, 0)",
                                 (self.rps,)
                             )
-                        conn.execute("PRAGMA journal_mode=WAL;")
                         conn.commit()
                         break
                 except sqlite3.OperationalError as e:
