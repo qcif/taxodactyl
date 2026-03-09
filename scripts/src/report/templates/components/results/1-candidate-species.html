@@ -156,7 +156,13 @@
         </th>
         <th class="text-center">
           Publications
-          {{ info_badge("Analysis of reference sequences' credibility based on supporting publications.") }}
+          {% set info_msg = "Analysis of reference sequence accession credibility based on supporting publications." %}
+          {% if candidates.species | length %}
+            {% set criteria_level = "STRONG" if candidates.strict else "MODERATE" %}
+            {% set info_msg = info_msg + " For this analysis, this includes only hits that meet the " + criteria_level + " candidate criteria." %}
+          {% endif %}
+
+          {{ info_badge(info_msg) }}
         </th>
       </thead>
       {% for candidate in candidates.species %}
