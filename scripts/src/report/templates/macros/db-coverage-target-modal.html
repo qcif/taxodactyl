@@ -94,7 +94,10 @@
                   {{ render_level_icon(flag_5_2.level) }}
                 </td>
                 <td class="px-3">
-                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Coverage of species in genus
+                  {% if context.data.genus %}
+                  <em>{{ context.data.genus }}</em>
+                  {% endif %}
                 </td>
               </tr>
 
@@ -106,7 +109,10 @@
                   {{ render_level_icon(flag_5_3.level) }}
                 </td>
                 <td class="px-3">
-                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Coverage of species in genus
+                  {% if context.data.genus %}
+                  <em>{{ context.data.genus }}</em>
+                  {% endif %}
                   in country of origin <strong>{{ context.metadata.country }}</strong>
                 </td>
               </tr>
@@ -203,7 +209,12 @@
           <hr>
 
           <div class="my-5" id="dbCovRelated-{{ context.target_id }}">
-            <h3>Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em></h3>
+            <h3>
+              Database coverage of species in genus
+              {% if context.data.genus %}
+              <em>{{ context.data.genus }}</em>
+              {% endif %}
+            </h3>
 
             <p class="alert alert-{{ flag_5_2.bs_class }}">
               <strong>Flag {{ flag_5_2.flag_id }}{{ flag_5_2.value }}:</strong>
@@ -327,7 +338,10 @@
 
           <div class="my-5" id="dbCovCountry-{{ context.target_id }}">
             <h3>
-              Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+              Database coverage of species in genus
+              {% if context.data.genus %}
+              <em>{{ context.data.genus }}</em>
+              {% endif %}
               that occur in country of origin <strong>{{ context.metadata.country }}</strong>
             </h3>
 

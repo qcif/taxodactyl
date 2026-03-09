@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "Stenotrophomonas maltophilia",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Xanthomonas gyrase B",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Xanthomonas gyrase B",
+    "target_type": "pmi"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Pulvinaria indica",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Pulvinaria",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Pulvinaria",
+    "target_type": "pmi"
+  }
+]

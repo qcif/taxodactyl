@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "Potexvirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "Potexvirus",
+    "target_type": "pmi"
+  }
+]

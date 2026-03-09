@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Luthrodes pandava",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Tymoviridae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Tymoviridae",
+    "target_type": "pmi"
+  }
+]

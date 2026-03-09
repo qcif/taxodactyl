@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Orius laevigatus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Orius horvathi",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Lygus pratensis",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "NA",
+    "target": "Miridae",
+    "target_type": "pmi"
+  }
+]

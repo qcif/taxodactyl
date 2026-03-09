@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Potyvirus cucurbitaflavitesselati",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "potyvirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "potyvirus",
+    "target_type": "pmi"
+  }
+]
