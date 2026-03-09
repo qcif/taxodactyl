@@ -23,6 +23,7 @@ class Endpoint:
     requests_per_second: Optional[int] = None
     requests_per_minute: Optional[int] = None
     backoff_factor: Optional[int] = None
+    global_rate_limit: bool = False
 
     def __post_init__(self):
         if not (self.requests_per_second or self.requests_per_minute):
@@ -37,11 +38,13 @@ class ENDPOINTS:
         name='gbif_slow',
         requests_per_second=1,
         backoff_factor=2,
+        global_rate_limit=True,
     )
     GBIF_FAST = Endpoint(
         name='gbif_fast',
         requests_per_second=10,
         backoff_factor=2,
+        global_rate_limit=True,
     )
     ENTREZ = Endpoint(
         name='entrez',
@@ -87,7 +90,11 @@ class Throttle:
             else self.PER_SECOND_BLOCK_MS
         )
         self.backoff_factor = endpoint.backoff_factor
-        self.db_path = config.throttle_sqlite_path
+        self.db_path = (
+            config.throttle_sqlite_global_path
+            if self.endpoint.global_rate_limit
+            else config.throttle_sqlite_path
+        )
         self.name = endpoint.name
         self.table_name = f"throttle_{self.name}"
         self.backoff_table = f"backoff_{self.name}"
