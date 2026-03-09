@@ -340,19 +340,40 @@
             "program": "${workspaceFolder}/scripts/dev/render_docs.py",
         },
         {
-            "name": "FastAPI server (uvicorn)",
+            "name": "Validate API server",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "app:app",
+                "main:app",
                 "--reload",
                 "--port",
-                "8002"
+                "8000"
             ],
-            "cwd": "${workspaceFolder}/cloudgene/downloader",
+            "env": {
+                "TAXONKIT_DB": "${env:HOME}/.taxonkit",
+            },
+            "cwd": "${workspaceFolder}/services/input_validation/api",
+            "windows": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/Scripts/python"
+            },
+            "linux": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
+            "osx": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Validate client server",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/services/input_validation/client/node_modules/.bin/vite",
+            "cwd": "${workspaceFolder}/services/input_validation/client",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
         },
         {
             "name": "Generate config default.yml",
