@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+import re
 
 from conftest import open_tab
 
@@ -35,9 +36,29 @@ def run_overview_tab(driver, report):
             By.CSS_SELECTOR,
             ".text-success svg.bi-check-circle-fill"
         )
-        component.toi_green_tick_first_row.assert_value(green_tick)
+        has_green_tick = len(green_tick) > 0
+        component.toi_green_tick_first_row.assert_value(has_green_tick)
 
     # Verify flag text in the last TOI row
-    if toi_rows:
-        component.flag_text.assert_value(
-            toi_rows[-1].text)
+    flag_text = overview_pane.text
+
+    component.overview_flag_text1.assert_value(flag_text)
+    component.overview_flag_text2.assert_value(flag_text)
+    component.overview_flag_text3.assert_value(flag_text)
+
+    def get_badge_count(label):
+        badge = overview_pane.find_element(
+            By.XPATH,
+            f".//span[contains(@class,'badge') and contains(text(),'{label}')]"
+        )
+        return int(re.search(r"\d+", badge.text).group())
+
+    component.matching_species_strong.assert_value(
+        get_badge_count("Strong")
+    )
+    component.matching_species_moderate.assert_value(
+        get_badge_count("Moderate")
+    )
+    component.matching_species_weak.assert_value(
+        get_badge_count("Weak")
+    )
