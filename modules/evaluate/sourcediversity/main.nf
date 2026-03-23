@@ -8,16 +8,13 @@ process EVALUATE_SOURCE_DIVERSITY {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder), path(candididate_json_file) // Query folder name and candidate JSON file
+    tuple val(query_folder), path(query_folder_path, stageAs: 'sources_input') // Query folder name and path
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder/$params.independent_sources_json_filename"), emit: independent_sources // Output: independent sources JSON
+    tuple val(query_folder), path("$query_folder"), emit: independent_sources_folders // Output: independent sources
     path("output/run.log"), emit: source_diversity_log // Output: log file
-
-    // ! CAM: I don't think 4.flag is being captured for this process?
-    // I can see aggregated_sources.json in the blob workdir but not 4.flag.
 
     script:
     def min_source_count_arg = params.min_source_count ? "--min-source-count ${params.min_source_count}" : ''
@@ -29,7 +26,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     # Ensure the query folder exists
     mkdir -p $query_folder
     # Move candidate JSON file into the query folder
-    mv $candididate_json_file $query_folder
+    mv sources_input/* $query_folder
     # Run the source diversity Python script
     python /app/scripts/p4_source_diversity.py \
     $query_folder \

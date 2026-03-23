@@ -55,7 +55,7 @@ workflow TAXODACTYL {
     CONFIGURE_ENVIRONMENT (
     )
 
-    ch_env_var_file = CONFIGURE_ENVIRONMENT.out
+    ch_env_var_file = CONFIGURE_ENVIRONMENT.out.first()
 
     // Prepare allowed loci file channel (or optional placeholder if not provided)
     // This is required on Azure Batch because the file does not exist remotely
@@ -81,9 +81,11 @@ workflow TAXODACTYL {
             ch_metadata,
             VALIDATE_INPUT.out.ready
         )
-        ch_hits = BOLD_SEARCH.out.hits
+        ch_hits_query_folders = BOLD_SEARCH.out.hits
+            .flatten()
+            .map { folder -> [folder.name, folder] }
 
-        ch_taxonomy_file = BOLD_SEARCH.out.taxonomy
+        ch_taxonomy_file = BOLD_SEARCH.out.taxonomy.first()
     } else {
         // BLAST search branch - use mock or real BLAST based on params.mock_blast
         if (params.mock_blast && params.blast_xml) {
@@ -110,10 +112,12 @@ workflow TAXODACTYL {
             ch_sequences,
             ch_metadata
         )
-        ch_hits = EXTRACT_HITS.out.hits
+        ch_hits_query_folders = EXTRACT_HITS.out.hits_query_folders
+            .flatten()
+            .map { folder -> [folder.name, folder] }
 
         BLAST_BLASTDBCMD (
-            EXTRACT_HITS.out.accessions
+            EXTRACT_HITS.out.hits_accessions
         )
 
         EXTRACT_TAXONOMY (
@@ -123,45 +127,18 @@ workflow TAXODACTYL {
             ch_metadata
         )
 
-        ch_taxonomy_file = EXTRACT_TAXONOMY.out.taxonomy
+        ch_taxonomy_file = EXTRACT_TAXONOMY.out.taxonomy.first()
 
     }
 
-    // Prepare hits for candidate extraction
-    ch_hits_to_filter = ch_hits
-        .flatten()
-        .map { file-> [file.parent.name, file] }
-        .groupTuple()
-        // .view()
-        .map { folder, files -> 
-            // Handle cases where FASTA file may be missing (no hits found)
-            def jsonFile = files.find { file -> file.name.endsWith('.json') }
-            def fastaFile = files.find { file -> file.name.endsWith('.fasta') }
-
-
-            // If no FASTA file exists, create an empty placeholder in a work folder
-            if (fastaFile == null) {
-                fastaFile = "${workflow.workDir}/${params.hits_fasta_filename}"
-                new File(fastaFile).createNewFile()      
-            }
-
-            [folder, jsonFile, fastaFile]
-        }
-
     // Extract candidate sequences for further analysis
-
-    // ! CAM: channels seem to break down from here, it seems like only
-    // query_001 is being channelled to remaining processes? I don't see
-    // query_002+ being allocated to any process from hereon.
-
     EXTRACT_CANDIDATES (
         ch_env_var_file,
-        ch_hits_to_filter,
+        ch_hits_query_folders,
         ch_taxonomy_file,
         ch_sequences,
         ch_metadata
     )
-
 
     // Prepare query sequences for alignment
     ch_query_fasta = ch_sequences
@@ -187,9 +164,9 @@ workflow TAXODACTYL {
     )
 
     // Filter candidates for source diversity evaluation 
-    ch_candidates_for_source_diversity_filtered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
+    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_folders_for_source_diversity
         .filter { tuple -> 
-            def (folder, countFile, candidateJsonFile) = tuple
+            def (folder, countFile, queryFolder) = tuple
             def count = countFile.text.trim().toInteger()
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
@@ -198,47 +175,34 @@ workflow TAXODACTYL {
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
         ch_env_var_file,
-        ch_candidates_for_source_diversity_filtered,
+        ch_candidates_folders_for_source_diversity,
         ch_sequences,
         ch_metadata
     )
 
-    // Evaluate database coverage for candidates
-    EVALUATE_DATABASE_COVERAGE (
-        ch_env_var_file,
-        EXTRACT_CANDIDATES.out.candidates_for_db_coverage,
-        ch_sequences,
-        ch_metadata
-    )
-
-    // Prepare hits for report
-    ch_hits_for_report = ch_hits.flatten()
-        .map { file-> [file.parent.name, file.parent] }
-        .groupTuple()
-        .map { folder, files -> [folder, files[0] ]}
-
-    // Prepare candidates for report
-    ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_for_db_coverage
-        .map { folderVal, filePath -> [folderVal, filePath.parent] }  
-
-    // Dump pipeline parameters to JSON for report
-    ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
-
-    // Prepare mock source diversity for cases with 0 or >3 candidates
-    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity_all
-        .filter { 
-            tuple -> 
-            def (folder, countFile, candidateJsonFile) = tuple
+    // Prepare candidates folders for cases with 0 or >3 candidates
+    // Combine with independent sources folders from source diversity evaluation
+    ch_independent_sources_folders = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
+    ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_folders_for_source_diversity
+        .filter { tuple -> 
+            def (folder, countFile, queryFolder) = tuple
             def count = countFile.text.trim().toInteger()
             return count == 0 || count > 3 
             }
-        .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
+        .map { tuple -> [tuple[0], tuple[2]] }
+        .concat(ch_independent_sources_folders)
+        .map { folderVal, folderPath -> [folderVal, folderPath] } 
+     
+    // Evaluate database coverage for candidates
+    EVALUATE_DATABASE_COVERAGE (
+        ch_env_var_file,
+        ch_query_folders_for_db_coverage,
+        ch_sequences,
+        ch_metadata
+    )
 
-    // Combine real and mock source diversity for report
-    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources
-        .concat(ch_mock_source_diversity)
-        .map { folderVal, filePath -> [folderVal, filePath.parent] } 
-
+    // Dump pipeline parameters to JSON for report
+    ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
 
     // Collect software version information for report
     if (params.db_type == 'bold') {
@@ -263,14 +227,12 @@ workflow TAXODACTYL {
         )
         
     // Combine all files needed for the final report
-    ch_files_for_report = ch_hits_for_report
+    ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.candidates_for_report
         .combine(FASTME.out.nwk, by: 0)
-        .combine(ch_candidates_for_report, by: 0) 
-        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_for_alternative_report, by: 0)
-        .combine(ch_source_diversity_for_report, by: 0)
-            .combine(ch_collated_versions)
-            .combine(ch_params_json)
-            .combine(ch_workflow_timestamp)
+        .combine(ch_collated_versions)
+        .combine(ch_params_json)
+        .combine(ch_workflow_timestamp)
+
          
     // Generate the final report
     REPORT (
@@ -310,14 +272,28 @@ workflow TAXODACTYL {
     ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
     ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
     ch_html_report = REPORT.out.html_report
+    ch_candidates_for_tests = EXTRACT_CANDIDATES.out.candidates_folders_for_tests
+
+    // Print labeled channel contents for debugging
+    ch_hits_query_folders.view { "ch_hits_query_folders: ${it}" }
+    ch_candidates_for_tests.view { "ch_candidates_for_tests: ${it}" }
+    ch_db_coverage_json.view { "ch_db_coverage_json: ${it}" }
+    ch_db_coverage_flags.view { "ch_db_coverage_flags: ${it}" }
+    ch_db_coverage_maps.view { "ch_db_coverage_maps: ${it}" }
+    ch_independent_sources_folders.view { "ch_independent_sources_folders: ${it}" }
+    ch_homology_trees.view { "ch_homology_trees: ${it}" }
+    ch_html_report.view { "ch_html_report: ${it}" }
+    ch_collated_versions.view { "ch_collated_versions: ${it}" }
+    ch_params_json.view { "ch_params_json: ${it}" }
+    ch_workflow_timestamp.view { "ch_workflow_timestamp: ${it}" }
 
     emit:
-    ch_hits_for_report
-    ch_candidates_for_report
+    ch_hits_query_folders
+    ch_candidates_for_tests
     ch_db_coverage_json
     ch_db_coverage_flags
     ch_db_coverage_maps
-    ch_source_diversity_for_report
+    ch_independent_sources_folders
     ch_homology_trees
     ch_html_report
     ch_collated_versions

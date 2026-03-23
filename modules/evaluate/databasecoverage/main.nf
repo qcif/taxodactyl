@@ -8,13 +8,12 @@ process EVALUATE_DATABASE_COVERAGE {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder), path(candidate_json_file) // Query folder name and candidate JSON file
+    tuple val(query_folder), path(query_folder_path, stageAs: 'db_coverage_input') // Query folder name and path
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder),
-        path("$query_folder"), emit: db_coverage_for_alternative_report // Output: query folder with results
+    tuple val(query_folder), path("$query_folder"), emit: candidates_for_report // Output: query folder with results
     tuple val(query_folder),
         path("$query_folder/db_coverage.json"), emit: db_coverage_json // Output: db_coverage.json file
     tuple val(query_folder),
@@ -43,7 +42,7 @@ process EVALUATE_DATABASE_COVERAGE {
     # Ensure the query folder exists
     mkdir -p $query_folder
     # Move candidate JSON file into the query folder
-    mv $candidate_json_file $query_folder
+    mv db_coverage_input/* $query_folder
     # Run the database coverage Python script
     python /app/scripts/p5_db_coverage.py \
         $query_folder \
