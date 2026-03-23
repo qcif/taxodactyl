@@ -8,25 +8,17 @@ process EXTRACT_CANDIDATES {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder), path(hits_json_file), path(hits_fasta_file) // Query folder, hits JSON, and hits FASTA
+    tuple val(query_folder), path(hits_folder, stageAs: 'hits_input') // Query folder name and hits folder
     path(taxonomy_file) // Taxonomy file
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Metadata file
 
     output:
     tuple val(query_folder), path("$query_folder/candidates_count.txt"),
-        path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_source_diversity_all // Output for source diversity
+        path("$query_folder"), emit: candidates_folders_for_source_diversity // Output for source diversity
     tuple val(query_folder), path("$query_folder/$params.candidates_phylogeny_fasta_filename"),
         emit: candidates_for_alignment // Output for alignment
-    tuple val(query_folder), path("$query_folder/$params.candidates_json_filename"), emit: candidates_for_db_coverage // Output for DB coverage
-    path("$query_folder/1.flag") // Flag file
-    path("$query_folder/2.flag"), optional: true // Optional flag file
-
-    // ! CAM: What about 7.flag?
-
-    path("$query_folder/$params.candidates_csv_filename") // Candidates CSV
-    path("$query_folder/$params.candidates_fasta_filename") // Candidates FASTA
-    path("$query_folder/$params.boxplot_img_filename"), optional: true // Optional boxplot image
+    tuple val(query_folder), path("$query_folder"), emit: candidates_folders_for_tests
     path("output/run.log"),    emit: extract_candidates_log // Output run log
     
     publishDir "${params.outdir}", mode: 'copy',
@@ -56,12 +48,8 @@ process EXTRACT_CANDIDATES {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Move hits files into the query folder
-    mv $hits_json_file $query_folder/
-    # Only move FASTA file if it exists (may be missing when no hits found)
-    if [ -f "$hits_fasta_file" ]; then
-        mv $hits_fasta_file $query_folder/
-    fi
+    # Copy hits files from the staged hits folder into the query folder
+    mv hits_input/* $query_folder/ 
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \
