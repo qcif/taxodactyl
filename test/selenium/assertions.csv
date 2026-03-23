@@ -11,3 +11,15 @@ overview_tab,overview_flag_text3,,Flag 7NA,Flag 7NA
 overview_tab,matching_species_strong,int,2,0
 overview_tab,matching_species_moderate,int,10,0
 overview_tab,matching_species_weak,int,22,230
+toi_tab,toi_flag_text,,Flag 2A,Flag 2B
+toi_tab,toi_outcome,,At least one of the taxa of interest,None of the taxa of interest
+toi_tab,toi_reasoning,,Taxon of interest detected,Taxon of interest NOT detected
+toi_tab,toi_number_of_rows,int,1,1
+toi_tab,toi_match,bool,TRUE,FALSE
+toi_tab,toi,list,Drosophila simulans,Eupodidae
+toi_tab,match_rank,list,species,
+toi_tab,match_taxon,list,Drosophila simulans,
+toi_tab,match_species,list,Drosophila simulans,
+toi_tab,match_accession,list,KC244283,
+toi_tab,match_identity,list,100,
+toi_tab,database_coverage,list,,
