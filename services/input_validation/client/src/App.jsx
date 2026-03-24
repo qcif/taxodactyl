@@ -49,7 +49,8 @@ function App() {
     setIsValidating(true);
     
     try{
-      const res = await fetch("http://127.0.0.1:8000/validate", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${apiUrl}/validate`, {
         method: "POST",
         body: formData
       });
