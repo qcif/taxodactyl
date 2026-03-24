@@ -14,12 +14,19 @@ process EXTRACT_CANDIDATES {
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder/candidates_count.txt"),
-        path("$query_folder"), emit: candidates_folders_for_source_diversity // Output for source diversity
-    tuple val(query_folder), path("$query_folder/$params.candidates_phylogeny_fasta_filename"),
-        emit: candidates_for_alignment // Output for alignment
-    tuple val(query_folder), path("$query_folder"), emit: candidates_folders_for_tests
+    tuple val(query_folder), 
+        path("$query_folder/candidates_count.txt"), emit: candidates_count_files // Output for source diversity
+    tuple val(query_folder), 
+        path("$query_folder/$params.candidates_phylogeny_fasta_filename"), emit: candidates_for_alignment_files // Output for alignment
     path("output/run.log"),    emit: extract_candidates_log // Output run log
+    path("$query_folder/1.flag")
+    path("$query_folder/2.flag")
+    path("$query_folder/7.flag")
+    path("$query_folder/$params.candidates_fasta_filename")
+    path("$query_folder/$params.candidates_csv_filename")
+    path("$query_folder/$params.candidates_json_filename")
+    path("$query_folder/$params.boxplot_img_filename"), optional: true
+
     
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename" // Publish phylogeny FASTA
@@ -48,8 +55,12 @@ process EXTRACT_CANDIDATES {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Copy hits files from the staged hits folder into the query folder
-    mv hits_input/* $query_folder/ 
+    # Symlink hits files from the staged input folder into the query folder
+    # to avoid mutating upstream process outputs and avoid duplicate copies.
+    for item in hits_input/*; do
+        [ -e "\$item" ] || continue
+        ln -s "\$(realpath "\$item")" "$query_folder/"
+    done
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
     $query_folder \

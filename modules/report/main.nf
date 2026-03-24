@@ -43,12 +43,11 @@ process REPORT {
     mkdir -p ${query_folder}
     # Move tree file into the query folder with the correct name
     mv tree.nwk ${query_folder}/$params.tree_nwk_filename
-    # Move results into the query folder and clean up
-    mv files_for_report/* ${query_folder}
-    rm -rf files_for_report
-    echo "FILES"
-    ls ${query_folder}
-    echo "FILES"
+    # Symlink staged report inputs into the query folder to keep upstream outputs intact.
+    for item in files_for_report/*; do
+        [ -e "\$item" ] || continue
+        ln -s "\$(realpath "\$item")" "${query_folder}/"
+    done
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             ${query_folder} \

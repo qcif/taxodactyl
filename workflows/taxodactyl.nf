@@ -112,9 +112,14 @@ workflow TAXODACTYL {
             ch_sequences,
             ch_metadata
         )
-        ch_hits_query_folders = EXTRACT_HITS.out.hits_query_folders
+        
+        ch_hits_query_folders = EXTRACT_HITS.out.hits_files
             .flatten()
-            .map { folder -> [folder.name, folder] }
+            .map { file-> [file.parent.name, file] }
+            .groupTuple()
+            .map { folder, files -> 
+                [folder, files[0].parent]
+            }
 
         BLAST_BLASTDBCMD (
             EXTRACT_HITS.out.hits_accessions
@@ -146,7 +151,7 @@ workflow TAXODACTYL {
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
     // Combine candidate and query sequences for alignment  
-    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment
+    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment_files
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
 
     ch_seqs_for_alignment = ch_candidates_for_join
@@ -164,13 +169,13 @@ workflow TAXODACTYL {
     )
 
     // Filter candidates for source diversity evaluation 
-    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_folders_for_source_diversity
+    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_count_files
         .filter { tuple -> 
-            def (folder, countFile, queryFolder) = tuple
+            def (folder, countFile) = tuple
             def count = countFile.text.trim().toInteger()
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
-        .map { tuple -> [tuple[0], tuple[2]] }
+        .map { tuple -> [tuple[0], tuple[1].parent] }
     
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
@@ -182,14 +187,17 @@ workflow TAXODACTYL {
 
     // Prepare candidates folders for cases with 0 or >3 candidates
     // Combine with independent sources folders from source diversity evaluation
-    ch_independent_sources_folders = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
-    ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_folders_for_source_diversity
+    ch_independent_sources_folders = EVALUATE_SOURCE_DIVERSITY.out.independent_sources
+            .map { folder, files -> 
+                [folder, files[0].parent]
+            }
+    ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_count_files
         .filter { tuple -> 
-            def (folder, countFile, queryFolder) = tuple
+            def (folder, countFile) = tuple
             def count = countFile.text.trim().toInteger()
             return count == 0 || count > 3 
             }
-        .map { tuple -> [tuple[0], tuple[2]] }
+        .map { tuple -> [tuple[0], tuple[1].parent] }
         .concat(ch_independent_sources_folders)
         .map { folderVal, folderPath -> [folderVal, folderPath] } 
      
@@ -201,104 +209,95 @@ workflow TAXODACTYL {
         ch_metadata
     )
 
-    // Dump pipeline parameters to JSON for report
-    ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
+    // // Dump pipeline parameters to JSON for report
+    // ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
 
-    // Collect software version information for report
-    if (params.db_type == 'bold') {
+    // // Collect software version information for report
+    // if (params.db_type == 'bold') {
 
-        ch_versions = MAFFT_ALIGN.out.versions
-            .mix(FASTME.out.versions)
+    //     ch_versions = MAFFT_ALIGN.out.versions
+    //         .mix(FASTME.out.versions)
 
-    } else {
+    // } else {
 
-        ch_versions = ch_blast_versions
-            .mix(BLAST_BLASTDBCMD.out.versions)
-            .mix(MAFFT_ALIGN.out.versions)
-            .mix(FASTME.out.versions)
+    //     ch_versions = ch_blast_versions
+    //         .mix(BLAST_BLASTDBCMD.out.versions)
+    //         .mix(MAFFT_ALIGN.out.versions)
+    //         .mix(FASTME.out.versions)
 
-    }
+    // }
 
-    ch_collated_versions = softwareVersionsToYAML(ch_versions)
-        .collectFile(
-            name:  'software_versions.yml',
-            sort: true,
-            newLine: true
-        )
+    // ch_collated_versions = softwareVersionsToYAML(ch_versions)
+    //     .collectFile(
+    //         name:  'software_versions.yml',
+    //         sort: true,
+    //         newLine: true
+    //     )
         
-    // Combine all files needed for the final report
-    ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.candidates_for_report
-        .combine(FASTME.out.nwk, by: 0)
-        .combine(ch_collated_versions)
-        .combine(ch_params_json)
-        .combine(ch_workflow_timestamp)
+    // // Combine all files needed for the final report
+    // ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.candidates_for_report
+    //     .combine(FASTME.out.nwk, by: 0)
+    //     .combine(ch_collated_versions)
+    //     .combine(ch_params_json)
+    //     .combine(ch_workflow_timestamp)
 
          
-    // Generate the final report
-    REPORT (
-        ch_env_var_file,
-        ch_files_for_report,
-        ch_taxonomy_file,
-        ch_metadata,
-        ch_sequences
-    )
+    // // Generate the final report
+    // REPORT (
+    //     ch_env_var_file,
+    //     ch_files_for_report,
+    //     ch_taxonomy_file,
+    //     ch_metadata,
+    //     ch_sequences
+    // )
 
-    // Collect all run.log files from processes using p\d_ Python scripts
-    ch_all_logs = VALIDATE_INPUT.out.validation_log
-        .mix(EXTRACT_HITS.out.extract_hits_log)
-        .mix(EXTRACT_CANDIDATES.out.extract_candidates_log)
-        .mix(EVALUATE_SOURCE_DIVERSITY.out.source_diversity_log)
-        .mix(EVALUATE_DATABASE_COVERAGE.out.db_coverage_log)
-        .mix(REPORT.out.report_log)
+    // // Collect all run.log files from processes using p\d_ Python scripts
+    // ch_all_logs = VALIDATE_INPUT.out.validation_log
+    //     .mix(EXTRACT_HITS.out.extract_hits_log)
+    //     .mix(EXTRACT_CANDIDATES.out.extract_candidates_log)
+    //     .mix(EVALUATE_SOURCE_DIVERSITY.out.source_diversity_log)
+    //     .mix(EVALUATE_DATABASE_COVERAGE.out.db_coverage_log)
+    //     .mix(REPORT.out.report_log)
     
-    // Add BOLD_SEARCH log if BOLD is used
-    if (params.db_type == 'bold') {
-        ch_all_logs = ch_all_logs.mix(BOLD_SEARCH.out.bold_search_log)
-    } else {
-        // Add EXTRACT_TAXONOMY log if BLAST is used
-        ch_all_logs = ch_all_logs.mix(EXTRACT_TAXONOMY.out.extract_taxonomy_log)
-    }
+    // // Add BOLD_SEARCH log if BOLD is used
+    // if (params.db_type == 'bold') {
+    //     ch_all_logs = ch_all_logs.mix(BOLD_SEARCH.out.bold_search_log)
+    // } else {
+    //     // Add EXTRACT_TAXONOMY log if BLAST is used
+    //     ch_all_logs = ch_all_logs.mix(EXTRACT_TAXONOMY.out.extract_taxonomy_log)
+    // }
     
-    ch_all_logs = ch_all_logs
-        .map { file -> file.text + '\n---------\n' }
-        .collectFile(name: 'run.log', newLine: false)
+    // ch_all_logs = ch_all_logs
+    //     .map { file -> file.text + '\n---------\n' }
+    //     .collectFile(name: 'run.log', newLine: false)
 
-    PREPARE_LOG (
-        ch_all_logs
-    )
+    // PREPARE_LOG (
+    //     ch_all_logs
+    // )
 
-    ch_homology_trees = FASTME.out.nwk
-    ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
-    ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
-    ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
-    ch_html_report = REPORT.out.html_report
-    ch_candidates_for_tests = EXTRACT_CANDIDATES.out.candidates_folders_for_tests
+    // ch_hits_for_report = ch_hits_query_folders
+    // ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_folders_for_tests
+    // ch_homology_trees = FASTME.out.nwk
+    // ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
+    // ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
+    // ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
+    // ch_source_diversity_for_report = ch_independent_sources_folders
+    // ch_html_report = REPORT.out.html_report
 
-    // Print labeled channel contents for debugging
-    ch_hits_query_folders.view { "ch_hits_query_folders: ${it}" }
-    ch_candidates_for_tests.view { "ch_candidates_for_tests: ${it}" }
-    ch_db_coverage_json.view { "ch_db_coverage_json: ${it}" }
-    ch_db_coverage_flags.view { "ch_db_coverage_flags: ${it}" }
-    ch_db_coverage_maps.view { "ch_db_coverage_maps: ${it}" }
-    ch_independent_sources_folders.view { "ch_independent_sources_folders: ${it}" }
-    ch_homology_trees.view { "ch_homology_trees: ${it}" }
-    ch_html_report.view { "ch_html_report: ${it}" }
-    ch_collated_versions.view { "ch_collated_versions: ${it}" }
-    ch_params_json.view { "ch_params_json: ${it}" }
-    ch_workflow_timestamp.view { "ch_workflow_timestamp: ${it}" }
 
-    emit:
-    ch_hits_query_folders
-    ch_candidates_for_tests
-    ch_db_coverage_json
-    ch_db_coverage_flags
-    ch_db_coverage_maps
-    ch_independent_sources_folders
-    ch_homology_trees
-    ch_html_report
-    ch_collated_versions
-    ch_params_json
-    ch_workflow_timestamp
+
+    // emit:
+    // ch_hits_for_report
+    // ch_candidates_for_report
+    // ch_db_coverage_json
+    // ch_db_coverage_flags
+    // ch_db_coverage_maps
+    // ch_source_diversity_for_report
+    // ch_homology_trees
+    // ch_html_report
+    // ch_collated_versions
+    // ch_params_json
+    // ch_workflow_timestamp
 
 }
 

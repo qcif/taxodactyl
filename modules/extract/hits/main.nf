@@ -13,7 +13,9 @@ process EXTRACT_HITS {
 
     output:
     path(params.accessions_filename), emit: hits_accessions // Output: accessions file
-    path("query_*"), emit: hits_query_folders // Output: hits folders
+    tuple path("query_*/$params.hits_fasta_filename"), 
+        path("query_*/$params.hits_json_filename"), 
+        path("query_*/query_title.txt"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
     path("output/run.log"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
@@ -30,6 +32,16 @@ process EXTRACT_HITS {
         --query-fasta ${sequences_file} \
         --metadata-csv ${metadata_file} \
         --output-dir ./ \
-        ${blast_max_target_seqs_arg} \
+        ${blast_max_target_seqs_arg}
+
+    # Ensure each query folder has a FASTA file so downstream matching/publishing is stable.
+    shopt -s nullglob
+    for qdir in query_*/; do
+        [ -d "\$qdir" ] || continue
+        if [[ ! -f "\${qdir}${params.hits_fasta_filename}" ]]; then
+            : > "\${qdir}${params.hits_fasta_filename}"
+        fi
+    done
+    
     """
 }
