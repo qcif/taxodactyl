@@ -41,8 +41,11 @@ process EVALUATE_DATABASE_COVERAGE {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Move candidate JSON file into the query folder
-    mv db_coverage_input/* $query_folder
+    # Symlink staged inputs into the query folder to keep upstream outputs intact.
+    for item in db_coverage_input/*; do
+        [ -e "\$item" ] || continue
+        ln -s "\$(realpath "\$item")" "$query_folder/"
+    done
     # Run the database coverage Python script
     python /app/scripts/p5_db_coverage.py \
         $query_folder \

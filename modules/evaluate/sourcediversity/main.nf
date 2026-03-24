@@ -13,7 +13,9 @@ process EVALUATE_SOURCE_DIVERSITY {
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder"), emit: independent_sources_folders // Output: independent sources
+    tuple val(query_folder), 
+        path("$query_folder/$params.independent_sources_json_filename"),
+        path("$query_folder/4.flag"), emit: independent_sources // Output: independent sources
     path("output/run.log"), emit: source_diversity_log // Output: log file
 
     script:
@@ -25,8 +27,11 @@ process EVALUATE_SOURCE_DIVERSITY {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Move candidate JSON file into the query folder
-    mv sources_input/* $query_folder
+    # Symlink staged inputs into the query folder to keep upstream outputs intact.
+    for item in sources_input/*; do
+        [ -e "\$item" ] || continue
+        ln -s "\$(realpath "\$item")" "$query_folder/"
+    done
     # Run the source diversity Python script
     python /app/scripts/p4_source_diversity.py \
     $query_folder \
