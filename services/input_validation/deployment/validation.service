@@ -1,0 +1,17 @@
+[Unit]
+Description=Taxodactyl Input Validation (API + Client)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/taxodactyl/services/input_validation
+ExecStartPre=/usr/bin/npm run build --prefix client
+ExecStart=/opt/taxodactyl/services/input_validation/api/venv/bin/honcho start
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
