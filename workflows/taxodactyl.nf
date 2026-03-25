@@ -117,9 +117,9 @@ workflow TAXODACTYL {
             .flatten()
             .map { file-> [file.parent.name, file] }
             .groupTuple()
-            .map { folder, files -> 
-                [folder, files[0].parent]
-            }
+            // .map { folder, files -> 
+            //     [folder, files[0].parent]
+            // }
 
         BLAST_BLASTDBCMD (
             EXTRACT_HITS.out.hits_accessions
@@ -169,13 +169,13 @@ workflow TAXODACTYL {
     )
 
     // Filter candidates for source diversity evaluation 
-    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_count_files
+    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
         .filter { tuple -> 
-            def (folder, countFile) = tuple
+            def (folder, countFile, otherFiles) = tuple
             def count = countFile.text.trim().toInteger()
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
-        .map { tuple -> [tuple[0], tuple[1].parent] }
+        .map { tuple -> [tuple[0], tuple[2]] }
     
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
@@ -185,21 +185,38 @@ workflow TAXODACTYL {
         ch_metadata
     )
 
-    // Prepare candidates folders for cases with 0 or >3 candidates
-    // Combine with independent sources folders from source diversity evaluation
-    ch_independent_sources_folders = EVALUATE_SOURCE_DIVERSITY.out.independent_sources
-            .map { folder, files -> 
-                [folder, files[0].parent]
-            }
-    ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_count_files
-        .filter { tuple -> 
-            def (folder, countFile) = tuple
+    // // Prepare candidates folders for cases with 0 or >3 candidates
+    // // Combine with independent sources folders from source diversity evaluation
+    // ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+    //     .filter { tuple -> 
+    //         def (folder, countFile, otherFiles) = tuple
+    //         def count = countFile.text.trim().toInteger()
+    //         return count == 0 || count > 3 
+    //         }
+    //     .map { tuple -> [tuple[0], tuple[2]] }
+    //     .concat(EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders)
+    //     .map { folderVal, folderPath -> [folderVal, folderPath] } 
+        // Prepare mock source diversity for cases with 0 or >3 candidates
+    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+        .filter { 
+            tuple -> 
+            def (folder, countFile, otherFiles) = tuple
             def count = countFile.text.trim().toInteger()
             return count == 0 || count > 3 
             }
-        .map { tuple -> [tuple[0], tuple[1].parent] }
-        .concat(ch_independent_sources_folders)
-        .map { folderVal, folderPath -> [folderVal, folderPath] } 
+        .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
+
+    // Combine real and mock source diversity for report
+    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
+        .concat(ch_mock_source_diversity)
+        .map { folderVal, files -> [folderVal, files.flatten()] } 
+
+    ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+        .map { tuple -> [tuple[0], tuple[2]] }
+
+    ch_query_folders_for_db_coverage = ch_source_diversity_for_report
+        .combine(ch_candidates_files, by: 0)
+        .map { folderVal, files -> [folderVal, files.flatten()] }
      
     // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
@@ -235,7 +252,7 @@ workflow TAXODACTYL {
     //     )
         
     // // Combine all files needed for the final report
-    // ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.candidates_for_report
+    // ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.query_folders_for_report
     //     .combine(FASTME.out.nwk, by: 0)
     //     .combine(ch_collated_versions)
     //     .combine(ch_params_json)

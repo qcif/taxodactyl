@@ -8,12 +8,13 @@ process EVALUATE_DATABASE_COVERAGE {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder), path(query_folder_path, stageAs: 'db_coverage_input') // Query folder name and path
+    tuple val(query_folder), path(query_folder_path, stageAs: 'db_coverage_input/*') // Query folder name and path
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder"), emit: candidates_for_report // Output: query folder with results
+    tuple val(query_folder), path("$query_folder"), 
+        emit: query_folders_for_report // Output: query folder with results (that should include all relevant files and folders with errors)
     tuple val(query_folder),
         path("$query_folder/db_coverage.json"), emit: db_coverage_json // Output: db_coverage.json file
     tuple val(query_folder),
@@ -21,6 +22,7 @@ process EVALUATE_DATABASE_COVERAGE {
     tuple val(query_folder),
         path("$query_folder/map*png"), emit: db_coverage_maps, optional: true // Output: coverage map PNG files
     path("output/run.log"), emit: db_coverage_log // Output: log file
+    path("$query_folder/errors"), optional: true
     
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : '' // Set --bold flag if using BOLD database
@@ -41,11 +43,15 @@ process EVALUATE_DATABASE_COVERAGE {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Symlink staged inputs into the query folder to keep upstream outputs intact.
+    # Move staged inputs into the query folder to keep upstream outputs intact.
+    echo "FILES COVERAGE INPUT:"
+    ls db_coverage_input/
     for item in db_coverage_input/*; do
         [ -e "\$item" ] || continue
-        ln -s "\$(realpath "\$item")" "$query_folder/"
+        mv "\$item" "$query_folder/"
     done
+    echo "FILES COVERAGE QUERY FOLDER:"
+    ls "$query_folder"
     # Run the database coverage Python script
     python /app/scripts/p5_db_coverage.py \
         $query_folder \

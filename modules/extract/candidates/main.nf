@@ -8,24 +8,24 @@ process EXTRACT_CANDIDATES {
 
     input:
     path(env_var_file) // Environment variables file
-    tuple val(query_folder), path(hits_folder, stageAs: 'hits_input') // Query folder name and hits folder
+    tuple val(query_folder), path(hits_files, stageAs: 'hits_files/*') // Query folder name and hit files
     path(taxonomy_file) // Taxonomy file
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Metadata file
 
     output:
     tuple val(query_folder), 
-        path("$query_folder/candidates_count.txt"), emit: candidates_count_files // Output for source diversity
+        path("$query_folder/candidates_count.txt"), 
+        path("$query_folder/*"), emit: candidates_plus_count_files // Output for source diversity
     tuple val(query_folder), 
         path("$query_folder/$params.candidates_phylogeny_fasta_filename"), emit: candidates_for_alignment_files // Output for alignment
     path("output/run.log"),    emit: extract_candidates_log // Output run log
-    path("$query_folder/1.flag")
-    path("$query_folder/2.flag")
-    path("$query_folder/7.flag")
-    path("$query_folder/$params.candidates_fasta_filename")
-    path("$query_folder/$params.candidates_csv_filename")
-    path("$query_folder/$params.candidates_json_filename")
-    path("$query_folder/$params.boxplot_img_filename"), optional: true
+    // path("$query_folder/2.flag")
+    // path("$query_folder/7.flag")
+    // path("$query_folder/$params.candidates_fasta_filename")
+    // path("$query_folder/$params.candidates_csv_filename")
+    // path("$query_folder/$params.candidates_json_filename")
+    // path("$query_folder/$params.boxplot_img_filename"), optional: true
 
     
     publishDir "${params.outdir}", mode: 'copy',
@@ -55,11 +55,10 @@ process EXTRACT_CANDIDATES {
     source ${env_var_file}
     # Ensure the query folder exists
     mkdir -p $query_folder
-    # Symlink hits files from the staged input folder into the query folder
-    # to avoid mutating upstream process outputs and avoid duplicate copies.
-    for item in hits_input/*; do
+    # Move staged hit files into the query folder for processing.
+    for item in hits_files/*; do
         [ -e "\$item" ] || continue
-        ln -s "\$(realpath "\$item")" "$query_folder/"
+        mv "\$item" "$query_folder/"
     done
     # Run the candidate extraction Python script
     python /app/scripts/p3_assign_taxonomy.py \
