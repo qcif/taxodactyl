@@ -150,7 +150,7 @@ workflow TAXODACTYL {
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
     // Combine candidate and query sequences for alignment  
-    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment_files
+    ch_candidates_for_join = EXTRACT_CANDIDATES.out.candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
 
     ch_seqs_for_alignment = ch_candidates_for_join
@@ -168,7 +168,7 @@ workflow TAXODACTYL {
     )
 
     // Filter candidates for source diversity evaluation 
-    ch_candidates_folders_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+    ch_candidates_for_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
         .filter { tuple -> 
             def (folder, countFile, otherFiles) = tuple
             def count = countFile.text.trim().toInteger()
@@ -179,10 +179,21 @@ workflow TAXODACTYL {
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
         ch_env_var_file,
-        ch_candidates_folders_for_source_diversity,
+        ch_candidates_for_source_diversity,
         ch_sequences,
         ch_metadata
     )
+
+    // Prepare candidates folders for cases with 0 or >3 candidates
+    ch_candidates_without_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
+        .filter { tuple -> 
+            def (folder, countFile, otherFiles) = tuple
+            def count = countFile.text.trim().toInteger()
+            return count == 0 || count > params.max_candidates_for_analysis
+        }
+        .map { tuple -> [tuple[0], tuple[2]] }
+
+    def ch_next_error = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_next_error.ifEmpty([]) 
 
     // // Prepare candidates folders for cases with 0 or >3 candidates
     // // Combine with independent sources folders from source diversity evaluation
@@ -196,34 +207,34 @@ workflow TAXODACTYL {
     //     .concat(EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders)
     //     .map { folderVal, folderPath -> [folderVal, folderPath] } 
         // Prepare mock source diversity for cases with 0 or >3 candidates
-    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
-        .filter { 
-            tuple -> 
-            def (folder, countFile, otherFiles) = tuple
-            def count = countFile.text.trim().toInteger()
-            return count == 0 || count > 3 
-            }
-        .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
+    // ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+    //     .filter { 
+    //         tuple -> 
+    //         def (folder, countFile, otherFiles) = tuple
+    //         def count = countFile.text.trim().toInteger()
+    //         return count == 0 || count > 3 
+    //         }
+    //     .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
-    // Combine real and mock source diversity for report
-    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
-        .concat(ch_mock_source_diversity)
-        .map { folderVal, files -> [folderVal, files.flatten()] } 
+    // // Combine real and mock source diversity for report
+    // ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
+    //     .concat(ch_mock_source_diversity)
+    //     .map { folderVal, files -> [folderVal, files.flatten()] } 
 
-    ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_plus_count_files
-        .map { tuple -> [tuple[0], tuple[2]] }
+    // ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_plus_count_files
+    //     .map { tuple -> [tuple[0], tuple[2]] }
 
-    ch_query_folders_for_db_coverage = ch_source_diversity_for_report
-        .combine(ch_candidates_files, by: 0)
-        .map { folderVal, files -> [folderVal, files.flatten()] }
+    // ch_query_folders_for_db_coverage = ch_source_diversity_for_report
+    //     .combine(ch_candidates_files, by: 0)
+    //     .map { folderVal, files -> [folderVal, files.flatten()] }
      
-    // Evaluate database coverage for candidates
-    EVALUATE_DATABASE_COVERAGE (
-        ch_env_var_file,
-        ch_query_folders_for_db_coverage,
-        ch_sequences,
-        ch_metadata
-    )
+    // // Evaluate database coverage for candidates
+    // EVALUATE_DATABASE_COVERAGE (
+    //     ch_env_var_file,
+    //     ch_query_folders_for_db_coverage,
+    //     ch_sequences,
+    //     ch_metadata
+    // )
 
     // // Dump pipeline parameters to JSON for report
     // ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
