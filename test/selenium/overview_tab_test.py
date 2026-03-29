@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 import re
 
-from conftest import open_tab
+from utils import open_tab
 
 
 def get_badge_count(overview_pane, label):
