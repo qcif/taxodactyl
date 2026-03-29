@@ -11,6 +11,57 @@ overview_tab,overview_flag_text3,,Flag 7NA,Flag 7NA
 overview_tab,matching_species_strong,int,2,0
 overview_tab,matching_species_moderate,int,10,0
 overview_tab,matching_species_weak,int,22,230
+candidate_tab,tab_title,,Identification of candidate species,Identification of candidate species
+candidate_tab,candidate_flag_text,,Flag 1B,Flag 1E
+candidate_tab,strong_alginment_identity,float,98.5,98.5
+candidate_tab,moderate_alginment_identity,float,93.5,93.5
+candidate_tab,weak_alginment_identity,float,93.5,93.5
+candidate_tab,strong_hits,int,71,0
+candidate_tab,moderate_hits,int,218,0
+candidate_tab,weak_hits,int,211,500
+candidate_tab,lowest_hit,float,90.5,82.4
+candidate_tab,species,list,Drosophila simulans|Drosophila mauritiana,
+candidate_tab,no_of_hits,list,85|8,
+candidate_tab,top_identity,list,100|100,
+candidate_tab,median_identity,list,100|96.6,
+candidate_tab,min_identity,list,96.3|95.5,
+candidate_tab,top_e_value,list,0|0,
+candidate_tab,publication,list,39|1,
+candidate_tab,cmodal_title,list,Database coverage of Candidate Drosophila simulans|Database coverage of Candidate Drosophila mauritiana,
+candidate_tab,cmodal_flag_text1,list,5.1A|5.1A,
+candidate_tab,cmodal_record_count,list,144|6,
+candidate_tab,cmodal_record_text,list,with the given locus COI|with the given locus COI,
+candidate_tab,cmodal_flag_text2,list,5.2B|5.2B,
+candidate_tab,cmodal_species_count,list,594|595,
+candidate_tab,cmodal_species_total,list,1679|1680,
+candidate_tab,cmodal_min_bar_count,list,10|10,
+candidate_tab,cmodal_first_bar_species,list,Drosophila affinis|Drosophila affinis,
+candidate_tab,cmodal_first_bar_count,list,1162|1162,
+candidate_tab,cmodal_final_text,list,"A country of origin was not provided in the sample metadata, so this analysis could not be performed|A country of origin was not provided in the sample metadata, so this analysis could not be performed",
+candidate_tab,pmodal_title,list,Publications supporting taxonomic association - Drosophila simulans,
+candidate_tab,pmodal_source,list,39 Independent Sources|1 Independent Source,
+candidate_tab,pmodal_count,list,39|1,
+candidate_tab,bmodal_title,,BLAST search results,BLAST search results
+candidate_tab,bmodal_rank,int,1,1
+candidate_tab,bmodal_accession,,KC244283,MG314115
+candidate_tab,bmodal_subject,,"Drosophila simulans strain sm21 mitochondrion, complete genome","Eupodidae sp. BIOUG24235-D06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial"
+candidate_tab,bmodal_lenght,int,682,621
+candidate_tab,bmodal_identity,float,100,86.2
+candidate_tab,bmodal_bitscore,float,1352.4,549.579
+candidate_tab,bmodal_evalue,,0.00E+00,1.86E-151
+candidate_tab,bmodal_coverage,float,96.5,90.9
+candidate_tab,bmodal_alignment_text,bool,TRUE,TRUE
+candidate_tab,bmodal_char_more_than_10,bool,TRUE,TRUE
+candidate_tab,bmodal_domain,,No data,No data
+candidate_tab,bmodal_kingdom,,Metazoa,Metazoa
+candidate_tab,bmodal_phylum,,Arthropoda,Arthropoda
+candidate_tab,bmodal_class,,Insecta,Arachnida
+candidate_tab,bmodal_order,,Diptera,Trombidiformes
+candidate_tab,bmodal_family,,Drosophilidae,Eupodidae
+candidate_tab,bmodal_genus,,Drosophila,No data
+candidate_tab,bmodal_species,,Drosophila simulans,Eupodidae sp. BIOUG24235-D06
+candidate_tab,hmodal_title,,Homology Tree,
+candidate_tab,hmodal_min_node,min,5,
 toi_tab,toi_flag_text,,Flag 2A,Flag 2B
 toi_tab,toi_outcome,,At least one of the taxa of interest,None of the taxa of interest
 toi_tab,toi_reasoning,,Taxon of interest detected,Taxon of interest NOT detected

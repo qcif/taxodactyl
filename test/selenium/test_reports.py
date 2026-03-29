@@ -1,11 +1,10 @@
 
 from pathlib import Path
-from conftest import parse_csv
+from utils import parse_csv
 from sample_metadata_test import run_sample_modal
 from overview_tab_test import run_overview_tab
+from candidate_tab_test import run_candidate_tab
 from toi_tab_test import run_toi_tab
-
-
 import pytest
 
 
@@ -21,4 +20,5 @@ def test_reports(driver, report):
 
     run_sample_modal(driver, report)
     run_overview_tab(driver, report)
+    run_candidate_tab(driver, report)
     run_toi_tab(driver, report)
