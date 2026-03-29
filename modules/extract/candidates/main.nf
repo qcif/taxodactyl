@@ -16,9 +16,11 @@ process EXTRACT_CANDIDATES {
     output:
     tuple val(query_folder), 
         path("$query_folder/candidates_count.txt"), 
-        path("$query_folder/*"), emit: candidates_plus_count_files // Output for source diversity
+        path("$query_folder/*"), emit: candidates_for_source_diversity // Output for source diversity
     tuple val(query_folder), 
-        path("$query_folder/$params.candidates_phylogeny_fasta_filename"), emit: candidates_for_alignment_files // Output for alignment
+        path("$query_folder/*"), emit: candidates_files // Output for database coverage
+    tuple val(query_folder), 
+        path("$query_folder/$params.candidates_phylogeny_fasta_filename"), emit: candidates_for_alignment // Output for alignment
     path("output/run.log"),    emit: extract_candidates_log // Output run log
     // path("$query_folder/2.flag")
     // path("$query_folder/7.flag")

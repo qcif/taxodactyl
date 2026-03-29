@@ -13,8 +13,14 @@ process EVALUATE_SOURCE_DIVERSITY {
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder/*"), 
-        emit: independent_sources_folders // Output: independent sources (that should include all relevant files and folders with errors)
+    tuple val(query_folder), 
+        path("$query_folder/4.flag"), emit: independent_sources_flag // Output: independent sources flag
+    tuple val(query_folder), 
+        path("$query_folder/$independent_sources_json_filename"), emit: independent_sources_json // Output: independent sources JSON
+    tuple val(query_folder), 
+        path("$query_folder/errors/next.txt"), optional: true, emit: independent_sources_next_error // Output: independent sources errors
+    tuple val(query_folder), 
+        path("$query_folder/errors/*.json"), optional: true, emit: independent_sources_json_errors
     path("output/run.log"), emit: source_diversity_log // Output: log file
     // path("$query_folder/1.flag")
     // path("$query_folder/2.flag")
