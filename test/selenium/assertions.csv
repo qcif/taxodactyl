@@ -62,3 +62,15 @@ candidate_tab,bmodal_genus,,Drosophila,No data
 candidate_tab,bmodal_species,,Drosophila simulans,Eupodidae sp. BIOUG24235-D06
 candidate_tab,hmodal_title,,Homology Tree,
 candidate_tab,hmodal_min_node,min,5,
+toi_tab,toi_flag_text,,Flag 2A,Flag 2B
+toi_tab,toi_outcome,,At least one of the taxa of interest,None of the taxa of interest
+toi_tab,toi_reasoning,,Taxon of interest detected,Taxon of interest NOT detected
+toi_tab,toi_number_of_rows,int,1,1
+toi_tab,toi_match,bool,TRUE,FALSE
+toi_tab,toi,list,Drosophila simulans,Eupodidae
+toi_tab,match_rank,list,species,
+toi_tab,match_taxon,list,Drosophila simulans,
+toi_tab,match_species,list,Drosophila simulans,
+toi_tab,match_accession,list,KC244283,
+toi_tab,match_identity,list,100,
+toi_tab,database_coverage,list,,
