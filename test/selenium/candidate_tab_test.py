@@ -46,14 +46,18 @@ def open_modal_from_button(driver, button, attr):
     driver.execute_script("arguments[0].click();", button)
 
     target = button.get_attribute(attr)
-    modal_id = target.split("'")[1] if attr == "onclick" else target.replace("#", "")
+    modal_id = (
+        target.split("'")[1] if attr == "onclick" else target.replace("#", "")
+    )
 
     return wait.until(EC.visibility_of_element_located((By.ID, modal_id)))
 
 
 def close_modal(modal, driver):
     modal.find_element(By.CSS_SELECTOR, "button.btn-close").click()
-    WebDriverWait(driver, WAIT_TIMEOUT).until(EC.invisibility_of_element(modal))
+    WebDriverWait(driver, WAIT_TIMEOUT).until(
+        EC.invisibility_of_element(modal)
+    )
 
 
 def text(parent, by, selector):
@@ -454,66 +458,67 @@ def assert_classification_table(candidate_pane, component):
             target.assert_value(int(cells[2].text.strip()))
 
 
-def assert_species_table(component, species_data):
-    component.species.assert_value(species_data["species"])
-    component.no_of_hits.assert_value(species_data["no_of_hits"])
-    component.top_identity.assert_value(species_data["top_identity"])
-    component.median_identity.assert_value(species_data["median_identity"])
-    component.min_identity.assert_value(species_data["min_identity"])
-    component.top_e_value.assert_value(species_data["top_e_value"])
+def assert_species_table(table, species_data):
+    table.species.assert_value(species_data["species"])
+    table.no_of_hits.assert_value(species_data["no_of_hits"])
+    table.top_identity.assert_value(species_data["top_identity"])
+    table.median_identity.assert_value(species_data["median_identity"])
+    table.min_identity.assert_value(species_data["min_identity"])
+    table.top_e_value.assert_value(species_data["top_e_value"])
 
 
-def assert_coverage_modal_data(component, modal_data):
-    component.cmodal_title.assert_value(modal_data["title"])
-    component.cmodal_flag_text1.assert_value(modal_data["flag1"])
-    component.cmodal_record_count.assert_value(modal_data["record_count"])
-    component.cmodal_record_text.assert_value(modal_data["record_text"])
-    component.cmodal_flag_text2.assert_value(modal_data["flag2"])
-    component.cmodal_species_count.assert_value(modal_data["species_count"])
-    component.cmodal_species_total.assert_value(modal_data["species_total"])
-    component.cmodal_first_bar_species.assert_value(
-        modal_data["first_bar_species"])
-    component.cmodal_first_bar_count.assert_value(
-        modal_data["first_bar_count"])
-
-    for count in modal_data["min_bar_count"]:
-        assert int(count) >= 10, f"Expected bar count >= 10, got {count}"
-    component.cmodal_final_text.assert_value(modal_data["final_text"])
-
-
-def assert_publication_modal_data(component, modal_data):
-    component.pmodal_title.assert_value(modal_data["title"])
-    component.pmodal_source.assert_value(modal_data["source"])
-    component.pmodal_count.assert_value(modal_data["source_count"])
+def assert_coverage_modal_data(db_coverage, modal_data):
+    for i, candidate in enumerate(db_coverage.candidate):
+        candidate.title.assert_value([modal_data["title"][i]])
+        candidate.flag_text1.assert_value([modal_data["flag1"][i]])
+        candidate.record_count.assert_value([modal_data["record_count"][i]])
+        candidate.record_text.assert_value([modal_data["record_text"][i]])
+        candidate.flag_text2.assert_value([modal_data["flag2"][i]])
+        candidate.species_count.assert_value([modal_data["species_count"][i]])
+        candidate.species_total.assert_value([modal_data["species_total"][i]])
+        for count in modal_data["min_bar_count"]:
+            candidate.min_bar_count.assert_value(int(count))
+        candidate.first_bar_species.assert_value(
+            [modal_data["first_bar_species"][i]])
+        candidate.first_bar_count.assert_value(
+            [modal_data["first_bar_count"][i]])
+        candidate.final_text.assert_value([modal_data["final_text"][i]])
 
 
-def assert_blast_modal_data(component, blast_data):
-    component.bmodal_title.assert_value(blast_data["title"])
-    component.bmodal_rank.assert_value(int(blast_data["rank"]))
-    component.bmodal_accession.assert_value(blast_data["accession"])
-    component.bmodal_subject.assert_value(blast_data["subject"])
-    component.bmodal_lenght.assert_value(int(blast_data["length"]))
-    component.bmodal_identity.assert_value(float(blast_data["identity"]))
-    component.bmodal_bitscore.assert_value(float(blast_data["bitscore"]))
-    component.bmodal_evalue.assert_value(blast_data["evalue"])
-    component.bmodal_coverage.assert_value(float(blast_data["coverage"]))
-    component.bmodal_alignment_text.assert_value(str(
+def assert_publication_modal_data(pub_modal, modal_data):
+    for i, candidate in enumerate(pub_modal.candidates):
+        candidate.title.assert_value([modal_data["title"][i]])
+        candidate.source.assert_value([modal_data["source"][i]])
+        candidate.count.assert_value([modal_data["source_count"][i]])
+
+
+def assert_blast_modal_data(blast_modal, blast_data):
+    blast_modal.title.assert_value(blast_data["title"])
+    blast_modal.rank.assert_value(int(blast_data["rank"]))
+    blast_modal.accession.assert_value(blast_data["accession"])
+    blast_modal.subject.assert_value(blast_data["subject"])
+    blast_modal.length.assert_value(int(blast_data["length"]))
+    blast_modal.identity.assert_value(float(blast_data["identity"]))
+    blast_modal.bitscore.assert_value(float(blast_data["bitscore"]))
+    blast_modal.evalue.assert_value(blast_data["evalue"])
+    blast_modal.coverage.assert_value(float(blast_data["coverage"]))
+    blast_modal.alignment_text.assert_value(str(
         blast_data["alignment_text"]).upper())
-    component.bmodal_char_more_than_10.assert_value(str(
+    blast_modal.char_more_than_10.assert_value(str(
         blast_data["char_more_than_10"]).upper())
-    component.bmodal_domain.assert_value(blast_data["domain"])
-    component.bmodal_kingdom.assert_value(blast_data["kingdom"])
-    component.bmodal_phylum.assert_value(blast_data["phylum"])
-    component.bmodal_class.assert_value(blast_data["class"])
-    component.bmodal_order.assert_value(blast_data["order"])
-    component.bmodal_family.assert_value(blast_data["family"])
-    component.bmodal_genus.assert_value(blast_data["genus"])
-    component.bmodal_species.assert_value(blast_data["species"])
+    blast_modal.domain.assert_value(blast_data["domain"])
+    blast_modal.kingdom.assert_value(blast_data["kingdom"])
+    blast_modal.phylum.assert_value(blast_data["phylum"])
+    getattr(blast_modal, 'class').assert_value(blast_data["class"])
+    blast_modal.order.assert_value(blast_data["order"])
+    blast_modal.family.assert_value(blast_data["family"])
+    blast_modal.genus.assert_value(blast_data["genus"])
+    blast_modal.species.assert_value(blast_data["species"])
 
 
-def assert_homology_modal_data(component, homology_data):
-    component.hmodal_title.assert_value(homology_data["title"])
-    component.hmodal_min_node.assert_value(homology_data["min_node"])
+def assert_homology_modal_data(tree_modal, homology_data):
+    tree_modal.title.assert_value(homology_data["title"])
+    tree_modal.min_node.assert_value(homology_data["min_node"])
 
 
 def run_candidate_tab(driver, report):
@@ -532,13 +537,14 @@ def run_candidate_tab(driver, report):
         collect_species_and_modal_data(candidate_pane, driver)
     )
 
-    assert_species_table(component, species_data)
-    assert_coverage_modal_data(component, coverage_modal_data)
-    assert_publication_modal_data(component, publication_modal_data)
+    assert_species_table(report.candidate_tab_table, species_data)
+    assert_coverage_modal_data(report.database_coverage, coverage_modal_data)
+    assert_publication_modal_data(
+        report.publication_modal, publication_modal_data)
 
     blast_data = collect_blast_modal_data(candidate_pane, driver)
-    assert_blast_modal_data(component, blast_data)
+    assert_blast_modal_data(report.blast_modal, blast_data)
 
     homology_data = collect_homology_modal_data(candidate_pane, driver)
     if homology_data:
-        assert_homology_modal_data(component, homology_data)
+        assert_homology_modal_data(report.tree_modal, homology_data)

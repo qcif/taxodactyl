@@ -141,7 +141,7 @@ components:
       type: list
       value: '1679'
     - id: min_bar_count
-      type: list
+      type: min
       value: '10'
     - id: first_bar_species
       type: list
@@ -176,7 +176,7 @@ components:
       type: list
       value: '1680'
     - id: min_bar_count
-      type: list
+      type: min
       value: '10'
     - id: first_bar_species
       type: list

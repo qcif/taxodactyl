@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from conftest import open_tab
+from utils import open_tab
 
 
 def extract_toi_table_data(toi_pane):
@@ -43,14 +43,14 @@ def assert_toi_header(component, pane_text):
     component.toi_reasoning.assert_value(pane_text)
 
 
-def assert_toi_table(component, table_data):
-    component.toi_number_of_rows.assert_value(table_data["row_count"])
-    component.toi.assert_value(table_data["toi"])
-    component.match_rank.assert_value(table_data["match_rank"])
-    component.match_taxon.assert_value(table_data["match_taxon"])
-    component.match_species.assert_value(table_data["match_species"])
-    component.match_accession.assert_value(table_data["match_accession"])
-    component.match_identity.assert_value(table_data["match_identity"])
+def assert_toi_table(toi_tab, toi_table, table_data):
+    toi_tab.toi_number_of_rows.assert_value(table_data["row_count"])
+    toi_table.toi.assert_value(table_data["toi"])
+    toi_table.match_rank.assert_value(table_data["match_rank"])
+    toi_table.match_taxon.assert_value(table_data["match_taxon"])
+    toi_table.match_species.assert_value(table_data["match_species"])
+    toi_table.match_accession.assert_value(table_data["match_accession"])
+    toi_table.match_identity.assert_value(table_data["match_identity"])
 
 
 def run_toi_tab(driver, report):
@@ -65,8 +65,9 @@ def run_toi_tab(driver, report):
 
     assert_toi_header(component, pane_text)
 
-    if component.toi_match.expected is False:
+    toi_table = report.toi_table
+    if not any(toi_table.toi_match.expected or []):
         return
 
     table_data = extract_toi_table_data(toi_pane)
-    assert_toi_table(component, table_data)
+    assert_toi_table(component, toi_table, table_data)
