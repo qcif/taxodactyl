@@ -2,6 +2,9 @@ from types import SimpleNamespace
 from pathlib import Path
 from typing import Any
 import pandas as pd
+
+from yaml import safe_load
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -189,3 +192,32 @@ def parse_csv(path: Path):
         parsed_reports.append(report)
 
     return parsed_reports
+
+
+def parse_yaml(path: Path):
+    with open(path, "r") as f:
+        data = safe_load(f)
+
+    report_name = path.stem
+    assertions = []
+
+    for component in data.get("components", []):
+        if component['id'] == 'database_coverage':
+            # Load lists of database coverage modals
+
+        elif 'rows' in component:
+            # Load table columns into N assertions per item
+
+        else:
+            for assertion_data in component.get("assertions", []):
+                assertion = Assertion(assertion_data, report_name)
+                assertions.append(assertion)
+
+    # In *_test.py, should be able to:
+    # component = report.database_coverage.candidate[0]
+    # run_database_coverage(component)
+    # ~~ Or ~~
+    # for component in report.database_coverage.candidate:
+    #     run_database_coverage(component)
+
+    return Report(report_name, assertions)
