@@ -9,8 +9,11 @@ process REPORT {
     input:
     path(env_var_file) // Environment variables file
     tuple val(query_folder),
-        path(query_folder_path, stageAs: 'files_for_report'),                // Folder with BLAST/BOLD hits
+        path(hits_files, stageAs: 'hits_files/*'),                // Folder with BLAST/BOLD hits
+        path(candidates_files, stageAs: 'candidates_files/*'),
+        path(db_coverage_files, stageAs: 'db_coverage_files/*'),
         path(nwk_file, stageAs: 'tree.nwk'),                                 // Newick tree file
+        path(independent_sources_files, stageAs: 'independent_sources_files/*'), // Folder with independent sources file
         path(versions_file),                                                  // File with version info
         path(params_file),                                                    // File with pipeline parameters
         path(timestamp_file)                                                  // File with timestamps
@@ -43,10 +46,45 @@ process REPORT {
     mkdir -p ${query_folder}
     # Move tree file into the query folder with the correct name
     mv tree.nwk ${query_folder}/$params.tree_nwk_filename
-    # Symlink staged report inputs into the query folder to keep upstream outputs intact.
-    for item in files_for_report/*; do
+    # Move staged report inputs into the query folder to keep upstream outputs intact
+    for item in hits_files/*; do
         [ -e "\$item" ] || continue
-        ln -s "\$(realpath "\$item")" "${query_folder}/"
+        mv "\$item" "$query_folder/"
+    done
+    for item in candidates_files/*; do
+        [ -e "\$item" ] || continue
+        mv "\$item" "$query_folder/"
+    done
+    for item in db_coverage_files/*; do
+        [ -e "\$item" ] || continue
+        if [ "\$(basename "\$item")" = "errors" ]; then
+            mkdir -p "$query_folder/errors"
+            find "\$item" -mindepth 1 -maxdepth 1 -exec mv -t "$query_folder/errors" {} +
+            continue
+        fi
+        mv "\$item" "$query_folder/"
+    done
+    for item in independent_sources_files/*; do
+        [ -e "\$item" ] || continue
+        if [ "\$(basename "\$item")" = "errors" ]; then
+            mkdir -p "$query_folder/errors"
+            next_file="$query_folder/errors/next.txt"
+            if [ -s "\$next_file" ]; then
+                read -r next_index < "\$next_file"
+            else
+                next_index=1
+            fi
+
+            for json_file in "\$item"/*.json; do
+                [ -e "\$json_file" ] || continue
+                mv "\$json_file" "$query_folder/errors/\${next_index}.json"
+                next_index=\$((next_index + 1))
+            done
+
+            printf '%s\n' "\$next_index" > "\$next_file"
+            continue
+        fi
+        mv "\$item" "$query_folder/"
     done
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
