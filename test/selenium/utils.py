@@ -169,8 +169,9 @@ class Report:
         )
 
 
-class YamlAssertion(Assertion):
-    """Assertion parsed from YAML format (id/type/value keys, native Python types)."""
+class Assertion(Assertion):
+    """Assertion parsed from YAML format (id/type/value keys,
+    native Python types)."""
 
     def __init__(self, assertion_data: dict, component_id: str, filename: str):
         self.report_filename = filename
@@ -186,7 +187,6 @@ class YamlAssertion(Assertion):
         if self.raw_value is None:
             return None
 
-        # 'list' type: always return a list of strings
         if self.assertion_type == 'list':
             if isinstance(self.raw_value, list):
                 items = [str(item).strip() for item in self.raw_value if str(item).strip()]
@@ -196,7 +196,6 @@ class YamlAssertion(Assertion):
                 return None
             return [raw_str]
 
-        # Non-list type but YAML gave us a list (e.g. type: bool, value: ['TRUE'])
         if isinstance(self.raw_value, list):
             return [self._parse_scalar(str(item)) for item in self.raw_value]
 
@@ -221,7 +220,7 @@ def _build_ns_from_yaml_assertions(
 ) -> SimpleNamespace:
     ns = SimpleNamespace()
     for a_data in assertion_list:
-        a = YamlAssertion(a_data, component_id, filename)
+        a = Assertion(a_data, component_id, filename)
         setattr(ns, a.assertion_id, a)
     return ns
 
@@ -234,22 +233,6 @@ def parse_assertions(df, report_col, filename):
         assertions.append(assertion)
 
     return assertions
-
-
-def parse_csv(path: Path):
-    df = pd.read_csv(path)
-
-    report_columns = df.columns[3:]
-    parsed_reports = []
-
-    for report_col in report_columns:
-        report_name = report_col
-        assertions = parse_assertions(df, report_col, report_name)
-
-        report = Report(report_name, assertions)
-        parsed_reports.append(report)
-
-    return parsed_reports
 
 
 def parse_yaml(path: Path):
@@ -268,7 +251,8 @@ def parse_yaml(path: Path):
             continue
 
         for assertion_data in component.get("assertions", []):
-            assertions.append(YamlAssertion(assertion_data, component_id, report_name))
+            assertions.append(Assertion(assertion_data, component_id,
+                                        report_name))
 
     report = Report(report_name, assertions)
 
