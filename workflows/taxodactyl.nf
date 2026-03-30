@@ -38,7 +38,7 @@ workflow TAXODACTYL {
     def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd HHmmss").withZone(java.time.ZoneId.systemDefault())
 	
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
-        .collectFile(name: 'timestamp.txt', newLine: true)
+        .collectFile(name: 'timestamp.txt', newLine: true).first()
 
     // Copy input files to work directory first to ensure availability
     // Pass sequences as an optional list input: one file when provided, empty list when absent
@@ -81,10 +81,7 @@ workflow TAXODACTYL {
             ch_metadata,
             VALIDATE_INPUT.out.ready
         )
-        ch_hits_query_folders = BOLD_SEARCH.out.hits
-            .flatten()
-            .map { folder -> [folder.name, folder] }
-
+        ch_hits_files = BOLD_SEARCH.out.hits
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy.first()
     } else {
         // BLAST search branch - use mock or real BLAST based on params.mock_blast
@@ -113,7 +110,8 @@ workflow TAXODACTYL {
             ch_metadata
         )
         
-        ch_hits_query_folders = EXTRACT_HITS.out.hits_files
+        ch_hits_files = EXTRACT_HITS.out.hits_files
+        ch_hits_files = ch_hits_files
             .flatten()
             .map { file-> [file.parent.name, file] }
             .groupTuple()
@@ -139,7 +137,7 @@ workflow TAXODACTYL {
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
         ch_env_var_file,
-        ch_hits_query_folders,
+        ch_hits_files,
         ch_taxonomy_file,
         ch_sequences,
         ch_metadata
@@ -176,6 +174,8 @@ workflow TAXODACTYL {
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
         .map { tuple -> [tuple[0], tuple[2]] }
+
+    ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_files
     
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
@@ -184,100 +184,73 @@ workflow TAXODACTYL {
         ch_sequences,
         ch_metadata
     )
+     
+    // Evaluate database coverage for candidates
+    EVALUATE_DATABASE_COVERAGE (
+        ch_env_var_file,
+        ch_candidates_files,
+        ch_sequences,
+        ch_metadata
+    )
 
-    // Prepare candidates folders for cases with 0 or >3 candidates
-    ch_candidates_without_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
-        .filter { tuple -> 
+    // Dump pipeline parameters to JSON for report
+    ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir)).first()
+
+    // Collect software version information for report
+    if (params.db_type == 'bold') {
+
+        ch_versions = MAFFT_ALIGN.out.versions
+            .mix(FASTME.out.versions)
+
+    } else {
+
+        ch_versions = ch_blast_versions
+            .mix(BLAST_BLASTDBCMD.out.versions)
+            .mix(MAFFT_ALIGN.out.versions)
+            .mix(FASTME.out.versions)
+
+    }
+
+    ch_collated_versions = softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            name:  'software_versions.yml',
+            sort: true,
+            newLine: true
+        ).first()
+
+    // Prepare mock source diversity for cases with 0 or >3 candidates
+    ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
+        .filter { 
+            tuple -> 
             def (folder, countFile, otherFiles) = tuple
             def count = countFile.text.trim().toInteger()
             return count == 0 || count > params.max_candidates_for_analysis
-        }
-        .map { tuple -> [tuple[0], tuple[2]] }
+            }
+        .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
 
-    def ch_next_error = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_next_error.ifEmpty([]) 
-
-    // // Prepare candidates folders for cases with 0 or >3 candidates
-    // // Combine with independent sources folders from source diversity evaluation
-    // ch_query_folders_for_db_coverage = EXTRACT_CANDIDATES.out.candidates_plus_count_files
-    //     .filter { tuple -> 
-    //         def (folder, countFile, otherFiles) = tuple
-    //         def count = countFile.text.trim().toInteger()
-    //         return count == 0 || count > 3 
-    //         }
-    //     .map { tuple -> [tuple[0], tuple[2]] }
-    //     .concat(EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders)
-    //     .map { folderVal, folderPath -> [folderVal, folderPath] } 
-        // Prepare mock source diversity for cases with 0 or >3 candidates
-    // ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_plus_count_files
-    //     .filter { 
-    //         tuple -> 
-    //         def (folder, countFile, otherFiles) = tuple
-    //         def count = countFile.text.trim().toInteger()
-    //         return count == 0 || count > 3 
-    //         }
-    //     .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
-
-    // // Combine real and mock source diversity for report
-    // ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_folders
-    //     .concat(ch_mock_source_diversity)
-    //     .map { folderVal, files -> [folderVal, files.flatten()] } 
-
-    // ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_plus_count_files
-    //     .map { tuple -> [tuple[0], tuple[2]] }
-
-    // ch_query_folders_for_db_coverage = ch_source_diversity_for_report
-    //     .combine(ch_candidates_files, by: 0)
-    //     .map { folderVal, files -> [folderVal, files.flatten()] }
-     
-    // // Evaluate database coverage for candidates
-    // EVALUATE_DATABASE_COVERAGE (
-    //     ch_env_var_file,
-    //     ch_query_folders_for_db_coverage,
-    //     ch_sequences,
-    //     ch_metadata
-    // )
-
-    // // Dump pipeline parameters to JSON for report
-    // ch_params_json = channel.fromPath(dumpParametersToJSON(params.outdir))
-
-    // // Collect software version information for report
-    // if (params.db_type == 'bold') {
-
-    //     ch_versions = MAFFT_ALIGN.out.versions
-    //         .mix(FASTME.out.versions)
-
-    // } else {
-
-    //     ch_versions = ch_blast_versions
-    //         .mix(BLAST_BLASTDBCMD.out.versions)
-    //         .mix(MAFFT_ALIGN.out.versions)
-    //         .mix(FASTME.out.versions)
-
-    // }
-
-    // ch_collated_versions = softwareVersionsToYAML(ch_versions)
-    //     .collectFile(
-    //         name:  'software_versions.yml',
-    //         sort: true,
-    //         newLine: true
-    //     )
+    // Combine real and mock source diversity for report
+    ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_files
+        .concat(ch_mock_source_diversity)
         
-    // // Combine all files needed for the final report
-    // ch_files_for_report = EVALUATE_DATABASE_COVERAGE.out.query_folders_for_report
-    //     .combine(FASTME.out.nwk, by: 0)
-    //     .combine(ch_collated_versions)
-    //     .combine(ch_params_json)
-    //     .combine(ch_workflow_timestamp)
+    // Combine all files needed for the final report
+    ch_files_for_report = ch_hits_files
+        .combine(ch_candidates_files, by: 0) 
+        .combine(EVALUATE_DATABASE_COVERAGE.out.db_coverage_files, by: 0)
+        .combine(FASTME.out.nwk, by: 0)
+        .combine(ch_source_diversity_for_report, by: 0)
+        .combine(ch_collated_versions)
+        .combine(ch_params_json)
+        .combine(ch_workflow_timestamp)
 
          
-    // // Generate the final report
-    // REPORT (
-    //     ch_env_var_file,
-    //     ch_files_for_report,
-    //     ch_taxonomy_file,
-    //     ch_metadata,
-    //     ch_sequences
-    // )
+    // Generate the final report
+    REPORT (
+        ch_env_var_file,
+        ch_files_for_report,
+        ch_taxonomy_file,
+        ch_metadata,
+        ch_sequences
+    )
 
     // // Collect all run.log files from processes using p\d_ Python scripts
     // ch_all_logs = VALIDATE_INPUT.out.validation_log
@@ -303,7 +276,7 @@ workflow TAXODACTYL {
     //     ch_all_logs
     // )
 
-    // ch_hits_for_report = ch_hits_query_folders
+    // ch_hits_for_report = ch_hits_files
     // ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_folders_for_tests
     // ch_homology_trees = FASTME.out.nwk
     // ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
