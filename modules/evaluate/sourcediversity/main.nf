@@ -59,7 +59,5 @@ process EVALUATE_SOURCE_DIVERSITY {
     ${min_source_count_arg} \
     ${temp_root_dir_arg} \
     ${temp_dir_name_arg}
-    mkdir -p "some_folder"
-    touch "some_folder/some_file"
     """
 }

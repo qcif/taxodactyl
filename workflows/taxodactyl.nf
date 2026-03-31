@@ -252,53 +252,52 @@ workflow TAXODACTYL {
         ch_sequences
     )
 
-    // // Collect all run.log files from processes using p\d_ Python scripts
-    // ch_all_logs = VALIDATE_INPUT.out.validation_log
-    //     .mix(EXTRACT_HITS.out.extract_hits_log)
-    //     .mix(EXTRACT_CANDIDATES.out.extract_candidates_log)
-    //     .mix(EVALUATE_SOURCE_DIVERSITY.out.source_diversity_log)
-    //     .mix(EVALUATE_DATABASE_COVERAGE.out.db_coverage_log)
-    //     .mix(REPORT.out.report_log)
+    // Collect all run.log files from processes using p\d_ Python scripts
+    ch_all_logs = VALIDATE_INPUT.out.validation_log
+        .mix(EXTRACT_HITS.out.extract_hits_log)
+        .mix(EXTRACT_CANDIDATES.out.extract_candidates_log)
+        .mix(EVALUATE_SOURCE_DIVERSITY.out.source_diversity_log)
+        .mix(EVALUATE_DATABASE_COVERAGE.out.db_coverage_log)
+        .mix(REPORT.out.report_log)
     
-    // // Add BOLD_SEARCH log if BOLD is used
-    // if (params.db_type == 'bold') {
-    //     ch_all_logs = ch_all_logs.mix(BOLD_SEARCH.out.bold_search_log)
-    // } else {
-    //     // Add EXTRACT_TAXONOMY log if BLAST is used
-    //     ch_all_logs = ch_all_logs.mix(EXTRACT_TAXONOMY.out.extract_taxonomy_log)
-    // }
+    // Add BOLD_SEARCH log if BOLD is used
+    if (params.db_type == 'bold') {
+        ch_all_logs = ch_all_logs.mix(BOLD_SEARCH.out.bold_search_log)
+    } else {
+        // Add EXTRACT_TAXONOMY log if BLAST is used
+        ch_all_logs = ch_all_logs.mix(EXTRACT_TAXONOMY.out.extract_taxonomy_log)
+    }
     
-    // ch_all_logs = ch_all_logs
-    //     .map { file -> file.text + '\n---------\n' }
-    //     .collectFile(name: 'run.log', newLine: false)
+    ch_all_logs = ch_all_logs
+        .map { file -> file.text + '\n---------\n' }
+        .collectFile(name: 'run.log', newLine: false)
 
-    // PREPARE_LOG (
-    //     ch_all_logs
-    // )
+    PREPARE_LOG (
+        ch_all_logs
+    )
 
-    // ch_hits_for_report = ch_hits_files
-    // ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_folders_for_tests
-    // ch_homology_trees = FASTME.out.nwk
-    // ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
-    // ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
-    // ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
-    // ch_source_diversity_for_report = ch_independent_sources_folders
-    // ch_html_report = REPORT.out.html_report
-
+    ch_hits_for_report = ch_hits_files
+    ch_candidates_for_report = ch_candidates_files
+    ch_homology_trees = FASTME.out.nwk
+    ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
+    ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
+    ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
+    ch_html_report = REPORT.out.html_report
 
 
-    // emit:
-    // ch_hits_for_report
-    // ch_candidates_for_report
-    // ch_db_coverage_json
-    // ch_db_coverage_flags
-    // ch_db_coverage_maps
-    // ch_source_diversity_for_report
-    // ch_homology_trees
-    // ch_html_report
-    // ch_collated_versions
-    // ch_params_json
-    // ch_workflow_timestamp
+
+    emit:
+    ch_hits_for_report
+    ch_candidates_for_report
+    ch_db_coverage_json
+    ch_db_coverage_flags
+    ch_db_coverage_maps
+    ch_source_diversity_for_report
+    ch_homology_trees
+    ch_html_report
+    ch_collated_versions
+    ch_params_json
+    ch_workflow_timestamp
 
 }
 
