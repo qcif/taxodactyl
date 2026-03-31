@@ -36,16 +36,16 @@ process REPORT {
     
     """
     # Source environment variables
-    source ${env_var_file}
+    source "${env_var_file}"
 
     # Override INPUT_FASTA_FILEPATH to use local sequences file
-    export INPUT_FASTA_FILEPATH=\$(realpath ${sequences_file})
+    export INPUT_FASTA_FILEPATH=\$(realpath "${sequences_file}")
     # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
-    export INPUT_METADATA_CSV_FILEPATH=\$(realpath ${metadata_file})
+    export INPUT_METADATA_CSV_FILEPATH=\$(realpath "${metadata_file}")
     # Ensure the query folder exists
-    mkdir -p ${query_folder}
+    mkdir -p "${query_folder}"
     # Move tree file into the query folder with the correct name
-    mv tree.nwk ${query_folder}/$params.tree_nwk_filename
+    mv tree.nwk "${query_folder}/${params.tree_nwk_filename}"
     # Move staged report inputs into the query folder to keep upstream outputs intact
     for item in hits_files/*; do
         [ -e "\$item" ] || continue
@@ -59,41 +59,23 @@ process REPORT {
         [ -e "\$item" ] || continue
         if [ "\$(basename "\$item")" = "errors" ]; then
             mkdir -p "$query_folder/errors"
-            find "\$item" -mindepth 1 -maxdepth 1 -exec mv -t "$query_folder/errors" {} +
+            find -L "\$item" -mindepth 1 -maxdepth 1 -exec cp -t "$query_folder/errors" {} +
             continue
         fi
         mv "\$item" "$query_folder/"
     done
     for item in independent_sources_files/*; do
         [ -e "\$item" ] || continue
-        if [ "\$(basename "\$item")" = "errors" ]; then
-            mkdir -p "$query_folder/errors"
-            next_file="$query_folder/errors/next.txt"
-            if [ -s "\$next_file" ]; then
-                read -r next_index < "\$next_file"
-            else
-                next_index=1
-            fi
-
-            for json_file in "\$item"/*.json; do
-                [ -e "\$json_file" ] || continue
-                mv "\$json_file" "$query_folder/errors/\${next_index}.json"
-                next_index=\$((next_index + 1))
-            done
-
-            printf '%s\n' "\$next_index" > "\$next_file"
-            continue
-        fi
         mv "\$item" "$query_folder/"
     done
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
-            ${query_folder} \
-            --query-fasta ${sequences_file} \
-            --metadata-csv ${metadata_file} \
+            "${query_folder}" \
+            --query-fasta "${sequences_file}" \
+            --metadata-csv "${metadata_file}" \
             --output-dir ./ \
-            --versions_yml ${versions_file} \
-            --params_json ${params_file} \
+            --versions_yml "${versions_file}" \
+            --params_json "${params_file}" \
             ${bold_flag} \
             ${report_debug_arg} \
             ${database_name_arg} \
