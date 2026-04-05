@@ -97,7 +97,42 @@ components:
     value: ''
 
 - id: database_coverage
-  pmi: []
+  pmi: 
+  - name: Eupodidae
+    assertions:
+    - id: title
+      type: list
+      value: Database coverage of Preliminary Morphology ID Eupodidae
+    - id: flag_text1
+      type: list
+      value: 5.1NA
+    - id: record_count
+      type: list
+      value: '4717'
+    - id: record_text
+      type: list
+      value: with the given locus COI
+    - id: flag_text2
+      type: list
+      value: 5.2NA
+    - id: species_count
+      type: list
+      value: ''
+    - id: species_total
+      type: list
+      value: ''
+    - id: min_bar_count
+      type: min
+      value: ''
+    - id: first_bar_species
+      type: list
+      value: ''
+    - id: first_bar_count
+      type: list
+      value: ''
+    - id: final_text
+      type: list
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
   toi: []
   candidate: []
 
