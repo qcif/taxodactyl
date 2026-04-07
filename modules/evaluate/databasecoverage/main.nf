@@ -13,16 +13,17 @@ process EVALUATE_DATABASE_COVERAGE {
     path(metadata_file) // Metadata file
 
     output:
-    tuple val(query_folder), path("$query_folder/*"), 
-        emit: db_coverage_files // Output: query folder with results (that should include all relevant files and folders with errors)
+    // tuple val(query_folder), path("$query_folder/*"), 
+    //     emit: db_coverage_files // Output: query folder with results (that should include all relevant files and folders with errors)
     tuple val(query_folder),
         path("$query_folder/db_coverage.json"), emit: db_coverage_json // Output: db_coverage.json file
     tuple val(query_folder),
-        path("$query_folder/*flag"), emit: db_coverage_flags // Output: flag files
+        path("$query_folder/5*flag"), emit: db_coverage_flags // Output: flag files
     tuple val(query_folder),
         path("$query_folder/map*png"), emit: db_coverage_maps, optional: true // Output: coverage map PNG files
     path("output/run.log"), emit: db_coverage_log // Output: log file
-    // path("$query_folder/errors"), optional: true
+    tuple val(query_folder), 
+        path("$query_folder/errors/*"), optional: true, emit: db_coverage_errors // Output: error files
     
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : '' // Set --bold flag if using BOLD database
