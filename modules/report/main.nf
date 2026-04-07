@@ -12,8 +12,10 @@ process REPORT {
         path(hits_files, stageAs: 'hits_files/*'),                // Folder with BLAST/BOLD hits
         path(candidates_files, stageAs: 'candidates_files/*'),
         path(db_coverage_files, stageAs: 'db_coverage_files/*'),
+        path(db_coverage_errors, stageAs: 'db_coverage_errors/*'),
         path(nwk_file, stageAs: 'tree.nwk'),                                 // Newick tree file
         path(independent_sources_files, stageAs: 'independent_sources_files/*'), // Folder with independent sources file
+        path(independent_sources_errors, stageAs: 'independent_sources_errors/*'),
         path(versions_file),                                                  // File with version info
         path(params_file),                                                    // File with pipeline parameters
         path(timestamp_file)                                                  // File with timestamps
@@ -57,16 +59,21 @@ process REPORT {
     done
     for item in db_coverage_files/*; do
         [ -e "\$item" ] || continue
-        if [ "\$(basename "\$item")" = "errors" ]; then
-            mkdir -p "$query_folder/errors"
-            find -L "\$item" -mindepth 1 -maxdepth 1 -exec cp -t "$query_folder/errors" {} +
-            continue
-        fi
         mv "\$item" "$query_folder/"
+    done
+    mkdir -p "$query_folder/errors"
+    for item in db_coverage_errors/*; do
+        [ -e "\$item" ] || continue
+        mv "\$item" "$query_folder/errors/"
     done
     for item in independent_sources_files/*; do
         [ -e "\$item" ] || continue
         mv "\$item" "$query_folder/"
+    done
+    mkdir -p "$query_folder/errors"
+    for item in independent_sources_errors/*; do
+        [ -e "\$item" ] || continue
+        mv "\$item" "$query_folder/errors/"
     done
     # Run the report generation Python script
     python /app/scripts/p6_report.py \

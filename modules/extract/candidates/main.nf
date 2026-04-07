@@ -17,18 +17,26 @@ process EXTRACT_CANDIDATES {
     tuple val(query_folder), 
         path("$query_folder/candidates_count.txt"), 
         path("$query_folder/*"), emit: candidates_for_source_diversity // Output for source diversity
-    tuple val(query_folder), 
-        path("$query_folder/*"), emit: candidates_files // Output 
+    // tuple val(query_folder), 
+    //     path("$query_folder/*"), emit: candidates_files // Output 
     tuple val(query_folder), 
         path("$query_folder/$params.candidates_phylogeny_fasta_filename"), emit: candidates_for_alignment // Output for alignment
     path("output/run.log"),    emit: extract_candidates_log // Output run log
-    // path("$query_folder/2.flag")
-    // path("$query_folder/7.flag")
-    // path("$query_folder/$params.candidates_fasta_filename")
-    // path("$query_folder/$params.candidates_csv_filename")
-    // path("$query_folder/$params.candidates_json_filename")
-    // path("$query_folder/$params.boxplot_img_filename"), optional: true
-
+    tuple val(query_folder), path("$query_folder/*.flag"), emit: candidates_flags
+    tuple val(query_folder), 
+        path("$query_folder/$params.candidates_fasta_filename"), emit: candidates_fasta_files
+    tuple val(query_folder), 
+        path("$query_folder/$params.candidates_csv_filename"), emit: candidates_csv_files
+    tuple val(query_folder), 
+        path("$query_folder/$params.candidates_json_filename"), emit: candidates_json_files
+    tuple val(query_folder), 
+        path("$query_folder/$params.boxplot_img_filename"), optional: true, emit: candidates_boxplot_files
+    tuple val(query_folder), 
+        path("$query_folder/assigned_taxonomy.csv"), optional: true, emit: assigned_taxonomy_files
+    tuple val(query_folder), 
+        path("$query_folder/preliminary_id_match.csv"), optional: true, emit: preliminary_id_match_files
+    tuple val(query_folder), 
+        path("$query_folder/taxa_of_concern_detected.csv"), optional: true, emit: taxa_of_concern_detected_files
     
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "$query_folder/$params.candidates_phylogeny_fasta_filename" // Publish phylogeny FASTA
