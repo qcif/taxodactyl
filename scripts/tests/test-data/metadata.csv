@@ -1,5 +1,5 @@
 sample_id,locus,classification,preliminary_id,taxa_of_interest,country,host,sequencing_platform
-LC438549.1,COI,animalia,Asterias rubens,Asteridae|Acanthaster planci,Japan,driftwood,nanopore
+LC438549.1,COI,,Orthotospovirus,Asteridae|Acanthaster planci,Japan,driftwood,nanopore
 ON075825.1,COX1,animalia,Epinephelus,Epinephelus|Epinephelus awoara,China,fishing net,illumina
 PP466915.1,NA,animalia,Sitodiplosis,,,,nanopore
 JQ585746.1,COX1,animalia,Doradidae,Platydoras armatulus,China,fishing net,nanopore
