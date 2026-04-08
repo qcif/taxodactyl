@@ -24,6 +24,7 @@ This results in a nice balance between cost and performance - it costs nothing u
 3. **[Reference Data](03-reference-data.md)** - Uploading and staging reference data with NVMe storage
 4. **[Start Tasks](04-start-tasks.md)** - Configuring start tasks for node initialization and reference data staging
 5. **[Troubleshooting](05-troubleshooting.md)** - Common issues and debugging techniques
+6. **[Maintenance](06-maintenance.md)** - Recurring maintenance tasks (SAS rotation, cache cleanup, key rotation)
 
 ## Azure CLI
 

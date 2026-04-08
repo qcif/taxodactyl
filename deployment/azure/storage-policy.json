@@ -17,6 +17,24 @@
           }
         }
       }
+    },
+    {
+      "name": "delete-expired-cache-entries",
+      "enabled": true,
+      "type": "Lifecycle",
+      "definition": {
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": ["cache/"]
+        },
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 7
+            }
+          }
+        }
+      }
     }
   ]
 }
