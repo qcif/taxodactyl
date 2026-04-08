@@ -44,6 +44,13 @@ BACKEND_AZURE_BLOB = 'azure_blob'
 
 CREATED_AT_METADATA_KEY = 'created_at'
 
+# Size of the urllib3 connection pool used by the Azure Blob SDK. The
+# default (10) is too small for our worker-pool workloads and causes
+# "Connection pool is full, discarding connection" warnings plus extra
+# TLS handshakes. Set comfortably above the expected concurrent worker
+# count.
+AZURE_BLOB_POOL_MAXSIZE = 50
+
 _backend_lock = threading.Lock()
 _backend: Optional['CacheBackend'] = None
 
@@ -424,6 +431,9 @@ class AzureBlobCacheBackend(CacheBackend):
                 "AzureBlobCacheBackend requires either account_url "
                 "(with DefaultAzureCredential) or connection_string."
             )
+        logging.getLogger(
+            "azure.core.pipeline.policies.http_logging_policy"
+        ).setLevel(logging.WARNING)
         self.container_name = container_name
         self.timeout_hours = timeout_hours
         self.account_url = account_url
@@ -441,6 +451,7 @@ class AzureBlobCacheBackend(CacheBackend):
             if self._container_client is not None:
                 return self._container_client
             try:
+                from azure.core.pipeline.transport import RequestsTransport
                 from azure.storage.blob import BlobServiceClient
             except ImportError as e:
                 raise ImportError(
@@ -449,9 +460,16 @@ class AzureBlobCacheBackend(CacheBackend):
                     "`pip install azure-storage-blob`."
                 ) from e
 
+            # Enlarge the urllib3 connection pool so that concurrent
+            # workers don't discard sockets on return.
+            transport = RequestsTransport(
+                connection_pool_maxsize=AZURE_BLOB_POOL_MAXSIZE,
+            )
+
             if self.connection_string:
                 service_client = BlobServiceClient.from_connection_string(
-                    self.connection_string
+                    self.connection_string,
+                    transport=transport,
                 )
             else:
                 try:
@@ -466,6 +484,7 @@ class AzureBlobCacheBackend(CacheBackend):
                 service_client = BlobServiceClient(
                     account_url=self.account_url,
                     credential=DefaultAzureCredential(),
+                    transport=transport,
                 )
 
             container_client = service_client.get_container_client(
