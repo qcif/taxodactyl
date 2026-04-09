@@ -2,3 +2,4 @@ selenium
 pytest
 webdriver-manager
 pandas
+pyyaml
