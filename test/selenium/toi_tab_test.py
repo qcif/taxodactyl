@@ -44,6 +44,17 @@ def assert_toi_header(component, pane_text):
 
 
 def assert_toi_table(toi_tab, toi_table, table_data):
+    """Assert the TOI results table against YAML expectations.
+
+    `toi_tab` holds header-level assertions (e.g. row count), while
+    `toi_table` holds per-column assertions where each expected value is a
+    list with one entry per table row — the order must match the rendered
+    row order. Columns with an identity percentage have the '%' suffix
+    stripped before comparison.
+
+    Row-count is checked via `toi_tab.toi_number_of_rows`; rows with fewer
+    than 7 cells are silently skipped by `extract_toi_table_data`.
+    """
     toi_tab.toi_number_of_rows.assert_value(table_data["row_count"])
     toi_table.toi.assert_value(table_data["toi"])
     toi_table.match_rank.assert_value(table_data["match_rank"])
