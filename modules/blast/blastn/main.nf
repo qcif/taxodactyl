@@ -2,6 +2,8 @@ process BLAST_BLASTN {
 
     label 'blast'
 
+    containerOptions "--bind ${file(params.blastdb).parent}"
+
     input:
     path(fasta) // Input FASTA file (can be gzipped)
     val ready   // Readiness flag
@@ -13,7 +15,7 @@ process BLAST_BLASTN {
     publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename" // Publish BLAST XML to output directory
     
     when:
-    task.ext.when == null || task.ext.when
+    task.ext.when == null || task.ext.when 
 
     script:
     def is_compressed = fasta.getExtension() == "gz" ? true : false
@@ -25,18 +27,10 @@ process BLAST_BLASTN {
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
-    # DEBUG: List contents of reference data directory
-    echo "Contents of /mnt/nvme/refdata/:"
-    find /mnt/nvme/refdata/ -print | while read -r path; do
-        depth=\$(echo "\$path" | tr -cd '/' | wc -c)
-        indent=\$(printf '%*s' "\$depth" '')
-        echo "\${indent}\${path##*/}"
-    done
-
     # Run BLASTN with specified parameters
     blastn \\
         -num_threads ${task.cpus} \\
-        -db "${params.blastdb}" \\
+        -db ${file(params.blastdb)} \\
         -query ${fasta_name} \\
         -outfmt 5 \\
         -out $params.blast_xml_filename \\
