@@ -4,6 +4,7 @@ const FULL_DATA_PATH = window.location.pathname.split("/").slice(0, -1).join("/"
 async function saveReport(readonly = false) {
 
   $('#saveModal').modal('hide');
+  $('.modal.fade').hide();
   $('body').removeClass('modal-open')
   $('body')[0].style = null
   $('.modal-backdrop').remove();
