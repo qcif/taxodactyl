@@ -9,7 +9,7 @@ from toi_tab_test import run_toi_tab
 import pytest
 
 
-reports = [parse_yaml(f) for f in sorted(Path(".").glob("*.yaml"))]
+reports = [parse_yaml(f) for f in sorted(Path("expected").glob("*.yaml"))]
 
 
 @pytest.mark.parametrize("report", reports, ids=lambda r: r.filename)

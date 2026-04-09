@@ -25,7 +25,7 @@ Each `.yaml` file in this directory is picked up automatically and run as a sepa
 
 ## How reports are tested
 
-`test_reports.py` parametrises over every `*.yaml` file it finds in the current directory. For each one it:
+`test_reports.py` parametrises over every `*.yaml` file it finds in `expected/`. For each one it:
 
 1. Opens the corresponding HTML file from `reports/`.
 2. Calls into each tab-specific module (`overview_tab_test.py`, `candidate_tab_test.py`, `database_coverage_test.py`, `toi_tab_test.py`) and the sample modal (`sample_metadata_test.py`).
@@ -34,7 +34,7 @@ Each `.yaml` file in this directory is picked up automatically and run as a sepa
 ## Adding a new report
 
 1. Place the generated `.html` report in `test/selenium/reports/`.
-2. Copy an existing YAML file (e.g. `1_report_SME25-218_2025-12-11_07_30_03.yaml`) as a starting point. Name it with the next sequential prefix so it sorts predictably (e.g. `3_report_<ticket>_<timestamp>.yaml`).
+2. Copy an existing YAML file from `expected/` (e.g. `1_report_SME25-218_2025-12-11_07_30_03.yaml`) as a starting point and place the new file in `expected/`. Name it with the next sequential prefix so it sorts predictably (e.g. `3_report_<ticket>_<timestamp>.yaml`).
 3. Set `filename` at the top of the YAML to the exact HTML filename (including extension).
 4. Update each component's assertion values to match what the new report is expected to display. Run the tests once without assertions (or with known-good values) to confirm the report loads correctly, then fill in the expected values.
 5. Run `pytest test_reports.py -v` and verify the new test passes.
