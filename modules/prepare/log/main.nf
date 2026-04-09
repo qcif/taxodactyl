@@ -1,6 +1,4 @@
 process PREPARE_LOG {
-    publishDir "results", mode: 'copy'
-
     input:
     path combined_file
 
