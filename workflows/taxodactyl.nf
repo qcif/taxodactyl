@@ -180,7 +180,8 @@ workflow TAXODACTYL {
     ch_candidates_count_files = ch_candidates_for_source_diversity_unfiltered
         .map { tuple -> [tuple[0], tuple[1]] }
 
-    ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_flags
+    ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_files
+    ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_flags
         .mix(EXTRACT_CANDIDATES.out.assigned_taxonomy_files)
         .mix(EXTRACT_CANDIDATES.out.candidates_csv_files)
         .mix(EXTRACT_CANDIDATES.out.candidates_fasta_files)
@@ -192,6 +193,9 @@ workflow TAXODACTYL {
         .mix(EXTRACT_CANDIDATES.out.taxa_of_concern_detected_files)
         .groupTuple(by: 0)
         .map { sample, files -> tuple(sample, files.flatten()) }
+        .map { folderVal, filePath ->
+        def sortedFiles = filePath.sort { a, b -> a.name <=> b.name }
+        [folderVal, sortedFiles] }
     
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
@@ -335,10 +339,6 @@ workflow TAXODACTYL {
     )
 
     ch_hits_for_report = ch_hits_files
-    ch_candidates_for_report = ch_candidates_files
-        .map { folderVal, filePath ->
-        def sortedFiles = filePath.sort { a, b -> a.name <=> b.name }
-        [folderVal, sortedFiles] }
     ch_homology_trees = FASTME.out.nwk
     ch_html_report = REPORT.out.html_report
     ch_source_diversity_for_report = ch_independent_sources_files
