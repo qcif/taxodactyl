@@ -155,14 +155,25 @@ def _get_connection(
         except (OSError, IOError):
             # If file locking fails, fall back to setting pragmas without lock
             # This maintains backwards compatibility but may have race
-            # conditions
+            # conditions - we use a retry to de-risk
             logger.warning(
                 "File locking failed, setting WAL mode without lock"
             )
-            conn.execute("PRAGMA journal_mode=WAL")
-            conn.execute("PRAGMA synchronous=NORMAL")
-            conn.execute("PRAGMA cache_size=10000")
-            conn.execute("PRAGMA temp_store=memory")
+            retries = 0
+            while True:
+                try:
+                    conn.execute("PRAGMA journal_mode=WAL")
+                    conn.execute("PRAGMA synchronous=NORMAL")
+                    conn.execute("PRAGMA cache_size=10000")
+                    conn.execute("PRAGMA temp_store=memory")
+                except sqlite3.OperationalError as exc:
+                    if retries < 5:
+                        time.sleep(0.1 * (2 ** retries))
+                        retries += 1
+                        continue
+                    raise exc
+                break
+
     else:
         # Skip WAL setup when called from within another locked context
         conn.execute("PRAGMA synchronous=NORMAL")
