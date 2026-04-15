@@ -55,6 +55,7 @@ workflow TAXODACTYL {
     CONFIGURE_ENVIRONMENT (
     )
 
+    // Capture the generated environment variable file
     ch_env_var_file = CONFIGURE_ENVIRONMENT.out.first()
 
     // Prepare allowed loci file channel (or optional placeholder if not provided)
@@ -81,6 +82,8 @@ workflow TAXODACTYL {
             ch_metadata,
             VALIDATE_INPUT.out.ready
         )
+
+        // Capture BOLD search outputs for downstream analysis and reporting
         ch_hits_files = BOLD_SEARCH.out.hits
         ch_taxonomy_file = BOLD_SEARCH.out.taxonomy.first()
     } else {
@@ -103,6 +106,7 @@ workflow TAXODACTYL {
             ch_blast_versions = BLAST_BLASTN.out.versions
         }
 
+        // Extract hit lists from BLAST output files
         EXTRACT_HITS (
             ch_env_var_file,
             ch_blast_output,
@@ -110,19 +114,19 @@ workflow TAXODACTYL {
             ch_metadata
         )
         
+        // Regroup hit files by sample for downstream joins
         ch_hits_files = EXTRACT_HITS.out.hits_files
         ch_hits_files = ch_hits_files
             .flatten()
             .map { file-> [file.parent.name, file] }
             .groupTuple()
-            // .map { folder, files -> 
-            //     [folder, files[0].parent]
-            // }
 
+        // Retrieve taxonomy identifiers for all extracted hit accessions
         BLAST_BLASTDBCMD (
             EXTRACT_HITS.out.hits_accessions
         )
 
+        // Build the taxonomy lookup file used in later reporting steps
         EXTRACT_TAXONOMY (
             ch_env_var_file,
             BLAST_BLASTDBCMD.out.taxids,
@@ -148,11 +152,12 @@ workflow TAXODACTYL {
         .splitFasta(record: [id: true, sequence: true])
         .map { tuple -> [tuple.id, tuple.sequence.replaceAll(/\n/, "")] }
 
-    // Combine candidate and query sequences for alignment  
+    // Prepare candidate records with a shared sample key for joining
     ch_candidates_for_alignment = EXTRACT_CANDIDATES.out.candidates_for_alignment
     ch_candidates_for_join = ch_candidates_for_alignment
         .map { tuple -> [tuple[0].replaceFirst(/query_\d\d\d_/, ""), tuple[0], tuple[1]] }
 
+    // Pair candidate sequences with their matching query sequences for alignment
     ch_seqs_for_alignment = ch_candidates_for_join
         .combine(ch_query_fasta, by: 0)
         .map { tuple -> [tuple[1], tuple[2], tuple[3]] }
@@ -177,9 +182,11 @@ workflow TAXODACTYL {
         }
         .map { tuple -> [tuple[0], tuple[2]] }
 
+    // Retain per-sample candidate count files for reporting
     ch_candidates_count_files = ch_candidates_for_source_diversity_unfiltered
         .map { tuple -> [tuple[0], tuple[1]] }
 
+    // Collect all candidate-derived report assets into a single channel
     ch_candidates_files = EXTRACT_CANDIDATES.out.candidates_files
     ch_candidates_for_report = EXTRACT_CANDIDATES.out.candidates_flags
         .mix(EXTRACT_CANDIDATES.out.assigned_taxonomy_files)
@@ -231,6 +238,7 @@ workflow TAXODACTYL {
 
     }
 
+    // Collate software version metadata into a single YAML artifact
     ch_collated_versions = softwareVersionsToYAML(ch_versions)
         .collectFile(
             name:  'software_versions.yml',
@@ -238,20 +246,7 @@ workflow TAXODACTYL {
             newLine: true
         ).first()
 
-    // // Prepare mock source diversity for cases with 0 or >3 candidates
-    // ch_mock_source_diversity = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
-    //     .filter { 
-    //         tuple -> 
-    //         def (folder, countFile, otherFiles) = tuple
-    //         def count = countFile.text.trim().toInteger()
-    //         return count == 0 || count > params.max_candidates_for_analysis
-    //         }
-    //     .map { tuple -> [tuple[0], [file("${projectDir}/assets/optional_input/QUERY_FOLDER/QUERY_FILE")]] }
-
-    // // Combine real and mock source diversity for report
-    // ch_source_diversity_for_report = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_files
-    //     .concat(ch_mock_source_diversity)
-
+    // Gather database coverage outputs that should appear in the report
     ch_db_coverage_json = EVALUATE_DATABASE_COVERAGE.out.db_coverage_json
     ch_db_coverage_flags = EVALUATE_DATABASE_COVERAGE.out.db_coverage_flags
     ch_db_coverage_maps = EVALUATE_DATABASE_COVERAGE.out.db_coverage_maps
@@ -272,6 +267,7 @@ workflow TAXODACTYL {
         .groupTuple(by: 0)
         .map { sample, files -> tuple(sample, files.flatten()) }
 
+    // Gather source diversity outputs that should appear in the report
     ch_independent_sources_flag = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_flag
     ch_independent_sources_json = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_json
     ch_independent_sources_files = ch_candidates_files
@@ -334,10 +330,13 @@ workflow TAXODACTYL {
         .map { file -> file.text + '\n---------\n' }
         .collectFile(name: 'run.log', newLine: false)
 
+    // Normalize the aggregated process logs before publishing them
     PREPARE_LOG (
         ch_all_logs
     )
 
+    // Expose final workflow outputs on consistently named channels
+    // nf-tests rely on them
     ch_hits_for_report = ch_hits_files
     ch_homology_trees = FASTME.out.nwk
     ch_html_report = REPORT.out.html_report

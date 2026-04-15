@@ -4,10 +4,12 @@ process REPORT {
 
     tag "$query_folder"
 
+    // Bind config/output locations required by report generation.
     containerOptions "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
 
     input:
     path(env_var_file) // Environment variables file
+    // Per-query report asset bundle assembled in the workflow.
     tuple val(query_folder),
         path(hits_files, stageAs: 'hits_files/*'),                // Folder with BLAST/BOLD hits
         path(candidates_files, stageAs: 'candidates_files/*'),
@@ -24,12 +26,15 @@ process REPORT {
     path(sequences_file) // Sequences file
 
     output:
+    // Final per-query report page(s).
     path("$query_folder/*.html"), emit: html_report // Output: final HTML report
+    // Process run log.
     path("output/run.log"), emit: report_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 
     script:
+    // Build optional CLI flags only when corresponding params are set.
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
     def report_debug_arg = params.report_debug ? "--report-debug" : ''
     def database_name_arg = params.blast_database_name_for_report ? "--database-name '${params.blast_database_name_for_report}'" : ''
@@ -37,44 +42,68 @@ process REPORT {
     def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
     
     """
-    # Source environment variables
+    # Load environment exported by upstream setup step.
     source "${env_var_file}"
 
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath "${sequences_file}")
+
     # Override INPUT_METADATA_CSV_FILEPATH to use local metadata file
     export INPUT_METADATA_CSV_FILEPATH=\$(realpath "${metadata_file}")
+
     # Ensure the query folder exists
     mkdir -p "${query_folder}"
+
     # Move tree file into the query folder with the correct name
     mv tree.nwk "${query_folder}/${params.tree_nwk_filename}"
+
     # Move staged report inputs into the query folder to keep upstream outputs intact
     for item in hits_files/*; do
         [ -e "\$item" ] || continue
         mv "\$item" "$query_folder/"
     done
+    rm -r hits_files
+
     for item in candidates_files/*; do
         [ -e "\$item" ] || continue
         mv "\$item" "$query_folder/"
     done
+    rm -r candidates_files
+
     for item in db_coverage_files/*; do
         [ -e "\$item" ] || continue
         mv "\$item" "$query_folder/"
     done
-    mkdir -p "$query_folder/errors"
-    for item in db_coverage_errors/*; do
-        [ -e "\$item" ] || continue
-        mv "\$item" "$query_folder/errors/"
-    done
-    for item in independent_sources_files/*; do
-        [ -e "\$item" ] || continue
-        mv "\$item" "$query_folder/"
-    done
-    mkdir -p "$query_folder/errors"
-    for item in independent_sources_errors/*; do
-        [ -e "\$item" ] || continue
-        mv "\$item" "$query_folder/errors/"
-    done
+    rm -r db_coverage_files
+
+    # Stage database-coverage errors under a shared errors folder.
+    if [ -d db_coverage_errors ]; then
+        mkdir -p "$query_folder/errors"
+        for item in db_coverage_errors/*; do
+            [ -e "\$item" ] || continue
+            mv "\$item" "$query_folder/errors/"
+        done
+        rm -r db_coverage_errors
+    fi
+
+    if [ -d independent_sources_files ]; then
+        for item in independent_sources_files/*; do
+            [ -e "\$item" ] || continue
+            mv "\$item" "$query_folder/"
+        done
+        rm -r independent_sources_files
+    fi
+
+    # Stage source-diversity errors under the same shared errors folder.
+    if [ -d independent_sources_errors ]; then
+        mkdir -p "$query_folder/errors"
+        for item in independent_sources_errors/*; do
+            [ -e "\$item" ] || continue
+            mv "\$item" "$query_folder/errors/"
+        done
+        rm -r independent_sources_errors
+    fi
+
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             "${query_folder}" \
