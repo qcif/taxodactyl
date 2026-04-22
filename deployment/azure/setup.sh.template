@@ -1,0 +1,211 @@
+#!/usr/bin/env bash
+
+# Enable verbose logging for debugging (all commands echo to stderr)
+set -x
+
+# Exit on error, but continue through the script to log as much as possible
+set -euo pipefail
+
+# -----------------------------------------------------------------------------
+# CONFIGURATION
+# -----------------------------------------------------------------------------
+
+NVME_MNT="/mnt/nvme"
+# Note: azcopy downloads the blob container structure (refdata/core_nt)
+# So we download to /mnt/nvme to get /mnt/nvme/refdata/core_nt
+REFDATA_DIR="$NVME_MNT"
+# SAS token for premium blob storage (expires 2026-12-29)
+# Permissions: read + list
+# Note: Downloads all data from the container root
+BLOB_URL="https://daffpremium.blob.core.windows.net/refdata?<PREMIUM_BLOB_SAS_TOKEN>"
+
+# -----------------------------------------------------------------------------
+# FUNCTIONS
+# -----------------------------------------------------------------------------
+
+detect_nvme_device() {
+    # Detect the NVMe disk by type "disk" and looking for "nvme"
+    # From our test, we know the device is /dev/nvme0n1
+    echo "=== Detecting NVMe device ===" >&2
+
+    # List all block devices for debugging
+    echo "Available block devices:" >&2
+    lsblk >&2 || true
+
+    # Look for NVMe devices
+    echo "NVMe devices:" >&2
+    ls -la /dev/nvme* >&2 || true
+
+    local dev
+    dev=$(lsblk -ndo NAME,TYPE | awk '$2=="disk" {print $1}' | grep nvme | head -n 1)
+
+    if [[ -z "$dev" ]]; then
+        echo "ERROR: No NVMe disk detected via lsblk. Trying direct detection..." >&2
+        # Fallback: check for /dev/nvme0n1 directly (from our test we know this exists)
+        if [[ -b /dev/nvme0n1 ]]; then
+            dev="nvme0n1"
+        else
+            echo "ERROR: No NVMe disk detected." >&2
+            exit 1
+        fi
+    fi
+
+    echo "Selected NVMe device: /dev/$dev" >&2
+    echo "/dev/$dev"
+}
+
+mount_nvme() {
+    local dev="$1"
+    echo "=== Mounting NVMe device $dev ===" >&2
+
+    # Create mount point (no sudo needed - running as root)
+    mkdir -p "$NVME_MNT"
+
+    # If not formatted, create ext4 filesystem
+    if ! blkid "$dev" >/dev/null 2>&1; then
+        echo "Formatting NVMe device $dev..." >&2
+        mkfs.ext4 -F "$dev"
+    else
+        echo "NVMe device $dev already formatted" >&2
+        blkid "$dev" >&2 || true
+    fi
+
+    # Mount if not mounted
+    if ! mount | grep -q "$NVME_MNT"; then
+        echo "Mounting NVMe filesystem to $NVME_MNT..." >&2
+        mount "$dev" "$NVME_MNT"
+        echo "Mount successful" >&2
+    else
+        echo "NVMe already mounted at $NVME_MNT" >&2
+    fi
+
+    # Show mount info
+    echo "Current mounts:" >&2
+    mount | grep nvme >&2 || true
+    df -h "$NVME_MNT" >&2 || true
+}
+
+install_azcopy() {
+    echo "=== Installing azcopy ===" >&2
+
+    # Check if azcopy is already installed
+    if command -v azcopy >/dev/null 2>&1; then
+        echo "azcopy already installed" >&2
+        azcopy --version >&2 || true
+        return
+    fi
+
+    echo "Downloading azcopy from Microsoft..." >&2
+    wget -q -O azcopy.tar.gz https://aka.ms/downloadazcopy-v10-linux
+
+    echo "Extracting azcopy..." >&2
+    tar -xf azcopy.tar.gz --strip-components=1
+
+    echo "Installing azcopy to /usr/local/bin..." >&2
+    mv azcopy /usr/local/bin/
+    chmod +x /usr/local/bin/azcopy
+
+    echo "Cleaning up..." >&2
+    rm -f azcopy.tar.gz
+
+    echo "azcopy installed successfully" >&2
+    azcopy --version >&2 || true
+
+    # echo "Downloading microsoft distribution DEB..." >&2
+    # wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+
+    # echo "Installing microsoft distribution DEB..." >&2
+    # sudo dpkg -i packages-microsoft-prod.deb
+    # rm packages-microsoft-prod.deb
+
+    # echo "Updating package lists..." >&2
+    # sudo apt-get update
+
+    # echo "Apt install azcopy package..." >&2
+    # sudo apt-get install azcopy -y
+
+}
+
+stage_refdata() {
+    echo "=== Staging reference data ===" >&2
+
+    # If refdata already exists → assume this is a warm node
+    # Check for the actual data directory, not just any contents
+    if [[ -d "$REFDATA_DIR/refdata/core_nt" ]]; then
+        echo "Refdata already staged at $REFDATA_DIR/refdata/core_nt — skipping download." >&2
+        echo "Directory contents:" >&2
+        ls -lh "$REFDATA_DIR/refdata/core_nt" >&2 || true
+        return
+    fi
+
+    echo "Creating refdata directory: $REFDATA_DIR" >&2
+    mkdir -p "$REFDATA_DIR"
+
+    echo "Downloading reference data from: ${BLOB_URL}" >&2
+    echo "Target directory: ${REFDATA_DIR}" >&2
+
+    # Note:
+    # --check-md5 NoCheck = fastest (skip MD5 validation)
+    # --cap-mbps 0 = unlimited throughput
+    # azcopy automatically uses optimal parallelism
+    azcopy copy \
+        "${BLOB_URL}" \
+        "${REFDATA_DIR}" \
+        --recursive \
+        --check-md5 NoCheck \
+        --cap-mbps 0
+
+    echo "Reference data download completed" >&2
+    echo "Downloaded files:" >&2
+    du -sh "$REFDATA_DIR" >&2 || true
+    ls -lh "$REFDATA_DIR" >&2 || true
+}
+
+# -----------------------------------------------------------------------------
+# MAIN
+# -----------------------------------------------------------------------------
+
+echo "===== START TASK: Begin staging refdata on NVMe =====" >&2
+echo "Date: $(date)" >&2
+echo "User: $(whoami)" >&2
+echo "Working directory: $(pwd)" >&2
+
+# Step 1: Detect NVMe device
+echo "" >&2
+echo "STEP 1: Detecting NVMe device" >&2
+NVME_DEV=$(detect_nvme_device)
+echo "✓ Detected NVMe device: $NVME_DEV" >&2
+
+# Step 2: Mount NVMe device
+echo "" >&2
+echo "STEP 2: Mounting NVMe device" >&2
+if mount_nvme "$NVME_DEV"; then
+    echo "✓ NVMe device mounted successfully" >&2
+else
+    echo "✗ Failed to mount NVMe device" >&2
+    exit 1
+fi
+
+# Step 3: Install azcopy
+echo "" >&2
+echo "STEP 3: Installing azcopy" >&2
+if install_azcopy; then
+    echo "✓ azcopy installed successfully" >&2
+else
+    echo "✗ Failed to install azcopy" >&2
+    exit 1
+fi
+
+# Step 4: Stage reference data
+echo "" >&2
+echo "STEP 4: Staging reference data" >&2
+if stage_refdata; then
+    echo "✓ Reference data staging completed" >&2
+else
+    echo "✗ Failed to stage reference data" >&2
+    exit 1
+fi
+
+echo "" >&2
+echo "===== START TASK: Completed Successfully =====" >&2
+exit 0
