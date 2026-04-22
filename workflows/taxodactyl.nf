@@ -68,10 +68,12 @@ workflow TAXODACTYL {
     VALIDATE_INPUT (
         ch_env_var_file,
         ch_sequences_prepared,
-        ch_metadata_prepared
+        ch_metadata_prepared,
+        ch_allowed_loci
     )
-    ch_sequences = VALIDATE_INPUT.out.sequences
-    ch_metadata = VALIDATE_INPUT.out.metadata
+    // For Azure Batch: .first() to be able to use a mixture of channels with multiple and single elements as arguments to processes
+    ch_sequences = VALIDATE_INPUT.out.sequences.first()
+    ch_metadata = VALIDATE_INPUT.out.metadata.first()
 
     // Run BOLD or BLAST search depending on db_type
     if (params.db_type == 'bold') {
@@ -137,6 +139,12 @@ workflow TAXODACTYL {
         ch_taxonomy_file = EXTRACT_TAXONOMY.out.taxonomy.first()
 
     }
+
+    ch_env_var_file.view()
+    ch_hits_files.view()
+    ch_taxonomy_file.view()
+    ch_sequences.view()
+    ch_metadata.view()
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
