@@ -25,25 +25,26 @@ which shows CLI arguments and environment variables for each script.
 1. [Debugging in Singularity](#debugging-in-singularity)
 1. [Running tests](#running-tests)
     1. [Units tests](#unit-tests)
-    2. [Integration tests](#integration-tests)
+    1. [Integration tests](#integration-tests)
 1. [Running the scripts](#workflow-steps-python-scripts)
     1. [Environment variables](#environment-variables)
     1. [P0 validate inputs](#p0-validate-inputs)
-    2. [P1 BLAST parser](#p1-blast-parser)
-    3. [BLASTDBCMD](#blastdbcmd)
-    4. [P2 NCBI Taxonomy extractor](#p2-ncbi-taxonomy-extractor)
-    5. [P3 Evaluate taxonomy](#p3-evaluate-taxonomy)
-    6. [P4 Analysis of reference sequence publications](#p4-analysis-of-reference-sequence-publications)
-    7. [P5 Analysis of database coverage](#p5-analysis-of-database-coverage)
-    8. [P6 Report generation](#p6-report-generation)
+    1. [P1 BLAST parser](#p1-blast-parser)
+    1. [BLASTDBCMD](#blastdbcmd)
+    1. [P2 NCBI Taxonomy extractor](#p2-ncbi-taxonomy-extractor)
+    1. [P3 Evaluate taxonomy](#p3-evaluate-taxonomy)
+    1. [P4 Analysis of reference sequence publications](#p4-analysis-of-reference-sequence-publications)
+    1. [P5 Analysis of database coverage](#p5-analysis-of-database-coverage)
+    1. [P6 Report generation](#p6-report-generation)
 1. [Building the docs](#building-the-docs)
 1. [Version release](#version-release)
 1. [Application features](#application-features)
     1. [Configuration](#application-configuration)
-    2. [Handling errors](#handling-errors)
-    3. [Throttling API requests](#throttling-api-requests)
-    4. [Flags](#flags)
-    5. [Sample locus](#sample-locus)
+    1. [Handling errors](#handling-errors)
+    1. [Throttling API requests](#throttling-api-requests)
+    1. [Caching API responses](#caching-api-responses)
+    1. [Flags](#flags)
+    1. [Sample locus](#sample-locus)
 
 
 # FAQs
@@ -803,6 +804,70 @@ released. The database table used depends on the `ENDPOINT` that the throttle
 was created with, as each endpoint is throttled independently:
 
 https://github.com/qcif/taxodactyl/blob/main/scripts/src/utils/throttle.py#L14-L31
+
+
+## Caching API responses
+
+Many of the external API calls made during P4/P5 are expensive and idempotent
+(e.g. GBIF species lookups, NCBI taxonomy, publication metadata). To avoid
+repeating the same request across reruns - or across the many threads spawned
+within a single run - responses are cached via the
+[cache.py](./src/utils/cache.py) module.
+
+Use the module-level `get`/`put` API, keying entries with `keyhash()` which
+accepts any number of hashable items (strings, ints, callables, objects with
+a `serialize()` method):
+
+```py
+from src.utils import cache
+
+key = cache.keyhash('gbif.species_suggest', 'Homo sapiens')
+result = cache.get(key)
+if result is None:
+    result = throttle.with_retry(pygbif.species.name_suggest, kwargs={...})
+    cache.put(key, result)
+```
+
+The `get`/`put` calls delegate to a singleton `CacheBackend` selected by
+`config.cache_backend`. Two backends are shipped:
+
+- **`sqlite`** (default) - stores entries in a local SQLite database with
+  WAL mode and `fcntl` file locks to coordinate concurrent access across
+  threads and processes on the same host. This is what runs during
+  development and on a single-node deployment.
+- **`azure_blob`** - stores each entry as a single blob in an Azure Blob
+  Storage container. Intended for deployment on Azure Batch where ephemeral
+  compute nodes share a cache over the network. Azure Blob Storage provides
+  last-writer-wins semantics on `PUT`, so no cross-node locking is required.
+  See [docs/azure/01-initial-setup.md](../docs/azure/01-initial-setup.md)
+  for provisioning instructions.
+
+Backends subclass the abstract `CacheBackend` and must implement `get()` and
+`put()`. A `lock()` context manager can optionally be overridden for
+backends that need cross-process coordination around schema/setup (the
+SQLite backend does this; the Azure backend does not). Both backends
+honour `config.cache_timeout_hours` and best-effort delete expired entries
+on read. For the Azure backend, the authoritative garbage collector is the
+storage account lifecycle rule defined in
+[deployment/azure/storage-policy.json](../deployment/azure/storage-policy.json).
+
+The active backend is controlled by these config fields (also settable via
+env vars - see [config/README.md](./config/README.md)):
+
+```yaml
+cache_backend: sqlite          # or 'azure_blob'
+cache_timeout_hours: 168       # 7 days
+cache_sqlite_path: /tmp/...    # sqlite backend only
+cache_azure_container: cache   # azure_blob only
+cache_azure_connection_string: ...  # azure_blob only (preferred)
+cache_azure_account_url: ...        # azure_blob only (DefaultAzureCredential)
+cache_azure_blob_prefix: ''         # azure_blob only, optional namespace
+```
+
+Cache entries are pickled, so values must be `pickle`-safe. Errors during
+`get`/`put` (missing blob, corrupt pickle, transport errors, SDK exceptions)
+are logged and swallowed - a cache failure should never break the analysis,
+it just results in the upstream API call being repeated.
 
 
 ## Flags

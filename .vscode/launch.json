@@ -255,7 +255,9 @@
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
+                // "CACHE_BACKEND": "azure_blob",
             },
+            // "envFile": "${workspaceFolder}/.env.azure",
             "preLaunchTask": "clear-log-files"
         },
         {

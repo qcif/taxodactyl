@@ -267,6 +267,26 @@ class ConfigSchema(BaseModel):
         default=168, description="Cache timeout in hours")
     cache_disabled: bool = Field(
         default=False, description="Disable caching of API responses")
+    cache_backend: str = Field(
+        default='sqlite',
+        description="Cache backend to use ('sqlite' or 'azure_blob')")
+    cache_azure_account_url: str | None = Field(
+        default=None,
+        description=(
+            "Azure Blob Storage account URL, e.g. "
+            "'https://<account>.blob.core.windows.net'. Used with "
+            "DefaultAzureCredential when cache_backend is 'azure_blob'."))
+    cache_azure_connection_string: str | None = Field(
+        default=None,
+        description=(
+            "Azure Blob Storage connection string. Alternative to "
+            "cache_azure_account_url when cache_backend is 'azure_blob'."))
+    cache_azure_container: str = Field(
+        default='biosecurity-cache',
+        description="Azure Blob Storage container name for the cache")
+    cache_azure_blob_prefix: str = Field(
+        default='',
+        description="Optional blob name prefix for all cache entries")
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")

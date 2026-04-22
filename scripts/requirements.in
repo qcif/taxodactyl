@@ -10,3 +10,6 @@ fsspec
 pyyaml
 biopython
 debugpy
+azure-core
+azure-identity
+azure-storage-blob

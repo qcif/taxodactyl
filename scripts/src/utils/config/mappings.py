@@ -346,6 +346,26 @@ PARAMS = {
         'cache_disabled',
         env_name='CACHE_DISABLED',
     ),
+    'cache_backend': StringMapping(
+        'cache_backend',
+        env_name='CACHE_BACKEND',
+    ),
+    'cache_azure_account_url': StringMapping(
+        'cache_azure_account_url',
+        env_name='CACHE_AZURE_ACCOUNT_URL',
+    ),
+    'cache_azure_connection_string': StringMapping(
+        'cache_azure_connection_string',
+        env_name='CACHE_AZURE_CONNECTION_STRING',
+    ),
+    'cache_azure_container': StringMapping(
+        'cache_azure_container',
+        env_name='CACHE_AZURE_CONTAINER',
+    ),
+    'cache_azure_blob_prefix': StringMapping(
+        'cache_azure_blob_prefix',
+        env_name='CACHE_AZURE_BLOB_PREFIX',
+    ),
     'max_api_retries': IntMapping(
         'max_api_retries',
         env_name='MAX_API_RETRIES',
