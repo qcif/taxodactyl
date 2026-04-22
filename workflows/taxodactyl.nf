@@ -140,12 +140,6 @@ workflow TAXODACTYL {
 
     }
 
-    ch_env_var_file.view()
-    ch_hits_files.view()
-    ch_taxonomy_file.view()
-    ch_sequences.view()
-    ch_metadata.view()
-
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
         ch_env_var_file,
