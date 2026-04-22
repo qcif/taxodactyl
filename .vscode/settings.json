@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./scripts"
-    ]
+    ],
+    "nextflow.telemetry.enabled": true
 }

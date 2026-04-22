@@ -47,4 +47,3 @@ process BLAST_BLASTN {
     END_VERSIONS
     """
 }
-
