@@ -4,6 +4,7 @@ import sqlite3
 import time
 from pprint import pformat
 
+from .cache import FileLock
 from .config import Config
 from .errors import APIError
 from src.utils import cache
@@ -85,6 +86,52 @@ class Throttle:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
+    def _get_file_lock(self) -> FileLock:
+        """Create a file-based lock for cross-process synchronization."""
+        lock_path = self.db_path.with_suffix(
+            self.db_path.suffix + '.lock'
+        )
+        return FileLock(lock_path)
+
+    def _get_connection(
+        self,
+        timeout: float = 30.0,
+        setup_wal: bool = True,
+    ) -> sqlite3.Connection:
+        """Get a database connection with proper configuration."""
+        conn = sqlite3.connect(
+            self.db_path,
+            timeout=timeout,
+            check_same_thread=False,
+        )
+        if setup_wal:
+            try:
+                with self._get_file_lock():
+                    cursor = conn.execute("PRAGMA journal_mode")
+                    current_mode = cursor.fetchone()[0]
+                    if current_mode.upper() != 'WAL':
+                        conn.execute("PRAGMA journal_mode=WAL")
+                    conn.execute("PRAGMA synchronous=NORMAL")
+            except (OSError, IOError):
+                logger.warning(
+                    "File locking failed, setting WAL mode without lock"
+                )
+                retries = 0
+                while True:
+                    try:
+                        conn.execute("PRAGMA journal_mode=WAL")
+                        conn.execute("PRAGMA synchronous=NORMAL")
+                    except sqlite3.OperationalError as exc:
+                        if retries < 5:
+                            time.sleep(0.1 * (2 ** retries))
+                            retries += 1
+                            continue
+                        raise exc
+                    break
+        else:
+            conn.execute("PRAGMA synchronous=NORMAL")
+        return conn
+
     def _initialize_db(self):
         """Create table for tracking request timestamps."""
         if not self.db_path.exists():
@@ -92,14 +139,52 @@ class Throttle:
                 f"Creating throttle SQLite DB file: {self.db_path}"
             )
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute(f"""
-                CREATE TABLE IF NOT EXISTS {self.table_name} (
-                    {self.FIELD_NAME} INTEGER
-                )
-            """)
-            conn.execute("PRAGMA journal_mode=WAL;")
-            conn.commit()
+        try:
+            with self._get_file_lock():
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        with self._get_connection(
+                            setup_wal=False,
+                        ) as conn:
+                            conn.execute(f"""
+                                CREATE TABLE IF NOT EXISTS {self.table_name} (
+                                    {self.FIELD_NAME} INTEGER
+                                )
+                            """)
+                            conn.commit()
+                            break
+                    except sqlite3.OperationalError as e:
+                        if (
+                            "database is locked" in str(e)
+                            and attempt < max_retries - 1
+                        ):
+                            time.sleep(0.1 * (2 ** attempt))
+                            continue
+                        raise
+        except (OSError, IOError):
+            logger.warning(
+                "File locking failed for schema operations"
+            )
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    with self._get_connection() as conn:
+                        conn.execute(f"""
+                            CREATE TABLE IF NOT EXISTS {self.table_name} (
+                                {self.FIELD_NAME} INTEGER
+                            )
+                        """)
+                        conn.commit()
+                        break
+                except sqlite3.OperationalError as e:
+                    if (
+                        "database is locked" in str(e)
+                        and attempt < max_retries - 1
+                    ):
+                        time.sleep(0.1 * (2 ** attempt))
+                        continue
+                    raise
 
     def _await_release(self):
         """Query sqlite DB for permission to send a request.
@@ -119,6 +204,7 @@ class Throttle:
                 with sqlite3.connect(
                     self.db_path,
                     isolation_level=None,
+                    timeout=30.0,
                 ) as conn:
                     try:
                         # Lock the database for writing
