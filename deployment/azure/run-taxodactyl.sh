@@ -93,6 +93,18 @@ if [[ -z "${AZURE_BATCH_ACCESS_KEY:-}" ]]; then
     exit 1
 fi
 
+# Check Redis reachability if configured
+if [[ "${THROTTLE_BACKEND:-}" == "redis" ]] && [[ -n "${REDIS_HOST:-}" ]]; then
+    echo -e "${YELLOW}Checking Redis connectivity at $REDIS_HOST:${REDIS_PORT:-6379}...${NC}"
+    if nc -z -w5 "$REDIS_HOST" "${REDIS_PORT:-6379}" 2>/dev/null; then
+        echo -e "${GREEN}Redis is reachable${NC}"
+    else
+        echo -e "${RED}ERROR: Redis at $REDIS_HOST:${REDIS_PORT:-6379} is not reachable${NC}"
+        echo "Check that the Redis VM is running: az_redis_vm_status"
+        exit 1
+    fi
+fi
+
 # Show configuration
 echo ""
 echo -e "${YELLOW}=== Taxodactyl Azure Batch Configuration ===${NC}"

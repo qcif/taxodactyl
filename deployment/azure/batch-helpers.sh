@@ -17,6 +17,12 @@ NC='\033[0m' # No Color
 DEFAULT_POOL_ID="taxodactyl"
 DEFAULT_AUTOSCALE_INTERVAL="PT5M"
 
+# Redis VM
+REDIS_VM_NAME="daff-redis-vm"
+REDIS_VM_HOST="daff-redis.australiaeast.cloudapp.azure.com"
+REDIS_VM_NSG="daff-redis-nsg"
+REDIS_VM_TYPE="Standard_B2ats_v2"
+
 # Autoscale formula: Fast scale-up (5min window), slow scale-down (30min window)
 # Scales to 1 node if ANY tasks in last 5 min OR any tasks in last 30 min
 # This ensures quick response to new tasks while keeping nodes warm
@@ -925,6 +931,124 @@ az_fetch_nf_logs() {
 }
 
 #
+# Redis VM Management
+#
+
+az_redis_vm_status() {
+    _check_env_vars || return 1
+
+    _info "Redis VM: $REDIS_VM_NAME"
+    echo ""
+
+    local power_state
+    power_state=$(az vm get-instance-view \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$REDIS_VM_NAME" \
+        --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" \
+        -o tsv 2>/dev/null)
+
+    if [[ -z "$power_state" ]]; then
+        _error "VM '$REDIS_VM_NAME' not found in resource group '$RESOURCE_GROUP'"
+        return 1
+    fi
+
+    echo -e "  Power state:  $power_state"
+    echo -e "  Hostname:     $REDIS_VM_HOST"
+    echo -e "  Port:         ${REDIS_PORT:-6379}"
+    echo ""
+
+    if [[ "$power_state" == "VM running" ]]; then
+        if nc -z -w3 "$REDIS_VM_HOST" "${REDIS_PORT:-6379}" 2>/dev/null; then
+            _success "Redis is reachable at $REDIS_VM_HOST:${REDIS_PORT:-6379}"
+        else
+            _warning "VM is running but Redis port is not reachable (this may be normal if you are accessing the VM from outside the Azure network)"
+            _info "Check Redis service: az_redis_vm_ssh then 'sudo systemctl status redis-server'"
+        fi
+    fi
+}
+
+az_redis_vm_start() {
+    local skip_confirm=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --yes|-y) skip_confirm=true; shift ;;
+            *) _error "Unknown argument: $1"; return 1 ;;
+        esac
+    done
+
+    _check_env_vars || return 1
+
+    local power_state
+    power_state=$(az vm get-instance-view \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$REDIS_VM_NAME" \
+        --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus" \
+        -o tsv 2>/dev/null)
+
+    if [[ "$power_state" == "VM running" ]]; then
+        _info "Redis VM is already running"
+        return 0
+    fi
+
+    _info "Starting Redis VM '$REDIS_VM_NAME' (current state: ${power_state:-unknown})..."
+
+    if [[ "$skip_confirm" == false ]] && ! _confirm "Start Redis VM?"; then
+        _warning "Start cancelled"
+        return 0
+    fi
+
+    if az vm start \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$REDIS_VM_NAME"; then
+        _success "Redis VM started"
+        _info "Redis available at $REDIS_VM_HOST:${REDIS_PORT:-6379}"
+    else
+        _error "Failed to start Redis VM"
+        return 1
+    fi
+}
+
+az_redis_vm_stop() {
+    local skip_confirm=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --yes|-y) skip_confirm=true; shift ;;
+            *) _error "Unknown argument: $1"; return 1 ;;
+        esac
+    done
+
+    _check_env_vars || return 1
+
+    _warning "Stopping Redis VM will make rate-limiting unavailable until restarted"
+    _info "VM: $REDIS_VM_NAME"
+
+    if [[ "$skip_confirm" == false ]] && ! _confirm "Deallocate Redis VM?"; then
+        _warning "Stop cancelled"
+        return 0
+    fi
+
+    _info "Deallocating Redis VM..."
+
+    if az vm deallocate \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$REDIS_VM_NAME"; then
+        _success "Redis VM deallocated (compute cost stopped)"
+    else
+        _error "Failed to deallocate Redis VM"
+        return 1
+    fi
+}
+
+az_redis_vm_ssh() {
+    _check_env_vars || return 1
+
+    _info "Connecting to Redis VM at $REDIS_VM_HOST..."
+    ssh "azureuser@$REDIS_VM_HOST"
+}
+
+#
 # Utility Functions
 #
 
@@ -964,6 +1088,12 @@ SAS Token Management:
 
 Nextflow Debugging:
   az_fetch_nf_logs [log_file] [output_dir]   Download all command logs from a Nextflow run
+
+Redis VM Management:
+  az_redis_vm_status              Show VM power state and Redis reachability
+  az_redis_vm_start [--yes]       Start a deallocated Redis VM
+  az_redis_vm_stop [--yes]        Deallocate Redis VM (stops compute billing)
+  az_redis_vm_ssh                 Open SSH session to Redis VM
 
 Utility:
   az_help                         Show this help message
@@ -1064,6 +1194,9 @@ else
     echo ""
     echo "  Nextflow Debugging:"
     echo "    az_fetch_nf_logs"
+    echo ""
+    echo "  Redis VM Management:"
+    echo "    az_redis_vm_status, az_redis_vm_start, az_redis_vm_stop, az_redis_vm_ssh"
     echo ""
     echo -e "${GREEN}Run 'az_help' for detailed usage information${NC}"
     echo ""
