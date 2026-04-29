@@ -386,6 +386,10 @@ class Config:
         return self.user_tempdir / ('throttle_' + self.sqlite_file)
 
     @property
+    def throttle_sqlite_global_path(self):
+        return self.tempdir / ('throttle_' + self.sqlite_file)
+
+    @property
     def cache_sqlite_path(self):
         return self.tempdir / ('cache_' + self.sqlite_file)
 
