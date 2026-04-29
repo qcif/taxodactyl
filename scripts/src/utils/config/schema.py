@@ -15,6 +15,11 @@ from pydantic import (
 SCRIPTS_ROOT = Path(__file__).parents[3]
 
 
+class Backend(str, Enum):
+    LOCAL = 'local'
+    AZURE = 'azure'
+
+
 def _make_absolute(path: Path) -> Path:
     """Convert a Path to an absolute path."""
     if not path.is_absolute():
@@ -180,6 +185,13 @@ class ConfigSchema(BaseModel):
         description="NCBI API key for increased rate limits"
     )
 
+    azure_key_vault_url: str | None = Field(
+        default=None,
+        description=(
+            "Azure Key Vault URL, e.g. "
+            "'https://<account>.vault.azure.net'. Required if backend is"
+            " 'azure' and you want to store user secrets.")
+    )
 
     # Output filenames
     timestamp_filename: str = Field(

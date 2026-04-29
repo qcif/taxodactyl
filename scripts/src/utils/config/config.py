@@ -23,12 +23,13 @@ from Bio import SeqIO
 from pydantic import ValidationError
 
 from src.utils import countries
+from src.utils import secrets
 from src.utils.locus import Locus
 from src.utils.log import get_logging_config
 from src.utils.utils import path_safe_str
 
 from . import mappings
-from .schema import ConfigSchema
+from .schema import Backend, ConfigSchema
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,11 @@ DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
     'sequence',
 )
+VARS_FROM_ENV = (
+    "USER_EMAIL",
+    "NCBI_API_KEY",
+)
+FACILITY_NAME_DEFAULT = "Not provided"
 TEMP_FILES = (
     'entrez_cache_dirname',
 )
@@ -234,6 +240,7 @@ class Config:
             setattr(self, field_name, field_value)
 
         self._apply_env_overrides()
+        self._resolve_ncbi_api_key()
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
@@ -246,6 +253,27 @@ class Config:
                     logger.warning(
                         f"Failed to update config from CLI arg "
                         f"{mapper.env_name}={value}: {e}")
+
+    def _resolve_ncbi_api_key(self):
+        """Resolve NCBI_API_KEY from vault if not provided via env var."""
+        if not self.USER_EMAIL:
+            return
+        if self.NCBI_API_KEY:
+            secrets.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
+        else:
+            self.NCBI_API_KEY = secrets.get('NCBI_API_KEY', self.USER_EMAIL)
+
+    def _resolve_facility_name(self):
+        """Resolve facility_name from vault if not provided by the user."""
+        if not self.USER_EMAIL:
+            return
+        current = self.inputs.facility_name
+        if current and current != FACILITY_NAME_DEFAULT:
+            secrets.put('facility_name', self.USER_EMAIL, current)
+        else:
+            vault_value = secrets.get('facility_name', self.USER_EMAIL)
+            if vault_value:
+                self.inputs.facility_name = vault_value
 
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
@@ -272,6 +300,8 @@ class Config:
                     f"Failed to update config from CLI arg "
                     f"{arg_name}={value}: {e}")
                 continue
+
+        self._resolve_facility_name()
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
@@ -615,6 +645,14 @@ class Config:
                     - timedelta(days=self.temp_clean_after_days)
                 ):
                     shutil.rmtree(path)
+
+    @property
+    def is_local(self) -> bool:
+        return self.backend == Backend.LOCAL
+
+    @property
+    def is_azure(self) -> bool:
+        return self.backend == Backend.AZURE
 
 
 def get_latest_mtime(path: str) -> datetime:
