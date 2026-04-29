@@ -167,12 +167,7 @@ class Throttle:
                         with self._get_connection(
                             setup_wal=False,
                         ) as conn:
-                            conn.execute(f"""
-                                CREATE TABLE IF NOT EXISTS {self.table_name} (
-                                    {self.FIELD_NAME} INTEGER
-                                )
-                            """)
-                            conn.commit()
+                            self._create_db_tables(conn)
                             break
                     except sqlite3.OperationalError as e:
                         if (
@@ -190,28 +185,7 @@ class Throttle:
             for attempt in range(max_retries):
                 try:
                     with self._get_connection() as conn:
-                        conn.execute("PRAGMA journal_mode=WAL;")
-                        conn.commit()
-                        conn.execute(f"""
-                            CREATE TABLE IF NOT EXISTS {self.table_name} (
-                                {self.FIELD_NAME} INTEGER
-                            )
-                        """)
-                        if self.backoff_factor:
-                            conn.execute(f"""
-                                CREATE TABLE IF NOT EXISTS {self.backoff_table} (
-                                    id INTEGER PRIMARY KEY CHECK (id = 1),
-                                    effective_rps REAL NOT NULL,
-                                    last_429_timestamp INTEGER NOT NULL
-                                )
-                            """)
-                            conn.execute(
-                                f"INSERT OR IGNORE INTO {self.backoff_table}"
-                                " (id, effective_rps, last_429_timestamp)"
-                                " VALUES (1, ?, 0)",
-                                (self.rps,)
-                            )
-                        conn.commit()
+                        self._create_db_tables(conn)
                         break
                 except sqlite3.OperationalError as e:
                     if (
@@ -221,6 +195,29 @@ class Throttle:
                         time.sleep(0.1 * (2 ** attempt))
                         continue
                     raise
+
+    def _create_db_tables(self, conn):
+        """Create necessary tables for throttling and backoff."""
+        conn.execute(f"""
+            CREATE TABLE IF NOT EXISTS {self.table_name} (
+                {self.FIELD_NAME} INTEGER
+            )
+        """)
+        if self.backoff_factor:
+            conn.execute(f"""
+                CREATE TABLE IF NOT EXISTS {self.backoff_table} (
+                    id INTEGER PRIMARY KEY CHECK (id = 1),
+                    effective_rps REAL NOT NULL,
+                    last_429_timestamp INTEGER NOT NULL
+                )
+            """)
+            conn.execute(
+                f"INSERT OR IGNORE INTO {self.backoff_table}"
+                " (id, effective_rps, last_429_timestamp)"
+                " VALUES (1, ?, 0)",
+                (self.rps,)
+            )
+        conn.commit()
 
     def _await_release(self):
         """Query sqlite DB for permission to send a request.
@@ -257,12 +254,14 @@ class Throttle:
                             conn.commit()
                             return
 
-                        # Rollback if the request limit is exceeded
+                        # The request limit has been exceeded
                         conn.rollback()
 
-                    except sqlite3.OperationalError:
-                        # Handle potential lock contention gracefully
-                        pass
+                    except sqlite3.OperationalError as e:
+                        logger.warning(
+                            "OperationalError during throttle check:"
+                            f" {e}. Retrying..."
+                        )
 
             except sqlite3.OperationalError as e:
                 raise sqlite3.OperationalError(
