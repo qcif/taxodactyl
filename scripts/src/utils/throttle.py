@@ -75,6 +75,8 @@ class Throttle:
     BACKOFF_DEBOUNCE_MS = 30_000  # 30s
     BACKOFF_EXPIRY_MS = 7_200_000  # 2 hours
     BACKOFF_MIN_RPS = 0.1
+    _await_exception_count = 0
+    _await_exception_msg = ""
 
     def __init__(
         self,
@@ -258,6 +260,7 @@ class Throttle:
                         conn.rollback()
 
                     except sqlite3.OperationalError as e:
+                        self._consider_await_exception(e)
                         logger.warning(
                             "OperationalError during throttle check:"
                             f" {e}. Retrying..."
@@ -276,6 +279,16 @@ class Throttle:
                     f"Awaiting throttle release for endpoint {self.name}"
                     f" for >{seconds_waited} seconds..."
                 )
+
+    def _consider_await_exception(self, exception):
+        """Raise if the same exception has occurred 5 times in a row."""
+        if self._await_exception_msg != str(exception):
+            self._await_exception_msg = str(exception)
+            self._await_exception_count = 0
+        self._await_exception_count += 1
+        if self._await_exception_count >= 5:
+            raise exception
+
 
     def _notify_429(self):
         """Record a 429 response and apply backoff if debounce has elapsed.
