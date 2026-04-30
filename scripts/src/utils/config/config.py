@@ -259,8 +259,17 @@ class Config:
             return
         if self.NCBI_API_KEY:
             self.vault.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
+            logger.info("NCBI API key read from env var NCBI_API_KEY and"
+                        " stored in vault.")
         else:
             self.NCBI_API_KEY = self.vault.get('NCBI_API_KEY', self.USER_EMAIL)
+            if self.NCBI_API_KEY:
+                logger.info("NCBI API key retrieved from vault.")
+            else:
+                logger.info(
+                    "No NCBI API key provided via env var or vault. Proceeding"
+                    " without an API key, but you may encounter rate limiting."
+                )
 
     def _resolve_facility_name(self):
         """Resolve facility_name from vault if not provided by the user."""
