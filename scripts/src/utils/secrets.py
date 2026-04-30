@@ -1,7 +1,11 @@
 """Secret storage backends for persisting user-provided credentials.
 
 Supports local encrypted file storage and Azure Key Vault.
-Backend is selected based on the AZURE_BACKEND environment variable.
+
+Usage:
+    vault = Vault(config)
+    vault.get(secret_name, user_email)
+    vault.put(secret_name, user_email, value)
 """
 
 import base64
@@ -15,12 +19,8 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet, InvalidToken
 
-from src.utils.config import Config
-
 logger = logging.getLogger(__name__)
-config = Config()
 
-AZURE_BACKEND_ENV = 'AZURE_BACKEND'
 SECRET_KEY_ENV = 'SECRET_KEY'
 SECRETS_FILENAME = 'secrets.enc'
 
@@ -103,8 +103,9 @@ class AzureVaultBackend(VaultBackend):
         key = self._key(secret_name, user_email)
         try:
             val = self._client.get_secret(key).value
-            logger.debug(f"Azure Key Vault: retrieved secret {key!r}:"
-                         f" {val[:4]}*****")
+            logger.debug(
+                f"Azure Key Vault: retrieved secret {key!r}: {val[:4]}*****"
+            )
             return val
         except Exception as e:
             logger.debug(f"Azure Key Vault: secret {key!r} not found: {e}")
@@ -119,34 +120,32 @@ class AzureVaultBackend(VaultBackend):
             logger.warning(f"Azure Key Vault: failed to set {key!r}: {e}")
 
 
-_vault: VaultBackend | None = None
+class Vault:
+    """Composable secret vault — instantiate with a config object.
 
+    The backend (local encrypted file or Azure Key Vault) is selected
+    automatically based on config.is_azure.
+    """
 
-def _create_backend() -> VaultBackend:
-    if config.is_azure:
-        return AzureVaultBackend(config.azure_key_vault_url)
-    return LocalVaultBackend(config.user_tempdir)
+    def __init__(self, config):
+        self._backend = self._create_backend(config)
 
+    def _create_backend(self, config) -> VaultBackend:
+        if config.is_azure:
+            return AzureVaultBackend(config.azure_key_vault_url)
+        return LocalVaultBackend(config.user_tempdir)
 
-def _get_vault() -> VaultBackend:
-    global _vault
-    if _vault is None:
-        _vault = _create_backend()
-    return _vault
+    def get(self, secret_name: str, user_email: str) -> str | None:
+        """Retrieve a secret, returning None on any error."""
+        try:
+            return self._backend.get(secret_name, user_email)
+        except Exception as e:
+            logger.warning(f"Vault get failed: {e}")
+            return None
 
-
-def get(secret_name: str, user_email: str) -> str | None:
-    """Retrieve a secret from the vault."""
-    try:
-        return _get_vault().get(secret_name, user_email)
-    except Exception as e:
-        logger.warning(f"Vault get failed: {e}")
-        return None
-
-
-def put(secret_name: str, user_email: str, value: str) -> None:
-    """Store a secret in the vault."""
-    try:
-        _get_vault().put(secret_name, user_email, value)
-    except Exception as e:
-        logger.warning(f"Vault put failed: {e}")
+    def put(self, secret_name: str, user_email: str, value: str) -> None:
+        """Store a secret, swallowing errors."""
+        try:
+            self._backend.put(secret_name, user_email, value)
+        except Exception as e:
+            logger.warning(f"Vault put failed: {e}")

@@ -23,7 +23,6 @@ from Bio import SeqIO
 from pydantic import ValidationError
 
 from src.utils import countries
-from src.utils import secrets
 from src.utils.locus import Locus
 from src.utils.log import get_logging_config
 from src.utils.utils import path_safe_str
@@ -259,9 +258,9 @@ class Config:
         if not self.USER_EMAIL:
             return
         if self.NCBI_API_KEY:
-            secrets.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
+            self.vault.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
         else:
-            self.NCBI_API_KEY = secrets.get('NCBI_API_KEY', self.USER_EMAIL)
+            self.NCBI_API_KEY = self.vault.get('NCBI_API_KEY', self.USER_EMAIL)
 
     def _resolve_facility_name(self):
         """Resolve facility_name from vault if not provided by the user."""
@@ -269,9 +268,9 @@ class Config:
             return
         current = self.inputs.facility_name
         if current and current != FACILITY_NAME_DEFAULT:
-            secrets.put('facility_name', self.USER_EMAIL, current)
+            self.vault.put('facility_name', self.USER_EMAIL, current)
         else:
-            vault_value = secrets.get('facility_name', self.USER_EMAIL)
+            vault_value = self.vault.get('facility_name', self.USER_EMAIL)
             if vault_value:
                 self.inputs.facility_name = vault_value
 
@@ -645,6 +644,11 @@ class Config:
                     - timedelta(days=self.temp_clean_after_days)
                 ):
                     shutil.rmtree(path)
+
+    @cached_property
+    def vault(self):
+        from src.utils.secrets import Vault
+        return Vault(self)
 
     @property
     def is_local(self) -> bool:
