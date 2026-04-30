@@ -23,6 +23,7 @@
 - [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
 - [Running tests with nf-test](docs/nf-tests.md)
 - [Python scripts](./scripts) (for developers)
+- [Run Taxodactyl on Azure Batch](./docs/azure/)
 
 
 ### Workflow Overview

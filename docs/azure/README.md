@@ -2,6 +2,10 @@
 
 This directory contains comprehensive documentation for running Taxodactyl workflows on Azure Batch.
 
+> [!NOTE]
+> Setting up an Azure environment to run Taxodactyl is not trivial, but we include helper scripts in ./deployment/azure to make this easier.
+> At minimum, you will need a Batch account and pool configured, and a storage account with multiple containers of reference and other data. For production deployment we also use a Redis server for coordinating concurrent rate-limiting across nodes/tasks, and a key vault for storing user API credentials.
+
 ## Quick start - running the workflow on Azure
 
 This assumes that you have an Azure Batch pool set up and configured according
