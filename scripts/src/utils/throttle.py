@@ -1,5 +1,4 @@
 import logging
-import os
 import random
 import sqlite3
 import time
@@ -305,7 +304,6 @@ class SqliteQueueBackend(AbstractQueueBackend):
         if self._await_exception_count >= 5:
             raise exception
 
-
     def _notify_429(self):
         """Record a 429 response and apply backoff if debounce has elapsed.
 
@@ -502,28 +500,16 @@ class Throttle:
     Uses a pluggable backend (SQLite or Redis) to track request timestamps
     and enforce rate limits. The backend is selected via the
     THROTTLE_BACKEND environment variable (default: 'sqlite').
-
-    The endpoint arg should be a dict of:
-        {
-          'requests_per_second': int,  # Max requests per second
-          // AND/OR
-          'requests_per_minute': int,  # Max requests per minute
-          'name': str,                 # Name to identify this endpoint
-        }
     """
 
     def __init__(
         self,
-        endpoint: dict,
+        endpoint: Endpoint,
     ):
-        self.rps = endpoint.get('requests_per_second')
-        self.rpm = endpoint.get('requests_per_minute')
-        if not (self.rps or self.rpm):
-            raise ValueError(
-                "Endpoint must specify either 'requests_per_second' or"
-                " 'requests_per_minute'."
-            )
-        self.name = endpoint['name']
+        self.rps = endpoint.requests_per_second
+        self.rpm = endpoint.requests_per_minute
+        self.name = endpoint.name
+        self.backoff_factor = endpoint.backoff_factor
         self.backend = _get_backend()
         self.backend.initialize(self.name, self.rps, self.rpm)
 
@@ -532,6 +518,10 @@ class Throttle:
 
     def __exit__(self, exc_type, exc_value, traceback):
         pass
+
+    def _notify_429(self):
+        if hasattr(self.backend, '_notify_429'):
+            self.backend._notify_429()
 
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
         retries = config.max_api_retries
