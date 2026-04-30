@@ -256,6 +256,9 @@ class Config:
     def _resolve_ncbi_api_key(self):
         """Resolve NCBI_API_KEY from vault if not provided via env var."""
         if not self.USER_EMAIL:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set NCBI_API_KEY"
+                " from vault.")
             return
         if self.NCBI_API_KEY:
             self.vault.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
@@ -274,6 +277,9 @@ class Config:
     def _resolve_facility_name(self):
         """Resolve facility_name from vault if not provided by the user."""
         if not self.USER_EMAIL:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set facility_name from"
+                " vault.")
             return
         current = self.inputs.facility_name
         if current and current != FACILITY_NAME_DEFAULT:
