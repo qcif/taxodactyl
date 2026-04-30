@@ -374,6 +374,11 @@ PARAMS = {
         'temp_clean_after_days',
         env_name='TEMP_CLEAN_AFTER_DAYS',
     ),
+    'throttle_backend': StringMapping(
+        'throttle_backend',
+        env_name='THROTTLE_BACKEND',
+        cli_name='throttle-backend',
+    ),
 
     # Analysis criteria (nested in criteria object)
     'alignment_min_nt': IntMapping(

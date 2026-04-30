@@ -49,6 +49,7 @@ sqlite_file: db.sqlite
 entrez_cache_dirname: entrez_cache
 cache_timeout_hours: 168
 cache_disabled: false
+throttle_backend: sqlite
 max_api_retries: 3
 errors_dir: errors
 temp_dir_name: biosecurity

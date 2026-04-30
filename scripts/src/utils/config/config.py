@@ -46,10 +46,11 @@ VARS_FROM_ENV = (
     "REDIS_HOST",
     "REDIS_PORT",
     "REDIS_PASSWORD",
+    "THROTTLE_BACKEND",
 )
-REDIS_DEFAULTS = {
+ENV_VAR_DEFAULTS = {
     "REDIS_HOST": "localhost",
-    "REDIS_PORT": "6380",
+    "REDIS_PORT": "6379",
     "REDIS_PASSWORD": None,
 }
 TEMP_FILES = (
@@ -170,6 +171,7 @@ class Config:
         self._load_cascading_config()
         self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
         self.query_dir = None
+        print(f"Env var THROTTLE_BACKEND={os.getenv('THROTTLE_BACKEND')}")  # ! NOCOMMIT
 
     def _get_config_paths(self) -> list[Path]:
         """Parse command line to get config file paths.
@@ -246,7 +248,7 @@ class Config:
             setattr(self, field_name, field_value)
 
         for var in VARS_FROM_ENV:
-            value = os.getenv(var, REDIS_DEFAULTS.get(var))
+            value = os.getenv(var, ENV_VAR_DEFAULTS.get(var))
             setattr(self, var, value)
 
         self._apply_env_overrides()

@@ -16,7 +16,6 @@ from src.utils import cache
 config = Config()
 logger = logging.getLogger(__name__)
 
-THROTTLE_BACKEND_ENV_VAR = 'THROTTLE_BACKEND'
 MAX_THROTTLE_WAIT_SECONDS = 120
 
 
@@ -488,11 +487,10 @@ BACKENDS = {
 
 def _get_backend() -> AbstractQueueBackend:
     """Select the throttle backend based on environment configuration."""
-    backend_name = os.getenv(THROTTLE_BACKEND_ENV_VAR, 'sqlite').lower()
-    backend_class = BACKENDS.get(backend_name)
+    backend_class = BACKENDS.get(config.throttle_backend)
     if not backend_class:
         raise ValueError(
-            f"Unknown throttle backend '{backend_name}'."
+            f"Unknown throttle backend '{config.throttle_backend}'."
             f" Available backends: {', '.join(BACKENDS.keys())}"
         )
     return backend_class()

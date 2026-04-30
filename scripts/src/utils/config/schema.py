@@ -1,5 +1,6 @@
 """Pydantic schema for configuration validation."""
 
+from enum import Enum
 from pathlib import Path
 from typing import Annotated, List
 
@@ -31,6 +32,12 @@ AbsolutePath = Annotated[
     Path,
     AfterValidator(_make_absolute)
 ]
+
+
+class ThrottleBackend(str, Enum):
+    """Enum for throttle backend options."""
+    SQLITE = 'sqlite'
+    REDIS = 'redis'
 
 
 class InputsConfig(BaseModel):
@@ -162,6 +169,15 @@ class ConfigSchema(BaseModel):
         default_factory=lambda: Path('~/.taxonkit').expanduser(),
         description="Path to TaxonKit data directory"
     )
+    throttle_backend: ThrottleBackend = Field(
+        default=ThrottleBackend.SQLITE,
+        description=(
+            "Backend to use for API request throttling. Options are 'local' "
+            "for SQLite-based throttling and 'azure' for Redis-based"
+            " throttling using Azure Cache for Redis. The 'azure' option"
+            " requires additional configuration for Azure credentials and"
+            " cache settings.")
+     )
 
     # Output filenames
     timestamp_filename: str = Field(
