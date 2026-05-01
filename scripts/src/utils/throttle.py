@@ -439,7 +439,7 @@ class RedisQueueBackend(AbstractQueueBackend):
             password=config.REDIS_PASSWORD,
             ssl=config.REDIS_SSL,
         )
-        self._user_email = config.USER_EMAIL or 'ANONYMOUS'
+        self._user_email = config.user_email or 'ANONYMOUS'
 
     def initialize(
         self,

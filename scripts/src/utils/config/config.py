@@ -40,19 +40,6 @@ DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
     'sequence',
 )
-VARS_FROM_ENV = (
-    "USER_EMAIL",
-    "NCBI_API_KEY",
-    "REDIS_HOST",
-    "REDIS_PORT",
-    "REDIS_PASSWORD",
-    "THROTTLE_BACKEND",
-)
-ENV_VAR_DEFAULTS = {
-    "REDIS_HOST": "localhost",
-    "REDIS_PORT": "6379",
-    "REDIS_PASSWORD": None,
-}
 TEMP_FILES = (
     'entrez_cache_dirname',
 )
@@ -246,10 +233,6 @@ class Config:
             field_value = getattr(self._config, field_name)
             setattr(self, field_name, field_value)
 
-        for var in VARS_FROM_ENV:
-            value = os.getenv(var, ENV_VAR_DEFAULTS.get(var))
-            setattr(self, var, value)
-
         self._apply_env_overrides()
 
     def _apply_env_overrides(self):
@@ -398,9 +381,10 @@ class Config:
     def throttle_sqlite_global_path(self):
         return self.tempdir / ('throttle_' + self.sqlite_file)
 
-    def REDIS_SSL(self):
+    @property
+    def redis_ssl(self):
         """Azure Cache for Redis uses SSL on port 6380."""
-        return int(self.REDIS_PORT) == 6380
+        return self.redis_port == 6380
 
     @property
     def cache_sqlite_path(self):

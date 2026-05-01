@@ -257,6 +257,14 @@ PARAMS = {
     ),
 
     # Input metadata
+    'user_email': StringMapping(
+        'user_email',
+        env_name='USER_EMAIL',
+    ),
+    'ncbi_api_key': StringMapping(
+        'ncbi_api_key',
+        env_name='NCBI_API_KEY',
+    ),
     'facility_name': StringMapping(
         'facility_name',
         namespace='inputs',
@@ -378,6 +386,18 @@ PARAMS = {
         'throttle_backend',
         env_name='THROTTLE_BACKEND',
         cli_name='throttle-backend',
+    ),
+    'redis_host': StringMapping(
+        'redis_host',
+        env_name='REDIS_HOST',
+    ),
+    'redis_port': IntMapping(
+        'redis_port',
+        env_name='REDIS_PORT',
+    ),
+    'redis_password': StringMapping(
+        'redis_password',
+        env_name='REDIS_PASSWORD',
     ),
 
     # Analysis criteria (nested in criteria object)
