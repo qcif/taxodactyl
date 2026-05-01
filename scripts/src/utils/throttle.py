@@ -466,7 +466,7 @@ class RedisQueueBackend(AbstractQueueBackend):
                     connection=self._connection,
                 ))
 
-        logger.info(
+        logger.debug(
             f"Redis throttle backend initialized for key: {key_prefix}"
         )
 

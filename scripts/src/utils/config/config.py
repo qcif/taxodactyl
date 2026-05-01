@@ -171,7 +171,6 @@ class Config:
         self._load_cascading_config()
         self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
         self.query_dir = None
-        print(f"Env var THROTTLE_BACKEND={os.getenv('THROTTLE_BACKEND')}")  # ! NOCOMMIT
 
     def _get_config_paths(self) -> list[Path]:
         """Parse command line to get config file paths.
