@@ -23,7 +23,7 @@ class Endpoint:
     """Configuration for a throttled API endpoint."""
 
     name: str
-    requests_per_second: Optional[int] = None
+    requests_per_second: Optional[float] = None
     requests_per_minute: Optional[int] = None
     backoff_factor: Optional[int] = None
     global_rate_limit: bool = False
@@ -45,13 +45,13 @@ class ENDPOINTS:
     )
     GBIF_FAST = Endpoint(
         name='gbif_fast',
-        requests_per_second=10,
+        requests_per_second=5,
         backoff_factor=2,
         global_rate_limit=True,
     )
     ENTREZ = Endpoint(
         name='entrez',
-        requests_per_second=10,
+        requests_per_second=5,
     )
     BOLD = Endpoint(
         name='bold',
@@ -77,13 +77,8 @@ class AbstractQueueBackend(ABC):
     """
 
     @abstractmethod
-    def initialize(
-        self,
-        name: str,
-        rps: int | None,
-        rpm: int | None,
-    ):
-        """Initialize the backend for the given endpoint name."""
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the backend for the given endpoint."""
 
     @abstractmethod
     def acquire(self):
@@ -102,10 +97,8 @@ class SqliteQueueBackend(AbstractQueueBackend):
     _await_exception_count = 0
     _await_exception_msg = ""
 
-    def __init__(
-        self,
-        endpoint: Endpoint,
-    ):
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the SQLite backend for the given endpoint."""
         self.rps = endpoint.requests_per_second
         self.rpm = endpoint.requests_per_minute
         self.per_second_limit = bool(self.rps)
@@ -434,26 +427,32 @@ class RedisQueueBackend(AbstractQueueBackend):
     def __init__(self):
         import redis as redis_lib
         self._connection = redis_lib.Redis(
-            host=config.REDIS_HOST,
-            port=int(config.REDIS_PORT),
-            password=config.REDIS_PASSWORD,
-            ssl=config.REDIS_SSL,
+            host=config.redis_host,
+            port=config.redis_port,
+            password=config.redis_password,
+            ssl=config.redis_ssl,
+            socket_connect_timeout=10,
+            socket_timeout=10,
         )
         self._user_email = config.user_email or 'ANONYMOUS'
 
-    def initialize(
-        self,
-        name: str,
-        rps: int | None,
-        rpm: int | None,
-    ):
+    def initialize(self, endpoint: Endpoint):
         from limiters import SyncTokenBucket
 
         self._buckets = []
-        key_prefix = f"throttle:{self._user_email}:{name}"
+        key_prefix = f"throttle:{self._user_email}:{endpoint.name}"
 
+        rps = endpoint.requests_per_second
+        if rps and rps < 1:
+            rps_capacity, rps_refill_n = 1, 1 / rps
+        elif rps:
+            rps_capacity, rps_refill_n = int(rps), 1
+        else:
+            rps_capacity, rps_refill_n = None, None
+
+        rpm = endpoint.requests_per_minute
         for key, capacity, refill_n in [
-            ('rps', rps, 1),
+            ('rps', rps_capacity, rps_refill_n),
             ('rpm', rpm, 60),
         ]:
             if capacity:
@@ -511,7 +510,7 @@ class Throttle:
         self.name = endpoint.name
         self.backoff_factor = endpoint.backoff_factor
         self.backend = _get_backend()
-        self.backend.initialize(self.name, self.rps, self.rpm)
+        self.backend.initialize(endpoint)
 
     def __enter__(self):
         self.backend.acquire()
