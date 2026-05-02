@@ -255,7 +255,6 @@ def fetch_gb_records(
     if locus:
         query += f' AND ({locus.genbank_query_str})'
     max_results = 1 if count else 100
-    logger.debug(f"Submitting Entrez query: <<{query}>>")
     results = fetch_entrez(
         endpoint=Entrez.esearch,
         term=query,

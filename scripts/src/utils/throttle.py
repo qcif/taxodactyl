@@ -534,6 +534,12 @@ class Throttle:
                 )
                 return cached_data
 
+            logger.debug(
+                f"Cache miss for {func.__module__}.{func.__name__} request")
+
+        logger.debug(f"Submitting request to {self.name}: Args: {args},"
+                     f" Kwargs: {kwargs}")
+
         while True:
             try:
                 with self:
