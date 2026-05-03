@@ -369,7 +369,7 @@ class Config:
 
     @property
     def user_tempdir(self):
-        user_dir = self.tempdir / (self.USER_EMAIL or 'ANONYMOUS')
+        user_dir = self.tempdir / (self.user_email or 'ANONYMOUS')
         user_dir.mkdir(exist_ok=True, parents=True)
         return user_dir
 
