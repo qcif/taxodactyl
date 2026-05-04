@@ -177,12 +177,21 @@ workflow TAXODACTYL {
     // Filter candidates for source diversity evaluation 
     ch_candidates_for_source_diversity_unfiltered = EXTRACT_CANDIDATES.out.candidates_for_source_diversity
     ch_candidates_for_source_diversity = ch_candidates_for_source_diversity_unfiltered
-        .filter { tuple -> 
+        .filter { tuple ->
             def (folder, countFile, otherFiles) = tuple
             def count = countFile.text.trim().toInteger()
             return count >= 1 && count <= params.max_candidates_for_analysis
         }
         .map { tuple -> [tuple[0], tuple[2]] }
+
+    // Identify samples intentionally skipped from source-diversity based on count thresholds.
+    ch_candidates_skipped_source_diversity = ch_candidates_for_source_diversity_unfiltered
+        .filter { tuple ->
+            def (folder, countFile, otherFiles) = tuple
+            def count = countFile.text.trim().toInteger()
+            return count < 1 || count > params.max_candidates_for_analysis
+        }
+        .map { tuple -> tuple[0] }
 
     // Retain per-sample candidate count files for reporting
     ch_candidates_count_files = ch_candidates_for_source_diversity_unfiltered
@@ -269,13 +278,16 @@ workflow TAXODACTYL {
         .groupTuple(by: 0)
         .map { sample, files -> tuple(sample, files.flatten()) }
 
-    // Gather source diversity outputs that should appear in the report
+    // Gather source-diversity outputs and add explicit empty results for skipped samples.
     ch_independent_sources_flag = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_flag
     ch_independent_sources_json = EVALUATE_SOURCE_DIVERSITY.out.independent_sources_json
-    ch_independent_sources_files = ch_candidates_files
-        .map { sample, files -> tuple(sample, []) }
-        .mix(ch_independent_sources_flag)
+    ch_independent_sources_skipped_files = ch_candidates_skipped_source_diversity
+        .map { sample -> tuple(sample, []) }
+    ch_independent_sources_files = ch_independent_sources_flag
         .mix(ch_independent_sources_json)
+        .groupTuple(by: 0)
+        .map { sample, files -> tuple(sample, files.flatten()) }
+        .mix(ch_independent_sources_skipped_files)
         .groupTuple(by: 0)
         .map { sample, files -> tuple(sample, files.flatten()) }
 
@@ -340,6 +352,7 @@ workflow TAXODACTYL {
     // Expose final workflow outputs on consistently named channels
     // nf-tests rely on them
     ch_hits_for_report = ch_hits_files
+    ch_candidates_for_report = ch_candidates_files
     ch_homology_trees = FASTME.out.nwk
     ch_html_report = REPORT.out.html_report
     ch_source_diversity_for_report = ch_independent_sources_files
