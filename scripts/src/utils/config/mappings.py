@@ -128,10 +128,6 @@ PARAMS = {
     ),
 
     # Environment configuration
-    'backend': StringMapping(
-        'backend',
-        env_name='BACKEND',
-    ),
     'cache_timeout_hours': IntMapping(
         'cache_timeout_hours',
         env_name='CACHE_TIMEOUT_HOURS',

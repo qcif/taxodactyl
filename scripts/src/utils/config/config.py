@@ -666,12 +666,8 @@ class Config:
         return Vault(self)
 
     @property
-    def is_local(self) -> bool:
-        return self.backend == Backend.LOCAL
-
-    @property
-    def is_azure(self) -> bool:
-        return self.backend == Backend.AZURE
+    def azure_key_vault_enabled(self) -> bool:
+        return bool(self.azure_key_vault_url)
 
 
 def get_latest_mtime(path: str) -> datetime:

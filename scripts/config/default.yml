@@ -1,4 +1,3 @@
-backend: local
 allowed_loci_file: config/loci.json
 flag_details_csv_path: config/flags.csv
 placeholder_img_path: src/report/static/img/placeholder.png

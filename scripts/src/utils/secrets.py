@@ -36,6 +36,16 @@ class VaultBackend(ABC):
         ...
 
 
+class NullVaultBackend(VaultBackend):
+    """No-op backend — used when vault is not configured."""
+
+    def get(self, secret_name: str, user_email: str) -> str | None:
+        return None
+
+    def put(self, secret_name: str, user_email: str, value: str) -> None:
+        pass
+
+
 class LocalVaultBackend(VaultBackend):
     """Encrypted JSON file storage backend."""
 
@@ -123,15 +133,23 @@ class AzureVaultBackend(VaultBackend):
 class Vault:
     """Composable secret vault — instantiate with a config object.
 
-    The backend (local encrypted file or Azure Key Vault) is selected
-    automatically based on config.is_azure.
+    The backend is selected automatically: AzureVaultBackend when
+    config.azure_key_vault_enabled (i.e. AZURE_KEY_VAULT_URL is set),
+    otherwise LocalVaultBackend. Falls back to NullVaultBackend if
+    backend initialisation fails.
     """
 
     def __init__(self, config):
-        self._backend = self._create_backend(config)
+        try:
+            self._backend = self._create_backend(config)
+        except Exception as e:
+            logger.warning(
+                f"Vault backend init failed, vault is disabled: {e}"
+            )
+            self._backend = NullVaultBackend()
 
     def _create_backend(self, config) -> VaultBackend:
-        if config.is_azure:
+        if config.azure_key_vault_enabled:
             return AzureVaultBackend(config.azure_key_vault_url)
         return LocalVaultBackend(config.user_tempdir)
 

@@ -913,11 +913,9 @@ vault operations are no-ops (the workflow continues without persisting secrets).
 
 **Azure Key Vault** — delegates to an
 [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/secrets/)
-instance via `DefaultAzureCredential`. Enabled when `config.is_azure` is
-`True` (i.e. the `AZURE_BACKEND` env var is set, which happens automatically
-via `conf/azure.config`). Requires `AZURE_KEY_VAULT_URL` to be set to the
-vault endpoint. Secret names are sanitised to the alphanumeric-and-hyphens
-format required by Azure Key Vault.
+instance via `DefaultAzureCredential`. Enabled when `config.azure_key_vault_enabled`
+is `True` (i.e. `AZURE_KEY_VAULT_URL` is set). Secret names are sanitised to
+the alphanumeric-and-hyphens format required by Azure Key Vault.
 
 Both backends subclass `VaultBackend` and implement `get()` and `put()`. The
 `Vault` class selects the backend in its constructor:
@@ -925,20 +923,22 @@ Both backends subclass `VaultBackend` and implement `get()` and `put()`. The
 ```py
 from src.utils.secrets import Vault
 
-vault = Vault(config)        # backend selected from config.is_azure
+vault = Vault(config)        # backend selected from config.azure_key_vault_enabled
 vault.put('MY_SECRET', user_email, 'value')
 vault.get('MY_SECRET', user_email)  # returns None if not found
 ```
 
 Errors during `get`/`put` are logged and swallowed — a vault failure should
-never interrupt the analysis.
+never interrupt the analysis. If neither `AZURE_KEY_VAULT_URL` nor `SECRET_KEY`
+is set the vault disables itself silently (`NullVaultBackend`).
 
 The active backend is controlled by:
 
 | Env var | Backend | Notes |
 |---|---|---|
 | `SECRET_KEY=<passphrase>` | Local encrypted file | Any string; used to derive the encryption key |
-| `AZURE_BACKEND=true` + `AZURE_KEY_VAULT_URL=<url>` | Azure Key Vault | Set automatically by `conf/azure.config` |
+| `AZURE_KEY_VAULT_URL=<url>` | Azure Key Vault | Set in `.env.azure`; picked up automatically by `conf/azure.config` |
+| *(neither set)* | Disabled (no-op) | `get` returns `None`, `put` is silently ignored |
 
 
 ## Flags

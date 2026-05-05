@@ -15,11 +15,6 @@ from pydantic import (
 SCRIPTS_ROOT = Path(__file__).parents[3]
 
 
-class Backend(str, Enum):
-    LOCAL = 'local'
-    AZURE = 'azure'
-
-
 def _make_absolute(path: Path) -> Path:
     """Convert a Path to an absolute path."""
     if not path.is_absolute():
@@ -189,8 +184,8 @@ class ConfigSchema(BaseModel):
         default=None,
         description=(
             "Azure Key Vault URL, e.g. "
-            "'https://<account>.vault.azure.net'. Required if backend is"
-            " 'azure' and you want to store user secrets.")
+            "'https://<account>.vault.azure.net'. Required if you want to"
+            " store user secrets when running on Azure Batch.")
     )
 
     # Output filenames

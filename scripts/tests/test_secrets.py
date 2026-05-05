@@ -6,7 +6,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
 
-from src.utils.secrets import AzureVaultBackend, LocalVaultBackend, Vault
+from src.utils.secrets import (
+    AzureVaultBackend, LocalVaultBackend, NullVaultBackend, Vault,
+)
 
 SECRET_KEY = 'test-secret-key'
 EMAIL = 'user@example.com'
@@ -163,17 +165,26 @@ class TestAzureVaultBackendOperations(unittest.TestCase):
         backend.put('NCBI_API_KEY', EMAIL, 'value')  # must not raise
 
 
+class TestNullVaultBackend(unittest.TestCase):
+
+    def test_get_returns_none(self):
+        self.assertIsNone(NullVaultBackend().get('MY_KEY', EMAIL))
+
+    def test_put_is_noop(self):
+        NullVaultBackend().put('MY_KEY', EMAIL, 'value')  # must not raise
+
+
 class TestVault(unittest.TestCase):
 
     def _make_local_config(self, storage_dir: Path):
         config = MagicMock()
-        config.is_azure = False
+        config.azure_key_vault_enabled = False
         config.user_tempdir = storage_dir
         return config
 
     def _make_azure_config(self):
         config = MagicMock()
-        config.is_azure = True
+        config.azure_key_vault_enabled = True
         config.azure_key_vault_url = 'https://myvault.vault.azure.net/'
         return config
 
@@ -187,6 +198,25 @@ class TestVault(unittest.TestCase):
              patch('azure.keyvault.secrets.SecretClient'):
             vault = Vault(self._make_azure_config())
         self.assertIsInstance(vault._backend, AzureVaultBackend)
+
+    def test_falls_back_to_null_backend_on_init_failure(self):
+        config = MagicMock()
+        config.azure_key_vault_enabled = True
+        config.azure_key_vault_url = 'https://myvault.vault.azure.net/'
+        with patch('azure.identity.DefaultAzureCredential',
+                   side_effect=Exception('no credentials')):
+            vault = Vault(config)
+        self.assertIsInstance(vault._backend, NullVaultBackend)
+
+    def test_null_backend_on_init_failure_does_not_raise(self):
+        config = MagicMock()
+        config.azure_key_vault_enabled = True
+        config.azure_key_vault_url = 'https://myvault.vault.azure.net/'
+        with patch('azure.identity.DefaultAzureCredential',
+                   side_effect=Exception('no credentials')):
+            vault = Vault(config)
+        self.assertIsNone(vault.get('MY_KEY', EMAIL))
+        vault.put('MY_KEY', EMAIL, 'value')  # must not raise
 
     def test_get_delegates_to_backend(self):
         with TemporaryDirectory() as d:

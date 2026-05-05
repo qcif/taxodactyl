@@ -6,6 +6,70 @@ This guide covers creating and managing Azure Batch pools for running Taxodactyl
 
 Since our workflow requires reference data, **do not use Nextflow's `autoPoolMode`**. We need to set up the pool with a start task to stage reference data for each node spawn event. If Nextflow creates its own pool, there won't be any reference data there!
 
+## Managed Identity for Key Vault Access
+
+> [!NOTE]
+> Azure Key Vault is optional, but can be used to remember the user's API key and facility. You can also use local key vault by setting a SECRET_KEY, or leave it out entirely to disable this feature.
+
+Batch nodes authenticate to Azure Key Vault using a **user-assigned managed identity**
+attached to the pool. This allows tasks to call `DefaultAzureCredential()` without any
+secrets or passwords being baked into the pool configuration.
+
+### Create the managed identity
+
+Set `MANAGED_IDENTITY_NAME` in `.env.azure`, then:
+
+```sh
+az_load_env
+az_identity_create
+```
+
+Or with the raw Azure CLI:
+
+```sh
+az identity create \
+  --name "$MANAGED_IDENTITY_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$REGION"
+```
+
+Note the `principalId` and full `id` (resource ID) from the output — you need both below.
+
+### Grant the identity access to Key Vault
+
+```sh
+# Use the principalId from the step above
+az_kv_grant_access --principal <principalId> --role user
+```
+
+This assigns the `Key Vault Secrets User` role (read-only) to the identity on the vault.
+See [07-key-vault.md](07-key-vault.md) for vault creation instructions if you haven't
+done that yet.
+
+### Add the identity to the pool JSON
+
+Replace the `<...>` placeholders in `pool-setup.json.template` with the real values
+before creating the pool:
+
+```json
+"identity": {
+  "type": "UserAssigned",
+  "userAssignedIdentities": {
+    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<MANAGED_IDENTITY_NAME>": {}
+  }
+}
+```
+
+You can get your subscription ID with:
+
+```sh
+az account show --query id -o tsv
+```
+
+> [!NOTE]
+> The identity must be attached at pool creation time. To add it to an existing pool
+> you need to delete and recreate the pool, since `identity` is an immutable property.
+
 ## Creating a Development Pool
 
 For development, we create a pool with autoscaling to minimize costs while maintaining quick access to compute resources.
@@ -17,6 +81,12 @@ First, create a JSON file to define the pool resources. We use Ubuntu 20.04 for 
 ```json
 {
   "id": "taxodactyl",
+  "identity": {
+    "type": "UserAssigned",
+    "userAssignedIdentities": {
+      "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<MANAGED_IDENTITY_NAME>": {}
+    }
+  },
   "vmSize": "standard_l8as_v3",
   "taskSchedulingPolicy": {
     "nodeFillType": "spread"
