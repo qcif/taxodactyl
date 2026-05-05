@@ -17,6 +17,12 @@ within a single shared vault.
 - `RESOURCE_GROUP`, `KEY_VAULT_NAME` and `REGION` set in `.env.azure`
 - `Owner` or `User Access Administrator` permission on the resource group
   (needed to assign RBAC roles on the vault)
+- `Microsoft.KeyVault` resource provider registered on the subscription:
+  ```sh
+  az provider register --namespace Microsoft.KeyVault
+  # Check status (wait for "Registered" before proceeding):
+  az provider show --namespace Microsoft.KeyVault --query registrationState
+  ```
 
 >[!NOTE]
 > Run `source deployment/azure/batch-helpers.sh` to load helper functions.
