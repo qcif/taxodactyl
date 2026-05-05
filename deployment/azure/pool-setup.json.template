@@ -1,16 +1,10 @@
 {
   "id": "taxodactyl",
-  "identity": {
-    "type": "UserAssigned",
-    "userAssignedIdentities": {
-      "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<MANAGED_IDENTITY_NAME>": {}
-    }
-  },
   "vmSize": "standard_l8as_v3",
   "taskSchedulingPolicy": {
     "nodeFillType": "spread"
   },
-  "taskSlotsPerNode": 8,
+  "taskSlotsPerNode": 24,
   "targetDedicatedNodes": 0,
   "virtualMachineConfiguration": {
     "imageReference": {

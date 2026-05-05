@@ -114,6 +114,52 @@ az_load_env() {
 # Pool Management
 #
 
+az_pool_assign_identity() {
+    local pool_id="${1:-$DEFAULT_POOL_ID}"
+
+    local missing=()
+    for var in RESOURCE_GROUP MANAGED_IDENTITY_NAME AZURE_BATCH_ACCOUNT_NAME; do
+        [[ -z "${!var}" ]] && missing+=("$var")
+    done
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        _error "Missing required environment variables: ${missing[*]}"
+        _info "Run 'az_load_env' to load from .env.azure"
+        return 1
+    fi
+
+    _info "Fetching subscription ID..."
+    local sub_id
+    sub_id=$(az account show --query id -o tsv)
+
+    _info "Fetching managed identity resource ID..."
+    local identity_id
+    identity_id=$(az identity show \
+        --name "$MANAGED_IDENTITY_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --query id -o tsv)
+
+    if [[ -z "$identity_id" ]]; then
+        _error "Managed identity '$MANAGED_IDENTITY_NAME' not found in '$RESOURCE_GROUP'"
+        return 1
+    fi
+
+    local pool_arm_id="/subscriptions/${sub_id}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Batch/batchAccounts/${AZURE_BATCH_ACCOUNT_NAME}/pools/${pool_id}"
+
+    _info "Pool:     $pool_id"
+    _info "Identity: $identity_id"
+
+    if az rest \
+        --method patch \
+        --url "${pool_arm_id}?api-version=2024-02-01" \
+        --body "{\"identity\": {\"type\": \"UserAssigned\", \"userAssignedIdentities\": {\"${identity_id}\": {}}}}"; then
+
+        _success "Managed identity assigned to pool '$pool_id'"
+    else
+        _error "Failed to assign managed identity"
+        return 1
+    fi
+}
+
 az_pool_create() {
     local pool_json=""
     local enable_autoscale=false
@@ -1355,6 +1401,7 @@ Environment Management:
 
 Pool Management:
   az_pool_create --json <file> [--autoscale] [--yes]         Create pool from JSON config
+  az_pool_assign_identity [pool_id]                          Attach managed identity to pool (run after create)
   az_pool_delete [pool_id] [--yes]                           Delete pool (with confirmation)
   az_pool_resize <0|1> [pool_id] [--yes]                     Resize pool to 0 or 1 persistent nodes
   az_pool_update --json <file> [--pool-id <id>] [--autoscale] [--yes]  Update pool configuration
@@ -1413,6 +1460,9 @@ Examples:
 
   # Create pool with autoscaling (interactive)
   az_pool_create --json deployment/azure/pool-setup.json.ignore --autoscale
+
+  # Attach managed identity to pool so nodes can access Key Vault
+  az_pool_assign_identity
 
   # Create pool without autoscaling (non-interactive, for scripts)
   az_pool_create --json deployment/azure/pool-setup.json.ignore --yes
@@ -1504,8 +1554,9 @@ else
     echo -e "${BLUE}Available Commands:${NC}"
     echo ""
     echo "  Pool Management:"
-    echo "    az_pool_create, az_pool_delete, az_pool_resize"
+    echo "    az_pool_create, az_pool_assign_identity, az_pool_delete, az_pool_resize"
     echo "    az_pool_update, az_pool_list, az_pool_show"
+    echo "    (run az_pool_assign_identity after az_pool_create to attach Key Vault access)"
     echo ""
     echo "  Node Management:"
     echo "    az_node_list, az_node_get_id, az_node_logs"

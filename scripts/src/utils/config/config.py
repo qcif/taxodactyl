@@ -28,7 +28,7 @@ from src.utils.log import get_logging_config
 from src.utils.utils import path_safe_str
 
 from . import mappings
-from .schema import Backend, ConfigSchema
+from .schema import ConfigSchema
 
 logger = logging.getLogger(__name__)
 

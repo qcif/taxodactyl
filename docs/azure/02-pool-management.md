@@ -46,29 +46,22 @@ This assigns the `Key Vault Secrets User` role (read-only) to the identity on th
 See [07-key-vault.md](07-key-vault.md) for vault creation instructions if you haven't
 done that yet.
 
-### Add the identity to the pool JSON
-
-Replace the `<...>` placeholders in `pool-setup.json.template` with the real values
-before creating the pool:
-
-```json
-"identity": {
-  "type": "UserAssigned",
-  "userAssignedIdentities": {
-    "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<MANAGED_IDENTITY_NAME>": {}
-  }
-}
-```
-
-You can get your subscription ID with:
-
-```sh
-az account show --query id -o tsv
-```
+### Attach the identity to the pool
 
 > [!NOTE]
-> The identity must be attached at pool creation time. To add it to an existing pool
-> you need to delete and recreate the pool, since `identity` is an immutable property.
+> The Batch Service REST API (used by `az batch pool create`) does not accept the
+> `identity` field. The identity must be patched onto the pool via the ARM API
+> **after** creation.
+
+Once the pool exists, run:
+
+```sh
+az_pool_assign_identity
+```
+
+This uses `MANAGED_IDENTITY_NAME`, `RESOURCE_GROUP`, and `AZURE_BATCH_ACCOUNT_NAME`
+from your environment to PATCH the pool's ARM resource. The identity can be added to
+an existing pool without recreating it.
 
 ## Creating a Development Pool
 
@@ -81,12 +74,6 @@ First, create a JSON file to define the pool resources. We use Ubuntu 20.04 for 
 ```json
 {
   "id": "taxodactyl",
-  "identity": {
-    "type": "UserAssigned",
-    "userAssignedIdentities": {
-      "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<MANAGED_IDENTITY_NAME>": {}
-    }
-  },
   "vmSize": "standard_l8as_v3",
   "taskSchedulingPolicy": {
     "nodeFillType": "spread"
@@ -132,6 +119,12 @@ az batch pool create \
 ```
 
 **Helper equivalent:** `az_pool_create deployment/azure/pool.json`
+
+If using Key Vault, attach the managed identity after the pool is created:
+
+```sh
+az_pool_assign_identity
+```
 
 ### Enable Autoscaling
 
