@@ -30,6 +30,7 @@ This results in a nice balance between cost and performance - it costs nothing u
 5. **[Troubleshooting](05-troubleshooting.md)** - Common issues and debugging techniques
 6. **[Maintenance](06-maintenance.md)** - Recurring maintenance tasks (SAS rotation, cache cleanup, key rotation)
 7. **[Redis](07-redis.md)** - Always-on Redis VM for distributed rate-limiting across concurrent workflow instances
+8. **[Key Vault](07-key-vault.md)** - Creating and configuring Azure Key Vault for per-user secret storage
 
 ## Azure CLI
 
@@ -85,6 +86,12 @@ az_jobs_list                    # List recent jobs
 - `az_redis_vm_start [--yes]` - Start a deallocated Redis VM
 - `az_redis_vm_stop [--yes]` - Deallocate Redis VM (stops compute billing)
 - `az_redis_vm_ssh` - Open SSH session to Redis VM
+
+**Key Vault Management:**
+- `az_kv_create [--region <r>] [--yes]` - Create Azure Key Vault
+- `az_kv_show` - Show vault details and URL
+- `az_kv_grant_access [--principal <id>] [--role officer|user]` - Assign RBAC role
+- `az_kv_list_secrets` - List secret names in the vault
 
 All destructive operations (create, delete, resize, update, upload) require confirmation unless `--yes` flag is provided for scripting.
 

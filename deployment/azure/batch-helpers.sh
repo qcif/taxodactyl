@@ -114,6 +114,52 @@ az_load_env() {
 # Pool Management
 #
 
+az_pool_assign_identity() {
+    local pool_id="${1:-$DEFAULT_POOL_ID}"
+
+    local missing=()
+    for var in RESOURCE_GROUP MANAGED_IDENTITY_NAME AZURE_BATCH_ACCOUNT_NAME; do
+        [[ -z "${!var}" ]] && missing+=("$var")
+    done
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        _error "Missing required environment variables: ${missing[*]}"
+        _info "Run 'az_load_env' to load from .env.azure"
+        return 1
+    fi
+
+    _info "Fetching subscription ID..."
+    local sub_id
+    sub_id=$(az account show --query id -o tsv)
+
+    _info "Fetching managed identity resource ID..."
+    local identity_id
+    identity_id=$(az identity show \
+        --name "$MANAGED_IDENTITY_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --query id -o tsv)
+
+    if [[ -z "$identity_id" ]]; then
+        _error "Managed identity '$MANAGED_IDENTITY_NAME' not found in '$RESOURCE_GROUP'"
+        return 1
+    fi
+
+    local pool_arm_id="/subscriptions/${sub_id}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Batch/batchAccounts/${AZURE_BATCH_ACCOUNT_NAME}/pools/${pool_id}"
+
+    _info "Pool:     $pool_id"
+    _info "Identity: $identity_id"
+
+    if az rest \
+        --method patch \
+        --url "${pool_arm_id}?api-version=2024-02-01" \
+        --body "{\"identity\": {\"type\": \"UserAssigned\", \"userAssignedIdentities\": {\"${identity_id}\": {}}}}"; then
+
+        _success "Managed identity assigned to pool '$pool_id'"
+    else
+        _error "Failed to assign managed identity"
+        return 1
+    fi
+}
+
 az_pool_create() {
     local pool_json=""
     local enable_autoscale=false
@@ -1049,6 +1095,299 @@ az_redis_vm_ssh() {
 }
 
 #
+# Identity Management
+#
+
+_check_identity_env_vars() {
+    local missing=()
+    local required_vars=(
+        "RESOURCE_GROUP"
+        "MANAGED_IDENTITY_NAME"
+        "REGION"
+    )
+
+    for var in "${required_vars[@]}"; do
+        if [[ -z "${!var}" ]]; then
+            missing+=("$var")
+        fi
+    done
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        _error "Missing required environment variables: ${missing[*]}"
+        _info "Run 'az_load_env' to load from .env.azure"
+        return 1
+    fi
+
+    return 0
+}
+
+az_identity_create() {
+    local skip_confirm=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --yes|-y)
+                skip_confirm=true
+                shift
+                ;;
+            *)
+                _error "Unknown argument: $1"
+                _error "Usage: az_identity_create [--yes]"
+                return 1
+                ;;
+        esac
+    done
+
+    _check_identity_env_vars || return 1
+
+    _info "Identity name:  $MANAGED_IDENTITY_NAME"
+    _info "Resource group: $RESOURCE_GROUP"
+    _info "Region:         $REGION"
+
+    if [[ "$skip_confirm" == false ]] && ! _confirm "Create managed identity '$MANAGED_IDENTITY_NAME'?"; then
+        _warning "Managed identity creation cancelled"
+        return 0
+    fi
+
+    _info "Creating managed identity..."
+
+    local result
+    result=$(az identity create \
+        --name "$MANAGED_IDENTITY_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --location "$REGION")
+
+    if [[ $? -ne 0 ]]; then
+        _error "Failed to create managed identity"
+        return 1
+    fi
+
+    local principal_id resource_id
+    principal_id=$(echo "$result" | grep -oP '"principalId":\s*"\K[^"]+')
+    resource_id=$(echo "$result" | grep -oP '"id":\s*"\K[^"]+' | head -1)
+
+    _success "Managed identity '$MANAGED_IDENTITY_NAME' created"
+    _info "Principal ID:  $principal_id"
+    _info "Resource ID:   $resource_id"
+    _info ""
+    _info "Next steps:"
+    _info "  1. Add the resource ID to the pool JSON 'identity' block (see 02-pool-management.md)"
+    _info "  2. Grant Key Vault access: az_kv_grant_access --principal $principal_id --role user"
+}
+
+az_identity_show() {
+    _check_identity_env_vars || return 1
+
+    _info "Managed identity: $MANAGED_IDENTITY_NAME"
+
+    az identity show \
+        --name "$MANAGED_IDENTITY_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --query "{name: name, principalId: principalId, clientId: clientId, resourceId: id}" \
+        -o table
+}
+
+#
+# Key Vault Management
+#
+
+_check_kv_env_vars() {
+    local missing=()
+    local required_vars=(
+        "RESOURCE_GROUP"
+        "KEY_VAULT_NAME"
+    )
+
+    for var in "${required_vars[@]}"; do
+        if [[ -z "${!var}" ]]; then
+            missing+=("$var")
+        fi
+    done
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        _error "Missing required environment variables: ${missing[*]}"
+        _info "Run 'az_load_env' to load from .env.azure"
+        return 1
+    fi
+
+    return 0
+}
+
+az_kv_create() {
+    local skip_confirm=false
+    local region="${REGION:-australiaeast}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --yes|-y)
+                skip_confirm=true
+                shift
+                ;;
+            --region)
+                region="$2"
+                shift 2
+                ;;
+            *)
+                _error "Unknown argument: $1"
+                _error "Usage: az_kv_create [--region <region>] [--yes]"
+                return 1
+                ;;
+        esac
+    done
+
+    _check_kv_env_vars || return 1
+
+    local kv_url="https://${KEY_VAULT_NAME}.vault.azure.net/"
+
+    _info "Key Vault name:   $KEY_VAULT_NAME"
+    _info "Resource group:   $RESOURCE_GROUP"
+    _info "Region:           $region"
+    _info "Vault URL:        $kv_url"
+    _info "Access model:     Azure RBAC"
+
+    if [[ "$skip_confirm" == false ]] && ! _confirm "Create Key Vault '$KEY_VAULT_NAME'?"; then
+        _warning "Key Vault creation cancelled"
+        return 0
+    fi
+
+    _info "Creating Key Vault..."
+
+    if az keyvault create \
+        --name "$KEY_VAULT_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --location "$region" \
+        --enable-rbac-authorization true \
+        --retention-days 7; then
+
+        _success "Key Vault '$KEY_VAULT_NAME' created"
+        _info "Vault URL: $kv_url"
+        _info ""
+        _info "Next steps:"
+        _info "  1. Add to .env.azure: AZURE_KEY_VAULT_URL=$kv_url"
+        _info "  2. Grant yourself secrets access: az_kv_grant_access --role officer"
+        _info "  3. Grant Batch node identity access: az_kv_grant_access --identity <principalId> --role user"
+    else
+        _error "Failed to create Key Vault"
+        return 1
+    fi
+}
+
+az_kv_show() {
+    _check_kv_env_vars || return 1
+
+    _info "Key Vault: $KEY_VAULT_NAME"
+
+    az keyvault show \
+        --name "$KEY_VAULT_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --query "{name: name, location: location, url: properties.vaultUri, rbac: properties.enableRbacAuthorization, state: properties.provisioningState}" \
+        -o table
+}
+
+az_kv_grant_access() {
+    local principal=""
+    local role_shorthand="officer"
+    local principal_type=""
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --principal|--identity)
+                principal="$2"
+                shift 2
+                ;;
+            --role)
+                role_shorthand="$2"
+                shift 2
+                ;;
+            --type)
+                principal_type="$2"
+                shift 2
+                ;;
+            *)
+                _error "Unknown argument: $1"
+                _error "Usage: az_kv_grant_access [--principal <objectId>] [--role officer|user] [--type User|ServicePrincipal]"
+                _error "  officer  -> Key Vault Secrets Officer (read + write, for admins)"
+                _error "  user     -> Key Vault Secrets User    (read-only, for Batch nodes)"
+                _error "  Omit --principal to grant access to the currently signed-in user."
+                return 1
+                ;;
+        esac
+    done
+
+    _check_kv_env_vars || return 1
+
+    # Resolve principal — default to current signed-in user
+    if [[ -z "$principal" ]]; then
+        principal=$(az ad signed-in-user show --query id -o tsv 2>/dev/null)
+        if [[ -z "$principal" ]]; then
+            _error "Could not resolve current user. Pass --principal <objectId> explicitly."
+            return 1
+        fi
+        _info "Granting access to current signed-in user ($principal)"
+        # Default type for signed-in user
+        principal_type="${principal_type:-User}"
+    else
+        # Default type for explicitly provided principal (managed identity)
+        principal_type="${principal_type:-ServicePrincipal}"
+    fi
+
+    # Map shorthand to full role name
+    local role_name
+    case "$role_shorthand" in
+        officer)
+            role_name="Key Vault Secrets Officer"
+            ;;
+        user)
+            role_name="Key Vault Secrets User"
+            ;;
+        *)
+            _error "Unknown role '$role_shorthand'. Use 'officer' or 'user'."
+            return 1
+            ;;
+    esac
+
+    # Get the Key Vault resource ID for scoping the role assignment
+    local kv_id
+    kv_id=$(az keyvault show \
+        --name "$KEY_VAULT_NAME" \
+        --resource-group "$RESOURCE_GROUP" \
+        --query id -o tsv)
+
+    if [[ -z "$kv_id" ]]; then
+        _error "Could not retrieve Key Vault resource ID for '$KEY_VAULT_NAME'"
+        return 1
+    fi
+
+    _info "Principal:  $principal"
+    _info "Type:       $principal_type"
+    _info "Role:       $role_name"
+    _info "Scope:      $kv_id"
+
+    if az role assignment create \
+        --role "$role_name" \
+        --assignee-object-id "$principal" \
+        --assignee-principal-type "$principal_type" \
+        --scope "$kv_id"; then
+
+        _success "Role '$role_name' assigned to $principal"
+    else
+        _error "Failed to assign role. Ensure you have 'Owner' or 'User Access Administrator' on the vault."
+        return 1
+    fi
+}
+
+az_kv_list_secrets() {
+    _check_kv_env_vars || return 1
+
+    _info "Listing secrets in Key Vault: $KEY_VAULT_NAME"
+
+    az keyvault secret list \
+        --vault-name "$KEY_VAULT_NAME" \
+        --query "[].{name: name, enabled: attributes.enabled, updated: attributes.updated}" \
+        -o table
+}
+
+#
 # Utility Functions
 #
 
@@ -1062,6 +1401,7 @@ Environment Management:
 
 Pool Management:
   az_pool_create --json <file> [--autoscale] [--yes]         Create pool from JSON config
+  az_pool_assign_identity [pool_id]                          Attach managed identity to pool (run after create)
   az_pool_delete [pool_id] [--yes]                           Delete pool (with confirmation)
   az_pool_resize <0|1> [pool_id] [--yes]                     Resize pool to 0 or 1 persistent nodes
   az_pool_update --json <file> [--pool-id <id>] [--autoscale] [--yes]  Update pool configuration
@@ -1085,6 +1425,16 @@ Storage Management:
 
 SAS Token Management:
   az_sas_generate <blob> [acct] [cont] [days]   Generate SAS token for blob
+
+Managed Identity Management:
+  az_identity_create [--yes]                                Create user-assigned managed identity
+  az_identity_show                                          Show identity details (principalId, resourceId)
+
+Key Vault Management:
+  az_kv_create [--region <r>] [--yes]                       Create Azure Key Vault
+  az_kv_show                                                Show Key Vault details and URL
+  az_kv_grant_access [--principal <id>] [--role officer|user]  Assign RBAC role on the vault
+  az_kv_list_secrets                                        List secret names in the vault
 
 Nextflow Debugging:
   az_fetch_nf_logs [log_file] [output_dir]   Download all command logs from a Nextflow run
@@ -1110,6 +1460,9 @@ Examples:
 
   # Create pool with autoscaling (interactive)
   az_pool_create --json deployment/azure/pool-setup.json.ignore --autoscale
+
+  # Attach managed identity to pool so nodes can access Key Vault
+  az_pool_assign_identity
 
   # Create pool without autoscaling (non-interactive, for scripts)
   az_pool_create --json deployment/azure/pool-setup.json.ignore --yes
@@ -1153,6 +1506,30 @@ Examples:
   # Download logs from the latest run (default)
   az_fetch_nf_logs
 
+  # Create Key Vault (interactive)
+  az_kv_create
+
+  # Create Key Vault in a specific region (non-interactive)
+  az_kv_create --region australiaeast --yes
+
+  # Show vault details (URL, state, RBAC mode)
+  az_kv_show
+
+  # Grant the current signed-in user read+write (officer) access
+  az_kv_grant_access --role officer
+
+  # Grant a Batch node managed identity read-only (user) access
+  az_kv_grant_access --principal <managed-identity-object-id> --role user
+
+  # List all secret names stored in the vault
+  az_kv_list_secrets
+
+  # Create the Batch pool managed identity (reads MANAGED_IDENTITY_NAME from env)
+  az_identity_create
+
+  # Show identity details including principalId needed for Key Vault role assignment
+  az_identity_show
+
 EOF
 }
 
@@ -1177,8 +1554,9 @@ else
     echo -e "${BLUE}Available Commands:${NC}"
     echo ""
     echo "  Pool Management:"
-    echo "    az_pool_create, az_pool_delete, az_pool_resize"
+    echo "    az_pool_create, az_pool_assign_identity, az_pool_delete, az_pool_resize"
     echo "    az_pool_update, az_pool_list, az_pool_show"
+    echo "    (run az_pool_assign_identity after az_pool_create to attach Key Vault access)"
     echo ""
     echo "  Node Management:"
     echo "    az_node_list, az_node_get_id, az_node_logs"
@@ -1197,6 +1575,11 @@ else
     echo ""
     echo "  Redis VM Management:"
     echo "    az_redis_vm_status, az_redis_vm_start, az_redis_vm_stop, az_redis_vm_ssh"
+    echo "  Managed Identity Management:"
+    echo "    az_identity_create, az_identity_show"
+    echo ""
+    echo "  Key Vault Management:"
+    echo "    az_kv_create, az_kv_show, az_kv_grant_access, az_kv_list_secrets"
     echo ""
     echo -e "${GREEN}Run 'az_help' for detailed usage information${NC}"
     echo ""

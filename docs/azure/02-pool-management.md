@@ -6,6 +6,63 @@ This guide covers creating and managing Azure Batch pools for running Taxodactyl
 
 Since our workflow requires reference data, **do not use Nextflow's `autoPoolMode`**. We need to set up the pool with a start task to stage reference data for each node spawn event. If Nextflow creates its own pool, there won't be any reference data there!
 
+## Managed Identity for Key Vault Access
+
+> [!NOTE]
+> Azure Key Vault is optional, but can be used to remember the user's API key and facility. You can also use local key vault by setting a SECRET_KEY, or leave it out entirely to disable this feature.
+
+Batch nodes authenticate to Azure Key Vault using a **user-assigned managed identity**
+attached to the pool. This allows tasks to call `DefaultAzureCredential()` without any
+secrets or passwords being baked into the pool configuration.
+
+### Create the managed identity
+
+Set `MANAGED_IDENTITY_NAME` in `.env.azure`, then:
+
+```sh
+az_load_env
+az_identity_create
+```
+
+Or with the raw Azure CLI:
+
+```sh
+az identity create \
+  --name "$MANAGED_IDENTITY_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$REGION"
+```
+
+Note the `principalId` and full `id` (resource ID) from the output — you need both below.
+
+### Grant the identity access to Key Vault
+
+```sh
+# Use the principalId from the step above
+az_kv_grant_access --principal <principalId> --role officer
+```
+
+This assigns the `Key Vault Secrets User` role (read-only) to the identity on the vault.
+See [07-key-vault.md](07-key-vault.md) for vault creation instructions if you haven't
+done that yet.
+
+### Attach the identity to the pool
+
+> [!NOTE]
+> The Batch Service REST API (used by `az batch pool create`) does not accept the
+> `identity` field. The identity must be patched onto the pool via the ARM API
+> **after** creation.
+
+Once the pool exists, run:
+
+```sh
+az_pool_assign_identity
+```
+
+This uses `MANAGED_IDENTITY_NAME`, `RESOURCE_GROUP`, and `AZURE_BATCH_ACCOUNT_NAME`
+from your environment to PATCH the pool's ARM resource. The identity can be added to
+an existing pool without recreating it.
+
 ## Creating a Development Pool
 
 For development, we create a pool with autoscaling to minimize costs while maintaining quick access to compute resources.
@@ -62,6 +119,12 @@ az batch pool create \
 ```
 
 **Helper equivalent:** `az_pool_create deployment/azure/pool.json`
+
+If using Key Vault, attach the managed identity after the pool is created:
+
+```sh
+az_pool_assign_identity
+```
 
 ### Enable Autoscaling
 

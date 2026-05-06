@@ -43,6 +43,7 @@ which shows CLI arguments and environment variables for each script.
     1. [Handling errors](#handling-errors)
     1. [Throttling API requests](#throttling-api-requests)
     1. [Caching API responses](#caching-api-responses)
+    1. [Secrets vault](#secrets-vault)
     1. [Flags](#flags)
     1. [Sample locus](#sample-locus)
 
@@ -868,6 +869,76 @@ Cache entries are pickled, so values must be `pickle`-safe. Errors during
 `get`/`put` (missing blob, corrupt pickle, transport errors, SDK exceptions)
 are logged and swallowed - a cache failure should never break the analysis,
 it just results in the upstream API call being repeated.
+
+
+## Secrets vault
+
+The [secrets.py](./src/utils/secrets.py) module provides persistent, encrypted
+storage for user-supplied credentials — specifically the NCBI API key and
+facility name — so that users do not need to pass them on the command line on
+every run.
+
+`Config` exposes a `vault` cached property that returns a `Vault` instance
+backed by whichever backend is appropriate for the current environment:
+
+```py
+from src.utils.config import Config
+
+config = Config()
+config.vault.put('NCBI_API_KEY', config.user_email, 'my-key')
+value = config.vault.get('NCBI_API_KEY', config.user_email)
+```
+
+Secrets are keyed as `"{secret_name}:{user_email}"` so that different users
+sharing the same execution environment maintain independent stores.
+
+### Vault integration in Config
+
+`Config._resolve_ncbi_api_key()` is called during initialisation and
+`Config._resolve_facility_name()` is called at the end of `update_from_args()`.
+Both follow the same pattern: if a value was supplied by the user (via env var
+or CLI), store it in the vault; otherwise, attempt to retrieve a previously
+stored value from the vault.
+
+### Backends
+
+Two backends are shipped, selected automatically based on the execution
+environment:
+
+**Local (default)** — an AES-encrypted JSON file written to
+`config.user_tempdir`. Enabled by setting the `SECRET_KEY` environment variable
+to any non-empty passphrase. The key is hashed with SHA-256 to derive a
+Fernet-compatible 256-bit key before use. If `SECRET_KEY` is not set, all
+vault operations are no-ops (the workflow continues without persisting secrets).
+
+**Azure Key Vault** — delegates to an
+[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/secrets/)
+instance via `DefaultAzureCredential`. Enabled when `config.azure_key_vault_enabled`
+is `True` (i.e. `AZURE_KEY_VAULT_URL` is set). Secret names are sanitised to
+the alphanumeric-and-hyphens format required by Azure Key Vault.
+
+Both backends subclass `VaultBackend` and implement `get()` and `put()`. The
+`Vault` class selects the backend in its constructor:
+
+```py
+from src.utils.secrets import Vault
+
+vault = Vault(config)        # backend selected from config.azure_key_vault_enabled
+vault.put('MY_SECRET', user_email, 'value')
+vault.get('MY_SECRET', user_email)  # returns None if not found
+```
+
+Errors during `get`/`put` are logged and swallowed — a vault failure should
+never interrupt the analysis. If neither `AZURE_KEY_VAULT_URL` nor `SECRET_KEY`
+is set the vault disables itself silently (`NullVaultBackend`).
+
+The active backend is controlled by:
+
+| Env var | Backend | Notes |
+|---|---|---|
+| `SECRET_KEY=<passphrase>` | Local encrypted file | Any string; used to derive the encryption key |
+| `AZURE_KEY_VAULT_URL=<url>` | Azure Key Vault | Set in `.env.azure`; picked up automatically by `conf/azure.config` |
+| *(neither set)* | Disabled (no-op) | `get` returns `None`, `put` is silently ignored |
 
 
 ## Flags

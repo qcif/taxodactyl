@@ -255,7 +255,7 @@
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
-                // "THROTTLE_BACKEND": "redis",
+                "SECRET_KEY": "secret",
                 // "CACHE_BACKEND": "azure_blob",
             },
             // "envFile": "${workspaceFolder}/.env.azure",

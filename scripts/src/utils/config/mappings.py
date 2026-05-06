@@ -90,7 +90,6 @@ PARAMS = {
         env_name='OUTPUT_DIR',
         create=True,
     ),
-
     'query_dir': PathMapping(
         'query_dir',
         cli_name='query_dir',
@@ -126,6 +125,40 @@ PARAMS = {
     'placeholder_img_path': PathMapping(
         'placeholder_img_path',
         env_name='PLACEHOLDER_IMG_PATH',
+    ),
+
+    # Environment configuration
+    'cache_timeout_hours': IntMapping(
+        'cache_timeout_hours',
+        env_name='CACHE_TIMEOUT_HOURS',
+    ),
+    'cache_disabled': BoolMapping(
+        'cache_disabled',
+        env_name='CACHE_DISABLED',
+    ),
+    'cache_backend': StringMapping(
+        'cache_backend',
+        env_name='CACHE_BACKEND',
+    ),
+    'cache_azure_account_url': StringMapping(
+        'cache_azure_account_url',
+        env_name='CACHE_AZURE_ACCOUNT_URL',
+    ),
+    'cache_azure_connection_string': StringMapping(
+        'cache_azure_connection_string',
+        env_name='CACHE_AZURE_CONNECTION_STRING',
+    ),
+    'cache_azure_container': StringMapping(
+        'cache_azure_container',
+        env_name='CACHE_AZURE_CONTAINER',
+    ),
+    'cache_azure_blob_prefix': StringMapping(
+        'cache_azure_blob_prefix',
+        env_name='CACHE_AZURE_BLOB_PREFIX',
+    ),
+    'azure_key_vault_url': StringMapping(
+        'azure_key_vault_url',
+        env_name='AZURE_KEY_VAULT_URL',
     ),
 
     # String filenames/paths
@@ -345,34 +378,6 @@ PARAMS = {
     'flag_file_template': StringMapping(
         'flag_file_template',
         env_name='FLAG_FILE_TEMPLATE',
-    ),
-    'cache_timeout_hours': IntMapping(
-        'cache_timeout_hours',
-        env_name='CACHE_TIMEOUT_HOURS',
-    ),
-    'cache_disabled': BoolMapping(
-        'cache_disabled',
-        env_name='CACHE_DISABLED',
-    ),
-    'cache_backend': StringMapping(
-        'cache_backend',
-        env_name='CACHE_BACKEND',
-    ),
-    'cache_azure_account_url': StringMapping(
-        'cache_azure_account_url',
-        env_name='CACHE_AZURE_ACCOUNT_URL',
-    ),
-    'cache_azure_connection_string': StringMapping(
-        'cache_azure_connection_string',
-        env_name='CACHE_AZURE_CONNECTION_STRING',
-    ),
-    'cache_azure_container': StringMapping(
-        'cache_azure_container',
-        env_name='CACHE_AZURE_CONTAINER',
-    ),
-    'cache_azure_blob_prefix': StringMapping(
-        'cache_azure_blob_prefix',
-        env_name='CACHE_AZURE_BLOB_PREFIX',
     ),
     'max_api_retries': IntMapping(
         'max_api_retries',

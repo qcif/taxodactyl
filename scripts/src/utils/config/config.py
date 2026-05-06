@@ -40,6 +40,11 @@ DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
     'sequence',
 )
+VARS_FROM_ENV = (
+    "USER_EMAIL",
+    "NCBI_API_KEY",
+)
+FACILITY_NAME_DEFAULT = "Not provided"
 TEMP_FILES = (
     'entrez_cache_dirname',
 )
@@ -234,6 +239,7 @@ class Config:
             setattr(self, field_name, field_value)
 
         self._apply_env_overrides()
+        self._resolve_ncbi_api_key()
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
@@ -246,6 +252,42 @@ class Config:
                     logger.warning(
                         f"Failed to update config from CLI arg "
                         f"{mapper.env_name}={value}: {e}")
+
+    def _resolve_ncbi_api_key(self):
+        """Resolve NCBI_API_KEY from vault if not provided via env var."""
+        if not self.user_email:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set NCBI_API_KEY"
+                " from vault.")
+            return
+        if self.ncbi_api_key:
+            self.vault.put('NCBI_API_KEY', self.user_email, self.ncbi_api_key)
+            logger.info("NCBI API key read from env var NCBI_API_KEY and"
+                        " stored in vault.")
+        else:
+            self.ncbi_api_key = self.vault.get('NCBI_API_KEY', self.user_email)
+            if self.ncbi_api_key:
+                logger.info("NCBI API key retrieved from vault.")
+            else:
+                logger.info(
+                    "No NCBI API key provided via env var or vault. Proceeding"
+                    " without an API key, but you may encounter rate limiting."
+                )
+
+    def _resolve_facility_name(self):
+        """Resolve facility_name from vault if not provided by the user."""
+        if not self.user_email:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set facility_name from"
+                " vault.")
+            return
+        current = self.inputs.facility_name
+        if current and current != FACILITY_NAME_DEFAULT:
+            self.vault.put('facility_name', self.user_email, current)
+        else:
+            vault_value = self.vault.get('facility_name', self.user_email)
+            if vault_value:
+                self.inputs.facility_name = vault_value
 
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
@@ -272,6 +314,8 @@ class Config:
                     f"Failed to update config from CLI arg "
                     f"{arg_name}={value}: {e}")
                 continue
+
+        self._resolve_facility_name()
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
@@ -615,6 +659,15 @@ class Config:
                     - timedelta(days=self.temp_clean_after_days)
                 ):
                     shutil.rmtree(path)
+
+    @cached_property
+    def vault(self):
+        from src.utils.secrets import Vault
+        return Vault(self)
+
+    @property
+    def azure_key_vault_enabled(self) -> bool:
+        return bool(self.azure_key_vault_url)
 
 
 def get_latest_mtime(path: str) -> datetime:

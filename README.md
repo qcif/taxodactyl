@@ -84,6 +84,22 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
 
 API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
 
+### Vault
+
+The workflow includes an optional secrets vault that persists user-provided values for `--ncbi_api_key` and `--facility_name` between runs. Once stored, these values are retrieved automatically so you do not need to pass them on the command line each time.
+
+The vault has two backends. Set the appropriate environment variable before running the workflow to enable one:
+
+| Backend | Environment variable | Description |
+|---|---|---|
+| Local (encrypted file) | `SECRET_KEY=<passphrase>` | Stores an AES-encrypted file in the user's temp directory. Any non-empty string can be used as the passphrase. |
+| Azure Key Vault | `AZURE_KEY_VAULT_URL=https://<vault-name>.vault.azure.net/` | Stores secrets in an Azure Key Vault. Requires an active Azure credential (e.g. via `az login` or a managed identity). The Azure backend is selected automatically when running with `conf/azure.config`. |
+
+> [!NOTE]
+> - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
+> - If neither environment variable is set, the vault is disabled and secrets are not persisted.
+> - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
+
 ### TaxonKit
 
 [Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder. 

@@ -180,6 +180,13 @@ class ConfigSchema(BaseModel):
         description="NCBI API key for increased rate limits"
     )
 
+    azure_key_vault_url: str | None = Field(
+        default=None,
+        description=(
+            "Azure Key Vault URL, e.g. "
+            "'https://<account>.vault.azure.net'. Required if you want to"
+            " store user secrets when running on Azure Batch.")
+    )
 
     # Output filenames
     timestamp_filename: str = Field(
