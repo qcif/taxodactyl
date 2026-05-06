@@ -4,7 +4,7 @@
   "taskSchedulingPolicy": {
     "nodeFillType": "spread"
   },
-  "taskSlotsPerNode": 24,
+  "taskSlotsPerNode": 8,
   "targetDedicatedNodes": 0,
   "virtualMachineConfiguration": {
     "imageReference": {
