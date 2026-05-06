@@ -2,6 +2,10 @@
 
 This directory contains comprehensive documentation for running Taxodactyl workflows on Azure Batch.
 
+> [!NOTE]
+> Setting up an Azure environment to run Taxodactyl is not trivial, but we include helper scripts in ./deployment/azure to make this easier.
+> At minimum, you will need a Batch account and pool configured, and a storage account with multiple containers of reference and other data. For production deployment we also use a Redis server for coordinating concurrent rate-limiting across nodes/tasks, and a key vault for storing user API credentials.
+
 ## Quick start - running the workflow on Azure
 
 This assumes that you have an Azure Batch pool set up and configured according
@@ -25,6 +29,7 @@ This results in a nice balance between cost and performance - it costs nothing u
 4. **[Start Tasks](04-start-tasks.md)** - Configuring start tasks for node initialization and reference data staging
 5. **[Troubleshooting](05-troubleshooting.md)** - Common issues and debugging techniques
 6. **[Maintenance](06-maintenance.md)** - Recurring maintenance tasks (SAS rotation, cache cleanup, key rotation)
+7. **[Redis](07-redis.md)** - Always-on Redis VM for distributed rate-limiting across concurrent workflow instances
 
 ## Azure CLI
 
@@ -74,6 +79,12 @@ az_jobs_list                    # List recent jobs
 
 **SAS Token Management:**
 - `az_sas_generate <blob> [account] [container] [days]` - Generate SAS tokens
+
+**Redis VM Management:**
+- `az_redis_vm_status` - Show VM power state and Redis reachability
+- `az_redis_vm_start [--yes]` - Start a deallocated Redis VM
+- `az_redis_vm_stop [--yes]` - Deallocate Redis VM (stops compute billing)
+- `az_redis_vm_ssh` - Open SSH session to Redis VM
 
 All destructive operations (create, delete, resize, update, upload) require confirmation unless `--yes` flag is provided for scripting.
 

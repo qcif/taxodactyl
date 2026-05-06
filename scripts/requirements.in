@@ -13,3 +13,5 @@ debugpy
 azure-core
 azure-identity
 azure-storage-blob
+redis
+redis-rate-limiters

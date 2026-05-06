@@ -1,5 +1,6 @@
 """Pydantic schema for configuration validation."""
 
+from enum import Enum
 from pathlib import Path
 from typing import Annotated, List
 
@@ -31,6 +32,12 @@ AbsolutePath = Annotated[
     Path,
     AfterValidator(_make_absolute)
 ]
+
+
+class ThrottleBackend(str, Enum):
+    """Enum for throttle backend options."""
+    SQLITE = 'sqlite'
+    REDIS = 'redis'
 
 
 class InputsConfig(BaseModel):
@@ -163,6 +170,17 @@ class ConfigSchema(BaseModel):
         description="Path to TaxonKit data directory"
     )
 
+    # User details
+    user_email: str | None = Field(
+        default='',
+        description="User email for API access",
+    )
+    ncbi_api_key: str | None = Field(
+        default='',
+        description="NCBI API key for increased rate limits"
+    )
+
+
     # Output filenames
     timestamp_filename: str = Field(
         default='timestamp.txt', description="Timestamp filename")
@@ -255,10 +273,7 @@ class ConfigSchema(BaseModel):
         description="GBIF accepted status list"
     )
 
-    # Logging and temporary files
-    log_filename: str = Field(default='run.log', description="Log filename")
-    query_log_filename: str = Field(
-        default='query.log', description="Query log filename")
+    # Caching
     sqlite_file: str = Field(
         default='db.sqlite', description="Throttle SQLite filename")
     entrez_cache_dirname: str = Field(
@@ -287,6 +302,28 @@ class ConfigSchema(BaseModel):
     cache_azure_blob_prefix: str = Field(
         default='',
         description="Optional blob name prefix for all cache entries")
+
+    # Throttle / Redis
+    throttle_backend: ThrottleBackend = Field(
+        default=ThrottleBackend.SQLITE,
+        description=(
+            "Backend to use for API request throttling. Options are 'local' "
+            "for SQLite-based throttling and 'azure' for Redis-based"
+            " throttling using Azure Cache for Redis. The 'azure' option"
+            " requires additional configuration for Azure credentials and"
+            " cache settings.")
+    )
+    redis_host: str = Field(
+        default='localhost', description="Redis host")
+    redis_port: int = Field(
+        default=6379, description="Redis port")
+    redis_password: str | None = Field(
+        default=None, description="Redis password")
+
+    # Logging and temporary files
+    log_filename: str = Field(default='run.log', description="Log filename")
+    query_log_filename: str = Field(
+        default='query.log', description="Query log filename")
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")

@@ -77,6 +77,8 @@ pyparsing==3.2.3
 pyppeteer==2.0.0
 pyproj==3.7.1
 pyquery==2.0.1
+redis==5.3.0
+redis-rate-limiters==0.5.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 pytz==2025.2

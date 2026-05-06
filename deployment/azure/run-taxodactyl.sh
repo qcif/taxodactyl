@@ -93,6 +93,11 @@ if [[ -z "${AZURE_BATCH_ACCESS_KEY:-}" ]]; then
     exit 1
 fi
 
+# Check Redis reachability if configured
+if [[ "${THROTTLE_BACKEND:-}" == "redis" ]] && [[ -n "${REDIS_HOST:-}" ]]; then
+    echo -e "${YELLOW}Redis backend enabled at $REDIS_HOST:${REDIS_PORT:-6379} (status unknown)${NC}"
+fi
+
 # Show configuration
 echo ""
 echo -e "${YELLOW}=== Taxodactyl Azure Batch Configuration ===${NC}"

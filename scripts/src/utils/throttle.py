@@ -3,6 +3,7 @@ import random
 import sqlite3
 import time
 from dataclasses import dataclass
+from abc import ABC, abstractmethod
 from pprint import pformat
 from typing import Optional
 
@@ -14,13 +15,15 @@ from src.utils import cache
 config = Config()
 logger = logging.getLogger(__name__)
 
+MAX_THROTTLE_WAIT_SECONDS = 120
+
 
 @dataclass(frozen=True)
 class Endpoint:
     """Configuration for a throttled API endpoint."""
 
     name: str
-    requests_per_second: Optional[int] = None
+    requests_per_second: Optional[float] = None
     requests_per_minute: Optional[int] = None
     backoff_factor: Optional[int] = None
     global_rate_limit: bool = False
@@ -42,13 +45,13 @@ class ENDPOINTS:
     )
     GBIF_FAST = Endpoint(
         name='gbif_fast',
-        requests_per_second=10,
+        requests_per_second=5,
         backoff_factor=2,
         global_rate_limit=True,
     )
     ENTREZ = Endpoint(
         name='entrez',
-        requests_per_second=10,
+        requests_per_second=5,
     )
     BOLD = Endpoint(
         name='bold',
@@ -57,8 +60,8 @@ class ENDPOINTS:
     )
 
 
-class Throttle:
-    """Use SQLite3 database to coordinate throttling of API requests.
+class AbstractQueueBackend(ABC):
+    """Abstract base class for throttle queue backends.
 
     This is necessary to avoid hitting API rate limits, or overwhelming the
     server. Each endpoint (identified by name) is throttled independently to
@@ -67,7 +70,23 @@ class Throttle:
 
     To be conservative, the throttle will limit per-second requests in 2-second
     blocks and per-minute requests in 90-second blocks.
+
+    Backends are responsible for coordinating request timestamps across
+    processes to enforce rate limits. Each backend must support atomic
+    check-and-insert operations to prevent race conditions.
     """
+
+    @abstractmethod
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the backend for the given endpoint."""
+
+    @abstractmethod
+    def acquire(self):
+        """Block until a request is allowed, then record it."""
+
+
+class SqliteQueueBackend(AbstractQueueBackend):
+    """SQLite-based throttle backend for single-node concurrency."""
 
     FIELD_NAME = 'timestamp'
     PER_SECOND_BLOCK_MS = 2000
@@ -78,10 +97,8 @@ class Throttle:
     _await_exception_count = 0
     _await_exception_msg = ""
 
-    def __init__(
-        self,
-        endpoint: Endpoint,
-    ):
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the SQLite backend for the given endpoint."""
         self.rps = endpoint.requests_per_second
         self.rpm = endpoint.requests_per_minute
         self.per_second_limit = bool(self.rps)
@@ -221,32 +238,24 @@ class Throttle:
             )
         conn.commit()
 
-    def _await_release(self):
-        """Query sqlite DB for permission to send a request.
-
-        The DB table keeps track of requests sent across processes by writing
-        a timestamp for each request sent. This is used to determine if we are
-        within the allowed request limits before sendind the next request.
-        """
+    def acquire(self):
+        """Poll SQLite DB until a request slot is available."""
         started_waiting = time.time()
         while True:
+            if not self.db_path.exists():
+                raise FileNotFoundError(
+                    f"Throttle SQLite DB file not found: {self.db_path}"
+                )
             try:
-                if not self.db_path.exists():
-                    raise FileNotFoundError(
-                        "Throttle SQLite DB file not found:"
-                        f" {self.db_path}"
-                    )
                 with sqlite3.connect(
                     self.db_path,
                     isolation_level=None,
                     timeout=30.0,
                 ) as conn:
                     try:
-                        # Lock the database for writing
                         conn.execute("BEGIN IMMEDIATE")
                         now = int(time.time() * 1000)
                         if self._within_request_limits(now, conn):
-                            # Insert current timestamp atomically
                             conn.execute(
                                 f"INSERT INTO {self.table_name}"
                                 f" ({self.FIELD_NAME})"
@@ -271,13 +280,12 @@ class Throttle:
                     str(e) + f"\nDB path: {self.db_path}"
                 )
 
-            # Sleep for a random interval to reduce race conditions
             time.sleep(round(random.uniform(0.1, 2), 3))
             seconds_waited = int(time.time() - started_waiting)
             if seconds_waited and seconds_waited % 15 == 0:
                 logger.info(
-                    f"Awaiting throttle release for endpoint {self.name}"
-                    f" for >{seconds_waited} seconds..."
+                    f"Awaiting throttle release for endpoint"
+                    f" {self.name} for >{seconds_waited} seconds..."
                 )
 
     def _consider_await_exception(self, exception):
@@ -288,7 +296,6 @@ class Throttle:
         self._await_exception_count += 1
         if self._await_exception_count >= 5:
             raise exception
-
 
     def _notify_429(self):
         """Record a 429 response and apply backoff if debounce has elapsed.
@@ -369,31 +376,26 @@ class Throttle:
         """
         window_start = now - self.window_length_ms
 
-        # Remove expired timestamps older than window length
         conn.execute(
             f"DELETE FROM {self.table_name}"
             f" WHERE {self.FIELD_NAME} < ?",
-            (window_start,))
+            (window_start,),
+        )
 
-        # Count requests in the window
         rps_observed = None
         rpm_observed = None
 
-        if self.per_second_limit:
+        if self.rps:
             args = [
                 f"SELECT COUNT(*) FROM {self.table_name}",
             ]
-            if self.per_minute_limit:
-                # The window is for rpm, so need to narrow
-                # query to RPS window size
+            if self.rpm:
                 args[0] += f" WHERE {self.FIELD_NAME} >= ?"
-                rps_window_start = (
-                    now - self.PER_SECOND_BLOCK_MS
-                )
+                rps_window_start = now - self.PER_SECOND_BLOCK_MS
                 args.append((rps_window_start,))
             rps_observed = conn.execute(*args).fetchone()[0]
 
-        if self.per_minute_limit:
+        if self.rpm:
             rpm_observed = conn.execute(
                 f"SELECT COUNT(*) FROM {self.table_name}"
             ).fetchone()[0]
@@ -413,21 +415,138 @@ class Throttle:
 
         return within_per_second_limit and within_per_minute_limit
 
+
+class RedisQueueBackend(AbstractQueueBackend):
+    """Redis-based throttle backend for distributed multi-node concurrency.
+
+    Uses SyncTokenBucket from redis-rate-limiters for atomic rate
+    limiting with Lua scripts. Supports both per-second and per-minute
+    limits via separate token buckets.
+    """
+
+    def __init__(self):
+        import redis as redis_lib
+        self._connection = redis_lib.Redis(
+            host=config.redis_host,
+            port=config.redis_port,
+            password=config.redis_password,
+            ssl=config.redis_ssl,
+            socket_connect_timeout=10,
+            socket_timeout=10,
+        )
+        self._user_email = config.user_email or 'ANONYMOUS'
+
+    def initialize(self, endpoint: Endpoint):
+        from limiters import SyncTokenBucket
+
+        self._buckets = []
+        key_prefix = f"throttle:{self._user_email}:{endpoint.name}"
+
+        rps = endpoint.requests_per_second
+        if rps and rps < 1:
+            rps_capacity, rps_refill_n = 1, 1 / rps
+        elif rps:
+            rps_capacity, rps_refill_n = int(rps), 1
+        else:
+            rps_capacity, rps_refill_n = None, None
+
+        rpm = endpoint.requests_per_minute
+        for key, capacity, refill_n in [
+            ('rps', rps_capacity, rps_refill_n),
+            ('rpm', rpm, 60),
+        ]:
+            if capacity:
+                self._buckets.append(SyncTokenBucket(
+                    name=f"{key_prefix}:{key}",
+                    capacity=capacity,
+                    refill_frequency=refill_n,
+                    refill_amount=capacity,
+                    max_sleep=MAX_THROTTLE_WAIT_SECONDS,
+                    connection=self._connection,
+                ))
+
+        logger.debug(
+            f"Redis throttle backend initialized for key: {key_prefix}"
+        )
+
+    def acquire(self):
+        """Acquire a token from all configured rate limit buckets."""
+        for bucket in self._buckets:
+            with bucket:
+                pass
+
+
+BACKENDS = {
+    'sqlite': SqliteQueueBackend,
+    'redis': RedisQueueBackend,
+}
+
+
+def _get_backend() -> AbstractQueueBackend:
+    """Select the throttle backend based on environment configuration."""
+    backend_class = BACKENDS.get(config.throttle_backend)
+    if not backend_class:
+        raise ValueError(
+            f"Unknown throttle backend '{config.throttle_backend}'."
+            f" Available backends: {', '.join(BACKENDS.keys())}"
+        )
+    return backend_class()
+
+
+class Throttle:
+    """Coordinate throttling of API requests across processes.
+
+    Uses a pluggable backend (SQLite or Redis) to track request timestamps
+    and enforce rate limits. The backend is selected via the
+    THROTTLE_BACKEND environment variable (default: 'sqlite').
+    """
+
+    def __init__(
+        self,
+        endpoint: Endpoint,
+    ):
+        self.rps = endpoint.requests_per_second
+        self.rpm = endpoint.requests_per_minute
+        self.name = endpoint.name
+        self.backoff_factor = endpoint.backoff_factor
+        self.backend = _get_backend()
+        self.backend.initialize(endpoint)
+
+    def __enter__(self):
+        self.backend.acquire()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+    def _notify_429(self):
+        if hasattr(self.backend, '_notify_429'):
+            self.backend._notify_429()
+
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
         retries = config.max_api_retries
         if with_cache:
             cache_key = cache.keyhash(func, args, kwargs)
             cached_data = cache.get(cache_key)
             if cached_data is not None:
-                logger.debug(f"Cache hit for {func.__module__}.{func.__name__}"
-                             " request")
+                logger.debug(
+                    f"Cache hit for {func.__module__}.{func.__name__}"
+                    " request"
+                )
                 return cached_data
+
+            logger.debug(
+                f"Cache miss for {func.__module__}.{func.__name__} request")
+
+        logger.debug(f"Submitting request to {self.name}: Args: {args},"
+                     f" Kwargs: {kwargs}")
 
         while True:
             try:
                 with self:
-                    logger.debug("Throttle released. Sending request to"
-                                 f" {self.name}...")
+                    logger.debug(
+                        "Throttle released. Sending request to"
+                        f" {self.name}..."
+                    )
                 res = func(*args, **kwargs)
                 if with_cache:
                     cache.put(cache_key, res)
@@ -453,13 +572,14 @@ class Throttle:
                 elif retries <= 0:
                     raise APIError(
                         'Failed to fetch data from API after'
-                        f' {config.max_api_retries} retries. Please try'
-                        f' resuming this job at a later time.'
+                        f' {config.max_api_retries} retries. Please'
+                        f' try resuming this job at a later time.'
                         f'\nException: {exc}'
                     )
                 logger.warning(
                     "Exception encountered in call to endpoint"
                     f" {self.name} Retrying {retries} more times."
                     f" Exception: {exc}\n"
-                    f" Args:\n{pformat(args)}")
+                    f" Args:\n{pformat(args)}"
+                )
                 time.sleep(sleep_seconds)
