@@ -71,8 +71,8 @@ Access is controlled via two built-in RBAC roles:
 
 | Role | Permissions | Who needs it |
 |---|---|---|
-| `Key Vault Secrets Officer` | read + write + delete | Developers / admins |
-| `Key Vault Secrets User` | read-only | Batch node managed identity |
+| `Key Vault Secrets Officer` | read + write + delete | Developers / admins / Batch node managed identity |
+| `Key Vault Secrets User` | read-only | Not used — nodes must write secrets to cache credentials |
 
 ### Grant access to your local user (for development)
 
@@ -94,6 +94,11 @@ az role assignment create \
   --scope "$KV_ID"
 ```
 
+> [!NOTE]
+> The `--assignee-principal-type` flag suppresses an Azure CLI warning and avoids
+> an AAD graph lookup. Use `User` for human accounts and `ServicePrincipal` for
+> managed identities.
+
 ### Grant access to the Batch node managed identity
 
 Batch nodes authenticate using a user-assigned managed identity attached to
@@ -107,10 +112,10 @@ az_identity_show
 # or: az identity show -n "$MANAGED_IDENTITY_NAME" -g "$RESOURCE_GROUP" --query principalId -o tsv
 ```
 
-Then grant read-only access to the vault:
+Then grant read+write access to the vault:
 
 ```sh
-az_kv_grant_access --principal <principalId> --role user
+az_kv_grant_access --principal <principalId> --role officer
 ```
 
 Or with the raw Azure CLI command:
@@ -119,8 +124,9 @@ Or with the raw Azure CLI command:
 KV_ID=$(az keyvault show -n "$KEY_VAULT_NAME" -g "$RESOURCE_GROUP" --query id -o tsv)
 
 az role assignment create \
-  --role "Key Vault Secrets User" \
+  --role "Key Vault Secrets Officer" \
   --assignee-object-id "<principalId>" \
+  --assignee-principal-type ServicePrincipal \
   --scope "$KV_ID"
 ```
 

@@ -39,7 +39,7 @@ Note the `principalId` and full `id` (resource ID) from the output — you need 
 
 ```sh
 # Use the principalId from the step above
-az_kv_grant_access --principal <principalId> --role user
+az_kv_grant_access --principal <principalId> --role officer
 ```
 
 This assigns the `Key Vault Secrets User` role (read-only) to the identity on the vault.
