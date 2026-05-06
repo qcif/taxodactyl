@@ -255,18 +255,18 @@ class Config:
 
     def _resolve_ncbi_api_key(self):
         """Resolve NCBI_API_KEY from vault if not provided via env var."""
-        if not self.USER_EMAIL:
+        if not self.user_email:
             logger.warning(
                 "USER_EMAIL not set; cannot get or set NCBI_API_KEY"
                 " from vault.")
             return
-        if self.NCBI_API_KEY:
-            self.vault.put('NCBI_API_KEY', self.USER_EMAIL, self.NCBI_API_KEY)
+        if self.ncbi_api_key:
+            self.vault.put('NCBI_API_KEY', self.user_email, self.ncbi_api_key)
             logger.info("NCBI API key read from env var NCBI_API_KEY and"
                         " stored in vault.")
         else:
-            self.NCBI_API_KEY = self.vault.get('NCBI_API_KEY', self.USER_EMAIL)
-            if self.NCBI_API_KEY:
+            self.ncbi_api_key = self.vault.get('NCBI_API_KEY', self.user_email)
+            if self.ncbi_api_key:
                 logger.info("NCBI API key retrieved from vault.")
             else:
                 logger.info(
@@ -276,16 +276,16 @@ class Config:
 
     def _resolve_facility_name(self):
         """Resolve facility_name from vault if not provided by the user."""
-        if not self.USER_EMAIL:
+        if not self.user_email:
             logger.warning(
                 "USER_EMAIL not set; cannot get or set facility_name from"
                 " vault.")
             return
         current = self.inputs.facility_name
         if current and current != FACILITY_NAME_DEFAULT:
-            self.vault.put('facility_name', self.USER_EMAIL, current)
+            self.vault.put('facility_name', self.user_email, current)
         else:
-            vault_value = self.vault.get('facility_name', self.USER_EMAIL)
+            vault_value = self.vault.get('facility_name', self.user_email)
             if vault_value:
                 self.inputs.facility_name = vault_value
 

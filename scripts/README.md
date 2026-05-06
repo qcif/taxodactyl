@@ -885,8 +885,8 @@ backed by whichever backend is appropriate for the current environment:
 from src.utils.config import Config
 
 config = Config()
-config.vault.put('NCBI_API_KEY', config.USER_EMAIL, 'my-key')
-value = config.vault.get('NCBI_API_KEY', config.USER_EMAIL)
+config.vault.put('NCBI_API_KEY', config.user_email, 'my-key')
+value = config.vault.get('NCBI_API_KEY', config.user_email)
 ```
 
 Secrets are keyed as `"{secret_name}:{user_email}"` so that different users
