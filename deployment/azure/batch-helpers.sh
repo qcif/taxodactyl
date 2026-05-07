@@ -26,14 +26,18 @@ REDIS_VM_TYPE="Standard_B2ats_v2"
 # Autoscale formula: Fast scale-up (5min window), slow scale-down (30min window)
 # Scales to 1 node if ANY tasks in last 5 min OR any tasks in last 30 min
 # This ensures quick response to new tasks while keeping nodes warm
-DEFAULT_AUTOSCALE_FORMULA='immediateActivity = max($ActiveTasks.GetSample(TimeInterval_Minute * 5));
-immediatePending = max($PendingTasks.GetSample(TimeInterval_Minute * 5));
-recentActivity = max($ActiveTasks.GetSample(TimeInterval_Minute * 30));
-recentPending = max($PendingTasks.GetSample(TimeInterval_Minute * 30));
-immediateDemand = immediateActivity + immediatePending;
-recentDemand = recentActivity + recentPending;
-totalDemand = max(immediateDemand, recentDemand);
-$TargetDedicatedNodes = totalDemand > 0 ? 1 : 0;'
+DEFAULT_AUTOSCALE_FORMULA='
+interval = TimeInterval_Minute * 60;
+$maxVmCount = 1;
+
+// Compute the target nodes based on pending tasks.
+$tasks = max( $PendingTasks.GetSample(1), avg($PendingTasks.GetSample(interval)));
+$targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes/2);
+targetPoolSize = max(0, min($targetVMs, $maxVmCount));
+
+// For first interval deploy 1 node, for other intervals scale up/down as per tasks.
+$TargetDedicatedNodes = targetPoolSize;
+$NodeDeallocationOption = taskcompletion;'
 
 #
 # Helper functions
