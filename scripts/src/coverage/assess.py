@@ -106,7 +106,13 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     ]
 
     tasks += [
-        (get_target_coverage, taxid, target, locus, is_bold)
+        (
+            get_target_coverage,
+            taxid,
+            higher_taxon_targets[target],
+            locus,
+            is_bold,
+        )
         for target, taxid in target_taxids.items()
         if target in higher_taxon_targets
     ]
