@@ -63,7 +63,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate required arguments
-if [[ -z "$METADATA" ]] || [[ -z "$SEQUENCES" ]] || [[ -z "$OUTDIR" ]]; then
+if [[ -z "$METADATA" ]] || [[ -z "$OUTDIR" ]]; then
     echo -e "${RED}ERROR: Missing required arguments${NC}"
     echo ""
     echo "Usage: $0 --metadata <file> --sequences <file> --outdir <dir> [-resume]"
@@ -123,11 +123,16 @@ echo ""
 
 mkdir -p "$OUTDIR"
 
+sequences_param=""
+if [[ ! -z "$SEQUENCES" ]]; then
+    sequences_param="--sequences $SEQUENCES"
+fi
+
 # Run Nextflow with Azure Batch profile
 nextflow run main.nf \
     -profile azure \
     --metadata "$METADATA" \
-    --sequences "$SEQUENCES" \
+    "$sequences_param" \
     --blastdb "$BLASTDB_PATH" \
     --outdir "$OUTDIR" \
     --taxdb "$TAXDB_PATH" \
