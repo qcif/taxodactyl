@@ -304,6 +304,23 @@ def _parse_and_filter_taxonkit_name2taxid(
                 ):
                     matching_taxids.add(lineage_taxid)
                     break
+        if taxid_to_results and not matching_taxids:
+            observed_ranks = {
+                rank
+                for lr in _parse_taxonkit_lineage(process.stdout)
+                for rank, _ in lr.taxonomy
+            }
+            ncbi = higher_classification['ncbi']
+            logger.warning(
+                f"Classification filter"
+                f" (rank='{ncbi['rank']}', taxon='{ncbi['taxon']}')"
+                f" matched none of the {len(taxid_to_results)} taxid(s)"
+                f" returned by taxonkit. All targets will be excluded from"
+                f" DB coverage assessment. Ranks observed in taxonkit"
+                f" lineage output: {sorted(observed_ranks)}. This may"
+                f" indicate a mismatch between the configured classification"
+                f" rank and the taxonkit database version."
+            )
         for taxid in matching_taxids:
             for name_result in taxid_to_results.get(taxid, []):
                 filtered_name_results.append(name_result)
