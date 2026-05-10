@@ -110,6 +110,13 @@ echo "Profile:       azure"
 echo "Resume:        ${RESUME:-false}"
 echo ""
 
+sequences_param=""
+if [ -n "$SEQUENCES" ]; then
+    sequences_param="--sequences $SEQUENCES"
+fi
+
+echo "sequences_param: $sequences_param"
+
 # Confirm execution
 read -p "Continue with workflow execution? (yes/no): " confirm
 if [[ "$confirm" != "yes" ]]; then
@@ -123,25 +130,21 @@ echo ""
 
 mkdir -p "$OUTDIR"
 
-sequences_param=""
-if [[ ! -z "$SEQUENCES" ]]; then
-    sequences_param="--sequences $SEQUENCES"
-fi
-
 # Run Nextflow with Azure Batch profile
 nextflow run main.nf \
     -profile azure \
+    $sequences_param \
     --metadata "$METADATA" \
-    "$sequences_param" \
     --blastdb "$BLASTDB_PATH" \
     --outdir "$OUTDIR" \
     --taxdb "$TAXDB_PATH" \
     --temp_root_dir ./tmp \
-    --ncbi_api_key "${NCBI_API_KEY:-}" \
     --ncbi_user_email "${NCBI_USER_EMAIL:-}" \
     --analyst_name "${ANALYST_NAME:-}" \
-    --facility_name "${FACILITY_NAME:-QCIF}" \
     $RESUME
+
+    # --ncbi_api_key "${NCBI_API_KEY:-}" \
+    # --facility_name "${FACILITY_NAME:-QCIF}" \
 
 exit_code=$?
 
