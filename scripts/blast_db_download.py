@@ -9,6 +9,7 @@ Usage:
         python3 blast_db_download.py
 """
 
+import argparse
 import json
 import logging
 import re
@@ -107,16 +108,35 @@ def download_tarball(filename: str) -> Path:
     )
 
 
-def extract_tarball(path: Path) -> None:
-    """Extract a .tar.gz archive into the current directory and remove it."""
+def extract_tarball(path: Path, keep: bool = False) -> float:
+    """Extract a .tar.gz archive into the current directory.
+
+    Returns the number of seconds spent extracting.
+    """
     log.info("Extracting %s", path)
+    t0 = time.monotonic()
     with tarfile.open(path, "r:gz") as tar:
         tar.extractall()
-    path.unlink()
-    log.info("Removed %s after extraction", path)
+    elapsed = time.monotonic() - t0
+    if keep:
+        log.info("Kept %s (--keep)", path)
+    else:
+        path.unlink()
+        log.info("Removed %s after extraction", path)
+    return elapsed
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Download and extract NCBI core_nt BLAST database volumes."
+    )
+    parser.add_argument(
+        "--keep",
+        action="store_true",
+        help="Keep compressed .tar.gz files after extraction.",
+    )
+    args = parser.parse_args()
+
     filenames = fetch_metadata()
 
     to_download = []
@@ -140,13 +160,17 @@ def main() -> None:
 
     log.info("%d volume(s) to download", len(to_download))
 
+    total_extract_secs = 0.0
     for fn, remote_md5 in to_download:
         tarball = download_tarball(fn)
-        extract_tarball(tarball)
+        total_extract_secs += extract_tarball(tarball, keep=args.keep)
         save_local_md5(fn, remote_md5)
         log.info("DONE  %s", fn)
 
-    log.info("All downloads complete")
+    log.info(
+        "All downloads complete — %.1fs spent extracting",
+        total_extract_secs,
+    )
 
 
 if __name__ == "__main__":
