@@ -112,6 +112,8 @@ To search sequences against the BLAST Core Nucleotide Database, you must downloa
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
+If the above script is not working for you, we have written a [Python version](./scripts/blast_db_download.py) that seems more reliable (recommended). Note that this will download the entire database when running for the first time, as updates depend on a local `checksums` directory.
+
 ### Sequences file (`sequences.fasta`)
 
 You can provide query sequences in either of two ways:

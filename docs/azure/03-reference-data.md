@@ -2,6 +2,8 @@
 
 This guide covers uploading reference data to Azure blob storage and staging it to compute nodes.
 
+Required reference data is documented in [README.md](../../../README.md)
+
 ## Overview
 
 Reference data is stored in premium blob storage and staged to each compute node's local NVMe storage during node initialization. This provides:
@@ -48,15 +50,17 @@ az role assignment create \
 Use azcopy for large data uploads (faster and more reliable than `az storage blob upload-batch`):
 
 ```sh
+cd $REFDATA/blast/core_nt/
 azcopy copy \
-  "./core_nt" \
+  './*' \
   "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/core_nt/" \
   --recursive \
   --overwrite=ifSourceNewer \
   --log-level INFO
 
+cd $REFDATA/taxonkit/
 azcopy copy \
-  ./taxdump/ \
+  './*' \
   "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/" \
   --recursive   \
   --overwrite=ifSourceNewer   \

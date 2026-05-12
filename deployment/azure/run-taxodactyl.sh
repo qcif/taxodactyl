@@ -31,7 +31,8 @@ OUTDIR="output/$RUN_ID"
 RESUME=""
 
 # Azure Batch node paths (staged by start task to NVMe)
-BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"
+# BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"  # old dbs (2025-09-12)
+BLASTDB_PATH="/mnt/nvme/refdata/core_nt/blast/core_nt"    # new dbs (2026-05-12)
 TAXDB_PATH="/mnt/nvme/refdata/taxdump/taxdump"
 
 # Parse command line arguments
