@@ -51,7 +51,7 @@ class ENDPOINTS:
     )
     ENTREZ = Endpoint(
         name='entrez',
-        requests_per_second=lambda: 5 if config.ncbi_api_key else 2.5,
+        requests_per_second=lambda: 5 if config.ncbi_api_key else 2,
     )
     BOLD = Endpoint(
         name='bold',
