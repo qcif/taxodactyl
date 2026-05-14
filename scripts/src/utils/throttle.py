@@ -5,7 +5,7 @@ import time
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from pprint import pformat
-from typing import Optional
+from typing import Callable, Optional
 
 from .cache import FileLock
 from .config import Config
@@ -23,7 +23,7 @@ class Endpoint:
     """Configuration for a throttled API endpoint."""
 
     name: str
-    requests_per_second: Optional[float] = None
+    requests_per_second: Optional[float | Callable[[], float]] = None
     requests_per_minute: Optional[int] = None
     backoff_factor: Optional[int] = None
     global_rate_limit: bool = False
@@ -51,7 +51,7 @@ class ENDPOINTS:
     )
     ENTREZ = Endpoint(
         name='entrez',
-        requests_per_second=5,
+        requests_per_second=lambda: 5 if config.ncbi_api_key else 2.5,
     )
     BOLD = Endpoint(
         name='bold',
@@ -99,7 +99,8 @@ class SqliteQueueBackend(AbstractQueueBackend):
 
     def initialize(self, endpoint: Endpoint):
         """Initialize the SQLite backend for the given endpoint."""
-        self.rps = endpoint.requests_per_second
+        rps = endpoint.requests_per_second
+        self.rps = rps() if callable(rps) else rps
         self.rpm = endpoint.requests_per_minute
         self.per_second_limit = bool(self.rps)
         self.per_minute_limit = bool(self.rpm)
@@ -442,7 +443,8 @@ class RedisQueueBackend(AbstractQueueBackend):
         self._buckets = []
         key_prefix = f"throttle:{self._user_email}:{endpoint.name}"
 
-        rps = endpoint.requests_per_second
+        _rps = endpoint.requests_per_second
+        rps = _rps() if callable(_rps) else _rps
         if rps and rps < 1:
             rps_capacity, rps_refill_n = 1, 1 / rps
         elif rps:
