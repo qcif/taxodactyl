@@ -28,14 +28,10 @@ REDIS_VM_TYPE="Standard_B2ats_v2"
 # This ensures quick response to new tasks while keeping nodes warm
 DEFAULT_AUTOSCALE_FORMULA='
 interval = TimeInterval_Minute * 60;
-$maxVmCount = 1;
 
 // Compute the target nodes based on pending tasks.
 $tasks = max( $PendingTasks.GetSample(1), avg($PendingTasks.GetSample(interval)));
-$targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes/2);
-targetPoolSize = max(0, min($targetVMs, $maxVmCount));
-
-// For first interval deploy 1 node, for other intervals scale up/down as per tasks.
+targetPoolSize = $tasks > 0 ? 2 : 0;
 $TargetDedicatedNodes = targetPoolSize;
 $NodeDeallocationOption = taskcompletion;'
 
@@ -230,6 +226,14 @@ az_pool_create() {
         --json-file "$pool_json"; then
 
         _success "Pool '$pool_id' created successfully"
+
+        if [[ -n "$MANAGED_IDENTITY_NAME" ]]; then
+            _info "Assigning managed identity '$MANAGED_IDENTITY_NAME' to pool..."
+            az_pool_assign_identity "$pool_id" || return 1
+        else
+            _warning "MANAGED_IDENTITY_NAME not set — skipping managed identity assignment"
+            _warning "Batch nodes will not have Key Vault access. Set MANAGED_IDENTITY_NAME in .env.azure and run az_pool_assign_identity."
+        fi
 
         if [[ "$enable_autoscale" == true ]]; then
             _info "Enabling autoscaling..."
