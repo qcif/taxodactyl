@@ -23,15 +23,18 @@ REDIS_VM_HOST="daff-redis.australiaeast.cloudapp.azure.com"
 REDIS_VM_NSG="daff-redis-nsg"
 REDIS_VM_TYPE="Standard_B2ats_v2"
 
-# Autoscale formula: Fast scale-up (5min window), slow scale-down (30min window)
-# Scales to 1 node if ANY tasks in last 5 min OR any tasks in last 30 min
+# Autoscale formula: Fast scale-up (5min window), slow scale-down (15 min window)
+# Scales to 2 nodes if any tasks in last 15 min
 # This ensures quick response to new tasks while keeping nodes warm
+
 DEFAULT_AUTOSCALE_FORMULA='
-interval = TimeInterval_Minute * 60;
+$keepWarmMinutes = 15;
+$concurrentNodes = 2;
+interval = TimeInterval_Minute * $keepWarmMinutes;
 
 // Compute the target nodes based on pending tasks.
 $tasks = max( $PendingTasks.GetSample(1), avg($PendingTasks.GetSample(interval)));
-targetPoolSize = $tasks > 0 ? 2 : 0;
+targetPoolSize = $tasks > 0 ? $concurrentNodes : 0;
 $TargetDedicatedNodes = targetPoolSize;
 $NodeDeallocationOption = taskcompletion;'
 
