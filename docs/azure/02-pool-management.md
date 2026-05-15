@@ -99,8 +99,6 @@ First, create a JSON file to define the pool resources. We use Ubuntu 20.04 for 
 
 **Note**: Some properties (`vmSize`, `targetDedicatedNodes`) can only be provided at pool creation, not when updating. To modify these, you'll need to delete and re-create the pool.
 
-**Note**: Container images used by Nextflow processes (e.g., `ncbi/blast`) may need to be added to `containerImageNames`.
-
 ### Create the Pool
 
 ```sh
