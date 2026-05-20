@@ -27,10 +27,6 @@ process EXTRACT_HITS {
     // Build optional CLI flags only when corresponding params are set.
     def blast_max_target_seqs_arg = params.blast_max_target_seqs_for_report ? "--blast-max-target-seqs ${params.blast_max_target_seqs_for_report}" : ''
     """
-    echo '===== FULL TASK ENVIRONMENT ====='
-    env | sort
-    echo '===== END TASK ENVIRONMENT ====='
-
     # Run the BLAST hit parsing Python script
     python /app/scripts/p1_parse_blast.py \
         ${blast_xml} \
