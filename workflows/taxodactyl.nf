@@ -13,7 +13,6 @@ include { MAFFT_ALIGN } from '../modules/mafft/align/main'
 include { EXTRACT_HITS } from '../modules/extract/hits/main'
 include { BLAST_BLASTDBCMD } from '../modules/blast/blastdbcmd/main'
 include { EXTRACT_TAXONOMY } from '../modules/extract/taxonomy/main'
-include { CONFIGURE_ENVIRONMENT } from '../modules/configure/environment/main'
 include { EXTRACT_CANDIDATES } from '../modules/extract/candidates/main'
 include { EVALUATE_SOURCE_DIVERSITY } from '../modules/evaluate/sourcediversity/main'
 include { EVALUATE_DATABASE_COVERAGE } from '../modules/evaluate/databasecoverage/main'
@@ -51,13 +50,6 @@ workflow TAXODACTYL {
     ch_sequences_prepared = PREPARE_INPUTS.out.sequences.ifEmpty([])
     ch_metadata_prepared = PREPARE_INPUTS.out.metadata
 
-    // Set up environment variables
-    CONFIGURE_ENVIRONMENT (
-    )
-
-    // Capture the generated environment variable file
-    ch_env_var_file = CONFIGURE_ENVIRONMENT.out.first()
-
     // Prepare allowed loci file channel (or optional placeholder if not provided)
     // This is required on Azure Batch because the file does not exist remotely
     ch_allowed_loci = params.allowed_loci_file ?
@@ -66,7 +58,6 @@ workflow TAXODACTYL {
 
     // Validate input files and parameters
     VALIDATE_INPUT (
-        ch_env_var_file,
         ch_sequences_prepared,
         ch_metadata_prepared,
         ch_allowed_loci
@@ -79,7 +70,6 @@ workflow TAXODACTYL {
     if (params.db_type == 'bold') {
         // BOLD search branch
         BOLD_SEARCH (
-            ch_env_var_file,
             ch_sequences,
             ch_metadata,
             VALIDATE_INPUT.out.ready
@@ -110,7 +100,6 @@ workflow TAXODACTYL {
 
         // Extract hit lists from BLAST output files
         EXTRACT_HITS (
-            ch_env_var_file,
             ch_blast_output,
             ch_sequences,
             ch_metadata
@@ -130,7 +119,6 @@ workflow TAXODACTYL {
 
         // Build the taxonomy lookup file used in later reporting steps
         EXTRACT_TAXONOMY (
-            ch_env_var_file,
             BLAST_BLASTDBCMD.out.taxids,
             ch_sequences,
             ch_metadata
@@ -142,7 +130,6 @@ workflow TAXODACTYL {
 
     // Extract candidate sequences for further analysis
     EXTRACT_CANDIDATES (
-        ch_env_var_file,
         ch_hits_files,
         ch_taxonomy_file,
         ch_sequences,
@@ -217,7 +204,6 @@ workflow TAXODACTYL {
     
     // Evaluate source diversity for filtered candidates
     EVALUATE_SOURCE_DIVERSITY (
-        ch_env_var_file,
         ch_candidates_for_source_diversity,
         ch_sequences,
         ch_metadata
@@ -225,7 +211,6 @@ workflow TAXODACTYL {
      
     // Evaluate database coverage for candidates
     EVALUATE_DATABASE_COVERAGE (
-        ch_env_var_file,
         ch_candidates_files,
         ch_sequences,
         ch_metadata
@@ -317,7 +302,6 @@ workflow TAXODACTYL {
          
     // Generate the final report
     REPORT (
-        ch_env_var_file,
         ch_files_for_report,
         ch_taxonomy_file,
         ch_metadata,

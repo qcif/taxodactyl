@@ -39,14 +39,13 @@
                 },
                 "metadata": {
                     "type": "string",
-                    "default": "metadata.csv",
                     "pattern": "^\\S+\\.csv$",
                     "format": "file-path",
                     "exists": "true",
                     "mimeType": "text/csv",
                     "schema": "assets/schema_input.json",
                     "description": "CSV file containing sample metadata.",
-                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension. Default: 'metadata.csv'."
+                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension."
                 },
                 "outdir": {
                     "type": "string",
@@ -57,7 +56,6 @@
                 },
                 "sequences": {
                     "type": "string",
-                    "default": "sequences.fasta",
                     "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "format": "file-path",
                     "exists": "true",
@@ -361,126 +359,6 @@
                     "pattern": "^\\S+$",
                     "description": "Name of the temporary directory within the temp_root_dir.",
                     "errorMessage": "Parameter 'temp_dir_name' must be a string."
-                },
-                "accessions_filename": {
-                    "type": "string",
-                    "default": "accessions.txt",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.txt$",
-                    "description": "Filename for the file containing BLAST accession numbers.",
-                    "errorMessage": "Parameter 'accessions_filename' file name cannot contain spaces and must have a .txt extension. Default: 'accessions.txt'."
-                },
-                "blast_xml_filename": {
-                    "type": "string",
-                    "default": "blast_results.xml",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.xml$",
-                    "description": "Filename for the BLAST XML results file.",
-                    "errorMessage": "Parameter 'blast_xml_filename' file name cannot contain spaces and must have a .xml extension. Default: 'blast_results.xml'."
-                },
-                "hits_fasta_filename": {
-                    "type": "string",
-                    "default": "all_hits.fasta",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
-                    "description": "Filename for the FASTA file containing all BLAST hits.",
-                    "errorMessage": "Parameter 'hits_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'all_hits.fasta'."
-                },
-                "hits_json_filename": {
-                    "type": "string",
-                    "default": "all_hits.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file containing all BLAST hits.",
-                    "errorMessage": "Parameter 'hits_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'all_hits.json'."
-                },
-                "boxplot_img_filename": {
-                    "type": "string",
-                    "default": "candidates_identity_boxplot.png",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.png$",
-                    "description": "Filename for the PNG image of candidate identity boxplot.",
-                    "errorMessage": "Parameter 'boxplot_img_filename' file name cannot contain spaces and must have a .png extension. Default: 'candidates_identity_boxplot.png'."
-                },
-                "candidates_csv_filename": {
-                    "type": "string",
-                    "default": "candidates.csv",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Filename for the CSV file listing candidate hits.",
-                    "errorMessage": "Parameter 'candidates_csv_filename' file name cannot contain spaces and must have a .csv extension. Default: 'candidates.csv'."
-                },
-                "candidates_fasta_filename": {
-                    "type": "string",
-                    "default": "candidates.fasta",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
-                    "description": "Filename for the FASTA file of candidate sequences.",
-                    "errorMessage": "Parameter 'candidates_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'candidates.fasta'."
-                },
-                "candidates_phylogeny_fasta_filename": {
-                    "type": "string",
-                    "default": "candidates_phylogeny.fasta",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
-                    "description": "Filename for the FASTA file of candidate sequences that will be used to generate the phylogenetic tree.",
-                    "errorMessage": "Parameter 'candidates_phylogeny_fasta_filename' file name cannot contain spaces and must have .fa, .fas, .fna, or .fasta extension. Default: 'candidates.fasta'."
-                },
-                "candidates_json_filename": {
-                    "type": "string",
-                    "default": "candidates.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file of candidate hits.",
-                    "errorMessage": "Parameter 'candidates_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates.json'."
-                },
-                "candidates_sources_json_filename": {
-                    "type": "string",
-                    "default": "candidates_sources.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file listing sources of candidate species.",
-                    "errorMessage": "Parameter 'candidates_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'candidates_sources.json'."
-                },
-                "independent_sources_json_filename": {
-                    "type": "string",
-                    "default": "aggregated_sources.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file listing aggregated publications supporting taxonomic associations.",
-                    "errorMessage": "Parameter 'independent_sources_json_filename' file name cannot contain spaces and must have a .json extension. Default: 'independent_sources.json'."
-                },
-                "bold_taxonomy_json": {
-                    "type": "string",
-                    "default": "bold_taxonomy.json",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Filename for the JSON file containing BOLD taxonomy data.",
-                    "errorMessage": "Parameter 'bold_taxonomy_json' file name cannot contain spaces and must have a .json extension. Default: 'bold_taxonomy.json'."
-                },
-                "taxonomy_filename": {
-                    "type": "string",
-                    "default": "taxonomy.csv",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Filename for the CSV file containing BLAST taxonomy assignments.",
-                    "errorMessage": "Parameter 'taxonomy_filename' file name cannot contain spaces and must have a .csv extension. Default: 'taxonomy.csv'."
-                },
-                "candidates_msa_filename": {
-                    "type": "string",
-                    "default": "candidates_phylogeny.msa",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.msa$",
-                    "description": "Filename for the multiple sequence alignment file of candidate sequences.",
-                    "errorMessage": "Parameter 'candidates_msa_filename' file name cannot contain spaces and must have a .msa extension. Default: 'candidates_phylogeny.msa'."
-                },
-                "tree_nwk_filename": {
-                    "type": "string",
-                    "default": "candidates_phylogeny.nwk",
-                    "hidden": true,
-                    "pattern": "^\\S+\\.nwk$",
-                    "description": "Filename for the Newick tree file of candidate sequences.",
-                    "errorMessage": "Parameter 'tree_nwk_filename' file name cannot contain spaces and must have a .nwk extension. Default: 'candidates_phylogeny.nwk'."
                 }
             }
         },
