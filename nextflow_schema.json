@@ -39,7 +39,6 @@
                 },
                 "metadata": {
                     "type": "string",
-                    "default": "metadata.csv",
                     "pattern": "^\\S+\\.csv$",
                     "format": "file-path",
                     "exists": "true",
