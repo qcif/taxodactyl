@@ -45,7 +45,7 @@
                     "mimeType": "text/csv",
                     "schema": "assets/schema_input.json",
                     "description": "CSV file containing sample metadata.",
-                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension. Default: 'metadata.csv'."
+                    "errorMessage": "Parameter 'metadata' must be a valid file path, be in CSV format with columns: 'sample_id', 'locus', 'preliminary_id', file name cannot contain spaces and must have a .csv extension."
                 },
                 "outdir": {
                     "type": "string",
@@ -56,7 +56,6 @@
                 },
                 "sequences": {
                     "type": "string",
-                    "default": "sequences.fasta",
                     "pattern": "^\\S+\\.(fasta|fas|fna|fa)$",
                     "format": "file-path",
                     "exists": "true",
