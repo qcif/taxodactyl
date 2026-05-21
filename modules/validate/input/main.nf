@@ -5,7 +5,6 @@ process VALIDATE_INPUT {
     containerOptions  "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
 
     input:
-    path(env_var_file) // Environment variables file
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Copied metadata file
     path(allowed_loci_file, stageAs: 'loci.json') // Allowed loci configuration file
@@ -14,7 +13,7 @@ process VALIDATE_INPUT {
     val true, emit: ready // Output: validation success flag
     path("output/sequences.fasta", emit: sequences) // Output: validated/copied sequences file
     path "metadata.csv", emit: metadata // Output: validated/cleaned metadata file
-    path("output/run.log"), emit: validation_log // Output: log file
+    path("output/${task.ext.log_filename}"), emit: validation_log // Output: log file
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
@@ -29,8 +28,6 @@ process VALIDATE_INPUT {
     // Staging and passing as file base name seems to resolve abspath issues with Azure Batch
     def allowed_loci_arg = allowed_loci_file.name != 'OPTIONAL_FILE' ? "--allowed-loci-file ${allowed_loci_file.name}" : ''
     """
-    # Source environment variables
-    source ${env_var_file}
     # Run the input validation Python script
     python /app/scripts/p0_validation.py \
     --taxdb-dir ${file(params.taxdb)} \

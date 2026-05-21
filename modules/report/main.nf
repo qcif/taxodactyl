@@ -8,7 +8,6 @@ process REPORT {
     containerOptions "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
 
     input:
-    path(env_var_file) // Environment variables file
     // Per-query report asset bundle assembled in the workflow.
     tuple val(query_folder),
         path(hits_files, stageAs: 'hits_files/*'),                // Folder with BLAST/BOLD hits
@@ -29,7 +28,7 @@ process REPORT {
     // Final per-query report page(s).
     path("$query_folder/*.html"), emit: html_report // Output: final HTML report
     // Process run log.
-    path("output/run.log"), emit: report_log // Output: log file
+    path("output/${task.ext.log_filename}"), emit: report_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 
@@ -42,9 +41,6 @@ process REPORT {
     def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
     
     """
-    # Load environment exported by upstream setup step.
-    source "${env_var_file}"
-
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath "${sequences_file}")
 
@@ -55,7 +51,7 @@ process REPORT {
     mkdir -p "${query_folder}"
 
     # Move tree file into the query folder with the correct name
-    mv tree.nwk "${query_folder}/${params.tree_nwk_filename}"
+    mv tree.nwk "${query_folder}/${task.ext.tree_nwk}"
 
     # Move staged report inputs into the query folder to keep upstream outputs intact
     for item in hits_files/*; do
