@@ -40,10 +40,6 @@ DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
     'sequence',
 )
-VARS_FROM_ENV = (
-    "USER_EMAIL",
-    "NCBI_API_KEY",
-)
 FACILITY_NAME_DEFAULT = "Not provided"
 TEMP_FILES = (
     'entrez_cache_dirname',
@@ -262,8 +258,6 @@ class Config:
             return
         if self.ncbi_api_key:
             self.vault.put('NCBI_API_KEY', self.user_email, self.ncbi_api_key)
-            logger.info("NCBI API key read from env var NCBI_API_KEY and"
-                        " stored in vault.")
         else:
             self.ncbi_api_key = self.vault.get('NCBI_API_KEY', self.user_email)
             if self.ncbi_api_key:
