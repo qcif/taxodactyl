@@ -169,7 +169,12 @@ class Vault:
     def _create_backend(self, config) -> VaultBackend:
         if config.azure_key_vault_enabled:
             return AzureVaultBackend(config.azure_key_vault_url)
-        return LocalVaultBackend(config.user_secrets_dir)
+        if os.environ.get(SECRET_KEY_ENV):
+            return LocalVaultBackend(config.user_secrets_dir)
+        logger.info(
+            "Neither SECRET_KEY or AZURE_KEY_VAULT_URL are set. Vault is "
+            "disabled and user secrets will not be stored.")
+        return NullVaultBackend()
 
     def get(self, secret_name: str, user_email: str) -> str | None:
         """Retrieve a secret, returning None on any error."""
