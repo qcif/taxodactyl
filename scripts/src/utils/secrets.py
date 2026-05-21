@@ -52,6 +52,7 @@ class LocalVaultBackend(VaultBackend):
     def __init__(self, storage_dir: Path):
         self._path = storage_dir / SECRETS_FILENAME
         self._cipher = self._init_cipher()
+        logger.debug(f"Initialized local vault at {self._path}")
 
     def _init_cipher(self) -> Fernet | None:
         key = os.environ.get(SECRET_KEY_ENV)
@@ -87,12 +88,20 @@ class LocalVaultBackend(VaultBackend):
             logger.warning(f"Failed to write local secrets file: {e}")
 
     def get(self, secret_name: str, user_email: str) -> str | None:
-        return self._read().get(f"{secret_name}:{user_email}")
+        key = f"{secret_name}:{user_email}"
+        value = self._read().get(key)
+        logger.debug(
+            f"Local vault: secret {key!r} "
+            f"{'found' if value is not None else 'not found'}"
+        )
+        return value
 
     def put(self, secret_name: str, user_email: str, value: str) -> None:
+        key = f"{secret_name}:{user_email}"
         data = self._read()
-        data[f"{secret_name}:{user_email}"] = value
+        data[key] = value
         self._write(data)
+        logger.debug(f"Local vault: stored secret {key!r}")
 
 
 class AzureVaultBackend(VaultBackend):
