@@ -92,13 +92,16 @@ The vault has two backends. Set the appropriate environment variable before runn
 
 | Backend | Environment variable | Description |
 |---|---|---|
-| Local (encrypted file) | `SECRET_KEY=<passphrase>` | Stores an AES-encrypted file in the user's temp directory. Any non-empty string can be used as the passphrase. |
+| Local (encrypted file) | `SECRET_KEY=<passphrase>` | Stores an AES-encrypted file in the user secrets directory. Any non-empty string can be used as the passphrase. |
 | Azure Key Vault | `AZURE_KEY_VAULT_URL=https://<vault-name>.vault.azure.net/` | Stores secrets in an Azure Key Vault. Requires an active Azure credential (e.g. via `az login` or a managed identity). The Azure backend is selected automatically when running with `conf/azure.config`. |
 
 > [!NOTE]
 > - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
 > - If neither environment variable is set, the vault is disabled and secrets are not persisted.
 > - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
+
+> [!NOTE]
+> If running local vault, secrets will be stored in ~/.local/share/taxodactyl/. System users (e.g. www-data) will use /var/lib/taxodactyl/, which must be created with appropriate permissions before running.
 
 ### TaxonKit
 

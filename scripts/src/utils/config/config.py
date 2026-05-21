@@ -418,6 +418,27 @@ class Config:
         return user_dir
 
     @property
+    def user_secrets_dir(self) -> Path:
+        user_sub = self.user_email or 'ANONYMOUS'
+        candidates = [
+            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
+            Path('/var/lib/taxodactyl') / user_sub,
+        ]
+        for candidate in candidates:
+            try:
+                candidate.mkdir(exist_ok=True, parents=True)
+                return candidate
+            except OSError:
+                continue
+        raise OSError(
+            "No writable secrets directory found. Tried:\n- "
+            + "\n- ".join(str(c) for c in candidates)
+            + "\n\nPlease ensure one of these directories is writable, or"
+            + " remove the SECRET_KEY environment variable to disable local"
+            + " secrets storage."
+        )
+
+    @property
     def throttle_sqlite_path(self):
         return self.user_tempdir / ('throttle_' + self.sqlite_file)
 

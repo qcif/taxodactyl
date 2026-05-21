@@ -101,6 +101,13 @@ class AzureVaultBackend(VaultBackend):
     def __init__(self, kv_url: str):
         from azure.identity import DefaultAzureCredential
         from azure.keyvault.secrets import SecretClient
+        if not os.getenv("LOGGING_DEBUG"):
+            for azure_logger in (
+                "azure.identity",
+                "azure.keyvault",
+                "azure.core",
+            ):
+                logging.getLogger(azure_logger).setLevel(logging.WARNING)
         credential = DefaultAzureCredential()
         self._client = SecretClient(vault_url=kv_url, credential=credential)
 
@@ -114,7 +121,8 @@ class AzureVaultBackend(VaultBackend):
         try:
             val = self._client.get_secret(key).value
             logger.debug(
-                f"Azure Key Vault: retrieved secret {key!r}: {val[:4]}*****"
+                f"Azure Key Vault: retrieved secret {key!r}: "
+                f'"{self._print_safe(val)}"'
             )
             return val
         except Exception as e:
@@ -128,6 +136,16 @@ class AzureVaultBackend(VaultBackend):
             logger.debug(f"Azure Key Vault: set secret {key!r}")
         except Exception as e:
             logger.warning(f"Azure Key Vault: failed to set {key!r}: {e}")
+
+    def _print_safe(self, val: str) -> str:
+        if not val:
+            return ''
+
+        if len(val) <= 4:
+            return '*' * len(val)
+
+        chars_to_show = len(val) // 2
+        return '*' * (len(val) - chars_to_show) + val[-chars_to_show:]
 
 
 class Vault:
@@ -150,8 +168,11 @@ class Vault:
 
     def _create_backend(self, config) -> VaultBackend:
         if config.azure_key_vault_enabled:
-            return AzureVaultBackend(config.azure_key_vault_url)
-        return LocalVaultBackend(config.user_tempdir)
+            return AzureVaultBackend(
+                config.azure_key_vault_url,
+                debug=config.debug,
+            )
+        return LocalVaultBackend(config.user_secrets_dir)
 
     def get(self, secret_name: str, user_email: str) -> str | None:
         """Retrieve a secret, returning None on any error."""
