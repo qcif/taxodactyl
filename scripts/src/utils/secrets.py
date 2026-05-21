@@ -168,10 +168,7 @@ class Vault:
 
     def _create_backend(self, config) -> VaultBackend:
         if config.azure_key_vault_enabled:
-            return AzureVaultBackend(
-                config.azure_key_vault_url,
-                debug=config.debug,
-            )
+            return AzureVaultBackend(config.azure_key_vault_url)
         return LocalVaultBackend(config.user_secrets_dir)
 
     def get(self, secret_name: str, user_email: str) -> str | None:

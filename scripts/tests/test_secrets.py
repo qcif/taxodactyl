@@ -179,7 +179,7 @@ class TestVault(unittest.TestCase):
     def _make_local_config(self, storage_dir: Path):
         config = MagicMock()
         config.azure_key_vault_enabled = False
-        config.user_tempdir = storage_dir
+        config.user_secrets_dir = storage_dir
         return config
 
     def _make_azure_config(self):
