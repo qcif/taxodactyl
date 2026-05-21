@@ -167,6 +167,15 @@ class TestAzureVaultBackendOperations(unittest.TestCase):
 
 class TestNullVaultBackend(unittest.TestCase):
 
+    def _make_local_config(self):
+        config = MagicMock()
+        config.azure_key_vault_enabled = False
+        return config
+
+    def test_selects_local_backend_when_not_azure(self):
+        vault = Vault(self._make_local_config())
+        self.assertIsInstance(vault._backend, NullVaultBackend)
+
     def test_get_returns_none(self):
         self.assertIsNone(NullVaultBackend().get('MY_KEY', EMAIL))
 
@@ -180,6 +189,7 @@ class TestVault(unittest.TestCase):
         config = MagicMock()
         config.azure_key_vault_enabled = False
         config.user_secrets_dir = storage_dir
+        os.environ['SECRET_KEY'] = SECRET_KEY
         return config
 
     def _make_azure_config(self):
