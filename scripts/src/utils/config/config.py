@@ -429,7 +429,7 @@ class Config:
             + "\n- ".join(str(c) for c in candidates)
             + "\n\nPlease ensure one of these directories is writable, or"
             + " remove the SECRET_KEY environment variable to disable local"
-            + " secrets storage."
+            + " secrets storage.\n"
         )
 
     @property
