@@ -415,8 +415,8 @@ class Config:
     def user_secrets_dir(self) -> Path:
         user_sub = self.user_email or 'ANONYMOUS'
         candidates = [
-            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
             Path('/var/lib/taxodactyl') / user_sub,
+            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
         ]
         for candidate in candidates:
             try:
