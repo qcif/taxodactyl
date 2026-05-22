@@ -45,7 +45,6 @@ workflow TAXODACTYL {
         params.app_data_created = true
     } catch (Exception e) {
         log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
-        params.app_data_created = false
     }
 
     // Copy input files to work directory first to ensure availability
