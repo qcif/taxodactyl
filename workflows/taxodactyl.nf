@@ -39,6 +39,15 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true).first()
 
+    // Attempt creation of app data directory
+    try {
+        file(params.app_data_dir).mkdirs()
+        params.app_data_created = true
+    } catch (Exception e) {
+        log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
+        params.app_data_created = false
+    }
+
     // Copy input files to work directory first to ensure availability
     // Pass sequences as an optional list input: one file when provided, empty list when absent
     def sequences_input = params.sequences ? [file(params.sequences)] : []

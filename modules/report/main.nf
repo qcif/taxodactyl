@@ -5,7 +5,10 @@ process REPORT {
     tag "$query_folder"
 
     // Bind config/output locations required by report generation.
-    containerOptions "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
+    containerOptions {
+        def bind_app_data = params.app_data_created ? " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl" : ""
+        "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
     // Per-query report asset bundle assembled in the workflow.
@@ -39,7 +42,7 @@ process REPORT {
     def database_name_arg = params.blast_database_name_for_report ? "--database-name '${params.blast_database_name_for_report}'" : ''
     def facility_name_arg = params.facility_name ? "--facility-name '${params.facility_name}'" : ''
     def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
-    
+
     """
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath "${sequences_file}")

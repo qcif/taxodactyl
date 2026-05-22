@@ -2,7 +2,10 @@ process VALIDATE_INPUT {
 
     label 'daff_tax_assign'
 
-    containerOptions  "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
+    containerOptions {
+        def bind_app_data = params.app_data_created ? " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl" : ""
+        "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
     path(sequences_file) // Copied sequences file
