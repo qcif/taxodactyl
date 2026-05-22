@@ -353,12 +353,6 @@
                     "description": "Directory for persistent application data (e.g. caches). Bound into containers at /var/lib/taxodactyl.",
                     "errorMessage": "Parameter 'app_data_dir' must be a valid directory path."
                 },
-                "app_data_created": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Set internally to true if app_data_dir was successfully created at runtime.",
-                    "hidden": true
-                },
                 "temp_root_dir": {
                     "type": "string",
                     "default": "output",

@@ -6,7 +6,7 @@ process EVALUATE_DATABASE_COVERAGE {
 
     // Bind external data and writable locations needed by p5_db_coverage.py.
     containerOptions {
-        def bind_app_data = params.app_data_created ? " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl" : ""
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
         "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}${bind_app_data} --bind ${file(params.temp_root_dir)} --writable-tmpfs"
     }
 

@@ -39,10 +39,9 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true).first()
 
-    // Attempt creation of app data directory
     try {
         file(params.app_data_dir).mkdirs()
-        params.app_data_created = true
+        System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
     } catch (Exception e) {
         log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
     }

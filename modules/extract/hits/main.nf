@@ -4,7 +4,7 @@ process EXTRACT_HITS {
 
     // Bind output location used for published hit FASTA files.
     containerOptions {
-        def bind_app_data = params.app_data_created ? " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl" : ""
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
         "--bind ${file(params.outdir)}${bind_app_data}"
     }
 

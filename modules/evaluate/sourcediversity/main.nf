@@ -6,7 +6,7 @@ process EVALUATE_SOURCE_DIVERSITY {
 
     // Bind output and temp locations needed by p4_source_diversity.py.
     containerOptions {
-        def bind_app_data = params.app_data_created ? " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl" : ""
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
         "--bind ${file(params.outdir)}${bind_app_data} --bind ${file(params.temp_root_dir)}"
     }
 
