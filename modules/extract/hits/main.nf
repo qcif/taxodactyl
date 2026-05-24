@@ -21,7 +21,7 @@ process EXTRACT_HITS {
         path("query_*/${task.ext.hits_json}"),
         path("query_*/${task.ext.query_title_file}"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
+    path("${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory

@@ -26,7 +26,7 @@ process EVALUATE_SOURCE_DIVERSITY {
     tuple val(query_folder),
         path("$query_folder/errors/*"), optional: true, emit: independent_sources_errors // Output: error files
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: source_diversity_log // Output: log file
+    path("${task.ext.log_filename}"), emit: source_diversity_log // Output: log file
 
     script:
     // Build optional CLI flags only when corresponding params are set.

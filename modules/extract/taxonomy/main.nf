@@ -14,7 +14,7 @@ process EXTRACT_TAXONOMY {
 
     output:
     path task.ext.taxonomy_file, emit: taxonomy // Output taxonomy file
-    path("output/${task.ext.log_filename}"), emit: extract_taxonomy_log // Output: log file
+    path("${task.ext.log_filename}"), emit: extract_taxonomy_log // Output: log file
 
     script:
     """

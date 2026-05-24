@@ -16,7 +16,7 @@ process VALIDATE_INPUT {
     val true, emit: ready // Output: validation success flag
     path("output/sequences.fasta", emit: sequences) // Output: validated/copied sequences file
     path "metadata.csv", emit: metadata // Output: validated/cleaned metadata file
-    path("output/${task.ext.log_filename}"), emit: validation_log // Output: log file
+    path("${task.ext.log_filename}"), emit: validation_log // Output: log file
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''

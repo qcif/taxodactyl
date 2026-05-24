@@ -31,7 +31,7 @@ process REPORT {
     // Final per-query report page(s).
     path("$query_folder/*.html"), emit: html_report // Output: final HTML report
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: report_log // Output: log file
+    path("${task.ext.log_filename}"), emit: report_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 

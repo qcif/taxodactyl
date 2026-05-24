@@ -28,7 +28,7 @@ process EXTRACT_CANDIDATES {
     tuple val(query_folder),
         path("$query_folder/${task.ext.candidates_phylogeny_fasta}"), emit: candidates_for_alignment // Output for alignment
     // Process run log.
-    path("output/${task.ext.log_filename}"),    emit: extract_candidates_log // Output: run log
+    path("${task.ext.log_filename}"),    emit: extract_candidates_log // Output: run log
     // Candidate and rule flags generated for this query.
     tuple val(query_folder), path("$query_folder/*.flag"), emit: candidates_flags
     // Candidate FASTA/CSV/JSON summary files.
