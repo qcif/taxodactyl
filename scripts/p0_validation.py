@@ -80,6 +80,12 @@ def _parse_args():
         description="Validate user input."
     )
     parser.add_argument(
+        f"--{CLI_ARGS['output_dir'].cli_name}",
+        type=existing_path,
+        default=config.output_dir,
+        help=f"Path to output directory. Defaults to {config.output_dir}.",
+    )
+    parser.add_argument(
         f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
