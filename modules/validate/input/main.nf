@@ -14,8 +14,8 @@ process VALIDATE_INPUT {
 
     output:
     val true, emit: ready // Output: validation success flag
-    path("output/sequences.fasta", emit: sequences) // Output: validated/copied sequences file
-    path "metadata.csv", emit: metadata // Output: validated/cleaned metadata file
+    path("sequences.fasta", emit: sequences) // Output: validated/copied sequences file
+    path("metadata.csv", emit: metadata) // Output: validated/cleaned metadata file
     path("${task.ext.log_filename}"), emit: validation_log // Output: log file
 
     script:
@@ -33,6 +33,7 @@ process VALIDATE_INPUT {
     """
     # Run the input validation Python script
     python /app/scripts/p0_validation.py \
+    --output-dir ./ \
     --taxdb-dir ${file(params.taxdb)} \
     ${query_fasta_arg} \
     --metadata-csv ${metadata_file} \
