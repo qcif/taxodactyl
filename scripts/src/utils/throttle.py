@@ -36,6 +36,16 @@ class Endpoint:
             )
 
 
+def _get_entrez_rps():
+    if config.ncbi_api_key:
+        logger.debug("config.ncbi_api_key is set, faster rate limit for Entrez"
+                     " endpoint")
+    else:
+        logger.debug("config.ncbi_api_key is NOT set, using slower rate limit"
+                     " for Entrez endpoint")
+    return 5 if config.ncbi_api_key else 2
+
+
 class ENDPOINTS:
     GBIF_SLOW = Endpoint(
         name='gbif_slow',
@@ -51,7 +61,7 @@ class ENDPOINTS:
     )
     ENTREZ = Endpoint(
         name='entrez',
-        requests_per_second=lambda: 5 if config.ncbi_api_key else 2,
+        requests_per_second=_get_entrez_rps,
     )
     BOLD = Endpoint(
         name='bold',

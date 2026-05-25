@@ -39,6 +39,13 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true).first()
 
+    try {
+        file(params.app_data_dir).mkdirs()
+        System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
+    } catch (Exception e) {
+        log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
+    }
+
     // Copy input files to work directory first to ensure availability
     // Pass sequences as an optional list input: one file when provided, empty list when absent
     def sequences_input = params.sequences ? [file(params.sequences)] : []

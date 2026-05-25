@@ -2,7 +2,10 @@ process VALIDATE_INPUT {
 
     label 'daff_tax_assign'
 
-    containerOptions  "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
+    containerOptions {
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
+        "--bind ${file(params.taxdb)} --bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
     path(sequences_file) // Copied sequences file
@@ -11,9 +14,9 @@ process VALIDATE_INPUT {
 
     output:
     val true, emit: ready // Output: validation success flag
-    path("output/sequences.fasta", emit: sequences) // Output: validated/copied sequences file
-    path "metadata.csv", emit: metadata // Output: validated/cleaned metadata file
-    path("output/${task.ext.log_filename}"), emit: validation_log // Output: log file
+    path("sequences.fasta", emit: sequences) // Output: validated/copied sequences file
+    path("metadata.csv", emit: metadata) // Output: validated/cleaned metadata file
+    path("${task.ext.log_filename}"), emit: validation_log // Output: log file
 
     script:
     def bold_flag = params.db_type == 'bold' ? '--bold' : ''
@@ -30,6 +33,7 @@ process VALIDATE_INPUT {
     """
     # Run the input validation Python script
     python /app/scripts/p0_validation.py \
+    --output-dir ./ \
     --taxdb-dir ${file(params.taxdb)} \
     ${query_fasta_arg} \
     --metadata-csv ${metadata_file} \
