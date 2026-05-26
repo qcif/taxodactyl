@@ -10,7 +10,7 @@ process BOLD_SEARCH {
     output:
     path(task.ext.bold_taxonomy_json), emit: taxonomy // Output taxonomy JSON file
     path("query_*"), emit: hits // // Output: hits folders
-    path("output/${task.ext.log_filename}"), emit: bold_search_log // Output: log file
+    path("${task.ext.log_filename}"), emit: bold_search_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory

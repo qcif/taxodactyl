@@ -156,9 +156,33 @@ class Config:
         if Config._initialized:
             return
         Config._initialized = True
-        self._load_cascading_config()
-        self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
-        self.query_dir = None
+        self._load_config_cascade()
+        self._set_output_dir()
+        self._setup_logging()
+        self.query_dir = getattr(self, 'query_dir', None)
+
+    def _set_output_dir(self) -> Path:
+        """Determine output directory from env var or CLI arg."""
+        param = mappings.PARAMS['output_dir']
+        if os.getenv(param.env_name):
+            self.output_dir = Path(os.getenv(param.env_name))
+        else:
+            parser = argparse.ArgumentParser(add_help=False)
+            parser.add_argument(
+                f'--{param.cli_name}',
+                type=Path,
+            )
+            args, _ = parser.parse_known_args()
+            if args.output_dir:
+                self.output_dir = args.output_dir
+        if not self.output_dir:  # Should have been set in default YAML
+            self.output_dir = Path('output')
+        self.output_dir.mkdir(exist_ok=True, parents=True)
+
+    def _setup_logging(self):
+        dictConfig(
+            get_logging_config(self.output_dir / self.log_filename)
+        )
 
     def _get_config_paths(self) -> list[Path]:
         """Parse command line to get config file paths.
@@ -182,7 +206,7 @@ class Config:
 
         return args.config
 
-    def _load_cascading_config(self):
+    def _load_config_cascade(self):
         """Load and merge multiple configuration files with cascading."""
         config_paths = self._get_config_paths()
         try:
@@ -285,10 +309,6 @@ class Config:
 
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
-        # Setup logging
-        conf = get_logging_config(self.output_dir / self.log_filename)
-        dictConfig(conf)
-
         # Handle BOLD flag
         if hasattr(args, 'bold') and args.bold:
             self.bold_flag_file.write_text('1')
@@ -415,8 +435,8 @@ class Config:
     def user_secrets_dir(self) -> Path:
         user_sub = self.user_email or 'ANONYMOUS'
         candidates = [
-            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
             Path('/var/lib/taxodactyl') / user_sub,
+            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
         ]
         for candidate in candidates:
             try:
@@ -429,7 +449,7 @@ class Config:
             + "\n- ".join(str(c) for c in candidates)
             + "\n\nPlease ensure one of these directories is writable, or"
             + " remove the SECRET_KEY environment variable to disable local"
-            + " secrets storage."
+            + " secrets storage.\n"
         )
 
     @property

@@ -5,7 +5,10 @@ process REPORT {
     tag "$query_folder"
 
     // Bind config/output locations required by report generation.
-    containerOptions "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}"
+    containerOptions {
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
+        "--bind ${file(params.allowed_loci_file).parent} --bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
     // Per-query report asset bundle assembled in the workflow.
@@ -28,7 +31,7 @@ process REPORT {
     // Final per-query report page(s).
     path("$query_folder/*.html"), emit: html_report // Output: final HTML report
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: report_log // Output: log file
+    path("${task.ext.log_filename}"), emit: report_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy', pattern: "$query_folder/*.html" // Publish HTML report to output directory
 
@@ -39,7 +42,7 @@ process REPORT {
     def database_name_arg = params.blast_database_name_for_report ? "--database-name '${params.blast_database_name_for_report}'" : ''
     def facility_name_arg = params.facility_name ? "--facility-name '${params.facility_name}'" : ''
     def analyst_name_arg = params.analyst_name ? "--analyst-name '${params.analyst_name}'" : ''
-    
+
     """
     # Override INPUT_FASTA_FILEPATH to use local sequences file
     export INPUT_FASTA_FILEPATH=\$(realpath "${sequences_file}")

@@ -3,7 +3,10 @@ process EXTRACT_HITS {
     label 'daff_tax_assign'
 
     // Bind output location used for published hit FASTA files.
-    containerOptions "--bind ${file(params.outdir)}"
+    containerOptions {
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
+        "--bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
     path(blast_xml)    // BLAST XML results file
@@ -14,11 +17,11 @@ process EXTRACT_HITS {
     // Accession list used for taxonomy lookup.
     path(task.ext.accessions_filename), emit: hits_accessions // Output: accessions file
     // Per-query parsed hit assets.
-    tuple path("query_*/${task.ext.hits_fasta}"), 
-        path("query_*/${task.ext.hits_json}"), 
+    tuple path("query_*/${task.ext.hits_fasta}"),
+        path("query_*/${task.ext.hits_json}"),
         path("query_*/${task.ext.query_title_file}"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
+    path("${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory
@@ -43,6 +46,6 @@ process EXTRACT_HITS {
             : > "\${qdir}${task.ext.hits_fasta}"
         fi
     done
-    
+
     """
 }

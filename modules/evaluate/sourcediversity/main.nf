@@ -5,7 +5,10 @@ process EVALUATE_SOURCE_DIVERSITY {
     tag "$query_folder"
 
     // Bind output and temp locations needed by p4_source_diversity.py.
-    containerOptions "--bind ${file(params.outdir)} --bind ${file(params.temp_root_dir)}"
+    containerOptions {
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
+        "--bind ${file(params.outdir)}${bind_app_data} --bind ${file(params.temp_root_dir)}"
+    }
 
     input:
     tuple val(query_folder), path(query_folder_path, stageAs: 'sources_input/*') // Query folder name and path
@@ -14,16 +17,16 @@ process EVALUATE_SOURCE_DIVERSITY {
 
     output:
     // Flag indicating independent-source criteria status.
-    tuple val(query_folder), 
+    tuple val(query_folder),
         path("$query_folder/4.flag"), emit: independent_sources_flag // Output: independent sources flag
     // Aggregated source-diversity summary JSON.
-    tuple val(query_folder), 
+    tuple val(query_folder),
         path("$query_folder/${task.ext.independent_sources_json}"), emit: independent_sources_json // Output: independent sources JSON
     // Optional error files for this query.
-    tuple val(query_folder), 
+    tuple val(query_folder),
         path("$query_folder/errors/*"), optional: true, emit: independent_sources_errors // Output: error files
     // Process run log.
-    path("output/${task.ext.log_filename}"), emit: source_diversity_log // Output: log file
+    path("${task.ext.log_filename}"), emit: source_diversity_log // Output: log file
 
     script:
     // Build optional CLI flags only when corresponding params are set.

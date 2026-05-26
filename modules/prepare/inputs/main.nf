@@ -4,7 +4,7 @@ process PREPARE_INPUTS {
     input:
     path sequences_file
     path metadata_file
-    
+
     output:
     path "sequences.fasta", emit: sequences, optional: true
     path "metadata.csv", emit: metadata

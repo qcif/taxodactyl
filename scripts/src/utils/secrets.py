@@ -52,7 +52,7 @@ class LocalVaultBackend(VaultBackend):
     def __init__(self, storage_dir: Path):
         self._path = storage_dir / SECRETS_FILENAME
         self._cipher = self._init_cipher()
-        logger.debug(f"Initialized local vault at {self._path}")
+        logger.info(f"Initialized local vault at {self._path}")
 
     def _init_cipher(self) -> Fernet | None:
         key = os.environ.get(SECRET_KEY_ENV)

@@ -33,9 +33,9 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
+                // "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 // Note: PHYLOGENY_SPECIES_MAX_SEQS and GBIF_MAX_OCCURRENCE_RECORDS
                 // are now passed as CLI arguments in the Python scripts
             },
@@ -149,7 +149,6 @@
                 // "--max-candidates-analysis", "0",  // Force boxplot
             ],
             "env": {
-                // Keep remaining env vars that aren't converted yet
             },
             "preLaunchTask": "clear-log-files"
         },

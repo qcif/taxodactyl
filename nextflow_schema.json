@@ -348,6 +348,11 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'mock_blast' must be true or false. Default: false."
                 },
+                "app_data_dir": {
+                    "type": "string",
+                    "description": "Directory for persistent application data (e.g. caches). Bound into containers at /var/lib/taxodactyl.",
+                    "errorMessage": "Parameter 'app_data_dir' must be a valid directory path."
+                },
                 "temp_root_dir": {
                     "type": "string",
                     "default": "output",
