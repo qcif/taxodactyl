@@ -27,6 +27,10 @@ class Endpoint:
     requests_per_minute: Optional[int] = None
     backoff_factor: Optional[int] = None
     global_rate_limit: bool = False
+    # Endpoints sharing a service_name share the same backoff state, so
+    # a 429 on one endpoint slows down all sibling endpoints of the
+    # same upstream service (e.g. GBIF_SLOW and GBIF_FAST both hit GBIF)
+    service_name: Optional[str] = None
 
     def __post_init__(self):
         if not (self.requests_per_second or self.requests_per_minute):
@@ -34,6 +38,11 @@ class Endpoint:
                 "Endpoint must specify either 'requests_per_second'"
                 " or 'requests_per_minute'."
             )
+
+    @property
+    def service(self) -> str:
+        """The service identifier for shared backoff state."""
+        return self.service_name or self.name
 
 
 def _get_entrez_rps():
@@ -49,12 +58,14 @@ def _get_entrez_rps():
 class ENDPOINTS:
     GBIF_SLOW = Endpoint(
         name='gbif_slow',
+        service_name='gbif',
         requests_per_second=1,
         backoff_factor=2,
         global_rate_limit=True,
     )
     GBIF_FAST = Endpoint(
         name='gbif_fast',
+        service_name='gbif',
         requests_per_second=5,
         backoff_factor=2,
         global_rate_limit=True,
@@ -62,11 +73,13 @@ class ENDPOINTS:
     ENTREZ = Endpoint(
         name='entrez',
         requests_per_second=_get_entrez_rps,
+        service_name='entrez',
     )
     BOLD = Endpoint(
         name='bold',
         requests_per_second=5,
         requests_per_minute=50,
+        service_name='bold',
     )
 
 
@@ -93,6 +106,10 @@ class AbstractQueueBackend(ABC):
     @abstractmethod
     def acquire(self):
         """Block until a request is allowed, then record it."""
+
+    @abstractmethod
+    def _notify_429(self):
+        """Notify the backend of a 429 response."""
 
 
 class SqliteQueueBackend(AbstractQueueBackend):
@@ -433,7 +450,18 @@ class RedisQueueBackend(AbstractQueueBackend):
     Uses SyncTokenBucket from redis-rate-limiters for atomic rate
     limiting with Lua scripts. Supports both per-second and per-minute
     limits via separate token buckets.
+
+    For endpoints with a backoff_factor configured, progressive backoff
+    is applied on 429 responses. The cumulative backoff factor is stored
+    in a Redis key with a 2-hour TTL; the effective RPS is the original
+    RPS divided by that factor (floored at BACKOFF_MIN_RPS). Multiple
+    429s within BACKOFF_DEBOUNCE_SECONDS are lumped together so the
+    backoff factor is applied only once per debounce window.
     """
+
+    BACKOFF_DEBOUNCE_SECONDS = 30
+    BACKOFF_EXPIRY_SECONDS = 7200  # 2 hours
+    BACKOFF_MIN_RPS = 0.1
 
     def __init__(self):
         import redis as redis_lib
@@ -448,28 +476,68 @@ class RedisQueueBackend(AbstractQueueBackend):
         self._user_email = config.user_email or 'ANONYMOUS'
 
     def initialize(self, endpoint: Endpoint):
-        from limiters import SyncTokenBucket
-
-        self._buckets = []
-        key_prefix = f"throttle:{self._user_email}:{endpoint.name}"
+        self._endpoint = endpoint
+        if endpoint.global_rate_limit:
+            scope = "throttle"
+        else:
+            scope = f"throttle:{self._user_email}"
+        self._key_prefix = f"{scope}:{endpoint.name}"
+        backoff_prefix = f"{scope}:{endpoint.service}"
+        self._backoff_key = f"{backoff_prefix}:BACKOFF_FACTOR"
+        self._debounce_key = f"{backoff_prefix}:BACKOFF_DEBOUNCE"
 
         _rps = endpoint.requests_per_second
-        rps = _rps() if callable(_rps) else _rps
-        if rps and rps < 1:
-            rps_capacity, rps_refill_n = 1, 1 / rps
-        elif rps:
-            rps_capacity, rps_refill_n = int(rps), 1
+        self._rps = _rps() if callable(_rps) else _rps
+        self._rpm = endpoint.requests_per_minute
+        self._buckets = []
+        self._current_factor = None
+        self._build_buckets()
+        logger.debug(
+            f"Redis throttle backend initialized for key: {self._key_prefix}"
+        )
+
+    def _read_backoff_factor(self) -> float:
+        """Return the current cumulative backoff factor (1.0 if none)."""
+        if not self._endpoint.backoff_factor:
+            return 1.0
+        raw = self._connection.get(self._backoff_key)
+        if raw is None:
+            return 1.0
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return 1.0
+
+    def _build_buckets(self):
+        """(Re)build token buckets if the backoff factor has changed."""
+        from limiters import SyncTokenBucket
+
+        factor = self._read_backoff_factor()
+        if factor == self._current_factor:
+            return
+        self._current_factor = factor
+
+        # Different backoff factors use distinct bucket names so each
+        # rate tier gets fresh Redis token bucket state
+        suffix = f":f{factor}" if factor != 1.0 else ""
+
+        if self._rps:
+            effective_rps = max(self._rps / factor, self.BACKOFF_MIN_RPS)
+            if effective_rps < 1:
+                rps_capacity, rps_refill_n = 1, 1 / effective_rps
+            else:
+                rps_capacity, rps_refill_n = int(effective_rps), 1
         else:
             rps_capacity, rps_refill_n = None, None
 
-        rpm = endpoint.requests_per_minute
+        self._buckets = []
         for key, capacity, refill_n in [
             ('rps', rps_capacity, rps_refill_n),
-            ('rpm', rpm, 60),
+            ('rpm', self._rpm, 60),
         ]:
             if capacity:
                 self._buckets.append(SyncTokenBucket(
-                    name=f"{key_prefix}:{key}",
+                    name=f"{self._key_prefix}:{key}{suffix}",
                     capacity=capacity,
                     refill_frequency=refill_n,
                     refill_amount=capacity,
@@ -477,15 +545,55 @@ class RedisQueueBackend(AbstractQueueBackend):
                     connection=self._connection,
                 ))
 
-        logger.debug(
-            f"Redis throttle backend initialized for key: {key_prefix}"
-        )
-
     def acquire(self):
         """Acquire a token from all configured rate limit buckets."""
+        self._build_buckets()
         for bucket in self._buckets:
             with bucket:
                 pass
+
+    def _notify_429(self):
+        """Record a 429 response and apply backoff if debounce has elapsed.
+
+        All 429s within BACKOFF_DEBOUNCE_SECONDS are lumped together so
+        that the backoff factor is applied only once per debounce window.
+        The backoff state expires after BACKOFF_EXPIRY_SECONDS with no
+        further 429s.
+        """
+        if not self._endpoint.backoff_factor:
+            return
+
+        debounced = self._connection.set(
+            self._debounce_key,
+            b"1",
+            nx=True,
+            ex=self.BACKOFF_DEBOUNCE_SECONDS,
+        )
+        if not debounced:
+            return
+
+        current_factor = self._read_backoff_factor()
+        new_factor = current_factor * self._endpoint.backoff_factor
+        if self._rps:
+            max_factor = self._rps / self.BACKOFF_MIN_RPS
+            new_factor = min(new_factor, max_factor)
+        self._connection.set(
+            self._backoff_key,
+            new_factor,
+            ex=self.BACKOFF_EXPIRY_SECONDS,
+        )
+        if self._rps:
+            old_rps = max(self._rps / current_factor, self.BACKOFF_MIN_RPS)
+            new_rps = max(self._rps / new_factor, self.BACKOFF_MIN_RPS)
+            logger.warning(
+                f"429 backoff applied for endpoint {self._endpoint.name}:"
+                f" RPS reduced from {old_rps} to {new_rps}"
+            )
+        else:
+            logger.warning(
+                f"429 backoff applied for endpoint {self._endpoint.name}:"
+                f" factor increased from {current_factor} to {new_factor}"
+            )
 
 
 BACKENDS = {
