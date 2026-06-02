@@ -40,6 +40,8 @@ def serialize(obj):
     ):
         # Fallback for older Pydantic versions
         return dict(obj)
+    if 'vault' in type(obj).__name__.lower():
+        return "VaultSecret(******)"
     raise TypeError(f"Object of type {type(obj).__name__} is not JSON"
                     " serializable")
 

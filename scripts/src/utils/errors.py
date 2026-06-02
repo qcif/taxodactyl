@@ -1,5 +1,6 @@
 """Define error handling logic."""
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Union
@@ -74,22 +75,18 @@ def write(
     context: optional, the context of the error to help locate it in the
              report e.g. 'target'.
     """
-    parent = query_dir or config.output_dir
-    next_path = parent / config.errors_dir / 'next.txt'
-    if next_path.exists():
-        i = int(next_path.read_text())
-    else:
-        next_path.parent.mkdir(parents=True, exist_ok=True)
-        i = 1
-    next_path.write_text(str(i + 1))
-    path = parent / config.errors_dir / f'{i}.json'
+    parent = (query_dir or config.output_dir) / config.errors_dir
+    parent.mkdir(parents=True, exist_ok=True)
+    content = json.dumps({
+        "location": location,
+        "message": msg,
+        "exception": str(exc) if exc else None,
+        "context": context,
+    }, indent=2)
+    err_hash = hashlib.md5(content.encode()).hexdigest()[:8]
+    path = parent / f'{err_hash}.json'
     with path.open('w') as f:
-        json.dump({
-            "location": location,
-            "message": msg,
-            "exception": str(exc) if exc else None,
-            "context": context,
-        }, f, indent=2)
+        f.write(content)
 
 
 class ErrorLog:

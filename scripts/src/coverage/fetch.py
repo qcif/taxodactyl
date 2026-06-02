@@ -161,8 +161,8 @@ def _fetch_gb_records_for_species(species_names, locus):
             errors.append((taxid_to_species[taxid], exc))
 
     species_counts = {
-        taxid_to_species[taxid]: count
-        for taxid, count in results.items()
+        species: results.get(taxid, 0)
+        for species, taxid in taxids.items()
     }
     species_counts.update({
         species: 0

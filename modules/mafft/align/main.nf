@@ -5,11 +5,11 @@ process MAFFT_ALIGN {
     tuple val(query_folder), path(candidate_fasta_file), val(query_sequence) // Input: query folder, candidate FASTA, and query sequence
 
     output:
-    tuple val(query_folder), path("$query_folder/$params.candidates_msa_filename"), path("$query_folder/id_mapping.tsv"), emit: aligned_sequences // Output: aligned sequences in PHYLIP format and id mapping file
-    path "versions.yml"                 , emit: versions // Output: MAFFT version info
+    tuple val(query_folder), path("$query_folder/${task.ext.candidates_msa}"), path("$query_folder/id_mapping.tsv"), emit: aligned_sequences // Output: aligned sequences in PHYLIP format and id mapping file
+    path "${task.ext.versions_yml}"                 , emit: versions // Output: MAFFT version info
 
     publishDir "${params.outdir}", mode: 'copy',
-        pattern:    "$query_folder/$params.candidates_msa_filename" // Publish alignment to output directory
+        pattern:    "$query_folder/${task.ext.candidates_msa}" // Publish alignment to output directory
 
     when:
     task.ext.when == null || task.ext.when
@@ -65,10 +65,10 @@ process MAFFT_ALIGN {
         if (n > 0) rep = rep sprintf("%*s", n, "");# pad to 11 characters
         else rep = rep " ";                        # otherwise add single trailing space
         printf "s/\\\\<%s\\\\>[[:space:]]*/%s/g\\n", \$1, rep
-    }' $query_folder/id_mapping.tsv | sed -f - $query_folder/temp.msa > $query_folder/$params.candidates_msa_filename
+    }' $query_folder/id_mapping.tsv | sed -f - $query_folder/temp.msa > $query_folder/${task.ext.candidates_msa}
 
     # Record the MAFFT version used for reproducibility
-    cat <<-END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > ${task.ext.versions_yml}
     "${task.process}":
         mafft: \$(mafft --version 2>&1 | sed 's/^v//' | sed 's/ (.*)//')
     END_VERSIONS

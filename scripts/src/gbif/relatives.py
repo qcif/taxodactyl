@@ -146,6 +146,11 @@ class RelatedTaxaGBIF:
         )
         for raw_record in res_name:
             synonym = False
+            record = GBIFRecord(raw_record) if raw_record else None
+
+            if not self._matches_classification(record):
+                continue
+
             if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
                 res_usage = throttle.with_retry(
@@ -167,7 +172,6 @@ class RelatedTaxaGBIF:
                 else:
                     raw_record = None
 
-            record = GBIFRecord(raw_record) if raw_record else None
             if record and self._is_accepted(record):
                 logger.info(
                     f"Record found for taxon"
@@ -184,6 +188,15 @@ class RelatedTaxaGBIF:
     def _is_accepted(self, record):
         if not record:
             return False
+        matches_classification = self._matches_classification(record)
+        return bool(
+            matches_classification
+            and record.status in config.gbif_accepted_status
+            and (self.INCLUDE_EXTINCT or record.is_extinct is not True)
+            and RANK.from_string(record.rank)
+        )
+
+    def _matches_classification(self, record):
         kingdom_key = record.kingdom_key
         matches_classification = (
             (kingdom_key if kingdom_key is not None else self.classification)
@@ -196,14 +209,10 @@ class RelatedTaxaGBIF:
                 f"Record '{record.canonical_name}' does not match"
                 f" the expected classification '{self.classification}'"
                 f" (kingdomKey: {kingdom_key}) - excluding from"
-                " relatives."
+                " GBIF records."
             )
-        return bool(
-            matches_classification
-            and record.status in config.gbif_accepted_status
-            and (self.INCLUDE_EXTINCT or record.is_extinct is not True)
-            and RANK.from_string(record.rank)
-        )
+
+        return matches_classification
 
     def _filter_records(self, records):
         wrapped = [

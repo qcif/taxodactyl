@@ -2,8 +2,12 @@ import logging
 import random
 import sqlite3
 import time
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
 from pprint import pformat
+from typing import Callable, Optional
 
+from .cache import FileLock
 from .config import Config
 from .errors import APIError
 from src.utils import cache
@@ -11,62 +15,120 @@ from src.utils import cache
 config = Config()
 logger = logging.getLogger(__name__)
 
+MAX_THROTTLE_WAIT_SECONDS = 120
+
+
+@dataclass(frozen=True)
+class Endpoint:
+    """Configuration for a throttled API endpoint."""
+
+    name: str
+    requests_per_second: Optional[float | Callable[[], float]] = None
+    requests_per_minute: Optional[int] = None
+    backoff_factor: Optional[int] = None
+    global_rate_limit: bool = False
+    # Endpoints sharing a service_name share the same backoff state, so
+    # a 429 on one endpoint slows down all sibling endpoints of the
+    # same upstream service (e.g. GBIF_SLOW and GBIF_FAST both hit GBIF)
+    service_name: Optional[str] = None
+
+    def __post_init__(self):
+        if not (self.requests_per_second or self.requests_per_minute):
+            raise ValueError(
+                "Endpoint must specify either 'requests_per_second'"
+                " or 'requests_per_minute'."
+            )
+
+    @property
+    def service(self) -> str:
+        """The service identifier for shared backoff state."""
+        return self.service_name or self.name
+
+
+def _get_entrez_rps():
+    if config.ncbi_api_key:
+        logger.debug("config.ncbi_api_key is set, faster rate limit for Entrez"
+                     " endpoint")
+    else:
+        logger.debug("config.ncbi_api_key is NOT set, using slower rate limit"
+                     " for Entrez endpoint")
+    return 5 if config.ncbi_api_key else 2
+
 
 class ENDPOINTS:
-    GBIF_SLOW = {
-        'requests_per_second': 1,
-        'name': 'gbif_slow',
-    }
-    GBIF_FAST = {
-        'requests_per_second': 10,
-        'name': 'gbif_fast',
-    }
-    ENTREZ = {
-        'requests_per_second': 10,
-        'name': 'entrez',
-    }
-    BOLD = {
-        'requests_per_second': 5,
-        'requests_per_minute': 50,
-        'name': 'bold',
-    }
+    GBIF_SLOW = Endpoint(
+        name='gbif_slow',
+        service_name='gbif',
+        requests_per_second=1,
+        backoff_factor=2,
+        global_rate_limit=True,
+    )
+    GBIF_FAST = Endpoint(
+        name='gbif_fast',
+        service_name='gbif',
+        requests_per_second=5,
+        backoff_factor=2,
+        global_rate_limit=True,
+    )
+    ENTREZ = Endpoint(
+        name='entrez',
+        requests_per_second=_get_entrez_rps,
+        service_name='entrez',
+    )
+    BOLD = Endpoint(
+        name='bold',
+        requests_per_second=5,
+        requests_per_minute=50,
+        service_name='bold',
+    )
 
 
-class Throttle:
-    """Use SQLite3 database to coordinate throttling of API requests.
+class AbstractQueueBackend(ABC):
+    """Abstract base class for throttle queue backends.
 
     This is necessary to avoid hitting API rate limits, or overwhelming the
     server. Each endpoint (identified by name) is throttled independently to
     allow for request rates to be set per-service, and to for throttles to be
     managed independently.
 
-    The endpoint arg should be a dict of:
-        {
-          'requests_per_second': int,  # Max requests per second
-          // AND/OR
-          'requests_per_minute': int,  # Max requests per minute
-          'name': str,                 # Name to identify this endpoint
-        }
-
     To be conservative, the throttle will limit per-second requests in 2-second
     blocks and per-minute requests in 90-second blocks.
+
+    Backends are responsible for coordinating request timestamps across
+    processes to enforce rate limits. Each backend must support atomic
+    check-and-insert operations to prevent race conditions.
     """
+
+    @abstractmethod
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the backend for the given endpoint."""
+
+    @abstractmethod
+    def acquire(self):
+        """Block until a request is allowed, then record it."""
+
+    @abstractmethod
+    def _notify_429(self):
+        """Notify the backend of a 429 response."""
+
+
+class SqliteQueueBackend(AbstractQueueBackend):
+    """SQLite-based throttle backend for single-node concurrency."""
 
     FIELD_NAME = 'timestamp'
     PER_SECOND_BLOCK_MS = 2000
     PER_MINUTE_BLOCK_MS = 12000
+    BACKOFF_DEBOUNCE_MS = 30_000  # 30s
+    BACKOFF_EXPIRY_MS = 7_200_000  # 2 hours
+    BACKOFF_MIN_RPS = 0.1
+    _await_exception_count = 0
+    _await_exception_msg = ""
 
-    def __init__(
-        self,
-        endpoint: dict,
-    ):
-        self.rps = endpoint.get('requests_per_second')
-        self.rpm = endpoint.get('requests_per_minute')
-        if not (self.rps or self.rpm):
-            raise ValueError(
-                "Endpoint must specify either 'requests_per_second' or"
-                " 'requests_per_minute'."
-            )
+    def initialize(self, endpoint: Endpoint):
+        """Initialize the SQLite backend for the given endpoint."""
+        rps = endpoint.requests_per_second
+        self.rps = rps() if callable(rps) else rps
+        self.rpm = endpoint.requests_per_minute
         self.per_second_limit = bool(self.rps)
         self.per_minute_limit = bool(self.rpm)
         self.window_length_ms = (
@@ -74,9 +136,15 @@ class Throttle:
             if self.rpm
             else self.PER_SECOND_BLOCK_MS
         )
-        self.db_path = config.throttle_sqlite_path
-        self.name = endpoint['name']
+        self.backoff_factor = endpoint.backoff_factor
+        self.db_path = (
+            config.throttle_sqlite_global_path
+            if endpoint.global_rate_limit
+            else config.throttle_sqlite_path
+        )
+        self.name = endpoint.name
         self.table_name = f"throttle_{self.name}"
+        self.backoff_table = f"backoff_{self.name}"
         self._initialize_db()
 
     def __enter__(self):
@@ -85,47 +153,137 @@ class Throttle:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
+    def _get_file_lock(self) -> FileLock:
+        """Create a file-based lock for cross-process synchronization."""
+        lock_path = self.db_path.with_suffix(
+            self.db_path.suffix + '.lock'
+        )
+        return FileLock(lock_path)
+
+    def _get_connection(
+        self,
+        timeout: float = 30.0,
+        setup_wal: bool = True,
+    ) -> sqlite3.Connection:
+        """Get a database connection with proper configuration."""
+        conn = sqlite3.connect(
+            self.db_path,
+            timeout=timeout,
+            check_same_thread=False,
+        )
+        if setup_wal:
+            try:
+                with self._get_file_lock():
+                    cursor = conn.execute("PRAGMA journal_mode")
+                    current_mode = cursor.fetchone()[0]
+                    if current_mode.upper() != 'WAL':
+                        conn.execute("PRAGMA journal_mode=WAL")
+                    conn.execute("PRAGMA synchronous=NORMAL")
+            except (OSError, IOError):
+                logger.warning(
+                    "File locking failed, setting WAL mode without lock"
+                )
+                retries = 0
+                while True:
+                    try:
+                        conn.execute("PRAGMA journal_mode=WAL")
+                        conn.execute("PRAGMA synchronous=NORMAL")
+                    except sqlite3.OperationalError as exc:
+                        if retries < 5:
+                            time.sleep(0.1 * (2 ** retries))
+                            retries += 1
+                            continue
+                        raise exc
+                    break
+        else:
+            conn.execute("PRAGMA synchronous=NORMAL")
+        return conn
+
     def _initialize_db(self):
-        """Create table for tracking request timestamps."""
+        """Create tables for tracking request timestamps and backoff."""
         if not self.db_path.exists():
             logger.info(
                 f"Creating throttle SQLite DB file: {self.db_path}"
             )
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self.db_path) as conn:
+        try:
+            with self._get_file_lock():
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        with self._get_connection(
+                            setup_wal=False,
+                        ) as conn:
+                            self._create_db_tables(conn)
+                            break
+                    except sqlite3.OperationalError as e:
+                        if (
+                            "database is locked" in str(e)
+                            and attempt < max_retries - 1
+                        ):
+                            time.sleep(0.1 * (2 ** attempt))
+                            continue
+                        raise
+        except (OSError, IOError):
+            logger.warning(
+                "File locking failed for schema operations"
+            )
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    with self._get_connection() as conn:
+                        self._create_db_tables(conn)
+                        break
+                except sqlite3.OperationalError as e:
+                    if (
+                        "database is locked" in str(e)
+                        and attempt < max_retries - 1
+                    ):
+                        time.sleep(0.1 * (2 ** attempt))
+                        continue
+                    raise
+
+    def _create_db_tables(self, conn):
+        """Create necessary tables for throttling and backoff."""
+        conn.execute(f"""
+            CREATE TABLE IF NOT EXISTS {self.table_name} (
+                {self.FIELD_NAME} INTEGER
+            )
+        """)
+        if self.backoff_factor:
             conn.execute(f"""
-                CREATE TABLE IF NOT EXISTS {self.table_name} (
-                    {self.FIELD_NAME} INTEGER
+                CREATE TABLE IF NOT EXISTS {self.backoff_table} (
+                    id INTEGER PRIMARY KEY CHECK (id = 1),
+                    effective_rps REAL NOT NULL,
+                    last_429_timestamp INTEGER NOT NULL
                 )
             """)
-            conn.execute("PRAGMA journal_mode=WAL;")
-            conn.commit()
+            conn.execute(
+                f"INSERT OR IGNORE INTO {self.backoff_table}"
+                " (id, effective_rps, last_429_timestamp)"
+                " VALUES (1, ?, 0)",
+                (self.rps,)
+            )
+        conn.commit()
 
-    def _await_release(self):
-        """Query sqlite DB for permission to send a request.
-
-        The DB table keeps track of requests sent across processes by writing
-        a timestamp for each request sent. This is used to determine if we are
-        within the allowed request limits before sendind the next request.
-        """
+    def acquire(self):
+        """Poll SQLite DB until a request slot is available."""
         started_waiting = time.time()
         while True:
+            if not self.db_path.exists():
+                raise FileNotFoundError(
+                    f"Throttle SQLite DB file not found: {self.db_path}"
+                )
             try:
-                if not self.db_path.exists():
-                    raise FileNotFoundError(
-                        "Throttle SQLite DB file not found:"
-                        f" {self.db_path}"
-                    )
                 with sqlite3.connect(
                     self.db_path,
                     isolation_level=None,
+                    timeout=30.0,
                 ) as conn:
                     try:
-                        # Lock the database for writing
                         conn.execute("BEGIN IMMEDIATE")
                         now = int(time.time() * 1000)
                         if self._within_request_limits(now, conn):
-                            # Insert current timestamp atomically
                             conn.execute(
                                 f"INSERT INTO {self.table_name}"
                                 f" ({self.FIELD_NAME})"
@@ -135,26 +293,108 @@ class Throttle:
                             conn.commit()
                             return
 
-                        # Rollback if the request limit is exceeded
+                        # The request limit has been exceeded
                         conn.rollback()
 
-                    except sqlite3.OperationalError:
-                        # Handle potential lock contention gracefully
-                        pass
+                    except sqlite3.OperationalError as e:
+                        self._consider_await_exception(e)
+                        logger.warning(
+                            "OperationalError during throttle check:"
+                            f" {e}. Retrying..."
+                        )
 
             except sqlite3.OperationalError as e:
                 raise sqlite3.OperationalError(
                     str(e) + f"\nDB path: {self.db_path}"
                 )
 
-            # Sleep for a random interval to reduce race conditions
             time.sleep(round(random.uniform(0.1, 2), 3))
             seconds_waited = int(time.time() - started_waiting)
             if seconds_waited and seconds_waited % 15 == 0:
                 logger.info(
-                    f"Awaiting throttle release for endpoint {self.name}"
-                    f" for >{seconds_waited} seconds..."
+                    f"Awaiting throttle release for endpoint"
+                    f" {self.name} for >{seconds_waited} seconds..."
                 )
+
+    def _consider_await_exception(self, exception):
+        """Raise if the same exception has occurred 5 times in a row."""
+        if self._await_exception_msg != str(exception):
+            self._await_exception_msg = str(exception)
+            self._await_exception_count = 0
+        self._await_exception_count += 1
+        if self._await_exception_count >= 5:
+            raise exception
+
+    def _notify_429(self):
+        """Record a 429 response and apply backoff if debounce has elapsed.
+
+        All 429s within BACKOFF_DEBOUNCE_MS are lumped together so that the
+        backoff factor is applied only once per debounce window.
+        """
+        if not self.backoff_factor:
+            return
+        try:
+            with sqlite3.connect(
+                self.db_path,
+                isolation_level=None,
+            ) as conn:
+                conn.execute("BEGIN IMMEDIATE")
+                now = int(time.time() * 1000)
+                row = conn.execute(
+                    f"SELECT effective_rps, last_429_timestamp"
+                    f" FROM {self.backoff_table}"
+                    " WHERE id = 1"
+                ).fetchone()
+                effective_rps, last_429_ts = row
+
+                if now - last_429_ts < self.BACKOFF_DEBOUNCE_MS:
+                    conn.rollback()
+                    return
+
+                new_rps = max(
+                    effective_rps / self.backoff_factor,
+                    self.BACKOFF_MIN_RPS,
+                )
+                conn.execute(
+                    f"UPDATE {self.backoff_table}"
+                    " SET effective_rps = ?,"
+                    " last_429_timestamp = ?"
+                    " WHERE id = 1",
+                    (new_rps, now),
+                )
+                conn.commit()
+                logger.warning(
+                    f"429 backoff applied for endpoint {self.name}:"
+                    f" RPS reduced from {effective_rps} to {new_rps}"
+                )
+        except sqlite3.OperationalError:
+            pass
+
+    def _get_effective_rps(self, conn):
+        """Read effective RPS from backoff table, resetting if expired."""
+        row = conn.execute(
+            f"SELECT effective_rps, last_429_timestamp"
+            f" FROM {self.backoff_table}"
+            " WHERE id = 1"
+        ).fetchone()
+        effective_rps, last_429_ts = row
+        now = int(time.time() * 1000)
+
+        if last_429_ts and now - last_429_ts > self.BACKOFF_EXPIRY_MS:
+            conn.execute(
+                f"UPDATE {self.backoff_table}"
+                " SET effective_rps = ?,"
+                " last_429_timestamp = 0"
+                " WHERE id = 1",
+                (self.rps,),
+            )
+            logger.info(
+                f"Backoff expired for endpoint {self.name}:"
+                f" RPS reset to {self.rps}"
+            )
+            return self.rps
+
+        return effective_rps
 
     def _within_request_limits(self, now, conn):
         """Check if the request limits are within the allowed range.
@@ -164,38 +404,37 @@ class Throttle:
         """
         window_start = now - self.window_length_ms
 
-        # Remove expired timestamps older than window length
         conn.execute(
             f"DELETE FROM {self.table_name}"
             f" WHERE {self.FIELD_NAME} < ?",
-            (window_start,))
+            (window_start,),
+        )
 
-        # Count requests in the window
         rps_observed = None
         rpm_observed = None
 
-        if self.per_second_limit:
+        if self.rps:
             args = [
                 f"SELECT COUNT(*) FROM {self.table_name}",
             ]
-            if self.per_minute_limit:
-                # The window is for rpm, so need to narrow
-                # query to RPS window size
+            if self.rpm:
                 args[0] += f" WHERE {self.FIELD_NAME} >= ?"
-                rps_window_start = (
-                    now - self.PER_SECOND_BLOCK_MS
-                )
+                rps_window_start = now - self.PER_SECOND_BLOCK_MS
                 args.append((rps_window_start,))
             rps_observed = conn.execute(*args).fetchone()[0]
 
-        if self.per_minute_limit:
+        if self.rpm:
             rpm_observed = conn.execute(
                 f"SELECT COUNT(*) FROM {self.table_name}"
             ).fetchone()[0]
 
+        rps_limit = self.rps
+        if self.backoff_factor and self.per_second_limit:
+            rps_limit = self._get_effective_rps(conn)
+
         within_per_second_limit = (
             not self.per_second_limit
-            or rps_observed < self.rps
+            or rps_observed < rps_limit
         )
         within_per_minute_limit = (
             not self.per_minute_limit
@@ -204,21 +443,230 @@ class Throttle:
 
         return within_per_second_limit and within_per_minute_limit
 
+
+class RedisQueueBackend(AbstractQueueBackend):
+    """Redis-based throttle backend for distributed multi-node concurrency.
+
+    Uses SyncTokenBucket from redis-rate-limiters for atomic rate
+    limiting with Lua scripts. Supports both per-second and per-minute
+    limits via separate token buckets.
+
+    For endpoints with a backoff_factor configured, progressive backoff
+    is applied on 429 responses. The cumulative backoff factor is stored
+    in a Redis key with a 2-hour TTL; the effective RPS is the original
+    RPS divided by that factor (floored at BACKOFF_MIN_RPS). Multiple
+    429s within BACKOFF_DEBOUNCE_SECONDS are lumped together so the
+    backoff factor is applied only once per debounce window.
+    """
+
+    BACKOFF_DEBOUNCE_SECONDS = 30
+    BACKOFF_EXPIRY_SECONDS = 7200  # 2 hours
+    BACKOFF_MIN_RPS = 0.1
+
+    def __init__(self):
+        import redis as redis_lib
+        self._connection = redis_lib.Redis(
+            host=config.redis_host,
+            port=config.redis_port,
+            password=config.redis_password,
+            ssl=config.redis_ssl,
+            socket_connect_timeout=10,
+            socket_timeout=10,
+        )
+        self._user_email = config.user_email or 'ANONYMOUS'
+
+    def initialize(self, endpoint: Endpoint):
+        self._endpoint = endpoint
+        if endpoint.global_rate_limit:
+            scope = "throttle"
+        else:
+            scope = f"throttle:{self._user_email}"
+        self._key_prefix = f"{scope}:{endpoint.name}"
+        backoff_prefix = f"{scope}:{endpoint.service}"
+        self._backoff_key = f"{backoff_prefix}:BACKOFF_FACTOR"
+        self._debounce_key = f"{backoff_prefix}:BACKOFF_DEBOUNCE"
+
+        _rps = endpoint.requests_per_second
+        self._rps = _rps() if callable(_rps) else _rps
+        self._rpm = endpoint.requests_per_minute
+        self._buckets = []
+        self._current_factor = None
+        self._build_buckets()
+        logger.debug(
+            f"Redis throttle backend initialized for key: {self._key_prefix}"
+        )
+
+    def _read_backoff_factor(self) -> float:
+        """Return the current cumulative backoff factor (1.0 if none)."""
+        if not self._endpoint.backoff_factor:
+            return 1.0
+        raw = self._connection.get(self._backoff_key)
+        if raw is None:
+            return 1.0
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return 1.0
+
+    def _build_buckets(self):
+        """(Re)build token buckets if the backoff factor has changed."""
+        from limiters import SyncTokenBucket
+
+        factor = self._read_backoff_factor()
+        if factor == self._current_factor:
+            return
+        self._current_factor = factor
+
+        # Different backoff factors use distinct bucket names so each
+        # rate tier gets fresh Redis token bucket state
+        suffix = f":f{factor}" if factor != 1.0 else ""
+
+        if self._rps:
+            effective_rps = max(self._rps / factor, self.BACKOFF_MIN_RPS)
+            if effective_rps < 1:
+                rps_capacity, rps_refill_n = 1, 1 / effective_rps
+            else:
+                rps_capacity, rps_refill_n = int(effective_rps), 1
+        else:
+            rps_capacity, rps_refill_n = None, None
+
+        self._buckets = []
+        for key, capacity, refill_n in [
+            ('rps', rps_capacity, rps_refill_n),
+            ('rpm', self._rpm, 60),
+        ]:
+            if capacity:
+                self._buckets.append(SyncTokenBucket(
+                    name=f"{self._key_prefix}:{key}{suffix}",
+                    capacity=capacity,
+                    refill_frequency=refill_n,
+                    refill_amount=capacity,
+                    max_sleep=MAX_THROTTLE_WAIT_SECONDS,
+                    connection=self._connection,
+                ))
+
+    def acquire(self):
+        """Acquire a token from all configured rate limit buckets."""
+        self._build_buckets()
+        for bucket in self._buckets:
+            with bucket:
+                pass
+
+    def _notify_429(self):
+        """Record a 429 response and apply backoff if debounce has elapsed.
+
+        All 429s within BACKOFF_DEBOUNCE_SECONDS are lumped together so
+        that the backoff factor is applied only once per debounce window.
+        The backoff state expires after BACKOFF_EXPIRY_SECONDS with no
+        further 429s.
+        """
+        if not self._endpoint.backoff_factor:
+            return
+
+        debounced = self._connection.set(
+            self._debounce_key,
+            b"1",
+            nx=True,
+            ex=self.BACKOFF_DEBOUNCE_SECONDS,
+        )
+        if not debounced:
+            return
+
+        current_factor = self._read_backoff_factor()
+        new_factor = current_factor * self._endpoint.backoff_factor
+        if self._rps:
+            max_factor = self._rps / self.BACKOFF_MIN_RPS
+            new_factor = min(new_factor, max_factor)
+        self._connection.set(
+            self._backoff_key,
+            new_factor,
+            ex=self.BACKOFF_EXPIRY_SECONDS,
+        )
+        if self._rps:
+            old_rps = max(self._rps / current_factor, self.BACKOFF_MIN_RPS)
+            new_rps = max(self._rps / new_factor, self.BACKOFF_MIN_RPS)
+            logger.warning(
+                f"429 backoff applied for endpoint {self._endpoint.name}:"
+                f" RPS reduced from {old_rps} to {new_rps}"
+            )
+        else:
+            logger.warning(
+                f"429 backoff applied for endpoint {self._endpoint.name}:"
+                f" factor increased from {current_factor} to {new_factor}"
+            )
+
+
+BACKENDS = {
+    'sqlite': SqliteQueueBackend,
+    'redis': RedisQueueBackend,
+}
+
+
+def _get_backend() -> AbstractQueueBackend:
+    """Select the throttle backend based on environment configuration."""
+    backend_class = BACKENDS.get(config.throttle_backend)
+    if not backend_class:
+        raise ValueError(
+            f"Unknown throttle backend '{config.throttle_backend}'."
+            f" Available backends: {', '.join(BACKENDS.keys())}"
+        )
+    return backend_class()
+
+
+class Throttle:
+    """Coordinate throttling of API requests across processes.
+
+    Uses a pluggable backend (SQLite or Redis) to track request timestamps
+    and enforce rate limits. The backend is selected via the
+    THROTTLE_BACKEND environment variable (default: 'sqlite').
+    """
+
+    def __init__(
+        self,
+        endpoint: Endpoint,
+    ):
+        self.rps = endpoint.requests_per_second
+        self.rpm = endpoint.requests_per_minute
+        self.name = endpoint.name
+        self.backoff_factor = endpoint.backoff_factor
+        self.backend = _get_backend()
+        self.backend.initialize(endpoint)
+
+    def __enter__(self):
+        self.backend.acquire()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+    def _notify_429(self):
+        if hasattr(self.backend, '_notify_429'):
+            self.backend._notify_429()
+
     def with_retry(self, func, args=[], kwargs={}, with_cache=False):
         retries = config.max_api_retries
         if with_cache:
             cache_key = cache.keyhash(func, args, kwargs)
             cached_data = cache.get(cache_key)
             if cached_data is not None:
-                logger.debug(f"Cache hit for {func.__module__}.{func.__name__}"
-                             " request")
+                logger.debug(
+                    f"Cache hit for {func.__module__}.{func.__name__}"
+                    " request"
+                )
                 return cached_data
+
+            logger.debug(
+                f"Cache miss for {func.__module__}.{func.__name__} request")
+
+        logger.debug(f"Submitting request to {self.name}: Args: {args},"
+                     f" Kwargs: {kwargs}")
 
         while True:
             try:
                 with self:
-                    logger.debug("Throttle released. Sending request to"
-                                 f" {self.name}...")
+                    logger.debug(
+                        "Throttle released. Sending request to"
+                        f" {self.name}..."
+                    )
                 res = func(*args, **kwargs)
                 if with_cache:
                     cache.put(cache_key, res)
@@ -228,21 +676,30 @@ class Throttle:
                 sleep_seconds = 1
                 retries -= 1
                 if '429' in str(exc):
-                    sleep_seconds = 600
-                    logger.warning(
-                        "API rate limit exceeded. Waiting 10 minutes before"
-                        " next retry.")
+                    self._notify_429()
+                    if self.backoff_factor:
+                        sleep_seconds = 10
+                        logger.warning(
+                            "API rate limit exceeded for endpoint"
+                            f" {self.name}. Backoff applied,"
+                            " retrying in 10 seconds.")
+                    else:
+                        sleep_seconds = 600
+                        logger.warning(
+                            "API rate limit exceeded. Waiting"
+                            " 10 minutes before next retry.")
                     retries = config.max_api_retries
                 elif retries <= 0:
                     raise APIError(
                         'Failed to fetch data from API after'
-                        f' {config.max_api_retries} retries. Please try'
-                        f' resuming this job at a later time.'
+                        f' {config.max_api_retries} retries. Please'
+                        f' try resuming this job at a later time.'
                         f'\nException: {exc}'
                     )
                 logger.warning(
                     "Exception encountered in call to endpoint"
                     f" {self.name} Retrying {retries} more times."
                     f" Exception: {exc}\n"
-                    f" Args:\n{pformat(args)}")
+                    f" Args:\n{pformat(args)}"
+                )
                 time.sleep(sleep_seconds)

@@ -33,9 +33,9 @@
             ],
             "env": {
                 "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
-                "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 "PYTHONPATH": "${workspaceFolder}/scripts",
                 "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
+                // "RUN_TEST_CASE": "A",  // Optional, run a specific test case
                 // Note: PHYLOGENY_SPECIES_MAX_SEQS and GBIF_MAX_OCCURRENCE_RECORDS
                 // are now passed as CLI arguments in the Python scripts
             },
@@ -149,7 +149,6 @@
                 // "--max-candidates-analysis", "0",  // Force boxplot
             ],
             "env": {
-                // Keep remaining env vars that aren't converted yet
             },
             "preLaunchTask": "clear-log-files"
         },
@@ -255,7 +254,10 @@
             ],
             "env": {
                 "LOGGING_DEBUG": "1",
+                // "SECRET_KEY": "secret",
+                // "CACHE_BACKEND": "azure_blob",
             },
+            // "envFile": "${workspaceFolder}/.env.azure",
             "preLaunchTask": "clear-log-files"
         },
         {
@@ -340,19 +342,40 @@
             "program": "${workspaceFolder}/scripts/dev/render_docs.py",
         },
         {
-            "name": "FastAPI server (uvicorn)",
+            "name": "Validate API server",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "app:app",
+                "main:app",
                 "--reload",
                 "--port",
-                "8002"
+                "8000"
             ],
-            "cwd": "${workspaceFolder}/cloudgene/downloader",
+            "env": {
+                "TAXONKIT_DB": "${env:HOME}/.taxonkit",
+            },
+            "cwd": "${workspaceFolder}/services/input_validation/api",
+            "windows": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/Scripts/python"
+            },
+            "linux": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
+            "osx": {
+                "python": "${workspaceFolder}/services/input_validation/api/venv/bin/python"
+            },
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Validate client server",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/services/input_validation/client/node_modules/.bin/vite",
+            "cwd": "${workspaceFolder}/services/input_validation/client",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
         },
         {
             "name": "Generate config default.yml",

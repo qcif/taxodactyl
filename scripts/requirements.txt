@@ -2,6 +2,11 @@ annotated-types==0.7.0
 anyio==4.9.0
 appdirs==1.4.4
 attrs==25.3.0
+azure-core==1.39.0
+azure-identity==1.25.3
+azure-keyvault-secrets==4.11.0
+azure-storage-blob==12.28.0
+cryptography==46.0.7
 beautifulsoup4==4.13.4
 bio==1.8.0
 biopython==1.85
@@ -74,6 +79,8 @@ pyparsing==3.2.3
 pyppeteer==2.0.0
 pyproj==3.7.1
 pyquery==2.0.1
+redis==5.3.0
+redis-rate-limiters==0.5.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 pytz==2025.2
@@ -95,7 +102,6 @@ typing_extensions==4.14.1
 tzdata==2025.2
 url-normalize==2.2.1
 urllib3==1.26.20
-uvloop==0.21.0
 w3lib==2.3.1
 watchfiles==1.1.0
 websockets==10.4

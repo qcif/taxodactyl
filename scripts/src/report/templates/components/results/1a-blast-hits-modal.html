@@ -58,7 +58,9 @@
               </th>
             </thead>
             {% for hit in hits %}
-            <tr class="interactive" onclick="showBlastHit({{ loop.index0 }});">
+            {% set hit_taxonomy = hits_taxonomy.get(hit.accession) %}
+            {% set hit_species = hit_taxonomy.get('species') if hit_taxonomy else none %}
+            <tr class="interactive" data-species="{{ hit_species }}" onclick="showBlastHit({{ loop.index0 }});">
               <td class="text-center">{{ loop.index }}</td>
               <td>
                 <a

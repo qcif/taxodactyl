@@ -289,3 +289,21 @@ tr.interactive.active {
 .btn-icon:hover {
   opacity: 1;
 }
+
+@media (min-width: 992px) {
+    .modal-xxl {
+        max-width:800px
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-xxl {
+        max-width:1140px
+    }
+}
+
+@media (min-width: 1350px) {
+    .modal-xxl {
+        max-width:1400px
+    }
+}

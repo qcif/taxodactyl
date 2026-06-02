@@ -19,10 +19,10 @@ DEBUG_REQUESTS = True
 EFETCH_BATCH_SIZE = 10
 AUTOMATED_ANNOTATION_TAG = '##Genome-Annotation-Data-START##'
 
-Entrez.email = config.USER_EMAIL
-if config.NCBI_API_KEY:
-    logger.info(f"Using NCBI API key: {config.NCBI_API_KEY[:5]}*********")
-    Entrez.api_key = config.NCBI_API_KEY
+Entrez.email = config.user_email
+if config.ncbi_api_key:
+    logger.info(f"Using NCBI API key: {config.ncbi_api_key[:5]}*********")
+    Entrez.api_key = config.ncbi_api_key
 
 
 class GbRecordSource:
@@ -255,7 +255,6 @@ def fetch_gb_records(
     if locus:
         query += f' AND ({locus.genbank_query_str})'
     max_results = 1 if count else 100
-    logger.debug(f"Submitting Entrez query: <<{query}>>")
     results = fetch_entrez(
         endpoint=Entrez.esearch,
         term=query,

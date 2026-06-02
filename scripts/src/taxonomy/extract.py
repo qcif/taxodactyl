@@ -2,6 +2,7 @@ import logging
 import os
 import subprocess
 import tempfile
+import threading
 
 from src.utils import errors
 from src.utils.config import Config
@@ -9,6 +10,7 @@ from src.utils.config import Config
 logger = logging.getLogger(__name__)
 config = Config()
 
+_taxonkit_semaphore = threading.Semaphore(1)
 
 TAXONOMIC_RANKS = [
     "domain",
@@ -75,7 +77,7 @@ def taxonomies(taxids: list[str]) -> dict[str, dict[str, str]]:
         temp_file_name = temp_file.name
 
     try:
-        result = subprocess.run(
+        result = _run_taxonkit(
             [
                 'taxonkit',
                 'lineage',
@@ -83,9 +85,6 @@ def taxonomies(taxids: list[str]) -> dict[str, dict[str, str]]:
                 '-c', temp_file_name,
                 '--data-dir', config.taxdb_dir,
             ],
-            capture_output=True,
-            check=True,
-            text=True,
         )
     except subprocess.CalledProcessError as exc:
         logger.error(
@@ -142,16 +141,13 @@ def taxids(
         temp_file.flush()
         temp_file_name = temp_file.name
     try:
-        res = subprocess.run(
+        res = _run_taxonkit(
             [
                 'taxonkit',
                 'name2taxid',
-                temp_file.name,
+                temp_file_name,
                 '--data-dir', config.taxdb_dir,
             ],
-            capture_output=True,
-            text=True,
-            check=True,
         )
     except subprocess.CalledProcessError as exc:
         logger.error(
@@ -208,6 +204,18 @@ def taxids(
         )
 
     return taxid_data
+
+
+def _run_taxonkit(args, kwargs={}) -> subprocess.CompletedProcess:
+    """Call taxonkit using a semaphore to ensure only one concurrent call."""
+    kwargs = {
+        'capture_output': True,
+        'text': True,
+        'check': True,
+        **kwargs,
+    }
+    with _taxonkit_semaphore:
+        return subprocess.run(args, **kwargs)
 
 
 def _parse_taxonkit_lineage(output: str) -> list[TaxonkitLineageResult]:
@@ -270,18 +278,16 @@ def _parse_and_filter_taxonkit_name2taxid(
         return filtered_name_results + no_taxid_results
 
     try:
-        process = subprocess.run(
+        process = _run_taxonkit(
             [
                 'taxonkit',
                 'lineage',
                 '-R',
-                '--data-dir',
-                config.taxdb_dir,
+                '--data-dir', config.taxdb_dir,
             ],
-            input="\n".join(taxid_to_results.keys()),
-            capture_output=True,
-            text=True,
-            check=True,
+            {
+                'input': "\n".join(taxid_to_results.keys()),
+            },
         )
         matching_taxids: set[str] = set()
         for lineage_result in _parse_taxonkit_lineage(process.stdout):
@@ -298,6 +304,23 @@ def _parse_and_filter_taxonkit_name2taxid(
                 ):
                     matching_taxids.add(lineage_taxid)
                     break
+        if taxid_to_results and not matching_taxids:
+            observed_ranks = {
+                rank
+                for lr in _parse_taxonkit_lineage(process.stdout)
+                for rank, _ in lr.taxonomy
+            }
+            ncbi = higher_classification['ncbi']
+            logger.warning(
+                f"Classification filter"
+                f" (rank='{ncbi['rank']}', taxon='{ncbi['taxon']}')"
+                f" matched none of the {len(taxid_to_results)} taxid(s)"
+                f" returned by taxonkit. All targets will be excluded from"
+                f" DB coverage assessment. Ranks observed in taxonkit"
+                f" lineage output: {sorted(observed_ranks)}. This may"
+                f" indicate a mismatch between the configured classification"
+                f" rank and the taxonkit database version."
+            )
         for taxid in matching_taxids:
             for name_result in taxid_to_results.get(taxid, []):
                 filtered_name_results.append(name_result)

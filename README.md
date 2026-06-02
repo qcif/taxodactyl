@@ -23,6 +23,7 @@
 - [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
 - [Running tests with nf-test](docs/nf-tests.md)
 - [Python scripts](./scripts) (for developers)
+- [Run Taxodactyl on Azure Batch](./docs/azure/)
 
 
 ### Workflow Overview
@@ -83,6 +84,25 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
 
 API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
 
+### Vault
+
+The workflow includes an optional secrets vault that persists user-provided values for `--ncbi_api_key` and `--facility_name` between runs. Once stored, these values are retrieved automatically so you do not need to pass them on the command line each time.
+
+The vault has two backends. Set the appropriate environment variable before running the workflow to enable one:
+
+| Backend | Environment variable | Description |
+|---|---|---|
+| Local (encrypted file) | `SECRET_KEY=<passphrase>` | Stores an AES-encrypted file in the user secrets directory (params.app_data_dir). Any non-empty string can be used as the passphrase. |
+| Azure Key Vault | `AZURE_KEY_VAULT_URL=https://<vault-name>.vault.azure.net/` | Stores secrets in an Azure Key Vault. Requires an active Azure credential (e.g. via `az login` or a managed identity). The Azure backend is selected automatically when running with `conf/azure.config`. |
+
+> [!NOTE]
+> - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
+> - If neither environment variable is set, the vault is disabled and secrets are not persisted.
+> - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
+
+> [!NOTE]
+> If running local vault, it will attempt to store secrets in ~/.local/share/taxodactyl/ or /var/lib/taxodactyl/, which must be created with appropriate permissions before running. For running in Singularity (the default) the params.app_data_dir path (which defaults to ~/.local/share/taxodactyl/) is mounted to the latter path on the container.
+
 ### TaxonKit
 
 [Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder. 
@@ -94,6 +114,8 @@ API Key is used to authenticate with the NCBI Entrez API for an increased rate l
 To search sequences against the BLAST Core Nucleotide Database, you must download it first. We recommend running the `update_blastdb.pl` program. Follow instructions from [this book](https://www.ncbi.nlm.nih.gov/books/NBK569850/). [Perl installation](https://www.perl.org/get.html) is required.
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
+
+If the above script is not working for you, we have written a [Python version](./scripts/blast_db_download.py) that seems more reliable (recommended). Note that this will download the entire database when running for the first time, as updates depend on a local `checksums` directory.
 
 ### Sequences file (`sequences.fasta`)
 
