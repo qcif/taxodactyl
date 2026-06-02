@@ -95,7 +95,7 @@
                         "all_hits.json:md5,ccd54035a018a6eac882204160b8298a",
                         "candidates.csv:md5,7c0029941c8a1ad7cbc29e7460d26f3e",
                         "candidates.fasta:md5,34d360c825a0f2f1ff40d15e85b1d670",
-                        "candidates.json:md5,618b6546b9e74becbc6db04fd87b1609",
+                        "candidates.json:md5,44539bcb29c6dbf3b151685be8e522fb",
                         "candidates_count.txt:md5,e4da3b7fbbce2345d7772b0674a318d5",
                         "candidates_identity_boxplot.png:md5,30f5dd79e7dac43e8c51d024df162cce",
                         "candidates_phylogeny.fasta:md5,eb0be8848ea8ecc3e4554e31ecce857f",
@@ -234,6 +234,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-03-04T01:38:04.988311402"
+        "timestamp": "2026-06-02T02:01:00.785836122"
     }
 }
