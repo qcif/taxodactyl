@@ -25,8 +25,8 @@ toi_detected_header:
 - Match accession
 - Match identity
 pmi_match_csv: preliminary_id_match.csv
-boxplot_img_filename: identity-boxplot.png
-tree_nwk_filename: candidates.nwk
+boxplot_img_filename: candidates_identity_boxplot.png
+tree_nwk_filename: candidates_phylogeny.nwk
 db_coverage_json: db_coverage.json
 blast_max_target_seqs: 2000
 bold_database: COX1_SPECIES_PUBLIC
