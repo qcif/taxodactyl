@@ -15,7 +15,9 @@ from src.utils import cache
 config = Config()
 logger = logging.getLogger(__name__)
 
-MAX_THROTTLE_WAIT_SECONDS = 120
+# 0 disables the sleep ceiling; at >200 parallel workers any finite cap is hit
+# constantly and wastes pre-reserved tokens on the failed retry
+MAX_THROTTLE_WAIT_SECONDS = 0
 
 
 @dataclass(frozen=True)
