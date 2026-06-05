@@ -286,7 +286,7 @@
                         "all_hits.json:md5,fa5ae71c0212b9b8dbdd1c567262e242",
                         "candidates.csv:md5,1a573150a551efc089ffae851a2d63c1",
                         "candidates.fasta:md5,1064aeddb5c1a5a42d700a0aa8fab5ac",
-                        "candidates.json:md5,2f205e89e46faeb30386bd63ce3ed3c3",
+                        "candidates.json:md5,88fb9dd43d91998cfab020416942b87e",
                         "candidates_count.txt:md5,c81e728d9d4c2f636f067f89cc14862c",
                         "candidates_phylogeny.fasta:md5,c0c2859153dba8608d15b18dc2cd2d52",
                         "taxa_of_concern_detected.csv:md5,fe1a5d9e4df7a4d04f007598c2a1e379"
@@ -428,7 +428,7 @@
                     [
                         "4.flag:md5,fac2580f47f70bf69e0dc81ec677f63b",
                         "aggregated_sources.json:md5,edcb525ba7a6d0234dc706005f45cfa6",
-                        "candidates.json:md5,2f205e89e46faeb30386bd63ce3ed3c3"
+                        "candidates.json:md5,88fb9dd43d91998cfab020416942b87e"
                     ]
                 ],
                 [
