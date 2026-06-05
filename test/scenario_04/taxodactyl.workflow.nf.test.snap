@@ -1200,23 +1200,21 @@
                     "query_001_barcode84_contig1_PE250203-B_REP1_KAPA",
                     [
                         "4.flag:md5,014886099a8d6a72f203c50454be3604",
-                        "aggregated_sources.json:md5,75582514952e43c8568874518cf2344f",
-                        "candidates.json:md5,33c6c8c53fa8ffc21b7230484d0055f1"
+                        "aggregated_sources.json:md5,75582514952e43c8568874518cf2344f"
                     ]
                 ],
                 [
                     "query_002_barcode88_contig1_PE250203-A_REP1_KAPA",
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
-                        "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a",
-                        "candidates.json:md5,93e21b0ae265f730b680b51d40f4cd0c"
+                        "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a"
                     ]
                 ],
                 [
                     "query_003_MG220521_3",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1224,7 +1222,7 @@
                     "query_004_MG240613_4",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1232,15 +1230,14 @@
                     "query_005_KDD0161",
                     [
                         "4.flag:md5,67d0961962bab9b6f8f00568a774fe52",
-                        "aggregated_sources.json:md5,4c724ee738444be8e1831b9cfadb5ead",
-                        "candidates.json:md5,59c0431b9d7c82131b84b384a4bc322f"
+                        "aggregated_sources.json:md5,4c724ee738444be8e1831b9cfadb5ead"
                     ]
                 ],
                 [
                     "query_006_LMJ1993",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1248,55 +1245,49 @@
                     "query_007_VE24-1284_COI",
                     [
                         "4.flag:md5,586352f3bfb9d42d31fc34c693deaa4b",
-                        "aggregated_sources.json:md5,f1b6cb3207ce575fea3fc0043f2434a3",
-                        "candidates.json:md5,8d3afaaf5aae5cf4829305814fb52cf7"
+                        "aggregated_sources.json:md5,f1b6cb3207ce575fea3fc0043f2434a3"
                     ]
                 ],
                 [
                     "query_008_VE24-1351_COI",
                     [
                         "4.flag:md5,ff651a9481004f2ad86596ff55a5a246",
-                        "aggregated_sources.json:md5,0a1d0f9a9a608f75653a317355529f8c",
-                        "candidates.json:md5,4dd96594b562aedd2005344192dcade0"
+                        "aggregated_sources.json:md5,0a1d0f9a9a608f75653a317355529f8c"
                     ]
                 ],
                 [
                     "query_009_VE25-1406_COI",
                     [
                         "4.flag:md5,8896795ac98c31cded9e5bc91dbb721f",
-                        "aggregated_sources.json:md5,67fc8b9ea1c73d822fa6e2b6c09cc534",
-                        "candidates.json:md5,ba028d1d490aae8e06d2534b4158b0c7"
+                        "aggregated_sources.json:md5,67fc8b9ea1c73d822fa6e2b6c09cc534"
                     ]
                 ],
                 [
                     "query_010_VE25-1425_28S",
                     [
                         "4.flag:md5,8d7f28b649d821f6348c4ee4c6c0fd84",
-                        "aggregated_sources.json:md5,c9610e68c0d574ac90666ef82480c1d0",
-                        "candidates.json:md5,83a29b858ccaa748807d90b5e81e339f"
+                        "aggregated_sources.json:md5,c9610e68c0d574ac90666ef82480c1d0"
                     ]
                 ],
                 [
                     "query_011_VE25-1428_16S",
                     [
                         "4.flag:md5,1c65f4332da9f5faeeaf3d3695725283",
-                        "aggregated_sources.json:md5,91ab31ae3532b3c398ccc0ae8a32767e",
-                        "candidates.json:md5,02adbc592c400543e3a05460398c3cef"
+                        "aggregated_sources.json:md5,91ab31ae3532b3c398ccc0ae8a32767e"
                     ]
                 ],
                 [
                     "query_012_VE25-1434_COI",
                     [
                         "4.flag:md5,9f772919951e02660b190102b82528d1",
-                        "aggregated_sources.json:md5,c2122ed9016d9ed9e21302e8497d6ecf",
-                        "candidates.json:md5,01e60740ac115317e40821a82d9e4e82"
+                        "aggregated_sources.json:md5,c2122ed9016d9ed9e21302e8497d6ecf"
                     ]
                 ],
                 [
                     "query_013_VE24-1066_COI",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1304,7 +1295,7 @@
                     "query_014_VE24-1067_COI",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1312,7 +1303,7 @@
                     "query_015_VE24-1068_COI",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1320,7 +1311,7 @@
                     "query_016_VE24-1075_COI",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1328,23 +1319,21 @@
                     "query_017_VE24-1079_COI",
                     [
                         "4.flag:md5,8fabe743a2e49b5db80eaff36c665bb9",
-                        "aggregated_sources.json:md5,0544c5a16de745c643d8aa440d090aa3",
-                        "candidates.json:md5,20bf0c4e694a4e2ffce108069c6c0221"
+                        "aggregated_sources.json:md5,0544c5a16de745c643d8aa440d090aa3"
                     ]
                 ],
                 [
                     "query_018_VE24-1086_COI",
                     [
                         "4.flag:md5,56d9de564215d9515ca0431c559a90ec",
-                        "aggregated_sources.json:md5,48a9c66267f47d40d3da1d9a8f7efb66",
-                        "candidates.json:md5,51d80772ea54696179aaddf9a541d483"
+                        "aggregated_sources.json:md5,48a9c66267f47d40d3da1d9a8f7efb66"
                     ]
                 ],
                 [
                     "query_019_Bac1_16S",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1352,7 +1341,7 @@
                     "query_020_Bac1_gyrB",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1360,7 +1349,7 @@
                     "query_021_Bac2_16S",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1368,7 +1357,7 @@
                     "query_022_Bac2_dnaX",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1376,7 +1365,7 @@
                     "query_023_FungusA_ITS",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1384,7 +1373,7 @@
                     "query_024_FungusB_ITS",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1392,7 +1381,7 @@
                     "query_025_FungusB_Btub",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1400,7 +1389,7 @@
                     "query_026_MP23-0431_matK",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1408,7 +1397,7 @@
                     "query_027_MP23-0431_rbcL",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1416,7 +1405,7 @@
                     "query_028_MP23-0432_matK",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1424,7 +1413,7 @@
                     "query_029_MP23-0432_rbcL",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1432,63 +1421,56 @@
                     "query_030_BISS_502833",
                     [
                         "4.flag:md5,e4d8e8c955d6192d504d4cc260ec3489",
-                        "aggregated_sources.json:md5,2f5f8aecaba933f83a3ec95970acb079",
-                        "candidates.json:md5,5a7e53c9d3c7659cfa8c6ab51e03cedb"
+                        "aggregated_sources.json:md5,2f5f8aecaba933f83a3ec95970acb079"
                     ]
                 ],
                 [
                     "query_031_barcode_79_AR21a_1_1_1",
                     [
                         "4.flag:md5,fda5f6fdb535639ec4dfdb4f178bedad",
-                        "aggregated_sources.json:md5,076e64f4ca730ca2b19204889fb8b0d8",
-                        "candidates.json:md5,e61da9f5a594b83faec47c3d2dbc5eb6"
+                        "aggregated_sources.json:md5,076e64f4ca730ca2b19204889fb8b0d8"
                     ]
                 ],
                 [
                     "query_032_barcode_80_AR8_1_1",
                     [
                         "4.flag:md5,fda5f6fdb535639ec4dfdb4f178bedad",
-                        "aggregated_sources.json:md5,076e64f4ca730ca2b19204889fb8b0d8",
-                        "candidates.json:md5,e61da9f5a594b83faec47c3d2dbc5eb6"
+                        "aggregated_sources.json:md5,076e64f4ca730ca2b19204889fb8b0d8"
                     ]
                 ],
                 [
                     "query_033_barcode_81_AR21a_1_1_1_KAPA",
                     [
                         "4.flag:md5,e21104e57818273f065415d789f42c91",
-                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161",
-                        "candidates.json:md5,9a3db79e08d774d255a3bbff9d75e376"
+                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161"
                     ]
                 ],
                 [
                     "query_034_barcode_82_AR8_1_1_KAPA",
                     [
                         "4.flag:md5,e21104e57818273f065415d789f42c91",
-                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161",
-                        "candidates.json:md5,bdacaf4249812959c61e7284010c210d"
+                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161"
                     ]
                 ],
                 [
                     "query_035_barcode_83_AR21a_1_1_1_MyFi",
                     [
                         "4.flag:md5,e21104e57818273f065415d789f42c91",
-                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161",
-                        "candidates.json:md5,9a3db79e08d774d255a3bbff9d75e376"
+                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161"
                     ]
                 ],
                 [
                     "query_036_barcode_84_AR8-1_1_MyFi",
                     [
                         "4.flag:md5,e21104e57818273f065415d789f42c91",
-                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161",
-                        "candidates.json:md5,b3a54cfb16fdfbfe817c9d618e5b5623"
+                        "aggregated_sources.json:md5,45644987bea99fe5bc5ff23e71046161"
                     ]
                 ],
                 [
                     "query_037_barcode_85_MG250214_4_1_1_KAPA",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1496,7 +1478,7 @@
                     "query_038_barcode_86_ICS192-1_1_1_KAPA",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1504,7 +1486,7 @@
                     "query_039_barcode_87_MG250214_4_1_1_MyFi",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1512,7 +1494,7 @@
                     "query_040_barcode_88_ICS192_1_1_1_MyFi",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1520,64 +1502,56 @@
                     "query_041_barcode_89_RID8931_1_1_MJ",
                     [
                         "4.flag:md5,1bc1df9dd9e9ac645e2ab5bcd9a313af",
-                        "aggregated_sources.json:md5,f5487ccfb7bc11b54b2826556c64129f",
-                        "candidates.json:md5,ff3c08a27392fa3698376f582cd51673"
+                        "aggregated_sources.json:md5,f5487ccfb7bc11b54b2826556c64129f"
                     ]
                 ],
                 [
                     "query_042_barcode_90_RID8931_1_1_Ci",
                     [
                         "4.flag:md5,1bc1df9dd9e9ac645e2ab5bcd9a313af",
-                        "aggregated_sources.json:md5,ab7d4c7d8957e73c8a65c45acfb5811e",
-                        "candidates.json:md5,375bc63876ed7ee27df18aa2e67e10ba"
+                        "aggregated_sources.json:md5,ab7d4c7d8957e73c8a65c45acfb5811e"
                     ]
                 ],
                 [
                     "query_043_barcode_91_RID8931_1_1_NLB",
                     [
                         "4.flag:md5,1bc1df9dd9e9ac645e2ab5bcd9a313af",
-                        "aggregated_sources.json:md5,22aae55c205000e519b6d482dca8db65",
-                        "candidates.json:md5,ff43e45cf72c14f3bd6dae769be88e6b"
+                        "aggregated_sources.json:md5,22aae55c205000e519b6d482dca8db65"
                     ]
                 ],
                 [
                     "query_044_barcode_93_MG250402_3_2_KAPA",
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
-                        "aggregated_sources.json:md5,00bc474c619db00cbf63d6a90410cf8d",
-                        "candidates.json:md5,77fd38a94c3678cbe70cf18a695bf04f"
+                        "aggregated_sources.json:md5,00bc474c619db00cbf63d6a90410cf8d"
                     ]
                 ],
                 [
                     "query_045_barcode_94_MG250402_3_1_KAPA",
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
-                        "aggregated_sources.json:md5,00bc474c619db00cbf63d6a90410cf8d",
-                        "candidates.json:md5,73f3118c8a1ac05e8eba2788eb38907a"
+                        "aggregated_sources.json:md5,00bc474c619db00cbf63d6a90410cf8d"
                     ]
                 ],
                 [
                     "query_046_barcode_95_MG250402_3_2_MyFi",
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
-                        "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a",
-                        "candidates.json:md5,a94554b8632166afeb04d1b279919537"
+                        "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a"
                     ]
                 ],
                 [
                     "query_047_B6_SME25-101_Alana",
                     [
                         "4.flag:md5,0dee5b443878fa56e6d97fc538ee1301",
-                        "aggregated_sources.json:md5,a95d81d8095a8632861b2064ec9fa9b4",
-                        "candidates.json:md5,d2ff6a6a2515dacc888acd7188981b19"
+                        "aggregated_sources.json:md5,a95d81d8095a8632861b2064ec9fa9b4"
                     ]
                 ],
                 [
                     "query_048_512503_1_Andrew",
                     [
                         "4.flag:md5,39bdc66f4924abda746a6c15789162bf",
-                        "aggregated_sources.json:md5,5efca1474528e167093514a884798c55",
-                        "candidates.json:md5,95da13aaf95edc163cc39aee7683f0fb"
+                        "aggregated_sources.json:md5,5efca1474528e167093514a884798c55"
                     ]
                 ]
             ],
