@@ -157,8 +157,8 @@
                 [
                     "query_020_Bac1_gyrB",
                     [
-                        "all_hits.fasta:md5,85b2280719315d720fe3f84d5b5eec88",
-                        "all_hits.json:md5,bc6f6247159cc34cb9a2f886e603c483",
+                        "all_hits.fasta:md5,b5731e928db9f8be1e655e56923817bd",
+                        "all_hits.json:md5,631acef72c92fb05bdd95151b1e58878",
                         "query_title.txt:md5,1ba15a4d809885832712ee624251e41d"
                     ]
                 ],
@@ -205,16 +205,16 @@
                 [
                     "query_026_MP23-0431_matK",
                     [
-                        "all_hits.fasta:md5,fa6ed30545ada299eb01665d23c21d64",
-                        "all_hits.json:md5,ff0c71371b1cc09089b8743b45f52051",
+                        "all_hits.fasta:md5,d600b0bd893e068da4f07e4cf0665cc2",
+                        "all_hits.json:md5,80fac35b1309593da165db7de8eab2d1",
                         "query_title.txt:md5,0a72cc34c15a29425f7d3ec28e68875f"
                     ]
                 ],
                 [
                     "query_027_MP23-0431_rbcL",
                     [
-                        "all_hits.fasta:md5,aa1911b50c12493beb7cd2d1fa0490c4",
-                        "all_hits.json:md5,a2d14cb19b398b9a0507dbfd848f2bd4",
+                        "all_hits.fasta:md5,f0c05dfc5e60998f230923de01b4b1c5",
+                        "all_hits.json:md5,a4db89f7c9523e6cd8021da4902a8a0c",
                         "query_title.txt:md5,1882bf2c13afc6d3651135f53a6ee118"
                     ]
                 ],
@@ -229,8 +229,8 @@
                 [
                     "query_029_MP23-0432_rbcL",
                     [
-                        "all_hits.fasta:md5,ab5ead51f928ab76c27dd8c966e45db6",
-                        "all_hits.json:md5,748c20f8872ba4e50a528588d08f7b6d",
+                        "all_hits.fasta:md5,5284d8d3f09396d17df17e0a07bc2ccf",
+                        "all_hits.json:md5,a7cb7b135e214b6dee97fd399ee6ac95",
                         "query_title.txt:md5,a7df0e5e4890e10d5d0dbcd85fdd9b47"
                     ]
                 ],
@@ -481,11 +481,11 @@
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
                         "all_hits.fasta:md5,b87913eb9522b741668379b6b2bb299b",
                         "all_hits.json:md5,03f52cb6b32545f1676385593b6600ad",
-                        "candidates.csv:md5,3fde9c4e6ec96e902b91068e28bdd668",
-                        "candidates.fasta:md5,ef96031a8ad8e247237023afb39ea9b5",
-                        "candidates.json:md5,69d49f348e4af4ed9b16a09725286781",
-                        "candidates_count.txt:md5,f457c545a9ded88f18ecee47145a72c0",
-                        "candidates_identity_boxplot.png:md5,b365d1be8a55726197f2d418625bb850",
+                        "candidates.csv:md5,44b28409efe66b6b7899b55d0f90205a",
+                        "candidates.fasta:md5,b87913eb9522b741668379b6b2bb299b",
+                        "candidates.json:md5,24a15f07e7a46c639019f28f2452a170",
+                        "candidates_count.txt:md5,c0c7c76d30bd3dcaefc96f40275bdc0a",
+                        "candidates_identity_boxplot.png:md5,1c44290cdb899b6d4240f299a1fa7b40",
                         "candidates_phylogeny.fasta:md5,b5ec43fd791c7a539b016912ae45b09f",
                         "taxa_of_concern_detected.csv:md5,8eb0437636f253e88f7527192ec488a2"
                     ]
@@ -566,7 +566,7 @@
                         "assigned_taxonomy.csv:md5,fc8becee5349d23cd3ae90734089c07d",
                         "candidates.csv:md5,7038e972e977025b165c2dd5f87e130b",
                         "candidates.fasta:md5,0c58589a91d8726308ffcb0ec7a7d35c",
-                        "candidates.json:md5,02adbc592c400543e3a05460398c3cef",
+                        "candidates.json:md5,78bb2042e471df08546ec6beb7cfdd54",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
                         "candidates_phylogeny.fasta:md5,23948a187576c3a0b46b7b1f45c72d98",
                         "preliminary_id_match.csv:md5,5a903587d26052cfcdd1dd0ca08a94e5",
@@ -699,12 +699,12 @@
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
                         "all_hits.fasta:md5,ce032a99b82df21dbe54021d315c42a0",
                         "all_hits.json:md5,ed42310e5854b70d8ab8dd3681e2d04a",
-                        "candidates.csv:md5,7dc3275fb2cd849b388112994ae310a3",
-                        "candidates.fasta:md5,33c6ea64e6f9ebeb16bb1226b5e435d7",
-                        "candidates.json:md5,4cfca11de9d8d1b70f56f919854c48ff",
+                        "candidates.csv:md5,f26bee494855759fc7c9873994ac0ac0",
+                        "candidates.fasta:md5,21f7e84b06a607eaf82a57db34cc81b7",
+                        "candidates.json:md5,6322425a8ab17efd0d676c9417683803",
                         "candidates_count.txt:md5,6ea9ab1baa0efb9e19094440c317e21b",
                         "candidates_identity_boxplot.png:md5,839098026983b6fc247d5392ad6c2518",
-                        "candidates_phylogeny.fasta:md5,45b4b8c9602e672105f7bd64cceafbc8"
+                        "candidates_phylogeny.fasta:md5,6a9b8c30d1fdf1c167aa09afd5c0944e"
                     ]
                 ],
                 [
@@ -713,11 +713,11 @@
                         "1.flag:md5,aaf0c8d08bbe7475e0f5a59d03103a05",
                         "2.flag:md5,7b61bdfa0bda019f07a812b2acfd296c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,85b2280719315d720fe3f84d5b5eec88",
-                        "all_hits.json:md5,bc6f6247159cc34cb9a2f886e603c483",
+                        "all_hits.fasta:md5,b5731e928db9f8be1e655e56923817bd",
+                        "all_hits.json:md5,631acef72c92fb05bdd95151b1e58878",
                         "candidates.csv:md5,3e87328e4ac0fb8e5b919021c027c19e",
                         "candidates.fasta:md5,ee40fd6ab2fba0c271cb1fb764f7a83f",
-                        "candidates.json:md5,eccb0375e0fc8142cefbeb0c3bb331c1",
+                        "candidates.json:md5,11e3df65110b6aa397db9aaf560de3aa",
                         "candidates_count.txt:md5,a87ff679a2f3e71d9181a67b7542122c",
                         "candidates_identity_boxplot.png:md5,0b331af921b295067159c4620663a936",
                         "candidates_phylogeny.fasta:md5,57e56b5a0c4b7564fe1ee4c15f07d14f"
@@ -752,7 +752,7 @@
                         "candidates.json:md5,3d644c8f87530c3f8122bc8d954d7acf",
                         "candidates_count.txt:md5,e4da3b7fbbce2345d7772b0674a318d5",
                         "candidates_identity_boxplot.png:md5,4b545f32a173352311a7a1b542ce67ae",
-                        "candidates_phylogeny.fasta:md5,2a5d94d94c19622d7b286f2573d13fcd"
+                        "candidates_phylogeny.fasta:md5,f9d1c55ca3dc6fafe56b40d32e2a0437"
                     ]
                 ],
                 [
@@ -809,14 +809,14 @@
                         "1.flag:md5,aaf0c8d08bbe7475e0f5a59d03103a05",
                         "2.flag:md5,7a4a44e9144b0324d4514786fe1a2f49",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,fa6ed30545ada299eb01665d23c21d64",
-                        "all_hits.json:md5,ff0c71371b1cc09089b8743b45f52051",
-                        "candidates.csv:md5,6646c663e7233ec22c089882d25303e1",
-                        "candidates.fasta:md5,2cf1957302ee0e3c1af72d706879cd7a",
-                        "candidates.json:md5,0e71cdaecb48b9f662042051bebda472",
+                        "all_hits.fasta:md5,d600b0bd893e068da4f07e4cf0665cc2",
+                        "all_hits.json:md5,80fac35b1309593da165db7de8eab2d1",
+                        "candidates.csv:md5,f16017df68603b27a8698cf7cbb9acec",
+                        "candidates.fasta:md5,f5f5776d8224393ce94f45cddc62a413",
+                        "candidates.json:md5,da61c7eb0d53d1c02300c05b0b078fea",
                         "candidates_count.txt:md5,d1f491a404d6854880943e5c3cd9ca25",
                         "candidates_identity_boxplot.png:md5,4dbab762bf55fdafb22f0574a62d6f61",
-                        "candidates_phylogeny.fasta:md5,a03e728dded26cc2b461175c96d2bf78",
+                        "candidates_phylogeny.fasta:md5,5c5dd9f14b654f0d8d2f37be726a9e39",
                         "taxa_of_concern_detected.csv:md5,7b96134b913a2d7e353ac8ea2b80e81e"
                     ]
                 ],
@@ -826,14 +826,14 @@
                         "1.flag:md5,aaf0c8d08bbe7475e0f5a59d03103a05",
                         "2.flag:md5,7a4a44e9144b0324d4514786fe1a2f49",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,aa1911b50c12493beb7cd2d1fa0490c4",
-                        "all_hits.json:md5,a2d14cb19b398b9a0507dbfd848f2bd4",
-                        "candidates.csv:md5,c83aaa3c032547a4484fd50ba238081d",
-                        "candidates.fasta:md5,aa1911b50c12493beb7cd2d1fa0490c4",
-                        "candidates.json:md5,09cc7d64bd418a297906a6ab0e9757a5",
+                        "all_hits.fasta:md5,f0c05dfc5e60998f230923de01b4b1c5",
+                        "all_hits.json:md5,a4db89f7c9523e6cd8021da4902a8a0c",
+                        "candidates.csv:md5,4173dc7e4c7810e1dcb6e994f818df10",
+                        "candidates.fasta:md5,f0c05dfc5e60998f230923de01b4b1c5",
+                        "candidates.json:md5,1afccc296b7de3cfd81e053be2cb46a2",
                         "candidates_count.txt:md5,85d8ce590ad8981ca2c8286f79f59954",
                         "candidates_identity_boxplot.png:md5,4493a956afc8312a0c8c03c49a837771",
-                        "candidates_phylogeny.fasta:md5,62ca24c61a69c9b9f5f23454296dd06c",
+                        "candidates_phylogeny.fasta:md5,845e84b428705ed3c02bec4f917229ab",
                         "taxa_of_concern_detected.csv:md5,156b0f2f386fcc371c5b65b8755c8b70"
                     ]
                 ],
@@ -860,11 +860,11 @@
                         "1.flag:md5,aaf0c8d08bbe7475e0f5a59d03103a05",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,ab5ead51f928ab76c27dd8c966e45db6",
-                        "all_hits.json:md5,748c20f8872ba4e50a528588d08f7b6d",
+                        "all_hits.fasta:md5,5284d8d3f09396d17df17e0a07bc2ccf",
+                        "all_hits.json:md5,a7cb7b135e214b6dee97fd399ee6ac95",
                         "candidates.csv:md5,2cc7e817070949fa20d66e044c783d13",
                         "candidates.fasta:md5,5f5686adc57585d945c9381dba121a3b",
-                        "candidates.json:md5,89c32ab78c41abf90380815d45687fbb",
+                        "candidates.json:md5,db2453f706fa980abdf50bafe02d6083",
                         "candidates_count.txt:md5,1ff1de774005f8da13f42943881c655f",
                         "candidates_identity_boxplot.png:md5,15243e2206dc0d92b8c6d8d08007f2e9",
                         "candidates_phylogeny.fasta:md5,fabfb2b9f34d85eb7118045a99b28f30",
@@ -1003,7 +1003,7 @@
                         "all_hits.json:md5,f3b6c1b5ff9a36a666d379f1af2b94d2",
                         "candidates.csv:md5,6cd75288dde0d9e2245184a9729a5647",
                         "candidates.fasta:md5,71b0536581614e51c61885a4fbe0abcf",
-                        "candidates.json:md5,4edd7fb19a6828fbe9be38cb18542d7a",
+                        "candidates.json:md5,aa4a1d348f9d1f959552c66e44e265a6",
                         "candidates_count.txt:md5,33e75ff09dd601bbe69f351039152189",
                         "candidates_identity_boxplot.png:md5,29285804fda825679cc9436eb9de04b8",
                         "candidates_phylogeny.fasta:md5,8970b5903079136367d0a66514e6f952",
@@ -1036,7 +1036,7 @@
                         "all_hits.json:md5,5427bf65bd9c6ea65be835e17d5c65bb",
                         "candidates.csv:md5,af32db58cdab091771d680b13f7b8eff",
                         "candidates.fasta:md5,81a808de982642502c20e2e3ea6a0800",
-                        "candidates.json:md5,38701d2831a69c4e4635654a118d0270",
+                        "candidates.json:md5,563e34adee3625025794f4067336f3c4",
                         "candidates_count.txt:md5,6ea9ab1baa0efb9e19094440c317e21b",
                         "candidates_identity_boxplot.png:md5,50d9ede146a2541b2d736c968ff55c08",
                         "candidates_phylogeny.fasta:md5,6f6be0cc71cb5e7fcc42dd736cdf7b0b",
@@ -1053,7 +1053,7 @@
                         "all_hits.json:md5,a23e2d1a6092767a39031e8c59ccf3ab",
                         "candidates.csv:md5,af57fbca89a319b6b965cc1d559b2fea",
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "candidates.json:md5,31a9ac491c2baabd36fd00820a1887e1",
+                        "candidates.json:md5,2c5c6883eba5a658bb743524a248d489",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
                         "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "taxa_of_concern_detected.csv:md5,d7557ed3effa7aa7ba5b64c312c781e8"
@@ -1188,7 +1188,7 @@
                         "assigned_taxonomy.csv:md5,e1ef3ad78edcdd34b0b98a532bdbb8fb",
                         "candidates.csv:md5,a625493a372fa61ecd28af6d134f2a48",
                         "candidates.fasta:md5,36cf19a1245ec48329a34fbc1c4f006c",
-                        "candidates.json:md5,95da13aaf95edc163cc39aee7683f0fb",
+                        "candidates.json:md5,fb404add4238ca3448bfafbf62ad64fc",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
                         "candidates_phylogeny.fasta:md5,a32b2fe9a04efb6f8e8dbfca12dd7edd",
                         "taxa_of_concern_detected.csv:md5,9b10e46f0b004c62923cbf1c68e99602"
@@ -1630,7 +1630,7 @@
                 ],
                 [
                     "query_019_Bac1_16S",
-                    "candidates_phylogeny.nwk:md5,13b9bae4c6b72a9c20015695536949f8"
+                    "candidates_phylogeny.nwk:md5,c9abe7a5825453f05f52a1568e29eb68"
                 ],
                 [
                     "query_020_Bac1_gyrB",
@@ -1642,7 +1642,7 @@
                 ],
                 [
                     "query_022_Bac2_dnaX",
-                    "candidates_phylogeny.nwk:md5,4f233190a7935f1db8220a34791ac4ad"
+                    "candidates_phylogeny.nwk:md5,eaa8c6bf28cd76f0154fe7b94ca561cc"
                 ],
                 [
                     "query_023_FungusA_ITS",
@@ -1658,11 +1658,11 @@
                 ],
                 [
                     "query_026_MP23-0431_matK",
-                    "candidates_phylogeny.nwk:md5,766b6ec5439c1a5dab01739b761994b9"
+                    "candidates_phylogeny.nwk:md5,1e6f4b1d826781cdb5813ae6aa5bb5da"
                 ],
                 [
                     "query_027_MP23-0431_rbcL",
-                    "candidates_phylogeny.nwk:md5,d03e712a9b237fa9a8d1d69fd835338e"
+                    "candidates_phylogeny.nwk:md5,a4c1ee566dd6657d94d68ecc7b33c376"
                 ],
                 [
                     "query_028_MP23-0432_matK",
@@ -1754,6 +1754,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-03-06T07:31:30.109690088"
+        "timestamp": "2026-06-05T22:28:43.562194066"
     }
 }

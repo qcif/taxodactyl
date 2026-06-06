@@ -29,8 +29,8 @@
                 [
                     "query_004_barcode_58_2029-01_Badnavirus_cluster_0_RC3794",
                     [
-                        "all_hits.fasta:md5,3fa31391335c71641de563c68d0d38d4",
-                        "all_hits.json:md5,898f813187ce516caf9d8afbb2ba802f",
+                        "all_hits.fasta:md5,c88b5c4686017b02bd3d0e6c4632dc19",
+                        "all_hits.json:md5,4c41e6bb84455256bba5ae973406b954",
                         "query_title.txt:md5,2ffd4119e5726a55ac44bca8d3ad1939"
                     ]
                 ],
@@ -212,8 +212,8 @@
                 [
                     "query_027_barcode_71_RID8937-1_MOL-016_cluster_15_RC229",
                     [
-                        "all_hits.fasta:md5,91708253cdef50ff78dc13062968b78b",
-                        "all_hits.json:md5,c583b5f42b6e655b4ccbaa3382c97bd7",
+                        "all_hits.fasta:md5,9c73da39195786b905f48d92cca7e8de",
+                        "all_hits.json:md5,479ff20cd88c10aa5fd7d4a0dee24d1d",
                         "query_title.txt:md5,0f0f86f75681689eb130f024272efcfd"
                     ]
                 ],
@@ -228,32 +228,32 @@
                 [
                     "query_029_barcode_73_rid8934-1-1_MOL-025_cluster_8_RC33",
                     [
-                        "all_hits.fasta:md5,f68af2e3ecc0d2caabe3b0641256427a",
-                        "all_hits.json:md5,aa3ca26f823a9185d263bda2d107454f",
+                        "all_hits.fasta:md5,b7b4cfbeda60bae1227928ee3e8d3dd9",
+                        "all_hits.json:md5,1f55222e2a1de497981f62ab054d3b58",
                         "query_title.txt:md5,5a8f568d4471c034cb6b320b16adecaf"
                     ]
                 ],
                 [
                     "query_030_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62",
                     [
-                        "all_hits.fasta:md5,da0162fcd4df73b845fc65d907661693",
-                        "all_hits.json:md5,012d50811c65210f839710ea922dd15e",
+                        "all_hits.fasta:md5,c90349a3152845cbaad03509f85d857a",
+                        "all_hits.json:md5,8138c84d1146fb35b18b0c3fb0fbb74e",
                         "query_title.txt:md5,f9d6eb601da349da1b7535ec342142fa"
                     ]
                 ],
                 [
                     "query_031_barcode_74_LMJ1855_C_MOL-025_cluster_0_RC1712",
                     [
-                        "all_hits.fasta:md5,d64af317224702ad0337a39fe875e86c",
-                        "all_hits.json:md5,e18ba826667d0ff54ff0a9b697b7a40e",
+                        "all_hits.fasta:md5,877558d562e4ef0231afda17a3edf720",
+                        "all_hits.json:md5,5ffaa16c935c73afea1b1dc66ce8933f",
                         "query_title.txt:md5,3b15538c142eb9bb4576ca9c3a418ed3"
                     ]
                 ],
                 [
                     "query_032_barcode_75_rid8933-1-1_MOL-034_cluster_2_RC97",
                     [
-                        "all_hits.fasta:md5,7d0de31a2a5ac5785da070d3a1d7ff6a",
-                        "all_hits.json:md5,b247cbfe53cf009098f968a814b65758",
+                        "all_hits.fasta:md5,50aec08d26ef213d23b0f9b47c562b02",
+                        "all_hits.json:md5,94bc0327f40a4d1061adb6fc4bbbc090",
                         "query_title.txt:md5,3c6c19a6dd4d37b85e8f8957bd4ecc6f"
                     ]
                 ],
@@ -340,8 +340,8 @@
                 [
                     "query_043_barcode_83_P59_Potyviridae_barcode_88_PMC219_Grapevine_badnavirus",
                     [
-                        "all_hits.fasta:md5,300fec37674ffc64e188794ba5956b04",
-                        "all_hits.json:md5,0b892f8b5da0f161296e7732818dde76",
+                        "all_hits.fasta:md5,1e84b835b8c7d47789a30f839e9ff44f",
+                        "all_hits.json:md5,57714f49fb78eca8be0355f3c0d5e9af",
                         "query_title.txt:md5,7431f4b964a1f468a10f3da9cfcfd3e4"
                     ]
                 ],
@@ -372,32 +372,32 @@
                 [
                     "query_047_barcode_85_SPaV_Crinivirus_cluster_63_RC288",
                     [
-                        "all_hits.fasta:md5,338715d02ab425b5c3a2ea3e1d234404",
-                        "all_hits.json:md5,3edb1beb341905b52a2923bbea853221",
+                        "all_hits.fasta:md5,a4f744eccbd8ed72eb31d3291f880dad",
+                        "all_hits.json:md5,8304782b84dee9361c963aaa699f13b6",
                         "query_title.txt:md5,dcb8442689bbfcaaefed68ec5ee70862"
                     ]
                 ],
                 [
                     "query_048_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199",
                     [
-                        "all_hits.fasta:md5,ccd8e49b946647ada522821ae9bb1092",
-                        "all_hits.json:md5,ccdc2437b06562f45a49028cadaa453d",
+                        "all_hits.fasta:md5,6b4f5fa9c5b3845a07804962f6df45dd",
+                        "all_hits.json:md5,a3f8381a56fbfea7b1b03da1e70f9a48",
                         "query_title.txt:md5,4be3520dcd3ee73004daa568808a09e2"
                     ]
                 ],
                 [
                     "query_049_barcode_87_DNA3_X_citri_cluster_4_RC1831",
                     [
-                        "all_hits.fasta:md5,30e48cbc96b25acca5b6fa0032de0962",
-                        "all_hits.json:md5,3bda27427214724067befe260ea2bf4d",
+                        "all_hits.fasta:md5,28d62cb3fbdd2d6310ae3fe93b221df1",
+                        "all_hits.json:md5,569de2acf7e457b6f6b6a60dc6469278",
                         "query_title.txt:md5,a440fd1ef65cd3e8545de3f5e33142db"
                     ]
                 ],
                 [
                     "query_050_barcode_88_PMC219_Grapevine_badnavirus_cluster_0_RC164",
                     [
-                        "all_hits.fasta:md5,300fec37674ffc64e188794ba5956b04",
-                        "all_hits.json:md5,8c8af70eafe95a6fe71e85f8d87aefe0",
+                        "all_hits.fasta:md5,1e84b835b8c7d47789a30f839e9ff44f",
+                        "all_hits.json:md5,b6605ec89d7b0e5d21284b49cde9ff15",
                         "query_title.txt:md5,c036b6e0fbe730785a370929f87bf63a"
                     ]
                 ],
@@ -676,8 +676,8 @@
                         "1.flag:md5,25c0c874ad20c71dd34eaa0bb4886afb",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,3fa31391335c71641de563c68d0d38d4",
-                        "all_hits.json:md5,898f813187ce516caf9d8afbb2ba802f",
+                        "all_hits.fasta:md5,c88b5c4686017b02bd3d0e6c4632dc19",
+                        "all_hits.json:md5,4c41e6bb84455256bba5ae973406b954",
                         "candidates.csv:md5,af57fbca89a319b6b965cc1d559b2fea",
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "candidates.json:md5,f48b9801436f12b7550dc3b7863ac12f",
@@ -897,7 +897,7 @@
                         "all_hits.json:md5,7c45a2388286d479e333534c7dba1ff0",
                         "candidates.csv:md5,af57fbca89a319b6b965cc1d559b2fea",
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "candidates.json:md5,63d507c34b0130bf000d724e85478589",
+                        "candidates.json:md5,04392056f5b9565bf7d673b83fb3f878",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
                         "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "taxa_of_concern_detected.csv:md5,3c6d32ebfb66e2f8be2e40f5b66b88cf"
@@ -946,7 +946,7 @@
                         "all_hits.json:md5,f03635aa86bd036f44260997bc8c788f",
                         "candidates.csv:md5,af57fbca89a319b6b965cc1d559b2fea",
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "candidates.json:md5,31a9ac491c2baabd36fd00820a1887e1",
+                        "candidates.json:md5,2c5c6883eba5a658bb743524a248d489",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
                         "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "taxa_of_concern_detected.csv:md5,d7557ed3effa7aa7ba5b64c312c781e8"
@@ -993,12 +993,12 @@
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
                         "all_hits.fasta:md5,4cbf3be41e77342c230f7a55a6b17979",
                         "all_hits.json:md5,4f9c3c81d019cb313fb24124d518b18d",
-                        "candidates.csv:md5,2dac00b8bd5f7b66a9e5d54e18ef2eb0",
+                        "candidates.csv:md5,05b51c9f5b3ce96cf94a7684146b18fb",
                         "candidates.fasta:md5,4cbf3be41e77342c230f7a55a6b17979",
-                        "candidates.json:md5,c939ac0295527a04fbf3bea2bd8f02ea",
-                        "candidates_count.txt:md5,39059724f73a9969845dfe4146c5660e",
+                        "candidates.json:md5,03c39ec9b39113a449a42e84f59a3f0d",
+                        "candidates_count.txt:md5,06138bc5af6023646ede0e1f7c1eac75",
                         "candidates_identity_boxplot.png:md5,059d25ee0c1976adcde920750fb92821",
-                        "candidates_phylogeny.fasta:md5,5dbc6a1a3db208d9180426bd870effc4",
+                        "candidates_phylogeny.fasta:md5,bb32cef48c03f287a75d5a4b59603a09",
                         "taxa_of_concern_detected.csv:md5,814d36ca7ebbb498eacf289f555b033b"
                     ]
                 ],
@@ -1012,7 +1012,7 @@
                         "all_hits.json:md5,fe4ef4b80f92e0c715828ad781683af4",
                         "candidates.csv:md5,f8ca1aa4e4b326616fa5196e264a55d4",
                         "candidates.fasta:md5,40225274496e1cdd7379fda3ad867694",
-                        "candidates.json:md5,eaef3dc3bd1abf13b165995f326176f9",
+                        "candidates.json:md5,2d07c557469d5dc677efae141cd55270",
                         "candidates_count.txt:md5,70efdf2ec9b086079795c442636b55fb",
                         "candidates_identity_boxplot.png:md5,255ce55b47d2d21e41e0e4c630598b49",
                         "candidates_phylogeny.fasta:md5,29a862667936c96a9d88afbb6219ce26",
@@ -1057,8 +1057,8 @@
                         "1.flag:md5,e48eb085772ecd7cb78c1c1cd6e09a24",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,91708253cdef50ff78dc13062968b78b",
-                        "all_hits.json:md5,c583b5f42b6e655b4ccbaa3382c97bd7",
+                        "all_hits.fasta:md5,9c73da39195786b905f48d92cca7e8de",
+                        "all_hits.json:md5,479ff20cd88c10aa5fd7d4a0dee24d1d",
                         "candidates.csv:md5,cf1cee1d0c0b18811e948b80a2b49410",
                         "candidates.fasta:md5,9a234cea5bc79266dd98cc82061d382d",
                         "candidates.json:md5,d93780a14fa8406d0e831cf1f8aa622f",
@@ -1090,14 +1090,14 @@
                         "1.flag:md5,f3d93e417259ddd4ae40f327a564095e",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,34336abcf46f9652fe2f2e87d6138a1c",
-                        "all_hits.fasta:md5,f68af2e3ecc0d2caabe3b0641256427a",
-                        "all_hits.json:md5,aa3ca26f823a9185d263bda2d107454f",
-                        "assigned_taxonomy.csv:md5,d5fcc45987ef184ac2cd4e74f7abea80",
-                        "candidates.csv:md5,bfb144b27dbeb431c1fb55ab8cabc6f0",
-                        "candidates.fasta:md5,5c66b0790558e2b36f04e2f473c82c95",
-                        "candidates.json:md5,d44294944da99b94c604a7afcb528dc5",
+                        "all_hits.fasta:md5,b7b4cfbeda60bae1227928ee3e8d3dd9",
+                        "all_hits.json:md5,1f55222e2a1de497981f62ab054d3b58",
+                        "assigned_taxonomy.csv:md5,2f2b2dd6d7197fb98a6efc188078c8ec",
+                        "candidates.csv:md5,3b83211cc9cec74992e564d23ec37eb0",
+                        "candidates.fasta:md5,15e95b2d0ec88fe3884be138dc417314",
+                        "candidates.json:md5,3cd8f763bc8cc534b748d4a120c80f8b",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
-                        "candidates_phylogeny.fasta:md5,847de5715faeab99353f766be3ec9c8e",
+                        "candidates_phylogeny.fasta:md5,b634a54acae5cb20379ef23af56deea7",
                         "taxa_of_concern_detected.csv:md5,888db07bd8141921ca21646f9ef494f0"
                     ]
                 ],
@@ -1107,11 +1107,11 @@
                         "1.flag:md5,25c0c874ad20c71dd34eaa0bb4886afb",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,da0162fcd4df73b845fc65d907661693",
-                        "all_hits.json:md5,012d50811c65210f839710ea922dd15e",
+                        "all_hits.fasta:md5,c90349a3152845cbaad03509f85d857a",
+                        "all_hits.json:md5,8138c84d1146fb35b18b0c3fb0fbb74e",
                         "candidates.csv:md5,af57fbca89a319b6b965cc1d559b2fea",
                         "candidates.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "candidates.json:md5,8fdf280169881f191a3bddef20a38a19",
+                        "candidates.json:md5,0550fa2ecbea9a0c122e1fd7fbc61bf7",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
                         "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
                         "taxa_of_concern_detected.csv:md5,888db07bd8141921ca21646f9ef494f0"
@@ -1123,14 +1123,14 @@
                         "1.flag:md5,aaf0c8d08bbe7475e0f5a59d03103a05",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,d64af317224702ad0337a39fe875e86c",
-                        "all_hits.json:md5,e18ba826667d0ff54ff0a9b697b7a40e",
-                        "candidates.csv:md5,f5fbff5f19990a7008f6fbafad24ed09",
-                        "candidates.fasta:md5,ceb194f24c94b940707d20da2153eb4d",
-                        "candidates.json:md5,f369e1331aa4124aa9564f5b7a8cb18b",
+                        "all_hits.fasta:md5,877558d562e4ef0231afda17a3edf720",
+                        "all_hits.json:md5,5ffaa16c935c73afea1b1dc66ce8933f",
+                        "candidates.csv:md5,6cb4d34ece66142db5603e2ec50267fb",
+                        "candidates.fasta:md5,36a9f21546ade61275230a1e31217401",
+                        "candidates.json:md5,a078e72ae4545d1bb3b5ef572cffab22",
                         "candidates_count.txt:md5,6512bd43d9caa6e02c990b0a82652dca",
                         "candidates_identity_boxplot.png:md5,32fb059985d01e3c014d92f26e306297",
-                        "candidates_phylogeny.fasta:md5,4ebc8c797df049027b0443248332ec94",
+                        "candidates_phylogeny.fasta:md5,ea3ddae80fc428d1a7e5754c35e7b4bb",
                         "taxa_of_concern_detected.csv:md5,888db07bd8141921ca21646f9ef494f0"
                     ]
                 ],
@@ -1140,14 +1140,14 @@
                         "1.flag:md5,f3d93e417259ddd4ae40f327a564095e",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,34336abcf46f9652fe2f2e87d6138a1c",
-                        "all_hits.fasta:md5,7d0de31a2a5ac5785da070d3a1d7ff6a",
-                        "all_hits.json:md5,b247cbfe53cf009098f968a814b65758",
+                        "all_hits.fasta:md5,50aec08d26ef213d23b0f9b47c562b02",
+                        "all_hits.json:md5,94bc0327f40a4d1061adb6fc4bbbc090",
                         "assigned_taxonomy.csv:md5,758867da0218fcc2c1fbfbeef350f597",
                         "candidates.csv:md5,38453b2990514e92d6d128cf240af392",
                         "candidates.fasta:md5,d1085de41f6fb403eb1c0fe001f59097",
-                        "candidates.json:md5,e4977de40ec49bf82ab236c4556b92e0",
+                        "candidates.json:md5,e8b1ec9aab8f5c44a3ff244b1bcc6d78",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
-                        "candidates_phylogeny.fasta:md5,04b7fe266cf279bab6736f2ecb03c0e8",
+                        "candidates_phylogeny.fasta:md5,d14ad587a848691d2125d85e921db9ba",
                         "taxa_of_concern_detected.csv:md5,8b73c11b7509675386b374e33a418784"
                     ]
                 ],
@@ -1327,8 +1327,8 @@
                         "1.flag:md5,e48eb085772ecd7cb78c1c1cd6e09a24",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,300fec37674ffc64e188794ba5956b04",
-                        "all_hits.json:md5,0b892f8b5da0f161296e7732818dde76",
+                        "all_hits.fasta:md5,1e84b835b8c7d47789a30f839e9ff44f",
+                        "all_hits.json:md5,57714f49fb78eca8be0355f3c0d5e9af",
                         "candidates.csv:md5,c36adec1a46efa32740b692c21fb21c7",
                         "candidates.fasta:md5,9b44c8769fea836fdebcc1d2479907bd",
                         "candidates.json:md5,3d4b83b25d4edcfcd51bb90d26c19e9f",
@@ -1345,9 +1345,9 @@
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
                         "all_hits.fasta:md5,ec577fbf06883f11e166ca742320f528",
                         "all_hits.json:md5,5d2158e9c0c9fc719c3a78f3aa7d3bee",
-                        "candidates.csv:md5,684cd50751ed3335c9be853f807dced8",
+                        "candidates.csv:md5,fb72560365d7ad8e4234d0f786110508",
                         "candidates.fasta:md5,516a52fd57ab1d58d603804c8f035f52",
-                        "candidates.json:md5,0686478cf1b98f1946d71717af659bf7",
+                        "candidates.json:md5,9c5c3734a88c0433e2640914237d20f7",
                         "candidates_count.txt:md5,c81e728d9d4c2f636f067f89cc14862c",
                         "candidates_phylogeny.fasta:md5,93ae60a38299d9496cf044e631ea73fa",
                         "taxa_of_concern_detected.csv:md5,b86958f3d557f242482e0950cc09d670"
@@ -1391,8 +1391,8 @@
                         "1.flag:md5,e48eb085772ecd7cb78c1c1cd6e09a24",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,338715d02ab425b5c3a2ea3e1d234404",
-                        "all_hits.json:md5,3edb1beb341905b52a2923bbea853221",
+                        "all_hits.fasta:md5,a4f744eccbd8ed72eb31d3291f880dad",
+                        "all_hits.json:md5,8304782b84dee9361c963aaa699f13b6",
                         "candidates.csv:md5,e5549f5d94296a1ea3345225f70d1309",
                         "candidates.fasta:md5,d0f79c64491de090aff2842ce0b69327",
                         "candidates.json:md5,2409bd3c9b9ad6a7d4d0b9147d392ad0",
@@ -1407,13 +1407,13 @@
                         "1.flag:md5,5bebb6bb53ff7b1b11b87057eabd4f81",
                         "2.flag:md5,7a4a44e9144b0324d4514786fe1a2f49",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,ccd8e49b946647ada522821ae9bb1092",
-                        "all_hits.json:md5,ccdc2437b06562f45a49028cadaa453d",
-                        "candidates.csv:md5,87198dc2d6ef4cc1585c75cfa92674c9",
-                        "candidates.fasta:md5,136858b3067018ab4c97d0cb42bdf420",
-                        "candidates.json:md5,2252ba0b1eb0cb2f3df3c7fdde264b79",
+                        "all_hits.fasta:md5,6b4f5fa9c5b3845a07804962f6df45dd",
+                        "all_hits.json:md5,a3f8381a56fbfea7b1b03da1e70f9a48",
+                        "candidates.csv:md5,3f82b03e9de5f8ddcfdae1007d579692",
+                        "candidates.fasta:md5,2c0a2e9c5773035c0efe71b685970f78",
+                        "candidates.json:md5,86d6cd0c350158401d18eb59b2a81e1e",
                         "candidates_count.txt:md5,eccbc87e4b5ce2fe28308fd9f2a7baf3",
-                        "candidates_phylogeny.fasta:md5,e7290eded61d7d28d4a395866e4a841a",
+                        "candidates_phylogeny.fasta:md5,d156a6d14f1fff56096d817ad48139bd",
                         "taxa_of_concern_detected.csv:md5,4bbfbc1bd98bbc15d256c13bb15dd1d3"
                     ]
                 ],
@@ -1423,13 +1423,13 @@
                         "1.flag:md5,5bebb6bb53ff7b1b11b87057eabd4f81",
                         "2.flag:md5,7a4a44e9144b0324d4514786fe1a2f49",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,30e48cbc96b25acca5b6fa0032de0962",
-                        "all_hits.json:md5,3bda27427214724067befe260ea2bf4d",
-                        "candidates.csv:md5,078f6f7aba057091b67b13f6af8e5de9",
-                        "candidates.fasta:md5,a2ea04998fe494b2695797e7431bd209",
-                        "candidates.json:md5,509c182b14e137e6a9dae3c5c68fb446",
+                        "all_hits.fasta:md5,28d62cb3fbdd2d6310ae3fe93b221df1",
+                        "all_hits.json:md5,569de2acf7e457b6f6b6a60dc6469278",
+                        "candidates.csv:md5,b6689bff913f44d86213cfee90c2abee",
+                        "candidates.fasta:md5,f315d756ce122473e8bbba8aa069b1c0",
+                        "candidates.json:md5,e75ea2b6ac5d9764d0cb7e9d247f2849",
                         "candidates_count.txt:md5,eccbc87e4b5ce2fe28308fd9f2a7baf3",
-                        "candidates_phylogeny.fasta:md5,ada86384cf6f3519e799de8a59fb53a1",
+                        "candidates_phylogeny.fasta:md5,1efd48411ba58f61da1bd4bef17a8e10",
                         "taxa_of_concern_detected.csv:md5,4bbfbc1bd98bbc15d256c13bb15dd1d3"
                     ]
                 ],
@@ -1439,8 +1439,8 @@
                         "1.flag:md5,e48eb085772ecd7cb78c1c1cd6e09a24",
                         "2.flag:md5,53b5ba2b547942d6b79cbc5af93ddb2c",
                         "7.flag:md5,faf7292155a57f6eb9acdc41e96d9252",
-                        "all_hits.fasta:md5,300fec37674ffc64e188794ba5956b04",
-                        "all_hits.json:md5,8c8af70eafe95a6fe71e85f8d87aefe0",
+                        "all_hits.fasta:md5,1e84b835b8c7d47789a30f839e9ff44f",
+                        "all_hits.json:md5,b6605ec89d7b0e5d21284b49cde9ff15",
                         "candidates.csv:md5,c36adec1a46efa32740b692c21fb21c7",
                         "candidates.fasta:md5,9b44c8769fea836fdebcc1d2479907bd",
                         "candidates.json:md5,3d4b83b25d4edcfcd51bb90d26c19e9f",
@@ -1902,7 +1902,6 @@
                     [
                         "4.flag:md5,1e74c6fc26f9ed4af9fe60e5baa0f852",
                         "aggregated_sources.json:md5,fd397fd7b6ca6e3f4f1ed015338bfdcb",
-                        "candidates.json:md5,55d2599edecf402e55ab02c894bdf6f4"
                     ]
                 ],
                 [
@@ -1910,7 +1909,6 @@
                     [
                         "4.flag:md5,18d4901495e03964e5545f8845045e5a",
                         "aggregated_sources.json:md5,62dc93236c5447ed430da8fad7cee61e",
-                        "candidates.json:md5,11b2db0f189fdba631979e8eb278d203"
                     ]
                 ],
                 [
@@ -1918,14 +1916,13 @@
                     [
                         "4.flag:md5,e81f93c0c8d770ae83f6221766f5d1bd",
                         "aggregated_sources.json:md5,871eb68809478d23bb76253287844533",
-                        "candidates.json:md5,4df81413e25bf40054886b468b5c8054"
                     ]
                 ],
                 [
                     "query_004_barcode_58_2029-01_Badnavirus_cluster_0_RC3794",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1934,7 +1931,6 @@
                     [
                         "4.flag:md5,093ec324439bfc49942f8cd6251d7021",
                         "aggregated_sources.json:md5,c539fe589d9afae9ae0af4480cd376f3",
-                        "candidates.json:md5,a69a8b74cc7d20e4c7c0165e0c8b3ac1"
                     ]
                 ],
                 [
@@ -1942,7 +1938,6 @@
                     [
                         "4.flag:md5,8b7d45f61d570d2d50997fc2b88982e0",
                         "aggregated_sources.json:md5,b4fff075c6f5688e123fe1ebb4a88a0d",
-                        "candidates.json:md5,fb7b42eed4b14eea05db0089740ed33c"
                     ]
                 ],
                 [
@@ -1950,7 +1945,6 @@
                     [
                         "4.flag:md5,71933f9670d7cab38b11a9a89fb76634",
                         "aggregated_sources.json:md5,2af08e43d0fa3f18bddf3ccf804d9e2c",
-                        "candidates.json:md5,699c2a7b2794eddbd3a18b8eb1d4633f"
                     ]
                 ],
                 [
@@ -1958,14 +1952,13 @@
                     [
                         "4.flag:md5,70b4cb3f7650ff6312f65c43d3e14fce",
                         "aggregated_sources.json:md5,51a4de74f1a185fae71d92be1aca07be",
-                        "candidates.json:md5,a888f9360bb10f007ea8efe32139357c"
                     ]
                 ],
                 [
                     "query_009_barcode_61_MG250402-8-1-1-1_KAPA_MOL-003a_cluster_0_RC5090",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1973,7 +1966,7 @@
                     "query_010_barcode_62_MG250402-2-1-2-1_KAPA_MOL-003a_cluster_0_RC1492",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1981,7 +1974,7 @@
                     "query_011_barcode_63_MG250402-2-1-1-1_KAPA_MOL-003a_cluster_0_RC329",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -1990,7 +1983,6 @@
                     [
                         "4.flag:md5,a5293e1727f26d13e9fa64f48a66a1bb",
                         "aggregated_sources.json:md5,6f4cf5651316bb232df808032bc7fa9a",
-                        "candidates.json:md5,6fe13842a4c7e5409433afeb62bc6384"
                     ]
                 ],
                 [
@@ -1998,7 +1990,6 @@
                     [
                         "4.flag:md5,50983cdcdc7823fea50f053095823da3",
                         "aggregated_sources.json:md5,465a5d1c43b65cdb6f59e024ad143b0b",
-                        "candidates.json:md5,800265c4190470d0f26aec376e90bcee"
                     ]
                 ],
                 [
@@ -2006,14 +1997,13 @@
                     [
                         "4.flag:md5,7097cde23ea5d8abb37972aa862c5f1d",
                         "aggregated_sources.json:md5,32d26358686e5eb6a7ad9ef824efb0e8",
-                        "candidates.json:md5,f1ef95a418f735529e6eaff88c9f37f4"
                     ]
                 ],
                 [
                     "query_015_barcode_65_MG250331-7-1-1-1_KAPA_MOL-003a_cluster_1_RC150",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2021,7 +2011,7 @@
                     "query_016_barcode_66_MG250331-5-1-1-1_KAPA_MOL-003a_cluster_0_RC787",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2029,7 +2019,7 @@
                     "query_017_barcode_67_MG250331-3-1-1-1_KAPA_MOL-003a_cluster_3_RC844",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2037,7 +2027,7 @@
                     "query_018_barcode_67_MG250331-3-1-1-1_KAPA_MOL-003a_cluster_4_RC38",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2046,14 +2036,13 @@
                     [
                         "4.flag:md5,7d9233075398569647e4101178317553",
                         "aggregated_sources.json:md5,aeae664788410e92465e5e673cb3e5ca",
-                        "candidates.json:md5,feb3e6ff4dfda4ef41dd3f13219396b0"
                     ]
                 ],
                 [
                     "query_020_barcode_68_ICS202-1-1_KAPA_MOL-003a_cluster_0_RC4019",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2061,7 +2050,7 @@
                     "query_021_barcode_69_MG250331-3-1-1-1_MyFi_MOL-003u_cluster_0_RC2971",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2070,14 +2059,13 @@
                     [
                         "4.flag:md5,711255f825091f4874e0a1a721288f80",
                         "aggregated_sources.json:md5,9fee4e80affc746dc6146c67065743ef",
-                        "candidates.json:md5,75e42acee26e51b0c8a8519381510657"
                     ]
                 ],
                 [
                     "query_023_barcode_70_HRV719_C_MOL-004a_cluster_0_RC638",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2085,7 +2073,7 @@
                     "query_024_barcode_70_HRV719_C_MOL-004a_cluster_3_RC30",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2094,14 +2082,13 @@
                     [
                         "4.flag:md5,3aebe12acafbdf046e87bce94321dec5",
                         "aggregated_sources.json:md5,9168369bc610dc86ead129b38c26de48",
-                        "candidates.json:md5,6cbd4636fa7d5152c2dfffc56b9e14e1"
                     ]
                 ],
                 [
                     "query_026_barcode_71_RID8937-1_MOL-016_cluster_14_RC424",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2110,7 +2097,6 @@
                     [
                         "4.flag:md5,09fd2680c2fa55dd16191a30f1fdaeb9",
                         "aggregated_sources.json:md5,e15fde6822d067f8da334d4e9e19f7b7",
-                        "candidates.json:md5,d93780a14fa8406d0e831cf1f8aa622f"
                     ]
                 ],
                 [
@@ -2118,22 +2104,20 @@
                     [
                         "4.flag:md5,710a3fd34892cc2f953f00b1967b05dc",
                         "aggregated_sources.json:md5,68450be0813aecebec6d1c4e5a09b370",
-                        "candidates.json:md5,518d929e4a5fc88ba75091e45767c12a"
                     ]
                 ],
                 [
                     "query_029_barcode_73_rid8934-1-1_MOL-025_cluster_8_RC33",
                     [
                         "4.flag:md5,7777ab41037c5ff68efb6b17f9a9fb60",
-                        "aggregated_sources.json:md5,7761c0ebf54613167efa8529501ab0fa",
-                        "candidates.json:md5,d44294944da99b94c604a7afcb528dc5"
+                        "aggregated_sources.json:md5,37df83c92cb2775cde75040a8b05a633",
                     ]
                 ],
                 [
                     "query_030_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2141,7 +2125,7 @@
                     "query_031_barcode_74_LMJ1855_C_MOL-025_cluster_0_RC1712",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2150,7 +2134,6 @@
                     [
                         "4.flag:md5,385942312ae1541083c45e423e2b8daa",
                         "aggregated_sources.json:md5,1a8c5128d7e961fd91b2f8d975225971",
-                        "candidates.json:md5,e4977de40ec49bf82ab236c4556b92e0"
                     ]
                 ],
                 [
@@ -2158,14 +2141,13 @@
                     [
                         "4.flag:md5,0fb8d0caf3e32f90810c111920165598",
                         "aggregated_sources.json:md5,0fba902d728800549534a2abca1d25e9",
-                        "candidates.json:md5,452dea48d9c657fe863511f00e924e68"
                     ]
                 ],
                 [
                     "query_034_barcode_77_RID8924_MOL-034_cluster_1_RC7",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2173,7 +2155,7 @@
                     "query_035_barcode_79_CE130_Potexvirus_cluster_17_RC268",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2182,7 +2164,6 @@
                     [
                         "4.flag:md5,7d0e4baf4db29cc0ad7d616b9dc73c95",
                         "aggregated_sources.json:md5,adeca288977963c435945af8fd6059ea",
-                        "candidates.json:md5,60de6b2bb3d3850e3fe7f15ae0401b91"
                     ]
                 ],
                 [
@@ -2190,7 +2171,6 @@
                     [
                         "4.flag:md5,b20450dbac7872d7f21da87faf8a686f",
                         "aggregated_sources.json:md5,a1ca67f49bb22b0c22f50d4bb0d09424",
-                        "candidates.json:md5,da209654c193ef93695baa283ed37a8d"
                     ]
                 ],
                 [
@@ -2198,7 +2178,6 @@
                     [
                         "4.flag:md5,b328f69be24091068e6d216820273670",
                         "aggregated_sources.json:md5,d6cb9be1057c128d234be9c407ab15a5",
-                        "candidates.json:md5,071002a3ddae7d0ceb8ab8f94ab7b53b"
                     ]
                 ],
                 [
@@ -2206,7 +2185,6 @@
                     [
                         "4.flag:md5,cf47004ac31b2ba87afc40b6a19478ae",
                         "aggregated_sources.json:md5,07823573dd9bedbf61a63dabf5563c71",
-                        "candidates.json:md5,8506c70bbd12a485ed954ba2c724eae0"
                     ]
                 ],
                 [
@@ -2214,7 +2192,6 @@
                     [
                         "4.flag:md5,45df89b3ade4985e283867800366883c",
                         "aggregated_sources.json:md5,1bafb435fdd04718bf35899c01af385f",
-                        "candidates.json:md5,1ae667512ecb0950717c8390b8bdef17"
                     ]
                 ],
                 [
@@ -2222,7 +2199,6 @@
                     [
                         "4.flag:md5,7214965c02269b42208c827b74e168ff",
                         "aggregated_sources.json:md5,a199ac5c5e23ed899ca60d43a939aa78",
-                        "candidates.json:md5,c447ee16d87c124b78da1412f0f198f4"
                     ]
                 ],
                 [
@@ -2230,7 +2206,6 @@
                     [
                         "4.flag:md5,45df89b3ade4985e283867800366883c",
                         "aggregated_sources.json:md5,58625053b2a7923b7bf57500c784c914",
-                        "candidates.json:md5,c2c2676d5fd3eb2d27b16fbbbc65e6e8"
                     ]
                 ],
                 [
@@ -2238,7 +2213,6 @@
                     [
                         "4.flag:md5,7017aaf28545154f9335076f6ba45b05",
                         "aggregated_sources.json:md5,5650940ad1c2acca56889860b30b09a7",
-                        "candidates.json:md5,3d4b83b25d4edcfcd51bb90d26c19e9f"
                     ]
                 ],
                 [
@@ -2246,7 +2220,6 @@
                     [
                         "4.flag:md5,8933fbc1f8550b32df248d0e39ab897d",
                         "aggregated_sources.json:md5,840ac27c10f00f05eb1c02a2cc412861",
-                        "candidates.json:md5,0686478cf1b98f1946d71717af659bf7"
                     ]
                 ],
                 [
@@ -2254,14 +2227,13 @@
                     [
                         "4.flag:md5,360da90b9988d49ec42a06297a475e0f",
                         "aggregated_sources.json:md5,82646c76423fc85e2162bfa4f2ea7bb3",
-                        "candidates.json:md5,e41a8ba014b0f775899780e0c006f047"
                     ]
                 ],
                 [
                     "query_046_barcode_84_PV-1748_Geminiviridae_cluster_36_RC8",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2270,23 +2242,20 @@
                     [
                         "4.flag:md5,a84728ab104fef73f6d49fd52fa55bb5",
                         "aggregated_sources.json:md5,49af8ca90c0d92149589733a9c4a666a",
-                        "candidates.json:md5,2409bd3c9b9ad6a7d4d0b9147d392ad0"
                     ]
                 ],
                 [
                     "query_048_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199",
                     [
                         "4.flag:md5,d0da123f18fa07ea1e4b0c0e0412368e",
-                        "aggregated_sources.json:md5,ba64c58d48ee1f743e9f64754ee84c4c",
-                        "candidates.json:md5,2252ba0b1eb0cb2f3df3c7fdde264b79"
+                        "aggregated_sources.json:md5,17fcace1fd4080f12258f3824ff50d9e",
                     ]
                 ],
                 [
                     "query_049_barcode_87_DNA3_X_citri_cluster_4_RC1831",
                     [
                         "4.flag:md5,d0da123f18fa07ea1e4b0c0e0412368e",
-                        "aggregated_sources.json:md5,ba64c58d48ee1f743e9f64754ee84c4c",
-                        "candidates.json:md5,509c182b14e137e6a9dae3c5c68fb446"
+                        "aggregated_sources.json:md5,17fcace1fd4080f12258f3824ff50d9e",
                     ]
                 ],
                 [
@@ -2294,7 +2263,6 @@
                     [
                         "4.flag:md5,7017aaf28545154f9335076f6ba45b05",
                         "aggregated_sources.json:md5,5650940ad1c2acca56889860b30b09a7",
-                        "candidates.json:md5,3d4b83b25d4edcfcd51bb90d26c19e9f"
                     ]
                 ],
                 [
@@ -2302,7 +2270,6 @@
                     [
                         "4.flag:md5,71b5aaa08ac70b50dc4ffe33ea20ec9e",
                         "aggregated_sources.json:md5,e574c6a6c3359fac0adb3a35a741df0e",
-                        "candidates.json:md5,88a3466ede62b53616198be93fd5ae9e"
                     ]
                 ],
                 [
@@ -2310,7 +2277,6 @@
                     [
                         "4.flag:md5,c4488611cb580af3ed93e91efc3bc496",
                         "aggregated_sources.json:md5,e1d4b489ad8e6714c8a76f980d149dd7",
-                        "candidates.json:md5,3b4c529bf44bf46f869d7371406714ed"
                     ]
                 ],
                 [
@@ -2318,7 +2284,6 @@
                     [
                         "4.flag:md5,ccfeb6c8af76007ff32ffdf54c392b48",
                         "aggregated_sources.json:md5,9dc3f84446a7a186d1a6ad1bec826c79",
-                        "candidates.json:md5,8d0165239cbd20406220d6457e66ab95"
                     ]
                 ],
                 [
@@ -2326,7 +2291,6 @@
                     [
                         "4.flag:md5,8b7d45f61d570d2d50997fc2b88982e0",
                         "aggregated_sources.json:md5,f622ab64d66f6f636b8b6ebc25e08d46",
-                        "candidates.json:md5,641562253e4186ef89de76cef39573e8"
                     ]
                 ],
                 [
@@ -2334,14 +2298,13 @@
                     [
                         "4.flag:md5,70b4cb3f7650ff6312f65c43d3e14fce",
                         "aggregated_sources.json:md5,51a4de74f1a185fae71d92be1aca07be",
-                        "candidates.json:md5,b2e38eacfc745f150004ccc2cdd2cf49"
                     ]
                 ],
                 [
                     "query_056_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_1_RC94",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2349,7 +2312,7 @@
                     "query_057_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_5_RC98",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2358,7 +2321,6 @@
                     [
                         "4.flag:md5,d55fca6ef16d247375b48d731ce66463",
                         "aggregated_sources.json:md5,f66593b2f6ead1d21eff8f6495ea87d4",
-                        "candidates.json:md5,b081f6f0d4fbf0c5bd421c9f327af36e"
                     ]
                 ],
                 [
@@ -2366,7 +2328,6 @@
                     [
                         "4.flag:md5,7e7b7347f48d79ad73ce51ef27252d2f",
                         "aggregated_sources.json:md5,e1fafd2e65576f79f82d29a0f006cb79",
-                        "candidates.json:md5,5137c5b31e15227e65708232dd4a9d5f"
                     ]
                 ],
                 [
@@ -2374,7 +2335,6 @@
                     [
                         "4.flag:md5,70541c1e26c80ff2468ef7d466223046",
                         "aggregated_sources.json:md5,a4e2173e5fb9bfe1b73199f9dab481a2",
-                        "candidates.json:md5,664b1baa593b6d1009c7d3c78573cb0d"
                     ]
                 ],
                 [
@@ -2382,7 +2342,6 @@
                     [
                         "4.flag:md5,791826b43e1f52c43c3a3281fb19553a",
                         "aggregated_sources.json:md5,1063b962f51ec238cbf1bdae79448cd6",
-                        "candidates.json:md5,9777f3562ed7e0d95fa7447b86628458"
                     ]
                 ],
                 [
@@ -2390,7 +2349,6 @@
                     [
                         "4.flag:md5,3d1d4e0f7deabccfb94fcd49bd5a5605",
                         "aggregated_sources.json:md5,2f4e21a3f47e573abbd95a250b285f42",
-                        "candidates.json:md5,c8e8f1a194b42a797bb9b41b1db37d8e"
                     ]
                 ],
                 [
@@ -2398,7 +2356,6 @@
                     [
                         "4.flag:md5,87895faffcf7d059a58530f68ae0b98b",
                         "aggregated_sources.json:md5,7d5a36da6134cfc58567e8a84fb35b23",
-                        "candidates.json:md5,fa74c3848ce2e01f2676331f85ef410c"
                     ]
                 ],
                 [
@@ -2406,7 +2363,6 @@
                     [
                         "4.flag:md5,b20450dbac7872d7f21da87faf8a686f",
                         "aggregated_sources.json:md5,283b4fa4fcbe2ae74b62d1138dd48b94",
-                        "candidates.json:md5,dc12b2905a38be289b6cc6fad00370e4"
                     ]
                 ],
                 [
@@ -2414,14 +2370,13 @@
                     [
                         "4.flag:md5,791826b43e1f52c43c3a3281fb19553a",
                         "aggregated_sources.json:md5,0757d3b4c21f0b5ae5ba89aab6761d39",
-                        "candidates.json:md5,9d0af135cd72e9fc305b65915a9e9b62"
                     ]
                 ],
                 [
                     "query_066_barcode_92_PMC219_Grapevine_vitivirus_cluster_3_RC291",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2429,7 +2384,7 @@
                     "query_067_barcode_92_PMC219_Grapevine_vitivirus_cluster_4_RC326",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2437,7 +2392,7 @@
                     "query_068_barcode_92_PMC219_Grapevine_vitivirus_cluster_2_RC275",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2446,7 +2401,6 @@
                     [
                         "4.flag:md5,8b7d45f61d570d2d50997fc2b88982e0",
                         "aggregated_sources.json:md5,316a60bab92a844c765bc0ec8c4ceb4a",
-                        "candidates.json:md5,4b8add28f2c9537d4eb8bd7de1d5beaa"
                     ]
                 ],
                 [
@@ -2454,14 +2408,13 @@
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
                         "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a",
-                        "candidates.json:md5,49c059478f644b589d84a4b0c8746267"
                     ]
                 ],
                 [
                     "query_071_barcode_94_Gustopica_Grapevine_vitivirus_cluster_2_RC19",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2470,14 +2423,13 @@
                     [
                         "4.flag:md5,8b7d45f61d570d2d50997fc2b88982e0",
                         "aggregated_sources.json:md5,e890e2badf0e9fd075c0c98a232d18a8",
-                        "candidates.json:md5,cdd17df2e5dfbd37c80f55debdad1612"
                     ]
                 ],
                 [
                     "query_073_barcode_94_Gustopica_Grapevine_vitivirus_cluster_5_RC29",
                     [
                         [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
+                            
                         ]
                     ]
                 ],
@@ -2486,7 +2438,6 @@
                     [
                         "4.flag:md5,b9b03e939d52a1a5f94adf4f063f20d7",
                         "aggregated_sources.json:md5,b397ad5d7a24d86324620a6a52b7f604",
-                        "candidates.json:md5,8b3d8408df92cccda5ec2295f5de5350"
                     ]
                 ],
                 [
@@ -2494,7 +2445,6 @@
                     [
                         "4.flag:md5,ccfeb6c8af76007ff32ffdf54c392b48",
                         "aggregated_sources.json:md5,a1f933dd182507fac8031d4924de8e9a",
-                        "candidates.json:md5,eccde6dca17b1b2b19c1826869f80081"
                     ]
                 ],
                 [
@@ -2502,7 +2452,6 @@
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
                         "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a",
-                        "candidates.json:md5,5052364340c36c7fd0af36382cc0769f"
                     ]
                 ],
                 [
@@ -2510,7 +2459,6 @@
                     [
                         "4.flag:md5,ef91b22a9ede7bef378b919521d2af83",
                         "aggregated_sources.json:md5,ce1c44e892ae115e4c4f0f1270802e5a",
-                        "candidates.json:md5,f726052a3396443456b47e3d5e278707"
                     ]
                 ]
             ],
@@ -2605,7 +2553,7 @@
                 ],
                 [
                     "query_023_barcode_70_HRV719_C_MOL-004a_cluster_0_RC638",
-                    "candidates_phylogeny.nwk:md5,242e5edefad5142c9f15463045f3e64b"
+                    "candidates_phylogeny.nwk:md5,fc26b81df27563e9df33fd32af03f5e7"
                 ],
                 [
                     "query_024_barcode_70_HRV719_C_MOL-004a_cluster_3_RC30",
@@ -2629,7 +2577,7 @@
                 ],
                 [
                     "query_029_barcode_73_rid8934-1-1_MOL-025_cluster_8_RC33",
-                    "candidates_phylogeny.nwk:md5,57fc5b4e510ec1f0226ff34102a5803a"
+                    "candidates_phylogeny.nwk:md5,238500df42822347ccd91503f196e0c8"
                 ],
                 [
                     "query_030_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62",
@@ -2637,11 +2585,11 @@
                 ],
                 [
                     "query_031_barcode_74_LMJ1855_C_MOL-025_cluster_0_RC1712",
-                    "candidates_phylogeny.nwk:md5,0ba1f10fbaac25e34bcd7c50780adf94"
+                    "candidates_phylogeny.nwk:md5,3ae562cc0d0cedbe591f8a487c9386c8"
                 ],
                 [
                     "query_032_barcode_75_rid8933-1-1_MOL-034_cluster_2_RC97",
-                    "candidates_phylogeny.nwk:md5,c1eb1b30926895dd4542e2b75afbcad7"
+                    "candidates_phylogeny.nwk:md5,4dc1d41adf180245d7063fb8f0be14bf"
                 ],
                 [
                     "query_033_barcode_76_RID8930_MOL-034_cluster_10_RC11",
@@ -2705,11 +2653,11 @@
                 ],
                 [
                     "query_048_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199",
-                    "candidates_phylogeny.nwk:md5,7534aa289df5ef7ed654296e9841b377"
+                    "candidates_phylogeny.nwk:md5,61f31e8d78e261f928a6982553f44c6d"
                 ],
                 [
                     "query_049_barcode_87_DNA3_X_citri_cluster_4_RC1831",
-                    "candidates_phylogeny.nwk:md5,d83d871f3a1f09b0bb478239d063bb4e"
+                    "candidates_phylogeny.nwk:md5,3a80920a0b0e3c41b7cb8982d932e4b7"
                 ],
                 [
                     "query_050_barcode_88_PMC219_Grapevine_badnavirus_cluster_0_RC164",
@@ -2829,6 +2777,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-03-06T06:49:59.684230043"
+        "timestamp": "2026-06-06T10:40:13.299188377"
     }
 }
