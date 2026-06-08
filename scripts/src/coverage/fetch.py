@@ -74,14 +74,13 @@ def get_related_coverage(gbif_target, locus, query_dir, is_bold):
     return results
 
 
-def get_related_country_coverage(
-    gbif_target,
-    locus,
-    country,
-    query_dir,
-    is_bold,
-):
-    db_name = 'BOLD' if is_bold else 'Entrez'
+def get_related_country_coverage(gbif_target, country, related_result):
+    """Derive country-specific coverage from precomputed related coverage.
+
+    The species returned by gbif_target.for_country() are a subset of
+    gbif_target.relatives, so per-species accession counts already produced
+    by get_related_coverage can be reused without re-hitting Entrez/BOLD.
+    """
     if not country:
         return FLAGS.NA
     species_names = [
@@ -90,36 +89,10 @@ def get_related_country_coverage(
     ]
     if not species_names:
         return {}
-
-    logger.info(
-        f"Fetching {db_name} records for target '{gbif_target.taxon}';"
-        f" locus: '{locus}'; country: '{country}'"
-        f" - {len(species_names)} related species"
-    )
-
-    if is_bold:
-        results, err = _fetch_bold_records_for_species(
-            species_names,
-            rank=RANK.to_string(gbif_target.rank),
-        )
-    else:
-        results, err = _fetch_gb_records_for_species(
-            species_names,
-            locus,
-        )
-    if err:
-        for species, exc in err:
-            msg = (
-                f"Error fetching related/country species records from"
-                f" {db_name} API (species: '{species}').")
-            errors.write(
-                errors.LOCATIONS.DB_COVERAGE_RELATED_COUNTRY,
-                msg,
-                exc=exc,
-                query_dir=query_dir,
-                context={'target': species},
-            )
-    return results
+    return {
+        species: related_result.get(species, 0)
+        for species in species_names
+    }
 
 
 def _fetch_gb_records_for_species(species_names, locus):

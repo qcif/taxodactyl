@@ -16,7 +16,6 @@ from src.utils.blast import build_blast_url
 from src.utils.flags import FLAGS, Flag
 
 from .fetch import (
-    get_related_country_coverage,
     get_related_coverage,
     get_target_coverage,
 )
@@ -30,13 +29,11 @@ MODULE_NAME = "Database Coverage"
 
 
 def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
-    def get_args(func, query_dir, target, taxid, locus, country):
+    def get_args(func, query_dir, target, taxid, locus):
         if func == get_target_coverage:
             return func, taxid, target, locus, is_bold
         elif func == get_related_coverage:
             return func, target, locus, query_dir, is_bold
-        elif func == get_related_country_coverage:
-            return func, target, locus, country, query_dir, is_bold
 
     locus = config.get_locus_for_query(query_dir)
     country = config.get_country_for_query(query_dir, code=True)
@@ -113,13 +110,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
             target_records.lower_taxa[target],
             taxid,
             locus,
-            country,
         )
         for target, taxid in target_taxids.items()
         for func in (
             get_target_coverage,
             get_related_coverage,
-            get_related_country_coverage,
         )
         if target in target_canonical_names
     ]
@@ -150,6 +145,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         resolved_candidate_list,
         resolved_toi_list,
         resolved_pmi,
+        country,
     )
     for taxon in unknown_taxa:
         for target_type, targets in {

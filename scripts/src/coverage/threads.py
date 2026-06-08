@@ -30,6 +30,7 @@ def parallel_process_tasks(
     candidate_list,
     toi_list,
     pmi,
+    country,
 ):
     with ThreadPoolExecutor(max_workers=15) as executor:
         results = {
@@ -85,6 +86,30 @@ def parallel_process_tasks(
                         " by visiting"
                         " https://eutils.ncbi.nlm.nih.gov"
                         "/entrez/eutils/efetch.fcgi in your browser.")
+
+    country_results = results[get_related_country_coverage.__name__]
+    for target, gbif_taxon in target_gbif_records.items():
+        related_result = results[get_related_coverage.__name__].get(gbif_taxon)
+        if related_result is None:
+            continue
+        try:
+            country_results[gbif_taxon] = get_related_country_coverage(
+                gbif_taxon, country, related_result,
+            )
+        except Exception as exc:
+            msg = (
+                f"Error deriving country coverage for target taxon"
+                f" '{target}'. This target could not be evaluated."
+                f" Exception: {type(exc).__name__}: {exc}"
+            )
+            logger.error(msg)
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE_RELATED_COUNTRY,
+                msg,
+                exc=exc,
+                query_dir=query_dir,
+                context={'target': target},
+            )
 
     logger.debug("Results collected from tasks:")
     for func, result in results.items():
