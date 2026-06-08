@@ -32,7 +32,7 @@ def parallel_process_tasks(
     pmi,
     country,
 ):
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         results = {
             get_target_coverage.__name__: {},
             get_related_coverage.__name__: {},

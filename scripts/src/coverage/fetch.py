@@ -115,7 +115,7 @@ def _fetch_gb_records_for_species(species_names, locus):
         if taxid is not None
     ]
 
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_task = {
             executor.submit(genbank.fetch_gb_records, *task, count=True): task
             for task in tasks
@@ -149,7 +149,7 @@ def _fetch_bold_records_for_species(taxa, rank):
     """Fetch a count of the number of BOLD accessions for each species in
     the list.
     """
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_task = {
             executor.submit(fetch_bold_records_count, taxon, rank=rank): taxon
             for taxon in taxa
