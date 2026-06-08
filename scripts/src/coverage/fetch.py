@@ -26,7 +26,7 @@ def get_target_coverage(taxid, gbif_target, locus, is_bold):
     )
     if is_bold:
         return fetch_bold_records_count(
-            gbif_target.taxon,
+            gbif_target.canonical_name,
             rank=RANK.to_string(gbif_target.rank),
         )
     return genbank.fetch_gb_records(locus, taxid, count=True)
