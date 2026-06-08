@@ -49,13 +49,6 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         )
         return None
 
-    target_taxids = get_taxids(targets, query_dir)
-    taxid_to_taxon = {v: k for k, v in target_taxids.items()}
-    unknown_taxa = {
-        t for t in targets
-        if t not in target_taxids
-    }
-
     logger.info(
         f"Assessing database coverage for {len(targets)}"
         f" taxon at locus '{locus}' in country '{country}'."
@@ -66,32 +59,58 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         f"  - Taxa of interest: {toi_list}\n"
         f"  - PMI: {pmi}"
     )
+
+    target_records = fetch_target_taxa(targets, query_dir)
+
+    resolved_candidate_list = [
+        target_records.original_to_canonical.get(t, t)
+        for t in candidate_list
+    ]
+    resolved_toi_list = [
+        target_records.original_to_canonical.get(t, t)
+        for t in toi_list
+    ]
+    resolved_pmi = target_records.original_to_canonical.get(pmi, pmi)
+
+    target_taxids = get_taxids(target_records.all_taxa, query_dir)
+    taxid_to_taxon = {v: k for k, v in target_taxids.items()}
     logger.debug(
         "Taxids for targets (extracted by taxonkit):\n"
         + pformat(target_taxids, indent=2)
     )
 
-    # 'Higher taxa' are at rank 'family' or higher
-    target_gbif_taxa, higher_taxon_targets = fetch_target_taxa(
-        targets, query_dir)
-
-    unknown_taxa = unknown_taxa.union({
+    unknown_taxa = {
+        # Extract those for which no taxid was found
+        r.canonical_name for r in target_records.all_taxa.values()
+        if r.canonical_name not in target_taxids
+    }.union({
+        # Extract those for which no GBIF record was found
         t for t in targets
-        if t not in target_gbif_taxa
-        and t not in higher_taxon_targets
+        if t not in [
+            r.taxon
+            for r in target_records.lower_taxa.values()
+        ] + [
+            r.taxon
+            for r in target_records.higher_taxa.values()
+        ]
     })
 
     _draw_occurrence_maps(
-        target_gbif_taxa,
-        higher_taxon_targets,
+        target_records.lower_taxa,
+        target_records.higher_taxa,
         query_dir,
     )
+
+    target_canonical_names = [
+        r.canonical_name
+        for r in target_records.lower_taxa.values()
+    ]
 
     tasks = [
         get_args(
             func,
             query_dir,
-            target_gbif_taxa[target],
+            target_records.lower_taxa[target],
             taxid,
             locus,
             country,
@@ -102,19 +121,19 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
             get_related_coverage,
             get_related_country_coverage,
         )
-        if target in target_gbif_taxa
+        if target in target_canonical_names
     ]
 
     tasks += [
         (
             get_target_coverage,
             taxid,
-            higher_taxon_targets[target],
+            target_records.higher_taxa[target],
             locus,
             is_bold,
         )
         for target, taxid in target_taxids.items()
-        if target in higher_taxon_targets
+        if target in target_records.higher_taxa
     ]
 
     if not (len(tasks) + len(unknown_taxa)):
@@ -126,17 +145,17 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         tasks,
         query_dir,
         target_taxids,
-        target_gbif_taxa,
+        target_records.lower_taxa,
         taxid_to_taxon,
-        candidate_list,
-        toi_list,
-        pmi,
+        resolved_candidate_list,
+        resolved_toi_list,
+        resolved_pmi,
     )
     for taxon in unknown_taxa:
         for target_type, targets in {
-            'candidate': candidate_list,
-            'toi': toi_list,
-            'pmi': [pmi],
+            'candidate': resolved_candidate_list,
+            'toi': resolved_toi_list,
+            'pmi': [resolved_pmi],
         }.items():
             if taxon in targets:
                 results[target_type][taxon] = {
@@ -144,11 +163,28 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
                     'related': None,
                     'country': None,
                 }
-    _set_flags(results, query_dir, higher_taxon_targets)
+
+    # Rename synonyms back to original target names
+    reindexed_results = {
+        target_type: {
+            target_records.canonical_to_original.get(taxon, taxon): data
+            for taxon, data in target_data.items()
+        }
+        for target_type, target_data in results.items()
+    }
+
+    _set_flags(
+        reindexed_results,
+        query_dir,
+        target_records.original_higher_taxa,
+    )
     results = {
-        'coverage': results,
+        'coverage': reindexed_results,
         'ncbi_blast_urls': {
-            taxon: build_blast_url(taxon, taxid, config)
+            target_records.canonical_to_original.get(
+                taxon,
+                taxon,
+            ): build_blast_url(taxon, taxid, config)
             for taxid, taxon in taxid_to_taxon.items()
         }
     }
@@ -156,14 +192,14 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
 
 
 def _draw_occurrence_maps(
-    target_gbif_taxa,
-    higher_taxon_targets,
+    target_gbif_records,
+    higher_target_gbif_records,
     query_dir,
 ):
     """Fetch occurrence data and draw world maps showing taxon distribution."""
     taxa = {
-        **target_gbif_taxa,
-        **higher_taxon_targets,
+        **target_gbif_records,
+        **higher_target_gbif_records,
     }
     for target, gbif_target in taxa.items():
         if not gbif_target.key:
@@ -220,7 +256,7 @@ def _draw_occurrence_maps(
                 )
 
 
-def _set_flags(db_coverage, query_dir, higher_taxon_targets):
+def _set_flags(db_coverage, query_dir, higher_target_gbif_records):
     """Set flags 5.1 - 5.3 (DB coverage) for each target."""
     def set_target_coverage_flag(
         target,
@@ -349,19 +385,19 @@ def _set_flags(db_coverage, query_dir, higher_taxon_targets):
                     target_species,
                     target_type,
                     coverage_data['target'],
-                    higher_taxon=target_species in higher_taxon_targets,
+                    higher_taxon=target_species in higher_target_gbif_records,
                 )
                 set_related_coverage_flag(
                     target_species,
                     target_type,
                     coverage_data['related'],
-                    higher_taxon=target_species in higher_taxon_targets,
+                    higher_taxon=target_species in higher_target_gbif_records,
                 )
                 set_country_coverage_flag(
                     target_species,
                     target_type,
                     coverage_data['country'],
-                    higher_taxon=target_species in higher_taxon_targets,
+                    higher_taxon=target_species in higher_target_gbif_records,
                 )
             except Exception as exc:
                 raise RuntimeError(

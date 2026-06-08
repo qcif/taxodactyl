@@ -13,7 +13,7 @@ config = config.Config()
 
 MODULE_NAME = 'GBIF API'
 
-CANONICAL_TAXA = {
+KINGDOM_TAXA = {
     "fungi": {"rank": "Kingdom", "canonical_name": "fungi"},
     "fungus": {"rank": "Kingdom", "canonical_name": "fungi"},
     "mycota": {"rank": "Kingdom", "canonical_name": "fungi"},
@@ -115,7 +115,7 @@ class RelatedTaxaGBIF:
             if classification
             else None
         )
-        self.from_synonym = False
+        self.from_synonym = None
         self.taxon = taxon
         self.record = self._get_taxon_record(taxon)
         self.key = self.record.key
@@ -135,9 +135,9 @@ class RelatedTaxaGBIF:
             'q': taxon,
             'limit': 20,
         }
-        if canonical_taxon := CANONICAL_TAXA.get(taxon.lower()):
-            kwargs["q"] = canonical_taxon['canonical_name']
-            kwargs['rank'] = canonical_taxon['rank']
+        if kingdom_taxon := KINGDOM_TAXA.get(taxon.lower()):
+            kwargs["q"] = kingdom_taxon['canonical_name']
+            kwargs['rank'] = kingdom_taxon['rank']
         throttle = Throttle(ENDPOINTS.GBIF_FAST)
         res_name = throttle.with_retry(
             pygbif.species.name_suggest,
@@ -153,7 +153,7 @@ class RelatedTaxaGBIF:
 
             if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
-                res_usage = throttle.with_retry(
+                canonical_record = throttle.with_retry(
                     pygbif.species.name_usage,
                     kwargs={
                         'key': self._get_synonym_key(raw_record),
@@ -161,16 +161,14 @@ class RelatedTaxaGBIF:
                     },
                     with_cache=True,
                 )
-                if res_usage:
-                    raw_record = res_usage
+                if canonical_record:
                     synonym = True
                     logger.info(
                         f"Taxon '{taxon}' is a SYNONYM."
                         " Using accepted name"
-                        f" '{_get_scientific_name(raw_record)}'."
+                        f" '{_get_scientific_name(canonical_record)}'."
                     )
-                else:
-                    raw_record = None
+                    record = GBIFRecord(canonical_record)
 
             if record and self._is_accepted(record):
                 logger.info(
@@ -178,7 +176,7 @@ class RelatedTaxaGBIF:
                     f" '{taxon}' - rank:{record.rank}"
                     f" genusKey:{record.genus_key}")
                 if synonym:
-                    self.from_synonym = True
+                    self.from_synonym = taxon
                 return record
 
         raise GBIFRecordNotFound(

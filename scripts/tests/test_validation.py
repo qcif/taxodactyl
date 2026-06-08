@@ -24,13 +24,13 @@ from src.utils.errors import FASTAFormatError, MetadataFormatError
 logging.disable(logging.CRITICAL)
 
 TEST_DATA_DIR = Path(__file__).parent / 'test-data'
-FASTA_VALID = TEST_DATA_DIR / 'queries.fasta'
+FASTA_VALID = TEST_DATA_DIR / 'validation/queries.fasta'
 FASTA_INVALID_RESIDUE = TEST_DATA_DIR / 'validation/invalid_residues.fasta'
 FASTA_INVALID_LENGTH = TEST_DATA_DIR / 'validation/invalid_max_length.fasta'
 FASTA_INVALID_COUNT = TEST_DATA_DIR / 'validation/invalid_max_count.fasta'
 FASTA_INVALID_DUPLICATE_ID = (
     TEST_DATA_DIR / 'validation/invalid_duplicate.fasta')
-METADATA_VALID = TEST_DATA_DIR / 'metadata.csv'
+METADATA_VALID = TEST_DATA_DIR / 'validation/metadata.csv'
 METADATA_INVALID_COLUMNS = (
     TEST_DATA_DIR / 'validation/metadata_invalid_columns.csv')
 METADATA_INVALID_LOCUS = (

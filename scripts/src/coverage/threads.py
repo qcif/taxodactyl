@@ -25,7 +25,7 @@ def parallel_process_tasks(
     tasks,
     query_dir,
     target_taxids,
-    target_gbif_taxa,
+    target_gbif_records,
     taxid_to_taxon,
     candidate_list,
     toi_list,
@@ -94,7 +94,7 @@ def parallel_process_tasks(
     return _collect_results(
         results,
         target_taxids,
-        target_gbif_taxa,
+        target_gbif_records,
         candidate_list,
         toi_list,
         pmi,
@@ -104,7 +104,7 @@ def parallel_process_tasks(
 def _collect_results(
     results,
     target_taxids,
-    target_gbif_taxa,
+    target_gbif_records,
     candidate_list,
     toi_list,
     pmi,
@@ -115,7 +115,7 @@ def _collect_results(
     pmi_results = {}
 
     for target_taxon, taxid in target_taxids.items():
-        gbif_taxon = target_gbif_taxa.get(target_taxon)
+        gbif_taxon = target_gbif_records.get(target_taxon)
         target_result = results[get_target_coverage.__name__].get(taxid)
         related_result = results[get_related_coverage.__name__].get(
             gbif_taxon)
@@ -125,7 +125,7 @@ def _collect_results(
             error_detected
             or (
                 # None result is expected in higher taxon targets
-                target_taxon in target_gbif_taxa
+                target_taxon in target_gbif_records
                 and None in (target_result, related_result, country_result)
                 # TODO: But only if country was provided?
             )
