@@ -8,6 +8,7 @@ from pprint import pformat
 from typing import Callable, Optional
 
 from .cache import FileLock
+from .coalesce import coalesce
 from .config import Config
 from .errors import APIError
 from src.utils import cache
@@ -644,21 +645,28 @@ class Throttle:
         if hasattr(self.backend, '_notify_429'):
             self.backend._notify_429()
 
-    def with_retry(self, func, args=[], kwargs={}, with_cache=False):
-        retries = config.max_api_retries
+    def with_retry(
+        self, func, args=[], kwargs={}, with_cache=False, cache_key=None,
+    ):
+        """Throttle and retry ``func(*args, **kwargs)``.
+
+        When ``with_cache`` is set, the result is cached and concurrent
+        callers for the same key are coalesced via :mod:`coalesce`. Pass
+        ``cache_key`` explicitly if the default
+        ``cache.keyhash(func, args, kwargs)`` is unstable - e.g. when
+        ``kwargs`` contains callables whose ``str()`` includes a memory
+        address.
+        """
         if with_cache:
-            cache_key = cache.keyhash(func, args, kwargs)
-            cached_data = cache.get(cache_key)
-            if cached_data is not None:
-                logger.debug(
-                    f"Cache hit for {func.__module__}.{func.__name__}"
-                    " request"
-                )
-                return cached_data
+            key = cache_key or cache.keyhash(func, args, kwargs)
+            return coalesce(
+                key,
+                lambda: self._call_with_retry(func, args, kwargs),
+            )
+        return self._call_with_retry(func, args, kwargs)
 
-            logger.debug(
-                f"Cache miss for {func.__module__}.{func.__name__} request")
-
+    def _call_with_retry(self, func, args, kwargs):
+        retries = config.max_api_retries
         logger.debug(f"Submitting request to {self.name}: Args: {args},"
                      f" Kwargs: {kwargs}")
 
@@ -669,10 +677,7 @@ class Throttle:
                         "Throttle released. Sending request to"
                         f" {self.name}..."
                     )
-                res = func(*args, **kwargs)
-                if with_cache:
-                    cache.put(cache_key, res)
-                return res
+                return func(*args, **kwargs)
 
             except Exception as exc:
                 sleep_seconds = 1
