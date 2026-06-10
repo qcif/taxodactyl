@@ -164,9 +164,8 @@ def fetch_entrez(
             handle.close()
 
     cache_key = cache.keyhash(endpoint, db, truncate_metadata, kwargs)
-    logger.debug(
-        f"Submitting Entrez {endpoint.__name__} request:"
-        f" db={db}, kwargs={kwargs}"
+    task_description = (
+        f"Entrez {endpoint.__name__}: db={db}, kwargs={kwargs}"
     )
     throttle = Throttle(ENDPOINTS.ENTREZ)
     return throttle.with_retry(
@@ -174,6 +173,7 @@ def fetch_entrez(
         kwargs={'db': db, **kwargs},
         with_cache=True,
         cache_key=cache_key,
+        task_description=task_description,
     )
 
 

@@ -85,7 +85,11 @@ def reset_connection():
         _redis_init_attempted = False
 
 
-def coalesce(cache_key: str, fetch_fn: Callable[[], T]) -> T:
+def coalesce(
+    cache_key: str,
+    fetch_fn: Callable[[], T],
+    task_description: str | None = None,
+) -> T:
     """Run ``fetch_fn`` at most once per ``cache_key`` across processes.
 
     Flow:
@@ -101,15 +105,24 @@ def coalesce(cache_key: str, fetch_fn: Callable[[], T]) -> T:
     5. Hard timeout (``WAIT_TIMEOUT_SECONDS``) falls back to running
        ``fetch_fn()`` directly with a warning, to bound worst-case latency.
 
+    ``task_description`` is a human-readable label included in HIT/MISS log
+    messages. Pass something like ``"Entrez esearch: term=txid7240..."``
+    so logs explain which request was cached/coalesced. Defaults to a
+    short cache_key prefix.
+
     Falls back to a plain ``cache.get`` / ``fetch_fn`` / ``cache.put`` if
     Redis is not configured or unreachable.
     """
+    label = task_description or f"key={cache_key[:12]}"
+
     cached = cache.get(cache_key)
     if cached is not None:
+        logger.debug(f"Cache HIT: {label}")
         return cached
 
     redis_conn = _get_redis()
     if redis_conn is None:
+        logger.debug(f"Cache MISS, fetching directly: {label}")
         return _run_and_cache(cache_key, fetch_fn)
 
     lease_key = f"{LEASE_KEY_PREFIX}{cache_key}"
@@ -117,15 +130,19 @@ def coalesce(cache_key: str, fetch_fn: Callable[[], T]) -> T:
         owner = redis_conn.set(lease_key, b'1', nx=True, ex=LEASE_TTL_SECONDS)
     except Exception as exc:
         logger.warning(
-            f"Coalesce lease acquire failed for {cache_key[:12]}...:"
-            f" {exc}. Proceeding with direct fetch."
+            f"Coalesce lease acquire failed for {label}: {exc}."
+            " Proceeding with direct fetch."
         )
         return _run_and_cache(cache_key, fetch_fn)
 
     if owner:
+        logger.debug(f"Cache MISS, fetching as leader: {label}")
         return _run_and_cache(cache_key, fetch_fn, redis_conn, lease_key)
 
-    return _wait_for_leader(cache_key, fetch_fn, redis_conn, lease_key)
+    logger.debug(f"Cache MISS, awaiting coalesced fetch: {label}")
+    return _wait_for_leader(
+        cache_key, fetch_fn, redis_conn, lease_key, label,
+    )
 
 
 def _run_and_cache(
@@ -155,6 +172,7 @@ def _wait_for_leader(
     fetch_fn: Callable[[], T],
     redis_conn,
     lease_key: str,
+    label: str,
 ) -> T:
     """Poll the cache until the leader's result lands, or take over."""
     deadline = time.monotonic() + WAIT_TIMEOUT_SECONDS
@@ -181,14 +199,14 @@ def _wait_for_leader(
             if owner:
                 logger.info(
                     f"Coalesce leader appears to have died; taking over"
-                    f" fetch for {cache_key[:12]}..."
+                    f" fetch for {label}"
                 )
                 return _run_and_cache(
                     cache_key, fetch_fn, redis_conn, lease_key,
                 )
 
     logger.warning(
-        f"Coalesce wait timed out for {cache_key[:12]}... after"
+        f"Coalesce wait timed out for {label} after"
         f" {WAIT_TIMEOUT_SECONDS:.0f}s; falling back to direct fetch."
     )
     return _run_and_cache(cache_key, fetch_fn)

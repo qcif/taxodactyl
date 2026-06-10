@@ -647,6 +647,7 @@ class Throttle:
 
     def with_retry(
         self, func, args=[], kwargs={}, with_cache=False, cache_key=None,
+        task_description=None,
     ):
         """Throttle and retry ``func(*args, **kwargs)``.
 
@@ -656,12 +657,17 @@ class Throttle:
         ``cache.keyhash(func, args, kwargs)`` is unstable - e.g. when
         ``kwargs`` contains callables whose ``str()`` includes a memory
         address.
+
+        ``task_description`` is a human-readable label used in cache
+        HIT/MISS log messages from :func:`coalesce`. Pass something like
+        ``"Entrez esearch: term=txid7240..."``.
         """
         if with_cache:
             key = cache_key or cache.keyhash(func, args, kwargs)
             return coalesce(
                 key,
                 lambda: self._call_with_retry(func, args, kwargs),
+                task_description=task_description,
             )
         return self._call_with_retry(func, args, kwargs)
 
