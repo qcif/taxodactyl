@@ -73,6 +73,9 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
   Used for containerised execution of all bioinformatics tools, ensuring reproducibility.
   *Tested version: 3.7.0*
 
+- **[Redis](https://redis.io/)**
+  Optional, but we highly recommend for better concurrecy management with lots of samples - see [Redis for concurrency](#redis-for-concurrency)
+
 > [!NOTE]
 > - Instructions on how to set up Nextflow and a compatible version of Java can be found on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
 > - To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
@@ -102,6 +105,12 @@ The vault has two backends. Set the appropriate environment variable before runn
 
 > [!NOTE]
 > If running local vault, it will attempt to store secrets in ~/.local/share/taxodactyl/ or /var/lib/taxodactyl/, which must be created with appropriate permissions before running. For running in Singularity (the default) the params.app_data_dir path (which defaults to ~/.local/share/taxodactyl/) is mounted to the latter path on the container.
+
+
+### Redis for concurrency
+
+We send a lot of API requests to public servers, and Redis is much better at coordinating this than the default SQLite3 backend. Especially with hundreds of parallel samples, your workflow will run faster and with less API errors. It's very easy to run a local or remote Redis server with Docker. See [.env.azure.sample](./.env.azure.sample) for env vars required to connect your Redis server.
+
 
 ### TaxonKit
 
