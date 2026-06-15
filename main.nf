@@ -113,7 +113,10 @@ workflow {
             def fullName = row['name'] ?: ''
             def workDirStr = row['workdir'] ?: ''
             def taskId = row['task_id'] ?: ''
+            def status = row['status'] ?: ''
             if (!fullName || !workDirStr) return
+            // Only collect logs for failed/aborted tasks — skip COMPLETED and CACHED.
+            if (status in ['COMPLETED', 'CACHED']) return
 
             def process = (fullName =~ /^(.+?)\s*(?:\(.*\))?$/)[0][1].replace(':', '/')
             def tagMatch = (fullName =~ /\((.+?)\)/)
