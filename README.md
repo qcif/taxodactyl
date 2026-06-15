@@ -56,6 +56,22 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 11. **Workflow report** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and supporting evidence for each assignment.
 
+## Infrastructure
+
+The pipeline relies on three pluggable backends — for caching API responses, coordinating concurrent API throttling, and storing user secrets (optional). By default, the workflow will run with SQLite3 backends and no vault. The best configuration depends on whether your tasks share a filesystem. The table below suggests minimum requirements for your execution environment. For Azure deployments please consult the [Azure docs](docs/azure/README.md).
+
+| Execution environment                                                                                | Cache backend  | Concurrency backend | Vault backend (optional)   |
+|------------------------------------------------------------------------------------------------------|----------------|---------------------|-----------------|
+| **Local** — Nextflow and tasks run on the same machine                                               | SQLite         | SQLite**              | Local           |
+| **HPC** — tasks run on different nodes in the same network, with a shared filesystem                 | SQLite *       | SQLite**            | Local           |
+| **Azure** — tasks run on ephemeral nodes in Azure Batch                                              | Azure Blob     | [Redis](#redis-for-concurrency)               | [Azure Key Vault](docs/azure/07-key-vault.md) |
+
+\* On HPC, the local SQLite backends work OK across nodes **provided `--temp_root_dir` points to a shared volume** (e.g. an NFS or Lustre mount). All nodes need to be able to read/write the same SQLite files for the cache and the throttle coordination to work correctly. If you can't guarantee a shared filesystem, you can use the Azure Blob (cache) and Redis (concurrency) backends instead.
+
+\*\* Regardless of your execution environment, Redis is the most reliable concurrency backend. We highly [recommend running a Redis server](#redis-for-concurrency) for Taxodactyl to use if you care about performance and reliability.
+
+For Azure deployments, see [deployment/azure/](deployment/azure/) for setup instructions covering Batch pools, Blob storage, the Redis VM, and Key Vault.
+
 ## Usage
 
 ### Software
@@ -83,6 +99,7 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
 > - The pipeline was tested only on a Linux-based operating system - specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
 > - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md).
 
+
 ### NCBI API Key
 
 API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
@@ -109,7 +126,7 @@ The vault has two backends. Set the appropriate environment variable before runn
 
 ### Redis for concurrency
 
-We send a lot of API requests to public servers, and Redis is much better at coordinating this than the default SQLite3 backend. Especially with hundreds of parallel samples, your workflow will run faster and with less API errors. It's very easy to run a local or remote Redis server with Docker. See [.env.azure.sample](./.env.azure.sample) for env vars required to connect your Redis server.
+We send a lot of API requests to public servers, and Redis is much better at coordinating this than the default SQLite3 backend. Especially with hundreds of parallel samples, your workflow will run faster and with less API errors. It's very easy to [run a local or remote Redis server with Docker](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/). See [.env.sample](./.env.sample) for env vars required to connect your Redis server.
 
 
 ### TaxonKit
@@ -246,21 +263,6 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --facility_name "QCIF" \
     -resume
   ```
-
-To run the pipeline using the BOLD web database:
-```bash
-nextflow run /path/to/pipeline/taxodactyl/main.nf \
-    --metadata /path/to/metadata.csv \
-    --sequences /path/to/sequences.fasta \
-    --db_type bold \
-    --outdir /path/to/output \
-    -profile singularity \
-    --taxdb /path/to/.taxonkit/ \
-    --ncbi_api_key API_KEY \
-    --ncbi_user_email EMAIL \
-    --analyst_name "Magdalena Antczak" \
-    --facility_name "QCIF" \
-    -resume
 ```
 
 > [!NOTE]

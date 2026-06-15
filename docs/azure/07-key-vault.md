@@ -29,7 +29,7 @@ within a single shared vault.
 
 ## Step 1: Add Key Vault variables to `.env.azure`
 
-Add the following to your `.env.azure` file (see `.env.azure.sample` for
+Add the following to your `.env.azure` file (see `.env.sample` for
 the template):
 
 ```bash

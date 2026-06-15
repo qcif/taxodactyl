@@ -73,7 +73,7 @@ The setup script (`deployment/azure/redis-vm-setup.sh`) is idempotent and can be
 
 ## Configuration
 
-Add the following to `.env.azure` (see `.env.azure.sample`):
+Add the following to `.env.azure` (see `.env.sample`):
 
 ```bash
 THROTTLE_BACKEND=redis
