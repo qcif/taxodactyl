@@ -216,7 +216,8 @@ def _draw_occurrence_maps(
                 " target.")
             continue
 
-        path = query_dir / config.get_map_filename_for_target(target)
+        path = query_dir / config.get_map_filename_for_target(
+            gbif_target.taxon)
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             rank_str = RANK.to_string(gbif_target.rank)
             if gbif_target.rank:
