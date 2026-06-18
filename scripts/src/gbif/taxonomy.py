@@ -17,6 +17,7 @@ def fetch_kingdom(phylum: str) -> str:
         pygbif.species.name_suggest,
         kwargs=kwargs,
         with_cache=True,
+        task_description=f"GBIF name_suggest: {kwargs}",
     )
     if res and len(res) > 0 and 'kingdom' in res[0]:
         return res[0]['kingdom']

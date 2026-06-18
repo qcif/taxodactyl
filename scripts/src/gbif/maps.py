@@ -36,6 +36,10 @@ def draw_occurrence_map(taxon_key: str, path: Path):
                 'offset': offset,
             },
             with_cache=True,
+            task_description=(
+                f"GBIF occurrences.search: taxonKey={taxon_key},"
+                f" offset={offset}"
+            ),
         )
         all_results.extend(res.get('results', []))
         if res.get('endOfRecords', True):

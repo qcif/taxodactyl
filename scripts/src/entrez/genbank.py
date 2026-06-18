@@ -133,6 +133,11 @@ def fetch_entrez(
     Throttle requests to avoid rate limits and retry on failure.
     If truncate_metadata is set, the response will be truncated before sequence
     data begins to avoid downloading large amounts of surplus data.
+
+    Caching and cross-process coalescing are delegated to
+    ``Throttle.with_retry(with_cache=True)``; ``cache_key`` is computed
+    explicitly so that ``endpoint`` (a Bio.Entrez callable) is hashed by
+    its module/name rather than by its address.
     """
     def read(handle):
         if endpoint == Entrez.efetch:
@@ -150,23 +155,26 @@ def fetch_entrez(
             return handle.read()
         return Entrez.read(handle)
 
-    cache_key = cache.keyhash(endpoint, db, truncate_metadata, kwargs)
-    cached_data = cache.get(cache_key)
-    if cached_data is not None:
-        logger.debug(f"Cache hit for Entrez {endpoint}: {kwargs}")
-        return cached_data
+    def fetch_and_read(**kw):
+        Entrez.local_cache = config.entrez_cache_dir
+        handle = endpoint(**kw)
+        try:
+            return read(handle)
+        finally:
+            handle.close()
 
-    Entrez.local_cache = config.entrez_cache_dir
-    handle = None
-    kwargs.update({
-        "db": db,
-    })
+    cache_key = cache.keyhash(endpoint, db, truncate_metadata, kwargs)
+    task_description = (
+        f"Entrez {endpoint.__name__}: db={db}, kwargs={kwargs}"
+    )
     throttle = Throttle(ENDPOINTS.ENTREZ)
-    handle = throttle.with_retry(endpoint, kwargs=kwargs)
-    data = read(handle)
-    handle.close()
-    cache.put(cache_key, data)
-    return data
+    return throttle.with_retry(
+        fetch_and_read,
+        kwargs={'db': db, **kwargs},
+        with_cache=True,
+        cache_key=cache_key,
+        task_description=task_description,
+    )
 
 
 def fetch_fasta(identifier, **kwargs):
@@ -192,7 +200,7 @@ def fetch_sources(accessions: list, **kwargs) -> dict[str, GbRecordSource]:
         return parse_metadata(metadata_xml)
 
     accession_sources = {}
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         futures = [
             executor.submit(
                 fetch_and_parse,

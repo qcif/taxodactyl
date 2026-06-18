@@ -16,7 +16,6 @@ from src.utils.blast import build_blast_url
 from src.utils.flags import FLAGS, Flag
 
 from .fetch import (
-    get_related_country_coverage,
     get_related_coverage,
     get_target_coverage,
 )
@@ -30,18 +29,21 @@ MODULE_NAME = "Database Coverage"
 
 
 def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
-    def get_args(func, query_dir, target, taxid, locus, country):
+    def get_args(func, query_dir, target, taxid, locus):
         if func == get_target_coverage:
             return func, taxid, target, locus, is_bold
         elif func == get_related_coverage:
             return func, target, locus, query_dir, is_bold
-        elif func == get_related_country_coverage:
-            return func, target, locus, country, query_dir, is_bold
 
     locus = config.get_locus_for_query(query_dir)
     country = config.get_country_for_query(query_dir, code=True)
     candidate_list, toi_list, pmi = get_targets(query_dir)
     targets = candidate_list + toi_list + [pmi]
+    original_targets = {
+        'candidate': candidate_list,
+        'toi': toi_list,
+        'pmi': [pmi],
+    }
     if not targets:
         logger.info(
             "Skipping analysis - no target taxon"
@@ -113,13 +115,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
             target_records.lower_taxa[target],
             taxid,
             locus,
-            country,
         )
         for target, taxid in target_taxids.items()
         for func in (
             get_target_coverage,
             get_related_coverage,
-            get_related_country_coverage,
         )
         if target in target_canonical_names
     ]
@@ -150,6 +150,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         resolved_candidate_list,
         resolved_toi_list,
         resolved_pmi,
+        country,
     )
     for taxon in unknown_taxa:
         for target_type, targets in {
@@ -167,8 +168,10 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     # Rename synonyms back to original target names
     reindexed_results = {
         target_type: {
-            target_records.canonical_to_original.get(taxon, taxon): data
-            for taxon, data in target_data.items()
+            taxon: target_data[
+                target_records.original_to_canonical.get(taxon, taxon)
+            ]
+            for taxon in original_targets[target_type]
         }
         for target_type, target_data in results.items()
     }
@@ -209,7 +212,8 @@ def _draw_occurrence_maps(
                 " target.")
             continue
 
-        path = query_dir / config.get_map_filename_for_target(target)
+        path = query_dir / config.get_map_filename_for_target(
+            gbif_target.taxon)
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             rank_str = RANK.to_string(gbif_target.rank)
             if gbif_target.rank:

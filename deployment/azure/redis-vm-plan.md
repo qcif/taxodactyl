@@ -114,7 +114,7 @@ REDIS_VM_TYPE=Standard_B2ats_v2
 `az_redis_vm_ssh`
 - Opens an SSH session to the VM for maintenance
 
-### 2. `.env.azure.sample`
+### 2. `.env.sample`
 
 Add:
 ```bash

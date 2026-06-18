@@ -105,7 +105,13 @@ class RANK:
 
 
 class RelatedTaxaGBIF:
-    """Fetch taxonomic relatives for a given taxon from GBIF API."""
+    """Fetch taxonomic relatives for a given taxon from GBIF API.
+
+    If GBIF determines that the given taxon is a synonym, the accepted record
+    will be set as the `record` for this taxon. The original taxon
+    is stored in `from_synonym`, while the key, genus, genus_key, rank and
+    canonical_name fields are all taken from the accepted record.
+    """
 
     INCLUDE_EXTINCT = False
 
@@ -143,9 +149,9 @@ class RelatedTaxaGBIF:
             pygbif.species.name_suggest,
             kwargs=kwargs,
             with_cache=True,
+            task_description=f"GBIF name_suggest: {kwargs}",
         )
         for raw_record in res_name:
-            synonym = False
             record = GBIFRecord(raw_record) if raw_record else None
 
             if not self._matches_classification(record):
@@ -153,30 +159,32 @@ class RelatedTaxaGBIF:
 
             if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
+                synonym_key = self._get_synonym_key(raw_record)
                 canonical_record = throttle.with_retry(
                     pygbif.species.name_usage,
                     kwargs={
-                        'key': self._get_synonym_key(raw_record),
+                        'key': synonym_key,
                         'limit': 1,
                     },
                     with_cache=True,
+                    task_description=(
+                        f"GBIF name_usage: synonym_key={synonym_key}"
+                    ),
                 )
                 if canonical_record:
-                    synonym = True
                     logger.info(
                         f"Taxon '{taxon}' is a SYNONYM."
                         " Using accepted name"
                         f" '{_get_scientific_name(canonical_record)}'."
                     )
                     record = GBIFRecord(canonical_record)
+                    self.from_synonym = taxon
 
             if record and self._is_accepted(record):
                 logger.info(
                     f"Record found for taxon"
                     f" '{taxon}' - rank:{record.rank}"
                     f" genusKey:{record.genus_key}")
-                if synonym:
-                    self.from_synonym = taxon
                 return record
 
         raise GBIFRecordNotFound(
@@ -259,6 +267,10 @@ class RelatedTaxaGBIF:
                 pygbif.species.name_lookup,
                 kwargs=kwargs,
                 with_cache=True,
+                task_description=(
+                    f"GBIF name_lookup: higherTaxonKey={self.genus_key},"
+                    f" offset={kwargs['offset']}"
+                ),
             )
             new_records = self._filter_records(res['results'])
             record_count += len(new_records)
@@ -317,6 +329,12 @@ class RelatedTaxaGBIF:
                 pygbif.occurrences.search,
                 kwargs=kwargs,
                 with_cache=True,
+                task_description=(
+                    f"GBIF occurrences.search:"
+                    f" genusKey={self.genus_key},"
+                    f" country={country_code},"
+                    f" offset={kwargs['offset']}"
+                ),
             )
             records += res['results']
             try:
