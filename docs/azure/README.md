@@ -11,13 +11,16 @@ This directory contains comprehensive documentation for running Taxodactyl workf
 This assumes that you have an Azure Batch pool set up and configured according
 to the docs above.
 
-1. Create a `.env.azure` file in the project root (see `.env.azure.sample`)
+1. Create a `.env.azure` file in the project root (see `.env.sample`)
 1. `deployment/azure/run-taxodactyl.sh --metadata my.csv --sequences seqs.fasta`
 
 This will run Nextflow locally and send tasks to run on an Azure Batch node.
 The pool can be configured with autoscale such that it defaults to zero nodes, and then spawns an ephemeral node when Nextflow submits a task to the pool.
 The node is then "kept warm" for a period of time after workflow completion (typically 30 mins), and with subsequent jobs re-using the same node.
 This results in a nice balance between cost and performance - it costs nothing until the workflow is run, and requires 5-8 minutes to launch the node and stage reference databases.
+
+
+**Blob cache, Redis and Azure key vault** are all configured through .env.azure. Each of these services must be deployed independent of running the workflow, as descibed in these docs.
 
 ---
 

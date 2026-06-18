@@ -149,6 +149,7 @@ class RelatedTaxaGBIF:
             pygbif.species.name_suggest,
             kwargs=kwargs,
             with_cache=True,
+            task_description=f"GBIF name_suggest: {kwargs}",
         )
         for raw_record in res_name:
             record = GBIFRecord(raw_record) if raw_record else None
@@ -158,13 +159,17 @@ class RelatedTaxaGBIF:
 
             if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
+                synonym_key = self._get_synonym_key(raw_record)
                 canonical_record = throttle.with_retry(
                     pygbif.species.name_usage,
                     kwargs={
-                        'key': self._get_synonym_key(raw_record),
+                        'key': synonym_key,
                         'limit': 1,
                     },
                     with_cache=True,
+                    task_description=(
+                        f"GBIF name_usage: synonym_key={synonym_key}"
+                    ),
                 )
                 if canonical_record:
                     logger.info(
@@ -262,6 +267,10 @@ class RelatedTaxaGBIF:
                 pygbif.species.name_lookup,
                 kwargs=kwargs,
                 with_cache=True,
+                task_description=(
+                    f"GBIF name_lookup: higherTaxonKey={self.genus_key},"
+                    f" offset={kwargs['offset']}"
+                ),
             )
             new_records = self._filter_records(res['results'])
             record_count += len(new_records)
@@ -320,6 +329,12 @@ class RelatedTaxaGBIF:
                 pygbif.occurrences.search,
                 kwargs=kwargs,
                 with_cache=True,
+                task_description=(
+                    f"GBIF occurrences.search:"
+                    f" genusKey={self.genus_key},"
+                    f" country={country_code},"
+                    f" offset={kwargs['offset']}"
+                ),
             )
             records += res['results']
             try:

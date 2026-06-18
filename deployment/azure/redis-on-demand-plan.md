@@ -159,7 +159,7 @@ Add `networkConfiguration` block:
 }
 ```
 
-### 4. `.env.azure.sample`
+### 4. `.env.sample`
 
 Add:
 ```bash
