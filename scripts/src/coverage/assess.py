@@ -39,6 +39,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     country = config.get_country_for_query(query_dir, code=True)
     candidate_list, toi_list, pmi = get_targets(query_dir)
     targets = candidate_list + toi_list + [pmi]
+    original_targets = {
+        'candidate': candidate_list,
+        'toi': toi_list,
+        'pmi': [pmi],
+    }
     if not targets:
         logger.info(
             "Skipping analysis - no target taxon"
@@ -163,8 +168,10 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     # Rename synonyms back to original target names
     reindexed_results = {
         target_type: {
-            target_records.canonical_to_original.get(taxon, taxon): data
-            for taxon, data in target_data.items()
+            taxon: target_data[
+                target_records.original_to_canonical.get(taxon, taxon)
+            ]
+            for taxon in original_targets[target_type]
         }
         for target_type, target_data in results.items()
     }
@@ -205,7 +212,8 @@ def _draw_occurrence_maps(
                 " target.")
             continue
 
-        path = query_dir / config.get_map_filename_for_target(target)
+        path = query_dir / config.get_map_filename_for_target(
+            gbif_target.taxon)
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             rank_str = RANK.to_string(gbif_target.rank)
             if gbif_target.rank:

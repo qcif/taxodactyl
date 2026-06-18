@@ -240,7 +240,7 @@
 
                <ul>
                 <li>
-                  Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Species in the genus <em>{{ context.data.genus }}</em>
                 </li>
                 <li>
                   {% if context.locus_provided %}
@@ -371,7 +371,7 @@
 
                 <ul>
                   <li>
-                    Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                    Species in the genus <em>{{ context.data.genus }}</em>
                   </li>
                   <li>
                     {% if context.locus_provided %}
