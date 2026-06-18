@@ -65,6 +65,7 @@
                         "candidates.json:md5,92b0787b67e6d60248ead76d4871d120",
                         "candidates_count.txt:md5,eccbc87e4b5ce2fe28308fd9f2a7baf3",
                         "candidates_phylogeny.fasta:md5,5561dcc85a331e59a244bf1eb25ddd0f",
+                        "query_title.txt:md5,77ec52e6a3a7d6f379069d854d528615",
                         "taxa_of_concern_detected.csv:md5,265affe18c28efd1aeef009635a4d53e"
                     ]
                 ],
@@ -82,6 +83,7 @@
                         "candidates.json:md5,7d60c980bbcbddd73fb2645fbc68b300",
                         "candidates_count.txt:md5,c4ca4238a0b923820dcc509a6f75849b",
                         "candidates_phylogeny.fasta:md5,59f5587ce7dd94418e18fb9d6f1e1a23",
+                        "query_title.txt:md5,ca6856f3ecc508a0b53ccbde58bff4e1",
                         "taxa_of_concern_detected.csv:md5,664dd579bb7573f8568e5ae7d49230f4"
                     ]
                 ],
@@ -95,10 +97,11 @@
                         "all_hits.json:md5,ccd54035a018a6eac882204160b8298a",
                         "candidates.csv:md5,7c0029941c8a1ad7cbc29e7460d26f3e",
                         "candidates.fasta:md5,34d360c825a0f2f1ff40d15e85b1d670",
-                        "candidates.json:md5,618b6546b9e74becbc6db04fd87b1609",
+                        "candidates.json:md5,44539bcb29c6dbf3b151685be8e522fb",
                         "candidates_count.txt:md5,e4da3b7fbbce2345d7772b0674a318d5",
                         "candidates_identity_boxplot.png:md5,30f5dd79e7dac43e8c51d024df162cce",
                         "candidates_phylogeny.fasta:md5,eb0be8848ea8ecc3e4554e31ecce857f",
+                        "query_title.txt:md5,c33a84382a403a5b14d647e38f8efb39",
                         "taxa_of_concern_detected.csv:md5,d5a5d8b6795e949e833da75721ae4a69"
                     ]
                 ],
@@ -115,6 +118,7 @@
                         "candidates.json:md5,15366e771f76228c6526a2d74ff8e689",
                         "candidates_count.txt:md5,cfcd208495d565ef66e7dff9f98764da",
                         "candidates_phylogeny.fasta:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "query_title.txt:md5,aad54948b7a389eb3c53b3348abd04df",
                         "taxa_of_concern_detected.csv:md5,c6b1e7bb1f2faf89618e6eeabc96e04b"
                     ]
                 ],
@@ -132,6 +136,7 @@
                         "candidates_count.txt:md5,6f4922f45568161a8cdf4ad2299f6d23",
                         "candidates_identity_boxplot.png:md5,21ef79b31d9038a6589dc034d4433fe8",
                         "candidates_phylogeny.fasta:md5,ffb24948e2532d706ad5dbacaae89105",
+                        "query_title.txt:md5,cc891360d979a965c082a74ed99dcb90",
                         "taxa_of_concern_detected.csv:md5,e45c7972589aa0f88ce1daf7d5ae39f2"
                     ]
                 ],
@@ -149,6 +154,7 @@
                         "candidates_count.txt:md5,1679091c5a880faf6fb5e6087eb1b2dc",
                         "candidates_identity_boxplot.png:md5,a0f70153e643277817a58dacd4025388",
                         "candidates_phylogeny.fasta:md5,e2853225b83b5449bda66415ab4332b5",
+                        "query_title.txt:md5,ed15ab5d882e639c41fc91d5f386f53a",
                         "taxa_of_concern_detected.csv:md5,4bd7dc18516a7c321071859cd2d689aa"
                     ]
                 ]
@@ -158,48 +164,38 @@
                     "query_001_Scenario_01",
                     [
                         "4.flag:md5,dbf16dfd24d456e9fe9bc0261d9fa441",
-                        "aggregated_sources.json:md5,b2a2b88a07ace60c2d1ebc757c78527f",
-                        "candidates.json:md5,92b0787b67e6d60248ead76d4871d120"
+                        "aggregated_sources.json:md5,b2a2b88a07ace60c2d1ebc757c78527f"
                     ]
                 ],
                 [
                     "query_002_Scenario_02",
                     [
                         "4.flag:md5,5a34cf25137221614401e52932ce5b60",
-                        "aggregated_sources.json:md5,92fbe5102bee7561f1f8d1af79c446cd",
-                        "candidates.json:md5,7d60c980bbcbddd73fb2645fbc68b300"
+                        "aggregated_sources.json:md5,92fbe5102bee7561f1f8d1af79c446cd"
                     ]
                 ],
                 [
                     "query_003_Scenario_03",
                     [
-                        [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
-                        ]
+                        
                     ]
                 ],
                 [
                     "query_004_Scenario_04",
                     [
-                        [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
-                        ]
+                        
                     ]
                 ],
                 [
                     "query_005_Scenario_05",
                     [
-                        [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
-                        ]
+                        
                     ]
                 ],
                 [
                     "query_006_Scenario_06",
                     [
-                        [
-                            "QUERY_FILE:md5,d41d8cd98f00b204e9800998ecf8427e"
-                        ]
+                        
                     ]
                 ]
             ],
@@ -234,6 +230,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2026-03-04T01:38:04.988311402"
+        "timestamp": "2026-06-05T00:25:37.365331149"
     }
 }

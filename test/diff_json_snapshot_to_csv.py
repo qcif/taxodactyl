@@ -22,9 +22,9 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 
-SAMPLE_RE = re.compile(r'"(query_\d+_Scenario_\d+)"')
+SAMPLE_RE = re.compile(r'"(query_\d+_[^"]+)"')
 FILE_MD5_RE = re.compile(r'"([^":]+):md5,([0-9a-fA-F]{32})"')
-SAMPLE_NUM_RE = re.compile(r"query_(\d+)_Scenario_\d+")
+SAMPLE_NUM_RE = re.compile(r'query_(\d+)_[^"]+')
 
 
 def sample_num(sample: str) -> int | None:
