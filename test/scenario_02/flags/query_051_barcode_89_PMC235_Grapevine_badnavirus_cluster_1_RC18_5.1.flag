@@ -13,13 +13,13 @@
   },
   {
     "flag_id": "5.1",
-    "value": "C",
+    "value": "A",
     "target": "Grapevine badnavirus",
     "target_type": "toi"
   },
   {
     "flag_id": "5.1",
-    "value": "C",
+    "value": "A",
     "target": "Grapevine badnavirus",
     "target_type": "pmi"
   }
