@@ -16,29 +16,7 @@
 include { TAXODACTYL  } from './workflows/taxodactyl'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow QCIF_TAXODACTYL {
-
-    // take:
-
-  
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    TAXODACTYL (
-
-    )
-}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -63,7 +41,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    QCIF_TAXODACTYL (
+    TAXODACTYL (
 
     )
     //
