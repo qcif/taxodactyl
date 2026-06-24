@@ -7,13 +7,13 @@
   },
   {
     "flag_id": "5.1",
-    "value": "B",
+    "value": "C",
     "target": "Bulimulus sporadicus",
     "target_type": "toi"
   },
   {
     "flag_id": "5.1",
-    "value": "B",
+    "value": "C",
     "target": "Bulimulus Sporadicus",
     "target_type": "pmi"
   }
