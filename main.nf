@@ -56,26 +56,46 @@ workflow {
     )
 
     // ── Log collection ────────────────────────────────────────────────────────
-    // After the run, parse the trace file and copy .command.log from each
-    // task's (possibly remote) workDir to:
-    //   <launchDir>/task_logs/<runName>/<PROCESS>/<tag>.log
-    //
-    // Driven by the trace file rather than a per-task hook because
-    // workflow.onProcessComplete isn't a supported handler. Works with any
-    // executor — Nextflow's VFS handles remote → local copies.
+    // After the run, parse the trace file and append details for each failed
+    // task into a single report at:
+    //   <outdir>/task_logs/failed_tasks.log
     // Capture metadata before the closure — inside the closure, `workflow` and
     // `params` are shadowed by the enclosing workflow block and resolve to null.
     def _launchDir = workflow.launchDir
     def _runName = workflow.runName
     def _outdir = params.outdir
-    def _tracePath = "${_outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt"
+    def traceFilePath = params.traceFile
+    def tracePaths = [
+        traceFilePath,
+        "${_launchDir}/logs/step1-trace.csv"
+    ]
     workflow.onComplete {
-        def logRoot = new File("${_outdir}/task_logs")
-        def traceFile = new File(_tracePath)
+        def failedLog = new File("${_outdir}/failed_tasks.log")
+        def tracePath = tracePaths.find { new File(it).exists() } ?: tracePaths[0]
+        def traceFile = new File(tracePath)
 
         if (!traceFile.exists()) {
-            log.warn "Task log collection skipped: trace file not found at ${_tracePath}"
+            log.warn "Task log collection skipped: trace file not found at ${tracePaths.join(', ')}"
             return
+        }
+
+        failedLog.text = ''
+
+        def readLog = { String filePath ->
+            try {
+                def src = nextflow.file.FileHelper.asPath(filePath)
+                if (!java.nio.file.Files.exists(src)) {
+                    return "[no ${src.fileName} found in ${src.parent}]\n"
+                }
+
+                src.withInputStream { ins ->
+                    def text = new String(ins.bytes, java.nio.charset.StandardCharsets.UTF_8)
+                    return text + (text.endsWith(System.lineSeparator()) ? '' : System.lineSeparator())
+                }
+            } catch (Exception e) {
+                def fileName = filePath.tokenize('/')[-1]
+                return "[could not read ${fileName}: ${e.message}]\n"
+            }
         }
 
         def header = null
@@ -84,50 +104,37 @@ workflow {
                 header = line.split('\t')
                 return
             }
-            def cols = line.split('\t')
-            def row = [:]
-            header.eachWithIndex { h, i -> row[h] = i < cols.size() ? cols[i] : '' }
+            try {
+                def cols = line.split('\t')
+                def row = [:]
+                header.eachWithIndex { h, i -> row[h] = i < cols.size() ? cols[i] : '' }
 
-            def fullName = row['name'] ?: ''
-            def workDirStr = row['workdir'] ?: ''
-            def taskId = row['task_id'] ?: ''
-            def status = row['status'] ?: ''
-            if (!fullName || !workDirStr) return
-            // Only collect logs for failed/aborted tasks — skip COMPLETED and CACHED.
-            if (status in ['COMPLETED', 'CACHED']) return
+                def fullName = row['name'] ?: ''
+                def workDirStr = row['workdir'] ?: ''
+                def taskId = row['task_id'] ?: ''
+                def status = row['status'] ?: ''
+                if (!fullName || !workDirStr) return
+                // Only collect logs for failed/aborted tasks — skip COMPLETED and CACHED.
+                if (status in ['COMPLETED', 'CACHED']) return
 
-            def process = (fullName =~ /^(.+?)\s*(?:\(.*\))?$/)[0][1].replace(':', '/')
-            def tagMatch = (fullName =~ /\((.+?)\)/)
-            def tag = tagMatch ? tagMatch[0][1] : taskId
+                def process = (fullName =~ /^(.+?)\s*(?:\(.*\))?$/)[0][1]
+                def tagMatch = (fullName =~ /\((.+?)\)/)
+                def tag = tagMatch ? tagMatch[0][1] : taskId
 
-            def destDir = new File("${logRoot}/${process}")
-            destDir.mkdirs()
-
-            // Collect both stdout (.command.out) and stderr (.command.err).
-            // Use the InputStream copy variant — Path→Path copy attempts to
-            // preserve filesystem attributes which Azure Blob's NIO provider
-            // does not implement (PosixFileAttributeView).
-            ['out', 'err'].each { stream ->
-                def dest = new File("${destDir}/${tag}.${stream}").toPath()
-                try {
-                    def src = nextflow.file.FileHelper.asPath("${workDirStr}/.command.${stream}")
-                    if (java.nio.file.Files.exists(src)) {
-                        src.withInputStream { ins ->
-                            java.nio.file.Files.copy(
-                                ins, dest,
-                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                            )
-                        }
-                    } else {
-                        dest.text = "[no .command.${stream} found in ${workDirStr}]\n"
-                    }
-                } catch (Exception e) {
-                    log.warn "Could not collect .command.${stream} for task '${fullName}': ${e.message}"
-                }
+                failedLog << "\nProcess: ${process}\n"
+                failedLog << "Tag: ${tag}\n"
+                failedLog << "Workdir: ${workDirStr}\n\n"
+                failedLog << "Full stderr:\n"
+                failedLog << readLog("${workDirStr}/.command.err")
+                failedLog << "\nFull stdout:\n"
+                failedLog << readLog("${workDirStr}/.command.out")
+                failedLog << "\n-----------------------------\n"
+            } catch (Exception e) {
+                log.warn "Could not collect failed task log entry from '${fullName ?: line}': ${e.message}"
             }
         }
 
-        log.info "Task logs collected under: ${logRoot}"
+        log.info "Failed task log collected at: ${failedLog}"
     }
 }
 

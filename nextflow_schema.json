@@ -327,6 +327,13 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'report_debug' must be one of [0, 1]. Default: 0."
                 },
+                "traceFile": {
+                    "type": "string",
+                    "format": "file-path",
+                    "default": "${params.outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt",
+                    "description": "Path to the Nextflow trace output file. This can be overridden by the user.",
+                    "errorMessage": "Parameter 'traceFile' must be a valid file path. Default: '${params.outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt'."
+                },
                 "email": {
                     "type": "string",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
