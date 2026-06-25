@@ -26,6 +26,8 @@ logger = logging.getLogger(__name__)
 config = Config()
 
 MODULE_NAME = "Database Coverage"
+NCBI_TAXONOMY_BASE_URL = (
+   'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=')
 
 
 def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
@@ -76,6 +78,13 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
 
     target_taxids = get_taxids(target_records.all_taxa, query_dir)
     taxid_to_taxon = {v: k for k, v in target_taxids.items()}
+    for record, record_og in zip(
+        target_records.all_taxa.values(),
+        target_records.original_taxa.values(),
+    ):
+        record.taxid = target_taxids.get(record.canonical_name)
+        record_og.taxid = target_taxids.get(record_og.canonical_name)
+
     logger.debug(
         "Taxids for targets (extracted by taxonkit):\n"
         + pformat(target_taxids, indent=2)
@@ -90,10 +99,10 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         t for t in targets
         if t not in [
             r.taxon
-            for r in target_records.lower_taxa.values()
+            for r in target_records.all_taxa.values()
         ] + [
             r.taxon
-            for r in target_records.higher_taxa.values()
+            for r in target_records.original_taxa.values()
         ]
     })
 
@@ -183,14 +192,27 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     )
     results = {
         'coverage': reindexed_results,
-        'ncbi_blast_urls': {
-            target_records.canonical_to_original.get(
-                taxon,
-                taxon,
-            ): build_blast_url(taxon, taxid, config)
-            for taxid, taxon in taxid_to_taxon.items()
-        }
+        'ncbi_urls': {
+            taxon: {
+                'blast': build_blast_url(
+                    target_records.original_taxa[taxon].canonical_name,
+                    target_records.original_taxa[taxon].taxid,
+                    config,
+                ),
+                'taxonomy': (
+                    NCBI_TAXONOMY_BASE_URL
+                    + target_records.original_taxa[taxon].taxid
+                )
+            }
+            for taxon in target_records.original_taxa
+        },
     }
+    for taxon in unknown_taxa:
+        results['ncbi_urls'][taxon] = {
+            'blast': None,
+            'taxonomy': None,
+        }
+
     return results, is_error
 
 

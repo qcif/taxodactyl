@@ -34,6 +34,7 @@ class TargetGbifRecords:
     lower_taxa: dict[str, RelatedTaxaGBIF]            # keyed by canonical
     higher_taxa: dict[str, RelatedTaxaGBIF]           # keyed by canonical
     all_taxa: dict[str, RelatedTaxaGBIF]              # keyed by canonical
+    original_taxa: dict[str, RelatedTaxaGBIF]         # keyed by original
     original_lower_taxa: dict[str, RelatedTaxaGBIF]   # keyed by original
     original_higher_taxa: dict[str, RelatedTaxaGBIF]  # keyed by original
 
@@ -195,4 +196,5 @@ def fetch_target_taxa(targets, query_dir):
         canonical_to_original=target_name_reverse_map,
         original_lower_taxa=original_lower_taxa,
         original_higher_taxa=original_higher_taxa,
+        original_taxa={**original_lower_taxa, **original_higher_taxa},
     )

@@ -1,4 +1,5 @@
 {% from 'macros/blast-link.html' import render_blast_link %}
+{% from "macros/db-coverage-target-modal.html" import render_target_modal %}
 
 {% set flags = conclusions.flags %}
 {% set taxon = metadata.preliminary_id %}
@@ -87,7 +88,7 @@
         </div>
       </td>
       <td>
-        {{ render_blast_link(db_coverage.ncbi_blast_urls[taxon]) }}
+        {{ render_blast_link(db_coverage.ncbi_urls[taxon]['blast']) }}
       </td>
     </tr>
     <tr>
@@ -117,5 +118,6 @@
   'config': config,
   'tois_detected': {},
   'locus_provided': locus_provided,
+  'ncbi_taxonomy_url': db_coverage.ncbi_urls[taxon]['taxonomy'],
 } %}
 {{ render_target_modal(modal_context) }}

@@ -90,7 +90,7 @@
         {% endif %}
       </td>
       <td>
-        {{ render_blast_link(db_coverage.ncbi_blast_urls[taxon]) }}
+        {{ render_blast_link(db_coverage.ncbi_urls[taxon]['blast']) }}
       </td>
     </tr>
     {% endfor %}

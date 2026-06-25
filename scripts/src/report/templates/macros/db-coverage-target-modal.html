@@ -144,6 +144,7 @@
                 <div class="big-number alert-{{ flag_5_1.bs_class }}">
                   {{ records_str }} records
                 </div>
+
                 <p class="my-3">
                   There are {{ records_str }} sequence records in the reference database for
                   <em>{{ context.target_taxon }}</em>
@@ -202,6 +203,12 @@
                   </p>
                   {% endif %}
                 </div>
+
+                <p class="text-center">
+                  <a href="{{ context.ncbi_taxonomy_url }}" target="_blank" rel="noopener noreferrer">
+                    View NCBI Taxonomy record
+                  </a>
+                </p>
               </div>
             </div>
           </div>
