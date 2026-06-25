@@ -179,6 +179,21 @@ def fetch_target_taxa(targets, query_dir):
             original_lower_taxa[target] = gbif_target
             target_gbif_records[target_key] = gbif_target
 
+        if (
+            gbif_target.canonical_name.lower() != target.lower()
+            and not gbif_target.from_synonym
+        ):
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                f"The query taxon '{target}' has been analyzed based on the"
+                f" first GBIF-accepted name, '{gbif_target.canonical_name}'."
+                " Please check that this is the intended taxon for analysis.",
+                query_dir=query_dir,
+                context={
+                    "target": target,
+                },
+            )
+
     logger.debug(
         "Targets identified at rank genus or lower:\n"
         + pformat(list(target_gbif_records.keys()), indent=2)
