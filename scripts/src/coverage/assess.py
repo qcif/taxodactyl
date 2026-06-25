@@ -98,8 +98,8 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     })
 
     _draw_occurrence_maps(
-        target_records.lower_taxa,
-        target_records.higher_taxa,
+        target_records.original_lower_taxa,
+        target_records.original_higher_taxa,
         query_dir,
     )
 
