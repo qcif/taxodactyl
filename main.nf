@@ -64,7 +64,7 @@ workflow {
     def _launchDir = workflow.launchDir
     def _runName = workflow.runName
     def _outdir = params.outdir
-    def traceFilePath = params.traceFile
+    def traceFilePath = params.trace_file
     def tracePaths = [
         traceFilePath,
         "${_launchDir}/logs/step1-trace.csv"
