@@ -56,9 +56,9 @@ workflow {
     )
 
     // ── Log collection ────────────────────────────────────────────────────────
-    // After the run, parse the trace file and append details for each failed
-    // task into a single report at:
-    //   <outdir>/task_logs/failed_tasks.log
+// After the run, parse the trace file and append details for each failed
+// task into a single report at:
+//   <outdir>/failed_tasks.log
     // Capture metadata before the closure — inside the closure, `workflow` and
     // `params` are shadowed by the enclosing workflow block and resolve to null.
     def _launchDir = workflow.launchDir
