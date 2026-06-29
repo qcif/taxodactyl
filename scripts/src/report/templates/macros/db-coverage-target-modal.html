@@ -204,11 +204,13 @@
                   {% endif %}
                 </div>
 
+                {% if context.ncbi_taxonomy_url %}
                 <p class="text-center">
                   <a href="{{ context.ncbi_taxonomy_url }}" target="_blank" rel="noopener noreferrer">
                     View NCBI Taxonomy record
                   </a>
                 </p>
+                {% endif %}
               </div>
             </div>
           </div>

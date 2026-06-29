@@ -202,7 +202,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
                 'taxonomy': (
                     NCBI_TAXONOMY_BASE_URL
                     + target_records.original_taxa[taxon].taxid
-                )
+                ) if target_records.original_taxa[taxon].taxid else None,
             }
             for taxon in target_records.original_taxa
         },
