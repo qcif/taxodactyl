@@ -1,6 +1,7 @@
 process VALIDATE_INPUT {
 
     label 'daff_tax_assign'
+    stageInMode 'copy'
 
     containerOptions {
         def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
