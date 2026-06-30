@@ -41,8 +41,8 @@ source_errors_dir="${DIR%/}/errors"
 errors_zip="${DIR%/}/errors.zip"
 
 if [[ ! -d "$source_errors_dir" ]]; then
-  echo "Errors directory not found: $source_errors_dir"
-  exit 1
+  echo "No errors directory found: $source_errors_dir (no errors occurred)"
+  exit 0
 fi
 
 found_err=0
