@@ -37,10 +37,6 @@ process EVALUATE_SOURCE_DIVERSITY {
     # Ensure the per-query output folder exists.
     mkdir -p $query_folder
 
-    echo "Forced failure for testing error handling" >&2
-    echo "Something went wrong look at err"
-    exit 1
-
     # Move staged inputs into the query folder to keep upstream outputs intact.
     for item in sources_input/*; do
         [ -e "\$item" ] || continue
