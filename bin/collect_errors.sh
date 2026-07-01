@@ -41,7 +41,8 @@ source_errors_dir="${DIR%/}/errors"
 errors_zip="${DIR%/}/errors.zip"
 
 if [[ ! -d "$source_errors_dir" ]]; then
-  echo "No errors directory found: $source_errors_dir (no errors occurred)"
+  echo "No errors occurred"
+  echo "Directory $source_errors_dir not found"
   exit 0
 fi
 
@@ -69,3 +70,4 @@ rm -f "$errors_zip"
 )
 
 echo "Zipped errors directory to: $errors_zip"
+echo 'You can download all workflow errors by from the "Results" tab.'
