@@ -70,8 +70,11 @@ workflow {
     def _tracePath = params.trace_file
     workflow.onComplete {
         def logRoot = new File("${_outdir}/errors")
+        if (!_tracePath) {
+            log.warn "Task log collection skipped: trace file path is empty (params.trace_file)"
+            return
+        }
         def traceFile = new File(_tracePath)
-
         if (!traceFile.exists()) {
             log.warn "Task log collection skipped: trace file not found at ${_tracePath}"
             return
