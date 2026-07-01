@@ -330,7 +330,6 @@
                 "trace_file": {
                     "type": "string",
                     "format": "file-path",
-                    "default": "${params.outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt",
                     "description": "Path to the Nextflow trace output file. This can be overridden by the user.",
                     "errorMessage": "Parameter 'trace_file' must be a valid file path. Default: '${params.outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt'."
                 },
