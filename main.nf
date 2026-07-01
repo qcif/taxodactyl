@@ -56,16 +56,16 @@ workflow {
     )
 
     // ── Log collection ────────────────────────────────────────────────────────
-    // After the run, parse the trace file and copy .command.log from each
-    // task's (possibly remote) workDir to:
-    //   <outdir>/errors/<runName>/<PROCESS>/<tag>.log
+    // After the run, parse the trace file and copy each failed or aborted
+    // task's .command.out and .command.err from its (possibly remote) workDir
+    // to:
+    //   <outdir>/errors/<PROCESS>/<tag>.<out|err>
     //
     // Driven by the trace file rather than a per-task hook because
     // workflow.onProcessComplete isn't a supported handler. Works with any
     // executor — Nextflow's VFS handles remote → local copies.
     // Capture metadata before the closure — inside the closure, `workflow` and
     // `params` are shadowed by the enclosing workflow block and resolve to null.
-    def _runName = workflow.runName
     def _outdir = params.outdir
     def _tracePath = params.trace_file
     workflow.onComplete {
