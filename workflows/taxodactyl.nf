@@ -42,10 +42,13 @@ workflow TAXODACTYL {
     [params.temp_root_dir, params.app_data_dir].each { dir ->
         def path = file(dir)
         def existed = path.exists()
-        if (path.exists() && !path.isDirectory()) {
+        if (existed && !path.isDirectory()) {
             throw new IllegalStateException("Runtime path '${dir}' exists but is not a directory")
         }
-        if (!path.exists() && !path.mkdirs()) {
+        if (!existed) {
+            path.mkdirs()
+        }
+        if (!path.exists() || !path.isDirectory()) {
             throw new IllegalStateException("Could not create runtime directory '${dir}'")
         }
         if (!existed) {
