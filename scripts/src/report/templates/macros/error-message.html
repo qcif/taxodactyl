@@ -5,7 +5,7 @@
   <ul>
     {% for error in errorlist %}
     <li>
-      {{ error.message }}
+      {{ error.message | safe }}
       {% if error.exception %}
       <br>
       <small>

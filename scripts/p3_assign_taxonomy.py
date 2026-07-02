@@ -22,7 +22,7 @@ from pathlib import Path
 from Bio import SeqIO
 
 from src.utils import deduplicate, existing_path
-from src.utils.blast import build_blast_url
+from src.utils.ncbi import build_blast_url
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
 from src.utils.flags import FLAGS, Flag

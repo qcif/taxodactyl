@@ -12,7 +12,7 @@ from src.gbif.maps import draw_occurrence_map, draw_placeholder_map
 from src.gbif.relatives import RANK
 from src.utils import errors
 from src.utils.config import Config
-from src.utils.blast import build_blast_url
+from src.utils import ncbi
 from src.utils.flags import FLAGS, Flag
 
 from .fetch import (
@@ -26,8 +26,6 @@ logger = logging.getLogger(__name__)
 config = Config()
 
 MODULE_NAME = "Database Coverage"
-NCBI_TAXONOMY_BASE_URL = (
-   'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=')
 
 
 def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
@@ -194,15 +192,14 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         'coverage': reindexed_results,
         'ncbi_urls': {
             taxon: {
-                'blast': build_blast_url(
+                'blast': ncbi.build_blast_url(
                     target_records.original_taxa[taxon].canonical_name,
                     target_records.original_taxa[taxon].taxid,
                     config,
                 ),
-                'taxonomy': (
-                    NCBI_TAXONOMY_BASE_URL
-                    + target_records.original_taxa[taxon].taxid
-                ) if target_records.original_taxa[taxon].taxid else None,
+                'taxonomy': ncbi.build_taxonomy_url(
+                    target_records.original_taxa[taxon].taxid,
+                )
             }
             for taxon in target_records.original_taxa
         },
