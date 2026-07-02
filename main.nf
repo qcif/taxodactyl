@@ -16,29 +16,7 @@
 include { TAXODACTYL  } from './workflows/taxodactyl'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow QCIF_TAXODACTYL {
-
-    // take:
-
-  
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    TAXODACTYL (
-
-    )
-}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -63,7 +41,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    QCIF_TAXODACTYL (
+    TAXODACTYL (
 
     )
     //
@@ -78,23 +56,25 @@ workflow {
     )
 
     // ── Log collection ────────────────────────────────────────────────────────
-    // After the run, parse the trace file and copy .command.log from each
-    // task's (possibly remote) workDir to:
-    //   <launchDir>/task_logs/<runName>/<PROCESS>/<tag>.log
+    // After the run, parse the trace file and copy each failed or aborted
+    // task's .command.out and .command.err from its (possibly remote) workDir
+    // to:
+    //   <outdir>/errors/<PROCESS>/<tag>.<out|err>
     //
     // Driven by the trace file rather than a per-task hook because
     // workflow.onProcessComplete isn't a supported handler. Works with any
     // executor — Nextflow's VFS handles remote → local copies.
     // Capture metadata before the closure — inside the closure, `workflow` and
     // `params` are shadowed by the enclosing workflow block and resolve to null.
-    def _launchDir = workflow.launchDir
-    def _runName = workflow.runName
     def _outdir = params.outdir
-    def _tracePath = "${_outdir}/pipeline_info/execution_trace_${params.trace_report_suffix}.txt"
+    def _tracePath = params.trace_file
     workflow.onComplete {
-        def logRoot = new File("${_outdir}/task_logs")
+        def logRoot = new File("${_outdir}/errors")
+        if (!_tracePath) {
+            log.warn "Task log collection skipped: trace file path is empty (params.trace_file)"
+            return
+        }
         def traceFile = new File(_tracePath)
-
         if (!traceFile.exists()) {
             log.warn "Task log collection skipped: trace file not found at ${_tracePath}"
             return

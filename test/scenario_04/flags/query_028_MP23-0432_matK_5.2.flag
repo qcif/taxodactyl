@@ -7,8 +7,8 @@
   },
   {
     "flag_id": "5.2",
-    "value": "C",
-    "target": "Planta",
+    "value": "NA",
+    "target": "Plantae",
     "target_type": "pmi"
   }
 ]
