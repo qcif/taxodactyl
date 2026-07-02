@@ -121,7 +121,7 @@ The vault has two backends. Set the appropriate environment variable before runn
 > - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
 
 > [!NOTE]
-> If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `${user.home}/.local/share/taxodactyl`. Set `--app_data_dir` explicitly if you need a different persistent/shared location.
+> If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `~/.local/share/taxodactyl` (i.e. `$HOME/.local/share/taxodactyl`). Set `--app_data_dir` explicitly if you need a different persistent/shared location.
 
 
 ### Redis for concurrency
