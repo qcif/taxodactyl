@@ -39,12 +39,20 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true).first()
 
-    try {
-        file(params.app_data_dir).mkdirs()
-        System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
-    } catch (Exception e) {
-        log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
+    [params.temp_root_dir, params.app_data_dir].each { dir ->
+        def path = file(dir)
+        def existed = path.exists()
+        if (path.exists() && !path.isDirectory()) {
+            throw new IllegalStateException("Runtime path '${dir}' exists but is not a directory")
+        }
+        if (!path.exists() && !path.mkdirs()) {
+            throw new IllegalStateException("Could not create runtime directory '${dir}'")
+        }
+        if (!existed) {
+            log.info "Created runtime directory '${dir}'"
+        }
     }
+    System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
 
     // Copy input files to work directory first to ensure availability
     // Pass sequences as an optional list input: one file when provided, empty list when absent
