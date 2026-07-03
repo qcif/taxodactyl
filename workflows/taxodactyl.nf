@@ -43,13 +43,13 @@ workflow TAXODACTYL {
         file(params.app_data_dir).mkdirs()
         System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
     } catch (Exception e) {
-        log.warn "Could not create app data directory '${params.app_data_dir}': ${e.message}"
+        log.info "Could not create app data directory '${params.app_data_dir}': ${e.message}"
     }
 
     try {
         file(params.temp_root_dir).mkdirs()
     } catch (Exception e) {
-        log.warn "Could not create temp root directory '${params.temp_root_dir}': ${e.message}"
+        log.info "Could not create temp root directory '${params.temp_root_dir}': ${e.message}"
     }
 
     // Copy input files to work directory first to ensure availability
