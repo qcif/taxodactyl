@@ -109,7 +109,7 @@ workflow {
             // Use the InputStream copy variant — Path→Path copy attempts to
             // preserve filesystem attributes which Azure Blob's NIO provider
             // does not implement (PosixFileAttributeView).
-            ['out', 'err'].each { stream ->
+            ['out', 'err', 'log'].each { stream ->
                 def dest = new File("${destDir}/${tag}.${stream}").toPath()
                 try {
                     def src = nextflow.file.FileHelper.asPath("${workDirStr}/.command.${stream}")
