@@ -46,10 +46,10 @@ workflow TAXODACTYL {
     try {
         def app_data_dir = file(params.app_data_dir)
         app_data_dir.mkdirs()
-        if (app_data_dir.exists()) {
+        if (app_data_dir.isDirectory()) {
             System.setProperty('taxodactyl.bind_app_data', " --bind ${app_data_dir}:/var/lib/taxodactyl")
         } else {
-            log.warn "App data directory '${params.app_data_dir}' could not be prepared for task binds. Tasks will continue without an app data host mount."
+            log.warn "App data path '${params.app_data_dir}' is not a directory and cannot be used for task binds. Tasks will continue without an app data host mount."
         }
     } catch (Exception e) {
         log.warn "Could not create app data directory '${params.app_data_dir}' for task binds: ${e.message}. Tasks will continue without an app data host mount."
