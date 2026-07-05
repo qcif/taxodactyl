@@ -39,17 +39,32 @@ workflow TAXODACTYL {
     ch_workflow_timestamp = channel.of(formatter.format(workflow.start))
         .collectFile(name: 'timestamp.txt', newLine: true).first()
 
+    System.setProperty('taxodactyl.bind_app_data', '')
+
+    // App data is optional: only tasks that use local secret persistence need
+    // the host mount, so failure here should not stop the workflow.
     try {
-        file(params.app_data_dir).mkdirs()
-        System.setProperty('taxodactyl.bind_app_data', " --bind ${file(params.app_data_dir)}:/var/lib/taxodactyl")
+        def app_data_dir = file(params.app_data_dir)
+        app_data_dir.mkdirs()
+        if (app_data_dir.exists()) {
+            System.setProperty('taxodactyl.bind_app_data', " --bind ${app_data_dir}:/var/lib/taxodactyl")
+        } else {
+            log.warn "App data directory '${params.app_data_dir}' could not be prepared for task binds. Tasks will continue without an app data host mount."
+        }
     } catch (Exception e) {
-        log.info "Could not create app data directory '${params.app_data_dir}': ${e.message}"
+        log.warn "Could not create app data directory '${params.app_data_dir}' for task binds: ${e.message}. Tasks will continue without an app data host mount."
     }
 
+    // Temp root is treated as generally required because task code may write
+    // cache/throttle state there, so we always try to prepare it up front.
     try {
-        file(params.temp_root_dir).mkdirs()
+        def temp_root_dir = file(params.temp_root_dir)
+        temp_root_dir.mkdirs()
+        if (!temp_root_dir.exists()) {
+            log.warn "Temp root directory '${params.temp_root_dir}' could not be prepared for task binds. Tasks will continue without a temp root host mount."
+        }
     } catch (Exception e) {
-        log.info "Could not create temp root directory '${params.temp_root_dir}': ${e.message}"
+        log.warn "Could not create temp root directory '${params.temp_root_dir}' for task binds: ${e.message}. Tasks will continue without a temp root host mount."
     }
 
     // Copy input files to work directory first to ensure availability
