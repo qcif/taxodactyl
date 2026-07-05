@@ -60,8 +60,8 @@ workflow TAXODACTYL {
     try {
         def temp_root_dir = file(params.temp_root_dir)
         temp_root_dir.mkdirs()
-        if (!temp_root_dir.exists()) {
-            log.warn "Temp root directory '${params.temp_root_dir}' could not be prepared for task binds. Tasks will continue without a temp root host mount."
+        if (!temp_root_dir.isDirectory()) {
+            log.warn "Temp root path '${params.temp_root_dir}' is not a directory and may cause task failures (tasks will still attempt to create/bind it per task)."
         }
     } catch (Exception e) {
         log.warn "Could not create temp root directory '${params.temp_root_dir}' for task binds: ${e.message}. Tasks will continue without a temp root host mount."
