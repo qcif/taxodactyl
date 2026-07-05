@@ -57,9 +57,9 @@ workflow {
 
     // ── Log collection ────────────────────────────────────────────────────────
     // After the run, parse the trace file and copy each failed or aborted
-    // task's .command.out and .command.err from its (possibly remote) workDir
+    // task's .command.out, .command.err and .command.log from its (possibly remote) workDir
     // to:
-    //   <outdir>/errors/<PROCESS>/<tag>.<out|err>
+    //   <outdir>/errors/<PROCESS>/<tag>.<out|err|log>
     //
     // Driven by the trace file rather than a per-task hook because
     // workflow.onProcessComplete isn't a supported handler. Works with any
@@ -105,7 +105,7 @@ workflow {
             def destDir = new File("${logRoot}/${process}")
             destDir.mkdirs()
 
-            // Collect both stdout (.command.out) and stderr (.command.err).
+            // Collect stdout (.command.out), stderr (.command.err) and log (.command.log).
             // Use the InputStream copy variant — Path→Path copy attempts to
             // preserve filesystem attributes which Azure Blob's NIO provider
             // does not implement (PosixFileAttributeView).
