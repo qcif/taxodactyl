@@ -119,7 +119,7 @@ The vault has two backends. Set the appropriate environment variable before runn
 > - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
 > - If neither environment variable is set, the vault is disabled and secrets are not persisted.
 > - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
-> - If running local vault, it will attempt to store secrets in ~/.local/share/taxodactyl/ or /var/lib/taxodactyl/, which must be created with appropriate permissions before running. For running in Singularity (the default) the params.app_data_dir path (which defaults to ~/.local/share/taxodactyl/) is mounted to the latter path on the container.
+> - If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `~/.local/share/taxodactyl` (i.e. `$HOME/.local/share/taxodactyl`). Set `--app_data_dir` explicitly if you need a different persistent/shared location.
 
 
 ### Redis for concurrency
