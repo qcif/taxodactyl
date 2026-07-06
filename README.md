@@ -119,9 +119,7 @@ The vault has two backends. Set the appropriate environment variable before runn
 > - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
 > - If neither environment variable is set, the vault is disabled and secrets are not persisted.
 > - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
-
-> [!NOTE]
-> If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `~/.local/share/taxodactyl` (i.e. `$HOME/.local/share/taxodactyl`). Set `--app_data_dir` explicitly if you need a different persistent/shared location.
+> - If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `~/.local/share/taxodactyl` (i.e. `$HOME/.local/share/taxodactyl`). Set `--app_data_dir` explicitly if you need a different persistent/shared location.
 
 
 ### Redis for concurrency
@@ -168,13 +166,13 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Required Columns
 1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
-2. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
-    > [!NOTE]
-    > - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
-    > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
-    > - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
-    > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailed_tech.md).
-3. **preliminary_id** - Preliminary morphology ID of the sample.
+2. **preliminary_id** - Preliminary morphology ID of the sample.
+3. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
+> [!NOTE]
+> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
+> - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
+> - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
+> - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailed_tech.md).
 
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
@@ -263,12 +261,11 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --facility_name "QCIF" \
     -resume
   ```
-```
 
 > [!NOTE]
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 > - We recommend avoiding spaces in file and folder names to prevent issues in command-line operations.
-> - The error strategy for the workflow is set to `ignore`. It means that even if a process encounters an error, Nextflow will continue executing subsequent processes rather than terminating the workflow. This is to avoid interrupting the entire workflow with multiple queries when only one of them fails. Unfortunately, this behaviour prevents more detailed errors from being displayed in the standard output. Instead, you will only see which tasks failed, and the hashes assigned to them that you can use to navigate the work folder to find specific errors. As a workaround, you can run `bin/collect_errors.sh` for local runs or `bin/collect_errors_azure.sh` for Azure runs at the end of execution. As a result, a list of processes should be displayed together with their work directory paths, the last 10 lines of standard error and the last 10 lines of standard output.
+> - The error strategy for the workflow is set to `ignore`. This means that if a process encounters an error, Nextflow continues executing subsequent processes rather than terminating the workflow. This avoids interrupting the entire run when only one query fails, but it also means less detail is shown directly in standard output. To make debugging easier, `main.nf` automatically collects logs of failed/aborted tasks into `<outdir>/errors/<PROCESS>/`.
 > - You can find detailed instructions and practical examples for customising the pipeline configuration in the [docs/customise.md](docs/customise.md) file. This guide covers how to set parameters, adjust resources, change error strategies, and modify the Singularity cache directory for your Nextflow runs.
 
 
@@ -304,33 +301,7 @@ After running the pipeline, the output directory will contain a separate folder 
     ├── candidates_phylogeny.nwk
     └── report_VE24-1079_COI_20250622_225319.html
 ```
-**BOLD**
-```
-.
-├── pipeline_info
-│   ├── execution_report_2025-06-22_22-53-22.html
-│   ├── execution_timeline_2025-06-22_22-53-22.html
-│   ├── execution_trace_2025-06-22_22-53-22.txt
-│   ├── params_2025-06-22_22-53-34.json
-│   └── pipeline_dag_2025-06-22_22-53-22.html
-├── query_001_VE24-1075_COI
-│   ├── all_hits.fasta
-│   ├── candidates.csv
-│   ├── candidates.fasta
-│   ├── candidates_phylogeny.fasta
-│   ├── candidates_phylogeny.msa
-│   ├── candidates_phylogeny.nwk
-│   └── report_BOLD_VE24-1075_COI_20250622_225326.html
-└── query_002_VE24-1079_COI
-    ├── all_hits.fasta
-    ├── candidates.csv
-    ├── candidates.fasta
-    ├── candidates_identity_boxplot.png
-    ├── candidates_phylogeny.fasta
-    ├── candidates_phylogeny.msa
-    ├── candidates_phylogeny.nwk
-    └── report_BOLD_VE24-1079_COI_20250622_225326.html
-```
+
 ## Credits
 <p align="center">
     <img src="docs/images/DAFF-inline-black.png" alt="Department of Agriculture, Fisheries and Forestry" height="60"/>

@@ -10,6 +10,7 @@ set -euo pipefail
 # CONFIGURATION
 # -----------------------------------------------------------------------------
 
+TIMEZONE="Australia/Brisbane"
 NVME_MNT="/mnt/nvme"
 # Note: azcopy downloads the blob container structure (refdata/core_nt)
 # So we download to /mnt/nvme to get /mnt/nvme/refdata/core_nt
@@ -22,6 +23,21 @@ BLOB_URL="https://daffpremium.blob.core.windows.net/refdata?<PREMIUM_BLOB_SAS_TO
 # -----------------------------------------------------------------------------
 # FUNCTIONS
 # -----------------------------------------------------------------------------
+
+set_timezone() {
+    echo "=== Setting timezone to $TIMEZONE ===" >&2
+    if command -v timedatectl >/dev/null 2>&1; then
+        timedatectl set-timezone "$TIMEZONE" || {
+            echo "timedatectl failed, falling back to /etc/localtime symlink" >&2
+            ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+            echo "$TIMEZONE" > /etc/timezone
+        }
+    else
+        ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+        echo "$TIMEZONE" > /etc/timezone
+    fi
+    echo "Current date/time: $(date)" >&2
+}
 
 detect_nvme_device() {
     # Detect the NVMe disk by type "disk" and looking for "nvme"
@@ -169,6 +185,11 @@ echo "===== START TASK: Begin staging refdata on NVMe =====" >&2
 echo "Date: $(date)" >&2
 echo "User: $(whoami)" >&2
 echo "Working directory: $(pwd)" >&2
+
+# Step 0: Set timezone
+echo "" >&2
+echo "STEP 0: Setting system timezone" >&2
+set_timezone || echo "⚠ Timezone setup failed (continuing)" >&2
 
 # Step 1: Detect NVMe device
 echo "" >&2

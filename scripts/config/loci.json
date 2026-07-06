@@ -256,5 +256,13 @@
       "trnL",
       "tRNA leu"
     ]
+  },
+  "ache": {
+    "ambiguous_synonyms": [
+      "AChE"
+    ],
+    "non_ambiguous_synonyms": [
+      "Acetylcholinesterase"
+    ]
   }
 }

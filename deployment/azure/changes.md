@@ -54,7 +54,7 @@ id 'nf-azure'  // Use latest compatible version
 
 **Error**:
 ```
-No container image specified for process QCIF_TAXODACTYL:TAXODACTYL:PREPARE_INPUTS (metadata.csv)
+No container image specified for process TAXODACTYL:PREPARE_INPUTS (metadata.csv)
 -- Either specify the container to use in the process definition or with 'process.container' value in your config
 ```
 

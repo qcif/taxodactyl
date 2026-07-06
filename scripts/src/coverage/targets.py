@@ -34,6 +34,7 @@ class TargetGbifRecords:
     lower_taxa: dict[str, RelatedTaxaGBIF]            # keyed by canonical
     higher_taxa: dict[str, RelatedTaxaGBIF]           # keyed by canonical
     all_taxa: dict[str, RelatedTaxaGBIF]              # keyed by canonical
+    original_taxa: dict[str, RelatedTaxaGBIF]         # keyed by original
     original_lower_taxa: dict[str, RelatedTaxaGBIF]   # keyed by original
     original_higher_taxa: dict[str, RelatedTaxaGBIF]  # keyed by original
 
@@ -110,6 +111,9 @@ def fetch_target_taxa(targets, query_dir):
     target_name_reverse_map = {}
     target_gbif_records = {}
     higher_target_gbif_records = {}  # Taxa at rank 'family' or higher
+    original_lower_taxa = {}
+    original_higher_taxa = {}
+
     for target in targets:
         try:
             gbif_target = RelatedTaxaGBIF(
@@ -168,10 +172,27 @@ def fetch_target_taxa(targets, query_dir):
         target_name_reverse_map[target_key] = target
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             # These get processed differently - broad GB record count only
+            original_higher_taxa[target] = gbif_target
             higher_target_gbif_records[target_key] = gbif_target
 
         else:
+            original_lower_taxa[target] = gbif_target
             target_gbif_records[target_key] = gbif_target
+
+        if (
+            gbif_target.canonical_name.lower() != target.lower()
+            and not gbif_target.from_synonym
+        ):
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                f"The query taxon '{target}' has been analyzed based on the"
+                f" first GBIF-accepted name, '{gbif_target.canonical_name}'."
+                " Please check that this is the intended taxon for analysis.",
+                query_dir=query_dir,
+                context={
+                    "target": target,
+                },
+            )
 
     logger.debug(
         "Targets identified at rank genus or lower:\n"
@@ -188,12 +209,7 @@ def fetch_target_taxa(targets, query_dir):
         all_taxa={**target_gbif_records, **higher_target_gbif_records},
         original_to_canonical=target_name_map,
         canonical_to_original=target_name_reverse_map,
-        original_lower_taxa={
-            target_name_reverse_map[k]: v
-            for k, v in target_gbif_records.items()
-        },
-        original_higher_taxa={
-            target_name_reverse_map[k]: v
-            for k, v in higher_target_gbif_records.items()
-        }
+        original_lower_taxa=original_lower_taxa,
+        original_higher_taxa=original_higher_taxa,
+        original_taxa={**original_lower_taxa, **original_higher_taxa},
     )

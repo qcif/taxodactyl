@@ -42,10 +42,6 @@ This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate
 
 # Modules
 
-## [configure/environment](../modules/configure/environment/main.nf)
-
-This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/taxodactyl/tree/main/scripts). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#environment-variables).
-
 ## [validate/input](../modules/validate/input/main.nf)
 
 This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA (if provided), and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).

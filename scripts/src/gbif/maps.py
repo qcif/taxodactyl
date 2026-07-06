@@ -97,7 +97,7 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         cb.set_label("Density of Occurrences")
     else:
         ax.text(
-            0.5, 0.15,
+            0.5, 0.45,
             "No occurrence records returned from GBIF",
             color="white",
             fontsize=16,

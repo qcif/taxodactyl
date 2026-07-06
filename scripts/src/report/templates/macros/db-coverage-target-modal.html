@@ -70,7 +70,19 @@
           {{ render_error_message(general_errors) }}
           {% endif %}
 
-          {% if context.data.target is not none %}
+          {% if context.data.target is none and context.data.related is none and context.data.country is none %}
+
+          {% set flag_1 = context.flags.get('1') %}
+          <p class="alert alert-info">
+            No database coverage information is available for this taxon.
+            {% if context.target_type == 'candidate' and flag_1 and flag_1.value.lower() in ['c', 'e'] %}
+            This is because database coverage is not evaluated when there are zero or &gt;3 candidate species.
+            {% else %}
+            This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
+            {% endif %}
+          </p>
+
+          {% else %}
 
           <table style="margin: 2rem auto;">
             <tbody>
@@ -139,11 +151,12 @@
                 {{ render_error_message(p5_1_errors) }}
                 {% endif %}
 
-                {% if context.data.target is not in [none, 'NA', 'ERR'] %}
+                {% if context.data.target not in [none, 'NA', 'ERR'] %}
                 {% set records_str = "{:,}".format(context.data.target) %}
                 <div class="big-number alert-{{ flag_5_1.bs_class }}">
                   {{ records_str }} records
                 </div>
+
                 <p class="my-3">
                   There are {{ records_str }} sequence records in the reference database for
                   <em>{{ context.target_taxon }}</em>
@@ -202,6 +215,14 @@
                   </p>
                   {% endif %}
                 </div>
+
+                {% if context.ncbi_taxonomy_url %}
+                <p class="text-center">
+                  <a href="{{ context.ncbi_taxonomy_url }}" target="_blank" rel="noopener noreferrer">
+                    View NCBI Taxonomy record
+                  </a>
+                </p>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -324,13 +345,11 @@
               </div>
             </div>
 
-            {% else %}
-            {% if context.data.related %}
+            {% elif context.data.related is not none %}
             <p>
               No species were found in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
               in the GBIF database, so there is nothing to report here.
             </p>
-            {% endif %}
             {% endif %}
           </div>
 
@@ -458,14 +477,12 @@
                 </div>
               </div>
 
-            {% else %}
-            {% if context.data.country %}
+            {% elif context.data.country is not none %}
             <p>
               The GBIF database returned no species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
               with occurrence records in country <strong>{{ context.metadata.country }}</strong>,
               so there is nothing to report here.
             </p>
-            {% endif %}
             {% endif %}
 
             {% else %}
@@ -475,16 +492,6 @@
             {% endif %}
           </div>
 
-          {% else %}
-
-          <p class="alert alert-info">
-            No database coverage information is available for this taxon.
-            {% if context.target_type == 'candidate' and context.flags['1'].value.lower() in ['c', 'e'] %}
-            This is because database coverage is not evaluated when there are zero or &gt;3 candidate species.
-            {% else %}
-            This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
-            {% endif %}
-          </p>
           {% endif %}
         </div>
       </div>

@@ -129,6 +129,7 @@ class RelatedTaxaGBIF:
         self.genus = self.record.get('genus')
         self.rank = RANK.from_string(self.record.rank)
         self.canonical_name = self.record.canonical_name
+        self.taxid = None
 
     def __str__(self):
         return f"{self.__class__.__name__}: {self.taxon} ({self.rank})"

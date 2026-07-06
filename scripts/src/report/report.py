@@ -410,7 +410,6 @@ def _read_db_coverage(query_ix):
     with path.open() as f:
         data = json.load(f)
     coverage_data = data['coverage']
-    ncbi_blast_urls = data['ncbi_blast_urls']
     for target_type, targets in coverage_data.items():
         for target in targets:
             path = (
@@ -423,7 +422,7 @@ def _read_db_coverage(query_ix):
     return {
         'full': coverage_data,
         'summary': _get_db_cov_summary(coverage_data),
-        'ncbi_blast_urls': ncbi_blast_urls,
+        'ncbi_urls': data['ncbi_urls'],
     }
 
 

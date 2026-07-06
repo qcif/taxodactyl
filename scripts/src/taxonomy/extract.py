@@ -4,7 +4,9 @@ import subprocess
 import tempfile
 import threading
 
-from src.utils import errors
+from markupsafe import Markup
+
+from src.utils import errors, ncbi
 from src.utils.config import Config
 
 logger = logging.getLogger(__name__)
@@ -189,13 +191,27 @@ def taxids(
         else:
             taxid_data[result.species] = result.taxid or None
     for species, taxids in duplicate_taxids.items():
-        msg = (
-            f'Duplicate taxid(s) {taxids} found for taxon "{species}" in'
-            " taxonkit name2taxid output. The first taxid returned"
-            f" ({taxid_data[species]})"
-            " has been used. This may result in incorrect taxid information."
+        taxid_links = [
+            Markup("<a href='{url}' target='_blank'>{taxid}</a>").format(
+                url=ncbi.build_taxonomy_url(taxid),
+                taxid=taxid,
+            )
+            for taxid in [taxid_data[species]] + taxids
+        ]
+        taxid_links_str = Markup(", ").join(taxid_links)
+        msg = Markup(
+            'Duplicate taxid(s) {links} found for taxon "{species}"'
+            " in taxonkit name2taxid output. The first taxid returned"
+            " ({first})"
+            " has been used to retrieve Genbank sequence record counts for"
+            " this species. You can better understand this issue by checking"
+            " these taxonomy records."
+        ).format(
+            links=taxid_links_str,
+            species=species,
+            first=taxid_links[0],
         )
-        logger.warning(msg)
+        logger.warning(msg.striptags())
         errors.write(
             errors.LOCATIONS.DB_COVERAGE_TAXONKIT_ERROR,
             msg,
