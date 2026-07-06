@@ -81,6 +81,7 @@ workflow {
         }
 
         def header = null
+        def errorsCollected = false
         traceFile.eachLine { line, idx ->
             if (idx == 1) {
                 header = line.split('\t')
@@ -98,6 +99,7 @@ workflow {
             // Only collect logs for failed/aborted tasks — skip COMPLETED and CACHED.
             if (status in ['COMPLETED', 'CACHED']) return
 
+            errorsCollected = true
             def process = (fullName =~ /^(.+?)\s*(?:\(.*\))?$/)[0][1].replace(':', '/')
             def tagMatch = (fullName =~ /\((.+?)\)/)
             def tag = tagMatch ? tagMatch[0][1] : taskId
@@ -129,7 +131,9 @@ workflow {
             }
         }
 
-        log.info "Task logs collected under: ${logRoot}"
+        if (errorsCollected) {
+            log.info "Task logs collected under: ${logRoot}"
+        }
     }
 }
 
