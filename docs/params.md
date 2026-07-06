@@ -108,7 +108,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `email`        | string  | null    | Email address for notifications and reports.                                                     | Must be a valid email address.       |
 | `logging_debug`| int     | 0       | If 1, verbose log statements will be emitted.                                                    | 0 or 1. Default: 0.                  |
 | `mock_blast`   | boolean | false   | If true, use mock BLAST for testing purposes instead of running actual BLAST.                    | Must be true or false. Default: false.|
-| `temp_root_dir`| string  | '${launchDir}/taxodactyl_tmp'| Directory where temporary files will be saved.                                    | Must be a valid directory path.      |
+| `app_data_dir` | string  | `~/.local/share/taxodactyl` | Directory for persistent application data (e.g. secrets / local vault data), mounted to `/var/lib/taxodactyl` in containers. | Must be a valid directory path. |
+| `temp_root_dir`| string  | `$TMPDIR/taxodactyl_tmp` (fallback: `${java.io.tmpdir}`, then `$HOME`) | Directory where temporary files will be saved. Uses `TMPDIR` when set, otherwise falls back to `${java.io.tmpdir}`, then `${user.home}`. In all cases `/taxodactyl_tmp` is appended to the selected base directory. | Must be a valid directory path.      |
 | `temp_dir_name`| string  |         | Name of the temporary directory within the temp_root_dir.                                        | Must be a string.                    |
 
 ---
