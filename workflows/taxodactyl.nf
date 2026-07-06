@@ -49,7 +49,7 @@ workflow TAXODACTYL {
         if (app_data_dir.isDirectory()) {
             System.setProperty('taxodactyl.bind_app_data', " --bind ${app_data_dir}:/var/lib/taxodactyl")
         } else {
-            log.warn "App data path '${params.app_data_dir}' is not a directory and cannot be used for task binds. Tasks will continue without an app data host mount."
+            log.warn "App data path '${params.app_data_dir}' is not a valid directory and cannot be used for task binds. Tasks will continue without an app data host mount."
         }
     } catch (Exception e) {
         log.warn "Could not create app data directory '${params.app_data_dir}' for task binds: ${e.message}. Tasks will continue without an app data host mount."
@@ -61,7 +61,7 @@ workflow TAXODACTYL {
         def temp_root_dir = file(params.temp_root_dir)
         temp_root_dir.mkdirs()
         if (!temp_root_dir.isDirectory()) {
-            log.warn "Temp root path '${params.temp_root_dir}' is not a directory and may cause task failures (tasks will still attempt to create/bind it per task)."
+            log.warn "Temp root path '${params.temp_root_dir}' is not a valid directory and may cause task failures (tasks will still attempt to create/bind it per task)."
         }
     } catch (Exception e) {
         log.warn "Could not create temp root directory '${params.temp_root_dir}' for task binds: ${e.message}. Tasks will continue without a temp root host mount."
