@@ -54,13 +54,17 @@ while IFS= read -r -d '' err_file; do
 
   echo
   echo "Error file: ${rel_path}"
-  echo "Last 10 lines of stderr:"
+  if [[ "$err_file" == *.log ]]; then
+    echo "Last 10 lines of log:"
+  else
+    echo "Last 10 lines of stderr:"
+  fi
   tail -n 10 "$err_file" || true
   echo "-----------------------------"
-done < <(find "$source_errors_dir" -type f -name '*.err' -print0 | sort -z)
+done < <(find "$source_errors_dir" -type f \( -name '*.err' -o -name '*.log' \) -print0 | sort -z)
 
 if [[ "$found_err" -eq 0 ]]; then
-  echo "No .err files found under ${source_errors_dir}"
+  echo "No .err or .log files found under ${source_errors_dir}"
 fi
 
 rm -f "$errors_zip"
