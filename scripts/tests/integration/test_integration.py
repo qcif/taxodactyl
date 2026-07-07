@@ -21,11 +21,15 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
+from tests.integration.coverage_assert import assert_matches
+
 PYTHON_ROOT = Path(__file__).parents[2]
 TEST_DATA_DIR = PYTHON_ROOT / "tests/test-data"
 COMPLETED_TESTS_FILE = "completed_tests.json"
 TEMPDIR_PREFIX = "integration_test_"
 QUERY_INDEX_FILENAME = 'query.index'  # optional query index to use (0-indexed)
+EXPECTED_DIR = "expected"
+DB_COVERAGE_FILENAME = "db_coverage.json"
 
 
 def print_green(text: str):
@@ -130,6 +134,34 @@ class IntegrationTest(unittest.TestCase):
             ]
             json.dump(case_names, f, indent=2)
         print(f"Completed tests written to: {self.completed_tests_file}")
+
+    def _assert_db_coverage(self, test_case: Path, query_dir: Path) -> None:
+        """Compare produced db_coverage.json against a case fixture, if any.
+
+        Rollout is incremental: cases without an ``expected/db_coverage.json``
+        fixture skip cleanly with a log line.
+        """
+        fixture_path = test_case / EXPECTED_DIR / DB_COVERAGE_FILENAME
+        if not fixture_path.exists():
+            print(
+                f"Test case {test_case.name}: no {EXPECTED_DIR}/"
+                f"{DB_COVERAGE_FILENAME} fixture — skipping db_coverage"
+                " assertion."
+            )
+            return
+        actual_path = query_dir / DB_COVERAGE_FILENAME
+        self.assertTrue(
+            actual_path.exists(),
+            f"Expected {actual_path} to exist after P5.",
+        )
+        with open(fixture_path) as f:
+            expected = json.load(f)
+        with open(actual_path) as f:
+            actual = json.load(f)
+        assert_matches(expected, actual)
+        print_green(
+            f"Test case {test_case.name}: db_coverage.json matches fixture."
+        )
 
     def prepare_working_dir(self, test_case: Path) -> Path:
         """Copy test case files into a fresh working directory"""
@@ -298,6 +330,8 @@ class IntegrationTest(unittest.TestCase):
                     config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P5 PASS\n")
+
+                self._assert_db_coverage(test_case, query_dir)
 
                 # Copy newick tree into query dir
                 nwk_file = next(wdir.glob("*.nwk"))
