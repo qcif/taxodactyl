@@ -115,7 +115,7 @@ Each required file is fetched via a single `az storage blob download`. `AZURE_ST
 ### Shared flags
 
 - `--yes` / `-y` — skip confirmation prompts.
-- `--dry-run` — report actions without writing files.
+- `--dry` — report actions without writing files.
 
 ### Typical workflow
 
@@ -133,7 +133,7 @@ suite run.
 1. Identify a completed Nextflow run and note its `.nextflow.log` path
    and the `sample_id` of the query you want to snapshot.
 2. `scripts/tests/integration/testkit.py harvest PATH/TO/.nextflow.log
-   --query SAMPLE_ID --name NAME` — optionally add `--dry-run` first to
+   --query SAMPLE_ID --name NAME` — optionally add `--dry` first to
    preview the resolution plan.
    - Azure runs: `source deployment/azure/batch-helpers.sh && az_load_env`
      first so per-file blob downloads authenticate.

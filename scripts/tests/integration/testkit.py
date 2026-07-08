@@ -48,7 +48,11 @@ from tests.integration.test_integration import (  # noqa: E402
     TEMPDIR_PREFIX,
 )
 
-PYTHON_ROOT = Path(__file__).parents[2]
+# ``__file__`` may be a symlink (e.g. ``testkit.py`` symlinked into
+# ``$PATH`` or the repo root). Resolve it so we walk from the real file
+# location — otherwise ``parents[2]`` climbs above the symlink's directory
+# and TEST_CASE_ROOT ends up pointing outside the repo.
+PYTHON_ROOT = Path(__file__).resolve().parents[2]
 TEST_CASE_ROOT = PYTHON_ROOT / "tests/test-data/integration/blast"
 
 USE_COLOUR = sys.stdout.isatty()
@@ -223,7 +227,7 @@ def _confirm(prompt: str, *, assume_yes: bool) -> bool:
 def _write_fixture(plan: CasePlan, *, dry_run: bool) -> None:
     plan.fixture.parent.mkdir(parents=True, exist_ok=True)
     if dry_run:
-        print(f"  {YELLOW}(dry-run){RESET} would copy {plan.produced}"
+        print(f"  {YELLOW}(dry){RESET} would copy {plan.produced}"
               f" -> {plan.fixture}")
         return
     shutil.copy2(plan.produced, plan.fixture)
@@ -335,6 +339,7 @@ def cmd_harvest(args: argparse.Namespace) -> int:
             case_name=args.name,
             case_root=TEST_CASE_ROOT,
             dry_run=args.dry_run,
+            assume_yes=args.yes,
             work_dir_override=args.work_dir,
             outdir_override=args.outdir,
             trace_override=args.trace,
@@ -343,7 +348,7 @@ def cmd_harvest(args: argparse.Namespace) -> int:
         raise ToolkitError(str(exc)) from exc
 
     if args.dry_run:
-        print(f"{YELLOW}(dry-run){RESET} no files written.")
+        print(f"{YELLOW}(dry){RESET} no files written.")
         return 0
 
     print()
@@ -368,7 +373,8 @@ def _add_shared_flags(sub: argparse.ArgumentParser) -> None:
         help="Skip confirmation prompts.",
     )
     sub.add_argument(
-        "--dry-run",
+        "--dry",
+        dest="dry_run",
         action="store_true",
         help="Report what would happen without writing any files.",
     )
@@ -491,9 +497,11 @@ def _build_parser() -> argparse.ArgumentParser:
         "--query",
         required=True,
         help=(
-            "sample_id of the query to snapshot (e.g. 'VE24-1351_COI')."
-            " Must match a row in the run's metadata.csv and a"
-            " <Iteration_query-def> prefix in blast_result.xml."
+            "Which query to snapshot. Accepts either a sample_id"
+            " (e.g. 'VE24-1351_COI') matching a metadata.csv row and a"
+            " <Iteration_query-def> prefix in blast_result.xml, or a"
+            " 1-3 digit query index (e.g. '3' or '003') — resolved to a"
+            " sample_id via the run's per-query task tags."
         ),
     )
     harvest_parser.add_argument(

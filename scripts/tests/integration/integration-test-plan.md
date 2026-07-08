@@ -87,7 +87,7 @@ tooling needed to keep them cheap.
 
 - [ ] Create `scripts/tests/integration/testkit.py` with an argparse
       sub-command dispatcher. Sub-commands: `harvest` (Phase 5), `promote`,
-      `seed`. Shared flags: `--yes`, `--dry-run`, TTY-only colour.
+      `seed`. Shared flags: `--yes`, `--dry`, TTY-only colour.
 - [ ] Do **not** wire testkit into `run_tests.sh`. It's a separate
       entrypoint — invoked as
       `python -m scripts.tests.integration.testkit <subcommand> …` or via
@@ -194,7 +194,7 @@ testkit.py harvest <nextflow-log> --query <query-id> --name <case>
 
 - Positional: path to the run's `.nextflow.log`.
 - Required flags: `--query <query-id>`, `--name <case>`.
-- Shared testkit flags apply: `--yes`, `--dry-run`.
+- Shared testkit flags apply: `--yes`, `--dry`.
 
 #### Checklist
 

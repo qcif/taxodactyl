@@ -46,6 +46,11 @@ TASK_HANDLER_RE = re.compile(
     r".*?workDir:\s*(?P<workdir>[^\]]+)\]"
 )
 
+# Per-query task tag format: ``query_NNN_<sample_id>`` (three-digit index,
+# left-padded). Used to resolve a numeric ``--query`` argument to a
+# sample_id by looking at any per-query task's tag.
+QUERY_TAG_RE = re.compile(r"^query_(?P<index>\d{3})_(?P<sample_id>.+)$")
+
 # Process name suffixes (after final ':') to source files from work dirs.
 PROC_VALIDATE_INPUT = "VALIDATE_INPUT"
 PROC_BLAST_BLASTN = "BLAST_BLASTN"
@@ -233,12 +238,16 @@ def load_tasks(
     run: RunInfo,
     log_path: Path,
     trace_override: Path | None = None,
-) -> tuple[list[TaskRow], str]:
-    """Return ``(tasks, source_label)``; trace preferred, log-scan fallback."""
+) -> tuple[list[TaskRow], Path | None]:
+    """Return ``(tasks, trace_path)``; trace preferred, log-scan fallback.
+
+    ``trace_path`` is the trace file used, or ``None`` if we fell back
+    to scanning the launcher log for TaskHandler lines.
+    """
     trace_path = _resolve_trace_path(run, trace_override)
     rows = _load_trace_rows(trace_path)
     if rows:
-        return rows, f"trace:{trace_path}"
+        return rows, trace_path
     rows = _scan_log_tasks(log_path)
     if not rows:
         raise HarvestError(
@@ -246,7 +255,33 @@ def load_tasks(
             f" (checked: {trace_path or 'default location'}) and no"
             f" TaskHandler lines in {log_path}."
         )
-    return rows, "log_scan"
+    return rows, None
+
+
+def resolve_query_id(query_arg: str, tasks: list[TaskRow]) -> str:
+    """Return a sample_id given either a sample_id or a 1-3 digit index.
+
+    Nextflow tags every per-query task with ``query_NNN_<sample_id>``.
+    If ``query_arg`` is purely digits (e.g. ``3`` or ``003``), pad it to
+    three digits and pick the sample_id from the first task whose tag
+    matches. Otherwise return ``query_arg`` unchanged.
+    """
+    if not query_arg.isdigit():
+        return query_arg
+    padded = query_arg.zfill(3)
+    prefix = f"query_{padded}_"
+    for t in tasks:
+        m = QUERY_TAG_RE.match(t.tag)
+        if m and m.group("index") == padded:
+            return m.group("sample_id")
+    tagged = sorted({
+        t.tag for t in tasks if QUERY_TAG_RE.match(t.tag)
+    })
+    raise HarvestError(
+        f"No per-query task tagged {prefix!r}* — cannot resolve query"
+        f" index {query_arg!r} to a sample_id."
+        + (f" Known query tags: {tagged}" if tagged else "")
+    )
 
 
 def find_task(
@@ -574,6 +609,7 @@ def harvest(
     case_root: Path,
     *,
     dry_run: bool = False,
+    assume_yes: bool = False,
     work_dir_override: Path | None = None,
     outdir_override: Path | None = None,
     trace_override: Path | None = None,
@@ -591,27 +627,59 @@ def harvest(
         )
 
     run = parse_launcher_line(log_path, outdir_override=outdir_override)
-    print(f"Profile: {run.profile}    Outdir: {run.outdir}")
+    tasks, trace_path = load_tasks(run, log_path, trace_override)
 
-    tasks, source_label = load_tasks(run, log_path, trace_override)
-    print(f"Tasks: {len(tasks)} rows loaded (source: {source_label}).")
+    print(f"Profile:              {run.profile}")
+    print(f"Outdir:               {run.outdir}")
+    if trace_path is not None:
+        print(f"Trace file:           {trace_path}")
+    else:
+        print(f"Trace file:           (none — fell back to log-scan of "
+              f"{log_path})")
     if work_dir_override is not None:
-        print(f"Local workdir override: {work_dir_override}")
+        print(f"Local workdir base:   {work_dir_override}")
+    print(f"Tasks:                {len(tasks)} rows loaded")
+    print(f"Case dir:             {case_dir}")
+
+    resolved_query_id = resolve_query_id(query_id, tasks)
+    if resolved_query_id != query_id:
+        print(f"Query:                {query_id!r} -> sample_id"
+              f" {resolved_query_id!r}")
+    else:
+        print(f"Query:                {query_id!r}")
+    query_id = resolved_query_id
 
     sources = _resolve_sources(run, tasks, query_id)
 
+    print()
+    header = (
+        "Resolution plan (--dry: no files fetched or written):"
+        if dry_run
+        else "Resolution plan:"
+    )
+    print(header)
+    for source in sources:
+        dest = case_dir / source.case_name
+        print(
+            f"  {source.workdir_uri}/{source.filename}"
+            f"  ->  {dest}"
+            f"  (filter={source.filter or 'copy'})"
+        )
+
     written: list[Path] = []
     if dry_run:
-        print()
-        print("Resolution plan (dry-run — no files fetched or written):")
-        for source in sources:
-            dest = case_dir / source.case_name
-            print(
-                f"  {source.workdir_uri}/{source.filename}"
-                f"  ->  {dest}"
-                f"  (filter={source.filter or 'copy'})"
-            )
         return HarvestResult(case_dir=case_dir, written=[])
+
+    if not assume_yes:
+        print()
+        print(
+            "Review the resolution plan above — if Outdir, Trace file or"
+            " workdir base look wrong, re-run with --outdir / --trace /"
+            " --work-dir set."
+        )
+        reply = input("\nProceed with harvest? [y/N] ").strip().lower()
+        if reply not in ("y", "yes"):
+            raise HarvestError("Aborted at confirmation prompt.")
 
     with tempfile.TemporaryDirectory(prefix="harvest_") as tmp_str:
         tmp = Path(tmp_str)

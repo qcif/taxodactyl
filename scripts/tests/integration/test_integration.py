@@ -193,7 +193,19 @@ class IntegrationTest(unittest.TestCase):
             expected = json.load(f)
         with open(actual_path) as f:
             actual = json.load(f)
-        assert_matches(expected, actual)
+        try:
+            assert_matches(expected, actual)
+        except AssertionError as exc:
+            raise AssertionError(
+                f"{exc}\n\n"
+                f"  Expected fixture: {fixture_path}\n"
+                f"  Actual output:    {actual_path}\n"
+                f"\n"
+                f"  If this is expected drift, promote the fixture:\n"
+                f"    testkit.py promote --case {test_case.name}\n"
+                f"  Otherwise, diff the two files to investigate the"
+                f" regression."
+            )
         print_green(
             f"Test case {test_case.name}: db_coverage.json matches fixture."
         )
