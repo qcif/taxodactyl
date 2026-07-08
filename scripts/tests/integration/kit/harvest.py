@@ -54,6 +54,7 @@ QUERY_TAG_RE = re.compile(r"^query_(?P<index>\d{3})_(?P<sample_id>.+)$")
 # Process name suffixes (after final ':') to source files from work dirs.
 PROC_VALIDATE_INPUT = "VALIDATE_INPUT"
 PROC_BLAST_BLASTN = "BLAST_BLASTN"
+PROC_MOCK_BLASTN = "MOCK_BLASTN"  # nf-test drop-in replacement
 PROC_BLAST_BLASTDBCMD = "BLAST_BLASTDBCMD"
 PROC_EXTRACT_TAXONOMY = "EXTRACT_TAXONOMY"
 PROC_FASTME = "FASTME"
@@ -234,53 +235,93 @@ def _scan_log_tasks(log_path: Path) -> list[TaskRow]:
     return rows
 
 
+@dataclass
+class TaskSource:
+    """Where the task list came from and any reason we skipped the trace."""
+    trace_path: Path | None       # trace we ended up using (rows populated)
+    trace_checked: Path | None    # trace we tried but had no workdir data
+    log_scan_used: bool
+
+
 def load_tasks(
     run: RunInfo,
     log_path: Path,
     trace_override: Path | None = None,
-) -> tuple[list[TaskRow], Path | None]:
-    """Return ``(tasks, trace_path)``; trace preferred, log-scan fallback.
-
-    ``trace_path`` is the trace file used, or ``None`` if we fell back
-    to scanning the launcher log for TaskHandler lines.
-    """
+) -> tuple[list[TaskRow], TaskSource]:
+    """Return ``(tasks, source)``; trace preferred, log-scan fallback."""
     trace_path = _resolve_trace_path(run, trace_override)
     rows = _load_trace_rows(trace_path)
     if rows:
-        return rows, trace_path
+        return rows, TaskSource(
+            trace_path=trace_path,
+            trace_checked=None,
+            log_scan_used=False,
+        )
+    trace_checked = trace_path
     rows = _scan_log_tasks(log_path)
     if not rows:
         raise HarvestError(
             f"Could not resolve any tasks — no populated trace found"
-            f" (checked: {trace_path or 'default location'}) and no"
+            f" (checked: {trace_checked or 'default location'}) and no"
             f" TaskHandler lines in {log_path}."
         )
-    return rows, None
+    return rows, TaskSource(
+        trace_path=None,
+        trace_checked=trace_checked,
+        log_scan_used=True,
+    )
 
 
-def resolve_query_id(query_arg: str, tasks: list[TaskRow]) -> str:
+def resolve_query_id(
+    query_arg: str,
+    tasks: list[TaskRow],
+    outdir: Path | None = None,
+) -> str:
     """Return a sample_id given either a sample_id or a 1-3 digit index.
 
-    Nextflow tags every per-query task with ``query_NNN_<sample_id>``.
-    If ``query_arg`` is purely digits (e.g. ``3`` or ``003``), pad it to
-    three digits and pick the sample_id from the first task whose tag
-    matches. Otherwise return ``query_arg`` unchanged.
+    Two resolution sources are tried in order:
+
+    1. Per-query task tags: Nextflow tags every per-query task with
+       ``query_NNN_<sample_id>``.
+    2. Outdir per-query directories: the published outdir has
+       ``query_NNN_<sample_id>/`` dirs. Useful when the run stopped
+       before per-query tasks ran (e.g. nf-test mock runs that only
+       cover the pre-query part of the workflow) but the query
+       directory names were still emitted.
+
+    Non-digit ``query_arg`` is returned unchanged (assumed to be a
+    sample_id already).
     """
     if not query_arg.isdigit():
         return query_arg
     padded = query_arg.zfill(3)
     prefix = f"query_{padded}_"
+
     for t in tasks:
         m = QUERY_TAG_RE.match(t.tag)
         if m and m.group("index") == padded:
             return m.group("sample_id")
-    tagged = sorted({
+
+    if outdir is not None:
+        for entry in outdir.glob(f"{prefix}*"):
+            if not entry.is_dir():
+                continue
+            m = QUERY_TAG_RE.match(entry.name)
+            if m and m.group("index") == padded:
+                return m.group("sample_id")
+
+    known_from_tags = sorted({
         t.tag for t in tasks if QUERY_TAG_RE.match(t.tag)
     })
+    known_from_outdir = sorted({
+        p.name for p in (outdir.glob("query_*") if outdir else [])
+        if p.is_dir() and QUERY_TAG_RE.match(p.name)
+    })
+    known = known_from_tags or known_from_outdir
     raise HarvestError(
-        f"No per-query task tagged {prefix!r}* — cannot resolve query"
-        f" index {query_arg!r} to a sample_id."
-        + (f" Known query tags: {tagged}" if tagged else "")
+        f"No per-query task tag or outdir directory matching {prefix!r}"
+        f"* — cannot resolve query index {query_arg!r} to a sample_id."
+        + (f" Known: {known}" if known else "")
     )
 
 
@@ -541,16 +582,56 @@ def _resolve_query_task(
     return find_task(tasks, process, tag_contains=query_id)
 
 
+def _find_task_or_none(
+    tasks: list[TaskRow],
+    process: str,
+    tag_contains: str | None = None,
+) -> TaskRow | None:
+    try:
+        return find_task(tasks, process, tag_contains=tag_contains)
+    except HarvestError:
+        return None
+
+
 def _resolve_sources(
     run: RunInfo,
     tasks: list[TaskRow],
     query_id: str,
 ) -> list[SourceFile]:
-    validate = find_task(tasks, PROC_VALIDATE_INPUT)
-    blastn = find_task(tasks, PROC_BLAST_BLASTN)
-    blastdbcmd = find_task(tasks, PROC_BLAST_BLASTDBCMD)
-    taxonomy = find_task(tasks, PROC_EXTRACT_TAXONOMY)
-    fastme = _resolve_query_task(tasks, PROC_FASTME, query_id)
+    validate = _find_task_or_none(tasks, PROC_VALIDATE_INPUT)
+    blastn = (
+        _find_task_or_none(tasks, PROC_BLAST_BLASTN)
+        or _find_task_or_none(tasks, PROC_MOCK_BLASTN)
+    )
+    blastdbcmd = _find_task_or_none(tasks, PROC_BLAST_BLASTDBCMD)
+    taxonomy = _find_task_or_none(tasks, PROC_EXTRACT_TAXONOMY)
+    fastme = _find_task_or_none(
+        tasks, PROC_FASTME, tag_contains=query_id,
+    )
+
+    missing = []
+    if validate is None:
+        missing.append(PROC_VALIDATE_INPUT)
+    if blastn is None:
+        missing.append(
+            f"{PROC_BLAST_BLASTN} (or {PROC_MOCK_BLASTN})"
+        )
+    if blastdbcmd is None:
+        missing.append(PROC_BLAST_BLASTDBCMD)
+    if taxonomy is None:
+        missing.append(PROC_EXTRACT_TAXONOMY)
+    if fastme is None:
+        missing.append(f"{PROC_FASTME} tagged with {query_id!r}")
+    if missing:
+        raise HarvestError(
+            "Cannot build a full case dir — the run did not produce"
+            " tasks for the following required workflow steps:\n"
+            + "\n".join(f"  - {m}" for m in missing)
+            + "\nThis is common for nf-test scenarios that mock or"
+            " truncate the workflow — harvest needs a full end-to-end"
+            " run."
+        )
+
     return [
         SourceFile(
             CASE_BLAST_XML, blastn.workdir_uri, WD_BLAST_XML, "xml",
@@ -627,21 +708,28 @@ def harvest(
         )
 
     run = parse_launcher_line(log_path, outdir_override=outdir_override)
-    tasks, trace_path = load_tasks(run, log_path, trace_override)
+    tasks, source = load_tasks(run, log_path, trace_override)
 
-    print(f"Profile:              {run.profile}")
+    print(f"\nProfile:              {run.profile}")
     print(f"Outdir:               {run.outdir}")
-    if trace_path is not None:
-        print(f"Trace file:           {trace_path}")
+    if source.trace_path is not None:
+        print(f"Trace file:           {source.trace_path}")
+    elif source.trace_checked is not None:
+        print(
+            f"Trace file:           {source.trace_checked}"
+            f" (no workdir column — using log-scan of {log_path})"
+        )
     else:
-        print(f"Trace file:           (none — fell back to log-scan of "
-              f"{log_path})")
+        print(
+            f"Trace file:           (no trace found — using log-scan of"
+            f" {log_path})"
+        )
     if work_dir_override is not None:
         print(f"Local workdir base:   {work_dir_override}")
     print(f"Tasks:                {len(tasks)} rows loaded")
     print(f"Case dir:             {case_dir}")
 
-    resolved_query_id = resolve_query_id(query_id, tasks)
+    resolved_query_id = resolve_query_id(query_id, tasks, run.outdir)
     if resolved_query_id != query_id:
         print(f"Query:                {query_id!r} -> sample_id"
               f" {resolved_query_id!r}")
