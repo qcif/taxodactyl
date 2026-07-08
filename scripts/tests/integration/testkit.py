@@ -40,6 +40,7 @@ from tests.integration.kit.coverage_assert import (  # noqa: E402
 )
 from tests.integration.kit.harvest import (  # noqa: E402
     HarvestError,
+    RemotePath,
     harvest,
 )
 from tests.integration.test_integration import (  # noqa: E402
@@ -332,17 +333,31 @@ def cmd_seed(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 
 def cmd_harvest(args: argparse.Namespace) -> int:
+    # If the log is remote, let the three optional flags inherit its
+    # host by default — the common case is that all four share a host.
+    outdir = (
+        args.outdir.with_host_from(args.log)
+        if args.outdir is not None else None
+    )
+    trace = (
+        args.trace.with_host_from(args.log)
+        if args.trace is not None else None
+    )
+    work_dir = (
+        args.work_dir.with_host_from(args.log)
+        if args.work_dir is not None else None
+    )
     try:
         result = harvest(
-            log_path=args.log,
+            log=args.log,
             query_id=args.query,
             case_name=args.name,
             case_root=TEST_CASE_ROOT,
             dry_run=args.dry_run,
             assume_yes=args.yes,
-            work_dir_override=args.work_dir,
-            outdir_override=args.outdir,
-            trace_override=args.trace,
+            work_dir=work_dir,
+            outdir=outdir,
+            trace=trace,
         )
     except HarvestError as exc:
         raise ToolkitError(str(exc)) from exc
@@ -490,8 +505,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     harvest_parser.add_argument(
         "log",
-        type=Path,
-        help="Path to the run's .nextflow.log.",
+        type=RemotePath,
+        help=(
+            "Path to the run's .nextflow.log. May be either a local path"
+            " or `host:path` for a run on a remote SSH host (e.g."
+            " `daff-admin:/mnt/data/.../nextflow.log`)."
+        ),
     )
     harvest_parser.add_argument(
         "--query",
@@ -516,37 +535,42 @@ def _build_parser() -> argparse.ArgumentParser:
     harvest_parser.add_argument(
         "--work-dir",
         dest="work_dir",
-        type=Path,
+        type=RemotePath,
         default=None,
         help=(
-            "Local mode only: override the workdir base if the log's"
-            " workDir paths are stale (e.g. a run copied off its"
-            " original machine). Each task's <hash-prefix>/<hash-tail>"
-            " is joined to this path instead."
+            "Override the workdir base if the log's workDir paths are"
+            " stale (e.g. a run copied off its original machine). Each"
+            " task's <hash-prefix>/<hash-tail> is joined to this path"
+            " instead. Accepts local paths or `host:path`; a plain path"
+            " inherits the log's host when the log is remote."
         ),
     )
     harvest_parser.add_argument(
         "--outdir",
         dest="outdir",
-        type=Path,
+        type=RemotePath,
         default=None,
         help=(
             "Override the run's outdir. By default it's read from the"
             " launcher line's `--outdir`, or from the `outdir` field of"
-            " a `-params-file` JSON. Useful when the log's paths are"
-            " stale or when the outdir sits at a non-default location"
-            " (e.g. Cloudgene job dirs)."
+            " a `-params-file` JSON. Accepts local paths or `host:path`;"
+            " a plain path inherits the log's host when the log is"
+            " remote. Useful when the log's paths are stale, when the"
+            " outdir sits at a non-default location (e.g. Cloudgene job"
+            " dirs), or when it lives on the same SSH host as the log."
         ),
     )
     harvest_parser.add_argument(
         "--trace",
         dest="trace",
-        type=Path,
+        type=RemotePath,
         default=None,
         help=(
             "Override the execution trace path. By default it's read"
             " from `-with-trace` in the launcher line, or from"
-            " `<outdir>/pipeline_info/execution_trace_*.txt`."
+            " `<outdir>/pipeline_info/execution_trace_*.txt`. Accepts"
+            " local paths or `host:path`; a plain path inherits the"
+            " log's host when the log is remote."
         ),
     )
     _add_shared_flags(harvest_parser)

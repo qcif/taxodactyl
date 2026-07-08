@@ -112,6 +112,24 @@ scripts/tests/integration/testkit.py harvest \
 Each required file is fetched via a single `az storage blob download`. `AZURE_STORAGE_ACCOUNT_KEY` must be set in the shell — `az_load_env` from
 `batch-helpers.sh` handles that.
 
+**Remote run over SSH/SCP** (run lives on another machine reachable via
+`ssh`; no need to rsync the whole job dir down first):
+
+```bash
+scripts/tests/integration/testkit.py harvest \
+    daff-admin:/mnt/data/tests-wf-2/tests/…/meta/nextflow.log \
+    --query 008 \
+    --name my_new_case
+```
+
+Any of `--outdir`, `--trace`, `--work-dir` can also be `host:path`, but
+plain paths inherit the log's host by default — so `--outdir
+/mnt/data/…/output` alongside a `daff-admin:` log is treated as
+`daff-admin:/mnt/data/…/output`. Requires non-interactive `ssh <host>`
+(agent forwarding or key auth). Each of the six required files is
+fetched with a single `scp` (never a whole-workdir mirror), with three
+retries on transient failures.
+
 ### Shared flags
 
 - `--yes` / `-y` — skip confirmation prompts.
