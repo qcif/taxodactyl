@@ -21,7 +21,7 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
-from tests.integration.coverage_assert import assert_matches
+from tests.integration.kit.coverage_assert import assert_matches
 
 PYTHON_ROOT = Path(__file__).parents[2]
 TEST_DATA_DIR = PYTHON_ROOT / "tests/test-data"
@@ -30,6 +30,15 @@ TEMPDIR_PREFIX = "integration_test_"
 QUERY_INDEX_FILENAME = 'query.index'  # optional query index to use (0-indexed)
 EXPECTED_DIR = "expected"
 DB_COVERAGE_FILENAME = "db_coverage.json"
+
+REQUIRED_CASE_FILES = (
+    "blast_result.xml",
+    "candidates.nwk",
+    "metadata.csv",
+    "query.fasta",
+    "taxids.csv",
+    "taxonomy.csv",
+)
 
 
 def print_green(text: str):
@@ -54,6 +63,32 @@ class IntegrationTest(unittest.TestCase):
         cls.python = PYTHON_ROOT / "venv" / "bin" / "python"
         cls.taxdump_dir = Path.home() / ".taxonkit"
         cls.test_case_root = TEST_DATA_DIR / "integration/blast"
+        cls._assert_cases_complete()
+
+    @classmethod
+    def _assert_cases_complete(cls):
+        """Fail loudly if any case dir is missing a required input file.
+
+        Catches half-set-up cases (e.g. a harvest that failed halfway,
+        or a hand-created dir missing one of the six required files).
+        """
+        problems = []
+        for case in sorted(cls.test_case_root.iterdir()):
+            if not case.is_dir():
+                continue
+            missing = [
+                name for name in REQUIRED_CASE_FILES
+                if not (case / name).is_file()
+            ]
+            if missing:
+                problems.append(f"  - {case.name}: missing {missing}")
+        if problems:
+            raise EnvironmentError(
+                "Integration test cases are missing required files:\n"
+                + "\n".join(problems)
+                + "\nRun `testkit.py harvest ...` to (re)build the case"
+                " dir, or delete it if it's obsolete."
+            )
 
     def setUp(self):
         """Clean up old temp dirs and create a new one."""

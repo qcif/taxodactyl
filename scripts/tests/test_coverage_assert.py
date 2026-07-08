@@ -14,7 +14,7 @@ Covers each of the four rule tiers with hand-crafted expected/actual pairs:
 import copy
 import unittest
 
-from tests.integration.coverage_assert import (
+from tests.integration.kit.coverage_assert import (
     ChangeKind,
     assert_matches,
     semantic_diff,

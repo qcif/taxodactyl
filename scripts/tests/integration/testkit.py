@@ -6,12 +6,11 @@ entrypoint, not a test runner.
 
 Invoke directly::
 
-    scripts/tests/integration/toolkit.py <subcommand> [...]
+    scripts/tests/integration/testkit.py <subcommand> [...]
 
 Sub-commands:
 
-- ``harvest`` — scaffold a new case directory from a Nextflow workflow output
-  (Phase 5 — not yet implemented).
+- ``harvest`` — scaffold a new case directory from a Nextflow workflow run.
 - ``promote`` — copy a produced ``db_coverage.json`` into ``<case>/expected/``
   after reviewing the semantic diff.
 - ``seed`` — like ``promote`` but for a case with no fixture yet; no diff step.
@@ -28,16 +27,20 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # Ensure ``scripts/`` is importable when the file is executed directly, so
-# ``from tests.integration.coverage_assert import …`` resolves the same way
-# it does under ``python -m``.
+# ``from tests.integration.kit.coverage_assert import …`` resolves the same
+# way it does under ``python -m``.
 _SCRIPTS_ROOT = str(Path(__file__).resolve().parents[2])
 if _SCRIPTS_ROOT not in sys.path:
     sys.path.insert(0, _SCRIPTS_ROOT)
 
-from tests.integration.coverage_assert import (  # noqa: E402
+from tests.integration.kit.coverage_assert import (  # noqa: E402
     Change,
     ChangeKind,
     semantic_diff,
+)
+from tests.integration.kit.harvest import (  # noqa: E402
+    HarvestError,
+    harvest,
 )
 from tests.integration.test_integration import (  # noqa: E402
     DB_COVERAGE_FILENAME,
@@ -325,9 +328,33 @@ def cmd_seed(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 
 def cmd_harvest(args: argparse.Namespace) -> int:
-    raise ToolkitError(
-        "harvest is not yet implemented — planned for Phase 5."
+    try:
+        result = harvest(
+            log_path=args.log,
+            query_id=args.query,
+            case_name=args.name,
+            case_root=TEST_CASE_ROOT,
+            dry_run=args.dry_run,
+            work_dir_override=args.work_dir,
+            outdir_override=args.outdir,
+            trace_override=args.trace,
+        )
+    except HarvestError as exc:
+        raise ToolkitError(str(exc)) from exc
+
+    if args.dry_run:
+        print(f"{YELLOW}(dry-run){RESET} no files written.")
+        return 0
+
+    print()
+    print(f"{GREEN}Harvested {len(result.written)} file(s) into"
+          f" {result.case_dir}.{RESET}")
+    print(
+        f"Next: `run_tests.sh --keep RUN_TEST_CASE={args.name}` to smoke"
+        f" test the case, then `testkit.py seed --case {args.name}` once"
+        " the coverage output looks right."
     )
+    return 0
 
 
 # ---------------------------------------------------------------------------
@@ -363,7 +390,7 @@ def _add_from_flag(sub: argparse.ArgumentParser) -> None:
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="toolkit",
+        prog="testkit",
         description=(
             "Manage integration-test fixtures for db_coverage.json."
             " All sub-commands read from a previous integration test run"
@@ -434,12 +461,88 @@ def _build_parser() -> argparse.ArgumentParser:
     _add_shared_flags(seed)
     seed.set_defaults(func=cmd_seed)
 
-    # harvest (Phase 5)
-    harvest = subparsers.add_parser(
+    # harvest
+    harvest_parser = subparsers.add_parser(
         "harvest",
-        help="Scaffold a new case dir from a Nextflow output (Phase 5).",
+        help="Scaffold a new case dir from a completed NF run.",
+        description=(
+            "Scaffold a new integration test case dir from a completed"
+            " Nextflow run. Takes the run's .nextflow.log as the sole"
+            " source arg — the first line encodes the profile"
+            " (local/singularity/azure) and the outdir, and the"
+            " pipeline_info/execution_trace_*.txt under that outdir gives"
+            " the per-task workdir URI. Files that live only in a task"
+            " scratch dir (metadata.csv, sequences.fasta, taxids.csv,"
+            " taxonomy.csv, candidates_phylogeny.nwk) are fetched"
+            " individually — Azure runs pull each blob one at a time,"
+            " never mirroring the whole workdir. blast_result.xml,"
+            " query.fasta and metadata.csv are filtered down to the"
+            " single --query <sample-id> so the case becomes a"
+            " single-query snapshot. Refuses if a case of --name already"
+            " exists under scripts/tests/test-data/integration/blast/."
+        ),
     )
-    harvest.set_defaults(func=cmd_harvest)
+    harvest_parser.add_argument(
+        "log",
+        type=Path,
+        help="Path to the run's .nextflow.log.",
+    )
+    harvest_parser.add_argument(
+        "--query",
+        required=True,
+        help=(
+            "sample_id of the query to snapshot (e.g. 'VE24-1351_COI')."
+            " Must match a row in the run's metadata.csv and a"
+            " <Iteration_query-def> prefix in blast_result.xml."
+        ),
+    )
+    harvest_parser.add_argument(
+        "--name",
+        required=True,
+        help=(
+            "Case name to create under"
+            " scripts/tests/test-data/integration/blast/<name>/."
+            " Must not collide with an existing case dir."
+        ),
+    )
+    harvest_parser.add_argument(
+        "--work-dir",
+        dest="work_dir",
+        type=Path,
+        default=None,
+        help=(
+            "Local mode only: override the workdir base if the log's"
+            " workDir paths are stale (e.g. a run copied off its"
+            " original machine). Each task's <hash-prefix>/<hash-tail>"
+            " is joined to this path instead."
+        ),
+    )
+    harvest_parser.add_argument(
+        "--outdir",
+        dest="outdir",
+        type=Path,
+        default=None,
+        help=(
+            "Override the run's outdir. By default it's read from the"
+            " launcher line's `--outdir`, or from the `outdir` field of"
+            " a `-params-file` JSON. Useful when the log's paths are"
+            " stale or when the outdir sits at a non-default location"
+            " (e.g. Cloudgene job dirs)."
+        ),
+    )
+    harvest_parser.add_argument(
+        "--trace",
+        dest="trace",
+        type=Path,
+        default=None,
+        help=(
+            "Override the execution trace path. By default it's read"
+            " from `-with-trace` in the launcher line, or from"
+            " `<outdir>/pipeline_info/execution_trace_*.txt`."
+        ),
+    )
+    _add_shared_flags(harvest_parser)
+    harvest_parser.set_defaults(func=cmd_harvest)
 
     return parser
 

@@ -20,7 +20,7 @@ tooling needed to keep them cheap.
     tolerated to differ — recurse with type-only rules.
 - Cases without a fixture keep today's "no exception raised" behaviour.
 - One tooling entrypoint, separate from the test runner:
-  - `scripts/tests/integration/toolkit.py` — sub-command CLI (`harvest`,
+  - `scripts/tests/integration/testkit.py` — sub-command CLI (`harvest`,
     `promote`, `seed`).
   - Kept out of `run_tests.sh`, which stays scoped to running tests
     ([run_tests.sh:16-39](scripts/tests/integration/run_tests.sh#L16-L39)).
@@ -28,18 +28,21 @@ tooling needed to keep them cheap.
     entrypoint — different mental model, different arg surface, and it
     keeps `run_tests.sh --help` honest.
   - Sub-commands:
-    - `toolkit.py harvest` — scaffold a new case dir from an NF workflow
-      output, driven by a declarative manifest.
-    - `toolkit.py promote` — copy a `--keep` output into `expected/`
+    - `testkit.py harvest` — scaffold a new case dir from a completed NF
+      run, scoped to a single query. Takes the run's `.nextflow.log` as
+      the sole source arg; profile (`local`/`azure`) and outdir are
+      parsed from it, and any per-task work files are resolved via
+      `pipeline_info/execution_trace_*.txt`.
+    - `testkit.py promote` — copy a `--keep` output into `expected/`
       after a semantic-diff review.
-    - `toolkit.py seed` — like `promote` but for a case that has no
+    - `testkit.py seed` — like `promote` but for a case that has no
       fixture yet (no diff step).
 
 ## Checklist
 
 ### Phase 1 — Assertion walker
 
-- [ ] Create `scripts/tests/integration/coverage_assert.py` with two entry
+- [ ] Create `scripts/tests/integration/kit/coverage_assert.py` with two entry
       points:
     - `assert_matches(expected: dict, actual: dict) -> None` — raises
       `AssertionError` with a path-qualified message on any tier violation.
@@ -80,16 +83,16 @@ tooling needed to keep them cheap.
       `expected/db_coverage.json`, commit.
 - [ ] Re-run the suite; confirm all seeded cases pass.
 
-### Phase 4 — `toolkit.py` skeleton + `promote` sub-command
+### Phase 4 — `testkit.py` skeleton + `promote` sub-command
 
-- [ ] Create `scripts/tests/integration/toolkit.py` with an argparse
+- [ ] Create `scripts/tests/integration/testkit.py` with an argparse
       sub-command dispatcher. Sub-commands: `harvest` (Phase 5), `promote`,
       `seed`. Shared flags: `--yes`, `--dry-run`, TTY-only colour.
-- [ ] Do **not** wire toolkit into `run_tests.sh`. It's a separate
+- [ ] Do **not** wire testkit into `run_tests.sh`. It's a separate
       entrypoint — invoked as
-      `python -m scripts.tests.integration.toolkit <subcommand> …` or via
+      `python -m scripts.tests.integration.testkit <subcommand> …` or via
       the `venv` script alias.
-- [ ] Implement `toolkit.py promote`:
+- [ ] Implement `testkit.py promote`:
     - Args: `--case <name>` | `--all` | `--all-failed`; `--from <path>`.
     - Locate the most recent `integration_test_*` tmp dir when `--from`
       is not given (mirror the existing `TEMPDIR_PREFIX` convention in
@@ -104,7 +107,7 @@ tooling needed to keep them cheap.
     - Print the resolved fixture path so the dev can `git add` it
       directly.
     - Exit non-zero if no changes were promoted.
-- [ ] Implement `toolkit.py seed`:
+- [ ] Implement `testkit.py seed`:
     - Args: `--case <name>`; `--from <path>` (optional, same discovery
       rule as `promote`).
     - Refuses to run if `expected/db_coverage.json` already exists
@@ -113,36 +116,129 @@ tooling needed to keep them cheap.
       path.
 - [ ] Extend
       [scripts/tests/integration/README.md](scripts/tests/integration/README.md)
-      with a "Managing fixtures with toolkit.py" section.
+      with a "Managing fixtures with testkit.py" section.
 
-### Phase 5 — `toolkit.py harvest` sub-command
+### Phase 5 — `testkit.py harvest` sub-command
 
-- [ ] Create `scripts/tests/integration/harvest_manifest.yml` declaring
-      required and optional input files per case (baseline from an
-      existing case: `blast_result.xml`, `candidates.nwk`, `metadata.csv`,
-      `query.fasta`, `taxids.csv`, `taxonomy.csv`).
-- [ ] Implement `toolkit.py harvest`:
-    - Args: `--from <nf-output-dir> --query <query-id> --name <case>`;
-      `--from-report <report.html>`.
-    - Interactive query picker when `--query` is omitted — list every
-      `query_*` dir under the run with a one-line summary (species, flag
-      count).
-    - Copy each manifest-declared file into
-      `scripts/tests/test-data/integration/blast/<name>/`; warn per
-      missing required file, ignore missing optional files.
-    - Rewrite absolute paths in copied files (start with `metadata.csv`)
-      to relative / placeholder form so the case is portable across
-      machines.
-    - `--from-report`: parse the workflow timestamp and query id embedded
-      in a completed report HTML and derive the source dir automatically.
-    - Print a summary: files harvested, files skipped, git paths to
-      `git add`.
+Scaffold a new test case dir from a completed NF workflow output, scoped to
+a single chosen query. The case dir must end up looking like an existing
+one (see [scripts/tests/test-data/integration/blast/A/](scripts/tests/test-data/integration/blast/A/))
+— a single-query snapshot suitable as `query_001` when the suite re-runs
+the Python phases against it.
+
+#### Required inputs and where they come from
+
+The suite's expected files for a case:
+
+| Case file          | NF source (per query dir unless noted) | Handling                      |
+| ------------------ | -------------------------------------- | ----------------------------- |
+| `blast_result.xml` | run-level `blast_result.xml`           | filter to the target query `<Iteration>`   |
+| `query.fasta`      | run-level `sequences.fasta`            | filter to the target query record   |
+| `metadata.csv`     | run-level `metadata.csv`               | filter to the target query row      |
+| `candidates.nwk`   | per-query `candidates_phylogeny.nwk`   | copy verbatim                 |
+| `taxids.csv`       | per-query `taxids.csv`                 | copy verbatim                 |
+| `taxonomy.csv`     | per-query `taxonomy.csv`               | copy verbatim                 |
+
+Rename on copy: `sequences.fasta` → `query.fasta`;
+`candidates_phylogeny.nwk` → `candidates.nwk`.
+
+Filtering rules:
+
+- `blast_result.xml`: keep only the `<Iteration>` whose
+  `<Iteration_query-def>` matches the chosen query id (prefix match on the
+  first whitespace-delimited token), implicitly making our target query the
+  first iteration.
+- `query.fasta`: keep only the FASTA record whose header starts with the
+  chosen query id.
+- `metadata.csv`: keep the header row plus the single row whose
+  `sample_id` matches the chosen query id.
+
+#### Single entrypoint: the `.nextflow.log`
+
+Rather than expose separate `--from` / `--from-azure` flags, harvest takes
+one required source arg: the run's `.nextflow.log`. Everything else is
+derived from it.
+
+- **Line 1** of `.nextflow.log` is the `nextflow.cli.Launcher` debug line
+  containing the full `nextflow run …` invocation. Parse it for:
+  - `-profile <name>` — determines local vs Azure retrieval mode.
+  - `--outdir <path>` — the run's published output directory (contains
+    `blast_result.xml`, per-query dirs, `pipeline_info/`).
+- `<outdir>/pipeline_info/execution_trace_*.txt` — a TSV with one row per
+  Nextflow task. The `workdir` column is a local path for the local
+  profile and an `az://<container>/work/<hash-prefix>/<hash-tail>` URI for
+  the Azure profile. Used to locate task-scratch files that are not
+  published (e.g. the per-query `metadata.csv`, `taxids.csv`,
+  `taxonomy.csv` which may live only in the corresponding task workdir).
+- For files that are published to `<outdir>` or `<outdir>/query_*/`
+  directly (e.g. `blast_result.xml`, `sequences.fasta`,
+  `candidates_phylogeny.nwk`), read them from there without touching the
+  trace.
+- For files only present in a task workdir, look up the relevant task by
+  process name in the trace (e.g. `TAXODACTYL:VALIDATE_INPUT` for
+  `metadata.csv`, the per-query taxid/taxonomy processes for the chosen
+  query), then:
+  - **Local profile**: read directly from the local workdir path.
+  - **Azure profile**: fetch via `deployment/azure/batch-helpers.sh`
+    helpers (already available in the dev shell — see project CLAUDE.md)
+    into a temp dir, then read from there.
+
+Behaviour is otherwise identical across profiles — the same filter/copy
+core runs on a materialised local view of the required files.
+
+#### CLI shape
+
+```
+testkit.py harvest <nextflow-log> --query <query-id> --name <case>
+```
+
+- Positional: path to the run's `.nextflow.log`.
+- Required flags: `--query <query-id>`, `--name <case>`.
+- Shared testkit flags apply: `--yes`, `--dry-run`.
+
+#### Checklist
+
+- [ ] Parse `.nextflow.log` line 1 to extract `-profile` and `--outdir`.
+      Refuse cleanly if either is missing.
+- [ ] Load the newest `pipeline_info/execution_trace_*.txt` from the
+      outdir; index rows by process name (and by per-query tag where
+      applicable) so per-query task workdirs can be resolved from the
+      chosen `--query`.
+- [ ] Extract the filter/copy core so it operates on a materialised local
+      source view (a dir or dict-of-paths containing every required
+      file). Local and Azure paths both funnel into this core.
+- [ ] Implement `blast_result.xml` iteration filter (prefix match on
+      `<Iteration_query-def>`; rewrite `<Iteration_iter-num>` to 1).
+- [ ] Implement `query.fasta` record filter (header prefix match) on the
+      run's `sequences.fasta`.
+- [ ] Implement `metadata.csv` row filter (`sample_id` == query id).
+- [ ] Copy `candidates_phylogeny.nwk` → `candidates.nwk`;
+      `taxids.csv` and `taxonomy.csv` verbatim.
+- [ ] Local profile: read published files from `<outdir>` and
+      `<outdir>/query_*/`; for any file only present in a task workdir,
+      read it directly from the workdir path listed in the trace.
+- [ ] Azure profile: for each required file, resolve its source (published
+      → `<outdir>`, otherwise task workdir `az://…` URI via the trace),
+      and fetch it into a temp dir using
+      `deployment/azure/batch-helpers.sh` helpers before dispatching to
+      the shared core. **Fetch each required file individually** (e.g. by
+      appending the known filename to the workdir URI) — never mirror the
+      whole workdir. Task workdirs can be large (multi-GB BLAST outputs,
+      scratch DBs, staged inputs), so a whole-dir pull would be
+      prohibitively slow and expensive.
+- [ ] Validate `--name` for uniqueness against existing case dirs under
+      `scripts/tests/test-data/integration/blast/`. Refuse with a clear
+      error if a case of that name already exists — harvest never
+      overwrites an existing case, even with `--yes` (updates go through
+      manual edits or a fresh name).
+- [ ] Print a summary: files harvested (with source → dest paths), any
+      warnings, and the git paths to `git add`.
 - [ ] Extend the integration README with an "Adding a new case" section
-      that walks: `toolkit.py harvest` → `run_tests.sh --test_case` →
-      `toolkit.py seed`.
+      that walks: `testkit.py harvest` → `run_tests.sh --test_case` →
+      `testkit.py seed`.
 - [ ] Add a lint helper (invoked by the test suite in `setUpClass`) that
-      flags any case dir missing a manifest-required file — catches
-      hand-created cases that were half-set-up.
+      flags any case dir missing a required file — catches hand-created
+      cases that were half-set-up.
 
 ### Phase 6 — End-to-end verification
 
@@ -163,18 +259,18 @@ tooling needed to keep them cheap.
       log; add a case reproducing it; confirm the assertion we'd have
       added would have caught it pre-hand-off.
 - [ ] CLI round trip:
-    - `toolkit.py harvest --from <past-run-dir> --query <query-id>
+    - `testkit.py harvest --from <past-run-dir> --query <query-id>
       --name smoke-harvest` — verify manifest coverage, portability
       rewrites, summary output.
     - `run_tests.sh --test_case smoke-harvest` — case runs end-to-end.
     - `run_tests.sh --keep --test_case smoke-harvest` then
-      `toolkit.py seed --case smoke-harvest` — fixture written.
+      `testkit.py seed --case smoke-harvest` — fixture written.
     - Re-run without `--keep` — passes cleanly.
     - Change a value in the fixture to trigger a `WOULD_FAIL` diff, run
-      `toolkit.py promote --case smoke-harvest`, confirm the diff renders
+      `testkit.py promote --case smoke-harvest`, confirm the diff renders
       correctly and prompts before writing.
     - Delete the smoke case + fixture.
-- [ ] `--help` on each `toolkit.py` sub-command renders a full workflow
+- [ ] `--help` on each `testkit.py` sub-command renders a full workflow
       explanation matching the README.
 - [ ] `flake8` clean across all new files.
 
