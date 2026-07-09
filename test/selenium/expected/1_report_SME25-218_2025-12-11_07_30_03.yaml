@@ -25,13 +25,13 @@ components:
   - id: toi_green_tick_first_row
     type: bool
     value: 'TRUE'
-  - id: overview_flag_text1
+  - id: conclusion_flag
     type: ''
     value: Flag 1B
-  - id: overview_flag_text2
+  - id: toi_flag
     type: ''
     value: Flag 2A
-  - id: overview_flag_text3
+  - id: preliminary_flag
     type: ''
     value: Flag 7NA
   - id: matching_species_strong
@@ -126,9 +126,7 @@ components:
     - id: record_count
       type: list
       value: '11374'
-    - id: record_text
-      type: list
-      value: with the given locus COI
+
     - id: flag_text2
       type: list
       value: 5.2B
@@ -162,9 +160,7 @@ components:
     - id: record_count
       type: list
       value: '144'
-    - id: record_text
-      type: list
-      value: with the given locus COI
+
     - id: flag_text2
       type: list
       value: 5.2B
@@ -199,9 +195,7 @@ components:
     - id: record_count
       type: list
       value: '144'
-    - id: record_text
-      type: list
-      value: with the given locus COI
+
     - id: flag_text2
       type: list
       value: 5.2B
@@ -234,9 +228,7 @@ components:
     - id: record_count
       type: list
       value: '6'
-    - id: record_text
-      type: list
-      value: with the given locus COI
+
     - id: flag_text2
       type: list
       value: 5.2B

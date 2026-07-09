@@ -23,13 +23,13 @@ components:
   - id: toi_green_tick_first_row
     type: bool
     value: 'FALSE'
-  - id: overview_flag_text1
+  - id: conclusion_flag
     type: ''
     value: Flag 1E
-  - id: overview_flag_text2
+  - id: toi_flag
     type: ''
     value: Flag 2B
-  - id: overview_flag_text3
+  - id: preliminary_flag
     type: ''
     value: Flag 7NA
   - id: matching_species_strong
@@ -109,9 +109,7 @@ components:
     - id: record_count
       type: list
       value: '4717'
-    - id: record_text
-      type: list
-      value: with the given locus COI
+
     - id: flag_text2
       type: list
       value: 5.2NA
