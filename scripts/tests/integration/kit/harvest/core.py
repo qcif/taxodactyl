@@ -20,6 +20,9 @@ from .tasks import (
     load_tasks,
 )
 
+_GREEN = "\033[32m" if sys.stdout.isatty() else ""
+_RESET = "\033[0m" if sys.stdout.isatty() else ""
+
 
 @dataclass
 class HarvestResult:
@@ -144,16 +147,28 @@ def _print_header(
     work_dir_display: str | None,
     task_count: int,
     case_dir: Path,
+    query_arg: str,
+    resolved_query_id: str,
 ) -> None:
-    print(f"\nProfile:              {profile}")
+    lines = [f"Profile:              {profile}"]
     if remote_host is not None:
-        print(f"Remote host:          {remote_host}")
-    print(f"Outdir:               {outdir_display}")
-    print(f"Trace file:           {trace_display}")
+        lines.append(f"Remote host:          {remote_host}")
+    lines.append(f"Outdir:               {outdir_display}")
+    lines.append(f"Trace file:           {trace_display}")
     if work_dir_display is not None:
-        print(f"Local workdir base:   {work_dir_display}")
-    print(f"Tasks:                {task_count} rows loaded")
-    print(f"Case dir:             {case_dir}")
+        lines.append(f"Local workdir base:   {work_dir_display}")
+    lines.append(f"Tasks:                {task_count} rows loaded")
+    lines.append(f"Case dir:             {case_dir}")
+    if resolved_query_id != query_arg:
+        lines.append(
+            f"Query:                {query_arg!r} -> sample_id"
+            f" {resolved_query_id!r}"
+        )
+    else:
+        lines.append(f"Query:                {query_arg!r}")
+    print()
+    for line in lines:
+        print(f"{_GREEN}{line}{_RESET}")
 
 
 def harvest(
@@ -237,12 +252,10 @@ def harvest(
         elif source.trace_checked is not None:
             trace_display = (
                 f"{source.trace_checked} (no workdir column — using"
-                f" log-scan of {log})"
+                f" log-scan of nextflow.log)"
             )
         else:
-            trace_display = (
-                f"(no trace found — using log-scan of {log})"
-            )
+            trace_display = "(no trace found — using log-scan of nextflow.log)"
         work_dir_display = str(work_dir) if work_dir is not None else None
 
         _print_header(
@@ -253,14 +266,9 @@ def harvest(
             work_dir_display=work_dir_display,
             task_count=len(tasks),
             case_dir=case_dir,
+            query_arg=query_id,
+            resolved_query_id=resolved_query_id,
         )
-        if resolved_query_id != query_id:
-            print(
-                f"Query:                {query_id!r} -> sample_id"
-                f" {resolved_query_id!r}"
-            )
-        else:
-            print(f"Query:                {query_id!r}")
         query_id = resolved_query_id
 
         source_files = resolve_sources(tasks, query_id)
@@ -299,6 +307,8 @@ def harvest(
             ).strip().lower()
             if reply not in ("y", "yes"):
                 raise HarvestError("Aborted at confirmation prompt.")
+
+        print(f"\nHarvesting case {case_name}...\n")
 
         written: list[Path] = []
         work_dir_local_path: Path | None = (

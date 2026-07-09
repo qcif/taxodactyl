@@ -370,9 +370,9 @@ def cmd_harvest(args: argparse.Namespace) -> int:
     print(f"{GREEN}Harvested {len(result.written)} file(s) into"
           f" {result.case_dir}.{RESET}")
     print(
-        f"Next: `run_tests.sh --keep RUN_TEST_CASE={args.name}` to smoke"
+        f"\nNext: `run_tests.sh --keep RUN_TEST_CASE={args.name}` to smoke"
         f" test the case, then `testkit.py seed --case {args.name}` once"
-        " the coverage output looks right."
+        " the coverage output looks right.\n"
     )
     return 0
 
