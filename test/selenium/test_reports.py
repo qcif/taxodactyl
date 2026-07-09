@@ -1,12 +1,13 @@
-
 from pathlib import Path
-from report import parse_yaml
-from sample_metadata_test import run_sample_modal
-from overview_tab_test import run_overview_tab
-from candidate_tab_test import run_candidate_tab
-from database_coverage_test import run_database_coverage
-from toi_tab_test import run_toi_tab
+
 import pytest
+
+from lib.report import parse_yaml
+from lib.sample_metadata import run_sample_modal
+from lib.overview import run_overview_tab
+from lib.candidate import run_candidate_tab
+from lib.database_coverage import run_database_coverage
+from lib.toi import run_toi_tab
 
 
 reports = [parse_yaml(f) for f in sorted(Path("expected").glob("*.yaml"))]

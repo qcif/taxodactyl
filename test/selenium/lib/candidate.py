@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field, fields
-from report import open_tab
+from lib.report import open_tab
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

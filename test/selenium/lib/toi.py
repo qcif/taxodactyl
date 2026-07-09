@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from report import open_tab
+from lib.report import open_tab
 
 
 def extract_toi_table_data(toi_pane):
