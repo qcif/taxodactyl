@@ -30,20 +30,22 @@ cleanly.
 scripts/tests/integration/testkit.py <subcommand> [options]
 ```
 
-By default the testkit reads from the most recent `integration_test_*`
+By default, testkit reads from the most recent `integration_test_*`
 directory under the system temp dir. Pass `--from PATH` to override.
 
 ### Sub-commands
 
 #### `seed --case NAME`
 
-Write a first-time fixture for a case that has none. Refuses if
-`expected/db_coverage.json` already exists — use `promote` in that case.
+Write a first-time fixture from prior test output for a case that has none.
+Refuses if `expected/db_coverage.json` already exists — use `promote` in that
+case.
 
 #### `promote --case NAME | --all | --all-failed`
 
-Update an existing fixture. Renders a semantic diff (colour-coded
-`WOULD_FAIL` vs `TOLERATED`), prompts for confirmation, and warns before
+Update an existing fixture from prior test output.
+Renders a semantic diff (colour-coded `WOULD_FAIL` vs `TOLERATED`),
+prompts for confirmation, and warns before
 dropping species keys. Refuses cases whose last run raised an exception
 (no produced `db_coverage.json`). Use `--all-failed` after intentional
 algorithm changes to bulk-promote every currently failing case.
