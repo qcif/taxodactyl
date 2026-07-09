@@ -1,5 +1,6 @@
-from selenium.webdriver.common.by import By
 import re
+
+from selenium.webdriver.common.by import By
 
 from lib.report import open_tab
 
@@ -12,34 +13,28 @@ def get_badge_count(overview_pane, label):
             match = re.search(r"\d+", badge_text)
             if match:
                 return int(match.group())
-    raise AssertionError(f"Badge with label '{label}' not found")
+    return None
 
 
-def run_overview_tab(driver, report):
-    overview_pane = open_tab(
+def collect_overview(driver, report):
+    pane = open_tab(
         driver,
         tab_id="results-summary-tab",
         pane_id="results-summary",
     )
 
-    component = report.overview_tab
-
-    component.conclusion_text.assert_value(overview_pane.text)
-
     visible_species_rows = [
         row
-        for row in overview_pane.find_elements(By.CSS_SELECTOR, "tbody tr")
+        for row in pane.find_elements(By.CSS_SELECTOR, "tbody tr")
         if row.is_displayed() and row.text.strip()
     ]
-    row_texts = [row.text for row in visible_species_rows]
-    component.species_found.assert_value(row_texts)
+    species_texts = [row.text for row in visible_species_rows]
 
-    tbodies = overview_pane.find_elements(By.TAG_NAME, "tbody")
+    tbodies = pane.find_elements(By.TAG_NAME, "tbody")
     assert tbodies, "No tbody elements found in Overview tab"
-
     toi_rows = tbodies[-1].find_elements(By.TAG_NAME, "tr")
-    component.toi_row_count.assert_value(len(toi_rows))
 
+    has_green_tick = False
     if toi_rows:
         detected_cell = toi_rows[0].find_elements(By.TAG_NAME, "td")[1]
         green_tick = detected_cell.find_elements(
@@ -47,19 +42,18 @@ def run_overview_tab(driver, report):
             ".text-success svg.bi-check-circle-fill"
         )
         has_green_tick = len(green_tick) > 0
-        component.toi_green_tick_first_row.assert_value(has_green_tick)
 
-    flag_text = overview_pane.text
-    component.overview_flag_text1.assert_value(flag_text)
-    component.overview_flag_text2.assert_value(flag_text)
-    component.overview_flag_text3.assert_value(flag_text)
+    pane_text = pane.text
 
-    component.matching_species_strong.assert_value(
-        get_badge_count(overview_pane, "Strong")
-    )
-    component.matching_species_moderate.assert_value(
-        get_badge_count(overview_pane, "Moderate")
-    )
-    component.matching_species_weak.assert_value(
-        get_badge_count(overview_pane, "Weak")
-    )
+    report.set_observed("overview_tab", {
+        "conclusion_text": pane_text,
+        "species_found": species_texts,
+        "toi_row_count": len(toi_rows),
+        "toi_green_tick_first_row": has_green_tick,
+        "overview_flag_text1": pane_text,
+        "overview_flag_text2": pane_text,
+        "overview_flag_text3": pane_text,
+        "matching_species_strong": get_badge_count(pane, "Strong"),
+        "matching_species_moderate": get_badge_count(pane, "Moderate"),
+        "matching_species_weak": get_badge_count(pane, "Weak"),
+    })

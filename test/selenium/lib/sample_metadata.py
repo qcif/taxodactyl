@@ -5,6 +5,9 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 
+MODAL_ID = "inputFastaModal"
+
+
 def open_modal(
     driver: WebDriver,
     button_text: str,
@@ -12,12 +15,7 @@ def open_modal(
     modal_title: str = None,
     timeout: int = 10
 ) -> WebElement:
-    """
-    Click a button to open a modal, wait for it to appear,
-    and optionally asserts the modal title.
-
-    Returns the modal WebElement.
-    """
+    """Click a button to open a modal, wait for it, return the WebElement."""
     wait = WebDriverWait(driver, timeout)
 
     button = wait.until(
@@ -26,8 +24,9 @@ def open_modal(
     button.click()
 
     modal = wait.until(EC.visibility_of_element_located((By.ID, modal_id)))
-    assert modal.value_of_css_property(
-        "display") != "none", f"Modal {modal_id} did not appear"
+    assert modal.value_of_css_property("display") != "none", (
+        f"Modal {modal_id} did not appear"
+    )
     if modal_title:
         title_element = modal.find_element(By.CLASS_NAME, "modal-title")
         assert modal_title in title_element.text, (
@@ -37,16 +36,16 @@ def open_modal(
     return modal
 
 
-def run_sample_modal(driver, report):
-    modal = open_modal(driver, button_text="View", modal_id="inputFastaModal")
+def collect_sample_metadata(driver, report):
+    modal = open_modal(driver, button_text="View", modal_id=MODAL_ID)
     modal_content = modal.text
 
-    component = report.input_sequence_modal
+    report.set_observed("input_sequence_modal", {
+        "sample_id": modal_content,
+        "dna_sequence": modal_content,
+    })
 
-    component.sample_id.assert_value(modal_content)
-    component.dna_sequence.assert_value(modal_content)
     modal.find_element(By.XPATH, ".//button[text()='Close']").click()
-    # Wait until the modal is fully hidden before continuing
     WebDriverWait(driver, 10).until(
         lambda d: modal.value_of_css_property("display") == "none"
     )

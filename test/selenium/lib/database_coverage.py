@@ -1,45 +1,11 @@
-from dataclasses import dataclass, field
 from typing import List
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from lib.report import open_tab
-from lib.candidate import (
-    open_modal_from_button,
-    close_modal,
-    merge_modal_data,
-)
-
-
-@dataclass
-class CoverageModalRow:
-    title: str
-    flag1: str
-    record_count: int
-    record_text: str
-    flag2: str
-    species_count: str
-    species_total: str
-    min_bar_count: int
-    first_bar_species: str
-    first_bar_count: int
-    final_text: str
-
-
-@dataclass
-class CoverageModalData:
-    title: List[str] = field(default_factory=list)
-    flag1: List[str] = field(default_factory=list)
-    record_count: List[str] = field(default_factory=list)
-    record_text: List[str] = field(default_factory=list)
-    flag2: List[str] = field(default_factory=list)
-    species_count: List[str] = field(default_factory=list)
-    species_total: List[str] = field(default_factory=list)
-    min_bar_count: List[str] = field(default_factory=list)
-    first_bar_species: List[str] = field(default_factory=list)
-    first_bar_count: List[str] = field(default_factory=list)
-    final_text: List[str] = field(default_factory=list)
+from lib.candidate import open_modal_from_button, close_modal
 
 
 def find_text(modal, css_selector, default=""):
@@ -80,12 +46,12 @@ def extract_plotly_chart_data(modal, driver):
     """, plot_divs[0])
 
 
-def collect_coverage_modal_data(
+def _collect_coverage_row(
     cells: List[WebElement],
     driver: WebDriver,
     button_cell_index: int,
     button_attr: str,
-) -> CoverageModalRow:
+) -> dict:
     modal = open_modal_from_button(
         driver,
         cells[button_cell_index].find_element(By.TAG_NAME, "button"),
@@ -111,75 +77,53 @@ def collect_coverage_modal_data(
     flag1_scope = target_section[0] if target_section else modal
     flag2_scope = related_section[0] if related_section else modal
 
-    row = CoverageModalRow(
-        title=find_text(modal, "h5.modal-title"),
-        flag1=extract_flag_text(
-            flag1_scope, "p.alert.alert-success", "p.alert.alert-secondary"),
-        record_count=extract_big_number(modal),
-        record_text=find_text(modal, "p.my-3"),
-        flag2=extract_flag_text(
-            flag2_scope, "p.alert.alert-warning", "p.alert.alert-secondary"),
-        species_count=find_text(
-            modal,
-            "span.small-number span[class^='relatedHasReference']",
-        ),
-        species_total=find_text(
-            modal,
-            "span.small-number span[class^='relatedCount']",
-        ),
-        min_bar_count=min_bar_count,
-        first_bar_species=first_bar_species,
-        first_bar_count=first_bar_count,
-        final_text=find_text(modal,
-                             "div[id^='dbCovCountry'] p.alert.alert-info"),
-    )
-
+    row = {
+        "title": [find_text(modal, "h5.modal-title")],
+        "flag_text1": [extract_flag_text(
+            flag1_scope, "p.alert.alert-success", "p.alert.alert-secondary")],
+        "record_count": [str(extract_big_number(modal))],
+        "record_text": [find_text(modal, "p.my-3")],
+        "flag_text2": [extract_flag_text(
+            flag2_scope, "p.alert.alert-warning", "p.alert.alert-secondary")],
+        "species_count": [find_text(
+            modal, "span.small-number span[class^='relatedHasReference']")],
+        "species_total": [find_text(
+            modal, "span.small-number span[class^='relatedCount']")],
+        "min_bar_count": min_bar_count,
+        "first_bar_species": [first_bar_species],
+        "first_bar_count": [str(first_bar_count)],
+        "final_text": [find_text(
+            modal, "div[id^='dbCovCountry'] p.alert.alert-info")],
+    }
     close_modal(modal, driver)
     return row
 
 
-def collect_group_coverage_data(
-    rows: List[WebElement],
+def _collect_group(
+    report,
+    group: str,
+    table_rows: List[WebElement],
     driver: WebDriver,
     button_cell_index: int,
     button_attr: str,
     min_cells: int,
-) -> CoverageModalData:
-    coverage_modal_data = CoverageModalData()
-    for row in rows:
-        cells = row.find_elements(By.TAG_NAME, "td")
+):
+    idx = 0
+    for row_element in table_rows:
+        cells = row_element.find_elements(By.TAG_NAME, "td")
         if len(cells) < min_cells:
             continue
-        merge_modal_data(
-            coverage_modal_data,
-            collect_coverage_modal_data(cells,
-                                        driver,
-                                        button_cell_index,
-                                        button_attr),
-            stringify_keys={"record_count",
-                            "min_bar_count",
-                            "first_bar_count"},
+        row_data = _collect_coverage_row(
+            cells, driver, button_cell_index, button_attr,
         )
-    return coverage_modal_data
+        report.get_or_extend_group_row("database_coverage", group, idx)
+        report.set_observed(
+            "database_coverage", row_data, index=idx, group=group,
+        )
+        idx += 1
 
 
-def assert_group_coverage(group_assertions, modal_data: CoverageModalData):
-    for i, entry in enumerate(group_assertions):
-        entry.title.assert_value([modal_data.title[i]])
-        entry.flag_text1.assert_value([modal_data.flag1[i]])
-        entry.record_count.assert_value([modal_data.record_count[i]])
-        entry.record_text.assert_value([modal_data.record_text[i]])
-        entry.flag_text2.assert_value([modal_data.flag2[i]])
-        entry.species_count.assert_value([modal_data.species_count[i]])
-        entry.species_total.assert_value([modal_data.species_total[i]])
-        for count in modal_data.min_bar_count:
-            entry.min_bar_count.assert_value(int(count))
-        entry.first_bar_species.assert_value([modal_data.first_bar_species[i]])
-        entry.first_bar_count.assert_value([modal_data.first_bar_count[i]])
-        entry.final_text.assert_value([modal_data.final_text[i]])
-
-
-def run_database_coverage(driver, report):
+def collect_database_coverage(driver, report):
     db_coverage = report.database_coverage
 
     summary_pane = open_tab(
@@ -192,42 +136,36 @@ def run_database_coverage(driver, report):
         "table.table.tight.border.align-middle.centered-columns",
     )
 
-    if db_coverage.pmi:
-        pmi_rows = tables[0].find_elements(By.CSS_SELECTOR, "tbody tr")
-        pmi_data = collect_group_coverage_data(
-            pmi_rows, driver,
-            button_cell_index=4,
-            button_attr="data-bs-target",
-            min_cells=6,
-        )
-        assert_group_coverage(db_coverage.pmi, pmi_data)
-
-    if db_coverage.toi:
-        toi_rows = tables[1].find_elements(By.CSS_SELECTOR, "tbody tr")
-        toi_data = collect_group_coverage_data(
-            toi_rows, driver,
-            button_cell_index=4,
-            button_attr="data-bs-target",
-            min_cells=6,
-        )
-        assert_group_coverage(db_coverage.toi, toi_data)
-
-    if db_coverage.candidate:
-        candidate_pane = open_tab(
+    if len(tables) >= 1 and db_coverage.pmi is not None:
+        _collect_group(
+            report, "pmi",
+            tables[0].find_elements(By.CSS_SELECTOR, "tbody tr"),
             driver,
-            tab_id="candidate-species-tab",
-            pane_id="results-candidate-species",
+            button_cell_index=4, button_attr="data-bs-target", min_cells=6,
         )
-        species_table = candidate_pane.find_element(
-            By.CSS_SELECTOR,
-            "table.table.table-striped.freeze-header.sortable",
+
+    if len(tables) >= 2 and db_coverage.toi is not None:
+        _collect_group(
+            report, "toi",
+            tables[1].find_elements(By.CSS_SELECTOR, "tbody tr"),
+            driver,
+            button_cell_index=4, button_attr="data-bs-target", min_cells=6,
         )
-        candidate_rows = species_table.find_elements(
+
+    candidate_pane = open_tab(
+        driver,
+        tab_id="candidate-species-tab",
+        pane_id="results-candidate-species",
+    )
+    species_tables = candidate_pane.find_elements(
+        By.CSS_SELECTOR,
+        "table.table.table-striped.freeze-header.sortable",
+    )
+    if species_tables:
+        candidate_rows = species_tables[0].find_elements(
             By.CSS_SELECTOR, "tbody tr")
-        candidate_data = collect_group_coverage_data(
+        _collect_group(
+            report, "candidate",
             candidate_rows, driver,
-            button_cell_index=6,
-            button_attr="onclick",
-            min_cells=8,
+            button_cell_index=6, button_attr="onclick", min_cells=8,
         )
-        assert_group_coverage(db_coverage.candidate, candidate_data)
