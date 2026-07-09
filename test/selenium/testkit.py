@@ -24,6 +24,7 @@ from pathlib import Path
 
 from lib.collect import collect_all
 from lib.driver import make_driver
+from lib.promote import promote_yaml
 from lib.report import Report
 
 
@@ -100,6 +101,46 @@ def cmd_ingest(args) -> int:
     return 0
 
 
+def _resolve_yaml_target(target: str) -> Path:
+    """Accept either 'foo.yaml', 'expected/foo.yaml', or a bare stem."""
+    p = Path(target)
+    if p.exists():
+        return p
+    stem = p.name
+    if not stem.endswith(".yaml"):
+        stem += ".yaml"
+    candidate = EXPECTED_DIR / stem
+    if candidate.exists():
+        return candidate
+    return p
+
+
+def cmd_promote(args) -> int:
+    if args.all:
+        targets = sorted(EXPECTED_DIR.glob("*.yaml"))
+        if not targets:
+            print(f"error: no YAMLs found in {EXPECTED_DIR}", file=sys.stderr)
+            return 1
+    else:
+        if not args.target:
+            print(
+                "error: provide a YAML name or --all",
+                file=sys.stderr,
+            )
+            return 2
+        target = _resolve_yaml_target(args.target)
+        if not target.exists():
+            print(f"error: {target} not found", file=sys.stderr)
+            return 1
+        targets = [target]
+
+    total = 0
+    for path in targets:
+        total += promote_yaml(path, headless=True, auto_yes=args.yes)
+    print(f"\nPromoted {total} assertion(s) across {len(targets)} file(s).")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="testkit", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -122,6 +163,27 @@ def build_parser() -> argparse.ArgumentParser:
         help="Overwrite an existing expected/*.yaml at the target path",
     )
     ingest.set_defaults(func=cmd_ingest)
+
+    promote = sub.add_parser(
+        "promote",
+        help=(
+            "Merge observed values into an existing expected/*.yaml when "
+            "legitimate drift is observed"
+        ),
+    )
+    promote.add_argument(
+        "target", nargs="?",
+        help="YAML name, path, or stem (unused with --all)",
+    )
+    promote.add_argument(
+        "--all", action="store_true",
+        help="Promote every YAML in expected/",
+    )
+    promote.add_argument(
+        "--yes", action="store_true",
+        help="Skip prompts and accept every drift (dangerous)",
+    )
+    promote.set_defaults(func=cmd_promote)
 
     return parser
 
