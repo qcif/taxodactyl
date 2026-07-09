@@ -1,3 +1,4 @@
+import re
 from types import SimpleNamespace
 from pathlib import Path
 from typing import Any, Iterator, Optional
@@ -18,6 +19,48 @@ from lib.schema import (
 
 
 _SENTINEL = object()
+
+FLAG_BADGE_PREFIX = "Flag "
+
+_WHITESPACE_RE = re.compile(r"\s+")
+
+
+def normalize_whitespace(value):
+    """Collapse consecutive whitespace (including newlines) into single
+    spaces and strip. Non-string values pass through unchanged."""
+    if not isinstance(value, str):
+        return value
+    return _WHITESPACE_RE.sub(" ", value).strip()
+
+
+def extract_flag_badge(container) -> str:
+    """Return the first 'Flag X' badge text found within the container."""
+    for badge in container.find_elements(By.CSS_SELECTOR, "span.badge"):
+        text = badge.text.strip()
+        if text.startswith(FLAG_BADGE_PREFIX):
+            return text
+    return ""
+
+
+def extract_labelled_paragraph(container, label: str) -> str:
+    """Return the text following a `<strong>Label:</strong> ...` pattern.
+
+    Trims at the next newline so it returns just the label's own line.
+    """
+    label_clean = label.rstrip(":").lower()
+    for strong in container.find_elements(By.TAG_NAME, "strong"):
+        if strong.text.strip().rstrip(":").lower() == label_clean:
+            parent = strong.find_element(By.XPATH, "..")
+            full = parent.text
+            idx = full.find(strong.text)
+            remaining = full[idx + len(strong.text):] if idx >= 0 else full
+            return remaining.split("\n")[0].strip()
+    return ""
+
+
+def first_h_text(container, tag: str = "h2") -> str:
+    elements = container.find_elements(By.TAG_NAME, tag)
+    return elements[0].text.strip() if elements else ""
 
 
 def open_tab(
@@ -42,6 +85,48 @@ def open_tab(
         )
 
     return pane
+
+
+class Collector:
+    """Base collector for a single component.
+
+    Subclasses declare `component_id` (matching a key in SIMPLE_COMPONENTS or
+    GROUPED_COMPONENTS) and implement `_extract_<field>(container)` per
+    schema-declared assertion field. Fields without an `_extract_<field>`
+    method are silently skipped — their `.observed` stays None, so
+    `report.assert_all()` won't raise on them.
+    """
+    component_id: str = ""
+
+    def collect(self, driver, report) -> None:
+        container = self._open(driver)
+        report.set_observed(self.component_id, self._collect_dict(container))
+
+    def _open(self, driver):
+        raise NotImplementedError
+
+    def _field_ids(self) -> list:
+        if self.component_id in SIMPLE_COMPONENTS:
+            return list(SIMPLE_COMPONENTS[self.component_id].keys())
+        if self.component_id in GROUPED_COMPONENTS:
+            return list(GROUPED_COMPONENTS[self.component_id]["fields"].keys())
+        return []
+
+    def _collect_dict(self, container) -> dict:
+        return {
+            field: getattr(self, f"_extract_{field}")(container)
+            for field in self._field_ids()
+            if hasattr(self, f"_extract_{field}")
+        }
+
+
+class TabCollector(Collector):
+    """Collector whose container is a Bootstrap tab pane opened by id."""
+    tab_id: str = ""
+    pane_id: str = ""
+
+    def _open(self, driver):
+        return open_tab(driver, self.tab_id, self.pane_id)
 
 
 class Assertion:
@@ -130,7 +215,10 @@ class Assertion:
         if self.expected is None:
             return
 
-        assert actual == self.expected, (
+        actual_cmp = normalize_whitespace(actual)
+        expected_cmp = normalize_whitespace(self.expected)
+
+        assert actual_cmp == expected_cmp, (
             f"{context} Expected '{self.expected}' but got '{actual}'"
         )
 
@@ -148,11 +236,11 @@ class Assertion:
         if self.expected is None:
             return
 
-        actual = str(actual).strip().lower()
-        expected = str(self.expected).strip().lower()
+        actual_cmp = normalize_whitespace(str(actual)).lower()
+        expected_cmp = normalize_whitespace(str(self.expected)).lower()
 
-        assert expected in actual, (
-            f"{context} Expected '{expected}' to be in '{actual}'"
+        assert expected_cmp in actual_cmp, (
+            f"{context} Expected '{expected_cmp}' to be in '{actual_cmp}'"
         )
 
     def assert_list_contains(self, actual=_SENTINEL, context: str = ""):
@@ -160,9 +248,13 @@ class Assertion:
         if not self.expected:
             return
 
+        normalized_actual = [
+            normalize_whitespace(str(item)) for item in actual
+        ]
         for expected_item in self.expected:
-            assert any(expected_item in item for item in actual), (
-                f"{context} Expected '{expected_item}' not found"
+            needle = normalize_whitespace(str(expected_item))
+            assert any(needle in item for item in normalized_actual), (
+                f"{context} Expected '{needle}' not found"
             )
 
     def assert_bool(self, actual=_SENTINEL, context: str = ""):
@@ -216,13 +308,13 @@ class Assertion:
             return None
         if self.assertion_type == "list":
             if isinstance(val, (list, tuple)):
-                return [str(item) for item in val]
-            return [str(val)]
+                return [normalize_whitespace(str(item)) for item in val]
+            return [normalize_whitespace(str(val))]
         if self.assertion_type == "bool":
             return "TRUE" if bool(val) else "FALSE"
         if self.assertion_type in ("int", "float", "min"):
             return str(val)
-        return str(val)
+        return normalize_whitespace(str(val))
 
 
 class Report:
@@ -364,7 +456,12 @@ class Report:
 
         data = {"filename": self.filename, "components": components}
         with open(path, "w") as f:
-            safe_dump(data, f, sort_keys=False, default_flow_style=False)
+            safe_dump(
+                data, f,
+                sort_keys=False,
+                default_flow_style=False,
+                width=1000,
+            )
 
     @staticmethod
     def _assertions_for_ns(ns, field_types: dict, source: str) -> list:

@@ -5,16 +5,22 @@ Populates the observed values on the provided Report in-place. Used by:
 - testkit.py ingest and promote
 """
 
-from lib.sample_metadata import collect_sample_metadata
-from lib.overview import collect_overview
-from lib.candidate import collect_candidate
-from lib.database_coverage import collect_database_coverage
-from lib.toi import collect_toi
+from lib.sample_metadata import InputSequenceModalCollector
+from lib.overview import OverviewCollector
+from lib.candidate import CandidateTabCollector
+from lib.database_coverage import DatabaseCoverageCollector
+from lib.toi import ToiTabCollector
+
+
+COLLECTORS = (
+    InputSequenceModalCollector,
+    OverviewCollector,
+    CandidateTabCollector,
+    DatabaseCoverageCollector,
+    ToiTabCollector,
+)
 
 
 def collect_all(driver, report):
-    collect_sample_metadata(driver, report)
-    collect_overview(driver, report)
-    collect_candidate(driver, report)
-    collect_database_coverage(driver, report)
-    collect_toi(driver, report)
+    for cls in COLLECTORS:
+        cls().collect(driver, report)
