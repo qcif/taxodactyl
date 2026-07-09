@@ -134,9 +134,19 @@ def cmd_promote(args) -> int:
             return 1
         targets = [target]
 
+    reports_dir = Path(args.reports) if args.reports else REPORTS_DIR
+    if not reports_dir.is_dir():
+        print(f"error: {reports_dir} is not a directory", file=sys.stderr)
+        return 1
+
     total = 0
     for path in targets:
-        total += promote_yaml(path, headless=True, auto_yes=args.yes)
+        total += promote_yaml(
+            path,
+            reports_dir=reports_dir,
+            headless=True,
+            auto_yes=args.yes,
+        )
     print(f"\nPromoted {total} assertion(s) across {len(targets)} file(s).")
     return 0
 
@@ -182,6 +192,15 @@ def build_parser() -> argparse.ArgumentParser:
     promote.add_argument(
         "--yes", action="store_true",
         help="Skip prompts and accept every drift (dangerous)",
+    )
+    promote.add_argument(
+        "--reports", default=None,
+        help=(
+            "Directory to search for the HTML report (default: reports/). "
+            "Reports are matched by sample_id when the exact filename is "
+            "not present, so timestamps in the report filename may differ "
+            "from the YAML fixture's."
+        ),
     )
     promote.set_defaults(func=cmd_promote)
 

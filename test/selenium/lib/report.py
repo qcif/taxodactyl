@@ -22,6 +22,31 @@ _SENTINEL = object()
 
 FLAG_BADGE_PREFIX = "Flag "
 
+# Report filenames follow `[<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...`.
+# The sample_id may itself contain underscores (e.g. VE24-1351_COI), so we
+# anchor on the date component to know where the sample_id ends.
+_SAMPLE_ID_RE = re.compile(
+    r"^(?:\d+_)?report_(.+?)_\d{4}-\d{2}-\d{2}_"
+)
+
+
+def extract_sample_id(filename: str) -> str:
+    """Return the sample id embedded in a report filename, or '' if the
+    filename doesn't match the report_<sample>_<date>_... pattern."""
+    m = _SAMPLE_ID_RE.match(filename)
+    return m.group(1) if m else ""
+
+
+def find_report_html(sample_id: str, reports_dir: Path) -> Optional[Path]:
+    """Return the first *.html file in `reports_dir` whose extracted
+    sample_id matches, or None."""
+    candidates = sorted(reports_dir.glob("*.html"))
+    for p in candidates:
+        if extract_sample_id(p.name) == sample_id:
+            return p
+    return None
+
+
 _WHITESPACE_RE = re.compile(r"\s+")
 
 

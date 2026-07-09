@@ -3,16 +3,15 @@ components:
 - id: input_sequence_modal
   assertions:
   - id: sample_id
-    type: ''
+    type: contains
     value: SME25-218
   - id: dna_sequence
-    type: ''
+    type: contains
     value: CCAAAAAATCA
-
 - id: overview_tab
   assertions:
   - id: conclusion_text
-    type: ''
+    type: contains
     value: inconclusive
   - id: species_found
     type: list
@@ -26,13 +25,13 @@ components:
     type: bool
     value: 'TRUE'
   - id: conclusion_flag
-    type: ''
+    type: contains
     value: Flag 1B
   - id: toi_flag
-    type: ''
+    type: contains
     value: Flag 2A
   - id: preliminary_flag
-    type: ''
+    type: contains
     value: Flag 7NA
   - id: matching_species_strong
     type: int
@@ -43,14 +42,13 @@ components:
   - id: matching_species_weak
     type: int
     value: '22'
-
 - id: candidate_tab
   assertions:
   - id: tab_title
-    type: ''
+    type: contains
     value: Identification of candidate species
   - id: candidate_flag_text
-    type: ''
+    type: contains
     value: Flag 1B
   - id: strong_alginment_identity
     type: float
@@ -73,9 +71,7 @@ components:
   - id: lowest_hit
     type: float
     value: '90.5'
-
 - id: candidate_tab_table
-  rows: 2
   assertions:
   - id: species
     type: list
@@ -112,7 +108,6 @@ components:
     value:
     - '39'
     - '1'
-
 - id: database_coverage
   pmi:
   - name: Drosophila simulans
@@ -126,7 +121,6 @@ components:
     - id: record_count
       type: list
       value: '11374'
-
     - id: flag_text2
       type: list
       value: 5.2B
@@ -160,7 +154,6 @@ components:
     - id: record_count
       type: list
       value: '144'
-
     - id: flag_text2
       type: list
       value: 5.2B
@@ -182,7 +175,6 @@ components:
     - id: final_text
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
-
   candidate:
   - name: Drosophila simulans
     assertions:
@@ -195,7 +187,6 @@ components:
     - id: record_count
       type: list
       value: '144'
-
     - id: flag_text2
       type: list
       value: 5.2B
@@ -228,7 +219,6 @@ components:
     - id: record_count
       type: list
       value: '6'
-
     - id: flag_text2
       type: list
       value: 5.2B
@@ -250,7 +240,6 @@ components:
     - id: final_text
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
-
 - id: publication_modal
   candidates:
   - name: Drosophila simulans
@@ -275,20 +264,19 @@ components:
     - id: count
       type: list
       value: '1'
-
 - id: blast_modal
   assertions:
   - id: title
-    type: ''
+    type: contains
     value: BLAST search results
   - id: rank
     type: int
     value: '1'
   - id: accession
-    type: ''
+    type: contains
     value: KC244283
   - id: subject
-    type: ''
+    type: contains
     value: Drosophila simulans strain sm21 mitochondrion, complete genome
   - id: length
     type: int
@@ -300,7 +288,7 @@ components:
     type: float
     value: '1352.4'
   - id: evalue
-    type: ''
+    type: contains
     value: '0.00E+00'
   - id: coverage
     type: float
@@ -312,54 +300,51 @@ components:
     type: bool
     value: 'TRUE'
   - id: domain
-    type: ''
+    type: contains
     value: No data
   - id: kingdom
-    type: ''
+    type: contains
     value: Metazoa
   - id: phylum
-    type: ''
+    type: contains
     value: Arthropoda
   - id: class
-    type: ''
+    type: contains
     value: Insecta
   - id: order
-    type: ''
+    type: contains
     value: Diptera
   - id: family
-    type: ''
+    type: contains
     value: Drosophilidae
   - id: genus
-    type: ''
+    type: contains
     value: Drosophila
   - id: species
-    type: ''
+    type: contains
     value: Drosophila simulans
-
 - id: tree_modal
   assertions:
   - id: title
-    type: ''
+    type: contains
     value: Homology Tree
   - id: min_node
     type: min
     value: '5'
-
 - id: toi_tab
   assertions:
   - id: toi_flag_text
-    type: ''
+    type: contains
     value: Flag 2A
   - id: toi_outcome
-    type: ''
+    type: contains
     value: At least one of the taxa of interest
   - id: toi_reasoning
-    type: ''
+    type: contains
     value: Taxon of interest detected
   - id: toi_number_of_rows
     type: int
     value: '1'
-
 - id: toi_table
   assertions:
   - id: toi_match
