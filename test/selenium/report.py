@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 from pathlib import Path
 from typing import Any
-import pandas as pd
 
 from yaml import safe_load
 
@@ -28,7 +27,6 @@ def open_tab(
     pane = wait.until(EC.presence_of_element_located((By.ID, pane_id)))
     wait.until(lambda d: "show" in pane.get_attribute("class"))
 
-    # Optional header assertion
     if expected_header:
         assert expected_header.lower() in pane.text.lower(), (
             f"Expected header '{expected_header}'"
@@ -38,42 +36,55 @@ def open_tab(
 
 
 class Assertion:
-    def __init__(self, row, report_column: str, filename: str):
-        self.report_filename = filename
-        self.component = row['Component']
-        self.assertion_id = row['Assertion ID']
-        self.assertion_type = (
-            str(row['Type']).strip().lower()
-            if pd.notna(row['Type']) and str(row['Type']).strip() != ""
-            else "contains"
-        )
+    """A single expected value parsed from an expected/*.yaml fixture."""
 
+    def __init__(
+        self,
+        assertion_data: dict,
+        component_id: str,
+        filename: str,
+    ):
+        self.report_filename = filename
+        self.component = component_id
+        self.assertion_id = assertion_data['id']
+        raw_type = str(assertion_data.get('type') or '').strip().lower()
+        self.assertion_type = raw_type if raw_type else 'contains'
         self.label = self.assertion_id.replace("_", " ").strip()
-        self.raw_value = row[report_column]
+        self.raw_value = assertion_data.get('value')
         self.expected = self._parse_value()
 
     def _parse_value(self) -> Any:
-        if pd.isna(self.raw_value):
+        if self.raw_value is None:
             return None
 
-        raw_str = str(self.raw_value).strip()
+        if self.assertion_type == 'list':
+            if isinstance(self.raw_value, list):
+                items = [
+                    str(item).strip()
+                    for item in self.raw_value
+                    if str(item).strip()
+                ]
+                return items if items else None
+            raw_str = str(self.raw_value).strip()
+            if not raw_str:
+                return None
+            return [raw_str]
 
-        if self.assertion_type == "list":
-            return [
-                item.strip()
-                for item in raw_str.split("|")
-                if item.strip()
-            ]
+        if isinstance(self.raw_value, list):
+            return [self._parse_scalar(str(item)) for item in self.raw_value]
 
-        if raw_str == "":
+        return self._parse_scalar(str(self.raw_value).strip())
+
+    def _parse_scalar(self, raw_str: str) -> Any:
+        if raw_str == '':
             return None
-        if self.assertion_type == "int":
+        if self.assertion_type == 'int':
             return int(raw_str)
-        if self.assertion_type == "min":
-            return float(raw_str) if "." in raw_str else int(raw_str)
-        if self.assertion_type == "bool":
-            return raw_str.lower() == "true"
-        if self.assertion_type == "float":
+        if self.assertion_type == 'min':
+            return float(raw_str) if '.' in raw_str else int(raw_str)
+        if self.assertion_type == 'bool':
+            return raw_str.upper() == 'TRUE'
+        if self.assertion_type == 'float':
             return float(raw_str)
         return raw_str
 
@@ -140,7 +151,9 @@ class Assertion:
         elif self.assertion_type == "min":
             self.assert_min(actual, **kwargs)
         else:
-            raise ValueError(f"Unknown assertion type: {self.assertion_type}")
+            raise ValueError(
+                f"Unknown assertion type: {self.assertion_type}"
+            )
 
 
 class Report:
@@ -162,57 +175,12 @@ class Report:
     def __getattr__(self, name):
         if name.startswith("_"):
             raise AttributeError(
-                f"{self.__class__.__name__!r} object has no attribute {name!r}"
+                f"{self.__class__.__name__!r} object has no attribute "
+                f"{name!r}"
             )
         raise AttributeError(
             f"Component '{name}' is missing in report: {self.filename}"
         )
-
-
-class Assertion(Assertion):
-    """Assertion parsed from YAML format (id/type/value keys,
-    native Python types)."""
-
-    def __init__(self, assertion_data: dict, component_id: str, filename: str):
-        self.report_filename = filename
-        self.component = component_id
-        self.assertion_id = assertion_data['id']
-        raw_type = str(assertion_data.get('type') or '').strip().lower()
-        self.assertion_type = raw_type if raw_type else 'contains'
-        self.label = self.assertion_id.replace("_", " ").strip()
-        self.raw_value = assertion_data.get('value')
-        self.expected = self._parse_value()
-
-    def _parse_value(self) -> Any:
-        if self.raw_value is None:
-            return None
-
-        if self.assertion_type == 'list':
-            if isinstance(self.raw_value, list):
-                items = [str(item).strip() for item in self.raw_value if str(item).strip()]
-                return items if items else None
-            raw_str = str(self.raw_value).strip()
-            if not raw_str:
-                return None
-            return [raw_str]
-
-        if isinstance(self.raw_value, list):
-            return [self._parse_scalar(str(item)) for item in self.raw_value]
-
-        return self._parse_scalar(str(self.raw_value).strip())
-
-    def _parse_scalar(self, raw_str: str) -> Any:
-        if raw_str == '':
-            return None
-        if self.assertion_type == 'int':
-            return int(raw_str)
-        if self.assertion_type == 'min':
-            return float(raw_str) if '.' in raw_str else int(raw_str)
-        if self.assertion_type == 'bool':
-            return raw_str.upper() == 'TRUE'
-        if self.assertion_type == 'float':
-            return float(raw_str)
-        return raw_str
 
 
 def _build_ns_from_yaml_assertions(
@@ -223,16 +191,6 @@ def _build_ns_from_yaml_assertions(
         a = Assertion(a_data, component_id, filename)
         setattr(ns, a.assertion_id, a)
     return ns
-
-
-def parse_assertions(df, report_col, filename):
-    assertions = []
-
-    for _, row in df.iterrows():
-        assertion = Assertion(row, report_col, filename)
-        assertions.append(assertion)
-
-    return assertions
 
 
 def parse_yaml(path: Path):
@@ -251,8 +209,9 @@ def parse_yaml(path: Path):
             continue
 
         for assertion_data in component.get("assertions", []):
-            assertions.append(Assertion(assertion_data, component_id,
-                                        report_name))
+            assertions.append(
+                Assertion(assertion_data, component_id, report_name)
+            )
 
     report = Report(report_name, assertions)
 
@@ -265,7 +224,9 @@ def parse_yaml(path: Path):
                 items = component.get(group_key, [])
                 setattr(db_ns, group_key, [
                     _build_ns_from_yaml_assertions(
-                        item.get('assertions', []), component_id, report_name
+                        item.get('assertions', []),
+                        component_id,
+                        report_name,
                     )
                     for item in items
                 ])

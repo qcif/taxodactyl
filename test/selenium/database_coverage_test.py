@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from utils import open_tab
+from report import open_tab
 from candidate_tab_test import (
     open_modal_from_button,
     close_modal,

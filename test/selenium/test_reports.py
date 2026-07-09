@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from utils import parse_yaml
+from report import parse_yaml
 from sample_metadata_test import run_sample_modal
 from overview_tab_test import run_overview_tab
 from candidate_tab_test import run_candidate_tab

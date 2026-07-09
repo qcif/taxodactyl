@@ -21,7 +21,7 @@ cd test/selenium
 pytest test_reports.py -v
 ```
 
-Each `.yaml` file in this directory is picked up automatically and run as a separate test case. Pytest will open a Chrome browser window for each report, navigate through each tab, and assert the values defined in the YAML.
+Each `.yaml` file in ./expected/ is picked up automatically and run as a separate test case. Pytest will open a Chrome browser window for each report, navigate through each tab, and assert the values defined in the YAML.
 
 ## How reports are tested
 
