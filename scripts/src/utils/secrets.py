@@ -150,10 +150,10 @@ class AzureVaultBackend(VaultBackend):
         if not val:
             return ''
 
-        if len(val) <= 4:
+        if len(val) <= 8:
             return '*' * len(val)
 
-        chars_to_show = len(val) // 2
+        chars_to_show = 4
         return '*' * (len(val) - chars_to_show) + val[-chars_to_show:]
 
 
