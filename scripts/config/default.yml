@@ -44,7 +44,6 @@ gbif_accepted_status:
 - ACCEPTED
 - DOUBTFUL
 log_filename: run.log
-query_log_filename: query.log
 sqlite_file: db.sqlite
 entrez_cache_dirname: entrez_cache
 cache_timeout_hours: 168

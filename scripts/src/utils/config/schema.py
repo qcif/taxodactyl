@@ -329,8 +329,6 @@ class ConfigSchema(BaseModel):
 
     # Logging and temporary files
     log_filename: str = Field(default='run.log', description="Log filename")
-    query_log_filename: str = Field(
-        default='query.log', description="Query log filename")
     max_api_retries: int = Field(
         default=3, description="Maximum API retries")
     errors_dir: str = Field(default='errors', description="Errors directory")

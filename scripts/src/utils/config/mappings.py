@@ -242,10 +242,6 @@ PARAMS = {
         'log_filename',
         env_name='LOG_FILENAME',
     ),
-    'query_log_filename': StringMapping(
-        'query_log_filename',
-        env_name='QUERY_LOG_FILENAME',
-    ),
     'sqlite_file': StringMapping(
         'sqlite_file',
         env_name='SQLITE_FILE',
