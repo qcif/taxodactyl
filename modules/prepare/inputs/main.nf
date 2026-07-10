@@ -16,7 +16,7 @@ process PREPARE_INPUTS {
     # throughout the workflow execution.
     # If no sequences file is provided, do not emit sequences.fasta.
     
-    if [ -n "${sequences_source ?: ''}" ]; then
+    if [ -n "${sequences_source ?: ''}" ] && [ "${sequences_source ?: ''}" != "sequences.fasta" ]; then
         cp "${sequences_source}" sequences.fasta
     fi
     
