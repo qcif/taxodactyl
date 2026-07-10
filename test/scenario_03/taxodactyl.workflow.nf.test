@@ -17,7 +17,6 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.ch_hits_for_report,
                     workflow.out.ch_candidates_for_report,
-                    workflow.out.ch_db_coverage_flags,
                     workflow.out.ch_source_diversity_for_report,
                     workflow.out.ch_homology_trees
                 ).match() },
@@ -26,7 +25,11 @@ nextflow_workflow {
                 { assert workflow.out.ch_params_json.size() == 1 },
                 { assert workflow.out.ch_workflow_timestamp.size() == 1 },
                 { assert workflow.out.ch_db_coverage_maps.size() == 14 },
-                { assert workflow.out.ch_db_coverage_json.size() == 14 } )
+                { assert workflow.out.ch_db_coverage_maps.collectMany { it[1] instanceof List ? it[1] : [it[1]] }.size() == 36 },
+                { assert workflow.out.ch_db_coverage_json.size() == 14 },
+                { assert workflow.out.ch_db_coverage_flags.size() == 14 },
+                { assert workflow.out.ch_db_coverage_flags.every { it[1].size() == 3 } },
+                { assert workflow.out.ch_db_coverage_flags.collectMany { it[1] }.size() == 42 } )
         }
     }
                     

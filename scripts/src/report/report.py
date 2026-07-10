@@ -67,17 +67,17 @@ def _get_static_file_contents():
         if root.name == 'css':
             static_files['css'] = [
                 f'/* {f} */\n' + (root / f).read_text()
-                for f in files
+                for f in sorted(files)
             ]
         elif root.name == 'js':
             static_files['js'] = sorted([
                 f'/* {f} */\n' + (root / f).read_text(encoding="utf-8")
-                for f in files
+                for f in sorted(files)
             ])
         elif root.name == 'img':
             static_files['img'] = {
                 f: _get_img_src(root / f)
-                for f in files
+                for f in sorted(files)
             }
     return {'static': static_files}
 
@@ -410,7 +410,6 @@ def _read_db_coverage(query_ix):
     with path.open() as f:
         data = json.load(f)
     coverage_data = data['coverage']
-    ncbi_blast_urls = data['ncbi_blast_urls']
     for target_type, targets in coverage_data.items():
         for target in targets:
             path = (
@@ -423,7 +422,7 @@ def _read_db_coverage(query_ix):
     return {
         'full': coverage_data,
         'summary': _get_db_cov_summary(coverage_data),
-        'ncbi_blast_urls': ncbi_blast_urls,
+        'ncbi_urls': data['ncbi_urls'],
     }
 
 

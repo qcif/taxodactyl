@@ -1,0 +1,16 @@
+[Unit]
+Description=Taxodactyl Input Validation app
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/mnt/data/taxodactyl_repo/services/input_validation/api
+ExecStart=/mnt/data/taxodactyl_repo/services/input_validation/api/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -26,3 +26,6 @@ RUN wget https://github.com/shenwei356/taxonkit/releases/latest/download/taxonki
 COPY . /app/scripts
 
 RUN pip install -r /app/scripts/requirements.txt
+
+# Make app data dir
+RUN mkdir -p /var/lib/taxodactyl/

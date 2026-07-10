@@ -56,6 +56,13 @@
             </span>
           </p>
 
+          {% if context.metadata.classification %}
+          <p class="alert alert-info">
+            Classification provided for this sample: <em>"{{ context.metadata.classification }}"</em>.
+            This classification has been used to ensure that species records reported in this analysis are from the intended taxonomic kingdom (i.e. "Drosophila" is both a fly and a genus of fungus).
+          </p>
+          {% endif %}
+
           {% set general_errors = errors.filter(
               location_lt=context.error_locations.DB_COVERAGE_TARGET,
           ) %}
@@ -63,7 +70,19 @@
           {{ render_error_message(general_errors) }}
           {% endif %}
 
-          {% if context.data.target is not none %}
+          {% if context.data.target is none and context.data.related is none and context.data.country is none %}
+
+          {% set flag_1 = context.flags.get('1') %}
+          <p class="alert alert-info">
+            No database coverage information is available for this taxon.
+            {% if context.target_type == 'candidate' and flag_1 and flag_1.value.lower() in ['c', 'e'] %}
+            This is because database coverage is not evaluated when there are zero or &gt;3 candidate species.
+            {% else %}
+            This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
+            {% endif %}
+          </p>
+
+          {% else %}
 
           <table style="margin: 2rem auto;">
             <tbody>
@@ -87,7 +106,10 @@
                   {{ render_level_icon(flag_5_2.level) }}
                 </td>
                 <td class="px-3">
-                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Coverage of species in genus
+                  {% if context.data.genus %}
+                  <em>{{ context.data.genus }}</em>
+                  {% endif %}
                 </td>
               </tr>
 
@@ -99,7 +121,10 @@
                   {{ render_level_icon(flag_5_3.level) }}
                 </td>
                 <td class="px-3">
-                  Coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Coverage of species in genus
+                  {% if context.data.genus %}
+                  <em>{{ context.data.genus }}</em>
+                  {% endif %}
                   in country of origin <strong>{{ context.metadata.country }}</strong>
                 </td>
               </tr>
@@ -126,11 +151,12 @@
                 {{ render_error_message(p5_1_errors) }}
                 {% endif %}
 
-                {% if context.data.target is not in [none, 'NA', 'ERR'] %}
+                {% if context.data.target not in [none, 'NA', 'ERR'] %}
                 {% set records_str = "{:,}".format(context.data.target) %}
                 <div class="big-number alert-{{ flag_5_1.bs_class }}">
                   {{ records_str }} records
                 </div>
+
                 <p class="my-3">
                   There are {{ records_str }} sequence records in the reference database for
                   <em>{{ context.target_taxon }}</em>
@@ -189,6 +215,14 @@
                   </p>
                   {% endif %}
                 </div>
+
+                {% if context.ncbi_taxonomy_url %}
+                <p class="text-center">
+                  <a href="{{ context.ncbi_taxonomy_url }}" target="_blank" rel="noopener noreferrer">
+                    View NCBI Taxonomy record
+                  </a>
+                </p>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -196,7 +230,12 @@
           <hr>
 
           <div class="my-5" id="dbCovRelated-{{ context.target_id }}">
-            <h3>Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em></h3>
+            <h3>
+              Database coverage of species in genus
+              {% if context.data.genus %}
+              <em>{{ context.data.genus }}</em>
+              {% endif %}
+            </h3>
 
             <p class="alert alert-{{ flag_5_2.bs_class }}">
               <strong>Flag {{ flag_5_2.flag_id }}{{ flag_5_2.value }}:</strong>
@@ -222,7 +261,7 @@
 
                <ul>
                 <li>
-                  Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                  Species in the genus <em>{{ context.data.genus }}</em>
                 </li>
                 <li>
                   {% if context.locus_provided %}
@@ -306,13 +345,11 @@
               </div>
             </div>
 
-            {% else %}
-            {% if context.data.related %}
+            {% elif context.data.related is not none %}
             <p>
               No species were found in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
               in the GBIF database, so there is nothing to report here.
             </p>
-            {% endif %}
             {% endif %}
           </div>
 
@@ -320,7 +357,10 @@
 
           <div class="my-5" id="dbCovCountry-{{ context.target_id }}">
             <h3>
-              Database coverage of species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+              Database coverage of species in genus
+              {% if context.data.genus %}
+              <em>{{ context.data.genus }}</em>
+              {% endif %}
               that occur in country of origin <strong>{{ context.metadata.country }}</strong>
             </h3>
 
@@ -350,7 +390,7 @@
 
                 <ul>
                   <li>
-                    Species in the genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
+                    Species in the genus <em>{{ context.data.genus }}</em>
                   </li>
                   <li>
                     {% if context.locus_provided %}
@@ -437,14 +477,12 @@
                 </div>
               </div>
 
-            {% else %}
-            {% if context.data.country %}
+            {% elif context.data.country is not none %}
             <p>
               The GBIF database returned no species in genus <em>{{ context.target_taxon.split(' ')[0] }}</em>
               with occurrence records in country <strong>{{ context.metadata.country }}</strong>,
               so there is nothing to report here.
             </p>
-            {% endif %}
             {% endif %}
 
             {% else %}
@@ -454,16 +492,6 @@
             {% endif %}
           </div>
 
-          {% else %}
-
-          <p class="alert alert-info">
-            No database coverage information is available for this taxon.
-            {% if context.target_type == 'candidate' and context.flags['1'].value.lower() in ['c', 'e'] %}
-            This is because database coverage is not evaluated when there are zero or &gt;3 candidate species.
-            {% else %}
-            This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
-            {% endif %}
-          </p>
           {% endif %}
         </div>
       </div>

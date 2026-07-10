@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Nitidulidae sp.",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Carpophilus mutilatus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Carpophilus mutilatus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Carpophilus",
+    "target_type": "pmi"
+  }
+]

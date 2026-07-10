@@ -25,13 +25,14 @@ def parallel_process_tasks(
     tasks,
     query_dir,
     target_taxids,
-    target_gbif_taxa,
+    target_gbif_records,
     taxid_to_taxon,
     candidate_list,
     toi_list,
     pmi,
+    country,
 ):
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         results = {
             get_target_coverage.__name__: {},
             get_related_coverage.__name__: {},
@@ -86,6 +87,30 @@ def parallel_process_tasks(
                         " https://eutils.ncbi.nlm.nih.gov"
                         "/entrez/eutils/efetch.fcgi in your browser.")
 
+    country_results = results[get_related_country_coverage.__name__]
+    for target, gbif_taxon in target_gbif_records.items():
+        related_result = results[get_related_coverage.__name__].get(gbif_taxon)
+        if related_result is None:
+            continue
+        try:
+            country_results[gbif_taxon] = get_related_country_coverage(
+                gbif_taxon, country, related_result,
+            )
+        except Exception as exc:
+            msg = (
+                f"Error deriving country coverage for target taxon"
+                f" '{target}'. This target could not be evaluated."
+                f" Exception: {type(exc).__name__}: {exc}"
+            )
+            logger.error(msg)
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE_RELATED_COUNTRY,
+                msg,
+                exc=exc,
+                query_dir=query_dir,
+                context={'target': target},
+            )
+
     logger.debug("Results collected from tasks:")
     for func, result in results.items():
         for k in result:
@@ -94,7 +119,7 @@ def parallel_process_tasks(
     return _collect_results(
         results,
         target_taxids,
-        target_gbif_taxa,
+        target_gbif_records,
         candidate_list,
         toi_list,
         pmi,
@@ -104,7 +129,7 @@ def parallel_process_tasks(
 def _collect_results(
     results,
     target_taxids,
-    target_gbif_taxa,
+    target_gbif_records,
     candidate_list,
     toi_list,
     pmi,
@@ -114,14 +139,8 @@ def _collect_results(
     toi_results = {}
     pmi_results = {}
 
-    taxa = list({
-        **target_taxids,
-        **target_gbif_taxa,
-    }.keys())
-
-    for target_taxon in taxa:
-        gbif_taxon = target_gbif_taxa.get(target_taxon)
-        taxid = target_taxids[target_taxon]
+    for target_taxon, taxid in target_taxids.items():
+        gbif_taxon = target_gbif_records.get(target_taxon)
         target_result = results[get_target_coverage.__name__].get(taxid)
         related_result = results[get_related_coverage.__name__].get(
             gbif_taxon)
@@ -131,7 +150,7 @@ def _collect_results(
             error_detected
             or (
                 # None result is expected in higher taxon targets
-                target_taxon in target_gbif_taxa
+                target_taxon in target_gbif_records
                 and None in (target_result, related_result, country_result)
                 # TODO: But only if country was provided?
             )
@@ -142,17 +161,23 @@ def _collect_results(
             candidate_results[target_taxon]['target'] = target_result
             candidate_results[target_taxon]['related'] = related_result
             candidate_results[target_taxon]['country'] = country_result
+            if gbif_taxon:
+                candidate_results[target_taxon]['genus'] = gbif_taxon.genus
         if target_taxon in toi_list:
             toi_results[target_taxon] = toi_results.get(target_taxon, {})
             toi_results[target_taxon]['target'] = target_result
             toi_results[target_taxon]['related'] = related_result
             toi_results[target_taxon]['country'] = country_result
+            if gbif_taxon:
+                toi_results[target_taxon]['genus'] = gbif_taxon.genus
         if target_taxon == pmi:
             pmi_results[target_taxon] = {
                 'target': target_result,
                 'related': related_result,
                 'country': country_result,
             }
+            if gbif_taxon:
+                pmi_results[target_taxon]['genus'] = gbif_taxon.genus
 
     return {
         TARGETS.CANDIDATE: candidate_results,

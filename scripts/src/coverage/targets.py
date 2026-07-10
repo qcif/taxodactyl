@@ -2,6 +2,7 @@
 
 import logging
 from pprint import pformat
+from dataclasses import dataclass
 
 from src.gbif.relatives import GBIFRecordNotFound, RANK, RelatedTaxaGBIF
 from src.taxonomy import extract
@@ -12,6 +13,30 @@ logger = logging.getLogger(__name__)
 config = Config()
 
 MODULE_NAME = "Database Coverage"
+
+
+@dataclass
+class TargetGbifRecords:
+    """GBIF records for the target taxa, indexed both by canonical name
+    (the GBIF-accepted name used for internal processing) and by the
+    original input string (used when writing output that must refer back
+    to the user-supplied target).
+
+    `higher_taxa` / `original_higher_taxa` contain records at rank
+    'family' or higher; the others contain rank 'genus' or lower.
+
+    `original_to_canonical` / `canonical_to_original` are inverse
+    translation maps for renaming between the two name-spaces.
+    """
+
+    original_to_canonical: dict[str, str]
+    canonical_to_original: dict[str, str]
+    lower_taxa: dict[str, RelatedTaxaGBIF]            # keyed by canonical
+    higher_taxa: dict[str, RelatedTaxaGBIF]           # keyed by canonical
+    all_taxa: dict[str, RelatedTaxaGBIF]              # keyed by canonical
+    original_taxa: dict[str, RelatedTaxaGBIF]         # keyed by original
+    original_lower_taxa: dict[str, RelatedTaxaGBIF]   # keyed by original
+    original_higher_taxa: dict[str, RelatedTaxaGBIF]  # keyed by original
 
 
 def _read_candidate_species(query_dir):
@@ -50,14 +75,21 @@ def get_targets(query_dir):
     return candidates, toi_list, pmi
 
 
-def get_taxids(targets, query_dir):
-    target_taxids = extract.taxids(targets)
+def get_taxids(target_gbif_records, query_dir):
+    targets = [
+        t.canonical_name
+        for t in target_gbif_records.values()
+    ]
+    classification = config.get_classification_for_query(query_dir)
+    target_taxids = extract.taxids(targets, classification=classification)
     if not all(target_taxids.values()):
         msg = (
             "Taxonkit failed to produce taxids for this taxon."
             " Database coverage for this taxon is assumed to be zero, since"
             " this likely means it is not represented in the reference"
-            " database.")
+            " database. If this seems unlikely, perhaps check that the"
+            " classification provided in the sample metadata is correct for"
+            " this sample?")
         for target in [
             k for k, v in target_taxids.items()
             if v is None
@@ -74,11 +106,20 @@ def get_taxids(targets, query_dir):
 
 
 def fetch_target_taxa(targets, query_dir):
-    target_gbif_taxa = {}
-    higher_taxon_targets = {}  # Taxa at rank 'family' or higher
+    classification = config.get_classification_for_query(query_dir)
+    target_name_map = {}
+    target_name_reverse_map = {}
+    target_gbif_records = {}
+    higher_target_gbif_records = {}  # Taxa at rank 'family' or higher
+    original_lower_taxa = {}
+    original_higher_taxa = {}
+
     for target in targets:
         try:
-            gbif_target = RelatedTaxaGBIF(target)
+            gbif_target = RelatedTaxaGBIF(
+                target,
+                classification=classification,
+            )
         except GBIFRecordNotFound as exc:
             msg = (f"No GBIF record found for target taxon '{target}'."
                    " This target could not be evaluated.")
@@ -92,6 +133,7 @@ def fetch_target_taxa(targets, query_dir):
                 context={"target": target},
             )
             continue
+
         if not gbif_target.rank:
             msg = (
                 f"GBIF record for target taxon '{target}' has no rank,"
@@ -105,11 +147,12 @@ def fetch_target_taxa(targets, query_dir):
                 query_dir=query_dir,
                 context={"target": target},
             )
+
         if gbif_target.from_synonym:
             msg = (
                 f"Target taxon '{target}' is listed as a synonym in GBIF."
                 " This taxon has been processed using the accepted name"
-                f" '{gbif_target.record['canonicalName']}'.")
+                f" '{gbif_target.canonical_name}'.")
             logger.info(msg)
             errors.write(
                 errors.LOCATIONS.DB_COVERAGE,
@@ -119,19 +162,54 @@ def fetch_target_taxa(targets, query_dir):
                     "target": target,
                 },
             )
+
+        target_key = (
+            gbif_target.canonical_name
+            if gbif_target.canonical_name
+            else target
+        )
+        target_name_map[target] = target_key
+        target_name_reverse_map[target_key] = target
         if gbif_target.rank > RANK.GENUS or not gbif_target.rank:
             # These get processed differently - broad GB record count only
-            higher_taxon_targets[target] = gbif_target
+            original_higher_taxa[target] = gbif_target
+            higher_target_gbif_records[target_key] = gbif_target
+
         else:
-            target_gbif_taxa[target] = gbif_target
+            original_lower_taxa[target] = gbif_target
+            target_gbif_records[target_key] = gbif_target
+
+        if (
+            gbif_target.canonical_name.lower() != target.lower()
+            and not gbif_target.from_synonym
+        ):
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                f"The query taxon '{target}' has been analyzed based on the"
+                f" first GBIF-accepted name, '{gbif_target.canonical_name}'."
+                " Please check that this is the intended taxon for analysis.",
+                query_dir=query_dir,
+                context={
+                    "target": target,
+                },
+            )
 
     logger.debug(
         "Targets identified at rank genus or lower:\n"
-        + pformat(list(target_gbif_taxa.keys()), indent=2)
+        + pformat(list(target_gbif_records.keys()), indent=2)
     )
     logger.debug(
         "Targets identified at rank family or higher:\n"
-        + pformat(list(higher_taxon_targets.keys()), indent=2)
+        + pformat(list(higher_target_gbif_records.keys()), indent=2)
     )
 
-    return target_gbif_taxa, higher_taxon_targets
+    return TargetGbifRecords(
+        lower_taxa=target_gbif_records,
+        higher_taxa=higher_target_gbif_records,
+        all_taxa={**target_gbif_records, **higher_target_gbif_records},
+        original_to_canonical=target_name_map,
+        canonical_to_original=target_name_reverse_map,
+        original_lower_taxa=original_lower_taxa,
+        original_higher_taxa=original_higher_taxa,
+        original_taxa={**original_lower_taxa, **original_higher_taxa},
+    )

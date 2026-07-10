@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Fabavirus vitis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Fabavirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Fabavirus",
+    "target_type": "pmi"
+  }
+]

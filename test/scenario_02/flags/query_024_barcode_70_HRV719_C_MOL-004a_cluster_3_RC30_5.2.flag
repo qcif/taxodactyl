@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Candidatus Liberibacter",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Candidatus Liberibacter",
+    "target_type": "pmi"
+  }
+]

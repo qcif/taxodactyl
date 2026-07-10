@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Potyvirus cucurbitaflavitesselati",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Potyvirus RID5215MJ1-MJ2a",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Grapevine badnavirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Grapevine badnavirus",
+    "target_type": "pmi"
+  }
+]

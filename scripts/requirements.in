@@ -9,3 +9,11 @@ requests
 fsspec
 pyyaml
 biopython
+debugpy
+azure-core
+azure-identity
+azure-keyvault-secrets
+azure-storage-blob
+redis
+redis-rate-limiters
+cryptography

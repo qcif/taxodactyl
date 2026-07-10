@@ -30,21 +30,27 @@
             },
             "country": {
                 "type": "string",
-                "description": "Country of origin for the sample.",
-                "errorMessage": "Parameter 'country' must be a string."
+                "description": "Country of origin for the sample. If unknown, leave empty (do not use 'NA', which is the country code for Namibia).",
+                "errorMessage": "Parameter 'country' must be a string. If country is unknown, leave it empty and do not use 'NA'."
             },
-            "host": {
+            "classification": {
                 "type": "string",
-                "description": "Host organism of the sample.",
-                "errorMessage": "Parameter 'host' must be a string."
+                "description": "High-level taxonomic classification for the sample.",
+                "enum": [
+                    "animalia",
+                    "plantae",
+                    "fungi",
+                    "chromista",
+                    "bacteria",
+                    "archaea",
+                    "viruses"
+                ],
+                "errorMessage": "Parameter 'classification' must be one of: animalia, plantae, fungi, chromista, bacteria, archaea, viruses."
             },
-            "sequencing_platform": {
+            "sequence": {
                 "type": "string",
-                "description": "Sequencing platform used for the sample.",
-                "errorMessage": "Parameter 'sequencing_platform' must be a string."
-            },
-            "sequencing_read_coverage": {
-                "description": "Sequencing read coverage for the sample."
+                "description": "Nucleotide sequence for the sample.",
+                "errorMessage": "Parameter 'sequence' must be a string."
             }
         },
         "required": ["sample_id", "locus", "preliminary_id"]

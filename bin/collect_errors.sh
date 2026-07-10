@@ -1,40 +1,77 @@
-#!/bin/bash
+#!/usr/bin/bash
 
-while [[ $# -gt 0 ]]; do
+set -euo pipefail
+
+usage() {
+  echo "Usage: $0 --dir <outdir>"
+  echo "Expected errors at: <outdir>/errors"
+}
+
+DIR=""
+
+while [[ "$#" -gt 0 ]]; do
   case "$1" in
     --dir)
-      execution_folder="$2"
+      if [[ "${2:-}" == "" ]]; then
+        echo "Missing value for --dir"
+        usage
+        exit 1
+      fi
+      DIR="$2"
       shift 2
       ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
     *)
-      shift
+      echo "Unknown parameter passed: $1"
+      usage
+      exit 1
       ;;
   esac
 done
 
-# This Bash script snippet is a common pattern for parsing command-line arguments. The while [[ $# -gt 0 ]]; do ... done loop continues as long as there are arguments left ($# is the number of arguments). Inside the loop, the case "$1" in ... esac statement checks the value of the first argument ($1). If it matches --dir, the script sets the variable execution_folder to the value of the second argument ($2), then uses shift 2 to remove both the flag and its value from the argument list. For any other argument, the script simply uses shift to skip it.
-
-# This approach allows the script to process arguments in order, handling known flags (like --dir) and ignoring unknown ones. A subtle point is that shift 2 is only safe if you know the flag is always followed by a value; otherwise, you might accidentally skip arguments. This pattern is useful for simple argument parsing, but for more complex needs, dedicated tools like getopts or external libraries are recommended.
-
-if [[ -n "$execution_folder" ]]; then
-  cd "${execution_folder}" || exit 1
+if [[ -z "$DIR" ]]; then
+  usage
+  exit 1
 fi
 
-nextflow log last -f process,workdir,tag -F 'exit != 0' | awk -F'\t' '
-{
-  printf "\nProcess: %s\n", $1
-  printf "Tag: %s\n", $3
-  printf "Workdir: %s\n", $2
+source_errors_dir="${DIR%/}/errors"
+errors_zip="${DIR%/}/errors.zip"
 
-  stderr_file = $2 "/.command.err"
-  stdout_file = $2 "/.command.out"
+if [[ ! -d "$source_errors_dir" ]]; then
+  echo "No errors occurred"
+  echo "Directory $source_errors_dir not found"
+  exit 0
+fi
 
-  printf "Last 10 lines of stderr:\n"
-  system("tail -n 10 " stderr_file)
+found_err=0
 
-  printf "\nLast 10 lines of stdout:\n"
-  system("tail -n 10 " stdout_file)
+while IFS= read -r -d '' err_file; do
+  found_err=1
+  rel_path="${err_file#"$source_errors_dir"/}"
 
-  print "-----------------------------"
-}'
-# $1 ~ /^QCIF/ 
+  echo
+  echo "Error file: ${rel_path}"
+  if [[ "$err_file" == *.log ]]; then
+    echo "Last 10 lines of log:"
+  else
+    echo "Last 10 lines of stderr:"
+  fi
+  tail -n 10 "$err_file" || true
+  echo "-----------------------------"
+done < <(find "$source_errors_dir" -type f \( -name '*.err' -o -name '*.log' \) -print0 | sort -z)
+
+if [[ "$found_err" -eq 0 ]]; then
+  echo "No .err or .log files found under ${source_errors_dir}"
+fi
+
+rm -f "$errors_zip"
+(
+  cd "$DIR"
+  zip -r "$(basename "$errors_zip")" "$(basename "$source_errors_dir")" > /dev/null
+)
+
+echo "Zipped errors directory to: $errors_zip"
+echo 'You can download all workflow errors by from the "Results" tab.'

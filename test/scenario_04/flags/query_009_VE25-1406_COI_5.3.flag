@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Pteromalidae sp.",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Atherigona orientalis",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Muscidae",
+    "target_type": "pmi"
+  }
+]

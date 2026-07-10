@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Nicotiana tomentosiformis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Tospovirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Tospovirus",
+    "target_type": "pmi"
+  }
+]

@@ -94,7 +94,9 @@
       "ef-1a"
     ],
     "non_ambiguous_synonyms": [
-      "elongation factor 1-alpha"
+      "elongation factor 1-alpha",
+      "tef1a",
+      "tef1α"
     ]
   },
   "fusa": {
@@ -239,6 +241,28 @@
     ],
     "non_ambiguous_synonyms": [
       "rna polymerase ii subunit b"
+    ]
+  },
+  "atpB": {
+    "ambiguous_synonyms": [],
+    "non_ambiguous_synonyms": [
+      "atpB",
+      "ATP synthase subunit B"
+    ]
+  },
+  "trnL": {
+    "ambiguous_synonyms": [],
+    "non_ambiguous_synonyms": [
+      "trnL",
+      "tRNA leu"
+    ]
+  },
+  "ache": {
+    "ambiguous_synonyms": [
+      "AChE"
+    ],
+    "non_ambiguous_synonyms": [
+      "Acetylcholinesterase"
     ]
   }
 }

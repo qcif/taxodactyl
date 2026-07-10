@@ -10,7 +10,7 @@ This is the pipeline entry point script. It handles parameter parsing and valida
 # Workflows
 ## [taxodactyl.nf](../workflows/taxodactyl.nf)
 
-This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata, performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
+This is the main Nextflow workflow script for the pipeline. It orchestrates the execution of all modules and subworkflows, defining the overall logic and data flow. The workflow takes input sequences and metadata (either a separate FASTA file or a `sequence` column in the metadata), performs taxonomic assignment (via BOLD or BLAST), extracts and analyses candidate sequences, builds phylogenetic trees, evaluates publications and database coverage supporting the taxonomic assignment, and generates a comprehensive report.
 
 ---
 
@@ -42,13 +42,9 @@ This subworkflow (`UTILS_NFSCHEMA_PLUGIN`) uses the nf-schema plugin to validate
 
 # Modules
 
-## [configure/environment](../modules/configure/environment/main.nf)
-
-This module generates an environment variables file (`env_vars.sh`) containing all relevant parameters required by the [Python Taxonomic Assignment workflow modules](https://github.com/qcif/taxodactyl/tree/main/scripts). The generated file is sourced by the Nextflow modules that call these Python modules, ensuring consistent parameter passing throughout the workflow. More information about the environment variables and their usage can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#environment-variables).
-
 ## [validate/input](../modules/validate/input/main.nf)
 
-This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA, and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).
+This process (`VALIDATE_INPUT`) runs a Python validation script inside a container to check the input files and parameters for the workflow. It sources an environment variables file, then calls `p0_validation.py` with paths to the taxonomy database, query FASTA (if provided), and metadata CSV. If the database type is BOLD, it adds a `--bold` flag. The process ensures all required inputs are valid before the main analysis begins. More information about the `p0_validation.py` script can be found [here](https://github.com/qcif/taxodactyl/tree/main/scripts#p0-validate-inputs).
 
 ## [blast/blastn](../modules/blast/blastn/main.nf)
 
@@ -124,6 +120,8 @@ Defines all pipeline parameters and their default values, such as input file nam
 ## [`conf/process.config`](../conf/process.config)
 Sets default resource requirements (CPUs, memory, time) and container images for each process or process label. It also defines the default error strategy and bash options for process execution. You can override these settings as required. See the [customisation document](customise.md) for examples of assigning different resources or error strategies to the processes.
 
+The process configuration also creates `params.temp_root_dir` in `beforeScript` for each task. This is intentional: unlike `params.app_data_dir`, the temp root is treated as generally required because task code may write cache and throttle state there even if the workflow-level setup could not prepare it in advance.
+
 You can also change the container for a process but we cannot guarantee the compatibility in downstream analysis. Currently, the following containers are used by each process or process label:
 
 | Process / Label         | Container Image                                                                                   |
@@ -132,6 +130,24 @@ You can also change the container for a process but we cannot guarantee the comp
 | `blast` label (`BLAST_BLASTN`, `BLAST_BLASTDBCMD`)          | `docker://ncbi/blast:2.16.0`                                                                     |
 | `MAFFT_ALIGN`           | `quay.io/biocontainers/mulled-v2-12eba4a074f913c639117640936668f5a6a01da6:425707898cf4f85051b77848be253b88f1d2298a-0` |
 | `FASTME`                | `quay.io/biocontainers/fastme:2.1.6.3--h7b50bb2_1`                                               |
+
+### `app_data_dir` versus `temp_root_dir`
+
+The workflow treats these two directories differently because they serve different purposes.
+
+| Aspect | `app_data_dir` | `temp_root_dir` |
+|---|---|---|
+| Main purpose | Persistent local secrets storage for the local vault | Temporary location for cache and throttle state |
+| Workflow setup | Created once during workflow startup and converted into a container bind only if the directory exists | Created during workflow startup, then created again per task in `beforeScript` |
+| How containers receive it | Passed indirectly through `System.setProperty('taxodactyl.bind_app_data', ...)` and only used by modules that need it | Bound directly by temp-using modules such as `EVALUATE_SOURCE_DIVERSITY` and `EVALUATE_DATABASE_COVERAGE` |
+| When it is really needed | Only when local encrypted secret persistence is being used | Treated as generally needed because task code may use it for temporary SQLite-backed cache/throttle state |
+| If setup fails at workflow start | The workflow logs a warning and continues without the host bind | The workflow logs a warning and continues, but tasks still try to prepare and use the temp root later |
+| Local executor | Useful when `SECRET_KEY` is set and persistence across runs matters | Expected to be writable and normally available |
+| Shared filesystem / HPC | Optional, but can be useful if persistent local vault data should be shared | Important when temp-backed state needs to remain usable across tasks or nodes |
+| Azure | Usually not useful for persistence on ephemeral task filesystems | Can still be used as ephemeral scratch space, but does not provide the same persistence guarantees as local or shared filesystems |
+| Failure impact | Usually degrades secret persistence rather than stopping the run | More likely to affect task execution if a process cannot create or use the temp path it expects |
+
+In short, `app_data_dir` is treated as optional and best-effort, while `temp_root_dir` is treated as operationally important even though some executors, especially Azure, may only provide ephemeral storage.
 
 Use `withLabel` or `withName` selectors to specify a container. If a process matches both a `withLabel` and a `withName` rule, the most specific rule (usually `withName`) takes precedence for the container.
 

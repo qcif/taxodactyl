@@ -1,6 +1,8 @@
 """Runtime configuration for the workflow.
 
 Read in from YAML and validate with Pydantic.
+
+To view/modify default values for config attributes, refer to default.yml.
 """
 
 import argparse
@@ -35,19 +37,115 @@ MAP_FILENAME_TEMPLATE = "map_{taxon_str}.png"
 REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
-VARS_FROM_ENV = (
-    "USER_EMAIL",
-    "NCBI_API_KEY",
+METADATA_IGNORE_FIELDS = (
+    'sequence',
 )
+FACILITY_NAME_DEFAULT = "Not provided"
 TEMP_FILES = (
     'entrez_cache_dirname',
 )
 
 
 class Config:
-    """Singleton configuration class using YAML with Pydantic validation."""
+    """Singleton configuration class for global config state.
+
+    Config can be read from:
+
+    - CLI arguments
+    - YAML with Pydantic validation.
+    - Env variables
+    """
+
     _instance = None
     _initialized = False
+
+    # These are used for taxonomic filtering of GBIF/taxonkit records:
+    HIGHER_CLASSIFICATIONS = {
+        'animalia': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
+        'animal': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
+        'animals': {
+            'gbif': 1,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'metazoa',
+            },
+        },
+        'plantae': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'plant': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'plants': {
+            'gbif': 6,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'viridiplantae',
+            },
+        },
+        'fungi': {
+            'gbif': 5,
+            'ncbi': {
+                'rank': 'kingdom',
+                'taxon': 'fungi',
+            },
+        },
+        'chromista': {
+            'gbif': 4,
+            'ncbi': {
+                'rank': 'clade',
+                'taxon': 'sar',
+            },
+        },
+        'bacteria': {
+            'gbif': 3,
+            'ncbi': {
+                'rank': 'domain',
+                'taxon': 'bacteria',
+            },
+        },
+        'archaea': {
+            'gbif': 2,
+            'ncbi': {
+                'rank': 'domain',
+                'taxon': 'archaea',
+            },
+        },
+        'viruses': {
+            'gbif': 8,
+            'ncbi': {
+                'rank': 'acellular root',
+                'taxon': 'viruses',
+            },
+        },
+        'virus': {
+            'gbif': 8,
+            'ncbi': {
+                'rank': 'acellular root',
+                'taxon': 'viruses',
+            },
+        },
+    }
 
     def __new__(cls):
         if cls._instance is None:
@@ -58,9 +156,33 @@ class Config:
         if Config._initialized:
             return
         Config._initialized = True
-        self._load_cascading_config()
-        self.output_dir = Path(os.getenv("OUTPUT_DIR", 'output'))
-        self.query_dir = None
+        self._load_config_cascade()
+        self._set_output_dir()
+        self._setup_logging()
+        self.query_dir = getattr(self, 'query_dir', None)
+
+    def _set_output_dir(self) -> Path:
+        """Determine output directory from env var or CLI arg."""
+        param = mappings.PARAMS['output_dir']
+        if os.getenv(param.env_name):
+            self.output_dir = Path(os.getenv(param.env_name))
+        else:
+            parser = argparse.ArgumentParser(add_help=False)
+            parser.add_argument(
+                f'--{param.cli_name}',
+                type=Path,
+            )
+            args, _ = parser.parse_known_args()
+            if args.output_dir:
+                self.output_dir = args.output_dir
+        if not self.output_dir:  # Should have been set in default YAML
+            self.output_dir = Path('output')
+        self.output_dir.mkdir(exist_ok=True, parents=True)
+
+    def _setup_logging(self):
+        dictConfig(
+            get_logging_config(self.output_dir / self.log_filename)
+        )
 
     def _get_config_paths(self) -> list[Path]:
         """Parse command line to get config file paths.
@@ -84,7 +206,7 @@ class Config:
 
         return args.config
 
-    def _load_cascading_config(self):
+    def _load_config_cascade(self):
         """Load and merge multiple configuration files with cascading."""
         config_paths = self._get_config_paths()
         try:
@@ -136,11 +258,8 @@ class Config:
             field_value = getattr(self._config, field_name)
             setattr(self, field_name, field_value)
 
-        for var in VARS_FROM_ENV:
-            value = os.getenv(var)
-            setattr(self, var, value)
-
         self._apply_env_overrides()
+        self._resolve_ncbi_api_key()
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
@@ -154,12 +273,42 @@ class Config:
                         f"Failed to update config from CLI arg "
                         f"{mapper.env_name}={value}: {e}")
 
+    def _resolve_ncbi_api_key(self):
+        """Resolve NCBI_API_KEY from vault if not provided via env var."""
+        if not self.user_email:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set NCBI_API_KEY"
+                " from vault.")
+            return
+        if self.ncbi_api_key:
+            self.vault.put('NCBI_API_KEY', self.user_email, self.ncbi_api_key)
+        else:
+            self.ncbi_api_key = self.vault.get('NCBI_API_KEY', self.user_email)
+            if self.ncbi_api_key:
+                logger.info("NCBI API key retrieved from vault.")
+            else:
+                logger.info(
+                    "No NCBI API key provided via env var or vault. Proceeding"
+                    " without an API key, but you may encounter rate limiting."
+                )
+
+    def _resolve_facility_name(self):
+        """Resolve facility_name from vault if not provided by the user."""
+        if not self.user_email:
+            logger.warning(
+                "USER_EMAIL not set; cannot get or set facility_name from"
+                " vault.")
+            return
+        current = self.inputs.facility_name
+        if current and current != FACILITY_NAME_DEFAULT:
+            self.vault.put('facility_name', self.user_email, current)
+        else:
+            vault_value = self.vault.get('facility_name', self.user_email)
+            if vault_value:
+                self.inputs.facility_name = vault_value
+
     def update_from_args(self, args: argparse.Namespace):
         """Update config from CLI arguments and setup logging/directories."""
-        # Setup logging
-        conf = get_logging_config(self.output_dir / self.log_filename)
-        dictConfig(conf)
-
         # Handle BOLD flag
         if hasattr(args, 'bold') and args.bold:
             self.bold_flag_file.write_text('1')
@@ -179,6 +328,8 @@ class Config:
                     f"Failed to update config from CLI arg "
                     f"{arg_name}={value}: {e}")
                 continue
+
+        self._resolve_facility_name()
 
     def create_query_dir(self, query_ix, query_title):
         """Create a directory for this query and write query title file."""
@@ -276,13 +427,43 @@ class Config:
 
     @property
     def user_tempdir(self):
-        user_dir = self.tempdir / (self.USER_EMAIL or 'ANONYMOUS')
+        user_dir = self.tempdir / (self.user_email or 'ANONYMOUS')
         user_dir.mkdir(exist_ok=True, parents=True)
         return user_dir
 
     @property
+    def user_secrets_dir(self) -> Path:
+        user_sub = self.user_email or 'ANONYMOUS'
+        candidates = [
+            Path('/var/lib/taxodactyl') / user_sub,
+            Path.home() / '.local' / 'share' / 'taxodactyl' / user_sub,
+        ]
+        for candidate in candidates:
+            try:
+                candidate.mkdir(exist_ok=True, parents=True)
+                return candidate
+            except OSError:
+                continue
+        raise OSError(
+            "No writable secrets directory found. Tried:\n- "
+            + "\n- ".join(str(c) for c in candidates)
+            + "\n\nPlease ensure one of these directories is writable, or"
+            + " remove the SECRET_KEY environment variable to disable local"
+            + " secrets storage.\n"
+        )
+
+    @property
     def throttle_sqlite_path(self):
         return self.user_tempdir / ('throttle_' + self.sqlite_file)
+
+    @property
+    def throttle_sqlite_global_path(self):
+        return self.tempdir / ('throttle_' + self.sqlite_file)
+
+    @property
+    def redis_ssl(self):
+        """Azure Cache for Redis uses SSL on port 6380."""
+        return self.redis_port == 6380
 
     @property
     def cache_sqlite_path(self):
@@ -344,6 +525,7 @@ class Config:
                     key: _get_value_for_key(key, row, colname)
                     for key, colname in header.items()
                     if key != "sample_id"
+                    and key.lower() not in METADATA_IGNORE_FIELDS
                 }
         return data
 
@@ -396,6 +578,14 @@ class Config:
     def get_toi_list_for_query(self, query) -> list[str]:
         """Read taxa of interest from TOI file."""
         return self._get_metadata_for_query(query, "taxa_of_interest")
+
+    def get_classification_for_query(self, query) -> str:
+        classification = self._get_metadata_for_query(query, "classification")
+        if not (isinstance(classification, str) and classification.strip()):
+            return None
+        return self.HIGHER_CLASSIFICATIONS[
+            classification.lower().strip()
+        ]
 
     def get_report_path(self, query, bold: bool = False) -> Path:
         query_ix = self.get_query_ix(query)
@@ -504,6 +694,15 @@ class Config:
                     - timedelta(days=self.temp_clean_after_days)
                 ):
                     shutil.rmtree(path)
+
+    @cached_property
+    def vault(self):
+        from src.utils.secrets import Vault
+        return Vault(self)
+
+    @property
+    def azure_key_vault_enabled(self) -> bool:
+        return bool(self.azure_key_vault_url)
 
 
 def get_latest_mtime(path: str) -> datetime:

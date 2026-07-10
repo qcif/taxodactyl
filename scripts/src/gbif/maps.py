@@ -36,6 +36,10 @@ def draw_occurrence_map(taxon_key: str, path: Path):
                 'offset': offset,
             },
             with_cache=True,
+            task_description=(
+                f"GBIF occurrences.search: taxonKey={taxon_key},"
+                f" offset={offset}"
+            ),
         )
         all_results.extend(res.get('results', []))
         if res.get('endOfRecords', True):
@@ -43,7 +47,7 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         offset += res['limit']
         if offset >= config.gbif_max_occurrence_records:
             logger.warning(
-                "Maximum number of records reached:"
+                "Maximum number of occurrence records reached:"
                 f" {config.gbif_max_occurrence_records}")
             break
 
@@ -93,7 +97,7 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         cb.set_label("Density of Occurrences")
     else:
         ax.text(
-            0.5, 0.15,
+            0.5, 0.45,
             "No occurrence records returned from GBIF",
             color="white",
             fontsize=16,

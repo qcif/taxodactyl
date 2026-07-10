@@ -156,7 +156,13 @@
         </th>
         <th class="text-center">
           Publications
-          {{ info_badge("Analysis of reference sequences' credibility based on supporting publications.") }}
+          {% set info_msg = "Analysis of reference sequence accession credibility based on supporting publications." %}
+          {% if candidates.species | length %}
+            {% set criteria_level = "STRONG" if candidates.strict else "MODERATE" %}
+            {% set info_msg = info_msg + " For this analysis, this includes only hits that meet the " + criteria_level + " candidate criteria." %}
+          {% endif %}
+
+          {{ info_badge(info_msg) }}
         </th>
       </thead>
       {% for candidate in candidates.species %}
@@ -173,7 +179,20 @@
             <em>{{ taxon }}</em>
           </a>
         </td>
-        <td class="text-center">{{ candidate.hit_count }}</td>
+        <td class="text-center">
+          {% if not bold %}
+          <a
+            class="btn btn-primary btn-sm"
+            href="javascript:void(0)"
+            role="button"
+            title="View BLAST hits for this species"
+            data-bs-toggle="tooltip"
+            onclick="showFilteredBlastHits('{{ taxon }}');"
+          >{{ candidate.hit_count }}</a>
+          {% else %}
+          {{ candidate.hit_count }}
+          {% endif %}
+        </td>
         <td class="text-center" data-sort="{{ candidate.identity }}">
           {{ (candidate.identity * 100) | round(2)}}%
         </td>
@@ -232,6 +251,7 @@
             'config': config,
             'tois_detected': {},
             'locus_provided': locus_provided,
+            'ncbi_taxonomy_url': db_coverage.ncbi_urls[taxon]['taxonomy'],
           } %}
           {{ render_target_modal(modal_context) }}
 
@@ -269,7 +289,7 @@
 
       {% if candidates.species | length == 0 %}
       <tr>
-        <td colspan="7" class="text-danger text-center">
+        <td colspan="8" class="text-danger text-center">
           <em>No candidate species identified</em>
         </td>
       </tr>
@@ -334,6 +354,36 @@
 
 
 <script>
+  function showFilteredBlastHits(species) {
+    const modal = document.getElementById('blastHitsModal');
+    const rows = modal.querySelectorAll('tr.interactive');
+    rows.forEach((row) => {
+      if (row.dataset.species === species) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+    // Update modal title to indicate filtering
+    const title = modal.querySelector('.modal-title');
+    title.textContent = 'BLAST hits for ' + species;
+    new bootstrap.Modal(modal).show();
+  }
+
+  // Reset filter when modal is closed
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('blastHitsModal');
+    if (modal) {
+      modal.addEventListener('hidden.bs.modal', () => {
+        const rows = modal.querySelectorAll('tr.interactive');
+        rows.forEach((row) => {
+          row.style.display = '';
+        });
+        modal.querySelector('.modal-title').textContent = 'BLAST search results';
+      });
+    }
+  });
+
   function togglePublicationsCollapse(link) {
     const tableRow = link.closest('tr');
     tableRow.querySelectorAll('.toggle-collapse').forEach((el) => {

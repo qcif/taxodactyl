@@ -3,18 +3,33 @@ const FULL_DATA_PATH = window.location.pathname.split("/").slice(0, -1).join("/"
 
 async function saveReport(readonly = false) {
 
-  $('#saveModal').modal('hide');
-  $('body').removeClass('modal-open')
-  $('body')[0].style = null
-  $('.modal-backdrop').remove();
+  const saveModalEl = document.getElementById('saveModal');
+  const saveModal = bootstrap.Modal.getOrCreateInstance(saveModalEl);
+  saveModal.hide();
 
   // Clone the current document's HTML
   const clone = document.documentElement.cloneNode(true);
+
+  // Strip transient Bootstrap modal state — hide() is animated, so the
+  // backdrop and modal-open class may still be present at clone time.
+  clone.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+  const clonedBody = clone.querySelector('body');
+  if (clonedBody) {
+    clonedBody.classList.remove('modal-open');
+    clonedBody.style.removeProperty('padding-right');
+  }
+  clone.querySelectorAll('.modal').forEach(el => {
+    el.classList.remove('show');
+    el.removeAttribute('style');
+    el.removeAttribute('aria-modal');
+    el.setAttribute('aria-hidden', 'true');
+  });
+
   if (readonly) {
-    const saveModal = clone.querySelector('#saveModal');
-    if (saveModal) saveModal.remove();
-    const saveButton = clone.querySelector('#saveButton');
-    if (saveButton) saveButton.remove();
+    const saveModalClone = clone.querySelector('#saveModal');
+    if (saveModalClone) saveModalClone.remove();
+    const saveButtonClone = clone.querySelector('#saveButton');
+    if (saveButtonClone) saveButtonClone.remove();
   }
 
   // Update all input and textarea values

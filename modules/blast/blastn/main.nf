@@ -9,10 +9,10 @@ process BLAST_BLASTN {
     val ready   // Readiness flag
 
     output:
-    path("$params.blast_xml_filename"), emit: blast_output // BLAST XML output
-    path "versions.yml"           , emit: versions         // BLAST version info
+    path("${task.ext.blast_xml_filename}"), emit: blast_output // BLAST XML output
+    path "${task.ext.versions_yml}"           , emit: versions         // BLAST version info
 
-    publishDir "${params.outdir}", mode: 'copy', pattern: "$params.blast_xml_filename" // Publish BLAST XML to output directory
+    publishDir "${params.outdir}", mode: 'copy', pattern: "${task.ext.blast_xml_filename}" // Publish BLAST XML to output directory
     
     when:
     task.ext.when == null || task.ext.when 
@@ -33,7 +33,7 @@ process BLAST_BLASTN {
         -db ${file(params.blastdb)} \\
         -query ${fasta_name} \\
         -outfmt 5 \\
-        -out $params.blast_xml_filename \\
+        -out ${task.ext.blast_xml_filename} \\
         -task megablast \\
         -max_target_seqs 500 \\
         -evalue 0.05 \\
@@ -41,10 +41,9 @@ process BLAST_BLASTN {
         -penalty -3
 
     # Record the BLAST version used
-    cat <<-END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > ${task.ext.versions_yml}
     "${task.process}":
         blast: \$(blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//')
     END_VERSIONS
     """
 }
-

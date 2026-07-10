@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Rastrococcus tropicasiaticus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "C",
+    "target": "Pulvinaria",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "C",
+    "target": "Pulvinaria",
+    "target_type": "pmi"
+  }
+]

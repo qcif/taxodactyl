@@ -1,11 +1,11 @@
 {% macro render_error_message(errorlist) %}
 
 <div class="alert alert-danger">
-  <strong>Errors encountered:</strong>
+  <strong>Issues encountered:</strong>
   <ul>
     {% for error in errorlist %}
     <li>
-      {{ error.message }}
+      {{ error.message | safe }}
       {% if error.exception %}
       <br>
       <small>

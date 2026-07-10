@@ -9,7 +9,7 @@ process BLAST_BLASTDBCMD {
 
     output:
     path "taxids.csv", emit: taxids      // Output: CSV mapping accession to taxid
-    path "versions.yml", emit: versions  // Output: BLAST version info
+    path "${task.ext.versions_yml}", emit: versions  // Output: BLAST version info
 
     when:
     task.ext.when == null || task.ext.when 
@@ -23,7 +23,7 @@ process BLAST_BLASTDBCMD {
         -outfmt "%a,%T" > taxids.csv
 
     # Record the BLAST version used 
-    cat <<-END_VERSIONS > versions.yml
+    cat <<-END_VERSIONS > ${task.ext.versions_yml}
     "${task.process}":
         blast: \$(blastdbcmd -version 2>&1 | head -n1 | sed 's/^.*blastdbcmd: //; s/ .*\$//')
     END_VERSIONS

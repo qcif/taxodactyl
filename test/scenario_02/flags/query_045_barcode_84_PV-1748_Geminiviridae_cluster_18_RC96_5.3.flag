@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Begomovirus ipomoeahenanense",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Begomovirus ipomoeasichuansecundi",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Geminiviridae",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Geminiviridae",
+    "target_type": "pmi"
+  }
+]

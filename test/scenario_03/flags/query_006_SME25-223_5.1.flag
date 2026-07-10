@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Drosophila simulans",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Drosophila mauritiana",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Drosophila simulans",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Drosophila",
+    "target_type": "pmi"
+  }
+]

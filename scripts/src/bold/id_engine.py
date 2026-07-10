@@ -169,7 +169,7 @@ class BoldSearch:
         # If multiple seq IDs, only keep the one with hits
         # (the correct orientation)
         # Submit all sequences concurrently
-        with ThreadPoolExecutor(max_workers=15) as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             future_to_seq = {
                 executor.submit(
                     submit_sequence,
@@ -253,7 +253,7 @@ class BoldSearch:
         )
         metadata = {}
 
-        with ThreadPoolExecutor(max_workers=15) as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             futures = []
             for i in range(
                 0,
@@ -405,7 +405,7 @@ class BoldSearch:
             for data in taxonomies.values()
         }
 
-        with ThreadPoolExecutor(max_workers=15) as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             futures = {
                 executor.submit(fetch_kingdom, phylum): phylum
                 for phylum in phyla.keys()

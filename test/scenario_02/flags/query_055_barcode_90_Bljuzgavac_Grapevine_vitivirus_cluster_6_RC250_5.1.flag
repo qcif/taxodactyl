@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Vitivirus GVL",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Vitivirus epsilonvitis",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Grapevine vitivirus",
+    "target_type": "pmi"
+  }
+]

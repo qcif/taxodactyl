@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "A",
+    "target": "Trogoderma granarium",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "A",
+    "target": "Trogoderma granarium",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "A",
+    "target": "Trogoderma",
+    "target_type": "pmi"
+  }
+]

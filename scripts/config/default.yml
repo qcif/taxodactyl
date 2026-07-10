@@ -25,8 +25,8 @@ toi_detected_header:
 - Match accession
 - Match identity
 pmi_match_csv: preliminary_id_match.csv
-boxplot_img_filename: identity-boxplot.png
-tree_nwk_filename: candidates.nwk
+boxplot_img_filename: candidates_identity_boxplot.png
+tree_nwk_filename: candidates_phylogeny.nwk
 db_coverage_json: db_coverage.json
 blast_max_target_seqs: 2000
 bold_database: COX1_SPECIES_PUBLIC
@@ -49,6 +49,7 @@ sqlite_file: db.sqlite
 entrez_cache_dirname: entrez_cache
 cache_timeout_hours: 168
 cache_disabled: false
+throttle_backend: sqlite
 max_api_retries: 3
 errors_dir: errors
 temp_dir_name: biosecurity
@@ -64,6 +65,8 @@ inputs:
     taxa_of_interest: taxa_of_interest
     country: country
     host: host
+    classification: classification
+    sequence: sequence
   metadata_csv_required_fields:
   - sample_id
   - locus

@@ -12,9 +12,9 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `blast_xml`    | string  |                   | Path to a pre-existing BLAST XML results file to skip the BLAST search step.                     | Must be a valid file path, `.xml` extension.                                                  |
 | `db_type`      | string  | 'blast_core_nt'   | Type of reference database to use for taxonomic assignment. Allowed: `blast_core_nt`, `bold`.     | Must be one of `blast_core_nt`, `bold`. Default: `blast_core_nt`.                             |
 | `facility_name`| string  |                   | Name of the facility where the workflow is executed.                                             | Must be a string.                                                                             |
-| `metadata`     | string  | 'metadata.csv'    | CSV file containing sample metadata. Must have columns: `sample_id`, `locus`, `preliminary_id`.  | Must be a valid CSV file path, no spaces, `.csv` extension, required columns.                 |
+| `metadata`     | string  | 'metadata.csv'    | CSV file containing sample metadata. Required columns: `sample_id`, `locus`, `preliminary_id`. Optional columns include `country` (if unknown, leave empty; do not use `NA`) and `classification` (one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`).  | Must be a valid CSV file path, no spaces, `.csv` extension, required columns.                 |
 | `outdir`       | string  | 'output'          | Directory where output files will be saved.                                                      | Must be a valid directory path. Default: `output`.                                            |
-| `sequences`    | string  | 'sequences.fasta' | FASTA file containing input sequences for analysis.                                              | Must be a valid file path, no spaces, `.fa`, `.fna`, or `.fasta` extension.                   |
+| `sequences`    | string  |                   | Optional FASTA file containing input sequences for analysis. If omitted, `metadata.csv` must include a `sequence` column. | Must be a valid file path, no spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension.            |
 | `taxdb`        | string  |                   | Directory where NCBI's taxdump files can be found.                                               | Must be a valid directory path. Following files should be present: citations.dmp, division.dmp, gencode.dmp, merged.dmp, nodes.dmp, taxonkit, delnodes.dmp, gc.prt, images.dmp, names.dmp and readme.txt |
 
 ---
@@ -108,7 +108,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | `email`        | string  | null    | Email address for notifications and reports.                                                     | Must be a valid email address.       |
 | `logging_debug`| int     | 0       | If 1, verbose log statements will be emitted.                                                    | 0 or 1. Default: 0.                  |
 | `mock_blast`   | boolean | false   | If true, use mock BLAST for testing purposes instead of running actual BLAST.                    | Must be true or false. Default: false.|
-| `temp_root_dir`| string  | '${launchDir}/taxodactyl_tmp'| Directory where temporary files will be saved.                                    | Must be a valid directory path.      |
+| `app_data_dir` | string  | `~/.local/share/taxodactyl` | Directory for persistent application data (e.g. secrets / local vault data), mounted to `/var/lib/taxodactyl` in containers. | Must be a valid directory path. |
+| `temp_root_dir`| string  | `$TMPDIR/taxodactyl_tmp` (fallback: `${java.io.tmpdir}`, then `$HOME`) | Directory where temporary files will be saved. Uses `TMPDIR` when set, otherwise falls back to `${java.io.tmpdir}`, then `${user.home}`. In all cases `/taxodactyl_tmp` is appended to the selected base directory. | Must be a valid directory path.      |
 | `temp_dir_name`| string  |         | Name of the temporary directory within the temp_root_dir.                                        | Must be a string.                    |
 
 ---
@@ -128,7 +129,7 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing all BLAST hits.                                           | No spaces, `.fa`, `.fna`, or `.fasta` extension. |
+| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing all BLAST hits.                                           | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
 | `hits_json_filename` | string | 'all_hits.json'   | Filename for the JSON file containing all BLAST hits.                                            | No spaces, `.json` extension.        |
 
 ---
@@ -139,8 +140,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 |----------------------------------|---------|--------------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
 | `boxplot_img_filename`           | string  | 'candidates_identity_boxplot.png' | Filename for the PNG image of candidate identity boxplot.                                     | No spaces, `.png` extension.         |
 | `candidates_csv_filename`        | string  | 'candidates.csv'               | Filename for the CSV file listing candidate hits.                                                | No spaces, `.csv` extension.         |
-| `candidates_fasta_filename`      | string  | 'candidates.fasta'             | Filename for the FASTA file of candidate sequences.                                              | No spaces, `.fa`, `.fna`, or `.fasta` extension. |
-| `candidates_phylogeny_fasta_filename` | string | 'candidates_phylogeny.fasta'  | Filename for the FASTA file of candidate sequences for the phylogenetic tree.                    | No spaces, `.fa`, `.fna`, or `.fasta` extension. |
+| `candidates_fasta_filename`      | string  | 'candidates.fasta'             | Filename for the FASTA file of candidate sequences.                                              | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
+| `candidates_phylogeny_fasta_filename` | string | 'candidates_phylogeny.fasta'  | Filename for the FASTA file of candidate sequences for the phylogenetic tree.                    | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
 | `candidates_json_filename`       | string  | 'candidates.json'              | Filename for the JSON file of candidate hits.                                                    | No spaces, `.json` extension.        |
 | `candidates_sources_json_filename`| string | 'candidates_sources.json'      | Filename for the JSON file listing sources of candidate species.                                 | No spaces, `.json` extension.        |
 | `independent_sources_json_filename`| string | 'aggregated_sources.json'      | Filename for the JSON file listing aggregated publications supporting taxonomic associations.     | No spaces, `.json` extension.        |

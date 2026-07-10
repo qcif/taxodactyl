@@ -1,0 +1,32 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Ctenopseustis obliquana",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Ctenopseustis herana",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Ctenopseustis fraterna",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Ctenopseustis herana",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Tortricidae",
+    "target_type": "pmi"
+  }
+]

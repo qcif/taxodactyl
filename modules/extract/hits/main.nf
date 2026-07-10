@@ -2,34 +2,50 @@ process EXTRACT_HITS {
 
     label 'daff_tax_assign'
 
-    containerOptions "--bind ${file(params.outdir)}"
-    // No longer need to bind original file parent directory since we use copied files
+    // Bind output location used for published hit FASTA files.
+    containerOptions {
+        def bind_app_data = System.getProperty('taxodactyl.bind_app_data', '')
+        "--bind ${file(params.outdir)}${bind_app_data}"
+    }
 
     input:
-    path(env_var_file) // Environment variables file
     path(blast_xml)    // BLAST XML results file
     path(sequences_file) // Copied sequences file
     path(metadata_file) // Copied metadata file
 
     output:
-    path(params.accessions_filename), emit: accessions // Output: accessions file
-    tuple path("query_*/$params.hits_json_filename"), path("query_*/$params.hits_fasta_filename"), emit: hits // Output: tuple of hits JSON and FASTA files
-    path("output/run.log"), emit: extract_hits_log // Output: log file
+    // Accession list used for taxonomy lookup.
+    path(task.ext.accessions_filename), emit: hits_accessions // Output: accessions file
+    // Per-query parsed hit assets.
+    tuple path("query_*/${task.ext.hits_fasta}"),
+        path("query_*/${task.ext.hits_json}"),
+        path("query_*/${task.ext.query_title_file}"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
+    // Process run log.
+    path("${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
-        pattern:    "query_*/$params.hits_fasta_filename" // Publish hit FASTA files to output directory
+        pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory
 
     script:
+    // Build optional CLI flags only when corresponding params are set.
     def blast_max_target_seqs_arg = params.blast_max_target_seqs_for_report ? "--blast-max-target-seqs ${params.blast_max_target_seqs_for_report}" : ''
     """
-    # Source environment variables
-    source ${env_var_file}
     # Run the BLAST hit parsing Python script
     python /app/scripts/p1_parse_blast.py \
         ${blast_xml} \
         --query-fasta ${sequences_file} \
         --metadata-csv ${metadata_file} \
         --output-dir ./ \
-        ${blast_max_target_seqs_arg} \
+        ${blast_max_target_seqs_arg}
+
+    # Ensure each query folder has a FASTA file so downstream matching/publishing is stable.
+    shopt -s nullglob
+    for qdir in query_*/; do
+        [ -d "\$qdir" ] || continue
+        if [[ ! -f "\${qdir}${task.ext.hits_fasta}" ]]; then
+            : > "\${qdir}${task.ext.hits_fasta}"
+        fi
+    done
+
     """
 }

@@ -23,6 +23,42 @@
                 "command": "bash",
                 "args": ["${workspaceFolder}/.vscode/tasks/clear_log_files.sh"]
             }
+        },
+        {
+            "label": "start-singularity-debug",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/scripts/run_in_singularity.sh",
+                "scripts/output/issues/225/sample_3",
+                "query_001_barcode_55_1991-08_Fabavirus_cluster_0_RC5417",
+                "${workspaceFolder}/scripts/output/issues/225/taxodactyl-v1.4.4-dev.sif"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*Starting Singularity",
+                    "endsPattern": "^$"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "stop-singularity-debug",
+            "type": "shell",
+            "command": "pkill",
+            "args": ["-f", "singularity exec.*run_in_singularity.sh"],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
         }
     ]
 }

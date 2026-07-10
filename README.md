@@ -23,6 +23,7 @@
 - [Documentation of the analysis](https://qcif.github.io/taxodactyl/understanding-the-analysis.html)
 - [Running tests with nf-test](docs/nf-tests.md)
 - [Python scripts](./scripts) (for developers)
+- [Run Taxodactyl on Azure Batch](./docs/azure/)
 
 
 ### Workflow Overview
@@ -55,6 +56,22 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 11. **Workflow report** Generates detailed HTML and text reports, including sequence alignments, phylogenetic trees, database coverage, and supporting evidence for each assignment.
 
+## Infrastructure
+
+The pipeline relies on three pluggable backends — for caching API responses, coordinating concurrent API throttling, and storing user secrets (optional). By default, the workflow will run with SQLite3 backends and no vault. The best configuration depends on whether your tasks share a filesystem. The table below suggests minimum requirements for your execution environment. For Azure deployments please consult the [Azure docs](docs/azure/README.md).
+
+| Execution environment                                                                                | Cache backend  | Concurrency backend | Vault backend (optional)   |
+|------------------------------------------------------------------------------------------------------|----------------|---------------------|-----------------|
+| **Local** — Nextflow and tasks run on the same machine                                               | SQLite         | SQLite**              | Local           |
+| **HPC** — tasks run on different nodes in the same network, with a shared filesystem                 | SQLite *       | SQLite**            | Local           |
+| **Azure** — tasks run on ephemeral nodes in Azure Batch                                              | Azure Blob     | [Redis](#redis-for-concurrency)               | [Azure Key Vault](docs/azure/07-key-vault.md) |
+
+\* On HPC, the local SQLite backends work OK across nodes **provided `--temp_root_dir` points to a shared volume** (e.g. an NFS or Lustre mount). All nodes need to be able to read/write the same SQLite files for the cache and the throttle coordination to work correctly. If you can't guarantee a shared filesystem, you can use the Azure Blob (cache) and Redis (concurrency) backends instead.
+
+\*\* Regardless of your execution environment, Redis is the most reliable concurrency backend. We highly [recommend running a Redis server](#redis-for-concurrency) for Taxodactyl to use if you care about performance and reliability.
+
+For Azure deployments, see [deployment/azure/](deployment/azure/) for setup instructions covering Batch pools, Blob storage, the Redis VM, and Key Vault.
+
 ## Usage
 
 ### Software
@@ -72,6 +89,9 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
   Used for containerised execution of all bioinformatics tools, ensuring reproducibility.
   *Tested version: 3.7.0*
 
+- **[Redis](https://redis.io/)**
+  Optional, but we highly recommend for better concurrecy management with lots of samples - see [Redis for concurrency](#redis-for-concurrency)
+
 > [!NOTE]
 > - Instructions on how to set up Nextflow and a compatible version of Java can be found on [this page](https://www.nextflow.io/docs/latest/install.html#installation).
 > - To install singularity follow instructions from [this website](https://docs.sylabs.io/guides/3.7/admin-guide/installation.html#before-you-begin).
@@ -79,13 +99,39 @@ To run the **qcif/taxodactyl** pipeline, you will need the following software in
 > - The pipeline was tested only on a Linux-based operating system - specifically, [Ubuntu 24.04.1 LTS](https://fridge.ubuntu.com/2024/08/30/ubuntu-24-04-1-lts-released/).
 > - If you have never downloaded or run a Nextflow pipeline, we have some additional tips and bash commands in the [step-by-step guide](docs/step_by_step.md).
 
+
 ### NCBI API Key
 
 API Key is used to authenticate with the NCBI Entrez API for an increased rate limit. You can generate it following the instructions from [this article](https://support.nlm.nih.gov/kbArticle/?pn=KA-05317).
 
+### Vault
+
+The workflow includes an optional secrets vault that persists user-provided values for `--ncbi_api_key` and `--facility_name` between runs. Once stored, these values are retrieved automatically so you do not need to pass them on the command line each time.
+
+The vault has two backends. Set the appropriate environment variable before running the workflow to enable one:
+
+| Backend | Environment variable | Description |
+|---|---|---|
+| Local (encrypted file) | `SECRET_KEY=<passphrase>` | Stores an AES-encrypted file in the user secrets directory (params.app_data_dir). Any non-empty string can be used as the passphrase. |
+| Azure Key Vault | `AZURE_KEY_VAULT_URL=https://<vault-name>.vault.azure.net/` | Stores secrets in an Azure Key Vault. Requires an active Azure credential (e.g. via `az login` or a managed identity). The Azure backend is selected automatically when running with `conf/azure.config`. |
+
+> [!NOTE]
+> - The vault is keyed per user by the `--ncbi_user_email` parameter, so different users sharing the same execution environment maintain separate secrets.
+> - If neither environment variable is set, the vault is disabled and secrets are not persisted.
+> - To update a stored value, simply pass it on the command line again and the stored value will be updated with the new value.
+> - If running local vault, secrets are stored in the `params.app_data_dir` directory and mounted to `/var/lib/taxodactyl` inside containers. By default this is `~/.local/share/taxodactyl` (i.e. `$HOME/.local/share/taxodactyl`). Set `--app_data_dir` explicitly if you need a different persistent/shared location.
+
+
+### Redis for concurrency
+
+We send a lot of API requests to public servers, and Redis is much better at coordinating this than the default SQLite3 backend. Especially with hundreds of parallel samples, your workflow will run faster and with less API errors. It's very easy to [run a local or remote Redis server with Docker](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/). See [.env.sample](./.env.sample) for env vars required to connect your Redis server.
+
+
 ### TaxonKit
 
-[Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder.
+[Download the NCBI taxonomy data files](https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz) and extract them to `~/.taxonkit`. Similarly, [download the taxonkit tool](https://github.com/shenwei356/taxonkit/releases) and move into the same folder. 
+> [!NOTE]
+> - The current version of TAXODACTYL is not compatible with `taxonkit/taxdump` files downloaded before `April 2025`; this affects viruses, and evaluating database coverage for viruses will likely return an error.
 
 ### BLAST Core Nucleotide Database
 
@@ -93,9 +139,16 @@ To search sequences against the BLAST Core Nucleotide Database, you must downloa
 The command should look like this:
 `perl ~/ncbi-blast-2.16.0+/bin/update_blastdb.pl --decompress core_nt`
 
+If the above script is not working for you, we have written a [Python version](./scripts/blast_db_download.py) that seems more reliable (recommended). Note that this will download the entire database when running for the first time, as updates depend on a local `checksums` directory.
+
 ### Sequences file (`sequences.fasta`)
 
-You will need a FASTA file containing the query sequences (up to 100), e.g.
+You can provide query sequences in either of two ways:
+
+- Provide a FASTA file using `--sequences`.
+- Add a `sequence` column to `metadata.csv` and omit `--sequences`.
+
+If using a FASTA file, it should contain the query sequences (up to 100), e.g.
 ```
 >VE24-1075_COI
 TGGATCATCTCTTAGAATTTTAATTCGATTAGAATTAAGACAAATTAATTCTATTATTWATAATAATCAATTATATAATGTAATTGTTCACAATTCATGCTTTTATTATAATTTTTTTTATAACTATACCAATTGTAATTGGTGGATTTGGAAATTGATTAATTCCTATAATAATAGGATGTCCTGATATATCATTTCCACSTTTAAATAATATTAGATTTTGATTATTACCTCCATCATTAATAATAATAATTTGTAGATTTTTAATTAATAATGGAACAGGAACAGGATGAACAATTTAYCCHCCTTTATCAAACAATATTGCACATAATAACATTTCAGTTGATTTAACTATTTTTTCTTTACATTTAGCAGGWATCTCATCAATTTTAGGAGCAATTAACTTTATTTGTACAATTCTTAATATAATAYCAAAYAATATAAAACTAAATCAAATTCCTCTTTTTCCTTGATCAATTTTAATTACAGCTATTTTATTAATTTTATMTTTACCAGTTTTAGCTGGTGCCATTACAATATTATTAACTGATCGTAATTTAAATACATCATTTTTGATCCAGCAGGAGGAGGAGATCC
@@ -104,6 +157,7 @@ AACTTTATATTTCATTTTTGGAATATGGGCAGGTATATTAGGAACTTCACTAAGATGAATTATTCGAATTGAACTTGGAC
 ```
 > [!NOTE]
 > - Example can be downloaded from [`test/query.fasta`](test/query.fasta).
+> - Supported FASTA file extensions are `.fa`, `.fas`, `.fna`, and `.fasta`.
 
 
 ### Metadata file (`metadata.csv`)
@@ -112,20 +166,21 @@ The metadata file provides essential information about each sequence and must fo
 
 #### Required Columns
 1. **sample_id** - Unique identifier for the sample. Must match the sequence ID in the `sequences.fasta` file. Cannot contain spaces.
-2. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
-    > [!NOTE]
-    > - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
-    > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
-    > - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
-    > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailed_tech.md).
-3. **preliminary_id** - Preliminary morphology ID of the sample.
+2. **preliminary_id** - Preliminary morphology ID of the sample.
+3. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
+> [!NOTE]
+> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
+> - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
+> - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
+> - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailed_tech.md).
 
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
-2. **host** - Host organism of the sample.
-3. **country** - Country of origin for the sample.
-4. **sequencing_platform** - Sequencing platform used for the sample.
-5. **sequencing_read_coverage** - Sequencing read coverage for the sample.
+2. **country** - Country of origin for the sample. If unknown, leave this field empty (do not use `NA`, which is the country code for Namibia).
+3. **classification** - High-level taxonomic classification for the sample. Must be one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`.
+4. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
+
+In addition to the above, you can include arbitrary columns (e.g., `host`, `sequencing_platform`, `sequencing_read_coverage`) which will be displayed in the workflow report's "Sample metadata" section.
 
 #### Example
 
@@ -136,8 +191,9 @@ The metadata file provides essential information about each sequence and must fo
             <th>locus</th>
             <th>preliminary_id</th>
             <th>taxa_of_interest</th>
-            <th>host</th>
             <th>country</th>
+            <th>classification</th>
+            <th>host</th>
             <th>sequencing_platform</th>
             <th>sequencing_read_coverage</th>
         </tr>
@@ -148,8 +204,9 @@ The metadata file provides essential information about each sequence and must fo
             <td>COI</td>
             <td>Aphididae</td>
             <td>Myzus persicae|Aphididae</td>
-            <td>Cut flower Rosa</td>
             <td>Ecuador</td>
+            <td>animalia</td>
+            <td>Cut flower Rosa</td>
             <td>Nanopore</td>
             <td>30x</td>
         </tr>
@@ -158,8 +215,9 @@ The metadata file provides essential information about each sequence and must fo
             <td>COI</td>
             <td>Miridae</td>
             <td>Lygus pratensis</td>
-            <td>Cut flower Paenonia</td>
             <td>Netherlands</td>
+            <td>animalia</td>
+            <td>Cut flower Paenonia</td>
             <td>Nanopore</td>
             <td>30x</td>
         </tr>
@@ -169,7 +227,7 @@ The metadata file provides essential information about each sequence and must fo
 > [!NOTE]
 > - All required columns must be present for every sample.
 > - Optional columns can be left blank or completely omitted if not applicable.
-> - Columns 4 and 5 are examples of "arbitrary columns" - add any arbitrary columns you like, and they will be included in the workflow report "Sample metadata".
+> - Arbitrary columns (such as `host`, `sequencing_platform`, `sequencing_read_coverage`) will be displayed in the workflow report "Sample metadata" section.
 > - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
 > - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 
@@ -189,12 +247,11 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     -resume
 ```
 
-To run the pipeline using the BOLD web database:
-```bash
-nextflow run /path/to/pipeline/taxodactyl/main.nf \
+  To run the pipeline using sequences stored in `metadata.csv`:
+  ```bash
+  nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --metadata /path/to/metadata.csv \
-    --sequences /path/to/sequences.fasta \
-    --db_type bold \
+    --blastdb /path/to/blastdbs/core_nt \
     --outdir /path/to/output \
     -profile singularity \
     --taxdb /path/to/.taxonkit/ \
@@ -203,12 +260,12 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
     --analyst_name "Magdalena Antczak" \
     --facility_name "QCIF" \
     -resume
-```
+  ```
 
 > [!NOTE]
 > - For a detailed explanation of all pipeline parameters, see [parameter documentation](docs/params.md).
 > - We recommend avoiding spaces in file and folder names to prevent issues in command-line operations.
-> - The error strategy for the workflow is set to `ignore`. It means that even if a process encounters an error, Nextflow will continue executing subsequent processes rather than terminating the workflow. This is to avoid interrupting the entire workflow with multiple queries when only one of them fails. Unfortunately, this behaviour prevents more detailed errors from being displayed in the standard output. Instead, you will only see which tasks failed, and the hashes assigned to them that you can use to navigate the work folder to find specific errors. As a workaround, you can run the following script at the end of your run from the directory where the pipeline was executed: `bash /path/to/pipeline/taxodactyl/bin/collect_errors.sh`. As a result, a list of processes should be displayed together with their work directory paths, the last 10 lines of standard error and the last 10 lines of standard output.
+> - The error strategy for the workflow is set to `ignore`. This means that if a process encounters an error, Nextflow continues executing subsequent processes rather than terminating the workflow. This avoids interrupting the entire run when only one query fails, but it also means less detail is shown directly in standard output. To make debugging easier, `main.nf` automatically collects logs of failed/aborted tasks into `<outdir>/errors/<PROCESS>/`.
 > - You can find detailed instructions and practical examples for customising the pipeline configuration in the [docs/customise.md](docs/customise.md) file. This guide covers how to set parameters, adjust resources, change error strategies, and modify the Singularity cache directory for your Nextflow runs.
 
 
@@ -244,33 +301,7 @@ After running the pipeline, the output directory will contain a separate folder 
     ├── candidates_phylogeny.nwk
     └── report_VE24-1079_COI_20250622_225319.html
 ```
-**BOLD**
-```
-.
-├── pipeline_info
-│   ├── execution_report_2025-06-22_22-53-22.html
-│   ├── execution_timeline_2025-06-22_22-53-22.html
-│   ├── execution_trace_2025-06-22_22-53-22.txt
-│   ├── params_2025-06-22_22-53-34.json
-│   └── pipeline_dag_2025-06-22_22-53-22.html
-├── query_001_VE24-1075_COI
-│   ├── all_hits.fasta
-│   ├── candidates.csv
-│   ├── candidates.fasta
-│   ├── candidates_phylogeny.fasta
-│   ├── candidates_phylogeny.msa
-│   ├── candidates_phylogeny.nwk
-│   └── report_BOLD_VE24-1075_COI_20250622_225326.html
-└── query_002_VE24-1079_COI
-    ├── all_hits.fasta
-    ├── candidates.csv
-    ├── candidates.fasta
-    ├── candidates_identity_boxplot.png
-    ├── candidates_phylogeny.fasta
-    ├── candidates_phylogeny.msa
-    ├── candidates_phylogeny.nwk
-    └── report_BOLD_VE24-1079_COI_20250622_225326.html
-```
+
 ## Credits
 <p align="center">
     <img src="docs/images/DAFF-inline-black.png" alt="Department of Agriculture, Fisheries and Forestry" height="60"/>

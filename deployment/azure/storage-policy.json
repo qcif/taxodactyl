@@ -1,0 +1,40 @@
+{
+  "rules": [
+    {
+      "name": "delete-old-work-files",
+      "enabled": true,
+      "type": "Lifecycle",
+      "definition": {
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": ["workdata/"]
+        },
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 14
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "delete-expired-cache-entries",
+      "enabled": true,
+      "type": "Lifecycle",
+      "definition": {
+        "filters": {
+          "blobTypes": ["blockBlob"],
+          "prefixMatch": ["cache/"]
+        },
+        "actions": {
+          "baseBlob": {
+            "delete": {
+              "daysAfterModificationGreaterThan": 7
+            }
+          }
+        }
+      }
+    }
+  ]
+}

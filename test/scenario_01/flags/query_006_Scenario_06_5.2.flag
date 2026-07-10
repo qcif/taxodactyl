@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Bactrocera aquilonis",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Bactrocera aquilonis",
+    "target_type": "pmi"
+  }
+]
