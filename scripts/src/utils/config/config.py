@@ -159,6 +159,7 @@ class Config:
         self._load_config_cascade()
         self._set_output_dir()
         self._setup_logging()
+        self._resolve_ncbi_api_key()
         self.query_dir = getattr(self, 'query_dir', None)
 
     def _set_output_dir(self) -> Path:
@@ -259,7 +260,6 @@ class Config:
             setattr(self, field_name, field_value)
 
         self._apply_env_overrides()
-        self._resolve_ncbi_api_key()
 
     def _apply_env_overrides(self):
         """Apply environment variable overrides for backward compatibility."""
