@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """testkit — CLI companion to the Selenium report test suite.
 
 Subcommands:

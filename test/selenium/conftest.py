@@ -9,7 +9,11 @@ DEFAULT_REPORTS_DIR = "reports"
 
 
 def pytest_addoption(parser):
-    parser.addoption(
+    group = parser.getgroup(
+        "selenium",
+        "Selenium report-validation tests",
+    )
+    group.addoption(
         "--reports-dir",
         action="store",
         default=DEFAULT_REPORTS_DIR,
