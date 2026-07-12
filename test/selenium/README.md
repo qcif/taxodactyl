@@ -16,17 +16,23 @@ All the commands below assume this venv is active and the working directory is `
 
 ## Running the tests
 
-First you have to generate a new set of reports from the selenium test case samples. You can use the input files in ./reports/.
-
-Then copy the generated reports to a single directory and run:
+First, generate a fresh set of workflow reports (input data lives in [inputs/](inputs/)). Then point the pytest runner at the directory containing the generated HTMLs:
 
 ```bash
-pytest test_reports.py -v --reports-dir /my/workflow/reports/
+pytest test_reports.py -v --dir /path/to/nf-test-output/
 ```
 
-Each `.yaml` file in [expected/](expected/) is picked up automatically and run as a separate parametrised test case. Pytest opens a Chrome browser window per report, walks each tab, and asserts every value declared in the fixture. Reports in `--reports-dir` are resolved to fixtures by sample_id, so timestamps and prefixes in the report filenames don't need to line up with the fixtures.
+`--dir` (long form: `--reports-dir`) is **required** — the framework won't run without an explicit reports directory. This forces you to state whether you're validating fresh workflow output or self-testing the framework itself.
 
-Without `--reports-dir`, the runner falls back to the checked-in [reports/](reports/) directory — that's a self-test of the framework against known-good reports, not a validation of new workflow output.
+To self-test the framework against the checked-in reference reports:
+
+```bash
+pytest test_reports.py -v --dir expected/reports/
+```
+
+Each `.yaml` file in [expected/](expected/) is picked up automatically and run as a separate parametrised test case. Reports are matched to fixtures by `sample_id`, so timestamps and prefixes in the report filenames don't need to line up with the fixtures.
+
+Every pytest run writes a structured `./test-report.json` alongside the usual pytest output. Feed it to `testkit render` to get a review page (see [Reviewing failures](#reviewing-failures)).
 
 ### CLI options
 
@@ -38,16 +44,34 @@ pytest --help
 
 | Flag | Default | Purpose |
 |------|---------|---------|
-| `--reports-dir <path>` | `reports/` | Directory to search for the HTML files to test. File names are resolved by sample_id. |
+| `--dir <path>` / `--reports-dir <path>` | *required* | Directory to search for the HTML files to test. Reports are matched by `sample_id`. |
 
 ## Report ↔ fixture matching
 
-Fixture filenames follow `{N}_report_{SAMPLE_ID}_{TIMESTAMP}.yaml`; freshly generated reports are typically `report_{SAMPLE_ID}_{TIMESTAMP}.html` (no numeric prefix, different timestamp). Both the test runner and `testkit promote` match reports to fixtures by **sample_id**, so timestamps and prefixes don't need to line up.
+Each fixture YAML declares a `sample_id:` at the top. Report filenames typically look like `report_{SAMPLE_ID}_{TIMESTAMP}.html` (or `{N}_report_{SAMPLE_ID}_{TIMESTAMP}.html` for the checked-in reference set). The runner extracts the `sample_id` from every `*.html` in `--dir` and links it to the fixture with the same id — timestamps and numeric prefixes are ignored.
 
-Resolution order for each fixture:
+The checked-in reference reports live in [expected/reports/](expected/reports/). When the review page shows "Open reference report", it links to the HTML in that directory whose `sample_id` matches the fixture.
 
-1. Exact filename match in the reports directory.
-2. First `*.html` in the reports directory whose extracted sample_id equals the fixture's sample_id.
+## Reviewing failures
+
+When drift is detected, the fastest review path is:
+
+1. Run pytest as usual — this always writes `./test-report.json` containing every drifted assertion (all of them, not just the first per test) plus absolute paths to the observed and reference HTML reports.
+2. Render the review page:
+   ```bash
+   python testkit.py render --open
+   ```
+   Defaults to reading `./test-report.json` and writing `./review.html`. `--open` launches the page in your default browser.
+
+The page has a summary banner (total / passed / failed / errored), a results table, and an expanded card for each failing test showing the `component.field | type | expected | observed` matrix plus one-click "Open observed" / "Open reference" links to the two HTML reports.
+
+For iterating on the review page itself, a sample JSON with drift is checked in at `.testkit-fixtures/test-report.sample.json`. Render straight from it to skip a pytest run:
+
+```bash
+python testkit.py render .testkit-fixtures/test-report.sample.json --out /tmp/review.html --open
+```
+
+Once you've inspected the reports and confirmed the drift is legitimate (e.g. new sequence records were deposited in the reference database), use `testkit promote` (below) to write the observed values back into the fixture.
 
 ## Ingesting and promoting fixtures — `testkit.py`
 
@@ -64,10 +88,10 @@ python testkit.py promote --help
 Extract values from a manually-verified HTML report and write a new `expected/*.yaml`:
 
 ```bash
-python testkit.py ingest reports/3_report_VE24-1351_COI_2026-07-09_10_46_05.html
+python testkit.py ingest /path/to/report_VE24-1351_COI_2026-07-09_10_46_05.html
 ```
 
-Auto-picks the next unused numeric prefix. Refuses to overwrite an existing fixture unless `--force` is passed. Spot-check the output before committing.
+Copies the HTML into `expected/reports/`, extracts its `sample_id`, and writes the fixture with the next unused numeric prefix. Refuses to overwrite an existing fixture unless `--force` is passed. Spot-check the output before committing.
 
 ### `testkit promote`
 
@@ -76,15 +100,15 @@ When legitimate drift is observed (e.g. new sequence records were deposited in t
 ```bash
 python testkit.py promote 1_report_SME25-218_2025-12-11_07_30_03.yaml
 python testkit.py promote --all
-python testkit.py promote --all --reports /path/to/nf-test-output/
+python testkit.py promote --all -d /path/to/nf-test-output/
 ```
 
-For each drifted field the CLI prints old vs. new and prompts `[y]es / [n]o / [a]ll / [q]uit`. Accepted drifts are written back to the same YAML preserving the schema layout. `--yes` skips prompts (accepts all). `--reports <dir>` mirrors the pytest option and resolves reports by sample_id.
+For each drifted field the CLI prints old vs. new and prompts `[y]es / [n]o / [a]ll / [q]uit`. Accepted drifts are written back to the same YAML preserving the schema layout. `--yes` skips prompts (accepts all). `-d` / `--reports` picks the directory to look up HTML reports by `sample_id` (default: `expected/reports/`).
 
 ## Fixture YAML structure
 
 ```yaml
-filename: my_report.html   # must match a file in reports/ (or a sample_id there)
+sample_id: SME25-218   # links this fixture to the HTML report with the same sample_id
 
 components:
   - id: input_sequence_modal

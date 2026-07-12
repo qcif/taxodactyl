@@ -14,7 +14,7 @@ Subcommands:
 
 Run from `test/selenium/` with the venv activated:
 
-    python testkit.py ingest reports/3_report_FOO_2026-01-15_08_00_00.html
+    python testkit.py ingest /path/to/report_FOO_2026-01-15_08_00_00.html
     python testkit.py promote 1_report_SME25-218_2025-12-11_07_30_03.yaml
 """
 
@@ -24,14 +24,20 @@ import shutil
 import sys
 from pathlib import Path
 
+import json
+import webbrowser
+
 from lib.collect import collect_all
 from lib.driver import make_driver
 from lib.promote import promote_yaml
-from lib.report import Report
+from lib.render import render_html
+from lib.report import Report, extract_sample_id
 
 
-REPORTS_DIR = Path("reports")
 EXPECTED_DIR = Path("expected")
+REPORTS_DIR = EXPECTED_DIR / "reports"
+DEFAULT_JSON_REPORT = Path("test-report.json")
+DEFAULT_HTML_REVIEW = Path("review.html")
 
 PREFIX_RE = re.compile(r"^(\d+)_")
 
@@ -56,6 +62,7 @@ def _target_yaml_path(html_path: Path, prefix: int = None) -> Path:
 
 
 def _ensure_html_in_reports(html_path: Path) -> Path:
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     if html_path.parent.resolve() == REPORTS_DIR.resolve():
         return html_path
     target = REPORTS_DIR / html_path.name
@@ -93,8 +100,16 @@ def cmd_ingest(args) -> int:
         return 2
 
     reports_html = _ensure_html_in_reports(html_path)
+    sample_id = extract_sample_id(reports_html.name)
+    if not sample_id:
+        print(
+            f"error: cannot extract sample_id from '{reports_html.name}'. "
+            "Expected pattern: [<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...",
+            file=sys.stderr,
+        )
+        return 3
 
-    report = Report.from_schema(reports_html.name)
+    report = Report.from_schema(sample_id)
     _open_and_collect(reports_html, report)
     report.to_yaml(target, source="observed")
 
@@ -153,6 +168,25 @@ def cmd_promote(args) -> int:
     return 0
 
 
+def cmd_render(args) -> int:
+    src = Path(args.json) if args.json else DEFAULT_JSON_REPORT
+    if not src.exists():
+        print(
+            f"error: {src} not found. Run `pytest test_reports.py` first.",
+            file=sys.stderr,
+        )
+        return 1
+
+    out = Path(args.out) if args.out else DEFAULT_HTML_REVIEW
+    data = json.loads(src.read_text())
+    out.write_text(render_html(data))
+    print(f"Wrote {out}")
+
+    if args.open:
+        webbrowser.open(out.resolve().as_uri())
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="testkit", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -196,15 +230,35 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip prompts and accept every drift (dangerous)",
     )
     promote.add_argument(
-        "--reports", default=None,
+        "-d", "--reports", default=None,
         help=(
-            "Directory to search for the HTML report (default: reports/). "
-            "Reports are matched by sample_id when the exact filename is "
-            "not present, so timestamps in the report filename may differ "
-            "from the YAML fixture's."
+            "Directory to search for the HTML report "
+            "(default: expected/reports/). Reports are matched by "
+            "sample_id, so timestamps in the report filename may differ."
         ),
     )
     promote.set_defaults(func=cmd_promote)
+
+    render = sub.add_parser(
+        "render",
+        help=(
+            "Render the pytest JSON test report into a review HTML page "
+            "with links to observed + reference reports"
+        ),
+    )
+    render.add_argument(
+        "json", nargs="?", default=None,
+        help=f"JSON report path (default: {DEFAULT_JSON_REPORT})",
+    )
+    render.add_argument(
+        "--out", default=None,
+        help=f"HTML output path (default: {DEFAULT_HTML_REVIEW})",
+    )
+    render.add_argument(
+        "--open", action="store_true",
+        help="Open the rendered HTML page in the default browser",
+    )
+    render.set_defaults(func=cmd_render)
 
     return parser
 

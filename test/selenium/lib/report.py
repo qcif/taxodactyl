@@ -166,11 +166,11 @@ class Assertion:
         self,
         assertion_data: Optional[dict],
         component_id: str,
-        filename: str,
+        sample_id: str,
         assertion_id: Optional[str] = None,
         assertion_type: Optional[str] = None,
     ):
-        self.report_filename = filename
+        self.report_sample_id = sample_id
         self.component = component_id
         self.observed = None
 
@@ -343,8 +343,8 @@ class Assertion:
 
 
 class Report:
-    def __init__(self, filename: str, assertions: list):
-        self.filename = filename
+    def __init__(self, sample_id: str, assertions: list):
+        self.sample_id = sample_id
         self.assertions = assertions
         self.group_assertions()
 
@@ -365,7 +365,7 @@ class Report:
                 f"{name!r}"
             )
         raise AttributeError(
-            f"Component '{name}' is missing in report: {self.filename}"
+            f"Component '{name}' is missing in report: {self.sample_id}"
         )
 
     # ------------------------------------------------------------------
@@ -424,10 +424,16 @@ class Report:
                 assertion.set_observed(value)
 
     def assert_all(self) -> None:
-        for a in self.iter_assertions():
-            if a.expected is None or a.observed is None:
-                continue
-            a.assert_value(context=f"[{a.component}.{a.assertion_id}]")
+        drifted = self.drifted()
+        if not drifted:
+            return
+        lines = ["Drifted assertions:"]
+        for a in drifted:
+            lines.append(
+                f"  [{a.component}.{a.assertion_id}] "
+                f"expected {a.expected!r}, observed {a.observed!r}"
+            )
+        raise AssertionError("\n".join(lines))
 
     def drifted(self) -> list:
         return [a for a in self.iter_assertions() if a.is_drifted()]
@@ -479,7 +485,7 @@ class Report:
                     "assertions": assertions_out,
                 })
 
-        data = {"filename": self.filename, "components": components}
+        data = {"sample_id": self.sample_id, "components": components}
         with open(path, "w") as f:
             safe_dump(
                 data, f,
@@ -518,7 +524,7 @@ class Report:
     # ------------------------------------------------------------------
 
     @classmethod
-    def from_schema(cls, filename: str) -> "Report":
+    def from_schema(cls, sample_id: str) -> "Report":
         """Build a skeleton Report with all schema-defined assertions in
         place but no expected/observed values.
 
@@ -526,7 +532,7 @@ class Report:
         created empty — the collector is responsible for extending them
         via `extend_group()` once it knows how many rows there are.
         """
-        report = cls(filename, assertions=[])
+        report = cls(sample_id, assertions=[])
 
         for component_id, field_types in SIMPLE_COMPONENTS.items():
             ns = SimpleNamespace()
@@ -534,7 +540,7 @@ class Report:
                 setattr(ns, field_id, Assertion(
                     assertion_data=None,
                     component_id=component_id,
-                    filename=filename,
+                    sample_id=sample_id,
                     assertion_id=field_id,
                     assertion_type=field_type,
                 ))
@@ -578,7 +584,7 @@ class Report:
             setattr(ns, field_id, Assertion(
                 assertion_data=None,
                 component_id=component_id,
-                filename=self.filename,
+                sample_id=self.sample_id,
                 assertion_id=field_id,
                 assertion_type=field_type,
             ))
@@ -589,14 +595,14 @@ class Report:
 def _build_ns_from_yaml_assertions(
     assertion_list: list,
     component_id: str,
-    filename: str,
+    sample_id: str,
     name: Optional[str] = None,
 ) -> SimpleNamespace:
     ns = SimpleNamespace()
     if name:
         ns._name = name
     for a_data in assertion_list:
-        a = Assertion(a_data, component_id, filename)
+        a = Assertion(a_data, component_id, sample_id)
         setattr(ns, a.assertion_id, a)
     return ns
 
@@ -605,7 +611,12 @@ def parse_yaml(path: Path):
     with open(path, "r") as f:
         data = safe_load(f)
 
-    report_name = data.get('filename', path.stem)
+    sample_id = data.get('sample_id')
+    if not sample_id:
+        raise ValueError(
+            f"{path} is missing a top-level 'sample_id' field"
+        )
+
     assertions = []
     special_components = []
 
@@ -618,10 +629,10 @@ def parse_yaml(path: Path):
 
         for assertion_data in component.get("assertions", []):
             assertions.append(
-                Assertion(assertion_data, component_id, report_name)
+                Assertion(assertion_data, component_id, sample_id)
             )
 
-    report = Report(report_name, assertions)
+    report = Report(sample_id, assertions)
 
     for component in special_components:
         component_id = component['id']
@@ -634,7 +645,7 @@ def parse_yaml(path: Path):
                     _build_ns_from_yaml_assertions(
                         item.get('assertions', []),
                         component_id,
-                        report_name,
+                        sample_id,
                         name=item.get('name'),
                     )
                     for item in items
@@ -647,7 +658,7 @@ def parse_yaml(path: Path):
                 _build_ns_from_yaml_assertions(
                     item.get('assertions', []),
                     component_id,
-                    report_name,
+                    sample_id,
                     name=item.get('name'),
                 )
                 for item in component.get('candidates', [])

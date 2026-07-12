@@ -16,25 +16,10 @@ from pathlib import Path
 
 from lib.collect import collect_all
 from lib.driver import make_driver
-from lib.report import extract_sample_id, find_report_html, parse_yaml
+from lib.report import find_report_html, parse_yaml
 
 
-DEFAULT_REPORTS_DIR = Path("reports")
-
-
-def _resolve_html(yaml_filename: str, reports_dir: Path):
-    """Locate the HTML report for a given YAML fixture.
-
-    Prefers an exact filename match, then falls back to sample-id matching
-    so that fixtures land at reports whose timestamps differ (e.g. a
-    fresh nf-test run)."""
-    exact = reports_dir / yaml_filename
-    if exact.exists():
-        return exact
-    sample_id = extract_sample_id(yaml_filename)
-    if not sample_id:
-        return None
-    return find_report_html(sample_id, reports_dir)
+DEFAULT_REPORTS_DIR = Path("expected/reports")
 
 
 def _prompt(context: str) -> str:
@@ -75,12 +60,11 @@ def promote_yaml(
     """Promote drifted observed values into `yaml_path`. Returns the number
     of assertions written back."""
     report = parse_yaml(yaml_path)
-    html_path = _resolve_html(report.filename, reports_dir)
+    html_path = find_report_html(report.sample_id, reports_dir)
     if html_path is None:
-        sample_id = extract_sample_id(report.filename)
         print(
-            f"error: no HTML report for sample_id '{sample_id}' found in "
-            f"{reports_dir} (referenced by {yaml_path.name})",
+            f"error: no HTML report for sample_id '{report.sample_id}' "
+            f"found in {reports_dir} (referenced by {yaml_path.name})",
             file=sys.stderr,
         )
         return 0

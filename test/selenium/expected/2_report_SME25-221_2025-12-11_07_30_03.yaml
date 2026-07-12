@@ -1,4 +1,4 @@
-filename: 2_report_SME25-221_2025-12-11_07_30_03.html
+sample_id: SME25-221
 components:
 - id: input_sequence_modal
   assertions:

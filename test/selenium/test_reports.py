@@ -3,31 +3,40 @@ from pathlib import Path
 import pytest
 
 from lib.collect import collect_all
-from lib.report import extract_sample_id, find_report_html, parse_yaml
+from lib.report import find_report_html, parse_yaml
 
 
-reports = [parse_yaml(f) for f in sorted(Path("expected").glob("*.yaml"))]
+REFERENCE_REPORTS_DIR = Path("expected/reports")
 
 
-@pytest.mark.parametrize("report", reports, ids=lambda r: r.filename)
+def _load_reports():
+    out = []
+    for yaml_path in sorted(Path("expected").glob("*.yaml")):
+        report = parse_yaml(yaml_path)
+        report.fixture_path = yaml_path.resolve()
+        out.append(report)
+    return out
+
+
+reports = _load_reports()
+
+
+@pytest.mark.parametrize("report", reports, ids=lambda r: r.sample_id)
 def test_reports(driver, reports_dir, report):
-    exact = reports_dir / report.filename
-    if exact.exists():
-        report_path = exact
-    else:
-        sample_id = extract_sample_id(report.filename)
-        assert sample_id, (
-            f"Cannot extract sample_id from fixture filename "
-            f"'{report.filename}'"
-        )
-        matched = find_report_html(sample_id, reports_dir)
-        assert matched is not None, (
-            f"No HTML report for sample_id '{sample_id}' found in "
-            f"{reports_dir}"
-        )
-        report_path = matched
+    observed = find_report_html(report.sample_id, reports_dir)
+    assert observed is not None, (
+        f"No HTML report for sample_id '{report.sample_id}' found in "
+        f"{reports_dir}"
+    )
+    observed = observed.resolve()
 
-    driver.get(report_path.resolve().as_uri())
+    reference = find_report_html(report.sample_id, REFERENCE_REPORTS_DIR)
+    report.observed_html_path = observed
+    report.reference_html_path = (
+        reference.resolve() if reference is not None else None
+    )
+
+    driver.get(observed.as_uri())
 
     collect_all(driver, report)
     report.assert_all()
