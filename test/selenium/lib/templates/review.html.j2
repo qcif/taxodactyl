@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Selenium test review</title>
+<link rel="icon" href="{{ favicon }}">
+<style>{{ css }}</style>
+</head>
+<body>
+<header>
+  <h1>Selenium test review</h1>
+  <div class="meta">
+    Generated {{ generated_at | e }}
+    &middot; reports-dir: <code>{{ reports_dir | e }}</code>
+  </div>
+</header>
+<main>
+  <section class="summary">
+    <div class="box"><div class="label">Total</div>
+      <div class="value">{{ total }}</div></div>
+    <div class="box passed"><div class="label">Passed</div>
+      <div class="value">{{ passed }}</div></div>
+    <div class="box failed"><div class="label">Failed</div>
+      <div class="value">{{ failed }}</div></div>
+    <div class="box error"><div class="label">Errored</div>
+      <div class="value">{{ errored }}</div></div>
+  </section>
+
+  <table class="results">
+    <thead><tr>
+      <th>Sample</th><th>Fixture</th><th>Outcome</th>
+      <th>Drift</th><th>Duration</th><th>Report</th>
+    </tr></thead>
+    <tbody>
+    {% for r in results %}
+      <tr class="row-{{ r.outcome }}">
+        <td><strong>{{ r.sample_id or '?' | e }}</strong></td>
+        <td>{{ r.fixture_label | e }}</td>
+        <td><span class="badge {{ r.outcome }}">{{ r.outcome }}</span></td>
+        <td>{{ r.drift_count }}</td>
+        <td>{{ r.duration_s }}s</td>
+        <td>
+          {{ r.observed_link }}
+          {{ r.reference_link }}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% for r in results if r.outcome != 'passed' %}
+  <details open>
+    <summary>
+      {{ r.sample_id or '?' | e }}
+      &mdash; {{ r.fixture_label | e }}
+      ({{ r.outcome }})
+    </summary>
+    <div class="links">
+      {{ r.observed_link }}
+      {{ r.reference_link }}
+    </div>
+    {% if r.error_message %}
+    <div class="error-message">{{ r.error_message | e }}</div>
+    {% endif %}
+    {% if r.drifted %}
+    <table class="drift">
+      <tr><th>Field</th><th>Type</th><th>Expected</th><th>Observed</th></tr>
+      {% for d in r.drifted %}
+      <tr>
+        <td><code>{{ d.component | e }}.{{ d.assertion_id | e }}</code></td>
+        <td>{{ d.type | e }}</td>
+        <td><code>{{ d.expected | pretty | e }}</code></td>
+        <td><code>{{ d.observed | pretty | e }}</code></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    {% if r.promote_cmd %}
+    <div class="promote">
+      <code>{{ r.promote_cmd | e }}</code>
+      <button data-copy="{{ r.promote_cmd | e }}">Copy</button>
+    </div>
+    {% endif %}
+  </details>
+  {% endfor %}
+</main>
+<script>{{ js }}</script>
+</body>
+</html>

@@ -2,3 +2,4 @@ selenium
 pytest
 webdriver-manager
 pyyaml
+jinja2
