@@ -67,7 +67,7 @@
       <tr><th>Field</th><th>Type</th><th>Expected</th><th>Observed</th></tr>
       {% for d in r.drifted %}
       <tr>
-        <td><code>{{ d.component | e }}.{{ d.assertion_id | e }}</code></td>
+        <td><code style="white-space: nowrap;">{{ d.component | e }}.{{ d.assertion_id | e }}</code></td>
         <td>{{ d.type | e }}</td>
         <td><code>{{ d.expected | pretty | e }}</code></td>
         <td><code>{{ d.observed | pretty | e }}</code></td>

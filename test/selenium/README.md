@@ -14,12 +14,29 @@ pip install -r requirements.txt
 
 All the commands below assume this venv is active and the working directory is `test/selenium/`.
 
+
+## Quick start
+
+Brief summary of round-trip:
+
+1. Run full Taxodactyl (Nextflow) on ./inputs/ input data with default params (and ideally with frozen test DBs)
+1. Copy all outputs reports to /path/to/my/html_reports/
+1. ```bash
+   pytest test_reports.py -v --dir /path/to/my/html_reports/
+   ```
+1. `./testkit.py render`
+1. Open the `review.html` produced - this is a nice overview of diffs for failed tests
+1. Compare/view HTML docs to identify diffs that indicate bug(s)
+1. Fix the bugs and repeat, until tests pass, or all diffs look like drift (e.g. sequence records published since last run)
+1. If there is drift (no bugs), promote the fixtures:
+   `./testkit.py promote <N> -d /path/to/my/html_reports/`
+
 ## Running the tests
 
 First, generate a fresh set of workflow reports (input data lives in [inputs/](inputs/)). Then point the pytest runner at the directory containing the generated HTMLs:
 
 ```bash
-pytest test_reports.py -v --dir /path/to/nf-test-output/
+pytest test_reports.py -v --dir /path/to/my/html_reports/
 ```
 
 `--dir` (long form: `--reports-dir`) is **required** — the framework won't run without an explicit reports directory. This forces you to state whether you're validating fresh workflow output or self-testing the framework itself.
