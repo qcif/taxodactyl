@@ -1,4 +1,5 @@
 sample_id: SME25-221
+date: '2025-12-11T07:30:03'
 components:
 - id: input_sequence_modal
   assertions:

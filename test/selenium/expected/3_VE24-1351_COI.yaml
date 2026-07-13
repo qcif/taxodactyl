@@ -1,4 +1,5 @@
 sample_id: VE24-1351_COI
+date: '2026-07-09T10:46:05'
 components:
 - id: input_sequence_modal
   assertions:

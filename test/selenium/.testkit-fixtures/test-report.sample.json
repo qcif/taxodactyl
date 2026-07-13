@@ -3,7 +3,7 @@
   "reports_dir": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/reports",
   "results": [
     {
-      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/1_report_SME25-218_2025-12-11_07_30_03.yaml",
+      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/1_SME25-218.yaml",
       "sample_id": "SME25-218",
       "outcome": "failed",
       "duration_s": 16.572,
@@ -28,7 +28,7 @@
       "error_message": null
     },
     {
-      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/2_report_SME25-221_2025-12-11_07_30_03.yaml",
+      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/2_SME25-221.yaml",
       "sample_id": "SME25-221",
       "outcome": "passed",
       "duration_s": 9.54,
@@ -38,7 +38,7 @@
       "error_message": null
     },
     {
-      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/3_report_VE24-1351_COI_2026-07-09_10_46_05.yaml",
+      "fixture": "/home/cameron/dev/daff-biosecurity/wf2-nextflow/test/selenium/expected/3_VE24-1351_COI.yaml",
       "sample_id": "VE24-1351_COI",
       "outcome": "passed",
       "duration_s": 18.524,

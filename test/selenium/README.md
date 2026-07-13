@@ -98,17 +98,23 @@ Copies the HTML into `expected/reports/`, extracts its `sample_id`, and writes t
 When legitimate drift is observed (e.g. new sequence records were deposited in the reference database), re-open the HTML and prompt through each drifted assertion:
 
 ```bash
-python testkit.py promote 1_report_SME25-218_2025-12-11_07_30_03.yaml
+python testkit.py promote 1                        # numeric prefix — resolves to expected/1_*.yaml
+python testkit.py promote 1_SME25-218.yaml         # full filename or bare stem
 python testkit.py promote --all
 python testkit.py promote --all -d /path/to/nf-test-output/
 ```
 
 For each drifted field the CLI prints old vs. new and prompts `[y]es / [n]o / [a]ll / [q]uit`. Accepted drifts are written back to the same YAML preserving the schema layout. `--yes` skips prompts (accepts all). `-d` / `--reports` picks the directory to look up HTML reports by `sample_id` (default: `expected/reports/`).
 
+Every successful promote:
+- Bumps the fixture's `date:` to match the HTML report it was promoted against.
+- Snapshots the previous YAML into `expected/.backups/{stem}.{timestamp}.yaml` and rotates so at most the **3 most recent backups** per fixture are kept. Backups are gitignored.
+
 ## Fixture YAML structure
 
 ```yaml
 sample_id: SME25-218   # links this fixture to the HTML report with the same sample_id
+date: '2025-12-11T07:30:03'   # timestamp of the HTML the fixture was last promoted against
 
 components:
   - id: input_sequence_modal

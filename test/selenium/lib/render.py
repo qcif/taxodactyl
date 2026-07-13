@@ -109,6 +109,45 @@ table.drift code {
     font-family: ui-monospace, monospace; font-size: 0.85rem;
     white-space: pre-wrap;
 }
+.promote {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: #0f172a; color: #e2e8f0;
+    padding: 0.6rem 0.75rem; border-radius: 6px;
+    margin: 0.5rem 0 1rem 0;
+    font-family: ui-monospace, monospace; font-size: 0.85rem;
+    overflow-x: auto;
+}
+.promote code {
+    flex: 1; background: transparent; color: inherit;
+    padding: 0; white-space: pre;
+}
+.promote button {
+    background: #334155; color: #e2e8f0;
+    border: 1px solid #475569; border-radius: 4px;
+    padding: 0.2rem 0.7rem; cursor: pointer;
+    font: inherit; font-size: 0.8rem;
+    flex-shrink: 0;
+}
+.promote button:hover { background: #475569; }
+.promote button.copied { background: #16a34a; border-color: #16a34a; }
+"""
+
+
+COPY_SCRIPT = """
+document.querySelectorAll('.promote button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(btn.dataset.copy);
+        } catch (e) { /* clipboard blocked */ }
+        const orig = btn.textContent;
+        btn.classList.add('copied');
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+});
 """
 
 
@@ -139,6 +178,35 @@ def _fixture_label(result: dict) -> str:
     return Path(fixture).name if fixture else "?"
 
 
+def _promote_target(result: dict) -> str:
+    """Return the shortest unambiguous promote target — numeric prefix
+    if the fixture name starts with digits, else the full stem."""
+    fixture = result.get("fixture")
+    if not fixture:
+        return result.get("sample_id") or ""
+    stem = Path(fixture).stem
+    head = stem.split("_", 1)[0]
+    return head if head.isdigit() else stem
+
+
+def _promote_snippet(result: dict, reports_dir: str) -> str:
+    target = _promote_target(result)
+    if not target:
+        return ""
+    cmd = f"./testkit.py promote {target}"
+    if reports_dir:
+        cmd += f" -d {reports_dir}"
+    return (
+        "<div>"
+        "<p>If these changes reflect legitimate drift, promote them with:</p>"
+        "<div class='promote'>"
+        f"<code>{escape(cmd)}</code>"
+        f"<button data-copy=\"{escape(cmd, quote=True)}\">Copy</button>"
+        "</div>"
+        "</div>"
+    )
+
+
 def _row(result: dict) -> str:
     outcome = result["outcome"]
     drift_count = len(result.get("drifted") or [])
@@ -157,7 +225,7 @@ def _row(result: dict) -> str:
     )
 
 
-def _drift_details(result: dict) -> str:
+def _drift_details(result: dict, reports_dir: str) -> str:
     if result["outcome"] == "passed":
         return ""
 
@@ -200,6 +268,7 @@ def _drift_details(result: dict) -> str:
             )
         parts.append("</table>")
 
+    parts.append(_promote_snippet(result, reports_dir))
     parts.append("</details>")
     return "".join(parts)
 
@@ -211,9 +280,11 @@ def render_html(data: dict) -> str:
     failed = sum(1 for r in results if r["outcome"] == "failed")
     errored = sum(1 for r in results if r["outcome"] == "error")
 
+    reports_dir = data.get("reports_dir", "") or ""
     rows = "".join(_row(r) for r in results)
     details = "".join(
-        _drift_details(r) for r in results if r["outcome"] != "passed"
+        _drift_details(r, reports_dir)
+        for r in results if r["outcome"] != "passed"
     )
 
     return f"""<!DOCTYPE html>
@@ -254,6 +325,7 @@ def render_html(data: dict) -> str:
 
   {details}
 </main>
+<script>{COPY_SCRIPT}</script>
 </body>
 </html>
 """

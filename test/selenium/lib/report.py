@@ -28,6 +28,9 @@ FLAG_BADGE_PREFIX = "Flag "
 _SAMPLE_ID_RE = re.compile(
     r"^(?:\d+_)?report_(.+?)_\d{4}-\d{2}-\d{2}_"
 )
+_DATE_RE = re.compile(
+    r"_(\d{4}-\d{2}-\d{2})_(\d{2})_(\d{2})_(\d{2})(?=\.html?$|_|$)"
+)
 
 
 def extract_sample_id(filename: str) -> str:
@@ -35,6 +38,15 @@ def extract_sample_id(filename: str) -> str:
     filename doesn't match the report_<sample>_<date>_... pattern."""
     m = _SAMPLE_ID_RE.match(filename)
     return m.group(1) if m else ""
+
+
+def extract_report_date(filename: str) -> str:
+    """Return the ISO-8601 timestamp embedded in a report filename
+    (e.g. '2025-12-11T07:30:03') or '' if not found."""
+    m = _DATE_RE.search(filename)
+    if not m:
+        return ""
+    return f"{m.group(1)}T{m.group(2)}:{m.group(3)}:{m.group(4)}"
 
 
 def find_report_html(sample_id: str, reports_dir: Path) -> Optional[Path]:
@@ -343,8 +355,14 @@ class Assertion:
 
 
 class Report:
-    def __init__(self, sample_id: str, assertions: list):
+    def __init__(
+        self,
+        sample_id: str,
+        assertions: list,
+        date: str = "",
+    ):
         self.sample_id = sample_id
+        self.date = date
         self.assertions = assertions
         self.group_assertions()
 
@@ -485,7 +503,10 @@ class Report:
                     "assertions": assertions_out,
                 })
 
-        data = {"sample_id": self.sample_id, "components": components}
+        data = {"sample_id": self.sample_id}
+        if self.date:
+            data["date"] = self.date
+        data["components"] = components
         with open(path, "w") as f:
             safe_dump(
                 data, f,
@@ -524,7 +545,7 @@ class Report:
     # ------------------------------------------------------------------
 
     @classmethod
-    def from_schema(cls, sample_id: str) -> "Report":
+    def from_schema(cls, sample_id: str, date: str = "") -> "Report":
         """Build a skeleton Report with all schema-defined assertions in
         place but no expected/observed values.
 
@@ -532,7 +553,7 @@ class Report:
         created empty — the collector is responsible for extending them
         via `extend_group()` once it knows how many rows there are.
         """
-        report = cls(sample_id, assertions=[])
+        report = cls(sample_id, assertions=[], date=date)
 
         for component_id, field_types in SIMPLE_COMPONENTS.items():
             ns = SimpleNamespace()
@@ -616,6 +637,7 @@ def parse_yaml(path: Path):
         raise ValueError(
             f"{path} is missing a top-level 'sample_id' field"
         )
+    date = str(data.get('date') or '').strip()
 
     assertions = []
     special_components = []
@@ -632,7 +654,7 @@ def parse_yaml(path: Path):
                 Assertion(assertion_data, component_id, sample_id)
             )
 
-    report = Report(sample_id, assertions)
+    report = Report(sample_id, assertions, date=date)
 
     for component in special_components:
         component_id = component['id']

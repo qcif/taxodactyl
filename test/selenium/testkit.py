@@ -31,7 +31,7 @@ from lib.collect import collect_all
 from lib.driver import make_driver
 from lib.promote import promote_yaml
 from lib.render import render_html
-from lib.report import Report, extract_sample_id
+from lib.report import Report, extract_report_date, extract_sample_id
 
 
 EXPECTED_DIR = Path("expected")
@@ -51,14 +51,10 @@ def _next_prefix() -> int:
     return (max(prefixes) + 1) if prefixes else 1
 
 
-def _target_yaml_path(html_path: Path, prefix: int = None) -> Path:
-    stem = html_path.stem
-    if PREFIX_RE.match(stem):
-        # HTML already has a prefix; mirror it in the YAML name.
-        return EXPECTED_DIR / f"{stem}.yaml"
+def _target_yaml_path(sample_id: str, prefix: int = None) -> Path:
     if prefix is None:
         prefix = _next_prefix()
-    return EXPECTED_DIR / f"{prefix}_{stem}.yaml"
+    return EXPECTED_DIR / f"{prefix}_{sample_id}.yaml"
 
 
 def _ensure_html_in_reports(html_path: Path) -> Path:
@@ -86,9 +82,19 @@ def cmd_ingest(args) -> int:
         print(f"error: {html_path} not found", file=sys.stderr)
         return 1
 
+    sample_id = extract_sample_id(html_path.name)
+    if not sample_id:
+        print(
+            f"error: cannot extract sample_id from '{html_path.name}'. "
+            "Expected pattern: [<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...",
+            file=sys.stderr,
+        )
+        return 3
+    date = extract_report_date(html_path.name)
+
     target = (
         Path(args.out) if args.out
-        else _target_yaml_path(html_path, prefix=args.prefix)
+        else _target_yaml_path(sample_id, prefix=args.prefix)
     )
 
     if target.exists() and not args.force:
@@ -100,16 +106,8 @@ def cmd_ingest(args) -> int:
         return 2
 
     reports_html = _ensure_html_in_reports(html_path)
-    sample_id = extract_sample_id(reports_html.name)
-    if not sample_id:
-        print(
-            f"error: cannot extract sample_id from '{reports_html.name}'. "
-            "Expected pattern: [<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...",
-            file=sys.stderr,
-        )
-        return 3
 
-    report = Report.from_schema(sample_id)
+    report = Report.from_schema(sample_id, date=date)
     _open_and_collect(reports_html, report)
     report.to_yaml(target, source="observed")
 
@@ -119,10 +117,24 @@ def cmd_ingest(args) -> int:
 
 
 def _resolve_yaml_target(target: str) -> Path:
-    """Accept either 'foo.yaml', 'expected/foo.yaml', or a bare stem."""
+    """Accept any of: 'foo.yaml', 'expected/foo.yaml', a bare stem, or a
+    numeric prefix (e.g. '1' resolves to expected/1_<sample>.yaml)."""
     p = Path(target)
     if p.exists():
         return p
+
+    if target.isdigit():
+        matches = sorted(EXPECTED_DIR.glob(f"{target}_*.yaml"))
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            print(
+                f"error: prefix '{target}' matches multiple fixtures: "
+                + ", ".join(m.name for m in matches),
+                file=sys.stderr,
+            )
+            return p
+
     stem = p.name
     if not stem.endswith(".yaml"):
         stem += ".yaml"

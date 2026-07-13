@@ -1,4 +1,5 @@
 sample_id: SME25-218
+date: '2026-07-11T06:42:21'
 components:
 - id: input_sequence_modal
   assertions:
@@ -38,10 +39,10 @@ components:
     value: '2'
   - id: matching_species_moderate
     type: int
-    value: '10'
+    value: '11'
   - id: matching_species_weak
     type: int
-    value: '22'
+    value: '21'
 - id: candidate_tab
   assertions:
   - id: tab_title
@@ -61,16 +62,16 @@ components:
     value: '93.5'
   - id: strong_hits
     type: int
-    value: '71'
+    value: '78'
   - id: moderate_hits
     type: int
-    value: '218'
+    value: '250'
   - id: weak_hits
     type: int
-    value: '211'
+    value: '172'
   - id: lowest_hit
     type: float
-    value: '90.5'
+    value: '90.6'
 - id: candidate_tab_table
   assertions:
   - id: species
@@ -81,7 +82,7 @@ components:
   - id: no_of_hits
     type: list
     value:
-    - '85'
+    - '92'
     - '8'
   - id: top_identity
     type: list
@@ -106,7 +107,7 @@ components:
   - id: publication
     type: list
     value:
-    - '39'
+    - '40'
     - '1'
 - id: database_coverage
   pmi:
@@ -120,16 +121,19 @@ components:
       value: 5.1A
     - id: record_count
       type: list
-      value: '11374'
+      value:
+      - '5266'
     - id: flag_text2
       type: list
       value: 5.2B
     - id: species_count
       type: list
-      value: '595'
+      value:
+      - '596'
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - '1680'
     - id: min_bar_count
       type: min
       value: '10'
@@ -159,10 +163,12 @@ components:
       value: 5.2B
     - id: species_count
       type: list
-      value: '594'
+      value:
+      - '596'
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - '1680'
     - id: min_bar_count
       type: min
       value: '10'
@@ -192,10 +198,12 @@ components:
       value: 5.2B
     - id: species_count
       type: list
-      value: '594'
+      value:
+      - '596'
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - '1680'
     - id: min_bar_count
       type: min
       value: '10'
@@ -224,7 +232,8 @@ components:
       value: 5.2B
     - id: species_count
       type: list
-      value: '595'
+      value:
+      - '596'
     - id: species_total
       type: list
       value: '1680'
@@ -249,10 +258,12 @@ components:
       value: Publications supporting taxonomic association - Drosophila simulans
     - id: source
       type: list
-      value: 39 Independent Sources
+      value:
+      - 40 Independent Sources
     - id: count
       type: list
-      value: '39'
+      value:
+      - '40'
   - name: Drosophila mauritiana
     assertions:
     - id: title
@@ -274,10 +285,10 @@ components:
     value: '1'
   - id: accession
     type: contains
-    value: KC244283
+    value: KC244284
   - id: subject
     type: contains
-    value: Drosophila simulans strain sm21 mitochondrion, complete genome
+    value: Drosophila simulans strain simw501 mitochondrion, complete genome
   - id: length
     type: int
     value: '682'
@@ -301,7 +312,7 @@ components:
     value: 'TRUE'
   - id: domain
     type: contains
-    value: No data
+    value: Eukaryota
   - id: kingdom
     type: contains
     value: Metazoa
@@ -370,7 +381,7 @@ components:
   - id: match_accession
     type: list
     value:
-    - KC244283
+    - KC244284
   - id: match_identity
     type: list
     value:

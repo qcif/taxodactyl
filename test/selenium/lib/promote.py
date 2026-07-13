@@ -8,18 +8,23 @@ Flow:
     2. Open the matching HTML and run collect_all (`.observed` populated).
     3. For each drifted assertion, prompt the user [y/n/a/q] with old vs new.
     4. For accepted drifts, update the assertion's raw_value in-place.
-    5. Rewrite the YAML via Report.to_yaml(source='expected').
+    5. Back up the previous YAML into expected/.backups/ (keep last 3).
+    6. Rewrite the YAML via Report.to_yaml(source='expected').
 """
 
+import shutil
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from lib.collect import collect_all
 from lib.driver import make_driver
-from lib.report import find_report_html, parse_yaml
+from lib.report import extract_report_date, find_report_html, parse_yaml
 
 
 DEFAULT_REPORTS_DIR = Path("expected/reports")
+BACKUP_DIR = Path("expected/.backups")
+BACKUPS_TO_KEEP = 3
 
 
 def _prompt(context: str) -> str:
@@ -49,6 +54,26 @@ def _decide(prompt_state: dict) -> bool:
         if c == "q":
             prompt_state["quit"] = True
             return False
+
+
+def _backup(yaml_path: Path) -> Path:
+    """Copy `yaml_path` into BACKUP_DIR with a timestamp suffix and rotate
+    older backups so at most BACKUPS_TO_KEEP remain for this fixture."""
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    stem = yaml_path.stem
+    ts = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    backup = BACKUP_DIR / f"{stem}.{ts}.yaml"
+    shutil.copy2(yaml_path, backup)
+
+    existing = sorted(
+        BACKUP_DIR.glob(f"{stem}.*.yaml"),
+        key=lambda p: p.name,
+        reverse=True,
+    )
+    for old in existing[BACKUPS_TO_KEEP:]:
+        old.unlink()
+
+    return backup
 
 
 def promote_yaml(
@@ -99,8 +124,19 @@ def promote_yaml(
             break
 
     if accepted:
+        backup = _backup(yaml_path)
+        html_date = extract_report_date(html_path.name)
+        if html_date:
+            report.date = html_date
         report.to_yaml(yaml_path, source="expected")
-        print(f"\n{yaml_path.name}: wrote {accepted} update(s).")
+        try:
+            backup_label = backup.relative_to(Path.cwd())
+        except ValueError:
+            backup_label = backup
+        print(
+            f"\n{yaml_path.name}: wrote {accepted} update(s). "
+            f"Backup: {backup_label}"
+        )
     else:
         print(f"\n{yaml_path.name}: no changes written.")
 
