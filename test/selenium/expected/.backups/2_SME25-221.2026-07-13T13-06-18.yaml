@@ -1,18 +1,19 @@
 sample_id: SME25-221
-date: '2026-07-11T06:42:21'
+date: '2025-12-11T07:30:03'
 components:
 - id: input_sequence_modal
   assertions:
   - id: sample_id
-    type: contains
+    type: ''
     value: SME25-221
   - id: dna_sequence
-    type: contains
+    type: ''
     value: CATAAAGATATT
+
 - id: overview_tab
   assertions:
   - id: conclusion_text
-    type: contains
+    type: ''
     value: inconclusive
   - id: species_found
     type: list
@@ -24,13 +25,13 @@ components:
     type: bool
     value: 'FALSE'
   - id: conclusion_flag
-    type: contains
+    type: ''
     value: Flag 1E
   - id: toi_flag
-    type: contains
+    type: ''
     value: Flag 2B
   - id: preliminary_flag
-    type: contains
+    type: ''
     value: Flag 7NA
   - id: matching_species_strong
     type: int
@@ -41,13 +42,14 @@ components:
   - id: matching_species_weak
     type: int
     value: '230'
+
 - id: candidate_tab
   assertions:
   - id: tab_title
-    type: contains
+    type: ''
     value: Identification of candidate species
   - id: candidate_flag_text
-    type: contains
+    type: ''
     value: Flag 1E
   - id: strong_alginment_identity
     type: float
@@ -66,10 +68,11 @@ components:
     value: '0'
   - id: weak_hits
     type: int
-    value: '499'
+    value: '500'
   - id: lowest_hit
     type: float
-    value: '82.3'
+    value: '82.4'
+
 - id: candidate_tab_table
   assertions:
   - id: species
@@ -93,8 +96,9 @@ components:
   - id: publication
     type: list
     value: ''
+
 - id: database_coverage
-  pmi:
+  pmi: 
   - name: Eupodidae
     assertions:
     - id: title
@@ -105,8 +109,8 @@ components:
       value: 5.1NA
     - id: record_count
       type: list
-      value:
-      - '4734'
+      value: '4717'
+
     - id: flag_text2
       type: list
       value: 5.2NA
@@ -128,70 +132,41 @@ components:
     - id: final_text
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
-  toi:
-  - assertions:
-    - id: title
-      type: list
-      value: null
-    - id: flag_text1
-      type: list
-      value: null
-    - id: record_count
-      type: list
-      value: null
-    - id: flag_text2
-      type: list
-      value: null
-    - id: species_count
-      type: list
-      value: null
-    - id: species_total
-      type: list
-      value: null
-    - id: min_bar_count
-      type: min
-      value: null
-    - id: first_bar_species
-      type: list
-      value: null
-    - id: first_bar_count
-      type: list
-      value: null
-    - id: final_text
-      type: list
-      value: null
+  toi: []
   candidate: []
+
 - id: publication_modal
   candidates: []
+
 - id: blast_modal
   assertions:
   - id: title
-    type: contains
+    type: ''
     value: BLAST search results
   - id: rank
     type: int
     value: '1'
   - id: accession
-    type: contains
-    value: OX030922
+    type: ''
+    value: MG314115
   - id: subject
-    type: contains
-    value: 'Anopheles ziemanni genome assembly, organelle: mitochondrion'
+    type: ''
+    value: Eupodidae sp. BIOUG24235-D06 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial
   - id: length
     type: int
-    value: '290'
+    value: '621'
   - id: identity
     type: float
-    value: '89.0'
+    value: '86.2'
   - id: bitscore
     type: float
-    value: '321.619'
+    value: '549.579'
   - id: evalue
-    type: contains
-    value: '1.04e-82'
+    type: ''
+    value: '1.86E-151'
   - id: coverage
     type: float
-    value: '42.5'
+    value: '90.9'
   - id: alignment_text
     type: bool
     value: 'TRUE'
@@ -199,51 +174,54 @@ components:
     type: bool
     value: 'TRUE'
   - id: domain
-    type: contains
-    value: Eukaryota
+    type: ''
+    value: No data
   - id: kingdom
-    type: contains
+    type: ''
     value: Metazoa
   - id: phylum
-    type: contains
+    type: ''
     value: Arthropoda
   - id: class
-    type: contains
-    value: Insecta
+    type: ''
+    value: Arachnida
   - id: order
-    type: contains
-    value: Diptera
+    type: ''
+    value: Trombidiformes
   - id: family
-    type: contains
-    value: Culicidae
+    type: ''
+    value: Eupodidae
   - id: genus
-    type: contains
-    value: Anopheles
+    type: ''
+    value: No data
   - id: species
-    type: contains
-    value: Anopheles ziemanni
+    type: ''
+    value: Eupodidae sp. BIOUG24235-D06
+
 - id: tree_modal
   assertions:
   - id: title
-    type: contains
+    type: ''
     value: ''
   - id: min_node
     type: min
     value: ''
+
 - id: toi_tab
   assertions:
   - id: toi_flag_text
-    type: contains
+    type: ''
     value: Flag 2B
   - id: toi_outcome
-    type: contains
+    type: ''
     value: None of the taxa of interest
   - id: toi_reasoning
-    type: contains
+    type: ''
     value: Taxon of interest NOT detected
   - id: toi_number_of_rows
     type: int
     value: '1'
+
 - id: toi_table
   assertions:
   - id: toi_match
