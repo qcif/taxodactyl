@@ -10,6 +10,7 @@ Flow:
     4. For accepted drifts, update the assertion's raw_value in-place.
     5. Back up the previous YAML into expected/.backups/ (keep last 3).
     6. Rewrite the YAML via Report.to_yaml(source='expected').
+    7. Replace the reference HTML in expected/reports/ with the observed one.
 """
 
 import shutil
@@ -25,6 +26,7 @@ from lib.report import extract_report_date, find_report_html, parse_yaml
 DEFAULT_REPORTS_DIR = Path("expected/reports")
 BACKUP_DIR = Path("expected/.backups")
 BACKUPS_TO_KEEP = 3
+REFERENCE_DIR = Path("expected/reports")
 
 
 def _prompt(context: str) -> str:
@@ -74,6 +76,24 @@ def _backup(yaml_path: Path) -> Path:
         old.unlink()
 
     return backup
+
+
+def _update_reference_html(
+    yaml_path: Path, sample_id: str, observed_html: Path,
+) -> Path:
+    """Replace the reference HTML for `sample_id` with `observed_html`.
+
+    The destination filename mirrors the fixture YAML stem so timestamps
+    are not embedded: e.g. `1_SME25-218.html`.  Any existing reference
+    HTML for this sample_id is removed first.  Returns the destination path.
+    """
+    REFERENCE_DIR.mkdir(parents=True, exist_ok=True)
+    old = find_report_html(sample_id, REFERENCE_DIR)
+    if old:
+        old.unlink()
+    dest = REFERENCE_DIR / f"{yaml_path.stem}.html"
+    shutil.copy2(observed_html, dest)
+    return dest
 
 
 def promote_yaml(
@@ -129,13 +149,18 @@ def promote_yaml(
         if html_date:
             report.date = html_date
         report.to_yaml(yaml_path, source="expected")
+        ref_html = _update_reference_html(
+            yaml_path, report.sample_id, html_path
+        )
         try:
             backup_label = backup.relative_to(Path.cwd())
+            ref_label = ref_html.relative_to(Path.cwd())
         except ValueError:
             backup_label = backup
+            ref_label = ref_html
         print(
             f"\n{yaml_path.name}: wrote {accepted} update(s). "
-            f"Backup: {backup_label}"
+            f"Backup: {backup_label} | Reference HTML: {ref_label}"
         )
     else:
         print(f"\n{yaml_path.name}: no changes written.")

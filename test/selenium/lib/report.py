@@ -22,11 +22,16 @@ _SENTINEL = object()
 
 FLAG_BADGE_PREFIX = "Flag "
 
-# Report filenames follow `[<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...`.
+# Workflow output: `[<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...`.
+# Reference HTMLs (expected/reports/): shorter `<prefix>_<sample_id>.html`.
 # The sample_id may itself contain underscores (e.g. VE24-1351_COI), so we
-# anchor on the date component to know where the sample_id ends.
+# anchor on the date component (for workflow output) or end-of-string (for
+# reference files) to know where the sample_id ends.
 _SAMPLE_ID_RE = re.compile(
     r"^(?:\d+_)?report_(.+?)_\d{4}-\d{2}-\d{2}_"
+)
+_SAMPLE_ID_SHORT_RE = re.compile(
+    r"^\d+_(.+?)\.html?$"
 )
 _DATE_RE = re.compile(
     r"_(\d{4}-\d{2}-\d{2})_(\d{2})_(\d{2})_(\d{2})(?=\.html?$|_|$)"
@@ -34,9 +39,15 @@ _DATE_RE = re.compile(
 
 
 def extract_sample_id(filename: str) -> str:
-    """Return the sample id embedded in a report filename, or '' if the
-    filename doesn't match the report_<sample>_<date>_... pattern."""
+    """Return the sample id embedded in a report filename, or ''.
+
+    Handles both workflow output (`[N_]report_<sample>_<date>_...html`)
+    and reference files (`N_<sample>.html`).
+    """
     m = _SAMPLE_ID_RE.match(filename)
+    if m:
+        return m.group(1)
+    m = _SAMPLE_ID_SHORT_RE.match(filename)
     return m.group(1) if m else ""
 
 
