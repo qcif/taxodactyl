@@ -28,6 +28,13 @@ def pytest_addoption(parser):
             "checked-in reference reports."
         ),
     )
+    group.addoption(
+        "--watch",
+        action="store_true",
+        default=False,
+        dest="watch",
+        help="Run Chrome in watch (visible) mode instead of headless.",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -36,8 +43,9 @@ def reports_dir(request):
 
 
 @pytest.fixture
-def driver():
-    driver = make_driver()
+def driver(request):
+    watch = request.config.getoption("--watch")
+    driver = make_driver(headless=not watch)
     yield driver
     driver.quit()
 

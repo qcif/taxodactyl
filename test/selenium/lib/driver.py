@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def make_driver(headless: bool = False):
+def make_driver(headless: bool = True):
     options = Options()
     options.add_argument("--window-size=1920,1080")
     if headless:
