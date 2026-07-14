@@ -62,6 +62,7 @@ pytest --help
 | Flag | Default | Purpose |
 |------|---------|---------|
 | `--dir <path>` / `--reports-dir <path>` | *required* | Directory to search for the HTML files to test. Reports are matched by `sample_id`. |
+| `--watch` | off | Open a visible Chrome window instead of running headless. Useful for debugging individual tests. |
 
 ## Report ↔ fixture matching
 
