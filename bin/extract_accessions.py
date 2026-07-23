@@ -59,7 +59,6 @@ def main():
         except Exception as e:
             print(f"Output file error: {output_filepath}, {e}.")
         else:
-            unique_hits = set()
             for hit in hit_accessions:
                 output_file.write(hit.text+"\n")
             print(f"Writing {len(hit_accessions)} hit accessions to {output_filepath}")
