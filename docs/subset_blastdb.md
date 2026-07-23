@@ -5,9 +5,9 @@ For test purposes, a small BLAST database can be created from the full database 
 
 #### Extract accession IDs
 
-Use `extract_accessions.py` to extract accession IDs from the output `blast_result.xml` for the test case. 
+Use `bin/extract_accessions.py` to extract accession IDs from the output `blast_result.xml` for the test case.
 
-Alternatively, the `accessions.txt` from the `TAXODACTYL:EXTRACT_HITS`  work folder. 
+Alternatively, use the `accessions.txt` file from the `TAXODACTYL:EXTRACT_HITS` work folder.
 
 #### Create `.fasta` of sequences
 
