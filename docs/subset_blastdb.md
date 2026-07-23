@@ -3,7 +3,7 @@
 
 For test purposes, a small BLAST database can be created from the full database for a test case. It requires that the test case has been run with the database that will be used to subset from. 
 
-## Extract accession IDs
+#### Extract accession IDs
 
 Use `extract_accessions.py` to extract accession IDs from the output `blast_result.xml` for the test case. 
 
