@@ -1,0 +1,185 @@
+{
+  "coverage": {
+    "candidate": {
+      "Planococcus citri": {
+        "target": 291,
+        "related": {
+          "Planococcus aemulor": 0,
+          "Planococcus aphelus": 0,
+          "Planococcus bagmaticus": 0,
+          "Planococcus bendovi": 0,
+          "Planococcus boafoensis": 0,
+          "Planococcus citri": 291,
+          "Planococcus dendrobii": 0,
+          "Planococcus dioscoreae": 0,
+          "Planococcus dorsospinosus": 0,
+          "Planococcus dubius": 0,
+          "Planococcus epulus": 0,
+          "Planococcus ficus": 147,
+          "Planococcus flagellatus": 0,
+          "Planococcus fungicola": 0,
+          "Planococcus furcisetosus": 0,
+          "Planococcus halli": 0,
+          "Planococcus hosnyi": 0,
+          "Planococcus hospitus": 0,
+          "Planococcus indicus": 59,
+          "Planococcus japonicus": 0,
+          "Planococcus kenyae": 1,
+          "Planococcus kraunhiae": 38,
+          "Planococcus lilacinus": 59,
+          "Planococcus litchi": 0,
+          "Planococcus mali": 0,
+          "Planococcus martini": 0,
+          "Planococcus minor": 237,
+          "Planococcus musae": 0,
+          "Planococcus nigritulus": 0,
+          "Planococcus orchidi": 0,
+          "Planococcus philippinensis": 0,
+          "Planococcus planococcoides": 0,
+          "Planococcus principe": 0,
+          "Planococcus psidii": 0,
+          "Planococcus radicum": 0,
+          "Planococcus subterraneus": 0,
+          "Planococcus sulawesi": 0,
+          "Planococcus taigae": 0,
+          "Planococcus tanzaniensis": 0,
+          "Planococcus vovae": 13,
+          "Planococcus zairensis": 0
+        },
+        "country": {
+          "Planococcus citri": 291,
+          "Planococcus vovae": 13,
+          "Planococcus ficus": 147
+        },
+        "genus": "Planococcus"
+      },
+      "Planococcus ficus": {
+        "target": 147,
+        "related": {
+          "Planococcus aemulor": 0,
+          "Planococcus aphelus": 0,
+          "Planococcus bagmaticus": 0,
+          "Planococcus bendovi": 0,
+          "Planococcus boafoensis": 0,
+          "Planococcus citri": 291,
+          "Planococcus dendrobii": 0,
+          "Planococcus dioscoreae": 0,
+          "Planococcus dorsospinosus": 0,
+          "Planococcus dubius": 0,
+          "Planococcus epulus": 0,
+          "Planococcus ficus": 147,
+          "Planococcus flagellatus": 0,
+          "Planococcus fungicola": 0,
+          "Planococcus furcisetosus": 0,
+          "Planococcus halli": 0,
+          "Planococcus hosnyi": 0,
+          "Planococcus hospitus": 0,
+          "Planococcus indicus": 59,
+          "Planococcus japonicus": 0,
+          "Planococcus kenyae": 1,
+          "Planococcus kraunhiae": 38,
+          "Planococcus lilacinus": 59,
+          "Planococcus litchi": 0,
+          "Planococcus mali": 0,
+          "Planococcus martini": 0,
+          "Planococcus minor": 237,
+          "Planococcus musae": 0,
+          "Planococcus nigritulus": 0,
+          "Planococcus orchidi": 0,
+          "Planococcus philippinensis": 0,
+          "Planococcus planococcoides": 0,
+          "Planococcus principe": 0,
+          "Planococcus psidii": 0,
+          "Planococcus radicum": 0,
+          "Planococcus subterraneus": 0,
+          "Planococcus sulawesi": 0,
+          "Planococcus taigae": 0,
+          "Planococcus tanzaniensis": 0,
+          "Planococcus vovae": 13,
+          "Planococcus zairensis": 0
+        },
+        "country": {
+          "Planococcus citri": 291,
+          "Planococcus vovae": 13,
+          "Planococcus ficus": 147
+        },
+        "genus": "Planococcus"
+      }
+    },
+    "toi": {
+      "Planococcus citri": {
+        "target": 291,
+        "related": {
+          "Planococcus aemulor": 0,
+          "Planococcus aphelus": 0,
+          "Planococcus bagmaticus": 0,
+          "Planococcus bendovi": 0,
+          "Planococcus boafoensis": 0,
+          "Planococcus citri": 291,
+          "Planococcus dendrobii": 0,
+          "Planococcus dioscoreae": 0,
+          "Planococcus dorsospinosus": 0,
+          "Planococcus dubius": 0,
+          "Planococcus epulus": 0,
+          "Planococcus ficus": 147,
+          "Planococcus flagellatus": 0,
+          "Planococcus fungicola": 0,
+          "Planococcus furcisetosus": 0,
+          "Planococcus halli": 0,
+          "Planococcus hosnyi": 0,
+          "Planococcus hospitus": 0,
+          "Planococcus indicus": 59,
+          "Planococcus japonicus": 0,
+          "Planococcus kenyae": 1,
+          "Planococcus kraunhiae": 38,
+          "Planococcus lilacinus": 59,
+          "Planococcus litchi": 0,
+          "Planococcus mali": 0,
+          "Planococcus martini": 0,
+          "Planococcus minor": 237,
+          "Planococcus musae": 0,
+          "Planococcus nigritulus": 0,
+          "Planococcus orchidi": 0,
+          "Planococcus philippinensis": 0,
+          "Planococcus planococcoides": 0,
+          "Planococcus principe": 0,
+          "Planococcus psidii": 0,
+          "Planococcus radicum": 0,
+          "Planococcus subterraneus": 0,
+          "Planococcus sulawesi": 0,
+          "Planococcus taigae": 0,
+          "Planococcus tanzaniensis": 0,
+          "Planococcus vovae": 13,
+          "Planococcus zairensis": 0
+        },
+        "country": {
+          "Planococcus citri": 291,
+          "Planococcus vovae": 13,
+          "Planococcus ficus": 147
+        },
+        "genus": "Planococcus"
+      }
+    },
+    "pmi": {
+      "Pseudococcidae": {
+        "target": 4291,
+        "related": null,
+        "country": null
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Planococcus citri": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Planococcus%20citri%20(taxid:170843)&QUERY=AAAAATATCAGATTAATATACCTTTTATTCGGATTTTGATCTGGATTAATAGGTTTATCAATAAGATTTATTATTCGAATTGAACTAATAAATTTAAATAATAATTTTAATAACAATATAATTTATTATATAATAATTACTATTCATGCTTTTATTATAATTTTCTTTATAACTATACCTATCATTATTGGAAGATTAAGAAATTGACTTTTGCCATTAATATTAATATCATCAGATTTAATTTTTCCCCGATTAAATAATTTTAGATTTTGATTATTAATTCCATCACTTATTTTAATAATAATAAATATAATATTATCTAATAATATTAATACAGGTTGAACACTTTACCCTCCTTTAATTAATCAAAATTTTATTACATTAAATTTTATTATTTTTTCTTTACATTTAAATGGAATTTCTTCTATTTTTAGATCAATTAATTTTATTTCATCAATTTTTATTATCAATAATAATAATTTTTTTTTTAATAATATTACTTTATATATTTGATCTATTATTATTACAACTATTTTATTAATTATTTCTATTCCAATTTTATCAAGAGCAATTACTATAATTATTTTAGATAATAATCTTAATATAAATTTTTTTAATCCATTAGGAAATGGTAATCCAATTTTATATCAACATTTATTTTGATTTTTTG",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=170843"
+    },
+    "Planococcus ficus": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Planococcus%20ficus%20(taxid:249562)&QUERY=AAAAATATCAGATTAATATACCTTTTATTCGGATTTTGATCTGGATTAATAGGTTTATCAATAAGATTTATTATTCGAATTGAACTAATAAATTTAAATAATAATTTTAATAACAATATAATTTATTATATAATAATTACTATTCATGCTTTTATTATAATTTTCTTTATAACTATACCTATCATTATTGGAAGATTAAGAAATTGACTTTTGCCATTAATATTAATATCATCAGATTTAATTTTTCCCCGATTAAATAATTTTAGATTTTGATTATTAATTCCATCACTTATTTTAATAATAATAAATATAATATTATCTAATAATATTAATACAGGTTGAACACTTTACCCTCCTTTAATTAATCAAAATTTTATTACATTAAATTTTATTATTTTTTCTTTACATTTAAATGGAATTTCTTCTATTTTTAGATCAATTAATTTTATTTCATCAATTTTTATTATCAATAATAATAATTTTTTTTTTAATAATATTACTTTATATATTTGATCTATTATTATTACAACTATTTTATTAATTATTTCTATTCCAATTTTATCAAGAGCAATTACTATAATTATTTTAGATAATAATCTTAATATAAATTTTTTTAATCCATTAGGAAATGGTAATCCAATTTTATATCAACATTTATTTTGATTTTTTG",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=249562"
+    },
+    "Pseudococcidae": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Pseudococcidae%20(taxid:30190)&QUERY=AAAAATATCAGATTAATATACCTTTTATTCGGATTTTGATCTGGATTAATAGGTTTATCAATAAGATTTATTATTCGAATTGAACTAATAAATTTAAATAATAATTTTAATAACAATATAATTTATTATATAATAATTACTATTCATGCTTTTATTATAATTTTCTTTATAACTATACCTATCATTATTGGAAGATTAAGAAATTGACTTTTGCCATTAATATTAATATCATCAGATTTAATTTTTCCCCGATTAAATAATTTTAGATTTTGATTATTAATTCCATCACTTATTTTAATAATAATAAATATAATATTATCTAATAATATTAATACAGGTTGAACACTTTACCCTCCTTTAATTAATCAAAATTTTATTACATTAAATTTTATTATTTTTTCTTTACATTTAAATGGAATTTCTTCTATTTTTAGATCAATTAATTTTATTTCATCAATTTTTATTATCAATAATAATAATTTTTTTTTTAATAATATTACTTTATATATTTGATCTATTATTATTACAACTATTTTATTAATTATTTCTATTCCAATTTTATCAAGAGCAATTACTATAATTATTTTAGATAATAATCTTAATATAAATTTTTTTAATCCATTAGGAAATGGTAATCCAATTTTATATCAACATTTATTTTGATTTTTTG",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=30190"
+    }
+  }
+}

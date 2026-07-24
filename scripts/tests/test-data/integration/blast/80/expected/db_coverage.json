@@ -1,0 +1,88 @@
+{
+  "coverage": {
+    "candidate": {
+      "Euchrysops cnejus": {
+        "target": 43,
+        "related": {
+          "Euchrysops abyssinica": 0,
+          "Euchrysops albistriata": 0,
+          "Euchrysops arcana": 0,
+          "Euchrysops banyo": 0,
+          "Euchrysops barkeri": 0,
+          "Euchrysops brunneus": 0,
+          "Euchrysops cnejus": 43,
+          "Euchrysops crawshayi": 0,
+          "Euchrysops cyclopteris": 0,
+          "Euchrysops decaryi": 0,
+          "Euchrysops dolorosa": 0,
+          "Euchrysops ella": 0,
+          "Euchrysops enejus": 0,
+          "Euchrysops horus": 0,
+          "Euchrysops jacksoni": 0,
+          "Euchrysops kabrosae": 0,
+          "Euchrysops katangae": 0,
+          "Euchrysops lois": 0,
+          "Euchrysops malathana": 29,
+          "Euchrysops mauensis": 0,
+          "Euchrysops migiurtiniensis": 0,
+          "Euchrysops nandensis": 0,
+          "Euchrysops niobe": 0,
+          "Euchrysops osiris": 15,
+          "Euchrysops osoris": 0,
+          "Euchrysops philbyi": 0,
+          "Euchrysops reducta": 0,
+          "Euchrysops sahelianus": 0,
+          "Euchrysops spec": 0,
+          "Euchrysops subpallida": 25,
+          "Euchrysops suffusus": 0,
+          "Euchrysops trifracta": 0,
+          "Euchrysops unigemmata": 0
+        },
+        "country": {
+          "Euchrysops cnejus": 43
+        },
+        "genus": "Euchrysops"
+      },
+      "Lycaenidae sp. SSG-2014a": {
+        "target": null,
+        "related": null,
+        "country": null
+      }
+    },
+    "toi": {
+      "Chilades pandava": {
+        "target": 198,
+        "related": {
+          "Edales pandava": 198
+        },
+        "country": {},
+        "genus": "Edales"
+      }
+    },
+    "pmi": {
+      "Lycaenidae": {
+        "target": 23130,
+        "related": null,
+        "country": null
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Euchrysops cnejus": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Euchrysops%20cnejus%20(taxid:689509)&QUERY=ACACTATATTTTATTTTTGGTATTTGAGCAGGAATATTAGGAACATCATTAAGTATTTTAATTCGTATAGAATTGGGAACTCCTGGATCTTTAATCGGGGATGATCAAATCTATAATACTATTGTTACAGCTCATGCTTTTATTATAATTTTTTTTATAGTAATACCTATTATAATTGGAGGGTTTGGAAATTGATTAATTCCTCTAATATTAGGAGCACCTGACATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTACCCCCATCACTAATATTACTAATTTCAAGAAGAATTGTAGAAAATGGAGCAGGAACTGGATGAACAGTGTACCCCCCTCTGTCATCTAATATTGCTCATAGTGGATCTTCCGTTGATCTAGCAATCTTCTCTCTTCATTTAGCAGGAATTTCATCAATTTTAGGAGCCATTAACTTTATCACAACTATTATTAATATAAAAGTAAATAATTTATCTTTTGATCAAATATCATTATTTATTTGAGCTGTTGGTATTACTGCATTATTATTATTATTATCTTTACCAGTATTAGCTGGAGCTATTACAATATTATTAACAGATCGTAATTTAAACACATCATTTTTTGACCCCGCTGGAGGAGGAGACCCAATTCTTTATCAACATTTATTTTGATTTTT",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=689509"
+    },
+    "Chilades pandava": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Edales%20pandava%20(taxid:689490)&QUERY=ACACTATATTTTATTTTTGGTATTTGAGCAGGAATATTAGGAACATCATTAAGTATTTTAATTCGTATAGAATTGGGAACTCCTGGATCTTTAATCGGGGATGATCAAATCTATAATACTATTGTTACAGCTCATGCTTTTATTATAATTTTTTTTATAGTAATACCTATTATAATTGGAGGGTTTGGAAATTGATTAATTCCTCTAATATTAGGAGCACCTGACATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTACCCCCATCACTAATATTACTAATTTCAAGAAGAATTGTAGAAAATGGAGCAGGAACTGGATGAACAGTGTACCCCCCTCTGTCATCTAATATTGCTCATAGTGGATCTTCCGTTGATCTAGCAATCTTCTCTCTTCATTTAGCAGGAATTTCATCAATTTTAGGAGCCATTAACTTTATCACAACTATTATTAATATAAAAGTAAATAATTTATCTTTTGATCAAATATCATTATTTATTTGAGCTGTTGGTATTACTGCATTATTATTATTATTATCTTTACCAGTATTAGCTGGAGCTATTACAATATTATTAACAGATCGTAATTTAAACACATCATTTTTTGACCCCGCTGGAGGAGGAGACCCAATTCTTTATCAACATTTATTTTGATTTTT",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=689490"
+    },
+    "Lycaenidae": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Lycaenidae%20(taxid:27544)&QUERY=ACACTATATTTTATTTTTGGTATTTGAGCAGGAATATTAGGAACATCATTAAGTATTTTAATTCGTATAGAATTGGGAACTCCTGGATCTTTAATCGGGGATGATCAAATCTATAATACTATTGTTACAGCTCATGCTTTTATTATAATTTTTTTTATAGTAATACCTATTATAATTGGAGGGTTTGGAAATTGATTAATTCCTCTAATATTAGGAGCACCTGACATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTACCCCCATCACTAATATTACTAATTTCAAGAAGAATTGTAGAAAATGGAGCAGGAACTGGATGAACAGTGTACCCCCCTCTGTCATCTAATATTGCTCATAGTGGATCTTCCGTTGATCTAGCAATCTTCTCTCTTCATTTAGCAGGAATTTCATCAATTTTAGGAGCCATTAACTTTATCACAACTATTATTAATATAAAAGTAAATAATTTATCTTTTGATCAAATATCATTATTTATTTGAGCTGTTGGTATTACTGCATTATTATTATTATTATCTTTACCAGTATTAGCTGGAGCTATTACAATATTATTAACAGATCGTAATTTAAACACATCATTTTTTGACCCCGCTGGAGGAGGAGACCCAATTCTTTATCAACATTTATTTTGATTTTT",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=27544"
+    },
+    "Lycaenidae sp. SSG-2014a": {
+      "blast": null,
+      "taxonomy": null
+    }
+  }
+}
