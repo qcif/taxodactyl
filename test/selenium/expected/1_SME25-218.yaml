@@ -1,0 +1,388 @@
+sample_id: SME25-218
+date: '2026-07-11T06:42:21'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: SME25-218
+  - id: dna_sequence
+    type: contains
+    value: CCAAAAAATCA
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Drosophila simulans
+    - Drosophila mauritiana
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'TRUE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1B
+  - id: toi_flag
+    type: contains
+    value: Flag 2A
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '2'
+  - id: matching_species_moderate
+    type: int
+    value: '11'
+  - id: matching_species_weak
+    type: int
+    value: '21'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1B
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '78'
+  - id: moderate_hits
+    type: int
+    value: '250'
+  - id: weak_hits
+    type: int
+    value: '172'
+  - id: lowest_hit
+    type: float
+    value: '90.6'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Drosophila simulans
+    - Drosophila mauritiana
+  - id: no_of_hits
+    type: list
+    value:
+    - '92'
+    - '8'
+  - id: top_identity
+    type: list
+    value:
+    - '100'
+    - '100'
+  - id: median_identity
+    type: list
+    value:
+    - '100'
+    - '96.6'
+  - id: min_identity
+    type: list
+    value:
+    - '96.3'
+    - '95.5'
+  - id: top_e_value
+    type: list
+    value:
+    - '0'
+    - '0'
+  - id: publication
+    type: list
+    value:
+    - '40'
+    - '1'
+- id: database_coverage
+  pmi:
+  - name: Drosophila simulans
+    assertions:
+    - id: title
+      type: list
+      value: Database coverage of Preliminary Morphology ID Drosophila
+    - id: flag_text1
+      type: list
+      value: 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '5266'
+    - id: flag_text2
+      type: list
+      value: 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '596'
+    - id: species_total
+      type: list
+      value:
+      - '1680'
+    - id: min_bar_count
+      type: min
+      value: '10'
+    - id: first_bar_species
+      type: list
+      value: Drosophila affinis
+    - id: first_bar_count
+      type: list
+      value: '1162'
+    - id: final_text
+      type: list
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+  toi:
+  - name: Drosophila simulans
+    assertions:
+    - id: title
+      type: list
+      value: Database coverage of Taxon of Interest Drosophila simulans
+    - id: flag_text1
+      type: list
+      value: 5.1A
+    - id: record_count
+      type: list
+      value: '144'
+    - id: flag_text2
+      type: list
+      value: 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '596'
+    - id: species_total
+      type: list
+      value:
+      - '1680'
+    - id: min_bar_count
+      type: min
+      value: '10'
+    - id: first_bar_species
+      type: list
+      value: Drosophila affinis
+    - id: first_bar_count
+      type: list
+      value: '1162'
+    - id: final_text
+      type: list
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+  candidate:
+  - name: Drosophila simulans
+    assertions:
+    - id: title
+      type: list
+      value: Database coverage of Candidate Drosophila simulans
+    - id: flag_text1
+      type: list
+      value: 5.1A
+    - id: record_count
+      type: list
+      value: '144'
+    - id: flag_text2
+      type: list
+      value: 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '596'
+    - id: species_total
+      type: list
+      value:
+      - '1680'
+    - id: min_bar_count
+      type: min
+      value: '10'
+    - id: first_bar_species
+      type: list
+      value: Drosophila affinis
+    - id: first_bar_count
+      type: list
+      value: '1162'
+    - id: final_text
+      type: list
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+  - name: Drosophila mauritiana
+    assertions:
+    - id: title
+      type: list
+      value: Database coverage of Candidate Drosophila mauritiana
+    - id: flag_text1
+      type: list
+      value: 5.1A
+    - id: record_count
+      type: list
+      value: '6'
+    - id: flag_text2
+      type: list
+      value: 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '596'
+    - id: species_total
+      type: list
+      value: '1680'
+    - id: min_bar_count
+      type: min
+      value: '10'
+    - id: first_bar_species
+      type: list
+      value: Drosophila affinis
+    - id: first_bar_count
+      type: list
+      value: '1162'
+    - id: final_text
+      type: list
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+- id: publication_modal
+  candidates:
+  - name: Drosophila simulans
+    assertions:
+    - id: title
+      type: list
+      value: Publications supporting taxonomic association - Drosophila simulans
+    - id: source
+      type: list
+      value:
+      - 40 Independent Sources
+    - id: count
+      type: list
+      value:
+      - '40'
+  - name: Drosophila mauritiana
+    assertions:
+    - id: title
+      type: list
+      value: Publications supporting taxonomic association - Drosophila mauritiana
+    - id: source
+      type: list
+      value: 1 Independent Source
+    - id: count
+      type: list
+      value: '1'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: KC244284
+  - id: subject
+    type: contains
+    value: Drosophila simulans strain simw501 mitochondrion, complete genome
+  - id: length
+    type: int
+    value: '682'
+  - id: identity
+    type: float
+    value: '100'
+  - id: bitscore
+    type: float
+    value: '1352.4'
+  - id: evalue
+    type: contains
+    value: '0.00E+00'
+  - id: coverage
+    type: float
+    value: '96.5'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Arthropoda
+  - id: class
+    type: contains
+    value: Insecta
+  - id: order
+    type: contains
+    value: Diptera
+  - id: family
+    type: contains
+    value: Drosophilidae
+  - id: genus
+    type: contains
+    value: Drosophila
+  - id: species
+    type: contains
+    value: Drosophila simulans
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '5'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2A
+  - id: toi_outcome
+    type: contains
+    value: At least one of the taxa of interest
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest detected
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value:
+    - 'TRUE'
+  - id: toi
+    type: list
+    value:
+    - Drosophila simulans
+  - id: match_rank
+    type: list
+    value:
+    - species
+  - id: match_taxon
+    type: list
+    value:
+    - Drosophila simulans
+  - id: match_species
+    type: list
+    value:
+    - Drosophila simulans
+  - id: match_accession
+    type: list
+    value:
+    - KC244284
+  - id: match_identity
+    type: list
+    value:
+    - '100'
