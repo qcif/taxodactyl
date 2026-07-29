@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "ERR",
+    "target": "Bulimulus aff. sporadicus ASHB-2015",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "C",
+    "target": "Bulimulus sporadicus",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "C",
+    "target": "Bulimulus Sporadicus",
+    "target_type": "pmi"
+  }
+]
