@@ -1,0 +1,79 @@
+{
+  "coverage": {
+    "candidate": {
+      "Anneissia japonica": {
+        "target": 23,
+        "related": {
+          "Anneissia benhami": 135,
+          "Anneissia bennetti": 7,
+          "Anneissia grandicalyx": 0,
+          "Anneissia intermedia": 3,
+          "Anneissia japonica": 23,
+          "Anneissia muelleri": 0,
+          "Anneissia pinguis": 9,
+          "Anneissia plectrophorum": 0,
+          "Anneissia solaster": 0
+        },
+        "country": "NA",
+        "genus": "Anneissia"
+      }
+    },
+    "toi": {},
+    "pmi": {
+      "Asterias rubens": {
+        "target": 27,
+        "related": {
+          "Echinaster aculeata": 0,
+          "Echinaster arcystatus": 0,
+          "Echinaster brasiliensis": 3,
+          "Echinaster callosus": 9,
+          "Echinaster colemani": 0,
+          "Echinaster crassus": 0,
+          "Echinaster cribella": 0,
+          "Echinaster cylindricus": 0,
+          "Echinaster deplanatus": 0,
+          "Echinaster echinatus": 0,
+          "Echinaster echinophorus": 5,
+          "Echinaster farquhari": 1,
+          "Echinaster glomeratus": 0,
+          "Echinaster gracilis": 0,
+          "Echinaster graminicola": 0,
+          "Echinaster guyanensis": 3,
+          "Echinaster jacobseni": 0,
+          "Echinaster lacunosus": 0,
+          "Echinaster luzonicus": 16,
+          "Echinaster modestus": 0,
+          "Echinaster panamensis": 0,
+          "Echinaster parvispinus": 0,
+          "Echinaster paucispinus": 1,
+          "Echinaster purpureus": 6,
+          "Echinaster reticulatus": 0,
+          "Echinaster rigidus": 0,
+          "Echinaster robustus": 0,
+          "Echinaster sentus": 3,
+          "Echinaster sepitosus": 0,
+          "Echinaster sepositus": 27,
+          "Echinaster serpentarius": 0,
+          "Echinaster smithi": 0,
+          "Echinaster spinulosus": 3,
+          "Echinaster stereosomus": 3,
+          "Echinaster superbus": 0,
+          "Echinaster tenuispina": 0,
+          "Echinaster varicolor": 0
+        },
+        "country": "NA",
+        "genus": "Echinaster"
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Anneissia japonica": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Anneissia%20japonica%20(taxid:1529436)&QUERY=GGTAAAAAAAATGAGTTTTTGGCTTTTGCCTCCTTCTTTTCTTCTTTTATTGGCTTCTGCTGGTGTTGAAAGGGGTGTTGGTACTGGGTGAACTATTTATCCTCCTTTGTCAAGTGGTATTGCTCATTCTGGTGGTTCTGTTGATCTTGCTATTTTTTCTTTACATATAGCTGGTGCTTCTTCTATTATAGCTTCGATTAACTTTATAACTACAATAATAAAAATGCGTGCTCCTGGTATTTCTTTTGATCGTCTTTCTCTTTTTGTTTGATCAATTTTTATTACTACTTTTCTTCTTTTGTTATCTTTACCTGTTTTGGCTGGGGCTATAACAATGCTTCTTACTGATCGTAATGTAAATACTACTTTTTTTGATCCTGCTGGTGGTGGTGATCCTATTTTGTTTCAGCATTTATTTTGGTTTTTTGGTCATCCTGAAGTTTATATTTTAATATTACCTGGTTTTGGTATGATTTCTCATGTTGTTTCTCATTATTCTGGTAAGAGAGAGCCTTTTGGTTATTTGGGTATGGTTTATGCGATGGTTGCTATAGGTATACTTGGTTTTCTTGTTTGAGCACATCATATGTTTACTGTAGGTA",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=1529436"
+    },
+    "Asterias rubens": {
+      "blast": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&EQ_MENU=Echinaster%20sepositus%20(taxid:72721)&QUERY=GGTAAAAAAAATGAGTTTTTGGCTTTTGCCTCCTTCTTTTCTTCTTTTATTGGCTTCTGCTGGTGTTGAAAGGGGTGTTGGTACTGGGTGAACTATTTATCCTCCTTTGTCAAGTGGTATTGCTCATTCTGGTGGTTCTGTTGATCTTGCTATTTTTTCTTTACATATAGCTGGTGCTTCTTCTATTATAGCTTCGATTAACTTTATAACTACAATAATAAAAATGCGTGCTCCTGGTATTTCTTTTGATCGTCTTTCTCTTTTTGTTTGATCAATTTTTATTACTACTTTTCTTCTTTTGTTATCTTTACCTGTTTTGGCTGGGGCTATAACAATGCTTCTTACTGATCGTAATGTAAATACTACTTTTTTTGATCCTGCTGGTGGTGGTGATCCTATTTTGTTTCAGCATTTATTTTGGTTTTTTGGTCATCCTGAAGTTTATATTTTAATATTACCTGGTTTTGGTATGATTTCTCATGTTGTTTCTCATTATTCTGGTAAGAGAGAGCCTTTTGGTTATTTGGGTATGGTTTATGCGATGGTTGCTATAGGTATACTTGGTTTTCTTGTTTGAGCACATCATATGTTTACTGTAGGTA",
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=72721"
+    }
+  }
+}

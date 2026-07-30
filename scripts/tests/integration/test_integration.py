@@ -21,11 +21,24 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
+from tests.integration.kit.coverage_assert import assert_matches
+
 PYTHON_ROOT = Path(__file__).parents[2]
 TEST_DATA_DIR = PYTHON_ROOT / "tests/test-data"
 COMPLETED_TESTS_FILE = "completed_tests.json"
 TEMPDIR_PREFIX = "integration_test_"
 QUERY_INDEX_FILENAME = 'query.index'  # optional query index to use (0-indexed)
+EXPECTED_DIR = "expected"
+DB_COVERAGE_FILENAME = "db_coverage.json"
+
+REQUIRED_CASE_FILES = (
+    "blast_result.xml",
+    "candidates.nwk",
+    "metadata.csv",
+    "query.fasta",
+    "taxids.csv",
+    "taxonomy.csv",
+)
 
 
 def print_green(text: str):
@@ -50,6 +63,32 @@ class IntegrationTest(unittest.TestCase):
         cls.python = PYTHON_ROOT / "venv" / "bin" / "python"
         cls.taxdump_dir = Path.home() / ".taxonkit"
         cls.test_case_root = TEST_DATA_DIR / "integration/blast"
+        cls._assert_cases_complete()
+
+    @classmethod
+    def _assert_cases_complete(cls):
+        """Fail loudly if any case dir is missing a required input file.
+
+        Catches half-set-up cases (e.g. a harvest that failed halfway,
+        or a hand-created dir missing one of the six required files).
+        """
+        problems = []
+        for case in sorted(cls.test_case_root.iterdir()):
+            if not case.is_dir():
+                continue
+            missing = [
+                name for name in REQUIRED_CASE_FILES
+                if not (case / name).is_file()
+            ]
+            if missing:
+                problems.append(f"  - {case.name}: missing {missing}")
+        if problems:
+            raise EnvironmentError(
+                "Integration test cases are missing required files:\n"
+                + "\n".join(problems)
+                + "\nRun `testkit.py harvest ...` to (re)build the case"
+                " dir, or delete it if it's obsolete."
+            )
 
     def setUp(self):
         """Clean up old temp dirs and create a new one."""
@@ -130,6 +169,46 @@ class IntegrationTest(unittest.TestCase):
             ]
             json.dump(case_names, f, indent=2)
         print(f"Completed tests written to: {self.completed_tests_file}")
+
+    def _assert_db_coverage(self, test_case: Path, query_dir: Path) -> None:
+        """Compare produced db_coverage.json against a case fixture, if any.
+
+        Rollout is incremental: cases without an ``expected/db_coverage.json``
+        fixture skip cleanly with a log line.
+        """
+        fixture_path = test_case / EXPECTED_DIR / DB_COVERAGE_FILENAME
+        if not fixture_path.exists():
+            print(
+                f"Test case {test_case.name}: no {EXPECTED_DIR}/"
+                f"{DB_COVERAGE_FILENAME} fixture — skipping db_coverage"
+                " assertion."
+            )
+            return
+        actual_path = query_dir / DB_COVERAGE_FILENAME
+        self.assertTrue(
+            actual_path.exists(),
+            f"Expected {actual_path} to exist after P5.",
+        )
+        with open(fixture_path) as f:
+            expected = json.load(f)
+        with open(actual_path) as f:
+            actual = json.load(f)
+        try:
+            assert_matches(expected, actual)
+        except AssertionError as exc:
+            raise AssertionError(
+                f"{exc}\n\n"
+                f"  Expected fixture: {fixture_path}\n"
+                f"  Actual output:    {actual_path}\n"
+                f"\n"
+                f"  If this is expected drift, promote the fixture:\n"
+                f"    testkit.py promote --case {test_case.name}\n"
+                f"  Otherwise, diff the two files to investigate the"
+                f" regression."
+            )
+        print_green(
+            f"Test case {test_case.name}: db_coverage.json matches fixture."
+        )
 
     def prepare_working_dir(self, test_case: Path) -> Path:
         """Copy test case files into a fresh working directory"""
@@ -298,6 +377,8 @@ class IntegrationTest(unittest.TestCase):
                     config_file=config_file,
                 )
                 print_green(f"\nTest case {test_case.name}: P5 PASS\n")
+
+                self._assert_db_coverage(test_case, query_dir)
 
                 # Copy newick tree into query dir
                 nwk_file = next(wdir.glob("*.nwk"))
