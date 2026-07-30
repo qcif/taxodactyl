@@ -59,18 +59,21 @@ az storage account create \
   -g $RESOURCE_GROUP \
   -l $REGION \
   --sku Premium_LRS \
-  --kind BlockBlobStorage
+  --kind BlockBlobStorage \
+  --allow-blob-public-access true
 
 az storage container create \
   --name $STORAGE_CONTAINER_REF \
-  --account-name $STORAGE_ACCOUNT_PREM
+  --account-name $STORAGE_ACCOUNT_PREM \
+  --public-access blob
 
 # Create standard storage account for work directory and scripts
 az storage account create \
   -n $STORAGE_ACCOUNT_STD \
   -g $RESOURCE_GROUP \
   -l $REGION \
-  --sku Standard_LRS
+  --sku Standard_LRS \
+  --allow-blob-public-access true
 
 az storage container create \
   --name $STORAGE_CONTAINER_WORK \
@@ -78,7 +81,8 @@ az storage container create \
 
 az storage container create \
   --name $STORAGE_CONTAINER_SCRIPTS \
-  --account-name $STORAGE_ACCOUNT_STD
+  --account-name $STORAGE_ACCOUNT_STD \
+  --public-access blob
 
 # Create the cache container used by the API-response cache
 # (shared across all Batch nodes; see Step 3b below for the
