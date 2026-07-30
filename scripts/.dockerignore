@@ -1,8 +1,13 @@
+venv/
+output/
+__pycache__/
+tests/
+dev/
+.claude/
 .git
 .gitignore
 .pytest_cache
 .vscode
-Dockerfile
-venv
+Dockerf*
 *.sh
 .dockerignore
