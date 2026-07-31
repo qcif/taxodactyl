@@ -22,23 +22,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v4
 
+      # Nextflow and nf-test both require a JVM
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
+      # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: "latest-everything"
+
+      # test/scenario_01/nextflow.config runs with profile "singularity", which
+      # isn't preinstalled on ubuntu-latest runners
       - name: Set up Singularity
         uses: eWaterCycle/setup-singularity@v7
         with:
           singularity-version: 3.8.7
 
+      # nf-test is the test runner itself; pin NFT_VER above if reproducibility
+      # across CI runs matters more than always testing the latest release
       - name: Install nf-test
         run: |
           wget -qO- https://get.nf-test.com | bash
           sudo mv nf-test /usr/local/bin/
 
+      # The checked-in root nf-test.config points at scenario_04 and has a
+      # placeholder workDir - overwrite it so nf-test resolves scenario_01
+      # and writes its working files under a real, runner-local path
       - name: Point nf-test.config at scenario_01
         run: |
           cat > nf-test.config <<CONFIG
@@ -50,14 +65,16 @@ jobs:
           }
           CONFIG
 
+      # test/scenario_01/nextflow.config ships with CUSTOMISE placeholders for
+      # values that depend on the runner (paths) or org-level infra (databases).
+      # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
+      # pointing at reference data reachable from this runner - mock_blast still
+      # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
       - name: Resolve scenario_01 CUSTOMISE placeholders
-        # test/scenario_01/nextflow.config ships with CUSTOMISE placeholders for
-        # values that depend on the runner (paths) or org-level infra (databases).
-        # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
-        # pointing at reference data reachable from this runner - mock_blast still
-        # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
         run: |
+          # Runner-local scratch dirs for temp files and the Singularity image cache
           mkdir -p "${{ runner.temp }}/taxodactyl" "${{ runner.temp }}/singularity"
+          # Fill in each CUSTOMISE placeholder with a real value/path
           sed -i \
             -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"${{ vars.BLASTDB_PATH }}\"|" \
             -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"${{ vars.TAXDB_PATH }}\"|" \
@@ -66,7 +83,10 @@ jobs:
             -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
             -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL }}\"|" \
             test/scenario_01/nextflow.config
+          # Print the resolved config so the run log shows exactly what executed
           cat test/scenario_01/nextflow.config
 
+      # Run the scenario_01 test file explicitly rather than a bare `nf-test test`,
+      # so this job doesn't silently pick up whatever nf-test.config last pointed to
       - name: Run scenario_01 nf-test
         run: nf-test test test/scenario_01/taxodactyl.workflow.nf.test
