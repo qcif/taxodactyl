@@ -4,10 +4,21 @@ on:
   push:
     branches:
       - nf-tests_ci
+  pull_request:
   workflow_dispatch:
+
+# Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NXF_ANSI_LOG: false
+  NFT_VER: "0.9.5"
 
 jobs:
   nf-test:
+    name: scenario_01
     runs-on: ubuntu-latest
 
     steps:
@@ -18,10 +29,44 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Set up Singularity
+        uses: eWaterCycle/setup-singularity@v7
+        with:
+          singularity-version: 3.8.7
+
       - name: Install nf-test
         run: |
           wget -qO- https://get.nf-test.com | bash
           sudo mv nf-test /usr/local/bin/
 
-      - name: Run tests
-        run: nf-test test
+      - name: Point nf-test.config at scenario_01
+        run: |
+          cat > nf-test.config <<CONFIG
+          config {
+              workDir "${{ runner.temp }}/nf-test"
+              testsDir "test/scenario_01"
+              configFile "test/scenario_01/nextflow.config"
+              profile "singularity"
+          }
+          CONFIG
+
+      - name: Resolve scenario_01 CUSTOMISE placeholders
+        # test/scenario_01/nextflow.config ships with CUSTOMISE placeholders for
+        # values that depend on the runner (paths) or org-level infra (databases).
+        # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
+        # pointing at reference data reachable from this runner - mock_blast still
+        # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
+        run: |
+          mkdir -p "${{ runner.temp }}/taxodactyl" "${{ runner.temp }}/singularity"
+          sed -i \
+            -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"${{ vars.BLASTDB_PATH }}\"|" \
+            -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"${{ vars.TAXDB_PATH }}\"|" \
+            -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
+            -e "s|cacheDir = CUSTOMISE|cacheDir = \"${{ runner.temp }}/singularity\"|" \
+            -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
+            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL }}\"|" \
+            test/scenario_01/nextflow.config
+          cat test/scenario_01/nextflow.config
+
+      - name: Run scenario_01 nf-test
+        run: nf-test test test/scenario_01/taxodactyl.workflow.nf.test
