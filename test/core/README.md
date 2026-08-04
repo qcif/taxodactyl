@@ -25,5 +25,5 @@ params.taxdb = "${projectDir}/test/core/refdata/taxonkit/2026-05-08/"
 
 #### Configuration
 
-- Set `nf-test.config` scenario to `core1
+- Set `nf-test.config` scenario to `core`.
 - Set `params.mock_blast` to false to run blast using the subset database. 
