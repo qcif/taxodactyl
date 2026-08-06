@@ -7,7 +7,7 @@ blastdb: 2026-07-29/subset_core_nt
 
 This test scenario consists of a diverse set of samples as described by `metadata.csv`.
 
-The nf-test snapshot and flags have been generated using reference data versions noted above. 
+The nf-test snapshot, flags and blast_result.xml have been generated using reference data versions noted above. 
 
 Follow the instructions in `${projectDir}/docs/nf-tests.md` to run this test, changing steps:
 
