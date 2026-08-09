@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Aedes scutellaris",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.1",
+    "value": "A",
+    "target": "Aedes scutellaris",
+    "target_type": "pmi"
+  }
+]

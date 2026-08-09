@@ -1,0 +1,20 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "ERR",
+    "target": "Pelamoviroid malleusmali",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Apple hammerhead viroid",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "NA",
+    "target": "Apple hammerhead viroid",
+    "target_type": "pmi"
+  }
+]

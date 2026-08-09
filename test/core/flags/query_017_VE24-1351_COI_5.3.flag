@@ -1,0 +1,32 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Lycoriella ingenua",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Bradysia impatiens",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Lycoriella mali",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Lycoriella ingenua",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "C",
+    "target": "Sciaridae",
+    "target_type": "pmi"
+  }
+]
