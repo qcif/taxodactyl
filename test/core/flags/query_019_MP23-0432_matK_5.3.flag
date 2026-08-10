@@ -1,0 +1,14 @@
+[
+  {
+    "flag_id": "5.3",
+    "value": "A",
+    "target": "Nicotiana tabacum",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.3",
+    "value": "B",
+    "target": "Planta",
+    "target_type": "pmi"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "flag_id": "5.2",
+    "value": "B",
+    "target": "Euchrysops cnejus",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "ERR",
+    "target": "Lycaenidae sp. SSG-2014a",
+    "target_type": "candidate"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "A",
+    "target": "Chilades pandava",
+    "target_type": "toi"
+  },
+  {
+    "flag_id": "5.2",
+    "value": "NA",
+    "target": "Lycaenidae",
+    "target_type": "pmi"
+  }
+]
