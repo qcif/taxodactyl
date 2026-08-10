@@ -3,7 +3,7 @@ name: nf-test
 on:
   push:
     branches:
-      - nf-tests_ci
+      - nf-tests_ci_core
   pull_request:
   workflow_dispatch:
 
@@ -18,7 +18,7 @@ env:
 
 jobs:
   nf-test:
-    name: scenario_01
+    name: core_test
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,7 @@ jobs:
         with:
           version: "latest-everything"
 
-      # test/scenario_01/nextflow.config runs with profile "singularity", which
+      # test/core/nextflow.config runs with profile "singularity", which
       # isn't preinstalled on ubuntu-latest runners
       - name: Set up Singularity
         uses: eWaterCycle/setup-singularity@v7
@@ -51,42 +51,56 @@ jobs:
           wget -qO- https://get.nf-test.com | bash
           sudo mv nf-test /usr/local/bin/
 
-      # The checked-in root nf-test.config points at scenario_04 and has a
-      # placeholder workDir - overwrite it so nf-test resolves scenario_01
+      # core test scenario runs with real blast against frozen versions of
+      # taxonkit and a small subset blast database  
+      - name: Download taxonkit
+        run: |
+          wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/taxdump/2026-05-08.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxdump
+          unzip -q 2026-05-08.zip -d $GITHUB_WORKSPACE/test/core/refdata/taxdump
+
+      - name: Download subset blastdb
+        run: |
+          wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/blastdb/2026-07-29.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxonkit
+          unzip -q 2026-07-29.zip -d $GITHUB_WORKSPACE/test/core/refdata/blastdb
+
+      # The checked-in root nf-test.config points at placeholder/other scenario
+      # and has a placeholder workDir - overwrite it so nf-test resolves to core 
       # and writes its working files under a real, runner-local path
-      - name: Point nf-test.config at scenario_01
+      - name: Point nf-test.config at core test scenario
         run: |
           cat > nf-test.config <<CONFIG
           config {
               workDir "${{ runner.temp }}/nf-test"
-              testsDir "test/scenario_01"
-              configFile "test/scenario_01/nextflow.config"
+              testsDir "test/core"
+              configFile "test/core/nextflow.config"
               profile "singularity"
           }
           CONFIG
 
-      # test/scenario_01/nextflow.config ships with CUSTOMISE placeholders for
+      # test/core/nextflow.config ships with CUSTOMISE placeholders for
       # values that depend on the runner (paths) or org-level infra (databases).
       # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
       # pointing at reference data reachable from this runner - mock_blast still
       # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
-      - name: Resolve scenario_01 CUSTOMISE placeholders
+      - name: Resolve core scenario CUSTOMISE placeholders
         run: |
           # Runner-local scratch dirs for temp files and the Singularity image cache
           mkdir -p "${{ runner.temp }}/taxodactyl" "${{ runner.temp }}/singularity"
           # Fill in each CUSTOMISE placeholder with a real value/path
           sed -i \
-            -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"${{ vars.BLASTDB_PATH }}\"|" \
-            -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"${{ vars.TAXDB_PATH }}\"|" \
+            -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"$GITHUB_WORKSPACE/test/core/refdata/blastdb/2026-07-29/subset_core_nt\"|" \
+            -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"$GITHUB_WORKSPACE/test/core/refdata/taxdump/2026-05-08\"|" \
             -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
             -e "s|cacheDir = CUSTOMISE|cacheDir = \"${{ runner.temp }}/singularity\"|" \
             -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
             -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL }}\"|" \
-            test/scenario_01/nextflow.config
+            test/core/nextflow.config
           # Print the resolved config so the run log shows exactly what executed
-          cat test/scenario_01/nextflow.config
+          cat test/core/nextflow.config
 
-      # Run the scenario_01 test file explicitly rather than a bare `nf-test test`,
+      # Run the core test file explicitly rather than a bare `nf-test test`,
       # so this job doesn't silently pick up whatever nf-test.config last pointed to
-      - name: Run scenario_01 nf-test
-        run: nf-test test test/scenario_01/taxodactyl.workflow.nf.test
+      - name: Run core nf-test
+        run: nf-test test test/core/taxodactyl.workflow.nf.test
