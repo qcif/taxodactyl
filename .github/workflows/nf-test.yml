@@ -15,6 +15,8 @@ concurrency:
 env:
   NXF_ANSI_LOG: false
   NFT_VER: "0.9.5"
+  # Toggle debug steps where required
+  ACTIONS_STEP_DEBUG: true
 
 jobs:
   nf-test:
@@ -100,6 +102,16 @@ jobs:
             test/core/nextflow.config
           # Print the resolved config so the run log shows exactly what executed
           cat test/core/nextflow.config
+
+      # Upload nextflow.log and trace.csv for debugging NXF setup
+      - name: Upload log files
+        if: ${{ runner.debug == '1' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-trace
+          path: |
+            ./nf-test/tests/*/meta/nextflow.log
+            ./nf-test/tests/*/meta/trace.csv
 
       # Run the core test file explicitly rather than a bare `nf-test test`,
       # so this job doesn't silently pick up whatever nf-test.config last pointed to
