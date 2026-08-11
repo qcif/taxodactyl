@@ -32,10 +32,11 @@ jobs:
           java-version: 17
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
+      # Version installed on testing VM, 25.04.6, rather than latest-everything
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2
         with:
-          version: "latest-everything"
+          version: 25.04.6
 
       # test/core/nextflow.config runs with profile "singularity", which
       # isn't preinstalled on ubuntu-latest runners
