@@ -15,8 +15,6 @@ concurrency:
 env:
   NXF_ANSI_LOG: false
   NFT_VER: "0.9.5"
-  # Toggle debug steps where required
-  ACTIONS_STEP_DEBUG: true
 
 jobs:
   nf-test:
@@ -110,7 +108,6 @@ jobs:
 
       # Upload nextflow.log and trace.csv for debugging NXF setup
       - name: Upload log files
-        if: ${{ runner.debug == '1' }}
         uses: actions/upload-artifact@v4
         with:
           name: log-trace
