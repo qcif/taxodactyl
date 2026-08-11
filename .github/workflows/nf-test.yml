@@ -113,5 +113,5 @@ jobs:
         with:
           name: log-trace
           path: |
-            ./nf-test/tests/*/meta/nextflow.log
-            ./nf-test/tests/*/meta/trace.csv
+            /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
+            /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
