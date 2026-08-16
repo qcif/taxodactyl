@@ -115,3 +115,5 @@ jobs:
           path: |
             /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
             /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
+            /home/runner/work/_temp/nf-test/tests/*/work/*/*/.command.err
+            /home/runner/work/_temp/nf-test/tests/*/work/*/*/.command.log
