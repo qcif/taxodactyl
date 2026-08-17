@@ -112,7 +112,9 @@ jobs:
       - name: Log trace work dir
         if: always()
         run: |
-          set -x
+          echo "##### nextflow.log:"
           cat /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
+          echo "##### trace.csv:"
           cat /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
-          tree /home/runner/work/_temp/nf-test/tests/
+          echo "##### tree -a /home/runner/work/_temp/nf-test/tests/:"
+          tree -a /home/runner/work/_temp/nf-test/tests/  
