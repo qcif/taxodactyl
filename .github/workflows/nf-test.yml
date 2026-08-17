@@ -57,12 +57,14 @@ jobs:
       - name: Download taxonkit
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/taxdump/2026-05-08.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxdump
           unzip -q 2026-05-08.zip -d $GITHUB_WORKSPACE/test/core/refdata/taxdump
           tree $GITHUB_WORKSPACE/test/core/refdata
 
       - name: Download subset blastdb
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/blastdb/2026-07-29.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/blastdb
           unzip -q 2026-07-29.zip -d $GITHUB_WORKSPACE/test/core/refdata/blastdb
           tree $GITHUB_WORKSPACE/test/core/refdata/
 
