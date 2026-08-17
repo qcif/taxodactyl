@@ -57,14 +57,12 @@ jobs:
       - name: Download taxonkit
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/taxdump/2026-05-08.zip
-          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxdump
           unzip -q 2026-05-08.zip -d $GITHUB_WORKSPACE/test/core/refdata/taxdump
           tree $GITHUB_WORKSPACE/test/core/refdata
 
       - name: Download subset blastdb
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/blastdb/2026-07-29.zip
-          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxonkit
           unzip -q 2026-07-29.zip -d $GITHUB_WORKSPACE/test/core/refdata/blastdb
           tree $GITHUB_WORKSPACE/test/core/refdata/
 
@@ -108,14 +106,11 @@ jobs:
       - name: Run core nf-test
         run: nf-test test test/core/taxodactyl.workflow.nf.test
 
-      # Upload nextflow.log and trace.csv for debugging NXF setup
-      - name: Upload log files
-        uses: actions/upload-artifact@v4
+      # Print nextflow.log, trace.csv and temp file structure for debug
+      - name: Log trace work dir
         if: always()
-        with:
-          name: log-trace
-          path: |
-            /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
-            /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
-            /home/runner/work/_temp/nf-test/tests/*/work/**/*.err
-            /home/runner/work/_temp/nf-test/tests/*/work/**/*.log
+        run: |
+          set -x
+          cat /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
+          cat /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
+          tree /home/runner/work/_temp/nf-test/tests/
