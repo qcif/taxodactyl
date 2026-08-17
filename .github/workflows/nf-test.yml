@@ -59,12 +59,14 @@ jobs:
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/taxdump/2026-05-08.zip
           mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxdump
           unzip -q 2026-05-08.zip -d $GITHUB_WORKSPACE/test/core/refdata/taxdump
+          tree $GITHUB_WORKSPACE/test/core/refdata
 
       - name: Download subset blastdb
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/blastdb/2026-07-29.zip
           mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxonkit
           unzip -q 2026-07-29.zip -d $GITHUB_WORKSPACE/test/core/refdata/blastdb
+          tree $GITHUB_WORKSPACE/test/core/refdata/
 
       # The checked-in root nf-test.config points at placeholder/other scenario
       # and has a placeholder workDir - overwrite it so nf-test resolves to core 
@@ -96,7 +98,7 @@ jobs:
             -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
             -e "s|cacheDir = CUSTOMISE|cacheDir = \"${{ runner.temp }}/singularity\"|" \
             -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
-            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL }}\"|" \
+            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL_NA }}\"|" \
             test/core/nextflow.config
           # Print the resolved config so the run log shows exactly what executed
           cat test/core/nextflow.config
@@ -115,5 +117,5 @@ jobs:
           path: |
             /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
             /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
-            /home/runner/work/_temp/nf-test/tests/*/work/*/*/.command.err
-            /home/runner/work/_temp/nf-test/tests/*/work/*/*/.command.log
+            /home/runner/work/_temp/nf-test/tests/*/work/**/*.err
+            /home/runner/work/_temp/nf-test/tests/*/work/**/*.log
