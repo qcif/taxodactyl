@@ -39,6 +39,7 @@ jobs:
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
+      # (later versions use stricter syntax parsing)
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2
         with:
@@ -114,12 +115,15 @@ jobs:
       - name: Run core nf-test
         run: nf-test test test/core/taxodactyl.workflow.nf.test
 
-      # Print trace.csv, temp file structure and stage .log and .err files
-      - name: Log trace work dir
-        if: always()
+      # Print trace.csv, temp file structure and command.err files
+      - name: Debug print trace tree err
+        # Only runs if prior step fails
+        if: failure()
         run: |
           echo "##### trace.csv:"
           cat /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
           echo "##### tree -a /home/runner/work/_temp/nf-test/tests/:"
           tree -a /home/runner/work/_temp/nf-test/tests/
-          find /home/runner/work/_temp/nf-test/tests/ -type f \( -iname "*.log" -o -iname "*.err" \) -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
+          find /home/runner/work/_temp/nf-test/tests/ \
+            -type f -name ".command.err" \
+            -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
