@@ -108,13 +108,12 @@ jobs:
       - name: Run core nf-test
         run: nf-test test test/core/taxodactyl.workflow.nf.test
 
-      # Print nextflow.log, trace.csv and temp file structure for debug
+      # Print trace.csv, temp file structure and stage .log and .err files
       - name: Log trace work dir
         if: always()
         run: |
-          echo "##### nextflow.log:"
-          cat /home/runner/work/_temp/nf-test/tests/*/meta/nextflow.log
           echo "##### trace.csv:"
           cat /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
           echo "##### tree -a /home/runner/work/_temp/nf-test/tests/:"
-          tree -a /home/runner/work/_temp/nf-test/tests/  
+          tree -a /home/runner/work/_temp/nf-test/tests/
+          find /home/runner/work/_temp/nf-test/tests/ -type f \( -iname "*.log" -o -iname "*.err" \) -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
