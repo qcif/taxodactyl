@@ -1,0 +1,415 @@
+sample_id: Scenario_01
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: Scenario_01
+  - id: dna_sequence
+    type: contains
+    value: AACATTATATTTTATTTTTG
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Spodoptera frugiperda
+    - Spodoptera exigua
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'TRUE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1B
+  - id: toi_flag
+    type: contains
+    value: Flag 2A
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '2'
+  - id: matching_species_moderate
+    type: int
+    value: '0'
+  - id: matching_species_weak
+    type: int
+    value: '0'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1B
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '500'
+  - id: moderate_hits
+    type: int
+    value: '0'
+  - id: weak_hits
+    type: int
+    value: '0'
+  - id: lowest_hit
+    type: float
+    value: '99.8'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Spodoptera frugiperda
+    - Spodoptera exigua
+  - id: no_of_hits
+    type: list
+    value:
+    - '499'
+    - '1'
+  - id: top_identity
+    type: list
+    value:
+    - '99.8'
+    - '99.8'
+  - id: median_identity
+    type: list
+    value:
+    - '99.8'
+    - '99.8'
+  - id: min_identity
+    type: list
+    value:
+    - '99.8'
+    - '99.8'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - '47'
+    - '1'
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Spodoptera frugiperda
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '4458'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '29'
+    - id: species_total
+      type: list
+      value:
+      - '39'
+    - id: min_bar_count
+      type: min
+      value: '39'
+    - id: first_bar_species
+      type: list
+      value:
+      - Spodoptera frugiperda
+    - id: first_bar_count
+      type: list
+      value:
+      - '4458'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Spodoptera frugiperda
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '4458'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '29'
+    - id: species_total
+      type: list
+      value:
+      - '39'
+    - id: min_bar_count
+      type: min
+      value: '39'
+    - id: first_bar_species
+      type: list
+      value:
+      - Spodoptera frugiperda
+    - id: first_bar_count
+      type: list
+      value:
+      - '4458'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Spodoptera frugiperda
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '4458'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '29'
+    - id: species_total
+      type: list
+      value:
+      - '39'
+    - id: min_bar_count
+      type: min
+      value: '39'
+    - id: first_bar_species
+      type: list
+      value:
+      - Spodoptera frugiperda
+    - id: first_bar_count
+      type: list
+      value:
+      - '4458'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Spodoptera exigua
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '618'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '29'
+    - id: species_total
+      type: list
+      value:
+      - '39'
+    - id: min_bar_count
+      type: min
+      value: '39'
+    - id: first_bar_species
+      type: list
+      value:
+      - Spodoptera frugiperda
+    - id: first_bar_count
+      type: list
+      value:
+      - '4458'
+    - id: final_text
+      type: list
+      value:
+      - ''
+- id: publication_modal
+  candidates:
+  - name: Spodoptera frugiperda
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Spodoptera frugiperda
+    - id: source
+      type: list
+      value:
+      - 47 Independent Sources
+    - id: count
+      type: list
+      value:
+      - '47'
+  - name: Spodoptera exigua
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Spodoptera exigua
+    - id: source
+      type: list
+      value:
+      - 1 Independent Source
+    - id: count
+      type: list
+      value:
+      - '1'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: OR347106
+  - id: subject
+    type: contains
+    value: Spodoptera frugiperda isolate GZGY203 mitochondrion, complete genome
+  - id: length
+    type: int
+    value: '659'
+  - id: identity
+    type: float
+    value: '99.8'
+  - id: bitscore
+    type: float
+    value: '1296.89'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '100.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Arthropoda
+  - id: class
+    type: contains
+    value: Insecta
+  - id: order
+    type: contains
+    value: Lepidoptera
+  - id: family
+    type: contains
+    value: Noctuidae
+  - id: genus
+    type: contains
+    value: Spodoptera
+  - id: species
+    type: contains
+    value: Spodoptera frugiperda
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '6'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2A
+  - id: toi_outcome
+    type: contains
+    value: At least one of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Spodoptera frugiperda
+  - id: match_rank
+    type: list
+    value:
+    - species
+  - id: match_taxon
+    type: list
+    value:
+    - Spodoptera frugiperda
+  - id: match_species
+    type: list
+    value:
+    - Spodoptera frugiperda
+  - id: match_accession
+    type: list
+    value:
+    - OR347106
+  - id: match_identity
+    type: list
+    value:
+    - '99.8'

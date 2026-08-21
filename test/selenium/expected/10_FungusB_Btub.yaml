@@ -1,0 +1,302 @@
+sample_id: FungusB_Btub
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: FungusB_Btub
+  - id: dna_sequence
+    type: contains
+    value: ATTGTAAGTACCTGCGCCTG
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Neofusicoccum australe
+    - Neofusicoccum luteum
+    - Neofusicoccum stellenboschiana
+    - Neofusicoccum cryptoaustrale
+    - Neofusicoccum laricinum
+    - + 2 more species...
+    - Fungi
+    - No taxa of interest provided
+  - id: toi_row_count
+    type: int
+    value: '1'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'FALSE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1C
+  - id: toi_flag
+    type: contains
+    value: ''
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '7'
+  - id: matching_species_moderate
+    type: int
+    value: '22'
+  - id: matching_species_weak
+    type: int
+    value: '0'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1C
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '361'
+  - id: moderate_hits
+    type: int
+    value: '139'
+  - id: weak_hits
+    type: int
+    value: '0'
+  - id: lowest_hit
+    type: float
+    value: '95.2'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Neofusicoccum australe
+    - Neofusicoccum luteum
+    - Neofusicoccum stellenboschiana
+    - Neofusicoccum cryptoaustrale
+    - Neofusicoccum laricinum
+    - Neofusicoccum mangroviorum
+    - Neofusicoccum lumnitzerae
+  - id: no_of_hits
+    type: list
+    value:
+    - '108'
+    - '176'
+    - '47'
+    - '29'
+    - '2'
+    - '6'
+    - '1'
+  - id: top_identity
+    type: list
+    value:
+    - '100.0'
+    - '99.7'
+    - '99.6'
+    - '99.5'
+    - '99.1'
+    - '99.0'
+    - '98.6'
+  - id: median_identity
+    type: list
+    value:
+    - '99.8'
+    - '99.1'
+    - '99.5'
+    - '99.3'
+    - '99.1'
+    - '98.6'
+    - '98.6'
+  - id: min_identity
+    type: list
+    value:
+    - '98.8'
+    - '97.7'
+    - '98.9'
+    - '99.3'
+    - '99.1'
+    - '98.6'
+    - '98.6'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - NA
+    - NA
+    - NA
+    - NA
+    - NA
+    - NA
+    - NA
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Fungi
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1NA
+    - id: record_count
+      type: list
+      value:
+      - '188547'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2NA
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi: []
+  candidate: []
+- id: publication_modal
+  candidates: []
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: GU251879
+  - id: subject
+    type: contains
+    value: Neofusicoccum australe strain PD253 beta tubulin gene, partial cds
+  - id: length
+    type: int
+    value: '489'
+  - id: identity
+    type: float
+    value: '100.0'
+  - id: bitscore
+    type: float
+    value: '969.819'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '75.2'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Fungi
+  - id: phylum
+    type: contains
+    value: Ascomycota
+  - id: class
+    type: contains
+    value: Dothideomycetes
+  - id: order
+    type: contains
+    value: Botryosphaeriales
+  - id: family
+    type: contains
+    value: Botryosphaeriaceae
+  - id: genus
+    type: contains
+    value: Neofusicoccum
+  - id: species
+    type: contains
+    value: Neofusicoccum australe
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '51'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2NA
+  - id: toi_outcome
+    type: contains
+    value: Could not be assessed.
+  - id: toi_reasoning
+    type: contains
+    value: No Taxa of Interest were provided.
+  - id: toi_number_of_rows
+    type: int
+    value: '0'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value: []
+  - id: match_rank
+    type: list
+    value: []
+  - id: match_taxon
+    type: list
+    value: []
+  - id: match_species
+    type: list
+    value: []
+  - id: match_accession
+    type: list
+    value: []
+  - id: match_identity
+    type: list
+    value: []

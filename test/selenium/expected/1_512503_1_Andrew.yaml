@@ -1,0 +1,350 @@
+sample_id: 512503_1_Andrew
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: 512503_1_Andrew
+  - id: dna_sequence
+    type: contains
+    value: ACTTTATATATACTTTTTGG
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: 'Outcome:'
+  - id: species_found
+    type: list
+    value:
+    - Bulimulus aff. sporadicus ASHB-2015
+    - Bulimulus Sporadicus
+    - Bulimulus sporadicus
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'FALSE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1A
+  - id: toi_flag
+    type: contains
+    value: Flag 2B
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7B
+  - id: matching_species_strong
+    type: int
+    value: '1'
+  - id: matching_species_moderate
+    type: int
+    value: '0'
+  - id: matching_species_weak
+    type: int
+    value: '87'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1A
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '1'
+  - id: moderate_hits
+    type: int
+    value: '0'
+  - id: weak_hits
+    type: int
+    value: '279'
+  - id: lowest_hit
+    type: float
+    value: '78.3'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Bulimulus aff. sporadicus ASHB-2015
+  - id: no_of_hits
+    type: list
+    value:
+    - '1'
+  - id: top_identity
+    type: list
+    value:
+    - '98.6'
+  - id: median_identity
+    type: list
+    value:
+    - '98.6'
+  - id: min_identity
+    type: list
+    value:
+    - '98.6'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - '1'
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Bulimulus Sporadicus
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '9'
+    - id: species_total
+      type: list
+      value:
+      - '101'
+    - id: min_bar_count
+      type: min
+      value: '101'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bulimulus guadalupensis
+    - id: first_bar_count
+      type: list
+      value:
+      - '19'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Bulimulus sporadicus
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '9'
+    - id: species_total
+      type: list
+      value:
+      - '101'
+    - id: min_bar_count
+      type: min
+      value: '101'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bulimulus guadalupensis
+    - id: first_bar_count
+      type: list
+      value:
+      - '19'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Bulimulus aff. sporadicus ASHB-2015
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+- id: publication_modal
+  candidates:
+  - name: Bulimulus aff. sporadicus ASHB-2015
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Bulimulus aff. sporadicus ASHB-2015
+    - id: source
+      type: list
+      value:
+      - 1 Independent Source
+    - id: count
+      type: list
+      value:
+      - '1'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: KP117235
+  - id: subject
+    type: contains
+    value: Bulimulus aff. sporadicus ASHB-2015 isolate FL_1301 cytochrome oxidase subunit 1 (COI) gene, partial cds; mitochondrial
+  - id: length
+    type: int
+    value: '653'
+  - id: identity
+    type: float
+    value: '98.6'
+  - id: bitscore
+    type: float
+    value: '1223.55'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '100.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Mollusca
+  - id: class
+    type: contains
+    value: Gastropoda
+  - id: order
+    type: contains
+    value: Stylommatophora
+  - id: family
+    type: contains
+    value: Bulimulidae
+  - id: genus
+    type: contains
+    value: Bulimulus
+  - id: species
+    type: contains
+    value: Bulimulus aff. sporadicus ASHB-2015
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '22'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2B
+  - id: toi_outcome
+    type: contains
+    value: None of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest NOT detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Bulimulus sporadicus
+  - id: match_rank
+    type: list
+    value: []
+  - id: match_taxon
+    type: list
+    value: []
+  - id: match_species
+    type: list
+    value: []
+  - id: match_accession
+    type: list
+    value: []
+  - id: match_identity
+    type: list
+    value: []

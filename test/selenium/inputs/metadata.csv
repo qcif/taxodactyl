@@ -1,4 +1,1 @@
-sample_id,locus,preliminary_id,taxa_of_interest,host,country,classification
-SME25-218,COI,Drosophila,Drosophila simulans,Grapes,,animalia
-SME25-221,COI,Eupodidae,Eupodidae,Kiwi Fruit,,
-VE24-1351_COI,COI,Sciaridae,Lycoriella mali,Lilium bulbs,Netherlands,
+../../core/metadata.csv

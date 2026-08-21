@@ -1,0 +1,288 @@
+sample_id: barcode_71_RID8937-1_MOL-016_cluster_14_RC424
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: barcode_71_RID8937-1_MOL-016_cluster_14_RC424
+  - id: dna_sequence
+    type: contains
+    value: GTTGGGTGTTGTAGGCTTGG
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - No candidates identified
+    - Tospovirus
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'FALSE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1E
+  - id: toi_flag
+    type: contains
+    value: Flag 2B
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '0'
+  - id: matching_species_moderate
+    type: int
+    value: '0'
+  - id: matching_species_weak
+    type: int
+    value: '0'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1E
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '0'
+  - id: moderate_hits
+    type: int
+    value: '0'
+  - id: weak_hits
+    type: int
+    value: '0'
+  - id: lowest_hit
+    type: float
+    value: '83.6'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value: []
+  - id: no_of_hits
+    type: list
+    value: []
+  - id: top_identity
+    type: list
+    value: []
+  - id: median_identity
+    type: list
+    value: []
+  - id: min_identity
+    type: list
+    value: []
+  - id: top_e_value
+    type: list
+    value: []
+  - id: publication
+    type: list
+    value: []
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Tospovirus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '9867'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2ERR
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Tospovirus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '9867'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2ERR
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  candidate: []
+- id: publication_modal
+  candidates: []
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: XM_070154973
+  - id: subject
+    type: contains
+    value: 'PREDICTED: Nicotiana sylvestris uncharacterized protein (LOC138876080), mRNA'
+  - id: length
+    type: int
+    value: '38'
+  - id: identity
+    type: float
+    value: '100.0'
+  - id: bitscore
+    type: float
+    value: '75.8181'
+  - id: evalue
+    type: contains
+    value: '9.39e-12'
+  - id: coverage
+    type: float
+    value: '14.2'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Viridiplantae
+  - id: phylum
+    type: contains
+    value: Streptophyta
+  - id: class
+    type: contains
+    value: Magnoliopsida
+  - id: order
+    type: contains
+    value: Solanales
+  - id: family
+    type: contains
+    value: Solanaceae
+  - id: genus
+    type: contains
+    value: Nicotiana
+  - id: species
+    type: contains
+    value: Nicotiana sylvestris
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: null
+  - id: min_node
+    type: min
+    value: null
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2B
+  - id: toi_outcome
+    type: contains
+    value: None of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest NOT detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Tospovirus
+  - id: match_rank
+    type: list
+    value: []
+  - id: match_taxon
+    type: list
+    value: []
+  - id: match_species
+    type: list
+    value: []
+  - id: match_accession
+    type: list
+    value: []
+  - id: match_identity
+    type: list
+    value: []
