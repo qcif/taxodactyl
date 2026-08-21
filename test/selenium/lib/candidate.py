@@ -26,9 +26,22 @@ CLASSIFICATION_TARGETS = {
 CANDIDATE_TAB_ID = "candidate-species-tab"
 CANDIDATE_PANE_ID = "results-candidate-species"
 
+NA_PLACEHOLDER = "NA"
+
 
 def strip_percent(text):
     return text.strip().replace("%", "")
+
+
+def find_modal_button(cell):
+    """Return the modal-opening button in a table cell, or None.
+
+    Cells render an `NA` badge instead of a button when the underlying
+    data is unavailable (no publication records, or too many candidates
+    for coverage analysis).
+    """
+    buttons = cell.find_elements(By.TAG_NAME, "button")
+    return buttons[0] if buttons else None
 
 
 def open_modal_from_button(driver, button, attr):
@@ -121,8 +134,11 @@ class CandidateTabCollector(TabCollector):
         return _classification_counts(pane)["weak_hits"]
 
     def _extract_lowest_hit(self, pane):
-        badge = pane.find_element(By.CSS_SELECTOR, "span.badge.bg-secondary")
-        return float(badge.text.strip().replace("%", ""))
+        badges = pane.find_elements(
+            By.CSS_SELECTOR, "span.badge.bg-secondary.text-light")
+        if not badges:
+            return None
+        return float(badges[0].text.strip().replace("%", ""))
 
 
 class CandidateTableCollector(Collector):
@@ -147,6 +163,7 @@ class CandidateTableCollector(Collector):
         }
 
         i = 0
+        pub_i = 0
         for row in rows:
             cells = row.find_elements(By.TAG_NAME, "td")
             if len(cells) < 8:
@@ -160,11 +177,17 @@ class CandidateTableCollector(Collector):
             cols["min_identity"].append(strip_percent(cells[4].text))
             cols["top_e_value"].append(cells[5].text.strip())
 
-            pub_row = _open_publication_modal(cells, driver)
+            button = find_modal_button(cells[-1])
+            if button is None:
+                cols["publication"].append(NA_PLACEHOLDER)
+                i += 1
+                continue
+
+            pub_row = _open_publication_modal(button, driver)
             cols["publication"].append(pub_row["count"])
 
             report.get_or_extend_group_row(
-                "publication_modal", "candidates", i, name=species_name,
+                "publication_modal", "candidates", pub_i, name=species_name,
             )
             report.set_observed(
                 "publication_modal",
@@ -173,17 +196,16 @@ class CandidateTableCollector(Collector):
                     "source": [pub_row["source"]],
                     "count": [pub_row["count"]],
                 },
-                index=i, group="candidates",
+                index=pub_i, group="candidates",
             )
+            pub_i += 1
             i += 1
 
         report.set_observed(self.component_id, cols)
 
 
-def _open_publication_modal(cells, driver):
-    modal = open_modal_from_button(
-        driver, cells[-1].find_element(By.TAG_NAME, "button"), attr="onclick"
-    )
+def _open_publication_modal(button, driver):
+    modal = open_modal_from_button(driver, button, attr="onclick")
     row = {
         "title": text_of(modal, "h5.modal-title"),
         "source": text_of(modal, "p.lead.px-3.fw-bold"),
