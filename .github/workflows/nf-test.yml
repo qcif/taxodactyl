@@ -15,6 +15,7 @@ concurrency:
 env:
   NXF_ANSI_LOG: false
   NFT_VER: "0.9.5"
+  MOCK_BLAST: true
 
 jobs:
   nf-test:
@@ -99,12 +100,19 @@ jobs:
       # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
       # pointing at reference data reachable from this runner - mock_blast still
       # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
+      # Turns on mock blast if set in env variable
       - name: Resolve core scenario CUSTOMISE placeholders
         run: |
-          # Runner-local scratch dirs for temp files and the Singularity image cache
-          mkdir -p "${{ runner.temp }}/taxodactyl" "${{ runner.temp }}/singularity"
+          # Runner-local scratch dirs for temp files, Singularity image cache
+          # and nf-test workDir where log files will be saved
+          mkdir -p \
+            "${{ runner.temp }}/taxodactyl" \
+            "${{ runner.temp }}/singularity" \
+            "${{ runner.temp }}/nf-test"
           # Fill in each CUSTOMISE placeholder with a real value/path
+          # and toggle mock_blast per env variable
           sed -i \
+            -e "s|params.mock_blast = false|params.mock_blast = \$MOCK_BLAST|" \
             -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"$GITHUB_WORKSPACE/test/core/refdata/blastdb/2026-07-29/subset_core_nt\"|" \
             -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"$GITHUB_WORKSPACE/test/core/refdata/taxdump/2026-05-08\"|" \
             -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
