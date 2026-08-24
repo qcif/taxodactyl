@@ -112,7 +112,7 @@ jobs:
           # Fill in each CUSTOMISE placeholder with a real value/path
           # and toggle mock_blast per env variable
           sed -i \
-            -e "s|params.mock_blast = false|params.mock_blast = \$MOCK_BLAST|" \
+            -e "s|params.mock_blast = false|params.mock_blast = $MOCK_BLAST|" \
             -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"$GITHUB_WORKSPACE/test/core/refdata/blastdb/2026-07-29/subset_core_nt\"|" \
             -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"$GITHUB_WORKSPACE/test/core/refdata/taxdump/2026-05-08\"|" \
             -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
@@ -136,7 +136,7 @@ jobs:
       # Print trace.csv, temp file structure and command.err files
       - name: Debug print trace tree err
         # Only runs if a nf-test step fails or if in debug mode
-        if: ${{ steps.nf-test.outcome == 'failure' || runner.debug == '1' }}
+        if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
         run: |
           echo "##### trace.csv:"
           cat ${{ runner.temp }}/nf-test/tests/*/meta/trace.csv
