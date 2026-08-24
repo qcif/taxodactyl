@@ -1,0 +1,477 @@
+sample_id: barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199
+  - id: dna_sequence
+    type: contains
+    value: CGATGATGGTGTGCGCAGCA
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Xanthomonas citri
+    - Xanthomonas sp. WG16
+    - Xanthomonas axonopodis
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'TRUE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1B
+  - id: toi_flag
+    type: contains
+    value: Flag 2A
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '3'
+  - id: matching_species_moderate
+    type: int
+    value: '2'
+  - id: matching_species_weak
+    type: int
+    value: '5'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1B
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '174'
+  - id: moderate_hits
+    type: int
+    value: '45'
+  - id: weak_hits
+    type: int
+    value: '25'
+  - id: lowest_hit
+    type: float
+    value: '83.8'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Xanthomonas citri
+    - Xanthomonas sp. WG16
+    - Xanthomonas axonopodis
+  - id: no_of_hits
+    type: list
+    value:
+    - '214'
+    - '1'
+    - '4'
+  - id: top_identity
+    type: list
+    value:
+    - '100.0'
+    - '100.0'
+    - '100.0'
+  - id: median_identity
+    type: list
+    value:
+    - '99.4'
+    - '100.0'
+    - '99.2'
+  - id: min_identity
+    type: list
+    value:
+    - '97.1'
+    - '100.0'
+    - '96.9'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+    - '0.0'
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - '11'
+    - '1'
+    - '2'
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Xanthomonas citri
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '1261'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '36'
+    - id: species_total
+      type: list
+      value:
+      - '38'
+    - id: min_bar_count
+      type: min
+      value: '38'
+    - id: first_bar_species
+      type: list
+      value:
+      - Xanthomonas oryzae
+    - id: first_bar_count
+      type: list
+      value:
+      - '402450'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Xanthomonas citri
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '1261'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '36'
+    - id: species_total
+      type: list
+      value:
+      - '38'
+    - id: min_bar_count
+      type: min
+      value: '38'
+    - id: first_bar_species
+      type: list
+      value:
+      - Xanthomonas oryzae
+    - id: first_bar_count
+      type: list
+      value:
+      - '402450'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Xanthomonas citri
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '1261'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '36'
+    - id: species_total
+      type: list
+      value:
+      - '38'
+    - id: min_bar_count
+      type: min
+      value: '38'
+    - id: first_bar_species
+      type: list
+      value:
+      - Xanthomonas oryzae
+    - id: first_bar_count
+      type: list
+      value:
+      - '402450'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Xanthomonas sp. WG16
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - Warning no locus provided
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Xanthomonas axonopodis
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '9452'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '36'
+    - id: species_total
+      type: list
+      value:
+      - '38'
+    - id: min_bar_count
+      type: min
+      value: '38'
+    - id: first_bar_species
+      type: list
+      value:
+      - Xanthomonas oryzae
+    - id: first_bar_count
+      type: list
+      value:
+      - '402450'
+    - id: final_text
+      type: list
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+- id: publication_modal
+  candidates:
+  - name: Xanthomonas citri
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Xanthomonas citri
+    - id: source
+      type: list
+      value:
+      - 11 Independent Sources
+    - id: count
+      type: list
+      value:
+      - '11'
+  - name: Xanthomonas sp. WG16
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Xanthomonas sp. WG16
+    - id: source
+      type: list
+      value:
+      - 1 Independent Source
+    - id: count
+      type: list
+      value:
+      - '1'
+  - name: Xanthomonas axonopodis
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Xanthomonas axonopodis
+    - id: source
+      type: list
+      value:
+      - 2 Independent Sources
+    - id: count
+      type: list
+      value:
+      - '2'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: AE008923
+  - id: subject
+    type: contains
+    value: Xanthomonas axonopodis pv. citri str. 306, complete genome
+  - id: length
+    type: int
+    value: '491'
+  - id: identity
+    type: float
+    value: '100.0'
+  - id: bitscore
+    type: float
+    value: '973.783'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '100.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Bacteria
+  - id: kingdom
+    type: contains
+    value: Pseudomonadati
+  - id: phylum
+    type: contains
+    value: Pseudomonadota
+  - id: class
+    type: contains
+    value: Gammaproteobacteria
+  - id: order
+    type: contains
+    value: Lysobacterales
+  - id: family
+    type: contains
+    value: Lysobacteraceae
+  - id: genus
+    type: contains
+    value: Xanthomonas
+  - id: species
+    type: contains
+    value: Xanthomonas citri
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '20'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2A
+  - id: toi_outcome
+    type: contains
+    value: At least one of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Xanthomonas citri
+  - id: match_rank
+    type: list
+    value:
+    - species
+  - id: match_taxon
+    type: list
+    value:
+    - Xanthomonas citri
+  - id: match_species
+    type: list
+    value:
+    - Xanthomonas citri
+  - id: match_accession
+    type: list
+    value:
+    - AE008923
+  - id: match_identity
+    type: list
+    value:
+    - '100.0'

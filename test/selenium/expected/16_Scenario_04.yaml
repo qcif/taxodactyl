@@ -1,0 +1,438 @@
+sample_id: Scenario_04
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: Scenario_04
+  - id: dna_sequence
+    type: contains
+    value: GTATTTTATATTTTATTTTT
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: 'Outcome:'
+  - id: species_found
+    type: list
+    value:
+    - Bruchophagus muli
+    - Bruchophagus
+    - Bruchophagus abnormis
+    - Bruchophagus abscedus
+  - id: toi_row_count
+    type: int
+    value: '4'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'FALSE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1A
+  - id: toi_flag
+    type: contains
+    value: Flag 2A
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7A
+  - id: matching_species_strong
+    type: int
+    value: '1'
+  - id: matching_species_moderate
+    type: int
+    value: '0'
+  - id: matching_species_weak
+    type: int
+    value: '235'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1A
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '1'
+  - id: moderate_hits
+    type: int
+    value: '0'
+  - id: weak_hits
+    type: int
+    value: '497'
+  - id: lowest_hit
+    type: float
+    value: '80.8'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Bruchophagus muli
+  - id: no_of_hits
+    type: list
+    value:
+    - '1'
+  - id: top_identity
+    type: list
+    value:
+    - '98.5'
+  - id: median_identity
+    type: list
+    value:
+    - '98.5'
+  - id: min_identity
+    type: list
+    value:
+    - '98.5'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - '1'
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Bruchophagus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '56'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '15'
+    - id: species_total
+      type: list
+      value:
+      - '124'
+    - id: min_bar_count
+      type: min
+      value: '124'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bruchophagus roddi
+    - id: first_bar_count
+      type: list
+      value:
+      - '18'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Bruchophagus abnormis
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '15'
+    - id: species_total
+      type: list
+      value:
+      - '124'
+    - id: min_bar_count
+      type: min
+      value: '124'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bruchophagus roddi
+    - id: first_bar_count
+      type: list
+      value:
+      - '18'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Bruchophagus abscedus
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '15'
+    - id: species_total
+      type: list
+      value:
+      - '124'
+    - id: min_bar_count
+      type: min
+      value: '124'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bruchophagus roddi
+    - id: first_bar_count
+      type: list
+      value:
+      - '18'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Bruchophagus muli
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '15'
+    - id: species_total
+      type: list
+      value:
+      - '124'
+    - id: min_bar_count
+      type: min
+      value: '124'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bruchophagus roddi
+    - id: first_bar_count
+      type: list
+      value:
+      - '18'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Bruchophagus muli
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '15'
+    - id: species_total
+      type: list
+      value:
+      - '124'
+    - id: min_bar_count
+      type: min
+      value: '124'
+    - id: first_bar_species
+      type: list
+      value:
+      - Bruchophagus roddi
+    - id: first_bar_count
+      type: list
+      value:
+      - '18'
+    - id: final_text
+      type: list
+      value:
+      - ''
+- id: publication_modal
+  candidates:
+  - name: Bruchophagus muli
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Bruchophagus muli
+    - id: source
+      type: list
+      value:
+      - 1 Independent Source
+    - id: count
+      type: list
+      value:
+      - '1'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: PV031759
+  - id: subject
+    type: contains
+    value: Bruchophagus muli voucher USNMENT01322389 cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial
+  - id: length
+    type: int
+    value: '650'
+  - id: identity
+    type: float
+    value: '98.5'
+  - id: bitscore
+    type: float
+    value: '1211.65'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '100.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Arthropoda
+  - id: class
+    type: contains
+    value: Insecta
+  - id: order
+    type: contains
+    value: Hymenoptera
+  - id: family
+    type: contains
+    value: Eurytomidae
+  - id: genus
+    type: contains
+    value: Bruchophagus
+  - id: species
+    type: contains
+    value: Bruchophagus muli
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '21'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2A
+  - id: toi_outcome
+    type: contains
+    value: At least one of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '3'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Bruchophagus abnormis
+    - Bruchophagus abscedus
+    - Bruchophagus muli
+  - id: match_rank
+    type: list
+    value:
+    - species
+  - id: match_taxon
+    type: list
+    value:
+    - Bruchophagus muli
+  - id: match_species
+    type: list
+    value:
+    - Bruchophagus muli
+  - id: match_accession
+    type: list
+    value:
+    - PV031759
+  - id: match_identity
+    type: list
+    value:
+    - '98.5'

@@ -8,6 +8,7 @@ from lib.candidate import (
     CANDIDATE_TAB_ID,
     CANDIDATE_PANE_ID,
     close_modal,
+    find_modal_button,
     open_modal_from_button,
 )
 from lib.schema import GROUPED_COMPONENTS
@@ -148,11 +149,10 @@ def _collect_rows_into_group(
         cells = row_element.find_elements(By.TAG_NAME, "td")
         if len(cells) < min_cells:
             continue
-        modal = open_modal_from_button(
-            driver,
-            cells[button_cell_index].find_element(By.TAG_NAME, "button"),
-            attr=button_attr,
-        )
+        button = find_modal_button(cells[button_cell_index])
+        if button is None:
+            continue
+        modal = open_modal_from_button(driver, button, attr=button_attr)
         row_dict = row_collector.collect_row(modal)
         close_modal(modal, driver)
 

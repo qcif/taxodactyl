@@ -15,6 +15,7 @@ Subcommands:
 Run from `test/selenium/` with the venv activated:
 
     python testkit.py ingest /path/to/report_FOO_2026-01-15_08_00_00.html
+    python testkit.py ingest /path/to/reports_dir/
     python testkit.py promote 1_report_SME25-218_2025-12-11_07_30_03.yaml
 """
 
@@ -82,6 +83,45 @@ def cmd_ingest(args) -> int:
         print(f"error: {html_path} not found", file=sys.stderr)
         return 1
 
+    if html_path.is_dir():
+        if args.out:
+            print(
+                "error: --out cannot be used with a directory input "
+                "(multiple reports would collide on one output path)",
+                file=sys.stderr,
+            )
+            return 1
+        if args.prefix is not None:
+            print(
+                "error: --prefix cannot be used with a directory input "
+                "(multiple reports would collide on one prefix)",
+                file=sys.stderr,
+            )
+            return 1
+
+        html_files = sorted(html_path.glob("*.html"))
+        if not html_files:
+            print(f"error: no *.html files found in {html_path}",
+                  file=sys.stderr)
+            return 1
+
+        failures = 0
+        for f in html_files:
+            print(f"\n== {f.name} ==")
+            code = _ingest_one(f, prefix=None, out=None, force=args.force)
+            if code != 0:
+                failures += 1
+        print(
+            f"\nIngested {len(html_files) - failures}/{len(html_files)} "
+            "report(s)."
+        )
+        return 1 if failures else 0
+
+    return _ingest_one(
+        html_path, prefix=args.prefix, out=args.out, force=args.force)
+
+
+def _ingest_one(html_path: Path, prefix, out, force) -> int:
     sample_id = extract_sample_id(html_path.name)
     if not sample_id:
         print(
@@ -93,11 +133,11 @@ def cmd_ingest(args) -> int:
     date = extract_report_date(html_path.name)
 
     target = (
-        Path(args.out) if args.out
-        else _target_yaml_path(sample_id, prefix=args.prefix)
+        Path(out) if out
+        else _target_yaml_path(sample_id, prefix=prefix)
     )
 
-    if target.exists() and not args.force:
+    if target.exists() and not force:
         print(
             f"error: {target} already exists. Use `testkit promote "
             f"{target.name}` to merge drift, or pass --force to overwrite.",
@@ -207,7 +247,13 @@ def build_parser() -> argparse.ArgumentParser:
         "ingest",
         help="Extract values from an HTML report into a new expected/*.yaml",
     )
-    ingest.add_argument("html", help="Path to the generated HTML report")
+    ingest.add_argument(
+        "html",
+        help=(
+            "Path to a generated HTML report, or a directory containing "
+            "multiple reports (*.html) to ingest in sequence"
+        ),
+    )
     ingest.add_argument(
         "--prefix", type=int, default=None,
         help="Numeric prefix for the new YAML filename (default: next free)",

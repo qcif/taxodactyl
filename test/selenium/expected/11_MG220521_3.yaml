@@ -1,0 +1,340 @@
+sample_id: MG220521_3
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: MG220521_3
+  - id: dna_sequence
+    type: contains
+    value: ATCATAAAAATATCAGAATA
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Pseudococcus longispinus
+    - Pseudococcus nr. longispinus DSPKJ168-09
+    - Pseudococcus sp. MJMB-00146
+    - Pseudococcus nr. longispinus DSPKJ169-09
+    - Pseudococcus nr. longispinus DSPKJ140-09
+    - + 1 more species...
+    - Pseudococcus
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'TRUE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1D
+  - id: toi_flag
+    type: contains
+    value: Flag 2A
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '0'
+  - id: matching_species_moderate
+    type: int
+    value: '6'
+  - id: matching_species_weak
+    type: int
+    value: '55'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1D
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '0'
+  - id: moderate_hits
+    type: int
+    value: '35'
+  - id: weak_hits
+    type: int
+    value: '465'
+  - id: lowest_hit
+    type: float
+    value: '90.2'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Pseudococcus longispinus
+    - Pseudococcus nr. longispinus DSPKJ168-09
+    - Pseudococcus sp. MJMB-00146
+    - Pseudococcus nr. longispinus DSPKJ169-09
+    - Pseudococcus nr. longispinus DSPKJ140-09
+    - Delottococcus aberiae
+  - id: no_of_hits
+    type: list
+    value:
+    - '30'
+    - '1'
+    - '1'
+    - '1'
+    - '1'
+    - '4'
+  - id: top_identity
+    type: list
+    value:
+    - '97.7'
+    - '95.2'
+    - '95.0'
+    - '94.9'
+    - '94.9'
+    - '93.7'
+  - id: median_identity
+    type: list
+    value:
+    - '96.1'
+    - '95.2'
+    - '95.0'
+    - '94.9'
+    - '94.9'
+    - '93.4'
+  - id: min_identity
+    type: list
+    value:
+    - '95.2'
+    - '95.2'
+    - '95.0'
+    - '94.9'
+    - '94.9'
+    - '93.2'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - NA
+    - NA
+    - NA
+    - NA
+    - NA
+    - NA
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Pseudococcus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '495'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '20'
+    - id: species_total
+      type: list
+      value:
+      - '187'
+    - id: min_bar_count
+      type: min
+      value: '187'
+    - id: first_bar_species
+      type: list
+      value:
+      - Pseudococcus comstocki
+    - id: first_bar_count
+      type: list
+      value:
+      - '86'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Pseudococcus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '495'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '20'
+    - id: species_total
+      type: list
+      value:
+      - '187'
+    - id: min_bar_count
+      type: min
+      value: '187'
+    - id: first_bar_species
+      type: list
+      value:
+      - Pseudococcus comstocki
+    - id: first_bar_count
+      type: list
+      value:
+      - '86'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  candidate: []
+- id: publication_modal
+  candidates: []
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: MG866190
+  - id: subject
+    type: contains
+    value: Pseudococcus longispinus clone 13-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial
+  - id: length
+    type: int
+    value: '476'
+  - id: identity
+    type: float
+    value: '97.7'
+  - id: bitscore
+    type: float
+    value: '856.83'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '70.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Arthropoda
+  - id: class
+    type: contains
+    value: Insecta
+  - id: order
+    type: contains
+    value: Hemiptera
+  - id: family
+    type: contains
+    value: Pseudococcidae
+  - id: genus
+    type: contains
+    value: Pseudococcus
+  - id: species
+    type: contains
+    value: Pseudococcus longispinus
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '22'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2A
+  - id: toi_outcome
+    type: contains
+    value: At least one of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Pseudococcus
+  - id: match_rank
+    type: list
+    value:
+    - genus
+  - id: match_taxon
+    type: list
+    value:
+    - Pseudococcus
+  - id: match_species
+    type: list
+    value:
+    - Pseudococcus longispinus
+  - id: match_accession
+    type: list
+    value:
+    - MG866190
+  - id: match_identity
+    type: list
+    value:
+    - '97.7'

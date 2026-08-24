@@ -1,36 +1,37 @@
-sample_id: SME25-218
-date: '2025-12-11T07:30:03'
+sample_id: barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300
+date: '2026-08-04T00:37:50'
 components:
 - id: input_sequence_modal
   assertions:
   - id: sample_id
     type: contains
-    value: SME25-218
+    value: barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300
   - id: dna_sequence
     type: contains
-    value: CCAAAAAATCA
+    value: CTCAGTCACAGGTTGGTGAA
 - id: overview_tab
   assertions:
   - id: conclusion_text
     type: contains
-    value: inconclusive
+    value: Inconclusive
   - id: species_found
     type: list
     value:
-    - Drosophila simulans
-    - Drosophila mauritiana
+    - Vitivirus epsilonvitis
+    - Vitivirus GVL
+    - Grapevine virus
   - id: toi_row_count
     type: int
     value: '2'
   - id: toi_green_tick_first_row
     type: bool
-    value: 'TRUE'
+    value: 'FALSE'
   - id: conclusion_flag
     type: contains
     value: Flag 1B
   - id: toi_flag
     type: contains
-    value: Flag 2A
+    value: Flag 2B
   - id: preliminary_flag
     type: contains
     value: Flag 7NA
@@ -39,10 +40,10 @@ components:
     value: '2'
   - id: matching_species_moderate
     type: int
-    value: '10'
+    value: '1'
   - id: matching_species_weak
     type: int
-    value: '22'
+    value: '0'
 - id: candidate_tab
   assertions:
   - id: tab_title
@@ -62,209 +63,247 @@ components:
     value: '93.5'
   - id: strong_hits
     type: int
-    value: '71'
+    value: '54'
   - id: moderate_hits
     type: int
-    value: '218'
+    value: '2'
   - id: weak_hits
     type: int
-    value: '211'
+    value: '0'
   - id: lowest_hit
     type: float
-    value: '90.5'
+    value: '86.1'
 - id: candidate_tab_table
   assertions:
   - id: species
     type: list
     value:
-    - Drosophila simulans
-    - Drosophila mauritiana
+    - Vitivirus epsilonvitis
+    - Vitivirus GVL
   - id: no_of_hits
     type: list
     value:
-    - '85'
-    - '8'
+    - '55'
+    - '1'
   - id: top_identity
     type: list
     value:
-    - '100'
-    - '100'
+    - '100.0'
+    - '98.5'
   - id: median_identity
     type: list
     value:
-    - '100'
-    - '96.6'
+    - '99.0'
+    - '98.5'
   - id: min_identity
     type: list
     value:
-    - '96.3'
-    - '95.5'
+    - '97.4'
+    - '98.5'
   - id: top_e_value
     type: list
     value:
-    - '0'
-    - '0'
+    - '1.37425e-105'
+    - '1.98936e-98'
   - id: publication
     type: list
     value:
-    - '39'
+    - '12'
     - '1'
 - id: database_coverage
   pmi:
-  - name: Drosophila simulans
-    assertions:
+  - assertions:
     - id: title
       type: list
-      value: Database coverage of Preliminary Morphology ID Drosophila
+      value:
+      - Database coverage of Preliminary Morphology ID Grapevine virus
     - id: flag_text1
       type: list
-      value: 5.1A
+      value:
+      - 5.1A
     - id: record_count
       type: list
-      value: '11374'
+      value:
+      - '39'
     - id: flag_text2
       type: list
-      value: 5.2B
+      value:
+      - ''
     - id: species_count
       type: list
-      value: '595'
+      value:
+      - '17'
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - '17'
     - id: min_bar_count
       type: min
-      value: '10'
+      value: '17'
     - id: first_bar_species
       type: list
-      value: Drosophila affinis
+      value:
+      - Grapevine virus A
     - id: first_bar_count
       type: list
-      value: '1162'
+      value:
+      - '750'
     - id: final_text
       type: list
-      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
   toi:
-  - name: Drosophila simulans
-    assertions:
+  - assertions:
     - id: title
       type: list
-      value: Database coverage of Taxon of Interest Drosophila simulans
+      value:
+      - Database coverage of Taxon of Interest Grapevine virus
     - id: flag_text1
       type: list
-      value: 5.1A
+      value:
+      - 5.1A
     - id: record_count
       type: list
-      value: '144'
+      value:
+      - '39'
     - id: flag_text2
       type: list
-      value: 5.2B
+      value:
+      - ''
     - id: species_count
       type: list
-      value: '594'
+      value:
+      - '17'
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - '17'
     - id: min_bar_count
       type: min
-      value: '10'
+      value: '17'
     - id: first_bar_species
       type: list
-      value: Drosophila affinis
+      value:
+      - Grapevine virus A
     - id: first_bar_count
       type: list
-      value: '1162'
+      value:
+      - '750'
     - id: final_text
       type: list
-      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
   candidate:
-  - name: Drosophila simulans
-    assertions:
+  - assertions:
     - id: title
       type: list
-      value: Database coverage of Candidate Drosophila simulans
+      value:
+      - Database coverage of Candidate Vitivirus epsilonvitis
     - id: flag_text1
       type: list
-      value: 5.1A
+      value:
+      - ''
     - id: record_count
       type: list
-      value: '144'
+      value:
+      - '0'
     - id: flag_text2
       type: list
-      value: 5.2B
+      value:
+      - Warning no locus provided
     - id: species_count
       type: list
-      value: '594'
+      value:
+      - ''
     - id: species_total
       type: list
-      value: '1679'
+      value:
+      - ''
     - id: min_bar_count
       type: min
-      value: '10'
+      value: '0'
     - id: first_bar_species
       type: list
-      value: Drosophila affinis
+      value:
+      - ''
     - id: first_bar_count
       type: list
-      value: '1162'
+      value:
+      - '0'
     - id: final_text
       type: list
-      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
-  - name: Drosophila mauritiana
-    assertions:
+      value:
+      - ''
+  - assertions:
     - id: title
       type: list
-      value: Database coverage of Candidate Drosophila mauritiana
+      value:
+      - Database coverage of Candidate Vitivirus GVL
     - id: flag_text1
       type: list
-      value: 5.1A
+      value:
+      - 5.1A
     - id: record_count
       type: list
-      value: '6'
+      value:
+      - '194'
     - id: flag_text2
       type: list
-      value: 5.2B
+      value:
+      - ''
     - id: species_count
       type: list
-      value: '595'
+      value:
+      - '17'
     - id: species_total
       type: list
-      value: '1680'
+      value:
+      - '17'
     - id: min_bar_count
       type: min
-      value: '10'
+      value: '17'
     - id: first_bar_species
       type: list
-      value: Drosophila affinis
+      value:
+      - Grapevine virus A
     - id: first_bar_count
       type: list
-      value: '1162'
+      value:
+      - '750'
     - id: final_text
       type: list
-      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
+      value:
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
 - id: publication_modal
   candidates:
-  - name: Drosophila simulans
+  - name: Vitivirus epsilonvitis
     assertions:
     - id: title
       type: list
-      value: Publications supporting taxonomic association - Drosophila simulans
+      value:
+      - Publications supporting taxonomic association - Vitivirus epsilonvitis
     - id: source
       type: list
-      value: 39 Independent Sources
+      value:
+      - 12 Independent Sources
     - id: count
       type: list
-      value: '39'
-  - name: Drosophila mauritiana
+      value:
+      - '12'
+  - name: Vitivirus GVL
     assertions:
     - id: title
       type: list
-      value: Publications supporting taxonomic association - Drosophila mauritiana
+      value:
+      - Publications supporting taxonomic association - Vitivirus GVL
     - id: source
       type: list
-      value: 1 Independent Source
+      value:
+      - 1 Independent Source
     - id: count
       type: list
-      value: '1'
+      value:
+      - '1'
 - id: blast_modal
   assertions:
   - id: title
@@ -275,25 +314,25 @@ components:
     value: '1'
   - id: accession
     type: contains
-    value: KC244283
+    value: LC746750
   - id: subject
     type: contains
-    value: Drosophila simulans strain sm21 mitochondrion, complete genome
+    value: Grapevine virus E g8-C882 RNA, nearly complete genome
   - id: length
     type: int
-    value: '682'
+    value: '195'
   - id: identity
     type: float
-    value: '100'
+    value: '100.0'
   - id: bitscore
     type: float
-    value: '1352.4'
+    value: '387.033'
   - id: evalue
     type: contains
-    value: '0.00E+00'
+    value: '1.37e-105'
   - id: coverage
     type: float
-    value: '96.5'
+    value: '100.0'
   - id: alignment_text
     type: bool
     value: 'TRUE'
@@ -305,25 +344,25 @@ components:
     value: No data
   - id: kingdom
     type: contains
-    value: Metazoa
+    value: Orthornavirae
   - id: phylum
     type: contains
-    value: Arthropoda
+    value: Kitrinoviricota
   - id: class
     type: contains
-    value: Insecta
+    value: Alsuviricetes
   - id: order
     type: contains
-    value: Diptera
+    value: Tymovirales
   - id: family
     type: contains
-    value: Drosophilidae
+    value: Betaflexiviridae
   - id: genus
     type: contains
-    value: Drosophila
+    value: Vitivirus
   - id: species
     type: contains
-    value: Drosophila simulans
+    value: Vitivirus epsilonvitis
 - id: tree_modal
   assertions:
   - id: title
@@ -331,18 +370,18 @@ components:
     value: Homology Tree
   - id: min_node
     type: min
-    value: '5'
+    value: '6'
 - id: toi_tab
   assertions:
   - id: toi_flag_text
     type: contains
-    value: Flag 2A
+    value: Flag 2B
   - id: toi_outcome
     type: contains
-    value: At least one of the taxa of interest
+    value: None of the taxa of interest matched the candidates species.
   - id: toi_reasoning
     type: contains
-    value: Taxon of interest detected
+    value: Taxon of interest NOT detected in candidate species.
   - id: toi_number_of_rows
     type: int
     value: '1'
@@ -350,29 +389,23 @@ components:
   assertions:
   - id: toi_match
     type: bool
-    value:
-    - 'TRUE'
+    value: null
   - id: toi
     type: list
     value:
-    - Drosophila simulans
+    - Grapevine virus
   - id: match_rank
     type: list
-    value:
-    - species
+    value: []
   - id: match_taxon
     type: list
-    value:
-    - Drosophila simulans
+    value: []
   - id: match_species
     type: list
-    value:
-    - Drosophila simulans
+    value: []
   - id: match_accession
     type: list
-    value:
-    - KC244283
+    value: []
   - id: match_identity
     type: list
-    value:
-    - '100'
+    value: []

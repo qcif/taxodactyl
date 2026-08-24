@@ -1,0 +1,412 @@
+sample_id: barcode84_contig1_PE250203-B_REP1_KAPA
+date: '2026-08-04T00:37:50'
+components:
+- id: input_sequence_modal
+  assertions:
+  - id: sample_id
+    type: contains
+    value: barcode84_contig1_PE250203-B_REP1_KAPA
+  - id: dna_sequence
+    type: contains
+    value: ACACTATATTTTATTTTTGG
+- id: overview_tab
+  assertions:
+  - id: conclusion_text
+    type: contains
+    value: Inconclusive
+  - id: species_found
+    type: list
+    value:
+    - Euchrysops cnejus
+    - Lycaenidae sp. SSG-2014a
+    - Lycaenidae
+    - Chilades pandava
+  - id: toi_row_count
+    type: int
+    value: '2'
+  - id: toi_green_tick_first_row
+    type: bool
+    value: 'FALSE'
+  - id: conclusion_flag
+    type: contains
+    value: Flag 1B
+  - id: toi_flag
+    type: contains
+    value: Flag 2B
+  - id: preliminary_flag
+    type: contains
+    value: Flag 7NA
+  - id: matching_species_strong
+    type: int
+    value: '2'
+  - id: matching_species_moderate
+    type: int
+    value: '1'
+  - id: matching_species_weak
+    type: int
+    value: '100'
+- id: candidate_tab
+  assertions:
+  - id: tab_title
+    type: contains
+    value: Identification of candidate species
+  - id: candidate_flag_text
+    type: contains
+    value: Flag 1B
+  - id: strong_alginment_identity
+    type: float
+    value: '98.5'
+  - id: moderate_alginment_identity
+    type: float
+    value: '93.5'
+  - id: weak_alginment_identity
+    type: float
+    value: '93.5'
+  - id: strong_hits
+    type: int
+    value: '35'
+  - id: moderate_hits
+    type: int
+    value: '1'
+  - id: weak_hits
+    type: int
+    value: '464'
+  - id: lowest_hit
+    type: float
+    value: '90.4'
+- id: candidate_tab_table
+  assertions:
+  - id: species
+    type: list
+    value:
+    - Euchrysops cnejus
+    - Lycaenidae sp. SSG-2014a
+  - id: no_of_hits
+    type: list
+    value:
+    - '34'
+    - '1'
+  - id: top_identity
+    type: list
+    value:
+    - '100.0'
+    - '99.8'
+  - id: median_identity
+    type: list
+    value:
+    - '99.8'
+    - '99.8'
+  - id: min_identity
+    type: list
+    value:
+    - '98.9'
+    - '99.8'
+  - id: top_e_value
+    type: list
+    value:
+    - '0.0'
+    - '0.0'
+  - id: publication
+    type: list
+    value:
+    - '13'
+    - '1'
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Preliminary Morphology ID Lycaenidae
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1NA
+    - id: record_count
+      type: list
+      value:
+      - '23155'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2NA
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Chilades pandava
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '198'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - '1'
+    - id: species_total
+      type: list
+      value:
+      - '1'
+    - id: min_bar_count
+      type: min
+      value: '1'
+    - id: first_bar_species
+      type: list
+      value:
+      - Edales pandava
+    - id: first_bar_count
+      type: list
+      value:
+      - '198'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Euchrysops cnejus
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '43'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '4'
+    - id: species_total
+      type: list
+      value:
+      - '33'
+    - id: min_bar_count
+      type: min
+      value: '33'
+    - id: first_bar_species
+      type: list
+      value:
+      - Euchrysops cnejus
+    - id: first_bar_count
+      type: list
+      value:
+      - '43'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Lycaenidae sp. SSG-2014a
+    - id: flag_text1
+      type: list
+      value:
+      - ''
+    - id: record_count
+      type: list
+      value:
+      - '0'
+    - id: flag_text2
+      type: list
+      value:
+      - ''
+    - id: species_count
+      type: list
+      value:
+      - ''
+    - id: species_total
+      type: list
+      value:
+      - ''
+    - id: min_bar_count
+      type: min
+      value: '0'
+    - id: first_bar_species
+      type: list
+      value:
+      - ''
+    - id: first_bar_count
+      type: list
+      value:
+      - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+- id: publication_modal
+  candidates:
+  - name: Euchrysops cnejus
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Euchrysops cnejus
+    - id: source
+      type: list
+      value:
+      - 13 Independent Sources
+    - id: count
+      type: list
+      value:
+      - '13'
+  - name: Lycaenidae sp. SSG-2014a
+    assertions:
+    - id: title
+      type: list
+      value:
+      - Publications supporting taxonomic association - Lycaenidae sp. SSG-2014a
+    - id: source
+      type: list
+      value:
+      - 1 Independent Source
+    - id: count
+      type: list
+      value:
+      - '1'
+- id: blast_modal
+  assertions:
+  - id: title
+    type: contains
+    value: BLAST search results
+  - id: rank
+    type: int
+    value: '1'
+  - id: accession
+    type: contains
+    value: GQ129020
+  - id: subject
+    type: contains
+    value: Euchrysops cnejus voucher MCZ:KD93C045 cytochrome c oxidase I (COI) gene, partial cds; tRNA-Leu gene, complete sequence; and cytochrome c oxidase II (COII) gene, complete cds; mitochondrial
+  - id: length
+    type: int
+    value: '665'
+  - id: identity
+    type: float
+    value: '100.0'
+  - id: bitscore
+    type: float
+    value: '1318.7'
+  - id: evalue
+    type: contains
+    value: '0.00e+00'
+  - id: coverage
+    type: float
+    value: '100.0'
+  - id: alignment_text
+    type: bool
+    value: 'TRUE'
+  - id: char_more_than_10
+    type: bool
+    value: 'TRUE'
+  - id: domain
+    type: contains
+    value: Eukaryota
+  - id: kingdom
+    type: contains
+    value: Metazoa
+  - id: phylum
+    type: contains
+    value: Arthropoda
+  - id: class
+    type: contains
+    value: Insecta
+  - id: order
+    type: contains
+    value: Lepidoptera
+  - id: family
+    type: contains
+    value: Lycaenidae
+  - id: genus
+    type: contains
+    value: Euchrysops
+  - id: species
+    type: contains
+    value: Euchrysops cnejus
+- id: tree_modal
+  assertions:
+  - id: title
+    type: contains
+    value: Homology Tree
+  - id: min_node
+    type: min
+    value: '22'
+- id: toi_tab
+  assertions:
+  - id: toi_flag_text
+    type: contains
+    value: Flag 2B
+  - id: toi_outcome
+    type: contains
+    value: None of the taxa of interest matched the candidates species.
+  - id: toi_reasoning
+    type: contains
+    value: Taxon of interest NOT detected in candidate species.
+  - id: toi_number_of_rows
+    type: int
+    value: '1'
+- id: toi_table
+  assertions:
+  - id: toi_match
+    type: bool
+    value: null
+  - id: toi
+    type: list
+    value:
+    - Chilades pandava
+  - id: match_rank
+    type: list
+    value: []
+  - id: match_taxon
+    type: list
+    value: []
+  - id: match_species
+    type: list
+    value: []
+  - id: match_accession
+    type: list
+    value: []
+  - id: match_identity
+    type: list
+    value: []
