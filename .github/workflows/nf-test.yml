@@ -165,7 +165,7 @@ jobs:
 
           # There will only ever be one test hash in the tests folder
           evaluated_dir=${{ runner.temp }}/nf-test/tests/*
-          echo ""evaluated_dir = $evaluated_dir"
+          echo "evaluated_dir = $evaluated_dir"
 
           mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
           echo "Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
