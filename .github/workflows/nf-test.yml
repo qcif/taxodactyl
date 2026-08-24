@@ -20,6 +20,11 @@ jobs:
   nf-test:
     name: core_test
     runs-on: ubuntu-latest
+    # Can extend strategy in the future for different versions + nf-test ver
+    strategy:
+      matrix:
+        python-version: [3.12]
+        nextflow-version: [25.04.6]
 
     steps:
       # Enable creation of containers as an unprivileged user
@@ -43,7 +48,7 @@ jobs:
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2
         with:
-          version: 25.04.6
+          version: ${{ matrix.nextflow-version }}
 
       # test/core/nextflow.config runs with profile "singularity", which
       # isn't preinstalled on ubuntu-latest runners
@@ -112,18 +117,63 @@ jobs:
 
       # Run the core test file explicitly rather than a bare `nf-test test`,
       # so this job doesn't silently pick up whatever nf-test.config last pointed to
+      # print both standard output and errors to file and console 
       - name: Run core nf-test
-        run: nf-test test test/core/taxodactyl.workflow.nf.test
+        id: nf-test
+        run: |
+          nf-test test test/core/taxodactyl.workflow.nf.test \
+            > >(tee ${{ runner.temp }}/nf-test/nf-test_results.txt) \
+            2> >(tee ${{ runner.temp }}/nf-test/nf-test_errors.txt)
 
       # Print trace.csv, temp file structure and command.err files
       - name: Debug print trace tree err
-        # Only runs if prior step fails
-        if: failure()
+        # Only runs if a nf-test step fails or if in debug mode
+        if: ${{ steps.nf-test.outcome == 'failure' || runner.debug == '1' }}
         run: |
           echo "##### trace.csv:"
-          cat /home/runner/work/_temp/nf-test/tests/*/meta/trace.csv
-          echo "##### tree -a /home/runner/work/_temp/nf-test/tests/:"
-          tree -a /home/runner/work/_temp/nf-test/tests/
-          find /home/runner/work/_temp/nf-test/tests/ \
+          cat ${{ runner.temp }}/nf-test/tests/*/meta/trace.csv
+          echo "##### tree -a ${{ runner.temp }}/nf-test/tests/:"
+          tree -a ${{ runner.temp }}/nf-test/tests/
+          find ${{ runner.temp }}/nf-test/tests/ \
             -type f -name ".command.err" \
             -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run snapshot to csv
+        run: |
+          python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
+            ${{ runner.temp }}/nf-test/nf-test_errors.txt
+          echo "#### ${{ runner.temp }}/nf-test/nf-test_errors.txt"
+          cat ${{ runner.temp }}/nf-test/nf-test_errors.txt
+
+      - name: Test flags
+        run: |
+          baseline_dir=$GITHUB_WORKSPACE/test/core/flags
+          echo "baseline_dir = $baseline_dir"
+
+          # There will only ever be one test hash in the tests folder
+          evaluated_dir=${{ runner.temp }}/nf-test/tests/*
+          echo ""evaluated_dir = $evaluated_dir"
+
+          mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
+          echo "Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
+
+          bash $GITHUB_WORKSPACE/bin/collect.flags.sh \
+            $evaluated_dir \
+            ${{ runner.temp }}/nf-test/tests/flags/evaluated
+
+          python $GITHUB_WORKSPACE/bin/test_flags.py \
+            $baseline_dir \
+            ${{ runner.temp }}/nf-test/flags/evaluated \
+            > ${{ runner.temp }}/nf-test/flags_results.txt \
+            2> ${{ runner.temp }}/nf-test/flags_errors.txt
+
+          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
+          cat ${{ runner.temp }}/nf-test/flags_errors.txt
+
+          echo "##### tree -a ${{ runner.temp }}/nf-test/:"
+          tree -a ${{ runner.temp }}/nf-test/
