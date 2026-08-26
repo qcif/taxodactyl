@@ -173,7 +173,7 @@ jobs:
           mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
           echo "Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
 
-          bash $GITHUB_WORKSPACE/bin/collect.flags.sh \
+          bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
             $evaluated_dir \
             ${{ runner.temp }}/nf-test/tests/flags/evaluated
 
