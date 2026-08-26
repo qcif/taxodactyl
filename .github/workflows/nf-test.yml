@@ -15,7 +15,7 @@ concurrency:
 env:
   NXF_ANSI_LOG: false
   NFT_VER: "0.9.5"
-  MOCK_BLAST: true
+  MOCK_BLAST: false
 
 jobs:
   nf-test:
@@ -151,7 +151,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Run snapshot to csv
+      - name: Summarise nf-test errors
+        if: ${{ always() }}
         run: |
           python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
             ${{ runner.temp }}/nf-test/nf-test_errors.txt
@@ -159,12 +160,14 @@ jobs:
           cat ${{ runner.temp }}/nf-test/nf-test_errors.txt
 
       - name: Test flags
+        if: ${{ always() }}
         run: |
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
 
           # There will only ever be one test hash in the tests folder
-          evaluated_dir=${{ runner.temp }}/nf-test/tests/*
+          dirs=(${{ runner.temp }}/nf-test/tests/*)
+          evaluated_dir="${dirs[0]}"
           echo "evaluated_dir = $evaluated_dir"
 
           mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
