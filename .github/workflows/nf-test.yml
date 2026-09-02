@@ -21,6 +21,7 @@ jobs:
   nf-test:
     name: core_test
     runs-on: ubuntu-latest
+    environment: testing
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
       matrix:
@@ -118,7 +119,7 @@ jobs:
             -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
             -e "s|cacheDir = CUSTOMISE|cacheDir = \"${{ runner.temp }}/singularity\"|" \
             -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
-            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.USER_EMAIL_NA }}\"|" \
+            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.NCBI_USER_EMAIL }}\"|" \
             test/core/nextflow.config
           # Print the resolved config so the run log shows exactly what executed
           cat test/core/nextflow.config
@@ -134,7 +135,7 @@ jobs:
             2> >(tee ${{ runner.temp }}/nf-test/nf-test_errors.txt)
 
       # Print trace.csv, temp file structure and command.err files
-      - name: Debug print trace tree err
+      - name: Debug failed nf-test
         # Only runs if a nf-test step fails or if in debug mode
         if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
         run: |
@@ -151,6 +152,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+
       - name: Summarise nf-test errors
         if: ${{ always() }}
         run: |
@@ -160,6 +166,7 @@ jobs:
           cat ${{ runner.temp }}/nf-test/nf-test_errors.txt
 
       - name: Test flags
+        id: test-flags
         if: ${{ always() }}
         run: |
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
@@ -171,12 +178,13 @@ jobs:
           echo "evaluated_dir = $evaluated_dir"
 
           mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
-          echo "Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
+          echo "collect_flags.sh: Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
 
           bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
             $evaluated_dir \
             ${{ runner.temp }}/nf-test/tests/flags/evaluated
 
+          echo "test_flags.py: Flag results and errors will be saved to ${{ runner.temp }}/nf-test/flags_results.txt | flags_errors.txt"
           python $GITHUB_WORKSPACE/bin/test_flags.py \
             $baseline_dir \
             ${{ runner.temp }}/nf-test/flags/evaluated \
@@ -188,3 +196,16 @@ jobs:
 
           echo "##### tree -a ${{ runner.temp }}/nf-test/:"
           tree -a ${{ runner.temp }}/nf-test/
+          
+      - name: Debug failed test flags
+        # Only runs if test-flags step fails or if in debug mode
+        if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
+        run: |
+          echo "##### tree -a ${{ runner.temp }}/nf-test/:"
+          tree -a ${{ runner.temp }}/nf-test/
+
+          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
+          cat ${{ runner.temp }}/nf-test/flags_results.txt
+
+          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
+          cat ${{ runner.temp }}/nf-test/flags_errors.txt
