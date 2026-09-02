@@ -152,11 +152,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r scripts/requirements.txt
-
       - name: Summarise nf-test errors
         if: ${{ always() }}
         run: |
@@ -196,7 +191,7 @@ jobs:
 
           echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
           cat ${{ runner.temp }}/nf-test/flags_errors.txt
-          
+
       - name: Debug failed test flags
         # Only runs if test-flags step fails or if in debug mode
         if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
