@@ -182,7 +182,7 @@ jobs:
 
           bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
             $evaluated_dir \
-            ${{ runner.temp }}/nf-test/tests/flags/evaluated
+            ${{ runner.temp }}/nf-test/flags/evaluated
 
           echo "test_flags.py: Flag results and errors will be saved to ${{ runner.temp }}/nf-test/flags_results.txt | flags_errors.txt"
           python $GITHUB_WORKSPACE/bin/test_flags.py \
@@ -191,11 +191,11 @@ jobs:
             > ${{ runner.temp }}/nf-test/flags_results.txt \
             2> ${{ runner.temp }}/nf-test/flags_errors.txt
 
+          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
+          cat ${{ runner.temp }}/nf-test/flags_results.txt
+
           echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
           cat ${{ runner.temp }}/nf-test/flags_errors.txt
-
-          echo "##### tree -a ${{ runner.temp }}/nf-test/:"
-          tree -a ${{ runner.temp }}/nf-test/
           
       - name: Debug failed test flags
         # Only runs if test-flags step fails or if in debug mode
