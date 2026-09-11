@@ -41,33 +41,23 @@ jobs:
       - name: Download mock test folder
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/fixtures/nf-test/mock_test_20260804.tar.gz
-          mkdir -p ${{ runner.temp }}/nf-test/tests/mock-test
-          tar -xvf mock_test_20260804.tar.gz -C ${{ runner.temp }}/nf-test/tests/mock-test
-          tree ${{ runner.temp }}/nf-test/tests
+          mkdir -p $RUNNER_TEMP/nf-test/tests/mock-test
+          tar -xvf mock_test_20260804.tar.gz -C $RUNNER_TEMP/nf-test/tests/mock-test
+          tree $RUNNER_TEMP/nf-test/tests
 
       # Test folder ends in unknown hash; set as env var here for later steps
       - name: Set test folder as env var
         run: |
-          dirs=(${{ runner.temp }}/nf-test/tests/*)
+          dirs=($RUNNER_TEMP/nf-test/tests/*)
           test_dir="${dirs[0]}"
           echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
-          echo "The test directory is $TEST_DIR"
+          echo "TEST_DIR=$test_dir has been saved as env var for future steps"
 
       - name: Set up Python
         if: always()
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Summarise nf-test errors
-        if: always()
-        run: |
-          python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
-            ${{ runner.temp }}/nf-test/nf-test_errors.txt
-          echo "#### ${{ runner.temp }}/nf-test/nf-test_errors.txt"
-          cat ${{ runner.temp }}/nf-test/nf-test_errors.txt
-          echo "#### ${{ runner.temp }}/nf-test/nf-test_errors_summary.csv"
-          cat ${{ runner.temp }}/nf-test/nf-test_errors_summary.csv
 
       - name: Test flags
         id: test-flags
@@ -76,50 +66,48 @@ jobs:
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
 
-          # There will only ever be one test hash in the tests folder
-          dirs=(${{ runner.temp }}/nf-test/tests/*)
-          evaluated_dir="${dirs[0]}"
+          evaluated_dir=$TEST_DIR
           echo "evaluated_dir = $evaluated_dir"
 
-          mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
-          echo "collect_flags.sh: Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
+          mkdir -p $RUNNER_TEMP/nf-test/flags/evaluated
+          echo "collect_flags.sh: Flags from test run will be collected to $RUNNER_TEMP/nf-test/flags/evaluated"
 
           bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
             $evaluated_dir \
-            ${{ runner.temp }}/nf-test/flags/evaluated
+            $RUNNER_TEMP/nf-test/flags/evaluated
 
-          echo "test_flags.py: Flag results and errors will be saved to ${{ runner.temp }}/nf-test/flags_results.txt | flags_errors.txt"
+          echo "test_flags.py: Flag results and errors will be saved to $RUNNER_TEMP/nf-test/flags_results.txt | flags_errors.txt"
           python $GITHUB_WORKSPACE/bin/test_flags.py \
             $baseline_dir \
-            ${{ runner.temp }}/nf-test/flags/evaluated \
-            > ${{ runner.temp }}/nf-test/flags_results.txt \
-            2> ${{ runner.temp }}/nf-test/flags_errors.txt
+            $RUNNER_TEMP/nf-test/flags/evaluated \
+            > $RUNNER_TEMP/nf-test/flags_results.txt \
+            2> $RUNNER_TEMP/nf-test/flags_errors.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
-          cat ${{ runner.temp }}/nf-test/flags_results.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
+          cat $RUNNER_TEMP/nf-test/flags_results.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
-          cat ${{ runner.temp }}/nf-test/flags_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
+          cat $RUNNER_TEMP/nf-test/flags_errors.txt
 
       - name: Debug failed test flags
         # Only runs if test-flags step fails or if in debug mode
         if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
         run: |
-          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
-          cat ${{ runner.temp }}/nf-test/flags_results.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
+          cat $RUNNER_TEMP/nf-test/flags_results.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
-          cat ${{ runner.temp }}/nf-test/flags_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
+          cat $RUNNER_TEMP/nf-test/flags_errors.txt
           
-          echo "#### tree -a ${{ runner.temp }}/nf-test/:"
-          tree -a ${{ runner.temp }}/nf-test/
+          echo "#### tree -a $RUNNER_TEMP/nf-test/:"
+          tree -a $RUNNER_TEMP/nf-test/
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
       # Always run, nothing will happen if there are no reports in output
         if: always()
         run: |
-          src_dir=$TEST_DIR/output"
+          src_dir=$TEST_DIR/output
           echo "Dir to be searched $src_dir"
 
           dest_dir=$TEST_DIR/output/reports
