@@ -1,5 +1,6 @@
 name: nf-test
 
+# If not running on push, check workflow is enabled on GH UI
 on:
   push:
     branches:
@@ -89,7 +90,7 @@ jobs:
         run: |
           cat > nf-test.config <<CONFIG
           config {
-              workDir "${{ runner.temp }}/nf-test"
+              workDir "$RUNNER_TEMP/nf-test"
               testsDir "test/core"
               configFile "test/core/nextflow.config"
               profile "singularity"
@@ -107,17 +108,17 @@ jobs:
           # Runner-local scratch dirs for temp files, Singularity image cache
           # and nf-test workDir where log files will be saved
           mkdir -p \
-            "${{ runner.temp }}/taxodactyl" \
-            "${{ runner.temp }}/singularity" \
-            "${{ runner.temp }}/nf-test"
+            "$RUNNER_TEMP/taxodactyl" \
+            "$RUNNER_TEMP/singularity" \
+            "$RUNNER_TEMP/nf-test"
           # Fill in each CUSTOMISE placeholder with a real value/path
           # and toggle mock_blast per env variable
           sed -i \
             -e "s|params.mock_blast = false|params.mock_blast = $MOCK_BLAST|" \
             -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"$GITHUB_WORKSPACE/test/core/refdata/blastdb/2026-07-29/subset_core_nt\"|" \
             -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"$GITHUB_WORKSPACE/test/core/refdata/taxdump/2026-05-08\"|" \
-            -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"${{ runner.temp }}/taxodactyl\"|" \
-            -e "s|cacheDir = CUSTOMISE|cacheDir = \"${{ runner.temp }}/singularity\"|" \
+            -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"$RUNNER_TEMP/taxodactyl\"|" \
+            -e "s|cacheDir = CUSTOMISE|cacheDir = \"$RUNNER_TEMP/singularity\"|" \
             -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
             -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.NCBI_USER_EMAIL }}\"|" \
             test/core/nextflow.config
@@ -131,8 +132,17 @@ jobs:
         id: nf-test
         run: |
           nf-test test test/core/taxodactyl.workflow.nf.test \
-            > >(tee ${{ runner.temp }}/nf-test/nf-test_results.txt) \
-            2> >(tee ${{ runner.temp }}/nf-test/nf-test_errors.txt)
+            > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
+            2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
+
+      # Test folder ends in unknown hash; set as env var here for later steps
+      - name: Set test folder as env var
+        run: |
+          dirs=($RUNNER_TEMP/nf-test/tests/*)
+          test_dir="${dirs[0]}"
+          echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
+          echo "Saved test folder ending in unknown hash as env var for future steps."
+          echo "TEST_DIR=$test_dir"
 
       # Print trace.csv, temp file structure and command.err files
       - name: Debug failed nf-test
@@ -140,10 +150,10 @@ jobs:
         if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
         run: |
           echo "##### trace.csv:"
-          cat ${{ runner.temp }}/nf-test/tests/*/meta/trace.csv
-          echo "##### tree -a ${{ runner.temp }}/nf-test/tests/:"
-          tree -a ${{ runner.temp }}/nf-test/tests/
-          find ${{ runner.temp }}/nf-test/tests/ \
+          cat $TEST_DIR/meta/trace.csv
+          echo "##### tree -a $RUNNER_TEMP/nf-test/tests/:"
+          tree -a $RUNNER_TEMP/nf-test/tests/
+          find $RUNNER_TEMP/nf-test/tests/ \
             -type f -name ".command.err" \
             -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
 
@@ -157,9 +167,11 @@ jobs:
         if: always()
         run: |
           python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
-            ${{ runner.temp }}/nf-test/nf-test_errors.txt
-          echo "#### ${{ runner.temp }}/nf-test/nf-test_errors.txt"
-          cat ${{ runner.temp }}/nf-test/nf-test_errors.txt
+            $RUNNER_TEMP/nf-test/nf-test_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/nf-test_errors.txt"
+          cat $RUNNER_TEMP/nf-test/nf-test_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv"
+          cat $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv
 
       - name: Test flags
         id: test-flags
@@ -168,56 +180,54 @@ jobs:
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
 
-          # There will only ever be one test hash in the tests folder
-          dirs=(${{ runner.temp }}/nf-test/tests/*)
-          evaluated_dir="${dirs[0]}"
+          evaluated_dir=$TEST_DIR
           echo "evaluated_dir = $evaluated_dir"
 
-          mkdir -p ${{ runner.temp }}/nf-test/flags/evaluated
-          echo "collect_flags.sh: Flags from test run will be collected to ${{ runner.temp }}/nf-test/flags/evaluated"
+          mkdir -p $RUNNER_TEMP/nf-test/flags/evaluated
+          echo "collect_flags.sh: Flags from test run will be collected to $RUNNER_TEMP/nf-test/flags/evaluated"
 
           bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
             $evaluated_dir \
-            ${{ runner.temp }}/nf-test/flags/evaluated
+            $RUNNER_TEMP/nf-test/flags/evaluated
 
-          echo "test_flags.py: Flag results and errors will be saved to ${{ runner.temp }}/nf-test/flags_results.txt | flags_errors.txt"
+          echo "test_flags.py: Flag results and errors will be saved to $RUNNER_TEMP/nf-test/flags_results.txt | flags_errors.txt"
           python $GITHUB_WORKSPACE/bin/test_flags.py \
             $baseline_dir \
-            ${{ runner.temp }}/nf-test/flags/evaluated \
-            > ${{ runner.temp }}/nf-test/flags_results.txt \
-            2> ${{ runner.temp }}/nf-test/flags_errors.txt
+            $RUNNER_TEMP/nf-test/flags/evaluated \
+            > $RUNNER_TEMP/nf-test/flags_results.txt \
+            2> $RUNNER_TEMP/nf-test/flags_errors.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
-          cat ${{ runner.temp }}/nf-test/flags_results.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
+          cat $RUNNER_TEMP/nf-test/flags_results.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
-          cat ${{ runner.temp }}/nf-test/flags_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
+          cat $RUNNER_TEMP/nf-test/flags_errors.txt
 
       - name: Debug failed test flags
         # Only runs if test-flags step fails or if in debug mode
         if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
         run: |
-          echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
-          cat ${{ runner.temp }}/nf-test/flags_results.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
+          cat $RUNNER_TEMP/nf-test/flags_results.txt
 
-          echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
-          cat ${{ runner.temp }}/nf-test/flags_errors.txt
+          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
+          cat $RUNNER_TEMP/nf-test/flags_errors.txt
           
-          echo "#### tree -a ${{ runner.temp }}/nf-test/:"
-          tree -a ${{ runner.temp }}/nf-test/
+          echo "#### tree -a $RUNNER_TEMP/nf-test/:"
+          tree -a $RUNNER_TEMP/nf-test/
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
       # Always run, nothing will happen if there are no reports in output
         if: always()
         run: |
-          src_dir="${{ runner.temp }}/nf-test/tests/*/output"
+          src_dir=$TEST_DIR/output
           echo "Dir to be searched $src_dir"
 
-          dest_dir="${{ runner.temp }}/nf-test/tests/*/output/reports"
+          dest_dir=$TEST_DIR/output/reports
           echo "Reports will be soft linked to dir $dest_dir"
 
-          mkdir -p dest_dir
+          mkdir -p $dest_dir
 
           # Find all "report*.html" files and link them into dest_dir
           find "$src_dir" -type f -name "report*.html" | while IFS= read -r file; do
@@ -234,8 +244,11 @@ jobs:
               echo "Linked: $file -> $dest_path"
           done
 
+          echo "#### tree $TEST_DIR/output/reports"
+          tree $TEST_DIR/output/reports
+
         # Install pytest and dependencies for running selenium
-      - name: Install pytest
+      - name: Install and run pytest
         if: always()
         run: |
           cd test/selenium
@@ -243,10 +256,7 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Run test_reports.py
-        if: always()
-        run: |
-          reports_dir="${{ runner.temp }}/nf-test/tests/*/output/reports"
+          reports_dir=$TEST_DIR/output/reports
 
           # Check if the folder contains at least one report
           if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
@@ -262,5 +272,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          path: |
-            $GITHUB_WORKSPACE/test/selenium/review.html
+          name: review.html
+          path: ${{ github.workspace }}/test/selenium/review.html
