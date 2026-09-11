@@ -42,8 +42,7 @@ jobs:
         run: |
           wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/fixtures/nf-test/mock_test_20260804.tar.gz
           mkdir -p $RUNNER_TEMP/nf-test/tests/mock-test
-          tar -xvf mock_test_20260804.tar.gz -C $RUNNER_TEMP/nf-test/tests/mock-test
-          tree $RUNNER_TEMP/nf-test/tests
+          tar -xf mock_test_20260804.tar.gz -C $RUNNER_TEMP/nf-test/tests/mock-test
 
       # Test folder ends in unknown hash; set as env var here for later steps
       - name: Set test folder as env var
@@ -155,11 +154,9 @@ jobs:
               echo "Reports folder is empty."
           fi
 
-          ll
-
       - name: Upload review.html
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          path: |
-            ${{ github.workspace }}/test/selenium/review.html
+          name: review.html
+          path: ${{ github.workspace }}/test/selenium/review.html
