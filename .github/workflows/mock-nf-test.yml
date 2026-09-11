@@ -51,7 +51,8 @@ jobs:
           dirs=($RUNNER_TEMP/nf-test/tests/*)
           test_dir="${dirs[0]}"
           echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
-          echo "TEST_DIR=$test_dir has been saved as env var for future steps"
+          echo "Saved test folder ending in unknown hash as env var for future steps."
+          echo "TEST_DIR=$test_dir"
 
       - name: Set up Python
         if: always()
@@ -113,7 +114,7 @@ jobs:
           dest_dir=$TEST_DIR/output/reports
           echo "Reports will be soft linked to dir $dest_dir"
 
-          mkdir -p dest_dir
+          mkdir -p $dest_dir
 
           # Find all "report*.html" files and link them into dest_dir
           find "$src_dir" -type f -name "report*.html" | while IFS= read -r file; do
