@@ -132,7 +132,7 @@ jobs:
           done
 
         # Install pytest and dependencies for running selenium
-      - name: Install pytest
+      - name: Install and run pytest
         if: always()
         run: |
           cd test/selenium
@@ -140,9 +140,6 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Run test_reports.py
-        if: always()
-        run: |
           reports_dir=$TEST_DIR/output/reports
 
           # Check if the folder contains at least one report
