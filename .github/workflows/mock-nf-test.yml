@@ -1,5 +1,6 @@
 name: mock-nf-test
 
+# Enable workflow manually in GH UI to run
 on:
   push:
     branches:
