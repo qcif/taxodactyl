@@ -148,12 +148,13 @@ jobs:
             -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
 
       - name: Set up Python
+        if: always()
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Summarise nf-test errors
-        if: ${{ always() }}
+        if: always()
         run: |
           python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
             ${{ runner.temp }}/nf-test/nf-test_errors.txt
@@ -162,7 +163,7 @@ jobs:
 
       - name: Test flags
         id: test-flags
-        if: ${{ always() }}
+        if: always()
         run: |
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
@@ -196,11 +197,70 @@ jobs:
         # Only runs if test-flags step fails or if in debug mode
         if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
         run: |
-          echo "##### tree -a ${{ runner.temp }}/nf-test/:"
-          tree -a ${{ runner.temp }}/nf-test/
-
           echo "#### ${{ runner.temp }}/nf-test/flags_results.txt"
           cat ${{ runner.temp }}/nf-test/flags_results.txt
 
           echo "#### ${{ runner.temp }}/nf-test/flags_errors.txt"
           cat ${{ runner.temp }}/nf-test/flags_errors.txt
+          
+          echo "#### tree -a ${{ runner.temp }}/nf-test/:"
+          tree -a ${{ runner.temp }}/nf-test/
+
+      # Selenium pytest test_reports.py requires all reports in a dir
+      - name: Soft link reports for pytest
+      # Always run, nothing will happen if there are no reports in output
+        if: always()
+        run: |
+          src_dir="${{ runner.temp }}/nf-test/tests/*/output"
+          echo "Dir to be searched $src_dir"
+
+          dest_dir="${{ runner.temp }}/nf-test/tests/*/output/reports"
+          echo "Reports will be soft linked to dir $dest_dir"
+
+          mkdir -p dest_dir
+
+          # Find all "report*.html" files and link them into dest_dir
+          find "$src_dir" -type f -name "report*.html" | while IFS= read -r file; do
+              base_name=$(basename "$file")
+              dest_path="$dest_dir/$base_name"
+
+              # Skip if link or file already exists
+              if [[ -e "$dest_path" ]]; then
+                  echo "Skipping: $dest_path already exists."
+                  continue
+              fi
+
+              ln -s "$file" "$dest_path"
+              echo "Linked: $file -> $dest_path"
+          done
+
+        # Install pytest and dependencies for running selenium
+      - name: Install pytest
+        if: always()
+        run: |
+          cd test/selenium
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run test_reports.py
+        if: always()
+        run: |
+          reports_dir="${{ runner.temp }}/nf-test/tests/*/output/reports"
+
+          # Check if the folder contains at least one report
+          if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
+            echo "Running pytest"
+            pytest test_reports.py -v --dir "$reports_dir"
+            echo "Running ./testkit.py render"
+            ./testkit.py render
+          else
+              echo "Reports folder is empty."
+          fi
+
+      - name: Upload review.html
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          path: |
+            $GITHUB_WORKSPACE/test/selenium/review.html
