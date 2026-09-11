@@ -131,6 +131,9 @@ jobs:
               echo "Linked: $file -> $dest_path"
           done
 
+          echo "#### tree $TEST_DIR/output/reports"
+          tree $TEST_DIR/output/reports
+
         # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
@@ -152,9 +155,11 @@ jobs:
               echo "Reports folder is empty."
           fi
 
+          ll
+
       - name: Upload review.html
         uses: actions/upload-artifact@v4
         if: always()
         with:
           path: |
-            $GITHUB_WORKSPACE/test/selenium/review.html
+            ${{ github.workspace }}/test/selenium/review.html
