@@ -1,5 +1,9 @@
 # Phase 2: GenBank metadata enrichment
 
+> [!WARNING]
+> Do not start this until your supervison has briefed you on Phase 2, and has
+> signed off on the Phase 1 deliverables.
+
 ## Background
 
 Phase 1 built a working database that answers *"how many records exist for
@@ -158,6 +162,16 @@ make this much cheaper than it first appears:
   sequence is the large majority of the bytes.
 - **You never need to keep the raw text.** The output per record is an accession
   and a handful of short fields.
+
+> The entire Genbank download is huge (8+ TB) so we aim to do this only once.
+> Develop the scripts on a single file (it's chunked into ~500MB files) and
+> begin the full download when everyone is 100% happy with the result.
+
+> **Do [Phase 3](./phase3-publications.md) at the same time as this step.** It
+> builds a separate publications database from the same flat files, and the
+> download is far too slow to stream twice. Read
+> [phase3-publications.md](./phase3-publications.md) before you write the parser,
+> so that a single pass produces both sets of output.
 
 Populate the new `records` columns from what you parse, then rebuild table 2:
 
