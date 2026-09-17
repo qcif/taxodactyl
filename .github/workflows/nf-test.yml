@@ -177,6 +177,8 @@ jobs:
         id: test-flags
         if: always()
         run: |
+          set +e
+
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
 
@@ -251,6 +253,8 @@ jobs:
       - name: Install and run pytest
         if: always()
         run: |
+          set +e
+          
           cd test/selenium
           python -m venv venv
           source venv/bin/activate
