@@ -6,6 +6,8 @@ Our bioinformatics workflow repeatedly needs to answer one question:
 
 > *How many DNA sequence records exist for organism **X** at locus **Y**?*
 
+> See [loci.json](../scripts/config/loci.json) for the list of loci
+
 Today we answer it by making live API calls to NCBI Entrez over the internet.
 That is slow, rate-limited, needs network access from every compute node, and is
 not reproducible — the same query run six months apart returns different numbers
