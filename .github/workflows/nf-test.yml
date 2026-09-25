@@ -214,7 +214,7 @@ jobs:
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
               $TEST_DIR/meta/trace.csv \
-              --outdir=$RUNNER_TEMP/nf-test/collected_errors
+              --outdir=$RUNNER_TEMP/nf-test/collected_errors \
               --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
               --nft-errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
               --mode="copy"
@@ -224,6 +224,13 @@ jobs:
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
+
+      - name: Upload error workdirs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: error_workdirs
+          path: ${{ runner.temp }}/nf-test/collected_errors
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
