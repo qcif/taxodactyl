@@ -137,7 +137,7 @@ def get_workdir(trace_file: str | Path, errors: list[tuple[str, str]]) -> dict[P
     workdirs = {}
     try:
         with open(trace_file, mode="r", encoding="utf-8") as f_in:
-            print(f"Collecting workdirs from {trace_file} for errors.")
+            print(f"Getting workdirs for collected errors from {trace_file}")
             # DictReader handles the header mapping automatically
             reader = csv.DictReader(f_in, delimiter="\t")
             for row in reader:
@@ -151,7 +151,7 @@ def get_workdir(trace_file: str | Path, errors: list[tuple[str, str]]) -> dict[P
     except FileNotFoundError:
         print(f"Error: Input file {trace_file} not found.")
 
-def copy_dirs(workdirs: dict[Path:Path], outdir: Path) -> None:
+def copy_dirs(workdirs: dict[Path, Path], outdir: Path) -> None:
     """
     Uses shutil.copytree to copy workdirs to outdir with <task>/<sample_id> structure.
 
@@ -162,19 +162,25 @@ def copy_dirs(workdirs: dict[Path:Path], outdir: Path) -> None:
     Returns:
         None
     """
-    for src, dest in workdirs.items():
+    for dest, src in workdirs.items():
         try:
             full_dest = outdir.joinpath(dest)
             # Debug line to be removed
             print(f"Attempting to copy: {src} -> {full_dest}")
-            shutil.copytree(src, full_dest, dirs_exist_ok=True)
+            shutil.copytree(
+                src, 
+                full_dest, 
+                dirs_exist_ok = True,
+                symlinks = False, 
+                ignore_dangling_symlinks = True
+                )
             print(f"Copied: {src} -> {full_dest}")
         except FileNotFoundError:
             print(f"Error: Source directory does not exist: {src}")
         except PermissionError:
             print(f"Error: Permission denied for {src} or {outdir}")
 
-def link_dirs(workdirs: dict[Path:Path], outdir: Path) -> None:
+def link_dirs(workdirs: dict[Path, Path], outdir: Path) -> None:
     """
     Uses os.symlink to link workdirs to outdir with <task>/<sample_id> structure.
 
@@ -186,7 +192,7 @@ def link_dirs(workdirs: dict[Path:Path], outdir: Path) -> None:
     Returns:
         None
     """
-    for src, dest in workdirs.items():
+    for dest, src in workdirs.items():
         full_dest = outdir.joinpath(dest)
         # Create parent directories for the destination
         full_dest.parent.mkdir(parents = True, exist_ok = True)
@@ -248,6 +254,10 @@ def main():
     args = parser.parse_args()
 
     trace_file = Path(args.trace_file)
+    print(f"DEBUG: Absolute path of trace.csv: {trace_file.absolute()}")
+    print(f"DEBUG: Type of path of trace.csv: {type(trace_file)}")
+    print(f"DEBUG: Does trace.csv exist?: {trace_file.exists()}")
+
     outdir = Path(args.outdir)
     flags_results = Path(args.flags_results) if args.flags_results else None
     nft_errors = Path(args.nft_errors) if args.nft_errors else None
