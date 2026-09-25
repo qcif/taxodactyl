@@ -216,7 +216,7 @@ jobs:
               $TEST_DIR/meta/trace.csv \
               --outdir=$RUNNER_TEMP/nf-test/collected_errors \
               --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
-              --nft-errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
+              --nft_errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
               --mode="copy"
 
       - name: Debug copy error workdirs
