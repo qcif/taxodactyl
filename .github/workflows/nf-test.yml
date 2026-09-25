@@ -205,18 +205,25 @@ jobs:
           echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
           cat $RUNNER_TEMP/nf-test/flags_errors.txt
 
-      - name: Debug failed test flags
-        # Only runs if test-flags step fails or if in debug mode
-        if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
+      - name: Copy error workdirs
+        id: copy-workdirs
+        # Always run, nothing will happen if 
+        if: always()
         run: |
-          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
-          cat $RUNNER_TEMP/nf-test/flags_results.txt
+          mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
-          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
-          cat $RUNNER_TEMP/nf-test/flags_errors.txt
-          
-          echo "#### tree -a $RUNNER_TEMP/nf-test/:"
-          tree -a $RUNNER_TEMP/nf-test/
+          python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
+              $TEST_DIR/meta/trace.csv \
+              --outdir=$RUNNER_TEMP/nf-test/collected_errors
+              --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
+              --nft-errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
+              --mode="copy"
+
+      - name: Debug copy error workdirs
+        if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
+        run: |
+          echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
+          tree -a $RUNNER_TEMP/nf-test/collected_errors/
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
