@@ -204,7 +204,7 @@ def link_dirs(workdirs: dict[Path, Path], outdir: Path) -> None:
             # Debug line to be removed
             print(f"Attempting to link: {src} -> {full_dest}")
             os.symlink(src, full_dest, target_is_directory = True)
-            print(f"Copied: {src} -> {full_dest}")
+            print(f"Linked: {src} -> {full_dest}")
         except FileExistsError:
             print(f"Warning: Destination link already exists: {full_dest}")
         except PermissionError:
@@ -212,10 +212,9 @@ def link_dirs(workdirs: dict[Path, Path], outdir: Path) -> None:
 
 def main():
     """
-    Parses command-line arguments, r...
+    Entry point for script.
 
-    Returns:
-        int: Exit code (0 for success, 1 for failure).
+    Parses arguments and executes workflow.
     """
     parser = argparse.ArgumentParser()
 
