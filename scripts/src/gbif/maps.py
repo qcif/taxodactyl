@@ -8,6 +8,7 @@ import geopandas as gpd
 import pandas as pd
 from pygbif import occurrences
 
+from src.gbif.api import COL_CHECKLIST_KEY
 from src.utils.config import Config
 from src.utils.throttle import ENDPOINTS, Throttle
 
@@ -23,8 +24,8 @@ NATURALEARTH_LOWRES_URL = (
     Path(__file__).parent / 'base_maps/ne_110m_admin_0_countries.zip')
 
 
-def draw_occurrence_map(taxon_key: str, path: Path):
-    """Fetch GBIF API to get species world map by using taxonomy ID."""
+def draw_occurrence_map(taxon_id: str, path: Path):
+    """Fetch GBIF API to get species world map by using a COL taxon ID."""
     all_results = []
     offset = 0
     throttle = Throttle(ENDPOINTS.GBIF_SLOW)
@@ -32,12 +33,13 @@ def draw_occurrence_map(taxon_key: str, path: Path):
         res = throttle.with_retry(
             occurrences.search,
             kwargs={
-                'taxonKey': taxon_key,
+                'taxonKey': taxon_id,
+                'checklistKey': COL_CHECKLIST_KEY,
                 'offset': offset,
             },
             with_cache=True,
             task_description=(
-                f"GBIF occurrences.search: taxonKey={taxon_key},"
+                f"GBIF occurrences.search: taxonKey={taxon_id},"
                 f" offset={offset}"
             ),
         )

@@ -5,6 +5,7 @@ from functools import cached_property
 
 import pygbif
 
+from src.gbif import api
 from src.utils import config
 from src.utils.throttle import ENDPOINTS, Throttle
 
@@ -60,7 +61,8 @@ class GBIFRecord:
         self.genus_key = data.get('genusKey')
         self.kingdom_key = data.get('kingdomKey')
         self.species_key = data.get('speciesKey')
-        self.is_extinct = data.get('isExtinct')
+        self.taxon_id = data.get('taxonID')
+        self.is_extinct = data.get('extinct', data.get('isExtinct'))
         self.canonical_name = _get_scientific_name(data)
 
     def get(self, key, default=None):
@@ -117,7 +119,7 @@ class RelatedTaxaGBIF:
 
     def __init__(self, taxon, classification=None):
         self.classification = (
-            classification['gbif']
+            classification['gbif_col']
             if classification
             else None
         )
@@ -145,18 +147,18 @@ class RelatedTaxaGBIF:
         if kingdom_taxon := KINGDOM_TAXA.get(taxon.lower()):
             kwargs["q"] = kingdom_taxon['canonical_name']
             kwargs['rank'] = kingdom_taxon['rank']
+        if self.classification:
+            kwargs['higher_taxon_key'] = api.get_usage_key(
+                self.classification)
         throttle = Throttle(ENDPOINTS.GBIF_FAST)
         res_name = throttle.with_retry(
-            pygbif.species.name_suggest,
+            api.name_suggest,
             kwargs=kwargs,
             with_cache=True,
             task_description=f"GBIF name_suggest: {kwargs}",
         )
         for raw_record in res_name:
             record = GBIFRecord(raw_record) if raw_record else None
-
-            if not self._matches_classification(record):
-                continue
 
             if raw_record.get('status') == 'SYNONYM':
                 # Replace the synonym record with its accepted name record
@@ -182,6 +184,11 @@ class RelatedTaxaGBIF:
                     self.from_synonym = taxon
 
             if record and self._is_accepted(record):
+                if record.taxon_id is None:
+                    # /v1/species/suggest (unlike /v1/species/search or
+                    # /v1/species/{key}) doesn't return taxonID at all, so
+                    # the common non-synonym path needs an extra lookup.
+                    record.taxon_id = api.get_col_taxon_id(record.key)
                 logger.info(
                     f"Record found for taxon"
                     f" '{taxon}' - rank:{record.rank}"
@@ -195,31 +202,11 @@ class RelatedTaxaGBIF:
     def _is_accepted(self, record):
         if not record:
             return False
-        matches_classification = self._matches_classification(record)
         return bool(
-            matches_classification
-            and record.status in config.gbif_accepted_status
+            record.status in config.gbif_accepted_status
             and (self.INCLUDE_EXTINCT or record.is_extinct is not True)
             and RANK.from_string(record.rank)
         )
-
-    def _matches_classification(self, record):
-        kingdom_key = record.kingdom_key
-        matches_classification = (
-            (kingdom_key if kingdom_key is not None else self.classification)
-            == self.classification
-            if self.classification
-            else True
-        )
-        if not matches_classification:
-            logger.debug(
-                f"Record '{record.canonical_name}' does not match"
-                f" the expected classification '{self.classification}'"
-                f" (kingdomKey: {kingdom_key}) - excluding from"
-                " GBIF records."
-            )
-
-        return matches_classification
 
     def _filter_records(self, records):
         wrapped = [
@@ -233,6 +220,8 @@ class RelatedTaxaGBIF:
         ]
 
     def _get_synonym_key(self, record):
+        if record.get('acceptedKey'):
+            return record['acceptedKey']
         for key in (
             'speciesKey',
             'genusKey',
@@ -257,6 +246,7 @@ class RelatedTaxaGBIF:
         kwargs = {
             'rank': 'species',
             'higherTaxonKey': self.genus_key,
+            'datasetKey': api.COL_CHECKLIST_KEY,
             'limit': config.gbif_limit_records,
         }
 
@@ -312,13 +302,24 @@ class RelatedTaxaGBIF:
 
         return records
 
+    @cached_property
+    def genus_taxon_id(self):
+        """Resolve self.genus_key (a v1 usage key) to its COL taxonID.
+
+        The occurrence API only accepts COL taxonIDs for `genusKey`, not
+        v1 usage keys, so this extra lookup is needed before querying
+        `for_country()`.
+        """
+        return api.get_col_taxon_id(self.genus_key)
+
     def for_country(self, country_code):
         i = 0
         end_of_records = False
         records = []
         while not end_of_records:
             kwargs = {
-                'genusKey': self.genus_key,
+                'genusKey': self.genus_taxon_id,
+                'checklistKey': api.COL_CHECKLIST_KEY,
                 'country': country_code,
                 'facet': "speciesKey",
                 'facetLimit': config.gbif_limit_records,
@@ -332,7 +333,7 @@ class RelatedTaxaGBIF:
                 with_cache=True,
                 task_description=(
                     f"GBIF occurrences.search:"
-                    f" genusKey={self.genus_key},"
+                    f" genusKey={self.genus_taxon_id},"
                     f" country={country_code},"
                     f" offset={kwargs['offset']}"
                 ),
@@ -353,16 +354,16 @@ class RelatedTaxaGBIF:
             else []
         )
 
-        # Retrieve species names for unique speciesKeys
-        species_keys = []
-        for species in species_counts:
-            species_key = species.get("name")
-            if species_key:
-                species_keys.append(int(species_key))
+        # Retrieve COL taxon IDs for unique species facets
+        species_ids = [
+            species["name"]
+            for species in species_counts
+            if species.get("name")
+        ]
 
         return [
             r for r in self.relatives
-            if r.species_key in species_keys
+            if r.taxon_id in species_ids
         ]
 
 

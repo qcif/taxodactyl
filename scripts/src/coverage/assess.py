@@ -265,7 +265,7 @@ def _draw_occurrence_maps(
                 f" '{path}'..."
             )
             try:
-                draw_occurrence_map(gbif_target.key, path)
+                draw_occurrence_map(gbif_target.record.taxon_id, path)
             except Exception as e:
                 msg = ("Taxon distribution map could not be generated due to"
                        " an error in the GBIF occurrence.")
