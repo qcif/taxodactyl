@@ -1,12 +1,15 @@
 name: mock-nf-test
+# Used to test workflow using a downloaded example test fixture work directory
+# rather than running nf-test in full.
 
-# Enable workflow manually in GH UI to run
+# Workflow is currently disabled on repo; must enable workflow manually in GH UI to run.
 on:
-  push:
-    branches:
-      - nf-tests_ci_core
-  pull_request:
   workflow_dispatch:
+# Once enabled on GH UI, update the following to run as desired
+  # push:
+  #   branches:
+  #     - nf-tests_ci_core
+  # pull_request:
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
@@ -59,11 +62,18 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      
+      # This mock test work dir doesn't include nf-test_errors.txt
+      # # Convert nf-test JSON snapshot errors into a CSV review file
+      # - name: Summarise nf-test errors
 
+      # Compare the evaluated flags against the baseline test flags.
       - name: Test flags
         id: test-flags
         if: always()
         run: |
+          set +e
+
           baseline_dir=$GITHUB_WORKSPACE/test/core/flags
           echo "baseline_dir = $baseline_dir"
 
@@ -90,22 +100,40 @@ jobs:
           echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
           cat $RUNNER_TEMP/nf-test/flags_errors.txt
 
-      - name: Debug failed test flags
-        # Only runs if test-flags step fails or if in debug mode
-        if: ${{ always() && (steps.test-flags.outcome == 'failure' || runner.debug == '1') }}
+      # Copies work directories for process/samples with failed/aborted nf-test, 
+      # diff flags or diff snapshots (may be large number!) to single dir with
+      # human readable PROCESS/SAMPLE file structure for uploading as artifact.
+      # mock-test: does not include --nft_errors
+      - name: Copy error workdirs
+        id: copy-workdirs
+        # Always run, nothing will happen if 
+        if: always()
         run: |
-          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
-          cat $RUNNER_TEMP/nf-test/flags_results.txt
+          mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
-          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
-          cat $RUNNER_TEMP/nf-test/flags_errors.txt
-          
-          echo "#### tree -a $RUNNER_TEMP/nf-test/:"
-          tree -a $RUNNER_TEMP/nf-test/
+          python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
+              $TEST_DIR/meta/trace.csv \
+              --outdir=$RUNNER_TEMP/nf-test/collected_errors \
+              --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
+              --mode="copy"
+
+      - name: Debug copy error workdirs
+        # Only runs if copy-workdirs step fails or runner is in debug mode
+        if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
+        run: |
+          echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
+          tree -a $RUNNER_TEMP/nf-test/collected_errors/
+
+      - name: Upload error workdirs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: error_workdirs
+          path: ${{ runner.temp }}/nf-test/collected_errors
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
-      # Always run, nothing will happen if there are no reports in output
+        # Always run, nothing will happen if there are no reports in output
         if: always()
         run: |
           src_dir=$TEST_DIR/output
@@ -134,10 +162,12 @@ jobs:
           echo "#### tree $TEST_DIR/output/reports"
           tree $TEST_DIR/output/reports
 
-        # Install pytest and dependencies for running selenium
+      # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
         run: |
+          set +e
+          
           cd test/selenium
           python -m venv venv
           source venv/bin/activate
