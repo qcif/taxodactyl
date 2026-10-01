@@ -1,7 +1,6 @@
 """Functions for getting taxonomic data."""
 
-import pygbif
-
+from src.gbif import api
 from src.utils.throttle import ENDPOINTS, Throttle
 
 
@@ -14,7 +13,7 @@ def fetch_kingdom(phylum: str) -> str:
     }
     throttle = Throttle(ENDPOINTS.GBIF_FAST)
     res = throttle.with_retry(
-        pygbif.species.name_suggest,
+        api.name_suggest,
         kwargs=kwargs,
         with_cache=True,
         task_description=f"GBIF name_suggest: {kwargs}",
