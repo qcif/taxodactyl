@@ -2,11 +2,14 @@ name: nf-test
 
 # If not running on push, check workflow is enabled on GH UI
 on:
-  push:
-    branches:
-      - nf-tests_ci_core
-  pull_request:
-  workflow_dispatch:
+    # To run workflow, trigger manually using GH UI
+    workflow_dispatch:
+    # Update to enable trigger on push of selected branch or on pull request
+    # push:
+    #   branches:
+    #     - nf-tests_ci_core
+    # pull_request:
+
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
@@ -125,7 +128,7 @@ jobs:
           # Print the resolved config so the run log shows exactly what executed
           cat test/core/nextflow.config
 
-      # Run the core test file explicitly rather than a bare `nf-test test`,
+      # Run the core test file explicitly rather than a bare `nf-test test`
       # so this job doesn't silently pick up whatever nf-test.config last pointed to
       # print both standard output and errors to file and console 
       - name: Run core nf-test
@@ -146,7 +149,7 @@ jobs:
 
       # Print trace.csv, temp file structure and command.err files
       - name: Debug failed nf-test
-        # Only runs if a nf-test step fails or if in debug mode
+        # Only runs if nf-test step fails or if in debug mode
         if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
         run: |
           echo "##### trace.csv:"
@@ -162,7 +165,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
+      
+      # Convert nf-test JSON snapshot errors into a CSV review file
       - name: Summarise nf-test errors
         if: always()
         run: |
@@ -173,6 +177,7 @@ jobs:
           echo "#### $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv"
           cat $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv
 
+      # Compare the evaluated flags against the baseline test flags.
       - name: Test flags
         id: test-flags
         if: always()
@@ -205,6 +210,9 @@ jobs:
           echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
           cat $RUNNER_TEMP/nf-test/flags_errors.txt
 
+      # Copies work directories for process/samples with failed/aborted nf-test, 
+      # diff flags or diff snapshots (may be large number!) to single dir with
+      # human readable PROCESS/SAMPLE file structure for uploading as artifact.
       - name: Copy error workdirs
         id: copy-workdirs
         # Always run, nothing will happen if 
@@ -220,6 +228,7 @@ jobs:
               --mode="copy"
 
       - name: Debug copy error workdirs
+        # Only runs if copy-workdirs step fails or runner is in debug mode
         if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
@@ -234,7 +243,7 @@ jobs:
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
-      # Always run, nothing will happen if there are no reports in output
+        # Always run, nothing will happen if there are no reports in output
         if: always()
         run: |
           src_dir=$TEST_DIR/output
@@ -263,7 +272,7 @@ jobs:
           echo "#### tree $TEST_DIR/output/reports"
           tree $TEST_DIR/output/reports
 
-        # Install pytest and dependencies for running selenium
+      # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
         run: |
