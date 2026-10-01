@@ -26,14 +26,17 @@ KINGDOM_TAXA = {
     "animals": {"rank": "Kingdom", "canonical_name": "animalia"},
     "animalia": {"rank": "Kingdom", "canonical_name": "animalia"},
     "metazoa": {"rank": "Kingdom", "canonical_name": "animalia"},
-    "bacteria": {"rank": "Kingdom", "canonical_name": "bacteria"},
-    "bacterium": {"rank": "Kingdom", "canonical_name": "bacteria"},
-    "archaea": {"rank": "Kingdom", "canonical_name": "archaea"},
-    "archaeabacteria": {"rank": "Kingdom", "canonical_name": "archaea"},
-    "virus": {"rank": "Kingdom", "canonical_name": "viruses"},
-    "viruses": {"rank": "Kingdom", "canonical_name": "viruses"},
-    "viroid": {"rank": "Kingdom", "canonical_name": "viruses"},
-    "viral": {"rank": "Kingdom", "canonical_name": "viruses"},
+    # Bacteria and Archaea are DOMAINs (not KINGDOMs) under the COL
+    # backbone, and Viruses is an UNRANKED root - see finding 4 in
+    # scripts/tasks/01-gbif-api-refactor.md.
+    "bacteria": {"rank": "Domain", "canonical_name": "bacteria"},
+    "bacterium": {"rank": "Domain", "canonical_name": "bacteria"},
+    "archaea": {"rank": "Domain", "canonical_name": "archaea"},
+    "archaeabacteria": {"rank": "Domain", "canonical_name": "archaea"},
+    "virus": {"rank": "Unranked", "canonical_name": "viruses"},
+    "viruses": {"rank": "Unranked", "canonical_name": "viruses"},
+    "viroid": {"rank": "Unranked", "canonical_name": "viruses"},
+    "viral": {"rank": "Unranked", "canonical_name": "viruses"},
     "protozoa": {"rank": "Kingdom", "canonical_name": "protista"},
     "protozoan": {"rank": "Kingdom", "canonical_name": "protista"},
     "protist": {"rank": "Kingdom", "canonical_name": "protista"},
@@ -93,6 +96,11 @@ class RANK:
     PHYLUM = 6
     KINGDOM = 7
     DOMAIN = 8
+    # COL's root taxa (e.g. Viruses) are rank UNRANKED rather than
+    # KINGDOM/DOMAIN. Must be distinct from NONE/0 (a falsy value would
+    # make `_is_accepted()` wrongly reject an otherwise-valid record, and
+    # `not gbif_target.rank` in assess.py would treat it as a GBIF error).
+    UNRANKED = 9
 
     @classmethod
     def from_string(cls, rank: str) -> str:
