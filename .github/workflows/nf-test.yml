@@ -67,7 +67,7 @@ jobs:
       # across CI runs matters more than always testing the latest release
       - name: Install nf-test
         run: |
-          wget -qO- https://get.nf-test.com | bash
+          wget -qO- https://get.nf-test.com | bash -s "$NFT_VER"
           sudo mv nf-test /usr/local/bin/
 
       # core test scenario runs with real blast against frozen versions of
