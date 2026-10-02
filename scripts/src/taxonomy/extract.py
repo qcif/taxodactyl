@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 import threading
 
+from copy import copy
 from markupsafe import Markup
 
 from src.utils import errors, ncbi
@@ -271,7 +272,7 @@ def _parse_taxonkit_lineage(output: str) -> list[TaxonLineage]:
 def _parse_and_filter_taxonkit_name2taxid(
     stdout: str,
     higher_classification: dict,
-) -> list[TaxonkitName2TaxidResult]:
+) -> list[TaxonLineage | TaxonkitName2TaxidResult]:
     """Extract taxids from taxonkit name2taxid output.
 
     Filter taxonkit name2taxid output lines by higher classification."""
@@ -368,7 +369,7 @@ def _parse_and_filter_taxonkit_name2taxid(
 
     for taxid in matching_taxids:
         for name_result in taxid_to_results.get(taxid, []):
-            lineage = taxid_to_lineage[taxid]
+            lineage = copy(taxid_to_lineage[taxid])
             lineage.query_taxon = name_result.query_taxon
             lineage.evaluate()
             filtered_name_results.append(lineage)
