@@ -291,9 +291,6 @@ def _parse_and_filter_taxonkit_name2taxid(
             "Unexpected format in taxonkit stdout. This may result in missing"
             " taxid information:\n" + line)
 
-    if not higher_classification:
-        return name_results
-
     # Separate results with and without taxids, and group results by taxid.
     taxid_to_results: dict[str, list[TaxonkitName2TaxidResult]] = {}
     filtered_name_results: list[TaxonLineage] = []
@@ -339,15 +336,16 @@ def _parse_and_filter_taxonkit_name2taxid(
     for taxid, taxon_lineage in taxid_to_lineage.items():
         if not taxid:
             continue
-        for rank, taxon in taxon_lineage.taxonomy:
-            if (
-                rank.lower()
-                == higher_classification['ncbi']['rank']
-                and taxon.lower()
-                == higher_classification['ncbi']['taxon']
-            ):
-                matching_taxids.add(taxid)
-                break
+        if higher_classification:
+            for rank, taxon in taxon_lineage.taxonomy:
+                if (
+                    rank.lower() == higher_classification['ncbi']['rank']
+                    and taxon.lower() == higher_classification['ncbi']['taxon']
+                ):
+                    matching_taxids.add(taxid)
+                    break
+        else:
+            matching_taxids.add(taxid)
 
     if taxid_to_results and not matching_taxids:
         observed_ranks = {
