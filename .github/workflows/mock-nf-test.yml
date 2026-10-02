@@ -93,12 +93,14 @@ jobs:
             $RUNNER_TEMP/nf-test/flags/evaluated \
             > $RUNNER_TEMP/nf-test/flags_results.txt \
             2> $RUNNER_TEMP/nf-test/flags_errors.txt
+          flags_status=$?
 
           echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
           cat $RUNNER_TEMP/nf-test/flags_results.txt
 
           echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
           cat $RUNNER_TEMP/nf-test/flags_errors.txt
+          exit "$flags_status"
 
       # Copies work directories for process/samples with failed/aborted nf-test, 
       # diff flags or diff snapshots (may be large number!) to single dir with
