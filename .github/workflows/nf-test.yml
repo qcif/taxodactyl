@@ -5,9 +5,9 @@ on:
     # To run workflow, trigger manually using GH UI
     workflow_dispatch:
     # Update to enable trigger on push of selected branch or on pull request
-    # push:
-    #   branches:
-    #     - nf-tests_ci_core
+    push:
+      branches:
+        - nf-tests_ci_core
     # pull_request:
 
 
