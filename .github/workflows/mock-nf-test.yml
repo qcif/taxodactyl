@@ -1,0 +1,195 @@
+name: mock-nf-test
+# Used to test workflow using a downloaded example test fixture work directory
+# rather than running nf-test in full.
+
+# Workflow is currently disabled on repo; must enable workflow manually in GH UI to run.
+on:
+  workflow_dispatch:
+# Once enabled on GH UI, update the following to run as desired
+  # push:
+  #   branches:
+  #     - nf-tests_ci_core
+  # pull_request:
+
+# Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NXF_ANSI_LOG: false
+  NFT_VER: "0.9.5"
+  MOCK_BLAST: false
+
+jobs:
+  nf-test:
+    name: core_test
+    runs-on: ubuntu-latest
+    environment: testing
+    # Can extend strategy in the future for different versions + nf-test ver
+    strategy:
+      matrix:
+        python-version: [3.12]
+        nextflow-version: [25.04.6]
+
+    steps:
+      # Enable creation of containers as an unprivileged user
+      - name: Enable unprivileged user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
+      - uses: actions/checkout@v4
+
+      - name: Download mock test folder
+        run: |
+          wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/fixtures/nf-test/mock_test_20260804.tar.gz
+          mkdir -p $RUNNER_TEMP/nf-test/tests/mock-test
+          tar -xf mock_test_20260804.tar.gz -C $RUNNER_TEMP/nf-test/tests/mock-test
+
+      # Test folder ends in unknown hash; set as env var here for later steps
+      - name: Set test folder as env var
+        run: |
+          dirs=($RUNNER_TEMP/nf-test/tests/*)
+          test_dir="${dirs[0]}"
+          echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
+          echo "Saved test folder ending in unknown hash as env var for future steps."
+          echo "TEST_DIR=$test_dir"
+
+      - name: Set up Python
+        if: always()
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      # This mock test work dir doesn't include nf-test_errors.txt
+      # # Convert nf-test JSON snapshot errors into a CSV review file
+      # - name: Summarise nf-test errors
+
+      # Compare the evaluated flags against the baseline test flags.
+      - name: Test flags
+        id: test-flags
+        if: always()
+        run: |
+          set +e
+
+          baseline_dir=$GITHUB_WORKSPACE/test/core/flags
+          echo "baseline_dir = $baseline_dir"
+
+          evaluated_dir=$TEST_DIR
+          echo "evaluated_dir = $evaluated_dir"
+
+          mkdir -p $RUNNER_TEMP/nf-test/flags/evaluated
+          echo "collect_flags.sh: Flags from test run will be collected to $RUNNER_TEMP/nf-test/flags/evaluated"
+
+          bash $GITHUB_WORKSPACE/bin/collect_flags.sh \
+            $evaluated_dir \
+            $RUNNER_TEMP/nf-test/flags/evaluated
+
+          echo "test_flags.py: Flag results and errors will be saved to $RUNNER_TEMP/nf-test/flags_results.txt | flags_errors.txt"
+          python $GITHUB_WORKSPACE/bin/test_flags.py \
+            $baseline_dir \
+            $RUNNER_TEMP/nf-test/flags/evaluated \
+            > $RUNNER_TEMP/nf-test/flags_results.txt \
+            2> $RUNNER_TEMP/nf-test/flags_errors.txt
+          flags_status=$?
+
+          echo "#### $RUNNER_TEMP/nf-test/flags_results.txt"
+          cat $RUNNER_TEMP/nf-test/flags_results.txt
+
+          echo "#### $RUNNER_TEMP/nf-test/flags_errors.txt"
+          cat $RUNNER_TEMP/nf-test/flags_errors.txt
+          exit "$flags_status"
+
+      # Copies work directories for process/samples with failed/aborted nf-test, 
+      # diff flags or diff snapshots (may be large number!) to single dir with
+      # human readable PROCESS/SAMPLE file structure for uploading as artifact.
+      # mock-test: does not include --nft_errors
+      - name: Copy error workdirs
+        id: copy-workdirs
+        # Always run, nothing will happen if 
+        if: always()
+        run: |
+          mkdir -p $RUNNER_TEMP/nf-test/collected_errors
+
+          python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
+              $TEST_DIR/meta/trace.csv \
+              --outdir=$RUNNER_TEMP/nf-test/collected_errors \
+              --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
+              --mode="copy"
+
+      - name: Debug copy error workdirs
+        # Only runs if copy-workdirs step fails or runner is in debug mode
+        if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
+        run: |
+          echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
+          tree -a $RUNNER_TEMP/nf-test/collected_errors/
+
+      - name: Upload error workdirs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: error_workdirs
+          path: ${{ runner.temp }}/nf-test/collected_errors
+
+      # Selenium pytest test_reports.py requires all reports in a dir
+      - name: Soft link reports for pytest
+        # Always run, nothing will happen if there are no reports in output
+        if: always()
+        run: |
+          src_dir=$TEST_DIR/output
+          echo "Dir to be searched $src_dir"
+
+          dest_dir=$TEST_DIR/output/reports
+          echo "Reports will be soft linked to dir $dest_dir"
+
+          mkdir -p $dest_dir
+
+          # Find all "report*.html" files and link them into dest_dir
+          find "$src_dir" -type f -name "report*.html" | while IFS= read -r file; do
+              base_name=$(basename "$file")
+              dest_path="$dest_dir/$base_name"
+
+              # Skip if link or file already exists
+              if [[ -e "$dest_path" ]]; then
+                  echo "Skipping: $dest_path already exists."
+                  continue
+              fi
+
+              ln -s "$file" "$dest_path"
+              echo "Linked: $file -> $dest_path"
+          done
+
+          echo "#### tree $TEST_DIR/output/reports"
+          tree $TEST_DIR/output/reports
+
+      # Install pytest and dependencies for running selenium
+      - name: Install and run pytest
+        if: always()
+        run: |
+          set +e
+          
+          cd test/selenium
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+          reports_dir=$TEST_DIR/output/reports
+
+          # Check if the folder contains at least one report
+          if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
+            echo "Running pytest"
+            pytest test_reports.py -v --dir "$reports_dir"
+            echo "Running ./testkit.py render"
+            ./testkit.py render
+          else
+              echo "Reports folder is empty."
+          fi
+
+      - name: Upload review.html
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: review.html
+          path: ${{ github.workspace }}/test/selenium/review.html
