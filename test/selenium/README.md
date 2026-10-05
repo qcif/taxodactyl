@@ -175,3 +175,17 @@ The set of components, the fields inside each, and each field's type are all dec
 Whitespace (including newlines and leading indentation from HTML) is collapsed to single spaces before every string comparison and on YAML write, so cosmetic wrapping doesn't cause spurious drift.
 
 Leave `value` empty (or omit it) to keep an assertion in the file without checking it.
+
+### Tolerance (`flex`)
+
+Fields that reflect a live, non-static resource (e.g. GenBank record counts under `database_coverage`) can drift slightly between workflow runs for reasons that aren't bugs. Those fields carry an optional `flex` key alongside `type`, a fraction (e.g. `0.1` for ±10%) within which a numeric `list`/`int`/`float` value is treated as a pass:
+
+```yaml
+- id: record_count
+  type: list
+  flex: 0.1
+  value:
+  - '495'
+```
+
+`flex` is **not** something to hand-edit in a fixture. It's declared once, in code, next to the collector that extracts the field (see `GENBANK_FLEX_FIELDS` in [lib/database_coverage.py](lib/database_coverage.py)), and is stamped onto the fixture by `testkit ingest`/`testkit promote` purely so reviewers can see the tolerance in effect. `testkit promote` always offers every value that differs from the observed report — including ones within tolerance — so a fixture never silently drifts out of sync with the real report; `flex` only relaxes pass/fail for `pytest`.

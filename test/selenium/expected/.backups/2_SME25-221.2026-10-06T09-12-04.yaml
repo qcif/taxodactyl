@@ -1,41 +1,34 @@
-sample_id: MG220521_3
-date: '2026-08-04T00:37:50'
+sample_id: SME25-221
+date: '2026-07-11T06:42:21'
 components:
 - id: input_sequence_modal
   assertions:
   - id: sample_id
     type: contains
-    value: MG220521_3
+    value: SME25-221
   - id: dna_sequence
     type: contains
-    value: ATCATAAAAATATCAGAATA
+    value: CATAAAGATATT
 - id: overview_tab
   assertions:
   - id: conclusion_text
     type: contains
-    value: Inconclusive
+    value: inconclusive
   - id: species_found
     type: list
-    value:
-    - Pseudococcus longispinus
-    - Pseudococcus nr. longispinus DSPKJ168-09
-    - Pseudococcus sp. MJMB-00146
-    - Pseudococcus nr. longispinus DSPKJ169-09
-    - Pseudococcus nr. longispinus DSPKJ140-09
-    - + 1 more species...
-    - Pseudococcus
+    value: ''
   - id: toi_row_count
     type: int
     value: '2'
   - id: toi_green_tick_first_row
     type: bool
-    value: 'TRUE'
+    value: 'FALSE'
   - id: conclusion_flag
     type: contains
-    value: Flag 1D
+    value: Flag 1E
   - id: toi_flag
     type: contains
-    value: Flag 2A
+    value: Flag 2B
   - id: preliminary_flag
     type: contains
     value: Flag 7NA
@@ -44,10 +37,10 @@ components:
     value: '0'
   - id: matching_species_moderate
     type: int
-    value: '6'
+    value: '0'
   - id: matching_species_weak
     type: int
-    value: '55'
+    value: '230'
 - id: candidate_tab
   assertions:
   - id: tab_title
@@ -55,7 +48,7 @@ components:
     value: Identification of candidate species
   - id: candidate_flag_text
     type: contains
-    value: Flag 1D
+    value: Flag 1E
   - id: strong_alginment_identity
     type: float
     value: '98.5'
@@ -70,169 +63,103 @@ components:
     value: '0'
   - id: moderate_hits
     type: int
-    value: '35'
+    value: '0'
   - id: weak_hits
     type: int
-    value: '465'
+    value: '499'
   - id: lowest_hit
     type: float
-    value: '90.2'
+    value: '82.3'
 - id: candidate_tab_table
   assertions:
   - id: species
     type: list
-    value:
-    - Pseudococcus longispinus
-    - Pseudococcus nr. longispinus DSPKJ168-09
-    - Pseudococcus sp. MJMB-00146
-    - Pseudococcus nr. longispinus DSPKJ169-09
-    - Pseudococcus nr. longispinus DSPKJ140-09
-    - Delottococcus aberiae
+    value: ''
   - id: no_of_hits
     type: list
-    value:
-    - '30'
-    - '1'
-    - '1'
-    - '1'
-    - '1'
-    - '4'
+    value: ''
   - id: top_identity
     type: list
-    value:
-    - '97.7'
-    - '95.2'
-    - '95.0'
-    - '94.9'
-    - '94.9'
-    - '93.7'
+    value: ''
   - id: median_identity
     type: list
-    value:
-    - '96.1'
-    - '95.2'
-    - '95.0'
-    - '94.9'
-    - '94.9'
-    - '93.4'
+    value: ''
   - id: min_identity
     type: list
-    value:
-    - '95.2'
-    - '95.2'
-    - '95.0'
-    - '94.9'
-    - '94.9'
-    - '93.2'
+    value: ''
   - id: top_e_value
     type: list
-    value:
-    - '0.0'
-    - '0.0'
-    - '0.0'
-    - '0.0'
-    - '0.0'
-    - '0.0'
+    value: ''
   - id: publication
     type: list
-    value:
-    - NA
-    - NA
-    - NA
-    - NA
-    - NA
-    - NA
+    value: ''
 - id: database_coverage
   pmi:
-  - assertions:
+  - name: Eupodidae
+    assertions:
     - id: title
       type: list
-      value:
-      - Database coverage of Preliminary Morphology ID Pseudococcus
+      value: Database coverage of Preliminary Morphology ID Eupodidae
     - id: flag_text1
       type: list
-      value:
-      - 5.1A
+      value: 5.1NA
     - id: record_count
       type: list
-      flex: 0.1
       value:
-      - '495'
+      - '4734'
     - id: flag_text2
       type: list
-      value:
-      - 5.2B
+      value: 5.2NA
     - id: species_count
       type: list
-      flex: 0.1
-      value:
-      - '20'
+      value: ''
     - id: species_total
       type: list
-      flex: 0.1
-      value:
-      - '187'
+      value: ''
     - id: min_bar_count
       type: min
-      value: '187'
+      value: ''
     - id: first_bar_species
       type: list
-      value:
-      - Pseudococcus comstocki
+      value: ''
     - id: first_bar_count
       type: list
-      flex: 0.1
-      value:
-      - '86'
+      value: ''
     - id: final_text
       type: list
-      value:
-      - ''
+      value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
   toi:
   - assertions:
     - id: title
       type: list
-      value:
-      - Database coverage of Taxon of Interest Pseudococcus
+      value: null
     - id: flag_text1
       type: list
-      value:
-      - 5.1A
+      value: null
     - id: record_count
       type: list
-      flex: 0.1
-      value:
-      - '495'
+      value: null
     - id: flag_text2
       type: list
-      value:
-      - 5.2B
+      value: null
     - id: species_count
       type: list
-      flex: 0.1
-      value:
-      - '20'
+      value: null
     - id: species_total
       type: list
-      flex: 0.1
-      value:
-      - '187'
+      value: null
     - id: min_bar_count
       type: min
-      value: '187'
+      value: null
     - id: first_bar_species
       type: list
-      value:
-      - Pseudococcus comstocki
+      value: null
     - id: first_bar_count
       type: list
-      flex: 0.1
-      value:
-      - '86'
+      value: null
     - id: final_text
       type: list
-      value:
-      - ''
+      value: null
   candidate: []
 - id: publication_modal
   candidates: []
@@ -246,25 +173,25 @@ components:
     value: '1'
   - id: accession
     type: contains
-    value: MG866190
+    value: OX030922
   - id: subject
     type: contains
-    value: Pseudococcus longispinus clone 13-LCO cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial
+    value: 'Anopheles ziemanni genome assembly, organelle: mitochondrion'
   - id: length
     type: int
-    value: '476'
+    value: '290'
   - id: identity
     type: float
-    value: '97.7'
+    value: '89.0'
   - id: bitscore
     type: float
-    value: '856.83'
+    value: '321.619'
   - id: evalue
     type: contains
-    value: '0.00e+00'
+    value: '1.04e-82'
   - id: coverage
     type: float
-    value: '70.0'
+    value: '42.5'
   - id: alignment_text
     type: bool
     value: 'TRUE'
@@ -285,35 +212,35 @@ components:
     value: Insecta
   - id: order
     type: contains
-    value: Hemiptera
+    value: Diptera
   - id: family
     type: contains
-    value: Pseudococcidae
+    value: Culicidae
   - id: genus
     type: contains
-    value: Pseudococcus
+    value: Anopheles
   - id: species
     type: contains
-    value: Pseudococcus longispinus
+    value: Anopheles ziemanni
 - id: tree_modal
   assertions:
   - id: title
     type: contains
-    value: Homology Tree
+    value: ''
   - id: min_node
     type: min
-    value: '22'
+    value: ''
 - id: toi_tab
   assertions:
   - id: toi_flag_text
     type: contains
-    value: Flag 2A
+    value: Flag 2B
   - id: toi_outcome
     type: contains
-    value: At least one of the taxa of interest matched the candidates species.
+    value: None of the taxa of interest
   - id: toi_reasoning
     type: contains
-    value: Taxon of interest detected in candidate species.
+    value: Taxon of interest NOT detected
   - id: toi_number_of_rows
     type: int
     value: '1'
@@ -321,28 +248,24 @@ components:
   assertions:
   - id: toi_match
     type: bool
-    value: null
+    value:
+    - 'FALSE'
   - id: toi
     type: list
     value:
-    - Pseudococcus
+    - Eupodidae
   - id: match_rank
     type: list
-    value:
-    - genus
+    value: ''
   - id: match_taxon
     type: list
-    value:
-    - Pseudococcus
+    value: ''
   - id: match_species
     type: list
-    value:
-    - Pseudococcus longispinus
+    value: ''
   - id: match_accession
     type: list
-    value:
-    - MG866190
+    value: ''
   - id: match_identity
     type: list
-    value:
-    - '97.7'
+    value: ''

@@ -123,6 +123,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '5266'
     - id: flag_text2
@@ -131,10 +132,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '596'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '1680'
     - id: min_bar_count
@@ -146,6 +149,7 @@ components:
       - Drosophila affinis
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '1162'
     - id: final_text
@@ -164,6 +168,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '144'
     - id: flag_text2
@@ -172,10 +177,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '596'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '1680'
     - id: min_bar_count
@@ -187,6 +194,7 @@ components:
       - Drosophila affinis
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '1162'
     - id: final_text
@@ -205,6 +213,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '144'
     - id: flag_text2
@@ -213,10 +222,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '596'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '1680'
     - id: min_bar_count
@@ -228,6 +239,7 @@ components:
       - Drosophila affinis
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '1162'
     - id: final_text
@@ -245,6 +257,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '6'
     - id: flag_text2
@@ -253,10 +266,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '596'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '1680'
     - id: min_bar_count
@@ -268,6 +283,7 @@ components:
       - Drosophila affinis
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '1162'
     - id: final_text

@@ -245,6 +245,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '36'
     - id: flag_text2
@@ -253,10 +254,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '295'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '956'
     - id: min_bar_count
@@ -268,6 +271,7 @@ components:
       - Aedes albopictus
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '5801'
     - id: final_text
@@ -286,6 +290,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '36'
     - id: flag_text2
@@ -294,10 +299,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '295'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '956'
     - id: min_bar_count
@@ -309,6 +316,7 @@ components:
       - Aedes albopictus
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '5801'
     - id: final_text

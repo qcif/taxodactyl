@@ -10,7 +10,8 @@ Flow:
     4. For accepted drifts, update the assertion's raw_value in-place.
     5. Back up the previous YAML into expected/.backups/ (keep last 3).
     6. Rewrite the YAML via Report.to_yaml(source='expected').
-    7. Replace the reference HTML in expected/reports/ with the observed one.
+    7. Replace the reference HTML in <yaml dir>/reports/ with the observed
+       one.
 """
 
 import shutil
@@ -26,7 +27,9 @@ from lib.report import extract_report_date, find_report_html, parse_yaml
 DEFAULT_REPORTS_DIR = Path("expected/reports")
 BACKUP_DIR = Path("expected/.backups")
 BACKUPS_TO_KEEP = 3
-REFERENCE_DIR = Path("expected/reports")
+# Reference HTMLs live in a `reports/` dir beside each fixture YAML
+# (e.g. expected/reports/, expected/test/reports/).
+REFERENCE_DIRNAME = "reports"
 
 
 def _prompt(context: str) -> str:
@@ -85,14 +88,23 @@ def _update_reference_html(
 
     The destination filename mirrors the fixture YAML stem so timestamps
     are not embedded: e.g. `1_SME25-218.html`.  Any existing reference
-    HTML for this sample_id is removed first.  Returns the destination path.
+    HTML for this sample_id is removed once the new one is in place.
+    Returns the destination path.
     """
-    REFERENCE_DIR.mkdir(parents=True, exist_ok=True)
-    old = find_report_html(sample_id, REFERENCE_DIR)
-    if old:
+    reference_dir = yaml_path.parent / REFERENCE_DIRNAME
+    reference_dir.mkdir(parents=True, exist_ok=True)
+    dest = reference_dir / f"{yaml_path.stem}.html"
+    old = find_report_html(sample_id, reference_dir)
+
+    # `observed_html` may already be `dest` or `old` (promoting against the
+    # fixture's own reports dir) - copy first so an old file sharing a path
+    # with `observed_html` is never deleted before its content has safely
+    # landed at `dest`.
+    # Paths are resolved so e.g. an absolute `-d` still matches.
+    if dest.resolve() != observed_html.resolve():
+        shutil.copy2(observed_html, dest)
+    if old and old.resolve() != dest.resolve():
         old.unlink()
-    dest = REFERENCE_DIR / f"{yaml_path.stem}.html"
-    shutil.copy2(observed_html, dest)
     return dest
 
 
@@ -121,19 +133,30 @@ def promote_yaml(
     finally:
         driver.quit()
 
-    drifted = report.drifted()
-    if not drifted:
+    # strict=True so promote offers every value that differs from the
+    # observed report, even ones within a field's flex tolerance - flex
+    # should only relax pass/fail in pytest, never hide drift from a
+    # human review. The fixture's `flex` is set from collector code during
+    # collect_all above, so it may also have changed independent of value
+    # drift (e.g. a field's tolerance was added or tweaked in code).
+    drifted = report.drifted(strict=True)
+    flex_changed = report.flex_changed()
+
+    if not drifted and not flex_changed:
         print(f"{yaml_path.name}: no drift detected.")
         return 0
 
-    print(f"{yaml_path.name}: {len(drifted)} drifted assertion(s).")
+    if drifted:
+        print(f"{yaml_path.name}: {len(drifted)} drifted assertion(s).")
     state = {"accept_all": auto_yes, "quit": False}
     accepted = 0
 
     for a in drifted:
         new_value = a.observed_for_yaml()
+        flex_label = f" ±{a.flex:.0%}" if a.flex is not None else ""
         print(
-            f"\n  [{a.component}.{a.assertion_id}] ({a.assertion_type})"
+            f"\n  [{a.component}.{a.assertion_id}] "
+            f"({a.assertion_type}{flex_label})"
         )
         print(f"    expected: {a.expected!r}")
         print(f"    observed: {new_value!r}")
@@ -143,7 +166,11 @@ def promote_yaml(
         if state["quit"]:
             break
 
-    if accepted:
+    if flex_changed:
+        print(f"\n{yaml_path.name}: {len(flex_changed)} flex update(s) "
+              "from collector code (applied automatically).")
+
+    if accepted or flex_changed:
         backup = _backup(yaml_path)
         html_date = extract_report_date(html_path.name)
         if html_date:
@@ -159,7 +186,8 @@ def promote_yaml(
             backup_label = backup
             ref_label = ref_html
         print(
-            f"\n{yaml_path.name}: wrote {accepted} update(s). "
+            f"\n{yaml_path.name}: wrote {accepted} value update(s), "
+            f"{len(flex_changed)} flex update(s). "
             f"Backup: {backup_label} | Reference HTML: {ref_label}"
         )
     else:
