@@ -267,5 +267,27 @@ class TestFetchRelatedSpecies(unittest.TestCase):
         self.assertEqual(result[0].taxon_id, 'MT4KV')
 
 
+class TestNameSuggestWrapper(unittest.TestCase):
+    """api.name_suggest exists specifically because pygbif silently drops
+    `datasetKey` (see api.py docstring), so its request-building must be
+    tested directly against the underlying `gbif_GET` call rather than
+    through a mock of `name_suggest` itself."""
+
+    @patch('src.gbif.api.gbif_GET')
+    def test_name_suggest_builds_expected_request(self, mock_gbif_get):
+        api.name_suggest(q='Prunella', limit=20, higher_taxon_key=296374190)
+
+        mock_gbif_get.assert_called_once_with(
+            api.GBIF_SUGGEST_URL,
+            {
+                'q': 'Prunella',
+                'rank': None,
+                'limit': 20,
+                'datasetKey': api.COL_CHECKLIST_KEY,
+                'higherTaxonKey': 296374190,
+            },
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
