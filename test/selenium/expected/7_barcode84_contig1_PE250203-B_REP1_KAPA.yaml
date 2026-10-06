@@ -124,6 +124,7 @@ components:
       - 5.1NA
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '23155'
     - id: flag_text2
@@ -132,10 +133,12 @@ components:
       - 5.2NA
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - ''
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - ''
     - id: min_bar_count
@@ -147,6 +150,7 @@ components:
       - ''
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: final_text
@@ -165,6 +169,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '198'
     - id: flag_text2
@@ -173,10 +178,12 @@ components:
       - ''
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '1'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '1'
     - id: min_bar_count
@@ -188,6 +195,7 @@ components:
       - Edales pandava
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '198'
     - id: final_text
@@ -206,6 +214,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '43'
     - id: flag_text2
@@ -214,10 +223,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '4'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '33'
     - id: min_bar_count
@@ -229,6 +240,7 @@ components:
       - Euchrysops cnejus
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '43'
     - id: final_text
@@ -246,6 +258,7 @@ components:
       - ''
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: flag_text2
@@ -254,10 +267,12 @@ components:
       - ''
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - ''
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - ''
     - id: min_bar_count
@@ -269,6 +284,7 @@ components:
       - ''
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: final_text

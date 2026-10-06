@@ -71,6 +71,7 @@ def _drift_records(report) -> list:
             "component": a.component,
             "assertion_id": a.assertion_id,
             "type": a.assertion_type,
+            "flex": a.flex,
             "expected": _serialise_value(a.expected),
             "observed": _serialise_value(a.observed),
         }

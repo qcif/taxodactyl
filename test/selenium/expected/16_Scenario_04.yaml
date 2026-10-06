@@ -117,6 +117,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '56'
     - id: flag_text2
@@ -125,10 +126,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '15'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '124'
     - id: min_bar_count
@@ -140,6 +143,7 @@ components:
       - Bruchophagus roddi
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '18'
     - id: final_text
@@ -158,6 +162,7 @@ components:
       - ''
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: flag_text2
@@ -166,10 +171,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '15'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '124'
     - id: min_bar_count
@@ -181,6 +188,7 @@ components:
       - Bruchophagus roddi
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '18'
     - id: final_text
@@ -198,6 +206,7 @@ components:
       - ''
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: flag_text2
@@ -206,10 +215,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '15'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '124'
     - id: min_bar_count
@@ -221,6 +232,7 @@ components:
       - Bruchophagus roddi
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '18'
     - id: final_text
@@ -238,6 +250,7 @@ components:
       - ''
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: flag_text2
@@ -246,10 +259,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '15'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '124'
     - id: min_bar_count
@@ -261,6 +276,7 @@ components:
       - Bruchophagus roddi
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '18'
     - id: final_text
@@ -279,6 +295,7 @@ components:
       - ''
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: flag_text2
@@ -287,10 +304,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '15'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '124'
     - id: min_bar_count
@@ -302,6 +321,7 @@ components:
       - Bruchophagus roddi
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '18'
     - id: final_text

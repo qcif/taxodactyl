@@ -17,6 +17,17 @@ from lib.schema import GROUPED_COMPONENTS
 SUMMARY_TAB_ID = "results-summary-tab"
 SUMMARY_PANE_ID = "results-summary"
 
+# These fields are counts pulled from GenBank, which is not a static
+# resource - records are added/removed between workflow runs. Allow +/-10%
+# drift before flagging a test failure.
+GENBANK_FLEX = 0.1
+GENBANK_FLEX_FIELDS = {
+    "record_count": GENBANK_FLEX,
+    "species_count": GENBANK_FLEX,
+    "species_total": GENBANK_FLEX,
+    "first_bar_count": GENBANK_FLEX,
+}
+
 
 def _find_text(modal, css_selector, default=""):
     elements = modal.find_elements(By.CSS_SELECTOR, css_selector)
@@ -59,6 +70,7 @@ class CoverageRowCollector:
     Fields correspond to GROUPED_COMPONENTS['database_coverage']['fields'].
     """
     component_id = "database_coverage"
+    flex = GENBANK_FLEX_FIELDS
 
     def __init__(self, driver):
         self._driver = driver
@@ -159,7 +171,8 @@ def _collect_rows_into_group(
         report.get_or_extend_group_row(
             "database_coverage", group, idx)
         report.set_observed(
-            "database_coverage", row_dict, index=idx, group=group)
+            "database_coverage", row_dict, index=idx, group=group,
+            flex=row_collector.flex)
         idx += 1
 
 

@@ -212,6 +212,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '289'
     - id: flag_text2
@@ -220,10 +221,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '66'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '300'
     - id: min_bar_count
@@ -235,6 +238,7 @@ components:
       - Plantago major
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '38'
     - id: final_text
@@ -253,6 +257,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '27'
     - id: flag_text2
@@ -261,10 +266,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '62'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '146'
     - id: min_bar_count
@@ -276,6 +283,7 @@ components:
       - Nicotiana benthamiana
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '34'
     - id: final_text

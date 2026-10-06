@@ -1,14 +1,14 @@
-sample_id: barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199
-date: '2026-08-04T00:37:50'
+sample_id: VE24-1351_COI
+date: '2026-07-09T10:46:05'
 components:
 - id: input_sequence_modal
   assertions:
   - id: sample_id
     type: contains
-    value: barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199
+    value: VE24-1351_COI
   - id: dna_sequence
     type: contains
-    value: CGATGATGGTGTGCGCAGCA
+    value: AACTTTATATTTTATCTTTG
 - id: overview_tab
   assertions:
   - id: conclusion_text
@@ -17,9 +17,10 @@ components:
   - id: species_found
     type: list
     value:
-    - Xanthomonas citri
-    - Xanthomonas sp. WG16
-    - Xanthomonas axonopodis
+    - Lycoriella ingenua
+    - Bradysia impatiens
+    - Lycoriella mali
+    - Sciaridae
   - id: toi_row_count
     type: int
     value: '2'
@@ -40,10 +41,10 @@ components:
     value: '3'
   - id: matching_species_moderate
     type: int
-    value: '2'
+    value: '0'
   - id: matching_species_weak
     type: int
-    value: '5'
+    value: '95'
 - id: candidate_tab
   assertions:
   - id: tab_title
@@ -63,30 +64,30 @@ components:
     value: '93.5'
   - id: strong_hits
     type: int
-    value: '174'
+    value: '33'
   - id: moderate_hits
     type: int
-    value: '45'
+    value: '0'
   - id: weak_hits
     type: int
-    value: '25'
+    value: '467'
   - id: lowest_hit
     type: float
-    value: '83.8'
+    value: '84.5'
 - id: candidate_tab_table
   assertions:
   - id: species
     type: list
     value:
-    - Xanthomonas citri
-    - Xanthomonas sp. WG16
-    - Xanthomonas axonopodis
+    - Lycoriella ingenua
+    - Bradysia impatiens
+    - Lycoriella mali
   - id: no_of_hits
     type: list
     value:
-    - '214'
-    - '1'
-    - '4'
+    - '29'
+    - '3'
+    - '2'
   - id: top_identity
     type: list
     value:
@@ -96,15 +97,15 @@ components:
   - id: median_identity
     type: list
     value:
-    - '99.4'
+    - '99.8'
     - '100.0'
-    - '99.2'
+    - '100.0'
   - id: min_identity
     type: list
     value:
-    - '97.1'
-    - '100.0'
-    - '96.9'
+    - '99.5'
+    - '84.7'
+    - '99.8'
   - id: top_e_value
     type: list
     value:
@@ -114,171 +115,34 @@ components:
   - id: publication
     type: list
     value:
-    - '11'
+    - '13'
     - '1'
-    - '2'
+    - '1'
 - id: database_coverage
   pmi:
   - assertions:
     - id: title
       type: list
       value:
-      - Database coverage of Preliminary Morphology ID Xanthomonas citri
+      - Database coverage of Preliminary Morphology ID Sciaridae
     - id: flag_text1
       type: list
       value:
       - 5.1A
     - id: record_count
       type: list
-      flex: 0.1
       value:
-      - '1261'
+      - '120729'
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2ERR
     - id: species_count
       type: list
-      flex: 0.1
-      value:
-      - '36'
-    - id: species_total
-      type: list
-      flex: 0.1
-      value:
-      - '38'
-    - id: min_bar_count
-      type: min
-      value: '38'
-    - id: first_bar_species
-      type: list
-      value:
-      - Xanthomonas oryzae
-    - id: first_bar_count
-      type: list
-      flex: 0.1
-      value:
-      - '402450'
-    - id: final_text
-      type: list
-      value:
-      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
-  toi:
-  - assertions:
-    - id: title
-      type: list
-      value:
-      - Database coverage of Taxon of Interest Xanthomonas citri
-    - id: flag_text1
-      type: list
-      value:
-      - 5.1A
-    - id: record_count
-      type: list
-      flex: 0.1
-      value:
-      - '1261'
-    - id: flag_text2
-      type: list
-      value:
-      - ''
-    - id: species_count
-      type: list
-      flex: 0.1
-      value:
-      - '36'
-    - id: species_total
-      type: list
-      flex: 0.1
-      value:
-      - '38'
-    - id: min_bar_count
-      type: min
-      value: '38'
-    - id: first_bar_species
-      type: list
-      value:
-      - Xanthomonas oryzae
-    - id: first_bar_count
-      type: list
-      flex: 0.1
-      value:
-      - '402450'
-    - id: final_text
-      type: list
-      value:
-      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
-  candidate:
-  - assertions:
-    - id: title
-      type: list
-      value:
-      - Database coverage of Candidate Xanthomonas citri
-    - id: flag_text1
-      type: list
-      value:
-      - 5.1A
-    - id: record_count
-      type: list
-      flex: 0.1
-      value:
-      - '1261'
-    - id: flag_text2
-      type: list
-      value:
-      - ''
-    - id: species_count
-      type: list
-      flex: 0.1
-      value:
-      - '36'
-    - id: species_total
-      type: list
-      flex: 0.1
-      value:
-      - '38'
-    - id: min_bar_count
-      type: min
-      value: '38'
-    - id: first_bar_species
-      type: list
-      value:
-      - Xanthomonas oryzae
-    - id: first_bar_count
-      type: list
-      flex: 0.1
-      value:
-      - '402450'
-    - id: final_text
-      type: list
-      value:
-      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
-  - assertions:
-    - id: title
-      type: list
-      value:
-      - Database coverage of Candidate Xanthomonas sp. WG16
-    - id: flag_text1
-      type: list
-      value:
-      - ''
-    - id: record_count
-      type: list
-      flex: 0.1
-      value:
-      - '0'
-    - id: flag_text2
-      type: list
-      value:
-      - Warning no locus provided
-    - id: species_count
-      type: list
-      flex: 0.1
       value:
       - ''
     - id: species_total
       type: list
-      flex: 0.1
       value:
       - ''
     - id: min_bar_count
@@ -290,9 +154,90 @@ components:
       - ''
     - id: first_bar_count
       type: list
-      flex: 0.1
       value:
       - '0'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  toi:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Taxon of Interest Lycoriella mali
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '59'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '22'
+    - id: species_total
+      type: list
+      value:
+      - '132'
+    - id: min_bar_count
+      type: min
+      value: '132'
+    - id: first_bar_species
+      type: list
+      value:
+      - Lycoriella sativae
+    - id: first_bar_count
+      type: list
+      value:
+      - '749'
+    - id: final_text
+      type: list
+      value:
+      - ''
+  candidate:
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Lycoriella ingenua
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '59'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '22'
+    - id: species_total
+      type: list
+      value:
+      - '132'
+    - id: min_bar_count
+      type: min
+      value: '132'
+    - id: first_bar_species
+      type: list
+      value:
+      - Lycoriella sativae
+    - id: first_bar_count
+      type: list
+      value:
+      - '749'
     - id: final_text
       type: list
       value:
@@ -301,68 +246,104 @@ components:
     - id: title
       type: list
       value:
-      - Database coverage of Candidate Xanthomonas axonopodis
+      - Database coverage of Candidate Bradysia impatiens
     - id: flag_text1
       type: list
       value:
       - 5.1A
     - id: record_count
       type: list
-      flex: 0.1
       value:
-      - '9452'
+      - '584'
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2B
     - id: species_count
       type: list
-      flex: 0.1
       value:
-      - '36'
+      - '76'
     - id: species_total
       type: list
-      flex: 0.1
       value:
-      - '38'
+      - '606'
     - id: min_bar_count
       type: min
-      value: '38'
+      value: '606'
     - id: first_bar_species
       type: list
       value:
-      - Xanthomonas oryzae
+      - Bradysia placida
     - id: first_bar_count
       type: list
-      flex: 0.1
       value:
-      - '402450'
+      - '926'
     - id: final_text
       type: list
       value:
-      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+      - ''
+  - assertions:
+    - id: title
+      type: list
+      value:
+      - Database coverage of Candidate Lycoriella mali
+    - id: flag_text1
+      type: list
+      value:
+      - 5.1A
+    - id: record_count
+      type: list
+      value:
+      - '59'
+    - id: flag_text2
+      type: list
+      value:
+      - 5.2B
+    - id: species_count
+      type: list
+      value:
+      - '22'
+    - id: species_total
+      type: list
+      value:
+      - '132'
+    - id: min_bar_count
+      type: min
+      value: '132'
+    - id: first_bar_species
+      type: list
+      value:
+      - Lycoriella sativae
+    - id: first_bar_count
+      type: list
+      value:
+      - '749'
+    - id: final_text
+      type: list
+      value:
+      - ''
 - id: publication_modal
   candidates:
-  - name: Xanthomonas citri
+  - name: Lycoriella ingenua
     assertions:
     - id: title
       type: list
       value:
-      - Publications supporting taxonomic association - Xanthomonas citri
+      - Publications supporting taxonomic association - Lycoriella ingenua
     - id: source
       type: list
       value:
-      - 11 Independent Sources
+      - 13 Independent Sources
     - id: count
       type: list
       value:
-      - '11'
-  - name: Xanthomonas sp. WG16
+      - '13'
+  - name: Bradysia impatiens
     assertions:
     - id: title
       type: list
       value:
-      - Publications supporting taxonomic association - Xanthomonas sp. WG16
+      - Publications supporting taxonomic association - Bradysia impatiens
     - id: source
       type: list
       value:
@@ -371,20 +352,20 @@ components:
       type: list
       value:
       - '1'
-  - name: Xanthomonas axonopodis
+  - name: Lycoriella mali
     assertions:
     - id: title
       type: list
       value:
-      - Publications supporting taxonomic association - Xanthomonas axonopodis
+      - Publications supporting taxonomic association - Lycoriella mali
     - id: source
       type: list
       value:
-      - 2 Independent Sources
+      - 1 Independent Source
     - id: count
       type: list
       value:
-      - '2'
+      - '1'
 - id: blast_modal
   assertions:
   - id: title
@@ -395,19 +376,19 @@ components:
     value: '1'
   - id: accession
     type: contains
-    value: AE008923
+    value: PQ008449
   - id: subject
     type: contains
-    value: Xanthomonas axonopodis pv. citri str. 306, complete genome
+    value: Lycoriella ingenua voucher 11-me-ZG cytochrome c oxidase subunit I (COX1) gene, partial cds; mitochondrial
   - id: length
     type: int
-    value: '491'
+    value: '660'
   - id: identity
     type: float
     value: '100.0'
   - id: bitscore
     type: float
-    value: '973.783'
+    value: '1308.79'
   - id: evalue
     type: contains
     value: '0.00e+00'
@@ -422,28 +403,28 @@ components:
     value: 'TRUE'
   - id: domain
     type: contains
-    value: Bacteria
+    value: Eukaryota
   - id: kingdom
     type: contains
-    value: Pseudomonadati
+    value: Metazoa
   - id: phylum
     type: contains
-    value: Pseudomonadota
+    value: Arthropoda
   - id: class
     type: contains
-    value: Gammaproteobacteria
+    value: Insecta
   - id: order
     type: contains
-    value: Lysobacterales
+    value: Diptera
   - id: family
     type: contains
-    value: Lysobacteraceae
+    value: Sciaridae
   - id: genus
     type: contains
-    value: Xanthomonas
+    value: Lycoriella
   - id: species
     type: contains
-    value: Xanthomonas citri
+    value: Lycoriella ingenua
 - id: tree_modal
   assertions:
   - id: title
@@ -451,7 +432,7 @@ components:
     value: Homology Tree
   - id: min_node
     type: min
-    value: '20'
+    value: '22'
 - id: toi_tab
   assertions:
   - id: toi_flag_text
@@ -474,7 +455,7 @@ components:
   - id: toi
     type: list
     value:
-    - Xanthomonas citri
+    - Lycoriella mali
   - id: match_rank
     type: list
     value:
@@ -482,15 +463,15 @@ components:
   - id: match_taxon
     type: list
     value:
-    - Xanthomonas citri
+    - Lycoriella mali
   - id: match_species
     type: list
     value:
-    - Xanthomonas citri
+    - Lycoriella mali
   - id: match_accession
     type: list
     value:
-    - AE008923
+    - AF319784
   - id: match_identity
     type: list
     value:

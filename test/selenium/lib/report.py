@@ -1,3 +1,4 @@
+import math
 import re
 from types import SimpleNamespace
 from pathlib import Path
@@ -196,6 +197,11 @@ class Assertion:
         self.report_sample_id = sample_id
         self.component = component_id
         self.observed = None
+        # Fractional tolerance for numeric comparison (e.g. 0.1 = +/-10%).
+        # Set by collectors via Report.set_observed; the value read from the
+        # fixture is kept as fixture_flex so promote can detect changes.
+        self.flex = None
+        self.fixture_flex = None
 
         if assertion_data is None:
             if assertion_id is None or assertion_type is None:
@@ -211,6 +217,10 @@ class Assertion:
             raw_type = str(assertion_data.get('type') or '').strip().lower()
             self.assertion_type = raw_type if raw_type else 'contains'
             self.raw_value = assertion_data.get('value')
+            raw_flex = assertion_data.get('flex')
+            if raw_flex is not None:
+                self.fixture_flex = float(raw_flex)
+                self.flex = self.fixture_flex
 
         self.label = self.assertion_id.replace("_", " ").strip()
         self.expected = self._parse_value()
@@ -258,15 +268,61 @@ class Assertion:
             return self.observed
         return actual
 
-    def assert_equals(self, actual=_SENTINEL, context: str = ""):
+    def _within_flex(self, actual, expected) -> bool:
+        """True when `actual` is within +/- flex of `expected` (both
+        numeric). Bounds are widened outward to whole numbers so small
+        counts get some tolerance (e.g. 4 +/- 10% accepts 3-5). Returns
+        False if either side is not a number."""
+        try:
+            a = float(str(actual).replace(",", ""))
+            e = float(str(expected).replace(",", ""))
+        except (TypeError, ValueError):
+            return False
+        delta = self.flex * abs(e)
+        return math.floor(e - delta) <= a <= math.ceil(e + delta)
+
+    def _flex_label(self) -> str:
+        return f" ±{self.flex:.0%}" if self.flex is not None else ""
+
+    def assert_equals(
+        self,
+        actual=_SENTINEL,
+        context: str = "",
+        strict: bool = False,
+    ):
         actual = self._resolve_actual(actual)
         if self.expected is None:
             return
 
         actual_cmp = normalize_whitespace(actual)
         expected_cmp = normalize_whitespace(self.expected)
+        if actual_cmp == expected_cmp:
+            return
 
-        assert actual_cmp == expected_cmp, (
+        # Flex only ever relaxes the strict comparison above
+        if self.flex is not None and not strict:
+            expected = self.expected
+            if isinstance(expected, list):
+                assert (
+                    isinstance(actual, (list, tuple))
+                    and len(actual) == len(expected)
+                    and all(
+                        normalize_whitespace(a) == normalize_whitespace(e)
+                        or self._within_flex(a, e)
+                        for a, e in zip(actual, expected)
+                    )
+                ), (
+                    f"{context} Expected '{expected}'{self._flex_label()} "
+                    f"but got '{actual}'"
+                )
+                return
+            assert self._within_flex(actual, expected), (
+                f"{context} Expected '{expected}'{self._flex_label()} "
+                f"but got '{actual}'"
+            )
+            return
+
+        raise AssertionError(
             f"{context} Expected '{self.expected}' but got '{actual}'"
         )
 
@@ -291,7 +347,12 @@ class Assertion:
             f"{context} Expected '{expected_cmp}' to be in '{actual_cmp}'"
         )
 
-    def assert_list_contains(self, actual=_SENTINEL, context: str = ""):
+    def assert_list_contains(
+        self,
+        actual=_SENTINEL,
+        context: str = "",
+        strict: bool = False,
+    ):
         actual = self._resolve_actual(actual)
         if not self.expected:
             return
@@ -299,11 +360,30 @@ class Assertion:
         normalized_actual = [
             normalize_whitespace(str(item)) for item in actual
         ]
+        use_flex = self.flex is not None and not strict
         for expected_item in self.expected:
             needle = normalize_whitespace(str(expected_item))
-            assert any(needle in item for item in normalized_actual), (
-                f"{context} Expected '{needle}' not found"
-            )
+            if any(needle in item for item in normalized_actual):
+                continue
+            # Flex only ever relaxes the strict substring match above
+            if use_flex and self._is_number(needle):
+                assert any(
+                    self._within_flex(item, needle)
+                    for item in normalized_actual
+                ), (
+                    f"{context} Expected '{needle}'{self._flex_label()} "
+                    f"not found in {normalized_actual}"
+                )
+                continue
+            raise AssertionError(f"{context} Expected '{needle}' not found")
+
+    @staticmethod
+    def _is_number(value: str) -> bool:
+        try:
+            float(value.replace(",", ""))
+        except ValueError:
+            return False
+        return True
 
     def assert_bool(self, actual=_SENTINEL, context: str = ""):
         actual = self._resolve_actual(actual)
@@ -314,22 +394,24 @@ class Assertion:
             f"{context} Expected {self.expected} but got {actual}"
         )
 
-    def assert_value(self, actual=_SENTINEL, **kwargs):
+    def assert_value(self, actual=_SENTINEL, strict: bool = False, **kwargs):
+        """Assert observed against expected. `strict=True` ignores flex
+        (used by promote, which should offer every changed value)."""
         if self.expected is None:
             return
 
         if self.assertion_type == "equals":
-            self.assert_equals(actual, **kwargs)
+            self.assert_equals(actual, strict=strict, **kwargs)
         elif self.assertion_type == "contains":
             self.assert_contains(actual, **kwargs)
         elif self.assertion_type == "list":
-            self.assert_list_contains(actual, **kwargs)
+            self.assert_list_contains(actual, strict=strict, **kwargs)
         elif self.assertion_type == "bool":
             self.assert_bool(actual, **kwargs)
         elif self.assertion_type == "int":
-            self.assert_equals(actual, **kwargs)
+            self.assert_equals(actual, strict=strict, **kwargs)
         elif self.assertion_type == "float":
-            self.assert_equals(actual, **kwargs)
+            self.assert_equals(actual, strict=strict, **kwargs)
         elif self.assertion_type == "min":
             self.assert_min(actual, **kwargs)
         else:
@@ -337,14 +419,14 @@ class Assertion:
                 f"Unknown assertion type: {self.assertion_type}"
             )
 
-    def is_drifted(self) -> bool:
+    def is_drifted(self, strict: bool = False) -> bool:
         """True when the observed value violates the expected value under
         this assertion's type semantics. Returns False when either side is
-        None (nothing to compare)."""
+        None (nothing to compare). `strict=True` ignores flex."""
         if self.expected is None or self.observed is None:
             return False
         try:
-            self.assert_value()
+            self.assert_value(strict=strict)
         except AssertionError:
             return True
         return False
@@ -428,12 +510,15 @@ class Report:
         values: dict,
         index: Optional[int] = None,
         group: Optional[str] = None,
+        flex: Optional[dict] = None,
     ) -> None:
         """Set observed values on the assertions of `component_id`.
 
         For simple components pass `values` as a flat dict. For grouped
         components (database_coverage, publication_modal) pass `group` and
-        `index` to select the row namespace.
+        `index` to select the row namespace. `flex` maps field id to a
+        fractional tolerance; when given, it overrides the assertion's flex
+        for every field in `values` (absent keys are cleared to None).
         """
         comp = getattr(self, component_id, None)
         if comp is None:
@@ -451,6 +536,8 @@ class Report:
             assertion = getattr(ns, key, None)
             if isinstance(assertion, Assertion):
                 assertion.set_observed(value)
+                if flex is not None:
+                    assertion.flex = flex.get(key)
 
     def assert_all(self) -> None:
         drifted = self.drifted()
@@ -464,8 +551,20 @@ class Report:
             )
         raise AssertionError("\n".join(lines))
 
-    def drifted(self) -> list:
-        return [a for a in self.iter_assertions() if a.is_drifted()]
+    def drifted(self, strict: bool = False) -> list:
+        return [
+            a for a in self.iter_assertions()
+            if a.is_drifted(strict=strict)
+        ]
+
+    def flex_changed(self) -> list:
+        """Assertions whose collector-defined flex differs from the value
+        stored in the fixture. Rows added by the collector (no fixture
+        value) are excluded - they aren't a flex change."""
+        return [
+            a for a in self.iter_assertions()
+            if a.raw_value is not None and a.flex != a.fixture_flex
+        ]
 
     # ------------------------------------------------------------------
     # Serialisation
@@ -544,11 +643,11 @@ class Report:
             else:
                 value = a.raw_value
 
-            out.append({
-                "id": field_id,
-                "type": field_type,
-                "value": value,
-            })
+            entry = {"id": field_id, "type": field_type}
+            if a.flex is not None:
+                entry["flex"] = a.flex
+            entry["value"] = value
+            out.append(entry)
         return out
 
     # ------------------------------------------------------------------

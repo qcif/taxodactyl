@@ -105,6 +105,7 @@ components:
       value: 5.1NA
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '4734'
     - id: flag_text2
@@ -112,9 +113,11 @@ components:
       value: 5.2NA
     - id: species_count
       type: list
+      flex: 0.1
       value: ''
     - id: species_total
       type: list
+      flex: 0.1
       value: ''
     - id: min_bar_count
       type: min
@@ -124,6 +127,7 @@ components:
       value: ''
     - id: first_bar_count
       type: list
+      flex: 0.1
       value: ''
     - id: final_text
       type: list
@@ -138,15 +142,18 @@ components:
       value: null
     - id: record_count
       type: list
+      flex: 0.1
       value: null
     - id: flag_text2
       type: list
       value: null
     - id: species_count
       type: list
+      flex: 0.1
       value: null
     - id: species_total
       type: list
+      flex: 0.1
       value: null
     - id: min_bar_count
       type: min
@@ -156,6 +163,7 @@ components:
       value: null
     - id: first_bar_count
       type: list
+      flex: 0.1
       value: null
     - id: final_text
       type: list

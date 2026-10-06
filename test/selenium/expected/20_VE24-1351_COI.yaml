@@ -131,6 +131,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '120729'
     - id: flag_text2
@@ -139,10 +140,12 @@ components:
       - 5.2ERR
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - ''
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - ''
     - id: min_bar_count
@@ -154,6 +157,7 @@ components:
       - ''
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '0'
     - id: final_text
@@ -172,6 +176,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '59'
     - id: flag_text2
@@ -180,10 +185,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '22'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '132'
     - id: min_bar_count
@@ -195,6 +202,7 @@ components:
       - Lycoriella sativae
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '749'
     - id: final_text
@@ -213,6 +221,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '59'
     - id: flag_text2
@@ -221,10 +230,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '22'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '132'
     - id: min_bar_count
@@ -236,6 +247,7 @@ components:
       - Lycoriella sativae
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '749'
     - id: final_text
@@ -253,6 +265,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '584'
     - id: flag_text2
@@ -261,10 +274,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '76'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '606'
     - id: min_bar_count
@@ -276,6 +291,7 @@ components:
       - Bradysia placida
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '926'
     - id: final_text
@@ -293,6 +309,7 @@ components:
       - 5.1A
     - id: record_count
       type: list
+      flex: 0.1
       value:
       - '59'
     - id: flag_text2
@@ -301,10 +318,12 @@ components:
       - 5.2B
     - id: species_count
       type: list
+      flex: 0.1
       value:
       - '22'
     - id: species_total
       type: list
+      flex: 0.1
       value:
       - '132'
     - id: min_bar_count
@@ -316,6 +335,7 @@ components:
       - Lycoriella sativae
     - id: first_bar_count
       type: list
+      flex: 0.1
       value:
       - '749'
     - id: final_text
