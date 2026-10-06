@@ -62,84 +62,84 @@ class Config:
     # These are used for taxonomic filtering of GBIF/taxonkit records:
     HIGHER_CLASSIFICATIONS = {
         'animalia': {
-            'gbif': 1,
+            'gbif_col': 'N',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'metazoa',
             },
         },
         'animal': {
-            'gbif': 1,
+            'gbif_col': 'N',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'metazoa',
             },
         },
         'animals': {
-            'gbif': 1,
+            'gbif_col': 'N',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'metazoa',
             },
         },
         'plantae': {
-            'gbif': 6,
+            'gbif_col': 'P',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'viridiplantae',
             },
         },
         'plant': {
-            'gbif': 6,
+            'gbif_col': 'P',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'viridiplantae',
             },
         },
         'plants': {
-            'gbif': 6,
+            'gbif_col': 'P',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'viridiplantae',
             },
         },
         'fungi': {
-            'gbif': 5,
+            'gbif_col': 'F',
             'ncbi': {
                 'rank': 'kingdom',
                 'taxon': 'fungi',
             },
         },
         'chromista': {
-            'gbif': 4,
+            'gbif_col': 'C',
             'ncbi': {
                 'rank': 'clade',
                 'taxon': 'sar',
             },
         },
         'bacteria': {
-            'gbif': 3,
+            'gbif_col': 'CRRY6',
             'ncbi': {
                 'rank': 'domain',
                 'taxon': 'bacteria',
             },
         },
         'archaea': {
-            'gbif': 2,
+            'gbif_col': 'CRLT8',
             'ncbi': {
                 'rank': 'domain',
                 'taxon': 'archaea',
             },
         },
         'viruses': {
-            'gbif': 8,
+            'gbif_col': '92e52ff4-2dc6-4b35-9339-2e92035b8daf',
             'ncbi': {
                 'rank': 'acellular root',
                 'taxon': 'viruses',
             },
         },
         'virus': {
-            'gbif': 8,
+            'gbif_col': '92e52ff4-2dc6-4b35-9339-2e92035b8daf',
             'ncbi': {
                 'rank': 'acellular root',
                 'taxon': 'viruses',
