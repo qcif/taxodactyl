@@ -1,7 +1,12 @@
 # Contract: loci panel (`scripts/config/loci.json`)
 
-Used by P0 (validation, P0-021), config (`get_locus_for_query`, CFG-027,
-CFG-040..042) and P5/P4 (GenBank queries).
+**Producer:** none in the running pipeline — a static file maintained by
+developers, or an operator-supplied override via `--allowed_loci_file`.
+**Consumers:** [P0](../python/p0-validation.md) (validation, P0-021),
+[shared/config.md](../python/shared/config.md)
+(`get_locus_for_query`, CFG-027, CFG-040..042), and
+[P5](../python/p5-db-coverage.md) / [P4](../python/p4-source-diversity.md)
+(GenBank query construction).
 
 ```json
 { "<key>": { "ambiguous_synonyms": ["…"], "non_ambiguous_synonyms": ["…"] } }
@@ -22,3 +27,13 @@ A key spelled `ache` has synonyms `AChE`/`Acetylcholinesterase`.
 
 Override with `--allowed_loci_file`; the override replaces the panel (no
 merge). The `NA` value is accepted separately and is not in the file.
+
+---
+
+## Provenance
+
+**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

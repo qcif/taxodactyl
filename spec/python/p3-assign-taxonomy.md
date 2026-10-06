@@ -1,8 +1,5 @@
 # Spec: P3 candidate selection and taxonomic assignment (`scripts/p3_assign_taxonomy.py`)
 
-**Derived from:** `p3_assign_taxonomy.py` (687), `src/utils/flags.py`
-(`Flag.write`), `src/utils/ncbi.py`, `src/utils/utils.py` (`deduplicate`),
-`tests/test_phylogeny_sampling.py`, `config/flags.csv`. v1.5.0.
 **Called by:** Nextflow `EXTRACT_CANDIDATES`, once per query folder.
 **Depends on:** [shared/config.md](shared/config.md), P1/P2 outputs
 ([p1-parse-blast.md](p1-parse-blast.md), [p2-extract-taxonomy.md](p2-extract-taxonomy.md)),
@@ -240,3 +237,13 @@ case.
    exist (a TOI at 97% is currently invisible if another species is ≥98.5%)?
 3. Should Flag 6 be implemented (automated clade assessment) or removed
    from `flags.csv`?
+
+---
+
+## Provenance
+
+**Initially derived from:** `p3_assign_taxonomy.py` (687), `src/utils/flags.py` (`Flag.write`), `src/utils/ncbi.py`, `src/utils/utils.py` (`deduplicate`), `tests/test_phylogeny_sampling.py`, `config/flags.csv`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

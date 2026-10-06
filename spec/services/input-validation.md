@@ -1,8 +1,5 @@
 # Spec: Input validation web service (`services/input_validation/`)
 
-**Derived from:** `api/main.py` (~330), `api/utils.py` (~480),
-`client/src/App.jsx` (439), `client/src/components/CsvEditor.jsx` (129),
-`deployment/validation.{service,nginx.conf}`, `README.md`. v1.5.0.
 **Depends on:** [../python/p0-validation.md](../python/p0-validation.md)
 (`p0_validation.validate_inputs`, imported from `scripts/`).
 
@@ -58,3 +55,13 @@ Not part of the Nextflow pipeline. It lets a submitter check and fix
 
 None. No unit, integration or UI tests exist for this service
 (TST-G-008).
+
+---
+
+## Provenance
+
+**Initially derived from:** `api/main.py` (~330), `api/utils.py` (~480), `client/src/App.jsx` (439), `client/src/components/CsvEditor.jsx` (129), `deployment/validation.{service,nginx.conf}`, `README.md`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

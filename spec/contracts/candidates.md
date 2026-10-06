@@ -1,6 +1,13 @@
 # Contract: candidate and evidence files
 
-Producers: [P3](../python/p3-assign-taxonomy.md), [P4](../python/p4-source-diversity.md).
+**Producers:** [P3](../python/p3-assign-taxonomy.md) (all files below
+except where noted), [P4](../python/p4-source-diversity.md) (reads
+`candidates.json`, produces files in
+[coverage-and-sources.md](coverage-and-sources.md) instead).
+**Consumers:** [P4](../python/p4-source-diversity.md),
+[P5](../python/p5-db-coverage.md) (`candidates.json` species list only),
+[P6](../python/p6-report.md) (everything), MAFFT_ALIGN
+(`candidates_phylogeny.fasta` only).
 
 ## 1. `candidates.json`
 
@@ -39,3 +46,13 @@ the query as `QUERY`; ids are temporarily renamed `HIT<n>` and restored
 ## 5. `candidates_count.txt`
 
 Decimal integer without newline.
+
+---
+
+## Provenance
+
+**Initially derived from:** [p3-assign-taxonomy.md](../python/p3-assign-taxonomy.md) §6, §9, [p4-source-diversity.md](../python/p4-source-diversity.md) §1 — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

@@ -1,9 +1,5 @@
 # Spec: Secrets vault (`src/utils/secrets.py`)
 
-**Derived from:** `secrets.py` (201), `config.py` (`vault`,
-`_resolve_ncbi_api_key`, `_resolve_facility_name`, `user_secrets_dir`),
-`tests/test_secrets.py`. v1.5.0.
-
 ## 1. Purpose
 
 Remember a user's NCBI API key and facility name between runs so they
@@ -27,3 +23,13 @@ need not be passed every time.
 | SEC-D-001 | Medium (security) | Secrets are keyed by the **unauthenticated** `USER_EMAIL`. With the Azure backend, anyone who can run the pipeline under the pool identity can retrieve another user's NCBI API key by setting their email. |
 | SEC-D-002 | Low (security) | Local key derivation is a single unsalted SHA-256 of the passphrase (no KDF); file permissions are not restricted. |
 | SEC-D-003 | Low | Azure name sanitisation can map different emails to the same secret (`a.b@x` vs `a-b@x`). |
+
+---
+
+## Provenance
+
+**Initially derived from:** `secrets.py` (201), `config.py` (`vault`, `_resolve_ncbi_api_key`, `_resolve_facility_name`, `user_secrets_dir`), `tests/test_secrets.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

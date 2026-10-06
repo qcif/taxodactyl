@@ -90,10 +90,11 @@ and BOLD `COX1_SPECIES_PUBLIC`; cross-sample summaries.
 
 | Area | Files |
 |---|---|
+| Governing principles | [../CONSTITUTION.md](../CONSTITUTION.md) — non-negotiable rules this spec is held to |
 | Architecture | [architecture.md](architecture.md) |
 | Nextflow layer | [nextflow/](nextflow/) — workflow, processes, params, config-profiles, error-handling |
-| Python layer | [python/](python/) — P0–P6, `shared/` (config, throttle, cache, errors, secrets, flags) |
+| Python layer | [python/](python/) — P0–P6, [blast-vs-bold.md](python/blast-vs-bold.md) (every BLAST/BOLD difference, one place), `shared/` (config, throttle, cache, errors, secrets, flags) |
 | Data contracts | [contracts/](contracts/) — inputs, query-folder, filenames, hits, candidates, coverage-and-sources, loci, outputs |
 | Services | [services/input-validation.md](services/input-validation.md) |
-| Quality and delivery | [testing.md](testing.md), [deployment.md](deployment.md) |
+| Quality and delivery | [tests.md](tests.md), [deployment.md](deployment.md) |
 | Backlog and decisions | [defects.md](defects.md), [decisions.md](decisions.md) |

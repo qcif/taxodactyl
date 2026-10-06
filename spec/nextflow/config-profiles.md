@@ -1,7 +1,5 @@
 # Spec: Nextflow configuration, profiles and resources
 
-**Sources:** `nextflow.config`, `conf/*.config`. Derived from code.
-
 ## 1. Composition
 
 | ID | Requirement |
@@ -97,3 +95,13 @@ The following environment variables MUST be exported into every task:
 | NF-CF-031 | `workflow.failOnIgnore = true`: a run in which any task error was ignored MUST finish with a non-zero exit status. |
 | NF-CF-032 | `cleanup = false`: the work directory is never auto-deleted. |
 | NF-CF-033 | `validation.defaultIgnoreParams = ["genomes"]`; help enabled with `--help_full` / `--show_hidden`. |
+
+---
+
+## Provenance
+
+**Initially derived from:** `nextflow.config`, `conf/*.config`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

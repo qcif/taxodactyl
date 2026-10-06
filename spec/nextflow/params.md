@@ -1,10 +1,7 @@
 # Spec: Nextflow parameters
 
-**Sources:** `conf/params.config` (defaults), `nextflow_schema.json`
-(validation), `conf/env.config`, and every `params.*` reference in
-`workflows/`, `modules/`, `subworkflows/local/`. "Consumer" is where the
-parameter actually takes effect — determined from code, not from schema
-descriptions.
+"Consumer" below is where the parameter actually takes effect —
+determined from code, not from schema descriptions.
 
 | ID | Requirement |
 |---|---|
@@ -123,3 +120,13 @@ directives hard-code `mode: 'copy'`).
 | NF-D-008 | `analyst_name`, `facility_name`, `blast_xml`, `allowed_loci_file`-related placeholders are absent from `params.config`; they rely on Nextflow returning `null` for undefined params. |
 | NF-D-009 | `conf/test.config` (`-profile test`) sets `db_type = 'bold'`, which cannot run (NF-D-002). |
 | NF-D-010 | Schema's `taxdb` is required, but `params.config` default is `null` and the schema description does not state it is required for BOLD too (P0 always needs it). |
+
+---
+
+## Provenance
+
+**Initially derived from:** `conf/params.config` (defaults), `nextflow_schema.json` (validation), `conf/env.config`, and every `params.*` reference in `workflows/`, `modules/`, `subworkflows/local/`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

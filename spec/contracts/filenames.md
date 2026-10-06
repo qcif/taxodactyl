@@ -1,8 +1,11 @@
 # Contract: shared filenames (Nextflow ↔ Python)
 
-Single source: `scripts/config/default.yml`. Nextflow reads it in
-`conf/filenames.config` and exposes it as `task.ext.*`; Python reads it
-via `Config`. Values and the schema-default discrepancies are tabulated in
+**Producer:** `scripts/config/default.yml` (a static file, maintained by
+developers — no process writes it). **Consumers:** Nextflow, via
+`conf/filenames.config` → `task.ext.*`
+([config-profiles.md §1](../nextflow/config-profiles.md)); every
+Python entrypoint, via [`Config`](../python/shared/config.md). Values and
+the schema-default discrepancies are tabulated in
 [../python/shared/config.md §3.5](../python/shared/config.md).
 
 | `task.ext.*` key | `default.yml` key | Value | Used in Nextflow by |
@@ -39,3 +42,13 @@ via `Config`. Values and the schema-default discrepancies are tabulated in
 |---|---|
 | FN-001 | Changing any value above requires the same change in `default.yml`, this table, every consumer in both layers, and the nf-test/flag fixtures. |
 | FN-002 | The hard-coded names above SHOULD be moved to `default.yml` so this contract has one source (currently a defect-in-waiting, see CFG-D-001). |
+
+---
+
+## Provenance
+
+**Initially derived from:** `scripts/config/default.yml`, `conf/filenames.config`, [shared/config.md](../python/shared/config.md) §3.5 — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

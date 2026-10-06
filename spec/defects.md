@@ -25,7 +25,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 |---|---|
 | High | 17 |
 | Medium | 53 |
-| Low | 24 (some rows group several items) |
+| Low | 25 (some rows group several items) |
 
 ## High
 
@@ -105,7 +105,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | DEP-D-002 | release | `docker_build.sh` always pushes `latest`; `Dockerfile.update` builds on `latest`. | [deployment.md](deployment.md) |
 | DEP-D-008 | deployment | `.env.sample` specifies Ubuntu 24.04 for Azure Batch nodes; the committed pool-setup template and every `docs/azure/*.md` walkthrough consistently specify Ubuntu 20.04 (chosen there for "Docker container compatibility"). Following `.env.sample` as instructed provisions a pool on the OS none of the docs or templates were written for. *To confirm which side is stale.* | [deployment.md §6](deployment.md) |
 | DEP-D-003 | image | Image not reproducible (floating base + taxonkit `latest`). Same as IMG-D-001. | [deployment.md](deployment.md) |
-| TST-G-001..010 | testing | Test gaps (no `1E` test, no Flag 5.1 threshold test, P3/P6 rules untested, no stub tests, CI lacks hmmsearch/taxonkit, etc.). | [testing.md](testing.md) |
+| TST-G-001..010 | testing | Test gaps (no `1E` test, no Flag 5.1 threshold test, P3/P6 rules untested, no stub tests, CI lacks hmmsearch/taxonkit, etc.). | [tests.md](tests.md) |
 
 ## Low
 
@@ -129,6 +129,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P4-D-005..007 | P4 | Missing efetch accessions silently treated as "no publications"; wrong unused `hit_count`; `4B` for 0 sources vs "1–5" text. | [python/p4-source-diversity.md](python/p4-source-diversity.md) |
 | P5-D-008..012 | P5 | TOI-truncation message lists nothing; sub-ranks (subspecies, tribe…) unsupported, "protozoa"→"protista"; fuzzy `name_suggest` may pick another taxon; 300-dpi maps bloat report; unreachable `None` return. | [python/p5-db-coverage.md](python/p5-db-coverage.md) |
 | P6-D-005..006 | P6 | Per-query wall time; `print` alongside logging. | [python/p6-report.md](python/p6-report.md) |
+| P6-D-007..008 | P6 | Heading link hard-coded to the project's old repo name (`daff-biosecurity-wf2`); tab-label/component-filename mismatch (cosmetic). | [python/p6-report.md](python/p6-report.md) |
 | THR-D-003..005 | throttle | Backoff scope differs SQLite vs Redis; Entrez limit per user not per IP; Redis client per request. | [python/shared/throttle.md](python/shared/throttle.md) |
 | CCH-D-001..004 | cache | Object args keyed by class only; unpickling from shared storage; transient empties cached 7 days; `fcntl` Linux-only. | [python/shared/cache.md](python/shared/cache.md) |
 | ERR-D-002 | errors | Float location codes collide (1.1 == 1.10). | [python/shared/errors.md](python/shared/errors.md) |

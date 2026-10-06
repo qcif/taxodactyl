@@ -1,9 +1,8 @@
 # Spec: Nextflow workflow (`TAXODACTYL`)
 
 **Scope:** `main.nf`, `workflows/taxodactyl.nf`,
-`subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`.
-**Derived from:** source code (not docs). Line references are to the
-`v1.5.0` tree.
+`subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. Line
+references are to the `v1.5.0` tree.
 **Companion specs:** [processes.md](processes.md), [params.md](params.md),
 [config-profiles.md](config-profiles.md), [error-handling.md](error-handling.md),
 [../contracts/](../contracts/).
@@ -174,7 +173,7 @@ There is no per-query "analysis failed" report.
 ### 4.7 Emitted channels
 
 The workflow MUST emit (names are relied on by `nf-test`, see
-`../testing.md`): `ch_hits_for_report`, `ch_candidates_for_report`,
+`../tests.md`): `ch_hits_for_report`, `ch_candidates_for_report`,
 `ch_db_coverage_json`, `ch_db_coverage_flags`, `ch_db_coverage_maps`,
 `ch_source_diversity_for_report`, `ch_homology_trees`, `ch_html_report`,
 `ch_collated_versions`, `ch_params_json`, `ch_workflow_timestamp`.
@@ -203,3 +202,13 @@ The workflow MUST emit (names are relied on by `nf-test`, see
    error (NF-WF-031)?
 3. Is `phylogeny_min_hit_identity` intended to reach `p3_assign_taxonomy.py`
    (see [processes.md](processes.md) `EXTRACT_CANDIDATES`)?
+
+---
+
+## Provenance
+
+**Initially derived from:** source code (not docs) — `main.nf`, `workflows/taxodactyl.nf`, `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

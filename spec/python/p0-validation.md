@@ -1,8 +1,5 @@
 # Spec: P0 input validation (`scripts/p0_validation.py`)
 
-**Derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`,
-`src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`,
-`tests/test_validation.py`. v1.5.0.
 **Called by:** Nextflow `VALIDATE_INPUT` ([../nextflow/processes.md §2](../nextflow/processes.md));
 `services/input_validation/api` (programmatic `validate_inputs()`).
 **Depends on:** [shared/config.md](shared/config.md).
@@ -179,3 +176,13 @@ tested.
    locus names) so downstream steps don't re-interpret raw values?
 3. Should P0 check the taxdump age (known virus incompatibility with
    pre-April-2025 taxdumps)?
+
+---
+
+## Provenance
+
+**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

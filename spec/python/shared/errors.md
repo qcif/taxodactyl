@@ -1,7 +1,5 @@
 # Spec: Non-fatal error reporting (`src/utils/errors.py`)
 
-**Derived from:** `errors.py` (194) and its callers. v1.5.0.
-
 ## 1. Purpose
 
 Record failures that must not stop the analysis (typically one external
@@ -41,3 +39,13 @@ negative.
 |---|---|---|
 | ERR-D-001 | Medium | P4 writes `SOURCE_DIVERSITY_ACCESSION_ERROR` **without `query_dir`** (`src/sources/collect.py`), so the file lands in `<task>/errors/`, which Nextflow does not collect: P4 non-fatal errors never reach the report. |
 | ERR-D-002 | Low | Locations are floats: `BOLD` (1.1) and `BOLD_ID_ENGINE` (1.10) are the same value; `location_in` string prefixes also conflate e.g. 1.1 and 1.11. |
+
+---
+
+## Provenance
+
+**Initially derived from:** `errors.py` (194) and its callers. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

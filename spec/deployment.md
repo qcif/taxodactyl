@@ -1,10 +1,5 @@
 # Spec: Deployment, images and release
 
-**Derived from:** `scripts/Dockerfile`, `scripts/Dockerfile.update`,
-`scripts/docker_build.sh`, `.github/workflows/build.yml`,
-`conf/process.config`, `conf/azure.config`, `conf/manifest.config`,
-`deployment/azure/**`, `.env.sample`. v1.5.0.
-
 ## 1. Execution environments
 
 | ID | Requirement |
@@ -40,7 +35,7 @@
 | DEP-020 | A release MUST update the version in **five** places: `conf/manifest.config` (`version`), `scripts/VERSION`, `scripts/pyproject.toml` (`version`), the `daff_tax_assign` image tag in `conf/process.config` and in `conf/azure.config`. (`scripts/README.md` lists four, including a `cloudgene.yml` that does not exist in the repository; it omits the two image tags.) |
 | DEP-021 | Publishing a GitHub release triggers `.github/workflows/build.yml`: it MUST fail unless `v$(cat scripts/VERSION)` equals the release tag, then run `docker_build.sh -p -t <tag>` (pushing `<tag>` and `latest` to Docker Hub with repository secrets). |
 | DEP-022 | The build workflow does not verify that `manifest.version`, `pyproject.toml` or the config image tags match the release tag (DEP-D-001). |
-| DEP-023 | Before release, surfaces 2–4 of [testing.md](testing.md) SHOULD be run and the reference-data versions recorded. |
+| DEP-023 | Before release, surfaces 2–4 of [tests.md](tests.md) SHOULD be run and the reference-data versions recorded. |
 
 ## 4. Reference data
 
@@ -82,3 +77,13 @@ and pass paths (`--blastdb`, `--taxdb`). See NF-PA rows in
 | DEP-D-006 | Low | Azure account names, pool, region and `/mnt/nvme/refdata` are hard-coded in `conf/azure.config`; a second tenant needs a fork or edit. |
 | DEP-D-007 | Low | `scripts/README.md`'s release section is out of date (`cloudgene.yml`, four locations); `scripts/dev/render_docs.py` is referenced for docs but docs rendering is not part of release automation. |
 | DEP-D-008 | Medium | `.env.sample` sets `NODE_AGENT_SKU="batch.node.ubuntu 24.04"` / `IMAGE_TAG=canonical:ubuntu-24_04-lts:server`, but the committed `deployment/azure/pool-setup.json.template` and every `docs/azure/*.md` walkthrough (01, 02, 04) consistently use Ubuntu **20.04** (`batch.node.ubuntu 20.04`, `ubuntu-server-container:20-04-lts`, container image `ubuntu:20.04`), with 02 explicitly stating "We use Ubuntu 20.04 for Docker container compatibility". An operator who copies `.env.sample` to `.env.azure` as instructed and runs `az batch pool create --image $IMAGE_TAG --node-agent-sku-id "$NODE_AGENT_SKU"` creates a pool on a different OS than the one every doc and template assumes, risking the exact container-compatibility problem the docs say 20.04 was chosen to avoid. Either `.env.sample` is stale relative to the template/docs, or the template/docs were never updated after a 24.04 migration — *to confirm which*. |
+
+---
+
+## Provenance
+
+**Initially derived from:** `scripts/Dockerfile`, `scripts/Dockerfile.update`, `scripts/docker_build.sh`, `.github/workflows/build.yml`, `conf/process.config`, `conf/azure.config`, `conf/manifest.config`, `deployment/azure/**`, `.env.sample`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.
