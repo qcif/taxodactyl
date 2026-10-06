@@ -1,7 +1,11 @@
 # Contract: hits and taxonomy files
 
-Producers: [P1](../python/p1-parse-blast.md), [P1-BOLD](../python/p1-bold-search.md),
-[P2](../python/p2-extract-taxonomy.md). Consumers: P3, P6.
+**Producers:** [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md)
+(`all_hits.json`, `all_hits.fasta`, `accessions.txt`), `blastdbcmd`
+([processes.md §6](../nextflow/processes.md)) (`taxids.csv`),
+[P2](../python/p2-extract-taxonomy.md) (`taxonomy.csv`).
+**Consumers:** [P3](../python/p3-assign-taxonomy.md),
+[P6](../python/p6-report.md).
 
 ## 1. `all_hits.json` (BLAST)
 
@@ -39,3 +43,13 @@ including gaps** (BLAST, P1-D-001) or full nucleotides with gaps removed
 | ID | Requirement |
 |---|---|
 | HIT-010 | A consumer MUST treat a hit with no `taxonomy.csv` row as "taxonomy unknown", never as an error and never as a candidate (P3-003). |
+
+---
+
+## Provenance
+
+**Initially derived from:** [p1-parse-blast.md](../python/p1-parse-blast.md) §3, [p1-bold-search.md](../python/p1-bold-search.md) §4, [p2-extract-taxonomy.md](../python/p2-extract-taxonomy.md) — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

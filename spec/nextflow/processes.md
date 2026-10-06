@@ -1,7 +1,7 @@
 # Spec: Nextflow processes
 
-**Scope:** every `process` in `modules/**/main.nf` (15). Derived from
-source. Wiring between them is in [workflow.md](workflow.md); parameters in
+**Scope:** every `process` in `modules/**/main.nf` (15). Wiring between
+them is in [workflow.md](workflow.md); parameters in
 [params.md](params.md); resources/containers in
 [config-profiles.md](config-profiles.md).
 
@@ -228,3 +228,13 @@ wired successfully in the current workflow.
 | NF-D-004 | `phylogeny_min_hit_identity` not forwarded to P3. |
 | NF-D-005 | Report shows `blast_max_target_seqs_for_report` (default 2000) while BLAST is hard-coded to 500. |
 | NF-D-006 | Single-quoted CLI args in `REPORT` break on embedded `'`. |
+
+---
+
+## Provenance
+
+**Initially derived from:** source code — every `process` in `modules/**/main.nf`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

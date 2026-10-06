@@ -1,7 +1,10 @@
 # Contract: database coverage, sources and error files
 
-Producers: [P5](../python/p5-db-coverage.md), [P4](../python/p4-source-diversity.md),
-[errors](../python/shared/errors.md). Consumer: [P6](../python/p6-report.md).
+**Producers:** [P5](../python/p5-db-coverage.md) (`db_coverage.json`,
+`5.*.flag`, `map_*.png`), [P4](../python/p4-source-diversity.md)
+(`aggregated_sources.json`, `4.flag`), both via
+[shared/errors.md](../python/shared/errors.md) for `errors/*.json`.
+**Consumer:** [P6](../python/p6-report.md).
 
 ## 1. `db_coverage.json`
 
@@ -40,3 +43,13 @@ the query folder reach the report (ERR-D-001).
 ## 4. `*.flag`
 
 See [../python/shared/flags.md](../python/shared/flags.md) §3.
+
+---
+
+## Provenance
+
+**Initially derived from:** [p5-db-coverage.md](../python/p5-db-coverage.md) §6, [p4-source-diversity.md](../python/p4-source-diversity.md) §7, [shared/errors.md](../python/shared/errors.md) §3 — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

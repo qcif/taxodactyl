@@ -1,5 +1,12 @@
 # Contract: user inputs
 
+**Producer:** the submitter, or the validation web service
+([services/input-validation.md](../services/input-validation.md)),
+which returns a cleaned copy. **Consumers:** nf-schema and
+[P0](../python/p0-validation.md) (validation, see the per-column table
+below); every `p0`–`p6` script downstream, which reads values via
+[`Config.metadata`](../python/shared/config.md).
+
 ## 1. `metadata.csv`
 
 One row per query sequence. Header names are configurable
@@ -66,3 +73,13 @@ Encoding: read with the platform default encoding by `csv.DictReader`
 ## 3. Run parameters
 
 See [../nextflow/params.md](../nextflow/params.md).
+
+---
+
+## Provenance
+
+**Initially derived from:** `assets/schema_input.json`, `nextflow_schema.json`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source, v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

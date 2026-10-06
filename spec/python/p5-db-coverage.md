@@ -1,10 +1,5 @@
 # Spec: P5 database coverage (`scripts/p5_db_coverage.py`, `src/coverage/`, `src/gbif/`)
 
-**Derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429),
-`targets.py` (215), `threads.py` (186), `fetch.py` (169),
-`src/gbif/relatives.py` (378), `src/gbif/maps.py` (139),
-`src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`,
-`src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. v1.5.0.
 **Called by:** Nextflow `EVALUATE_DATABASE_COVERAGE`, once per query
 (always; not gated by candidate count at Nextflow level).
 **Depends on:** [shared/config.md](shared/config.md), `shared/throttle.md`,
@@ -224,3 +219,13 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 2. Should taxid-less targets be graded `5.1C` explicitly instead of
    querying Entrez?
 3. Should `db_cov_country_missing_a` be implemented or removed?
+
+---
+
+## Provenance
+
+**Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

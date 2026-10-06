@@ -1,9 +1,5 @@
 # Spec: P1 BOLD search (`scripts/p1_bold_search.py`) and `src/bold/`
 
-**Derived from:** `p1_bold_search.py` (100), `src/bold/id_engine.py` (434),
-`src/bold/stats.py` (84), `src/utils/orient.py` (289),
-`src/gbif/taxonomy.py`, `scripts/Dockerfile`, `tests/test_orient.py`.
-v1.5.0.
 **Called by:** Nextflow `BOLD_SEARCH` (BOLD mode, once per run).
 `stats.fetch_bold_records_count` is used by P5 in BOLD mode.
 
@@ -133,3 +129,13 @@ merging, `stats.py`, P1B-D-* failure modes.
 1. Is BOLD support to be repaired (v5 API, image with HMMER or orientation
    removed) or retired? The answer decides whether NF-D-002, NF-D-009 and
    every P1B defect are fixed or the BOLD branch is deleted.
+
+---
+
+## Provenance
+
+**Initially derived from:** `p1_bold_search.py` (100), `src/bold/id_engine.py` (434), `src/bold/stats.py` (84), `src/utils/orient.py` (289), `src/gbif/taxonomy.py`, `scripts/Dockerfile`, `tests/test_orient.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

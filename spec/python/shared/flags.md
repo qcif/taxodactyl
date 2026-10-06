@@ -1,8 +1,5 @@
 # Spec: Flags (`src/utils/flags.py`, `config/flags.csv`)
 
-**Derived from:** `flags.py` (360), `config/flags.csv`, callers in P3–P6.
-v1.5.0.
-
 ## 1. Purpose
 
 Flags are the discrete, reportable outcomes of the analysis. Each is an
@@ -50,3 +47,13 @@ Level → Bootstrap class: 0 secondary, 1 success, 2 warning, ≥3 danger.
 |---|---|---|
 | FLG-D-001 | Medium | `flags.csv` explanations hard-code thresholds ("≥ 98.5%", ">5 entries", ">90%") that do not follow parameter changes (see P3-D-004, P5-D-001). |
 | FLG-D-002 | Medium | FLG-013 takes the **minimum** level whenever any sub-flag is level 0 — e.g. 5.1C (danger) with 5.3C (level 0) summarises as level 0 "secondary", hiding the danger in the summary badge. *Confirm intent.* |
+
+---
+
+## Provenance
+
+**Initially derived from:** `flags.py` (360), `config/flags.csv`, callers in P3–P6. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

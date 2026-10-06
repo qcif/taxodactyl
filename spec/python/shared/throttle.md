@@ -1,6 +1,5 @@
 # Spec: API throttling, retry and request coalescing (`src/utils/throttle.py`, `src/utils/coalesce.py`)
 
-**Derived from:** `throttle.py` (718), `coalesce.py` (212). v1.5.0.
 **Used by:** every external HTTP call — Entrez (P4, P5), GBIF (P5, BOLD
 kingdom lookup), BOLD (P1-BOLD, P5).
 
@@ -75,3 +74,13 @@ all nodes with working `fcntl` locks (see [../../nextflow/config-profiles.md](..
 `tests/test_cache.py`, `tests/test_coalesce.py` cover cache/coalescing.
 No dedicated unit tests for the SQLite/Redis throttle windows or retry
 policy.
+
+---
+
+## Provenance
+
+**Initially derived from:** `throttle.py` (718), `coalesce.py` (212). v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

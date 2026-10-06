@@ -1,8 +1,5 @@
 # Spec: Nextflow error handling and failure isolation
 
-**Sources:** `conf/process.config`, `conf/azure.config`, `conf/misc.config`,
-`main.nf`, `workflows/taxodactyl.nf`.
-
 ## 1. Model
 
 The workflow uses **process-level ignore**, not an application-level
@@ -50,3 +47,13 @@ placeholder memory defaults.
 2. A report (even a minimal one) for a query whose analysis failed.
 3. Retry logic for transient failures at process level (Python retries
    only external HTTP calls — see `python/shared/throttle.md`).
+
+---
+
+## Provenance
+
+**Initially derived from:** `conf/process.config`, `conf/azure.config`, `conf/misc.config`, `main.nf`, `workflows/taxodactyl.nf`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

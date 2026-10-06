@@ -1,7 +1,5 @@
 # Spec: P1 BLAST parser (`scripts/p1_parse_blast.py`)
 
-**Derived from:** `p1_parse_blast.py` (103), `src/blast/parse_xml.py`
-(195), `tests/test_blast_parser.py`. v1.5.0.
 **Called by:** Nextflow `EXTRACT_HITS` (BLAST mode only; once per run).
 **Depends on:** [shared/config.md](shared/config.md).
 
@@ -100,3 +98,13 @@ P1-005 (`test_calculate_hit_bitscore`), P1-006 (single and multiple
 e-value), P1-007, P1-009, P1-008 (incl. overlap), `test_parse_blast_xml`
 (P1-002/011 structure). **Not covered:** P1-001, P1-003, P1-012 (FASTA
 content), P1-013, `main()`.
+
+---
+
+## Provenance
+
+**Initially derived from:** `p1_parse_blast.py` (103), `src/blast/parse_xml.py` (195), `tests/test_blast_parser.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

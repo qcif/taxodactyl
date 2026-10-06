@@ -1,7 +1,5 @@
 # Spec: P2 taxonomy extraction (`scripts/p2_extract_taxonomy.py`) and `src/taxonomy/extract.py`
 
-**Derived from:** `p2_extract_taxonomy.py` (88), `src/taxonomy/extract.py`
-(352), `tests/test_taxonkit.py`, `tests/test-data/taxonkit.stdout`. v1.5.0.
 **Called by:** Nextflow `EXTRACT_TAXONOMY` (BLAST mode, once per run).
 `extract.taxids()` is also used by P5 (database coverage).
 **External tool:** `taxonkit` on `PATH` + taxdump in `config.taxdb_dir`
@@ -68,3 +66,13 @@ Output: `<out>/taxonomy.csv` with header
 fixture), `test_taxids_with_classification_filter` (P2-021),
 `test_main` (P2-001..005). **Not covered:** merged/deleted taxids,
 P2-022..025, malformed stdout.
+
+---
+
+## Provenance
+
+**Initially derived from:** `p2_extract_taxonomy.py` (88), `src/taxonomy/extract.py` (352), `tests/test_taxonkit.py`, `tests/test-data/taxonkit.stdout`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

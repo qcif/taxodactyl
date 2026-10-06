@@ -1,7 +1,5 @@
 # Spec: P4 reference-source diversity (`scripts/p4_source_diversity.py`)
 
-**Derived from:** `p4_source_diversity.py` (117), `src/sources/collect.py`
-(95), `src/entrez/genbank.py` (281), `src/utils/flags.py`. v1.5.0.
 **Called by:** Nextflow `EVALUATE_SOURCE_DIVERSITY`, once per query whose
 candidate count is 1..`max_candidates_for_analysis` (NF-WF-051).
 **Depends on:** [shared/config.md](shared/config.md), `shared/throttle.md`,
@@ -120,3 +118,13 @@ nf-test baselines include `4.flag` files end-to-end.
    as the same source?
 2. Should automated-annotation records form their own group separate from
    publication-less records?
+
+---
+
+## Provenance
+
+**Initially derived from:** `p4_source_diversity.py` (117), `src/sources/collect.py` (95), `src/entrez/genbank.py` (281), `src/utils/flags.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

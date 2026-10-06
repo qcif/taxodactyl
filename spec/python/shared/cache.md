@@ -1,7 +1,5 @@
 # Spec: API response cache (`src/utils/cache.py`)
 
-**Derived from:** `cache.py` (697), `tests/test_cache.py`,
-`tests/test_cache_azure.py`. v1.5.0.
 **Used by:** `Throttle.with_retry(with_cache=True)` via `coalesce`
 ([throttle.md](throttle.md)).
 
@@ -43,3 +41,13 @@ processes, queries and runs.
 | CCH-D-002 | Low (security) | Values are unpickled from shared storage (Azure container, shared temp dir): anyone able to write there can execute code in analysis tasks. |
 | CCH-D-003 | Low | Transient empty API responses are cached for 7 days. |
 | CCH-D-004 | Low | `fcntl` makes the package Linux/macOS-only. |
+
+---
+
+## Provenance
+
+**Initially derived from:** `cache.py` (697), `tests/test_cache.py`, `tests/test_cache_azure.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

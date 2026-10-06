@@ -1,8 +1,5 @@
 # Spec: Runtime configuration (`scripts/src/utils/config/`)
 
-**Derived from:** `config/config.py` (721), `config/schema.py` (361),
-`config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`,
-`src/utils/locus.py`, `tests/test_config.py`. v1.5.0.
 **Used by:** every `p*.py` entrypoint and most `src/` modules.
 
 ---
@@ -204,3 +201,13 @@ Loci file schema: see `../../contracts/loci.md`.
 override order (CFG-002, CFG-004/005), invalid type in YAML (CFG-003),
 `None` CLI values ignored (CFG-005). Not covered: CFG-020..036 helpers,
 loci matching, filename contract.
+
+---
+
+## Provenance
+
+**Initially derived from:** `config/config.py` (721), `config/schema.py` (361), `config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`, `src/utils/locus.py`, `tests/test_config.py`. v1.5.0.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.
