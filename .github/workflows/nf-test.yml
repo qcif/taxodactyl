@@ -32,7 +32,7 @@ jobs:
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
-        runner: [ubuntu-latest, cjh-github-actions-runner-20261001]
+        runner: [ubuntu-latest, self-hosted]
 
     steps:
       # Enable creation of containers as an unprivileged user
@@ -227,7 +227,7 @@ jobs:
         run: |
           # On the self-hosted runner, the whole work dir is copied and saved, 
           # so only links are required in the collected errors
-          if [[ "$GITHUB_RUNNER" == *"cjh"* ]]; then
+          if [[ "$GITHUB_RUNNER" == "self-hosted" ]]; then
             MODE="link"
           else
             MODE="copy"
@@ -327,7 +327,7 @@ jobs:
       # location (/var/runner/) on the self-hosted runner VM
       - name: Save run files on self-hosted runner
       # Only runs on self=hosted runner
-        if: ${{ always() && (runner.name == 'cjh-github-actions-runner-20261001') }}
+        if: ${{ always() && (runner.name == 'self-hosted') }}
         run: |
           # Run files will be saved in file with timestamp
           timestamp=$(date "+%F_%H%M%S")
