@@ -5,9 +5,9 @@ on:
     # To run workflow, trigger manually using GH UI
     workflow_dispatch:
     # Update to enable trigger on push of selected branch or on pull request
-    # push:
-    #   branches:
-    #     - nf-tests_ci_core
+    push:
+      branches:
+        - nf-test-sh-runner
     # pull_request:
 
 
@@ -24,13 +24,15 @@ env:
 jobs:
   nf-test:
     name: core_test
-    runs-on: ubuntu-latest
+    # Currently set up to run on both GH runner and self-hosted runner
+    runs-on: ${{ matrix.runner }}
     environment: testing
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
+        runner: [ubuntu-latest, cjh-github-actions-runner-20261001]
 
     steps:
       # Enable creation of containers as an unprivileged user
@@ -38,6 +40,9 @@ jobs:
         run: |
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+        # This step may not be required or give an error on self-hosted runner
+        # Add conditional if to step if there is an error and continues ok
+        continue-on-error: true
 
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v4
@@ -220,6 +225,13 @@ jobs:
         # Always run, nothing will happen if 
         if: always()
         run: |
+          # On the self-hosted runner, the whole work dir is copied and saved, 
+          # so only links are required in the collected errors
+          if [[ "$GITHUB_RUNNER" == *"cjh"* ]]; then
+            MODE="link"
+          else
+            MODE="copy"
+          fi
           mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
@@ -227,7 +239,7 @@ jobs:
               --outdir=$RUNNER_TEMP/nf-test/collected_errors \
               --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
               --nft_errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
-              --mode="copy"
+              --mode=$MODE
 
       - name: Debug copy error workdirs
         # Only runs if copy-workdirs step fails or runner is in debug mode
@@ -303,3 +315,23 @@ jobs:
         with:
           name: review.html
           path: ${{ github.workspace }}/test/selenium/review.html
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: $TEST_DIR/output/reports
+
+      # Copies entire work directory including test outputs to a dedicated
+      # location (/var/runner/) on the self-hosted runner VM
+      - name: Save run files on self-hosted runner
+      # Only runs on self=hosted runner
+        if: ${{ always() && (runner.name == 'cjh-github-actions-runner-20261001') }}
+        run: |
+          # Run files will be saved in file with timestamp
+          timestamp=$(date "+%F_%H%M%S")
+
+          mkdir -p "/var/runner/$timestamp"
+
+          cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
