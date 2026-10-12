@@ -44,3 +44,18 @@ Each query sequence gets its folder `query_<NUM>_<SAMPLE_ID>`. Inside each folde
   - For BOLD runs:  `report_BOLD_<SAMPLE_ID>_<timestamp>.html`
 
   See [this document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html) for tips on understanding the analysis and interpreting the final HTML report.
+
+#### Database coverage mode
+
+When the workflow is run with `--coverage_taxa`, the output directory contains:
+
+- **report_coverage_\<timestamp\>.html**
+  A single report with one row per taxon: the number of database records (flag 5.1), the genus coverage (flag 5.2), the coverage within the specified country (flag 5.3) and a button that opens the full coverage report for the taxon. For BOLD runs: `report_BOLD_coverage_<timestamp>.html`.
+
+- **query_\<NUM\>_\<TAXON\>_\<HASH\>/**
+  The working outputs for each taxon, where `<HASH>` identifies the combination of taxon, locus, country and classification. Each contains `db_coverage.json`, the flag files (`5.1.flag`, `5.2.flag` and `5.3.flag`), occurrence maps (`map_*.png`), an `errors/` folder (if any warnings were raised) and the `query_title.txt` file.
+
+- **coverage.csv**
+  The validated input, with duplicate rows removed.
+
+The `pipeline_info/` folder, `run.log` and `errors/` are as for a normal run. If the analysis fails for every taxon, no report is produced.

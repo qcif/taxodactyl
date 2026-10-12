@@ -35,6 +35,7 @@ bold_taxon_count_json: bold_taxon_counts.json
 bold_taxon_collectors_json: bold_taxon_collectors.json
 bold_taxonomy_json: bold_taxonomy.json
 db_coverage_toi_limit: 10
+coverage_taxa_max: 100
 db_coverage_max_candidates: 3
 hmmsearch_min_evalue: 1.0e-05
 flag_file_template: '{identifier}.flag'
@@ -70,11 +71,20 @@ inputs:
   - sample_id
   - locus
   - preliminary_id
+  coverage_csv_header:
+    taxon: taxon
+    locus: locus
+    country: country
+    classification: classification
+  coverage_csv_required_fields:
+  - taxon
+  - locus
   fasta_max_length: 3000
   fasta_min_length: 20
   fasta_max_sequences: 150
   query_fasta: null
   metadata_csv: null
+  coverage_taxa_csv: null
 criteria:
   alignment_min_nt: 300
   alignment_min_q_coverage: 0.85

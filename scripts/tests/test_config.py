@@ -575,5 +575,124 @@ class TestConfigPathResolution(unittest.TestCase):
             self.assertEqual(config.flag_details_csv_path, abs_flags_path)
 
 
+COVERAGE_CSV = (
+    'taxon,locus,country,classification\n'
+    'Drosophila melanogaster,COI,Australia,animalia\n'
+    'Aphididae,,,\n'
+)
+KNOWN_COVERAGE_ID = 'aphididae_3748f59c'
+
+
+class TestConfigCoverageMode(unittest.TestCase):
+    """Test the coverage-mode pseudo-sample behaviour of Config."""
+
+    def setUp(self):
+        Config._instance = None
+        Config._initialized = False
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.csv_path = Path(self.tmp.name) / 'coverage.csv'
+        self.csv_path.write_text(COVERAGE_CSV)
+        patcher = patch.dict(os.environ, {'OUTPUT_DIR': self.tmp.name})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        with patch('sys.argv', ['test_script']):
+            self.config = Config()
+        self.config.inputs.coverage_taxa_csv = self.csv_path
+
+    def tearDown(self):
+        Config._instance = None
+        Config._initialized = False
+
+    def _id(self, **kwargs):
+        row = {
+            'taxon': 'Bactrocera',
+            'locus': 'COI',
+            'country': 'Australia',
+            'classification': 'animalia',
+        }
+        row.update(kwargs)
+        return self.config.coverage_sample_id(row)
+
+    def test_coverage_mode_flag(self):
+        self.assertTrue(self.config.coverage_mode)
+        self.config.inputs.coverage_taxa_csv = None
+        self.assertFalse(self.config.coverage_mode)
+
+    def test_rows_blank_values_are_none(self):
+        rows = self.config.coverage_rows
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[1], {
+            'taxon': 'Aphididae',
+            'locus': None,
+            'country': None,
+            'classification': None,
+        })
+
+    def test_sample_id_and_query_dir(self):
+        sample_id = self.config.get_sample_id(0)
+        self.assertTrue(sample_id.startswith('drosophila_melanogaster_'))
+        query_dir = self.config.get_query_dir(0)
+        self.assertEqual(query_dir.name, f'query_001_{sample_id}')
+        self.assertEqual(
+            self.config.get_sample_id(query_dir), sample_id)
+
+    def test_metadata_accessors(self):
+        self.assertEqual(self.config.get_locus_for_query(0).name, 'coi')
+        self.assertEqual(self.config.get_country_for_query(0), 'Australia')
+        self.assertEqual(
+            self.config.get_country_for_query(0, code=True), 'AU')
+        self.assertEqual(
+            self.config.get_pmi_for_query(0), 'Drosophila melanogaster')
+        self.assertEqual(self.config.get_toi_list_for_query(0), [])
+        self.assertEqual(
+            self.config.get_classification_for_query(0)['gbif_col'], 'N')
+
+    def test_blank_locus_is_na(self):
+        """Regression: blank locus used to raise AttributeError."""
+        locus = self.config.get_locus_for_query(1)
+        self.assertFalse(locus)
+        self.assertEqual(locus.name, 'na')
+        self.assertIsNone(self.config.get_country_for_query(1))
+        self.assertIsNone(self.config.get_classification_for_query(1))
+
+    def test_metadata_keys_match_header_values(self):
+        """Inner metadata keys must be readable via the header values."""
+        header = self.config.inputs.metadata_csv_header
+        meta = self.config.metadata[self.config.get_sample_id(0)]
+        self.assertEqual(meta[header['preliminary_id']],
+                         'Drosophila melanogaster')
+        self.assertEqual(meta[header['taxa_of_interest']], [])
+
+    def test_id_normalisation(self):
+        base = self._id()
+        self.assertEqual(base, self._id(taxon='  bactrocera '))
+        self.assertEqual(base, self._id(taxon='BACTROCERA'))
+        self.assertEqual(base, self._id(locus='CO1'))
+        self.assertEqual(base, self._id(locus='COI gene'))
+        self.assertEqual(base, self._id(country='AU'))
+        self.assertEqual(base, self._id(classification=' Animalia '))
+
+    def test_id_differs_by_each_field(self):
+        base = self._id()
+        self.assertNotEqual(base, self._id(locus='16S'))
+        self.assertNotEqual(base, self._id(country=None))
+        self.assertNotEqual(base, self._id(country='New Zealand'))
+        self.assertNotEqual(base, self._id(classification='fungi'))
+        self.assertNotEqual(base, self._id(taxon='Bactrocera dorsalis'))
+
+    def test_id_path_safe_and_deterministic(self):
+        sample_id = self._id(taxon='Genus (sp.) x/y')
+        self.assertRegex(sample_id, r'^[\w\-.]+$')
+        self.assertEqual(self.config.get_sample_id(1), KNOWN_COVERAGE_ID)
+
+    def test_coverage_report_path(self):
+        path = self.config.get_coverage_report_path()
+        self.assertEqual(path.parent, self.config.output_dir)
+        self.assertTrue(path.name.startswith('report_coverage_'))
+        bold_path = self.config.get_coverage_report_path(bold=True)
+        self.assertTrue(bold_path.name.startswith('report_BOLD_coverage_'))
+
+
 if __name__ == '__main__':
     unittest.main()

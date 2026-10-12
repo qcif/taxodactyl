@@ -65,13 +65,17 @@ def _parse_args():
         f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
-        required=True,
     )
     parser.add_argument(
         f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
-        required=True,
+    )
+    parser.add_argument(
+        f"--{CLI_ARGS['coverage_taxa_csv'].cli_name}",
+        type=existing_path,
+        help="Path to the validated coverage taxa CSV (database coverage"
+             " mode, instead of --metadata-csv and --query-fasta).",
     )
     parser.add_argument(
         f"--{CLI_ARGS['db_coverage_toi_limit'].cli_name}",
@@ -137,7 +141,17 @@ def _parse_args():
         help="The name of the temp dir to create within the temp root"
              f" (defaults to '{config.temp_dir_name}')",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    sequence_inputs = bool(args.metadata_csv or args.query_fasta)
+    if args.coverage_taxa and sequence_inputs:
+        parser.error(
+            "--coverage-taxa cannot be combined with --metadata-csv or"
+            " --query-fasta.")
+    if not args.coverage_taxa and not (args.metadata_csv and args.query_fasta):
+        parser.error(
+            "either --coverage-taxa, or both --metadata-csv and"
+            " --query-fasta, are required.")
+    return args
 
 
 def write_db_coverage(query_dir, results):

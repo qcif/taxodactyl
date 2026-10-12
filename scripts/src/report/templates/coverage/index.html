@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ html_title }}</title>
+    {% include 'components/favicon.html' %}
+
+    {% for style in static.css %}
+      <style>
+        {{ style }}
+      </style>
+    {% endfor %}
+
+    <script>
+      const DB_COVERAGE = {{ db_coverage_js | tojson }};
+    </script>
+
+    {% for script in static.js %}
+      <script>
+        {{ script }}
+      </script>
+    {% endfor %}
+
+  </head>
+
+  <body>
+    {% from "macros/alert-level-icon.html" import render_level_icon %}
+    {% from "macros/db-coverage-target-modal.html" import render_target_modal %}
+
+    <div class="container">
+      {% include "components/heading.html" %}
+
+      <div class="row mb-5">
+        <div class="col">
+          {% include "components/walltime.html" %}
+          <p class="mt-3">
+            This report describes the reference database coverage of the target taxa listed in your input file.
+            No sequences were analysed. For each taxon, the report shows how well the reference database
+            represents the taxon itself (flag 5.1), the species related to it (flag 5.2), and the related
+            species that occur in the specified country (flag 5.3), at the specified locus.
+          </p>
+        </div>
+
+        <div class="col">
+          {% include "coverage/inputs.html" %}
+        </div>
+      </div>
+
+      <table class="table tight border align-middle centered-columns sortable">
+        <thead>
+          <tr>
+            <th colspan="7" class="text-center text-light bg-secondary bg-gradient">Database coverage</th>
+          </tr>
+          <tr class="bg-gray-100">
+            <th>Taxon</th>
+            <th>Locus</th>
+            <th>Country</th>
+            <th>DB records (5.1)</th>
+            <th>Genus coverage (5.2)</th>
+            <th>Country coverage (5.3)</th>
+            <th data-sort-method="none">Coverage report</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in taxa %}
+          {% set flags = t.flags %}
+          {% set summary = t.db_coverage.get('summary', {}).get('pmi', {}).get(t.taxon, {}) %}
+          <tr>
+            <td><em>{{ t.taxon }}</em></td>
+            <td>
+              {% if t.metadata.locus and t.metadata.locus | lower != 'na' %}
+              {{ t.metadata.locus }}
+              {% else %}
+              <span class="text-muted">Whole genome</span>
+              {% endif %}
+            </td>
+            <td>{{ t.metadata.country or '-' }}</td>
+
+            {% if not t.completed %}
+            <td colspan="4" class="text-center text-muted">
+              Analysis did not complete for this taxon &ndash; see workflow errors.
+            </td>
+            {% else %}
+
+            <td> <!-- 5.1 DB records -->
+              {% set flag = flags.get('5.1', {}).get('pmi', {}).get(t.taxon) %}
+              {% if flag and summary.get('target') is not none %}
+              <span
+                class="badge bg-{{ flag.bs_class }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ flag.outcome }}"
+              >
+                {{ "{:,}".format(summary.target) }}
+              </span>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+
+            <td> <!-- 5.2 Genus coverage -->
+              {% set flag = flags.get('5.2', {}).get('pmi', {}).get(t.taxon) %}
+              {% if flag and summary.get('related') is not none %}
+              <span
+                class="badge bg-{{ flag.bs_class }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ flag.outcome }}"
+              >
+                {{ "%.0f" | format(summary.related * 100) }}%
+              </span>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+
+            <td> <!-- 5.3 Country coverage -->
+              {% set flag = flags.get('5.3', {}).get('pmi', {}).get(t.taxon) %}
+              {% if flag and summary.get('country') is not none %}
+              <span
+                class="badge bg-{{ flag.bs_class }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ flag.outcome }}"
+              >
+                {{ "%.0f" | format(summary.country * 100) }}%
+              </span>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+
+            <td> <!-- Coverage report button -->
+              {% set flag = flags.get('5', {}).get('pmi', {}).get(t.taxon) %}
+              {% if flag %}
+              <div
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="See full database coverage report"
+                style="display: inline-block;"
+              >
+                <button
+                  class="btn btn-{{ flag.bs_class }} p-0 my-1"
+                  data-bs-toggle="modal"
+                  data-bs-target="#{{ t.target_id }}Modal"
+                  type="button"
+                  style="width: 4rem;"
+                >
+                  {{ render_level_icon(flag.level) }}
+                </button>
+              </div>
+              {% endif %}
+            </td>
+
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p>
+        <small>
+          Hover over a badge for its outcome, or see the
+          <a href="#" data-bs-toggle="modal" data-bs-target="#flagsModal">flag definitions</a>.
+        </small>
+      </p>
+
+      {% include "components/footer.html" %}
+    </div>
+
+    {% include "components/flags-modal.html" %}
+    {% include "components/error-modal.html" %}
+
+    {% for t in taxa if t.completed and t.flags.get('5', {}).get('pmi', {}).get(t.taxon) %}
+    {% set modal_context = {
+      'data': t.db_coverage.full.pmi[t.taxon],
+      'target_id': t.target_id,
+      'target_taxon': t.taxon,
+      'target_type': 'pmi',
+      'target_type_text': "Target taxon",
+      'js_key': t.sample_id,
+      'flags': t.flags,
+      'metadata': t.metadata,
+      'error_log': t.error_log,
+      'error_locations': error_locations,
+      'config': config,
+      'tois_detected': {},
+      'locus_provided': t.locus_provided,
+      'ncbi_taxonomy_url': t.db_coverage.ncbi_urls[t.taxon]['taxonomy'],
+      'coverage_mode': true,
+    } %}
+    {{ render_target_modal(modal_context) }}
+    {% endfor %}
+
+  </body>
+
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      document.querySelectorAll("table.sortable").forEach(function(table) {
+        new Tablesort(table);
+      });
+    });
+  </script>
+
+</html>
