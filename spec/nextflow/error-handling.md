@@ -6,6 +6,22 @@ The workflow uses **process-level ignore**, not an application-level
 "failed sample" status. A failing task produces no output; whatever depends
 on it silently receives nothing.
 
+`NF-ER-001`/`NF-ER-002` are stated as pipeline-wide requirements, not
+DAFF-specific policy: `errorStrategy = 'ignore'` and `failOnIgnore = true`
+are set once in the base `conf/process.config`/`conf/misc.config`, which
+every profile includes (local, HPC, azure alike —
+[config-profiles.md NF-CF-001](config-profiles.md)), so this is what
+anyone running `qcif/taxodactyl` off the shelf gets by default, not an
+Azure/DAFF override layered on top. Like every other default in this
+spec, an operator can still override it in their own `-c` config — the
+MUST describes the shipped default, not an un-overridable constraint, and
+exists so an accidental drift from it is a visible regression. Contrast
+this with the genuinely DAFF-tenancy-specific values in
+[config-profiles.md §4](config-profiles.md) and
+[../deployment.md §5](../deployment.md) (account names, region, node
+paths) — those are operator config, not requirements another deployer
+would need to match.
+
 | ID | Requirement |
 |---|---|
 | NF-ER-001 | `process.errorStrategy` MUST be `ignore` for all processes on all executors (local and Azure). |

@@ -66,20 +66,34 @@ processes, as a reference point).
 
 ## 4. Azure Batch profile (`conf/azure.config`)
 
+This section mixes two different kinds of statement. **General
+requirements** (`NF-CF-020`–`022`, `024`, `026`) describe how
+`-profile azure` works architecturally — they'd hold for *any* operator
+who points this pipeline at their own Azure Batch tenancy, not only DAFF.
+**Operator-specific values** (`NF-CF-023`, `025`) are literal facts about
+*DAFF's current tenancy* — account names, region, a node path — hard-coded
+into `conf/azure.config` rather than parameterised. They are not a
+requirement another deployer must satisfy; they're what the repo
+currently assumes, and a second tenant needs to edit them. The split
+isn't yet reflected in the code (`DEP-D-006`); [decisions.md
+`D-44`](../decisions.md) is open on moving them to a private overlay.
+
+**General requirements:**
+
 | ID | Requirement |
 |---|---|
-| NF-CF-020 | Under `-profile azure`, `workDir` MUST be `az://workdata/work` and every process MUST use executor `azurebatch`, queue `taxodactyl`, `errorStrategy 'ignore'`, default memory 2 GB, default container `docker.io/library/ubuntu:22.04`. |
+| NF-CF-020 | Under `-profile azure`, every process MUST use executor `azurebatch`, `errorStrategy 'ignore'`, default memory 2 GB, default container `docker.io/library/ubuntu:22.04`. |
 | NF-CF-021 | Container refs MUST use `docker.io/...` (Azure Batch rejects `docker://`): `neoformit/taxodactyl:v1.5.0`, `ncbi/blast:2.16.0`. |
 | NF-CF-022 | Resource classes (single-node design, pool 0–1 nodes): **heavy** `BLAST_BLASTN|BLAST_BLASTDBCMD|EXTRACT_TAXONOMY` 8 cpu / 64 GB / `maxForks 1` / 1 h; **medium** `MAFFT_ALIGN|FASTME` 4 / 32 GB / `maxForks 2` / 1 h; **light** `VALIDATE_INPUT|EXTRACT_HITS|EXTRACT_CANDIDATES|REPORT` 1 / 2 GB / `maxForks 16` / 30 m; **API** `EVALUATE_SOURCE_DIVERSITY|EVALUATE_DATABASE_COVERAGE` 0.5 / 2 GB / `maxForks 16` / 1 h. |
-| NF-CF-023 | Reference data MUST be pre-staged on the node at `/mnt/nvme/refdata` and mounted read-only (`-v /mnt/nvme/refdata:/mnt/nvme/refdata:ro`); `REPORT` additionally sets `-e TZ=Australia/Brisbane`. |
 | NF-CF-024 | Azure env MUST forward: `THROTTLE_BACKEND` (default `sqlite`), `REDIS_HOST/PORT/PASSWORD`, `AZURE_KEY_VAULT_URL`, `CACHE_BACKEND` (default `azure_blob`), `CACHE_AZURE_ACCOUNT_URL`, `CACHE_AZURE_CONNECTION_STRING`, `CACHE_AZURE_CONTAINER`, `CACHE_AZURE_BLOB_PREFIX`. |
-| NF-CF-025 | Storage account `daffstandard` (key from `AZURE_STORAGE_ACCOUNT_KEY`); batch account `daffbatch`, `australiaeast`, `autoPoolMode false`, `allowPoolCreation false`, `copyToolInstallMode 'task'`, jobs/tasks not deleted on completion. |
 | NF-CF-026 | Under Azure, `containerOptions` are overridden to `-v` syntax, so the `--bind` options in modules are not used for the listed processes. `PREPARE_INPUTS/PREPARE_LOG/BOLD_SEARCH/MOCK_BLASTN` have no override. |
 
-Note: Azure account names, region and node paths are **hard-coded**
-(`daffbatch`, `daffstandard`, `taxodactyl` pool, `/mnt/nvme/refdata`);
-another deployment needs a config edit. Tenancy-specific values belong in
-a private overlay, not in this repo (open question).
+**DAFF's current tenancy (operator-specific, not a general requirement):**
+
+| ID | Current value |
+|---|---|
+| NF-CF-023 | `workDir` is `az://workdata/work`; reference data is pre-staged on the node at `/mnt/nvme/refdata` and mounted read-only (`-v /mnt/nvme/refdata:/mnt/nvme/refdata:ro`); `REPORT` additionally sets `-e TZ=Australia/Brisbane`; Batch queue is named `taxodactyl`. |
+| NF-CF-025 | Storage account `daffstandard` (key from `AZURE_STORAGE_ACCOUNT_KEY`); batch account `daffbatch`, region `australiaeast`, `autoPoolMode false`, `allowPoolCreation false`, `copyToolInstallMode 'task'`, jobs/tasks not deleted on completion. |
 
 ## 5. Environment (`conf/env.config`)
 

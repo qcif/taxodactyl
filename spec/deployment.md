@@ -49,9 +49,18 @@ and pass paths (`--blastdb`, `--taxdb`). See NF-PA rows in
 | DEP-031 | The taxdump directory MUST contain the nine `*.dmp/gc.prt` files (P0-031) and be from April 2025 or later for virus support. |
 | DEP-032 | On Azure, reference data (≈250 GB) MUST be staged once per node by the pool start task to `/mnt/nvme/refdata` and mounted read-only into tasks; the run script defaults are `/mnt/nvme/refdata/core_nt/core_nt` and `/mnt/nvme/refdata/taxdump/taxdump`. |
 
-## 5. Azure Batch deployment (as implemented)
+## 5. Azure Batch deployment — DAFF's current tenancy
 
-| Item | Value (hard-coded in repo) |
+Everything in this section, except `DEP-040`/`DEP-041`, is **operator
+config, not a general requirement**: it documents what DAFF's specific
+Azure subscription is set up to do today, not something another deployer
+running this pipeline on their own tenancy would need to replicate
+exactly. See [config-profiles.md §4](nextflow/config-profiles.md) for the
+same general-vs-operator split applied to `conf/azure.config` itself, and
+`DEP-D-006`/[decisions.md `D-44`](decisions.md) for the open question of
+moving these values out of the repo.
+
+| Item | Value (hard-coded in repo, DAFF tenancy) |
 |---|---|
 | Pool | `taxodactyl`, autoscale 0–1 node, node retained 15 min after tasks, VM `Standard_L8as_v3` (8 vCPU, 64 GB, NVMe), Ubuntu 20.04 (per `pool-setup.json.template` and `docs/azure/`; see DEP-D-008) |
 | Storage | **two accounts**: `daffstandard` (`STORAGE_ACCOUNT_STD`) holds `workdata` (Nextflow work dir, deleted after 14 days), `scripts`, `cache` (entries deleted after 7 days) — lifecycle rules in `deployment/azure/storage-policy.json`, applied to `daffstandard` only; `daffpremium` (`STORAGE_ACCOUNT_PREM`) holds `refdata` only, staged directly to node-local NVMe by the pool start task via `azcopy` (outside Nextflow, no lifecycle rule) |
@@ -60,6 +69,9 @@ and pass paths (`--blastdb`, `--taxdb`). See NF-PA rows in
 | Redis | dedicated VM (`redis-vm-setup.sh`) or on-demand |
 | Entry script | `deployment/azure/run-taxodactyl.sh`: sources `.env.azure`, asks for confirmation, runs `nextflow run main.nf -profile azure …` |
 | Docs | `docs/azure/01…07*.md` (setup, pool management, reference data, start tasks, troubleshooting, maintenance, Key Vault, Redis) |
+
+The two items below *are* general requirements — they'd apply to any
+Azure Batch deployment of this pipeline, not just DAFF's:
 
 | ID | Requirement |
 |---|---|
