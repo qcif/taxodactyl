@@ -5,7 +5,7 @@
 | ID | Requirement |
 |---|---|
 | NF-CF-001 | `nextflow.config` MUST include, in this order: `params`, `process`, `filenames`, `manifest`, `validation`, `profiles`, `misc`, `env`. |
-| NF-CF-002 | `manifest.nextflowVersion` is `!>=24.10.6`: the pipeline MUST refuse to run on older Nextflow. `manifest.version` (`1.5.0`) is the single source of the pipeline version used by `--version`. |
+| NF-CF-002 | `manifest.nextflowVersion` is `!>=24.10.6`: the pipeline MUST refuse to run on older Nextflow. `manifest.version` is the single source of the pipeline version used by `--version` — a fact about the code's own self-reporting, which changes at every release and is distinct from this spec's own provenance ([README.md § Version](../README.md#version)). It is one of **five** places a release must update in step — see `DEP-020` and the drift risk `DEP-D-001` in [../deployment.md](../deployment.md). The Nextflow *engine* version actually tested is a separate, weaker claim: the README's "Tested versions: 24.10.3, 24.10.6" note is itself inconsistent with the `!>=24.10.6` hard minimum (`NF-D-012`). |
 | NF-CF-003 | `conf/filenames.config` MUST parse `scripts/config/default.yml` with `YamlSlurper` and expose filenames as `process.ext.*`. `blast_xml_filename`, `candidates_msa` and `versions_yml` are defined in Nextflow itself (`blast_result.xml`, `candidates_phylogeny.msa`, `versions.yml`); all others originate from the Python config. |
 | NF-CF-004 | Plugins: `nf-schema@2.1.1` and `nf-azure` (latest) MUST be declared in `misc.config`. |
 
@@ -41,11 +41,13 @@ Per-process overrides:
 | `/.*PREPARE.*/` | 0.5 | 1 MB | 10 m | |
 | all others (`VALIDATE_INPUT`, `EXTRACT_HITS`, `EXTRACT_CANDIDATES`, `REPORT`, `BLAST_BLASTDBCMD`, `MOCK_BLASTN`) | 1 | 1 MB | 10 m | |
 
-**Observation (NF-D-011).** The `1MB` default memory is not a real
-requirement — it is only harmless on the local executor, which does not
-enforce memory. Under a scheduler that enforces `memory` (SLURM, LSF, etc.)
-every process without an override would be killed. Real memory needs are
-undocumented (Azure config uses 2 GB for the light processes).
+**Defect `NF-D-011` (Medium, [defects.md](../defects.md)).** The `1MB`
+default memory is not a real requirement — it is only harmless on the
+`local` executor, which does not enforce `memory` at all (it's advisory
+there). Under a scheduler that *does* enforce `memory` (SLURM, LSF, etc.)
+every process without an override above would be OOM-killed outright.
+Real memory needs are undocumented (Azure config uses 2 GB for the light
+processes, as a reference point).
 
 ## 3. Profiles (`conf/profiles.config`)
 
@@ -55,7 +57,7 @@ undocumented (Azure config uses 2 GB for the light processes).
 | `apptainer`, `docker`, `podman`, `shifter`, `charliecloud`, `conda`, `mamba` | nf-core boilerplate, mutually exclusive engine flags. Not supported (NF-PR-005). |
 | `arm` | adds `--platform=linux/amd64` to docker runOptions. |
 | `azure` | `includeConfig 'azure.config'` (see §4). |
-| `test` | `includeConfig 'test.config'`: `metadata=test/metadata.csv`, `sequences=test/query.fasta`, `db_type='bold'`, analyst/facility placeholders. |
+| `test` | `includeConfig 'test.config'`: `metadata=test/metadata.csv`, `sequences=test/query.fasta`, `db_type='bold'`, analyst/facility placeholders. **The out-of-the-box test profile cannot succeed** — `db_type='bold'` selects the branch that cannot currently complete a run (`NF-D-009`, root cause `NF-D-002`; tracked under [decisions.md `D-01`](../decisions.md)). |
 | `debug` | `dumpHashes`, keep work dir (`cleanup=false`), echo hostname. |
 | `wave`, `gitpod` | nf-core boilerplate. |
 
