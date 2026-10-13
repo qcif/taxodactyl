@@ -11,6 +11,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -40,6 +41,7 @@ COVERAGE_REPORT_FILENAME = "report_{prefix}coverage_{timestamp}.html"
 COVERAGE_ID_HASH_LENGTH = 8
 NO_LOCUS_NAME = 'na'
 BOLD_LOCUS_NAME = 'COI'
+LOCUS_GENE_SUFFIX_RE = re.compile(r'\s+gene$', re.IGNORECASE)
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
@@ -608,11 +610,11 @@ class Config:
         """Match a locus name or synonym to its canonical allowed Locus.
 
         Blank and 'NA' names resolve to the NA locus, and a trailing " gene"
-        is ignored. Returns None if the name is not recognised.
+        is ignored (any case). Returns None if the name is not recognised.
         """
         if name is None or name.lower().strip() == NO_LOCUS_NAME:
             return Locus('NA', {})
-        name = name.strip().removesuffix(' gene')
+        name = LOCUS_GENE_SUFFIX_RE.sub('', name.strip())
         for locus in self.allowed_loci:
             if name in locus:
                 return locus
@@ -626,7 +628,7 @@ class Config:
         )
         if name is None or name.lower().strip() == NO_LOCUS_NAME:
             return Locus('NA', {})
-        name = name.strip().removesuffix(' gene')
+        name = LOCUS_GENE_SUFFIX_RE.sub('', name.strip())
         locus = self._resolve_locus(name)
         if locus:
             return locus.rename(name)

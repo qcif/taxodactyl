@@ -658,7 +658,7 @@ class TestConfigCoverageMode(unittest.TestCase):
 
     def test_locus_with_gene_suffix_is_a_locus(self):
         """Regression: ' gene' suffix used to return a plain string."""
-        for value in ('COI gene',):
+        for value in ('COI gene', 'COI GENE'):
             with self.subTest(locus=value):
                 self.config.inputs.coverage_taxa_csv.write_text(
                     f'taxon,locus\nAedes,{value}\n')
@@ -683,6 +683,8 @@ class TestConfigCoverageMode(unittest.TestCase):
         self.assertEqual(base, self._id(taxon='BACTROCERA'))
         self.assertEqual(base, self._id(locus='CO1'))
         self.assertEqual(base, self._id(locus='COI gene'))
+        self.assertEqual(base, self._id(locus='COI GENE'))
+        self.assertEqual(base, self._id(locus='coi Gene'))
         self.assertEqual(base, self._id(country='AU'))
         self.assertEqual(base, self._id(classification=' Animalia '))
 
