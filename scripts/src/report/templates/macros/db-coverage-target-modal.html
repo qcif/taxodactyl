@@ -41,7 +41,7 @@
         <p class="alert alert-warning">
           <strong>Warning: no locus provided</strong>
           <br>
-          Database coverage results are compromised, because a locus was not provided for this {% if context.coverage_mode %}taxon in the coverage CSV{% else %}sample in <code>metadata.csv</code>{% endif %}. The coverage shown correspnds to the
+          Database coverage results are compromised, because a locus was not provided for this {% if context.coverage_mode %}taxon in the coverage CSV{% else %}sample in <code>metadata.csv</code>{% endif %}. The coverage shown corresponds to the
           <strong>entire genome</strong>
           of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
         </p>
@@ -167,7 +167,7 @@
                   {% else %}
                   across the entire genome because
                   <strong>no locus was provided</strong>.
-                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider provising a locus in {% if context.coverage_mode %}the coverage CSV{% else %}<code>metadata.csv</code>{% endif %} to obtain a more relevant analysis.
+                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider providing a locus in {% if context.coverage_mode %}the coverage CSV{% else %}<code>metadata.csv</code>{% endif %} to obtain a more relevant analysis.
                   {% endif %}
                 </p>
 
