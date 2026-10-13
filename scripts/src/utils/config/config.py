@@ -626,8 +626,7 @@ class Config:
         )
         if name is None or name.lower().strip() == NO_LOCUS_NAME:
             return Locus('NA', {})
-        if name.endswith(' gene'):
-            return name.rsplit(' ', 1)[0]
+        name = name.strip().removesuffix(' gene')
         locus = self._resolve_locus(name)
         if locus:
             return locus.rename(name)

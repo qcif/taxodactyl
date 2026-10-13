@@ -656,6 +656,19 @@ class TestConfigCoverageMode(unittest.TestCase):
         self.assertIsNone(self.config.get_country_for_query(1))
         self.assertIsNone(self.config.get_classification_for_query(1))
 
+    def test_locus_with_gene_suffix_is_a_locus(self):
+        """Regression: ' gene' suffix used to return a plain string."""
+        for value in ('COI gene',):
+            with self.subTest(locus=value):
+                self.config.inputs.coverage_taxa_csv.write_text(
+                    f'taxon,locus\nAedes,{value}\n')
+                self.config.__dict__.pop('coverage_rows', None)
+                self.config.__dict__.pop('metadata', None)
+                locus = self.config.get_locus_for_query(0)
+                self.assertEqual(locus.name, 'coi')
+                self.assertEqual(str(locus), 'COI')
+                self.assertTrue(locus.genbank_query_str)
+
     def test_metadata_keys_match_header_values(self):
         """Inner metadata keys must be readable via the header values."""
         header = self.config.inputs.metadata_csv_header
