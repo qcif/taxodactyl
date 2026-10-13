@@ -61,3 +61,4 @@ spec in the same change.
 | D-43 | Replace placeholder `1MB` memory defaults with real limits. | NF-D-011 | open |
 | D-44 | Move Azure tenancy values out of the repo (overlay config). | DEP-D-006 | open |
 | D-45 | Guard/replace the `429` string test in the retry policy. | THR-D-002 | open |
+| D-19 | **(vs nf-core best practice)** Should error handling adopt the nf-core template's retry pattern (transient-failure exit codes retried with `task.attempt`-scaled resources, `ignore` only as a per-process opt-in label) instead of today's blanket `errorStrategy = 'ignore'`? Would reduce how often `NF-D-003` triggers, not just how it's reported. | NF-D-003, NF-D-011, NF-D-013 | open |

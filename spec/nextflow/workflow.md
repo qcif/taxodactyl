@@ -6,7 +6,7 @@ references are to the tree described in
 [README.md § Version](../README.md#version).
 **Companion specs:** [processes.md](processes.md), [params.md](params.md),
 [config-profiles.md](config-profiles.md), [error-handling.md](error-handling.md),
-[../contracts/](../contracts/).
+[nf-core-conformance.md](nf-core-conformance.md), [../contracts/](../contracts/).
 
 Requirement keywords: MUST / SHOULD / MAY as in RFC 2119. IDs are stable;
 cite them from tasks and tests. "**Defect**" entries record where the
