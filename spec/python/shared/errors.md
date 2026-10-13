@@ -44,7 +44,7 @@ negative.
 
 ## Provenance
 
-**Initially derived from:** `errors.py` (194) and its callers. v1.5.0.
+**Initially derived from:** `errors.py` (194) and its callers. See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

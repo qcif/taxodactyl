@@ -28,7 +28,7 @@ need not be passed every time.
 
 ## Provenance
 
-**Initially derived from:** `secrets.py` (201), `config.py` (`vault`, `_resolve_ncbi_api_key`, `_resolve_facility_name`, `user_secrets_dir`), `tests/test_secrets.py`. v1.5.0.
+**Initially derived from:** `secrets.py` (201), `config.py` (`vault`, `_resolve_ncbi_api_key`, `_resolve_facility_name`, `user_secrets_dir`), `tests/test_secrets.py`. See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

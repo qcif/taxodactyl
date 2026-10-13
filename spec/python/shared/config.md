@@ -206,7 +206,7 @@ loci matching, filename contract.
 
 ## Provenance
 
-**Initially derived from:** `config/config.py` (721), `config/schema.py` (361), `config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`, `src/utils/locus.py`, `tests/test_config.py`. v1.5.0.
+**Initially derived from:** `config/config.py` (721), `config/schema.py` (361), `config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`, `src/utils/locus.py`, `tests/test_config.py`. See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

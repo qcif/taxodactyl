@@ -25,7 +25,7 @@
 
 | Mechanism | Detail | Spec |
 |---|---|---|
-| Command-line flags | each process builds `--flag value` only for truthy params | NF-PR-004, [params.md](nextflow/params.md) |
+| Command-line options | each process builds `--option value` only for truthy params | NF-PR-004, [params.md](nextflow/params.md) |
 | Environment variables | `conf/env.config`, Azure env | [config-profiles.md §5](nextflow/config-profiles.md) |
 | Files in the query folder | named by `default.yml`, exposed as `task.ext.*` | [contracts/](contracts/) |
 | Run-level files | `sequences.fasta`, `metadata.csv`, `taxonomy.csv`, `timestamp.txt`, `BOLD` marker | [contracts/query-folder.md](contracts/query-folder.md) |
@@ -39,8 +39,14 @@ imports Python.
 The whole pipeline after the search is data-parallel over **query
 folders** (`query_NNN_<sample_id>`). One process instance handles one
 query; instances are independent and unordered. The only cross-query
-processes are the run-wide steps (`VALIDATE_INPUT`, BLAST, `EXTRACT_HITS`,
-`BLAST_BLASTDBCMD`, `EXTRACT_TAXONOMY`, and REPORT-side value channels).
+processes are the run-wide steps: `VALIDATE_INPUT`, then one of two
+mutually-exclusive search branches selected whole-run by `--db_type`
+(rule 3, [CONSTITUTION.md](../CONSTITUTION.md)) — BLAST (`BLAST_BLASTN` →
+`EXTRACT_HITS` → `BLAST_BLASTDBCMD` → `EXTRACT_TAXONOMY`, 4 processes) or
+BOLD (`BOLD_SEARCH`, 1 process doing search + taxonomy together) — plus
+REPORT-side value channels. Every point where the two branches diverge is
+consolidated in [python/blast-vs-bold.md](python/blast-vs-bold.md); as of
+this spec the BOLD branch cannot currently complete a run (`NF-D-002`).
 
 ## 4. Cross-cutting infrastructure (Python)
 
@@ -55,11 +61,21 @@ processes are the run-wide steps (`VALIDATE_INPUT`, BLAST, `EXTRACT_HITS`,
 
 ## 5. Data-flow summary
 
+**BLAST branch** (`--db_type blast_core_nt`, default):
 `sequences.fasta` + `metadata.csv` → *(BLAST)* `blast_result.xml` →
 *(P1)* per-query `all_hits.{json,fasta}` + `accessions.txt` →
 *(blastdbcmd, P2)* `taxonomy.csv` → *(P3)* candidates, phylogeny FASTA,
 flags 1/2/7 → *(MAFFT, FastME)* tree ∥ *(P4)* `aggregated_sources.json`,
 flag 4 ∥ *(P5)* `db_coverage.json`, flags 5.x, maps → *(P6)* HTML report.
+
+**BOLD branch** (`--db_type bold`; cannot currently complete a run,
+`NF-D-002`): `sequences.fasta` + `metadata.csv` → *(BOLD_SEARCH, P1-BOLD)*
+per-query `all_hits.{json,fasta}` **with taxonomy already attached**
+(no separate P2/`taxonomy.csv`) → *(P3)* candidates, phylogeny FASTA,
+flags 1/2/7 → the same P4/P5/P6 fan-out as the BLAST branch, with the
+field- and endpoint-level differences in
+[python/blast-vs-bold.md](python/blast-vs-bold.md).
+
 Full producer/consumer matrix: [contracts/query-folder.md](contracts/query-folder.md).
 
 ## 6. Design properties (and where they fail today)

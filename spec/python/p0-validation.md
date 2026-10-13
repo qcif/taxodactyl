@@ -149,6 +149,7 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | P0-D-007 | P0-012 compares the **unstripped** `sample_id` to FASTA ids, while P0-020 validates the stripped value; a trailing space yields a confusing "not present in FASTA" error. |
 | P0-D-008 | `classification` accepts 12 values here but `assets/schema_input.json` (nf-schema's secondary schema for `--metadata`, validated by `validateParameters()` before any process runs) enumerates only 7. If that nf-schema layer validates CSV row content as documented (see [../contracts/inputs.md §1](../contracts/inputs.md)), the 5 extra values P0 accepts (`animal`, `animals`, `plant`, `plants`, `virus`) are rejected by nf-schema **before P0 ever sees the row**, through the Nextflow-launched pipeline — those P0 branches are reachable only via the validation web service or a direct script call, which bypass nf-schema. *To confirm nf-schema's file-content validation actually fires here, by running a metadata.csv with `classification=animal`.* |
 | P0-D-009 | `_autofix_sample_id_spaces` logs with `logger.debug("…:", repr(x))` (print-style args) — malformed log calls. |
+| P0-D-010 **(vs Design Proposal)** | The [Design Proposal](../../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf) (§2.3 Workflow inputs) states BOLD mode is COI-only: "The BOLD database can only be used for query sequences at the COI locus. The locus is therefore not required for the BOLD workflow version." Nothing in P0 enforces a COI-specific check — `--bold` only relaxes the generic locus check (see P0-021, and the blank-locus bug P0-D-006); any locus value (not just COI) that resolves against `loci.json`, or in principle no restriction at all once P0-D-006 is fixed, is accepted in BOLD mode. [decisions.md `D-06`](../decisions.md) is open on whether to add the COI restriction or keep the current relaxed behaviour. |
 
 ## 8. Test mapping (`tests/test_validation.py`)
 
@@ -181,7 +182,7 @@ tested.
 
 ## Provenance
 
-**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. v1.5.0.
+**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

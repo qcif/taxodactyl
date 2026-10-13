@@ -1,6 +1,7 @@
 # Overview
 
-Specification of **`qcif/taxodactyl` v1.5.0**, derived from the source code.
+Specification of **`qcif/taxodactyl`**, derived from the source code (see
+[README.md § Version](README.md#version) for the exact commit).
 See [README.md](README.md) for conventions and status,
 [defects.md](defects.md) for every bug found.
 
@@ -55,9 +56,11 @@ step 4–8 affects only that one query's report
 filesystem) and Azure Batch; an optional web validator for input files.
 
 **Out of scope:** sequence generation/assembly; automatic final
-identification (the analyst decides, and the report says so when more
-than three species match); metabarcoding; databases other than Core Nt
-and BOLD `COX1_SPECIES_PUBLIC`; cross-sample summaries.
+identification — every report presents evidence plus an editable field
+for the analyst's own conclusion, never a final identification the
+pipeline asserts on its own authority ([CONSTITUTION.md §2](../CONSTITUTION.md));
+metabarcoding; databases other than Core Nt and BOLD
+`COX1_SPECIES_PUBLIC`; cross-sample summaries.
 
 ## 4. Actors
 
@@ -91,6 +94,7 @@ and BOLD `COX1_SPECIES_PUBLIC`; cross-sample summaries.
 | Area | Files |
 |---|---|
 | Governing principles | [../CONSTITUTION.md](../CONSTITUTION.md) — non-negotiable rules this spec is held to |
+| Original design intent | [Design Proposal for Development of a Taxonomic Assignment Pipeline](../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf) (QCIF, 2024-11-29) — a second cross-check source, same role as `docs/`: code is authoritative where they differ, but a divergence from this document is logged as a gap against *original intent*, distinct from an internal defect |
 | Architecture | [architecture.md](architecture.md) |
 | Nextflow layer | [nextflow/](nextflow/) — workflow, processes, params, config-profiles, error-handling |
 | Python layer | [python/](python/) — P0–P6, [blast-vs-bold.md](python/blast-vs-bold.md) (every BLAST/BOLD difference, one place), `shared/` (config, throttle, cache, errors, secrets, flags) |

@@ -52,7 +52,7 @@ Level → Bootstrap class: 0 secondary, 1 success, 2 warning, ≥3 danger.
 
 ## Provenance
 
-**Initially derived from:** `flags.py` (360), `config/flags.csv`, callers in P3–P6. v1.5.0.
+**Initially derived from:** `flags.py` (360), `config/flags.csv`, callers in P3–P6. See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

@@ -61,7 +61,7 @@ Run-level files read by P3/P6 from `<output_dir>` (not the query folder):
 
 ## Provenance
 
-**Initially derived from:** cross-reference compilation of every producer/consumer spec listed in the matrix above — each already derived from source, v1.5.0.
+**Initially derived from:** cross-reference compilation of every producer/consumer spec listed in the matrix above — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

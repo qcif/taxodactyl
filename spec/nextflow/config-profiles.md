@@ -100,7 +100,7 @@ The following environment variables MUST be exported into every task:
 
 ## Provenance
 
-**Initially derived from:** `nextflow.config`, `conf/*.config`. v1.5.0.
+**Initially derived from:** `nextflow.config`, `conf/*.config`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

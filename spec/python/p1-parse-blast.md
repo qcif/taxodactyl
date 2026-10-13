@@ -103,7 +103,7 @@ content), P1-013, `main()`.
 
 ## Provenance
 
-**Initially derived from:** `p1_parse_blast.py` (103), `src/blast/parse_xml.py` (195), `tests/test_blast_parser.py`. v1.5.0.
+**Initially derived from:** `p1_parse_blast.py` (103), `src/blast/parse_xml.py` (195), `tests/test_blast_parser.py`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

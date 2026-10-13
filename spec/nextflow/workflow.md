@@ -2,7 +2,8 @@
 
 **Scope:** `main.nf`, `workflows/taxodactyl.nf`,
 `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. Line
-references are to the `v1.5.0` tree.
+references are to the tree described in
+[README.md § Version](../README.md#version).
 **Companion specs:** [processes.md](processes.md), [params.md](params.md),
 [config-profiles.md](config-profiles.md), [error-handling.md](error-handling.md),
 [../contracts/](../contracts/).
@@ -207,7 +208,7 @@ The workflow MUST emit (names are relied on by `nf-test`, see
 
 ## Provenance
 
-**Initially derived from:** source code (not docs) — `main.nf`, `workflows/taxodactyl.nf`, `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. v1.5.0.
+**Initially derived from:** source code (not docs) — `main.nf`, `workflows/taxodactyl.nf`, `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

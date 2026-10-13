@@ -158,6 +158,7 @@ missing tree file, missing `assigned_taxonomy.csv` with Flag 1A, missing
 | P6-D-006 | Low | `print()` used alongside logging for the context path. |
 | P6-D-007 | Low | The heading's "documented here" link is hard-coded to `qcif/daff-biosecurity-wf2` — the project's former name — not the current `qcif/taxodactyl` repo. |
 | P6-D-008 | Low | Tab labels and component filenames disagree: tab "1. Inputs" renders `overview.html`; tab "2. Overview" renders `results-summary.html`. Cosmetic (a future editor renaming one without the other risks confusion, not breakage). |
+| P6-D-009 | Medium **(vs Design Proposal)** | The [Design Proposal](../../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)'s "Conclusion A – Positive taxonomic identification" (§3.8) requires **both** Flag 1a (single species, ≥98.5% identity) **and** Flag 4a (≥5 independent sources) before a positive ID is reported. P6-010 sets `confirmed = true` from Flag 1 = `A` alone; `sources_verified` (whether Flag 4 is `A` for every entry) only changes the result's colour/level (`success` vs `warning`), it never flips `confirmed`. A single-species match backed by only 1–5 sources is therefore still rendered as a confirmed identification — just with a warning colour rather than a `confirmed = false` "inconclusive" state. [decisions.md `D-18`](../decisions.md) is open on whether `confirmed` should require source verification. |
 
 ## 7. Test mapping
 
@@ -176,7 +177,7 @@ nf-test asserts the number of HTML files produced.
 
 ## Provenance
 
-**Initially derived from:** `p6_report.py` (93), `src/report/report.py` (476), `src/report/outcomes.py`, `src/report/filters/css_hash.py`, `src/utils/flags.py` (`Flag.read`), `src/report/templates/**` (1,552 lines of Jinja2), `src/report/static/**`. v1.5.0.
+**Initially derived from:** `p6_report.py` (93), `src/report/report.py` (476), `src/report/outcomes.py`, `src/report/filters/css_hash.py`, `src/utils/flags.py` (`Flag.read`), `src/report/templates/**` (1,552 lines of Jinja2), `src/report/static/**`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

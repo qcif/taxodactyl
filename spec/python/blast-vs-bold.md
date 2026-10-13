@@ -75,9 +75,10 @@ to the file with the full requirement.
 [p1-bold-search.md](p1-bold-search.md), [p3-assign-taxonomy.md](p3-assign-taxonomy.md),
 [p4-source-diversity.md](p4-source-diversity.md), [p5-db-coverage.md](p5-db-coverage.md),
 [p6-report.md](p6-report.md) and [nextflow/workflow.md](../nextflow/workflow.md) —
-each already derived from source, v1.5.0. This file adds no new facts;
-it is a navigational aid. If it drifts from the files it summarises,
-those files are authoritative.
+each already derived from source. See
+[README.md Version](../README.md#version) for the exact commit. This
+file adds no new facts; it is a navigational aid. If it drifts from the
+files it summarises, those files are authoritative.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

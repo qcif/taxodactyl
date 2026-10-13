@@ -46,7 +46,7 @@ processes, queries and runs.
 
 ## Provenance
 
-**Initially derived from:** `cache.py` (697), `tests/test_cache.py`, `tests/test_cache_azure.py`. v1.5.0.
+**Initially derived from:** `cache.py` (697), `tests/test_cache.py`, `tests/test_cache_azure.py`. See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

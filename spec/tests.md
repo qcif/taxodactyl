@@ -129,7 +129,7 @@ at every boundary.
 
 ## Provenance
 
-**Initially derived from:** `.github/workflows/*.yml`, `scripts/tests/**`, `test/**`, `nf-test.config`, `bin/test_flags.py`, `bin/collect_flags.sh`, `testkit.py` (root), `scripts/tests/integration/testkit.py`. v1.5.0.
+**Initially derived from:** `.github/workflows/*.yml`, `scripts/tests/**`, `test/**`, `nf-test.config`, `bin/test_flags.py`, `bin/collect_flags.sh`, `testkit.py` (root), `scripts/tests/integration/testkit.py`. See [README.md Version](README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

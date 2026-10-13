@@ -32,7 +32,7 @@ merge). The `NA` value is accepted separately and is not in the file.
 
 ## Provenance
 
-**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source, v1.5.0.
+**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

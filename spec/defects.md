@@ -1,8 +1,17 @@
 # Defect register
 
-All bugs and inconsistencies found while deriving the spec from the
-`v1.5.0` source. This file is the **single triage list**; each module spec
-also lists its own defects locally, with more context, under the same IDs.
+All bugs and inconsistencies found while deriving the spec from source
+(see [README.md § Version](README.md#version) for the exact commit). This
+file is the **single triage list**; each module spec also lists its own
+defects locally, with more context, under the same IDs.
+
+Most defects are internal contradictions (the code's own structure or
+interfaces imply one thing, the code does another). A few, marked **(vs
+Design Proposal)**, are instead gaps against the project's original
+intent as documented in the [Design Proposal for Development of a
+Taxonomic Assignment Pipeline](../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)
+(QCIF, 2024-11-29) — the code is internally consistent but diverges from
+what was originally specified before this code-derived spec existed.
 
 Found by reading code, not by running it, unless marked **confirmed by
 test/run**. Items marked *to confirm* depend on external tool behaviour.
@@ -24,7 +33,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | Severity | Count |
 |---|---|
 | High | 17 |
-| Medium | 53 |
+| Medium | 55 |
 | Low | 25 (some rows group several items) |
 
 ## High
@@ -62,6 +71,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P0-D-006 | P0 | `--bold` claims to accept a blank locus, but blanks are rejected earlier. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-007 | P0 | `sample_id` is validated stripped but matched to FASTA unstripped. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-008 | P0 | `classification` accepts 12 values in P0 but only 7 in `assets/schema_input.json`, nf-schema's secondary schema for `--metadata` (validated before any process runs). If that layer validates CSV content as documented, the 5 extra values P0 accepts (`animal`, `animals`, `plant`, `plants`, `virus`) never reach P0 through the Nextflow-launched pipeline — only via the validation web service or a direct script call. *To confirm by running `classification=animal`.* | [python/p0-validation.md](python/p0-validation.md), [contracts/inputs.md §1](contracts/inputs.md) |
+| P0-D-010 | P0 **(vs Design Proposal)** | The Design Proposal states BOLD mode is COI-only ("The BOLD database can only be used for query sequences at the COI locus", §2.3) and that locus is therefore not required for BOLD. The shipped code enforces neither: `--bold` only relaxes P0's locus check to accept (almost) any value — there is no COI-specific restriction. [decisions.md `D-06`](decisions.md). | [python/p0-validation.md](python/p0-validation.md) |
 | CFG-D-001 | config | `default.yml` and `schema.py` disagree (5 filenames, `taxdb_dir`, `database_name`); regenerating `default.yml` from the schema, as documented, would break Nextflow file globs. | [python/shared/config.md](python/shared/config.md) |
 | CFG-D-002 | config | Any `-c` config file **replaces** `default.yml` instead of layering on it. | [python/shared/config.md](python/shared/config.md) |
 | CFG-D-003 | config | `get_locus_for_query` returns a `str` (not `Locus`) for values ending in ` gene`, and calls `.endswith` before its `None` check. | [python/shared/config.md](python/shared/config.md) |
@@ -90,6 +100,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P6-D-002 | P6 / security | No HTML autoescaping: metadata cells, GenBank titles and error messages are injected raw into a shareable report (HTML/JS injection). | [python/p6-report.md](python/p6-report.md) |
 | P6-D-003 | P6 / security | `report_context.json` stores the full config incl. API key, Redis password and Azure connection string in the work dir. | [python/p6-report.md](python/p6-report.md) |
 | P6-D-004 | P6 | BOLD mode rewrites `identity`→`similarity` across inlined vendored JS/CSS. | [python/p6-report.md](python/p6-report.md) |
+| P6-D-009 | P6 **(vs Design Proposal)** | The Design Proposal's "Conclusion A – Positive taxonomic identification" requires **both** Flag 1a (single species, ≥98.5%) **and** Flag 4a (≥5 independent sources) (§3.8). The shipped code's `confirmed` result (P6-010) is set from Flag 1 = `A` alone; `sources_verified` (Flag 4a) only downgrades the badge colour (success→warning), it never flips `confirmed` to false. A single-species match with weak source support is therefore still reported as a confirmed identification, just in a different colour. [decisions.md `D-18`](decisions.md). | [python/p6-report.md §4.1](python/p6-report.md) |
 | ERR-D-001 | P4 / errors | P4 non-fatal errors are written without `query_dir` ⇒ outside the collected folder ⇒ **never shown in the report**. | [python/shared/errors.md](python/shared/errors.md) |
 | THR-D-002 | throttle | Any exception whose text contains `429` is treated as rate limiting; for Entrez/BOLD this sleeps 10 min and resets retries **indefinitely** ⇒ task hangs to timeout ⇒ report lost. | [python/shared/throttle.md](python/shared/throttle.md) |
 | THR-D-001 | throttle | SQLite per-minute limit checked over 12 s (not 60/90 s) ⇒ up to 5× the configured per-minute rate (BOLD). | [python/shared/throttle.md](python/shared/throttle.md) |

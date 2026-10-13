@@ -52,7 +52,7 @@ placeholder memory defaults.
 
 ## Provenance
 
-**Initially derived from:** `conf/process.config`, `conf/azure.config`, `conf/misc.config`, `main.nf`, `workflows/taxodactyl.nf`. v1.5.0.
+**Initially derived from:** `conf/process.config`, `conf/azure.config`, `conf/misc.config`, `main.nf`, `workflows/taxodactyl.nf`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

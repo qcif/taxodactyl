@@ -12,7 +12,7 @@ them is in [workflow.md](workflow.md); parameters in
 | NF-PR-001 | Process names are the config selectors used by `conf/process.config` and `conf/azure.config`; renaming a process MUST update both. |
 | NF-PR-002 | Internal file names MUST be read from `task.ext.*` (defined in `conf/filenames.config`, which loads Python-side names from `scripts/config/default.yml`), never hard-coded, for every file that crosses the Nextflow/Python boundary. Exceptions (hard-coded today, see defects): `sequences.fasta`, `metadata.csv`, `taxids.csv`, `id_mapping.tsv`, `4.flag`, `db_coverage.json`, `5*flag`, `map*png`, `errors/*`, `*_stat.txt`, `*.matrix.phy`, `query_*`. |
 | NF-PR-003 | Python processes are invoked as `python /app/scripts/<pN_*.py>` — i.e. the script path is inside the container image, not staged from `bin/`. Changing a script therefore requires a new image (see [../deployment.md](../deployment.md)). |
-| NF-PR-004 | A process's optional CLI flag MUST be emitted only when its parameter is truthy (`params.x ? "--flag ${params.x}" : ''`). A parameter set to `0`, `false`, empty string or `null` is therefore **indistinguishable from unset** and the Python default applies. |
+| NF-PR-004 | A process's optional CLI option MUST be emitted only when its parameter is truthy (`params.x ? "--option ${params.x}" : ''`). A parameter set to `0`, `false`, empty string or `null` is therefore **indistinguishable from unset** and the Python default applies. |
 | NF-PR-005 | Every process using `containerOptions` with `--bind` assumes Singularity/Apptainer syntax. Running under `-profile docker` is unsupported. |
 | NF-PR-006 | Processes that consume a per-query bundle MUST `mkdir -p <query_folder>`, `mv` the staged input files into it, then delete the staging directory, so the Python script sees one flat query folder. |
 | NF-PR-007 | The default error strategy is `ignore` ([error-handling.md](error-handling.md)). A process failing therefore yields no outputs for that task, not a run abort. |
@@ -233,7 +233,7 @@ wired successfully in the current workflow.
 
 ## Provenance
 
-**Initially derived from:** source code — every `process` in `modules/**/main.nf`. v1.5.0.
+**Initially derived from:** source code — every `process` in `modules/**/main.nf`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

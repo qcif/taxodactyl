@@ -134,7 +134,7 @@ merging, `stats.py`, P1B-D-* failure modes.
 
 ## Provenance
 
-**Initially derived from:** `p1_bold_search.py` (100), `src/bold/id_engine.py` (434), `src/bold/stats.py` (84), `src/utils/orient.py` (289), `src/gbif/taxonomy.py`, `scripts/Dockerfile`, `tests/test_orient.py`. v1.5.0.
+**Initially derived from:** `p1_bold_search.py` (100), `src/bold/id_engine.py` (434), `src/bold/stats.py` (84), `src/utils/orient.py` (289), `src/gbif/taxonomy.py`, `scripts/Dockerfile`, `tests/test_orient.py`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
