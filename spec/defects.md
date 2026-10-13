@@ -33,8 +33,8 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | Severity | Count |
 |---|---|
 | High | 17 |
-| Medium | 55 |
-| Low | 25 (some rows group several items) |
+| Medium | 56 |
+| Low | 27 (some rows group several items) |
 
 ## High
 
@@ -64,7 +64,8 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 |---|---|---|---|
 | NF-D-005 | Nextflow / report | Report shows `blast_max_target_seqs_for_report` (2000) while BLAST is hard-coded to `-max_target_seqs 500`. | [nextflow/processes.md §3](nextflow/processes.md) |
 | NF-D-006 | Nextflow | `REPORT` single-quotes `--facility-name` etc.; a value containing `'` breaks the command. | [nextflow/processes.md §14](nextflow/processes.md) |
-| NF-D-011 | Nextflow config | Default process memory is `1MB`; any memory-enforcing scheduler would kill tasks without overrides. | [nextflow/config-profiles.md §2](nextflow/config-profiles.md) |
+| NF-D-011 | Nextflow config | Default process memory is `1MB`; any memory-enforcing scheduler would kill tasks without overrides. Root cause: the pipeline never adopted the nf-core template's `process_low`/`medium`/`high` resource-label system or its `check_max()` cap — see `NF-D-013`. | [nextflow/config-profiles.md §2](nextflow/config-profiles.md), [nextflow/nf-core-conformance.md §2.2](nextflow/nf-core-conformance.md) |
+| NF-D-013 | Nextflow **(vs nf-core/Nextflow best practice)** | `errorStrategy` is a blanket `'ignore'` applied globally, with no `retry` tier and no `task.attempt` resource scaling — diverges from the nf-core template's default `conf/base.config` pattern (retry on transient-failure exit codes, escalating resources, `ignore` only as an explicit per-process opt-in label). Direct contributor to `NF-D-003` (a task that could have recovered on retry instead silently drops its query's report). [decisions.md `D-19`](decisions.md). | [nextflow/nf-core-conformance.md §2.1](nextflow/nf-core-conformance.md) |
 | NF-D-010 | Nextflow | `taxdb` is needed in BOLD mode too (P0 always checks it); not documented. | [nextflow/params.md §9](nextflow/params.md) |
 | P0-D-003 | P0 | An empty FASTA passes validation with any metadata. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-004 | P0 | Duplicate `sample_id` rows are not rejected; CSV sequences then produce duplicate FASTA ids, and metadata keeps only the last row. | [python/p0-validation.md](python/p0-validation.md) |
@@ -123,6 +124,8 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | ID | Area | Defect | Spec |
 |---|---|---|---|
 | NF-D-001 | Nextflow | `assets/NO_FILE_PLACEHOLDER` does not exist; the "no loci file" branch is unreachable. | [nextflow/workflow.md §4.1](nextflow/workflow.md) |
+| NF-D-014 | Nextflow **(vs nf-core best practice)** | None of the four modules installed from the `nf-core/modules` registry (`blast/blastdbcmd`, `blast/blastn`, `fastme`, `mafft/align`, per `modules.json`) retain their `meta.yml` (or `environment.yml`/`tests/`); only `main.nf` is present. This pipeline's local-only modules never had one, a lesser, recommendation-level gap by comparison. | [nextflow/nf-core-conformance.md §2.4](nextflow/nf-core-conformance.md) |
+| DEP-D-009 | deployment **(vs nf-core best practice)** | `CHANGELOG.md` — a standard nf-core template file, not listed under `.nf-core.yml`'s `skip_features` or any lint exemption — is absent from the repo; no human-readable release history exists alongside the five version locations in `DEP-020`. | [nextflow/nf-core-conformance.md §2.3](nextflow/nf-core-conformance.md) |
 | NF-D-007 | Nextflow | Schema error messages state wrong defaults (`phylogeny_min_hit_identity` 0.95, `phylogeny_max_seqs` 10). | [nextflow/params.md §9](nextflow/params.md) |
 | NF-D-008 | Nextflow | `analyst_name`, `facility_name`, `blast_xml` are not declared in `params.config`. | [nextflow/params.md §9](nextflow/params.md) |
 | — | Nextflow | `publish_dir_mode` is declared but ignored (all `publishDir` hard-code `copy`); `samplesheetToList` imported but unused; dead first definition of `ch_candidates_for_report`. | [nextflow/params.md §8](nextflow/params.md), [nextflow/workflow.md §4.7](nextflow/workflow.md) |
