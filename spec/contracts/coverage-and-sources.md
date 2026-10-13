@@ -48,7 +48,7 @@ See [../python/shared/flags.md](../python/shared/flags.md) §3.
 
 ## Provenance
 
-**Initially derived from:** [p5-db-coverage.md](../python/p5-db-coverage.md) §6, [p4-source-diversity.md](../python/p4-source-diversity.md) §7, [shared/errors.md](../python/shared/errors.md) §3 — each already derived from source, v1.5.0.
+**Initially derived from:** [p5-db-coverage.md](../python/p5-db-coverage.md) §6, [p4-source-diversity.md](../python/p4-source-diversity.md) §7, [shared/errors.md](../python/shared/errors.md) §3 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

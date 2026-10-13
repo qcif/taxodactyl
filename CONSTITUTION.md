@@ -2,18 +2,25 @@
 
 **Project:** `qcif/taxodactyl` — High-confidence, evidence-based
 taxonomic assignment of DNA sequences
-**Status:** v1 · **Companion:** [spec/](spec/)
+**Status:** v1 · **Spec version:** `v1.5.0` + 20 commits (`edaacae`) — see
+[spec/README.md § Version](spec/README.md#version) for the full
+explanation · **Companion:** [spec/](spec/)
 
 This file distils the non-negotiable principles that govern every design
 decision in this project. It is deliberately short. When `spec/` and this
 file disagree, this file wins; `spec/` is updated to reconcile.
 
-Unlike a green-field constitution, every principle below is grounded in
-the **shipped `v1.5.0` codebase**, derived the same way as the rest of
-`spec/` — by reading the code, not by aspiration. Where the codebase
+Every principle below is grounded in the **shipped codebase**, at the
+commit noted in **Spec version** above, derived the same way as the rest
+of `spec/` — by reading the code, not by aspiration. Where the codebase
 itself falls short of a principle stated here, that is a **defect**
 (tracked in [spec/defects.md](spec/defects.md)), not a reason to weaken
-the principle.
+the principle. Where the codebase falls short of the *original product
+intent* instead — the [Design Proposal for Development of a Taxonomic
+Assignment Pipeline](../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)
+(QCIF, 2024-11-29) — that is noted explicitly wherever it applies, since
+it is a gap against intent, not against this constitution's own
+principles.
 
 Principles fall into three tiers:
 
@@ -37,18 +44,29 @@ not assemble genomes, call variants, or generate sequences — upstream
 pipelines are responsible for that
 ([spec/overview.md §3](spec/overview.md)).
 
-### 2. The pipeline never outputs an unqualified final identification.
+### 2. The pipeline never asserts a final identification on its own authority — the analyst always reviews the evidence.
 
-It surfaces the strongest supportable claim plus every piece of
-corroborating and contradicting evidence (flags, phylogeny, database
-coverage, publication diversity), and explicitly prompts the analyst for
-a subjective genus/species-level call whenever more than
-`max_candidates_for_analysis` species match
-([spec/python/p3-assign-taxonomy.md §5](spec/python/p3-assign-taxonomy.md),
-[spec/python/p6-report.md §2a.2](spec/python/p6-report.md) tab 5's analyst
-checklist). A report that reads as an unqualified identification, or that
-lets the analyst conclude without seeing the corroborating evidence, is a
-defect against this constraint — not a style choice.
+Every report, regardless of outcome, surfaces the strongest supportable
+claim (if any) alongside every piece of corroborating and contradicting
+evidence (flags, phylogeny/BIN diversity, database coverage, source
+diversity) and an editable field for the analyst's own conclusion — this
+is a structural part of every report, not something shown only when the
+result is ambiguous
+([spec/python/p6-report.md §2a.2](spec/python/p6-report.md) tab 2's
+analyst checklist and subjective textarea; design intent stated
+explicitly in the Design Proposal §4.1, "the reader will be prompted to
+contribute their subjective conclusions based on the information
+provided"). A high-confidence, single-species match is still presented as
+evidence for the analyst to weigh, never as a verdict the analyst may
+skip reviewing. Separately, above `max_candidates_for_analysis` species
+matches the pipeline withholds species-level computation altogether and
+explicitly escalates to a genus-level call
+([spec/python/p3-assign-taxonomy.md §5](spec/python/p3-assign-taxonomy.md)) —
+that is an additional escalation, not the only point at which analyst
+judgement is required. A report that reads as an unqualified
+identification, or that lets the analyst conclude without seeing the
+corroborating evidence, is a defect against this constraint — not a style
+choice.
 
 ### 3. Reference database choice is whole-run; locus is per-sample.
 
@@ -58,7 +76,14 @@ invocation — every query in a run searches the same reference database.
 `scripts/config/loci.json`
 ([spec/nextflow/params.md](spec/nextflow/params.md),
 [spec/contracts/loci.md](spec/contracts/loci.md)). Mixing BLAST and BOLD
-queries requires two invocations, by design.
+queries requires two invocations, by design. **Gap against original
+intent** (`P0-D-010`): the Design Proposal states BOLD mode is COI-only
+("The BOLD database can only be used for query sequences at the COI
+locus... locus is therefore not required for the BOLD workflow version",
+§2.3 Workflow inputs); the shipped code does not enforce this — `--bold`
+only relaxes locus validation to accept (almost) any value, with no
+COI-specific check. [decisions.md `D-06`](spec/decisions.md) is open on
+whether to add the constraint or keep the relaxed behaviour.
 
 ### 4. Every query is independent.
 
@@ -107,15 +132,23 @@ inline at the section it affects
 non-fatal error that never reaches the report (`ERR-D-001`) is a defect
 against this rule.
 
-### 8. One query's failure must not silently remove its report.
+### 8. One query's failure must not silently remove its report — and must never stop other queries.
 
-A query whose evaluation fails should be visibly flagged as failed, not
-simply absent from the output. **This principle is currently violated**
-(`NF-D-003`): the report join is an inner join, so a missing tree or
-missing coverage result drops the query with no trace beyond
-`<outdir>/errors/`. [decisions.md `D-02`](spec/decisions.md) is open on
-how to close this; until it is, treat any taxodactyl output as
-potentially missing queries that produced no visible failure.
+A Nextflow task failure for one query MUST NOT abort or block any other
+query's processing: `process.errorStrategy` is `ignore` on every executor
+(`NF-ER-001`), and `workflow.failOnIgnore` is `true` so the run still
+exits non-zero overall even though siblings complete
+([spec/nextflow/error-handling.md §1](spec/nextflow/error-handling.md)).
+This part of the principle holds today. What does **not** hold: a query
+whose own evaluation fails should be visibly flagged as failed within
+*its own* report, not simply absent from the output. **This half of the
+principle is currently violated** (`NF-D-003`): the report join is an
+inner join, so a missing tree or missing coverage result drops that one
+query with no trace beyond `<outdir>/errors/`. [decisions.md
+`D-02`](spec/decisions.md) is open on how to close this; until it is,
+treat any taxodactyl output as potentially missing queries that produced
+no visible failure — even though every other query in the same run was
+unaffected by the failure.
 
 ### 9. Locus panel and flag semantics are versioned config, not hardcoded.
 
@@ -236,7 +269,7 @@ decision) — that is a spec-only change and needs no code change.
   evidence (a passing test, a CI run, or a documented manual check) that
   the new rule is upheld and the old failure mode is closed.
 
-This constitution describes `v1.5.0` as shipped, including where it falls
-short of itself. Where a later version changes that, update this file in
-the same change that introduces the difference — it must never go stale
-silently.
+This constitution describes the codebase as shipped at the commit noted
+in **Spec version** above, including where it falls short of itself.
+Where a later version changes that, update this file in the same change
+that introduces the difference — it must never go stale silently.

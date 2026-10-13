@@ -71,7 +71,7 @@ P2-022..025, malformed stdout.
 
 ## Provenance
 
-**Initially derived from:** `p2_extract_taxonomy.py` (88), `src/taxonomy/extract.py` (352), `tests/test_taxonkit.py`, `tests/test-data/taxonkit.stdout`. v1.5.0.
+**Initially derived from:** `p2_extract_taxonomy.py` (88), `src/taxonomy/extract.py` (352), `tests/test_taxonkit.py`, `tests/test-data/taxonkit.stdout`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

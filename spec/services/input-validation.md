@@ -60,7 +60,7 @@ None. No unit, integration or UI tests exist for this service
 
 ## Provenance
 
-**Initially derived from:** `api/main.py` (~330), `api/utils.py` (~480), `client/src/App.jsx` (439), `client/src/components/CsvEditor.jsx` (129), `deployment/validation.{service,nginx.conf}`, `README.md`. v1.5.0.
+**Initially derived from:** `api/main.py` (~330), `api/utils.py` (~480), `client/src/App.jsx` (439), `client/src/components/CsvEditor.jsx` (129), `deployment/validation.{service,nginx.conf}`, `README.md`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

@@ -16,6 +16,7 @@ spec in the same change.
 | D-03 | Should the run publish machine-readable per-query results (flags, `candidates.json`, `db_coverage.json`, a run summary)? | OUT-D-001, OUT-D-002 | open |
 | D-04 | Is a cross-sample run report wanted? | overview §3 | open |
 | D-05 | Should Flag 6 (phylogenetic assessment) be implemented or removed? | P3-D-003 | open |
+| D-06 | **(vs Design Proposal)** Should `--bold` mode restrict `locus` to COI, as the Design Proposal specifies, or keep the current behaviour (locus check merely relaxed, no BOLD-specific restriction)? | P0-D-010 | open |
 
 ## B. Scientific rules
 
@@ -29,6 +30,7 @@ spec in the same change.
 | D-15 | Should hard-coded BLAST settings (megablast, 500 targets, e-value, scoring) be parameters or recorded in the report? | NF-PR-030, NF-D-005 | open |
 | D-16 | Summary Flag 5 aggregation rule when any sub-flag is level 0. | FLG-D-002 | open |
 | D-17 | `db_cov_country_missing_a`: implement or remove. `phylogeny_min_hit_identity`: pass through or remove. | P5-D-003, NF-D-004 | open |
+| D-18 | **(vs Design Proposal)** Should the report's `confirmed` result require source-diversity verification (Flag 4a, ≥5 sources) in addition to Flag 1a, as the Design Proposal's Conclusion A specifies — rather than Flag 1a alone, with source verification only affecting colour as it does today? | P6-D-009 | open |
 
 ## C. Input handling
 

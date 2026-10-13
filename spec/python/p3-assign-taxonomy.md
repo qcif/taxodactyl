@@ -242,7 +242,7 @@ case.
 
 ## Provenance
 
-**Initially derived from:** `p3_assign_taxonomy.py` (687), `src/utils/flags.py` (`Flag.write`), `src/utils/ncbi.py`, `src/utils/utils.py` (`deduplicate`), `tests/test_phylogeny_sampling.py`, `config/flags.csv`. v1.5.0.
+**Initially derived from:** `p3_assign_taxonomy.py` (687), `src/utils/flags.py` (`Flag.write`), `src/utils/ncbi.py`, `src/utils/utils.py` (`deduplicate`), `tests/test_phylogeny_sampling.py`, `config/flags.csv`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

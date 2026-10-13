@@ -123,7 +123,7 @@ nf-test baselines include `4.flag` files end-to-end.
 
 ## Provenance
 
-**Initially derived from:** `p4_source_diversity.py` (117), `src/sources/collect.py` (95), `src/entrez/genbank.py` (281), `src/utils/flags.py`. v1.5.0.
+**Initially derived from:** `p4_source_diversity.py` (117), `src/sources/collect.py` (95), `src/entrez/genbank.py` (281), `src/utils/flags.py`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

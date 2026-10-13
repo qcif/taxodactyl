@@ -7,7 +7,7 @@ determined from code, not from schema descriptions.
 |---|---|
 | NF-PA-001 | Every user-facing parameter MUST be declared in **both** `conf/params.config` (default) and `nextflow_schema.json` (validation). |
 | NF-PA-002 | With `validate_params` true (default), parameters MUST be validated against the schema before any process runs. Required by schema: `metadata`, `outdir`, `db_type`, `taxdb`. |
-| NF-PA-003 | A parameter forwarded as an optional CLI flag is treated as unset when falsy (NF-PR-004). Parameters where `0` is schema-valid but has no effect: `min_nt` (min 0), `db_coverage_toi_limit` (min 0). |
+| NF-PA-003 | A parameter forwarded as an optional CLI option is treated as unset when falsy (NF-PR-004). Parameters where `0` is schema-valid but has no effect: `min_nt` (min 0), `db_coverage_toi_limit` (min 0). |
 | NF-PA-004 | `metadata` MUST match `^\S+\.csv$` and exist; `sequences` MUST match `^\S+\.(fasta\|fas\|fna\|fa)$` and exist. |
 
 ## 1. Input / output
@@ -125,7 +125,7 @@ directives hard-code `mode: 'copy'`).
 
 ## Provenance
 
-**Initially derived from:** `conf/params.config` (defaults), `nextflow_schema.json` (validation), `conf/env.config`, and every `params.*` reference in `workflows/`, `modules/`, `subworkflows/local/`. v1.5.0.
+**Initially derived from:** `conf/params.config` (defaults), `nextflow_schema.json` (validation), `conf/env.config`, and every `params.*` reference in `workflows/`, `modules/`, `subworkflows/local/`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

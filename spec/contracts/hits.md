@@ -48,7 +48,7 @@ including gaps** (BLAST, P1-D-001) or full nucleotides with gaps removed
 
 ## Provenance
 
-**Initially derived from:** [p1-parse-blast.md](../python/p1-parse-blast.md) §3, [p1-bold-search.md](../python/p1-bold-search.md) §4, [p2-extract-taxonomy.md](../python/p2-extract-taxonomy.md) — each already derived from source, v1.5.0.
+**Initially derived from:** [p1-parse-blast.md](../python/p1-parse-blast.md) §3, [p1-bold-search.md](../python/p1-bold-search.md) §4, [p2-extract-taxonomy.md](../python/p2-extract-taxonomy.md) — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

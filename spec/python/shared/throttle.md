@@ -79,7 +79,7 @@ policy.
 
 ## Provenance
 
-**Initially derived from:** `throttle.py` (718), `coalesce.py` (212). v1.5.0.
+**Initially derived from:** `throttle.py` (718), `coalesce.py` (212). See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

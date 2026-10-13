@@ -49,7 +49,7 @@ in the Nextflow work directory.
 
 ## Provenance
 
-**Initially derived from:** every `publishDir` directive (all `mode: 'copy'`), `conf/misc.config`, `main.nf`. v1.5.0.
+**Initially derived from:** every `publishDir` directive (all `mode: 'copy'`), `conf/misc.config`, `main.nf`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

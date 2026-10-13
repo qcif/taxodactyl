@@ -47,7 +47,7 @@ the schema-default discrepancies are tabulated in
 
 ## Provenance
 
-**Initially derived from:** `scripts/config/default.yml`, `conf/filenames.config`, [shared/config.md](../python/shared/config.md) §3.5 — each already derived from source, v1.5.0.
+**Initially derived from:** `scripts/config/default.yml`, `conf/filenames.config`, [shared/config.md](../python/shared/config.md) §3.5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

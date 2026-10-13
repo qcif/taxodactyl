@@ -51,7 +51,7 @@ Decimal integer without newline.
 
 ## Provenance
 
-**Initially derived from:** [p3-assign-taxonomy.md](../python/p3-assign-taxonomy.md) §6, §9, [p4-source-diversity.md](../python/p4-source-diversity.md) §1 — each already derived from source, v1.5.0.
+**Initially derived from:** [p3-assign-taxonomy.md](../python/p3-assign-taxonomy.md) §6, §9, [p4-source-diversity.md](../python/p4-source-diversity.md) §1 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

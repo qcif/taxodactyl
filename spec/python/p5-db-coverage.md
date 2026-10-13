@@ -224,7 +224,7 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 
 ## Provenance
 
-**Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. v1.5.0.
+**Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
