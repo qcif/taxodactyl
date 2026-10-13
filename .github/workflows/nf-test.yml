@@ -29,6 +29,7 @@ jobs:
     environment: testing
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
@@ -145,6 +146,7 @@ jobs:
 
       # Test folder ends in unknown hash; set as env var here for later steps
       - name: Set test folder as env var
+        if: always ()
         run: |
           dirs=($RUNNER_TEMP/nf-test/tests/*)
           test_dir="${dirs[0]}"
@@ -155,7 +157,7 @@ jobs:
       # Print trace.csv, temp file structure and command.err files
       - name: Debug failed nf-test
         # Only runs if nf-test step fails or if in debug mode
-        if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
+        if: always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1')
         run: |
           echo "##### trace.csv:"
           cat $TEST_DIR/meta/trace.csv
@@ -243,7 +245,7 @@ jobs:
 
       - name: Debug copy error workdirs
         # Only runs if copy-workdirs step fails or runner is in debug mode
-        if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
+        if: always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1')
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
@@ -326,8 +328,8 @@ jobs:
       # Copies entire work directory including test outputs to a dedicated
       # location (/var/runner/) on the self-hosted runner VM
       - name: Save run files on self-hosted runner
-      # Only runs on self=hosted runner
-        if: ${{ always() && (runner.name == 'self-hosted') }}
+      # Only runs on self-hosted runner
+        if: always() && runner.environment == 'self-hosted'
         run: |
           # Run files will be saved in file with timestamp
           timestamp=$(date "+%F_%H%M%S")
