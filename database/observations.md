@@ -31,3 +31,19 @@
 - Connected the loader to DuckDB and inserted valid batches into the `records` table using `executemany()`.
 - Tested the loader on 1,000 rows. All 1,000 rows were valid and inserted successfully, with no rejected records.
 - Verified the result directly in DuckDB using `SELECT COUNT(*)`; the `records` table contained 1,000 rows, matching the loader's inserted count.
+
+## 2026-10-15 - Step 5 DuckDB loader development test
+
+- Tested the Step 5 DuckDB loader using the 2,000,000-row `core_nt_sample.tsv.gz` development sample.
+- I have used a batch size of 50,000 records.
+- Processed 2,000,000 rows successfully.
+- 2,000,000 rows passed metadata validation.
+- 0 rows were rejected.
+- 2,000,000 records were inserted into the `records` table.
+- DuckDB row count was 2,000,000.
+- Distinct accession count was 2,000,000, matching the database row count.
+- Distinct taxid count was 142,630.
+- Minimum sequence length observed was 6.
+- Maximum sequence length observed was 97,909,271.
+- Duplicate-accession handling was tested separately using a controlled test file. The failed batch was rolled back and retried row-by-row, with the duplicate written to the reject log.
+- The 2-million-row run output was also saved locally to `step5_2m_run.log`.
