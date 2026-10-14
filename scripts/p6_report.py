@@ -14,6 +14,13 @@ def main():
     """Build the workflow report."""
     args = _parse_args()
     config.update_from_args(args)
+    if config.coverage_mode:
+        report.render_coverage(
+            args.bold,
+            params_json=args.params_json,
+            versions_yml=args.versions_yml,
+        )
+        return
     report.render(
         args.query_dir,
         args.bold,
@@ -27,7 +34,9 @@ def _parse_args():
     parser.add_argument(
         "query_dir",  # Not mapped to config
         type=existing_path,
-        help="Path to query output directory")
+        nargs='?',
+        help="Path to query output directory (not used in database coverage"
+             " mode)")
     parser.add_argument(
         "--bold",  # Not mapped to config
         action="store_true",
@@ -52,13 +61,18 @@ def _parse_args():
         f"--{CLI_ARGS['metadata_csv'].cli_name}",
         type=existing_path,
         help="Path to metadata.csv input file.",
-        required=True,
     )
     parser.add_argument(
         f"--{CLI_ARGS['query_fasta'].cli_name}",
         type=existing_path,
         help="Path to queries.fasta input file.",
-        required=True,
+    )
+    parser.add_argument(
+        f"--{CLI_ARGS['coverage_taxa_csv'].cli_name}",
+        type=existing_path,
+        help="Path to the validated coverage taxa CSV (database coverage"
+             " mode, instead of query_dir, --metadata-csv and"
+             " --query-fasta).",
     )
     parser.add_argument(
         f"--{CLI_ARGS['debug'].cli_name}",
@@ -86,7 +100,17 @@ def _parse_args():
         help="Path to CSV file containing flag definitions"
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.coverage_taxa:
+        if args.query_dir or args.metadata_csv or args.query_fasta:
+            parser.error(
+                "--coverage-taxa cannot be combined with query_dir,"
+                " --metadata-csv or --query-fasta.")
+    elif not (args.query_dir and args.metadata_csv and args.query_fasta):
+        parser.error(
+            "either --coverage-taxa, or all of query_dir, --metadata-csv and"
+            " --query-fasta, are required.")
+    return args
 
 
 if __name__ == '__main__':

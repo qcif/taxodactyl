@@ -1,0 +1,8 @@
+{
+  "location": 5.01,
+  "message": "No GBIF record found for target taxon 'Aphididiae'. This target could not be evaluated.",
+  "exception": "No GBIF record found for 'Aphididiae'. Taxonomic records cannot be retrieved. Please check that this species name is correct.",
+  "context": {
+    "target": "Aphididiae"
+  }
+}

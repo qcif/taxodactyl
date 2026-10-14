@@ -41,7 +41,7 @@
         <p class="alert alert-warning">
           <strong>Warning: no locus provided</strong>
           <br>
-          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown correspnds to the
+          Database coverage results are compromised, because a locus was not provided for this {% if context.coverage_mode %}taxon in the coverage CSV{% else %}sample in <code>metadata.csv</code>{% endif %}. The coverage shown corresponds to the
           <strong>entire genome</strong>
           of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
         </p>
@@ -58,7 +58,7 @@
 
           {% if context.metadata.classification %}
           <p class="alert alert-info">
-            Classification provided for this sample: <em>"{{ context.metadata.classification }}"</em>.
+            Classification provided for this {% if context.coverage_mode %}taxon{% else %}sample{% endif %}: <em>"{{ context.metadata.classification }}"</em>.
             This classification has been used to ensure that species records reported in this analysis are from the intended taxonomic kingdom (i.e. "Drosophila" is both a fly and a genus of fungus).
           </p>
           {% endif %}
@@ -167,7 +167,7 @@
                   {% else %}
                   across the entire genome because
                   <strong>no locus was provided</strong>.
-                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider provising a locus in <code>metadata.csv</code> to obtain a more relevant analysis.
+                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider providing a locus in {% if context.coverage_mode %}the coverage CSV{% else %}<code>metadata.csv</code>{% endif %} to obtain a more relevant analysis.
                   {% endif %}
                 </p>
 
@@ -307,7 +307,7 @@
 
                     <script>
                       document.addEventListener('DOMContentLoaded', function() {
-                        const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.target_taxon }}'].related;
+                        const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.js_key or context.target_taxon }}'].related;
                         const entries = Object.entries(data);
                         entries.sort((a, b) => a[1] - b[1]);
                         const keys = entries.map(entry => entry[0]);
@@ -400,7 +400,7 @@
                     {% endif %}
                   </li>
                   <li>
-                    In the sample country of origin <strong>{{ context.metadata.country }}</strong>
+                    In the {% if context.coverage_mode %}country{% else %}sample country of origin{% endif %} <strong>{{ context.metadata.country }}</strong>
                   </li>
                 </ul>
                 </div>
@@ -439,7 +439,7 @@
 
                       <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                          const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.target_taxon }}'].country;
+                          const data = DB_COVERAGE['{{ context.target_type }}']['{{ context.js_key or context.target_taxon }}'].country;
                           const entries = Object.entries(data);
                           entries.sort((a, b) => a[1] - b[1]);
                           const keys = entries.map(entry => entry[0]);
@@ -487,7 +487,7 @@
 
             {% else %}
             <p class="alert alert-info">
-              A country of origin was not provided in the sample metadata, so this analysis could not be performed.
+              A country {% if context.coverage_mode %}was not provided for this taxon in the coverage CSV{% else %}of origin was not provided in the sample metadata{% endif %}, so this analysis could not be performed.
             </p>
             {% endif %}
           </div>

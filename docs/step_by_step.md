@@ -113,3 +113,18 @@ cd launch/${version}_${today}
 # Execute the run script to start the pipeline
 ./run.sh
 ```
+### Database coverage mode
+
+To check database coverage for a list of taxa without any input sequences, replace
+the `--metadata` and `--sequences` arguments in the run script with `--coverage_taxa`
+(a `blastdb` is not needed). For example, with a `coverage.csv` such as
+[`test/coverage_example.csv`](../test/coverage_example.csv):
+
+```bash
+nextflow run main.nf -profile singularity \
+    --coverage_taxa coverage.csv \
+    --taxdb /path/to/taxdump \
+    --outdir output
+```
+
+See [Database coverage mode](../README.md#database-coverage-mode) for the CSV format.
