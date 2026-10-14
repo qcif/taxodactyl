@@ -78,8 +78,15 @@
             <td>{{ t.metadata.country or '-' }}</td>
 
             {% if not t.completed %}
-            <td colspan="4" class="text-center text-muted">
-              Analysis did not complete for this taxon &ndash; see workflow errors.
+            <td colspan="4" class="text-muted">
+              <strong>Analysis did not complete for this taxon.</strong>
+              {% if t.error_log %}
+              {% for error in t.error_log %}
+              <br>{{ error.message }}
+              {% endfor %}
+              {% else %}
+              No error details were recorded, which usually means the analysis task was stopped before it could finish (for example by exceeding its time limit or running out of memory). Please try re-running the analysis; if the problem persists, report it to the workflow maintainers.
+              {% endif %}
             </td>
             {% else %}
 

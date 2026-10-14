@@ -16,7 +16,7 @@ import logging
 import sys
 from pathlib import Path
 
-from src.coverage import assess_coverage
+from src.coverage import assess_coverage, failed_coverage
 from src.utils import existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
@@ -30,10 +30,18 @@ MODULE_NAME = "Database Coverage"
 def main():
     args = _parse_args()
     config.update_from_args(args)
-    results, error_detected = assess_coverage(
-        args.query_dir,
-        is_bold=args.bold,
-    )
+    try:
+        results, error_detected = assess_coverage(
+            args.query_dir,
+            is_bold=args.bold,
+        )
+    except Exception as exc:
+        if not config.coverage_mode:
+            raise
+        # Log the error for the report, and write ERR outputs so that the
+        # report can show why this taxon failed (see failed_coverage).
+        results = failed_coverage(args.query_dir, exc)
+        error_detected = True
     write_db_coverage(args.query_dir, results)
     config.cleanup()
     if error_detected:
