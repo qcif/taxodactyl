@@ -64,6 +64,26 @@
             "justMyCode": true
         },
         {
+            "name": "Integration test DB-cov",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s", "scripts/tests/integration",
+                "-p", "test_integration_coverage.py",
+                "-f",  // fail fast
+                "-v",  // show stdout instead of dots
+            ],
+            "env": {
+                "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
+                "PYTHONPATH": "${workspaceFolder}/scripts",
+                "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "type": "debugpy",
             "request": "launch",
             "name": "P0 Validate inputs",
