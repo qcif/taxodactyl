@@ -136,6 +136,23 @@ process/script contracts, not an end-to-end verified run.
 | NF-WF-042 | Candidate-for-alignment tuples MUST be re-keyed by the sample id obtained by removing the first match of `query_\d\d\d_` from the folder name, then joined with the query-sequence channel (`combine by:0`) to yield `[query_folder, candidates_phylogeny.fasta, query_sequence]`. A query whose FASTA id does not equal the sample-id part of its folder name is dropped from alignment silently. |
 | NF-WF-043 | `MAFFT_ALIGN` then `FASTME` MUST run on that tuple stream. |
 
+**Defect NF-D-015.** `combine(by:0)` is not a lookup that errors on a
+miss: a channel item with no partner on the other side simply never
+produces an output tuple. The two sides of this join are *independently
+derived* copies of what should be the same id — one from stripping
+`query_\d\d\d_` off the folder name, one from Nextflow's own FASTA-id
+tokenization — rather than one canonical id carried through both paths.
+If they ever disagree, that query is dropped here with **no task failure
+and no `errors/` entry** — unlike `NF-D-003`, there is no trace of it
+anywhere in the outputs. *To confirm*: whether any input that passes P0
+validation on the Nextflow-launched path (where auto-fix is disabled and
+mismatches are rejected instead, `P0-042`) can actually trigger this
+today, or whether it is presently a structural risk without a confirmed
+live trigger — the risk exists either way, because nothing enforces that
+the two derivations stay in sync. [decisions.md `D-02`](../decisions.md)
+(closing `NF-D-003`) should cover this case too, since a fix that only
+makes failed *tasks* visible wouldn't catch a join that simply never ran.
+
 ### 4.4 Source-diversity gating
 
 | ID | Requirement |
@@ -183,6 +200,15 @@ The workflow MUST emit (names are relied on by `nf-test`, see
   `ch_candidates_for_report` = `ch_candidates_files` (the earlier mixed
   definition of the same name — flags, csv, fasta, json, boxplot, etc. —
   is dead code, overwritten before use).
+
+**Defect NF-D-016.** The first definition of `ch_candidates_for_report`
+(the mixed flags/csv/fasta/json/boxplot tuple) is never read — every
+consumer sees the later, simpler reassignment to `ch_candidates_files`.
+Not just inert: a future edit to the *first* definition (the more
+plausible one to touch, since it's the one carrying the richer tuple
+shape) would silently have no effect, which is a maintenance hazard
+beyond ordinary dead code.
+
 - `ch_source_diversity_for_report` = independent-sources files, each file
   list sorted by file name.
 
@@ -190,10 +216,14 @@ The workflow MUST emit (names are relied on by `nf-test`, see
 
 - No analysis in Groovy: thresholds and rules live in Python.
 - No sample-sheet parsing in Nextflow: `samplesheetToList` is imported but
-  unused.
+  unused (`NF-D-017`) — residual from the nf-core template
+  (`subworkflows/nf-core/utils_nfschema_plugin`), never wired up because
+  this pipeline's input isn't a conventional nf-core samplesheet
+  ([contracts/inputs.md](../contracts/inputs.md)).
 - No cross-query aggregation, and no run-level summary report.
 - No `stub:` blocks exist in any process; `-stub-run` is not a supported
-  test path.
+  test path — tracked as an open enhancement, not a defect:
+  [decisions.md `D-41`](../decisions.md).
 
 ## 6. Open questions
 

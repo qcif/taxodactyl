@@ -12,7 +12,7 @@ spec in the same change.
 | # | Question | Affects | Status |
 |---|---|---|---|
 | D-01 | **BOLD: repair or retire?** Repair means BOLD v5 API, HMMER in the image (or drop orientation), regroup hits, write/remove `bold_taxonomy.json`. Retire means deleting the branch, `bold_*` params, BOLD tests and docs. | NF-D-002, NF-D-009, P1B-D-001..010, P3-D-005, testing | open |
-| D-02 | Should a query whose analysis fails still get a report (with an explicit "analysis incomplete" state) so nothing disappears silently? | NF-D-003, P3-D-001, P4-D-003, P5-D-004, THR-D-002 | open |
+| D-02 | Should a query whose analysis fails still get a report (with an explicit "analysis incomplete" state) so nothing disappears silently? | NF-D-003, NF-D-015, P3-D-001, P4-D-003, P5-D-004, THR-D-002 | open |
 | D-03 | Should the run publish machine-readable per-query results (flags, `candidates.json`, `db_coverage.json`, a run summary)? | OUT-D-001, OUT-D-002 | open |
 | D-04 | Is a cross-sample run report wanted? | overview §3 | open |
 | D-05 | Should Flag 6 (phylogenetic assessment) be implemented or removed? | P3-D-003 | open |
@@ -61,4 +61,5 @@ spec in the same change.
 | D-43 | Replace placeholder `1MB` memory defaults with real limits. | NF-D-011 | open |
 | D-44 | Move Azure tenancy values out of the repo (overlay config). | DEP-D-006 | open |
 | D-45 | Guard/replace the `429` string test in the retry policy. | THR-D-002 | open |
+| D-46 | Rename `ch_candidates_for_report`'s stale first definition (line 217 of `workflows/taxodactyl.nf`) to something else — or delete it, if confirmed unused — so the name is bound exactly once. **Not** a proposal to collapse the two-phase naming itself: `ch_<step>_files` during computation, `ch_<step>_for_report` at hand-off, is nf-core's own documented `ch_<previousprocess>_for_<nextprocess>` convention ([nf-core contributing guide](https://nf-co.re/docs/contributing/contributing_to_pipelines)) and should be kept — the fix is narrowly about the double-binding, not the pattern. | NF-D-016 | open |
 | D-19 | **(vs nf-core best practice)** Should error handling adopt the nf-core template's retry pattern (transient-failure exit codes retried with `task.attempt`-scaled resources, `ignore` only as a per-process opt-in label) instead of today's blanket `errorStrategy = 'ignore'`? Would reduce how often `NF-D-003` triggers, not just how it's reported. | NF-D-003, NF-D-011, NF-D-013 | open |

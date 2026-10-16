@@ -174,14 +174,41 @@ only a recommendation for those.
 |---|---|---|
 | NF-D-014 | Low **(vs nf-core best practice)** | None of the four modules installed from the `nf-core/modules` registry (`blast/blastdbcmd`, `blast/blastn`, `fastme`, `mafft/align`, per `modules.json`) retain their `meta.yml` (or `environment.yml`/`tests/`); only `main.nf` is present. This pipeline's local-only modules never had one, which is a lesser, recommendation-level gap by comparison. |
 
+### 2.5 Channel naming: good conformance, one real bug, one minor note
+
+nf-core documents two channel-naming conventions:
+
+- **Pipeline-level** ([Contributing to existing pipelines](https://nf-co.re/docs/contributing/contributing_to_pipelines)): an initial process output is `ch_output_from_<process>`; a channel handed to its next consumer is `ch_<previousprocess>_for_<nextprocess>` (their example: `ch_fastqc_for_multiqc`).
+- **Component-level, for subworkflows specifically** ([naming-conventions](https://nf-co.re/docs/specifications/components/subworkflows/naming-conventions)): `snake_case`, lowercase; `val_` prefix for a single-value input, `ch_` prefix for a multi-element input; **output channels named after the main output file, without a `ch_` prefix** (their example: emit `bam`, not `ch_bam`).
+
+`workflows/taxodactyl.nf`'s report-facing channels — `ch_hits_for_report`,
+`ch_candidates_for_report`, `ch_source_diversity_for_report` — are a close
+match for the pipeline-level `_for_<nextconsumer>` idiom, with "report"
+standing in for the next process. This is good, deliberate conformance,
+not a gap: it decouples the plain computation-phase name (`ch_hits_files`,
+used earlier for candidate extraction, unrelated to reporting) from the
+report hand-off name, so a later internal rename only touches one line.
+`NF-D-016` ([defects.md](../defects.md), Nextflow area — `ch_candidates_for_report`
+bound twice, the first value silently discarded) is a bug *within* this
+pattern, not a reason to abandon it: the fix
+([decisions.md `D-46`](../decisions.md)) is to stop that one name from
+being bound twice, not to merge the two-phase naming into one name.
+
+One minor, lower-confidence note: the `emit:` block keeps the `ch_`
+prefix on every output (`ch_hits_for_report`, etc.), where the
+*component-level* convention above would drop it. That rule is written
+for shared subworkflows specifically; it's not established that it's
+meant to bind a pipeline's own top-level workflow `emit:` the same way,
+so this is flagged as a style note, not a defect.
+
 ## 3. Not evaluated
 
 This comparison covers configuration/process conventions (errors,
-resources, release files, module docs) because they're where the
-`.nf-core.yml` record makes "declared vs. undeclared" checkable with
-confidence. It does not cover nf-core's module/subworkflow code-style
-conventions in depth (e.g. `versions.yml` emission pattern, standard
-input/output channel shapes) — a worthwhile follow-up, not done here.
+resources, release files, module docs, channel naming) because they're
+where the `.nf-core.yml` record makes "declared vs. undeclared" checkable
+with confidence. It does not cover nf-core's module/subworkflow code-style
+conventions in depth beyond naming (e.g. the `versions.yml` emission
+pattern) — a worthwhile follow-up, not done here.
 
 ---
 
