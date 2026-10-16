@@ -26,7 +26,12 @@ matk, rbcl, recn, reca, rpob, rplb, rpod, rpb2, atpB, trnL, ache.
 A key spelled `ache` has synonyms `AChE`/`Acetylcholinesterase`.
 
 Override with `--allowed_loci_file`; the override replaces the panel (no
-merge). The `NA` value is accepted separately and is not in the file.
+merge). The `NA` value is accepted separately and is not in the file: it
+is hardcoded as a third, always-valid option directly in P0's validation
+logic (**`P0-021`**, [p0-validation.md §4.3](../python/p0-validation.md)
+— "the result MUST be `na` **or** equal to one of the synonyms of some
+locus in the loci file"), so no panel or override can add, remove or
+affect it.
 
 ---
 
