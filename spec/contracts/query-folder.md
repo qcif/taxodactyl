@@ -12,7 +12,19 @@ producer/consumer matrix; formats are in the sibling contracts.
 2. **Extended** by P3, P4, P5 (each process receives the folder's files
    staged from upstream and writes new files next to them, NF-PR-006).
 3. **Read** by MAFFT/FastME (only the phylogeny FASTA), and by P6 (all files).
-4. Only a subset is copied to `<outdir>` ([outputs.md](outputs.md)).
+4. Only a subset is copied to `<outdir>` ([outputs.md](outputs.md)): from
+   the matrix below, just `all_hits.fasta`, `candidates.fasta`,
+   `candidates.csv`, `candidates_identity_boxplot.png` (conditional),
+   `candidates_phylogeny.{fasta,msa,nwk}`, and the report HTML. Everything
+   else in the matrix — `candidates.json`, every `*.flag`,
+   `aggregated_sources.json`, `db_coverage.json`, `map_<target>.png`,
+   `errors/*.json`, `query_title.txt`, `all_hits.json`,
+   `candidates_count.txt`, `assigned_taxonomy.csv`,
+   `preliminary_id_match.csv`, `taxa_of_concern_detected.csv`,
+   `id_mapping.tsv` — stays only in the Nextflow work directory and is
+   never published. That's the entire set of machine-readable data behind
+   the report; only the rendered HTML itself reaches `<outdir>`
+   (`OUT-D-001`).
 
 ## 2. File matrix
 
@@ -27,7 +39,7 @@ producer/consumer matrix; formats are in the sibling contracts.
 | `candidates_phylogeny.fasta` | [P3](../python/p3-assign-taxonomy.md) | MAFFT_ALIGN, [P6](../python/p6-report.md) | FASTA |
 | `candidates_count.txt` | [P3](../python/p3-assign-taxonomy.md) | Nextflow gate ([workflow.md NF-WF-051](../nextflow/workflow.md)) | integer |
 | `assigned_taxonomy.csv` | [P3](../python/p3-assign-taxonomy.md) (Flag 1A only) | [P6](../python/p6-report.md) | = `candidates.csv` |
-| `preliminary_id_match.csv` | [P3](../python/p3-assign-taxonomy.md) (Flag 7A only) | — (unread) | `rank,taxon…` |
+| `preliminary_id_match.csv` | [P3](../python/p3-assign-taxonomy.md) (Flag 7A only) | — (unread, `P3-D-008`) | `rank,taxon…` |
 | `taxa_of_concern_detected.csv` | [P3](../python/p3-assign-taxonomy.md) (TOIs given) | [P6](../python/p6-report.md) | [candidates.md](candidates.md) |
 | `candidates_identity_boxplot.png` | [P3](../python/p3-assign-taxonomy.md) (> max candidates) | [P6](../python/p6-report.md) | PNG |
 | `1.flag`, `2.flag`, `7.flag` | [P3](../python/p3-assign-taxonomy.md) | [P6](../python/p6-report.md) | [../python/shared/flags.md](../python/shared/flags.md) |
