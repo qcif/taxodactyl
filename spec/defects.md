@@ -32,9 +32,9 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 
 | Severity | Count |
 |---|---|
-| High | 17 |
+| High | 18 |
 | Medium | 56 |
-| Low | 27 (some rows group several items) |
+| Low | 28 (some rows group several items) |
 
 ## High
 
@@ -43,6 +43,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | NF-D-002 | Nextflow | **BOLD mode cannot run**: `EXTRACT_HITS.out` is referenced when `EXTRACT_HITS` was never invoked, and `BOLD_SEARCH.out.hits` is not regrouped into `[query_folder, files]` for `EXTRACT_CANDIDATES`. | [nextflow/workflow.md §4.2](nextflow/workflow.md) |
 | NF-D-009 | Nextflow | Default `-profile test` uses `db_type='bold'`, so it cannot succeed. | [nextflow/params.md §9](nextflow/params.md) |
 | NF-D-003 | Nextflow | Any ignored failure in `EXTRACT_CANDIDATES`, `MAFFT_ALIGN`, `FASTME`, `EVALUATE_SOURCE_DIVERSITY` or `EVALUATE_DATABASE_COVERAGE` **silently removes that query's report** (inner joins); the only trace is `<outdir>/errors/`. | [nextflow/workflow.md §4.5](nextflow/workflow.md), [nextflow/error-handling.md](nextflow/error-handling.md) |
+| NF-D-015 | Nextflow | **Worse than `NF-D-003`, no trace at all**: candidate-for-alignment tuples are joined to the query-sequence channel by matching two *independently derived* copies of what should be the same id — one from stripping `query_\d\d\d_` off the folder name, one from Nextflow's own FASTA-id tokenization (`combine by:0`, `NF-WF-042`) — rather than carrying one canonical id through both paths. If they ever disagree, that query is dropped with no task failure and nothing written to `errors/`. *To confirm*: whether any input that passes P0 validation on the Nextflow-launched path (where `P0-042` disables auto-fix and rejects mismatches instead, e.g. `P0-D-007`) can actually produce such a disagreement today, or whether this is presently a structural risk without a confirmed live trigger. | [nextflow/workflow.md §4.3](nextflow/workflow.md) |
 | NF-D-004 | Nextflow→P3 | `phylogeny_min_hit_identity` is never passed to P3; the parameter has no effect. | [nextflow/processes.md §9](nextflow/processes.md) |
 | P0-D-001 | P0 / config | Loci **`atpB`, `trnL`, `AChE` can never validate** — mixed-case synonyms compared against lower-cased input. `Locus.__contains__` has the same flaw downstream. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-002 | P0 | Sequences given in the metadata `sequence` column **bypass length and count limits**; a blank cell writes an empty FASTA record. | [python/p0-validation.md](python/p0-validation.md) |
@@ -128,7 +129,8 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | DEP-D-009 | deployment **(vs nf-core best practice)** | `CHANGELOG.md` — a standard nf-core template file, not listed under `.nf-core.yml`'s `skip_features` or any lint exemption — is absent from the repo; no human-readable release history exists alongside the five version locations in `DEP-020`. | [nextflow/nf-core-conformance.md §2.3](nextflow/nf-core-conformance.md) |
 | NF-D-007 | Nextflow | Schema error messages state wrong defaults (`phylogeny_min_hit_identity` 0.95, `phylogeny_max_seqs` 10). | [nextflow/params.md §9](nextflow/params.md) |
 | NF-D-008 | Nextflow | `analyst_name`, `facility_name`, `blast_xml` are not declared in `params.config`. | [nextflow/params.md §9](nextflow/params.md) |
-| — | Nextflow | `publish_dir_mode` is declared but ignored (all `publishDir` hard-code `copy`); `samplesheetToList` imported but unused; dead first definition of `ch_candidates_for_report`. | [nextflow/params.md §8](nextflow/params.md), [nextflow/workflow.md §4.7](nextflow/workflow.md) |
+| NF-D-016 | Nextflow | `ch_candidates_for_report`'s earlier, richer definition (flags/csv/fasta/json/boxplot tuple) is dead code — overwritten by a later, simpler reassignment before any consumer reads it. A future edit to the *first* definition (the more plausible one to touch) would silently have no effect. | [nextflow/workflow.md §4.7](nextflow/workflow.md) |
+| NF-D-017 | Nextflow | `samplesheetToList` is imported but never called — residual from the nf-core template's samplesheet-parsing path, never wired up since this pipeline's input isn't a conventional nf-core samplesheet. | [nextflow/workflow.md §5](nextflow/workflow.md) |
 | P0-D-005 | P0 | Regex `A-z` admits `[ \ ] ^ _` and backtick. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-009 | P0 | Malformed `logger.debug("…:", x)` calls in auto-fix. | [python/p0-validation.md](python/p0-validation.md) |
 | CFG-D-006 | config | Case-sensitive synonym matching (root cause of P0-D-001). | [python/shared/config.md](python/shared/config.md) |

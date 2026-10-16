@@ -109,7 +109,8 @@ checked in Nextflow.
 `pipelines_testdata_base_path`, `custom_config_*`, `config_profile_*`.
 
 **Declared but inert:** `publish_dir_mode` (schema only; all `publishDir`
-directives hard-code `mode: 'copy'`).
+directives hard-code `mode: 'copy'` — already tracked as `OUT-D-003`,
+[contracts/outputs.md](../contracts/outputs.md)).
 
 ## 9. Defects / inconsistencies
 
