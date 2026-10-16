@@ -204,6 +204,7 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 | P5-D-010 | Low | `name_suggest` is a prefix/fuzzy suggest; the first accepted suggestion may be a different taxon. This is reported as an informational error (P5-013) but the analysis proceeds. |
 | P5-D-011 | Low | Occurrence maps are 300 dpi 16×12 in PNGs (~4800×3600 px), embedded in the HTML report, which inflates its size. |
 | P5-D-012 | Low | `assess_coverage` returns `None` when there are no targets, which `main()` cannot unpack (unreachable because the PMI is always a target). |
+| P5-D-013 | Low | The "no country supplied" sentinel for `country` in `db_coverage.json` (P5-050) is the literal string `"NA"` — the same string `P0-024` resolves a user-supplied value to Namibia at the *input* layer. Checked against `P5-052`: this field's real values are always `{species: count}`/`{}`/`null`, never a bare country code or name, so there's no actual ambiguity within this file — only a cross-file vocabulary inconsistency (and a mismatch with this JSON's own `null`-for-unknown convention, `COV-004`). The version of this with real practical consequence is upstream, at input validation: `P0-D-011`. |
 
 ## 9. Test mapping
 

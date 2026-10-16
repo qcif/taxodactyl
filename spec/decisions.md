@@ -40,6 +40,7 @@ spec in the same change.
 | D-21 | Apply length/count limits to CSV sequences; reject empty sequences and duplicate sample ids? | P0-D-002..004 | open |
 | D-22 | Allow `sp.`, digits, hyphens in `preliminary_id`/`taxa_of_interest`? | P0 §9 | open |
 | D-23 | P0 writes a normalised `metadata.csv`? Checks taxdump age? | P0 §9 | open |
+| D-24 | Should P0 special-case a bare `NA`/`N/A` in the `country` column as "no country" (matching the common missing-value convention) instead of resolving it to the real country Namibia via `pycountry`? | P0-D-011 | open |
 
 ## D. Security and provenance
 

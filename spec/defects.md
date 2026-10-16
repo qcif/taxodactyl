@@ -33,8 +33,8 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | Severity | Count |
 |---|---|
 | High | 18 |
-| Medium | 56 |
-| Low | 28 (some rows group several items) |
+| Medium | 57 |
+| Low | 29 (some rows group several items) |
 
 ## High
 
@@ -74,6 +74,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P0-D-007 | P0 | `sample_id` is validated stripped but matched to FASTA unstripped. | [python/p0-validation.md](python/p0-validation.md) |
 | P0-D-008 | P0 | `classification` accepts 12 values in P0 but only 7 in `assets/schema_input.json`, nf-schema's secondary schema for `--metadata` (validated before any process runs). If that layer validates CSV content as documented, the 5 extra values P0 accepts (`animal`, `animals`, `plant`, `plants`, `virus`) never reach P0 through the Nextflow-launched pipeline — only via the validation web service or a direct script call. *To confirm by running `classification=animal`.* | [python/p0-validation.md](python/p0-validation.md), [contracts/inputs.md §1](contracts/inputs.md) |
 | P0-D-010 | P0 **(vs Design Proposal)** | The Design Proposal states BOLD mode is COI-only ("The BOLD database can only be used for query sequences at the COI locus", §2.3) and that locus is therefore not required for BOLD. The shipped code enforces neither: `--bold` only relaxes P0's locus check to accept (almost) any value — there is no COI-specific restriction. [decisions.md `D-06`](decisions.md). | [python/p0-validation.md](python/p0-validation.md) |
+| P0-D-011 | P0 | A `country` cell of the literal text `NA` (a standard "missing value" convention) is silently resolved to the real country **Namibia** by `pycountry.countries.lookup` (`P0-024`), not treated as "no country" (a *blank* cell is). No warning; the false country then feeds Flag 5.3. A well-precedented class of bug (Namibia's ISO alpha-2 code colliding with the `NA`-as-missing convention has caught out other tools, e.g. R's `readr`). [decisions.md `D-24`](decisions.md). | [python/p0-validation.md](python/p0-validation.md) |
 | CFG-D-001 | config | `default.yml` and `schema.py` disagree (5 filenames, `taxdb_dir`, `database_name`); regenerating `default.yml` from the schema, as documented, would break Nextflow file globs. | [python/shared/config.md](python/shared/config.md) |
 | CFG-D-002 | config | Any `-c` config file **replaces** `default.yml` instead of layering on it. | [python/shared/config.md](python/shared/config.md) |
 | CFG-D-003 | config | `get_locus_for_query` returns a `str` (not `Locus`) for values ending in ` gene`, and calls `.endswith` before its `None` check. | [python/shared/config.md](python/shared/config.md) |
@@ -144,6 +145,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P1B-D-006, -009, -010 | P1 BOLD | Invertebrate mt codon table never used in orientation; one HTTP failure aborts all queries; dead code (`taxon_*`, `_fetch_records`, `fetch_kingdom`). | [python/p1-bold-search.md](python/p1-bold-search.md) |
 | P4-D-005..007 | P4 | Missing efetch accessions silently treated as "no publications"; wrong unused `hit_count`; `4B` for 0 sources vs "1–5" text. | [python/p4-source-diversity.md](python/p4-source-diversity.md) |
 | P5-D-008..012 | P5 | TOI-truncation message lists nothing; sub-ranks (subspecies, tribe…) unsupported, "protozoa"→"protista"; fuzzy `name_suggest` may pick another taxon; 300-dpi maps bloat report; unreachable `None` return. | [python/p5-db-coverage.md](python/p5-db-coverage.md) |
+| P5-D-013 | P5 | `db_coverage.json`'s "no country" sentinel is the literal string `"NA"` (`P5-050`), reusing the token `P0-024` resolves to the real country Namibia at the *input* layer. This field's real values are always `{species: count}`/`{}`/`null`, never a bare country code or name (`P5-052`), so there is no actual ambiguity *within this file* — only a cross-file vocabulary inconsistency, lower-impact than it first looks. The version of this with real consequence is at the input layer: `P0-D-011`. | [python/p5-db-coverage.md](python/p5-db-coverage.md), [contracts/coverage-and-sources.md](contracts/coverage-and-sources.md) |
 | P6-D-005..006 | P6 | Per-query wall time; `print` alongside logging. | [python/p6-report.md](python/p6-report.md) |
 | P6-D-007..008 | P6 | Heading link hard-coded to the project's old repo name (`daff-biosecurity-wf2`); tab-label/component-filename mismatch (cosmetic). | [python/p6-report.md](python/p6-report.md) |
 | THR-D-003..005 | throttle | Backoff scope differs SQLite vs Redis; Entrez limit per user not per IP; Redis client per request. | [python/shared/throttle.md](python/shared/throttle.md) |
