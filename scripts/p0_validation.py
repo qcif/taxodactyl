@@ -12,6 +12,12 @@ from Bio.Data import IUPACData
 from src.utils import countries, existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
+from src.utils.encoding import (
+    BETA_ASCII,
+    fix_eszett_in_column,
+    fix_eszett_in_fasta_headers,
+    normalise_csv_encoding,
+)
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 import logging
@@ -45,6 +51,7 @@ def main():
     args = _parse_args()
     config.update_from_args(args)
     _validate_taxdbs(args.taxdb_dir)
+    _autofix_metadata_encoding(args.metadata_csv, args.query_fasta)
     ids = _validate_fasta(args.query_fasta)
     _validate_metadata(args.metadata_csv, ids, bold=args.bold)
 
@@ -62,6 +69,7 @@ def validate_inputs(
         bold=bold,
     )
     config.update_from_args(args)
+    _autofix_metadata_encoding(metadata_csv, query_fasta)
     _autofix_sample_id_spaces(
         metadata_path=metadata_csv,
         fasta_path=query_fasta,
@@ -73,6 +81,23 @@ def validate_inputs(
         ids,
         bold=args.bold,
     )
+
+
+def _autofix_metadata_encoding(
+    metadata_path: Path,
+    fasta_path: Path | None = None,
+):
+    """Convert the metadata CSV to UTF-8 and fix "ß" typed for "β".
+
+    Locus names get the Greek letter (ß-tub -> β-tub). Sample IDs must be
+    ASCII so become "beta", in the FASTA headers too, so that they match.
+    """
+    normalise_csv_encoding(metadata_path)
+    header = config.inputs.metadata_csv_header
+    fix_eszett_in_column(metadata_path, header['locus'])
+    if fix_eszett_in_column(metadata_path, header['sample_id'], BETA_ASCII):
+        if fasta_path:
+            fix_eszett_in_fasta_headers(fasta_path)
 
 
 def _parse_args():
@@ -243,7 +268,7 @@ def _validate_metadata(
     expect_seq_col = seq_ids is None
     sample_ids = []
     columns = config.inputs.metadata_csv_header
-    with path.open() as f:
+    with path.open(encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)  # skip header row
     for i, row in enumerate(rows):
