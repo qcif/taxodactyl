@@ -15,6 +15,10 @@
 
 ## 2. Container images
 
+See [containers.md](containers.md) for the detailed companion — Dockerfile
+contents, exact build/push commands, and the full container-pinning table
+for the `nf-core/modules`-sourced tools.
+
 | Image | Built from | Contents | Tag |
 |---|---|---|---|
 | `neoformit/taxodactyl` | `scripts/Dockerfile` | `python:3.12` + taxonkit + `scripts/` **source and requirements** at `/app/scripts` | `v<VERSION>` and `latest` |
@@ -38,6 +42,10 @@
 | DEP-023 | Before release, surfaces 2–4 of [tests.md](tests.md) SHOULD be run and the reference-data versions recorded. |
 
 ## 4. Reference data
+
+See [reference-data.md](reference-data.md) for the detailed companion —
+every external data source (not only the locally-provisioned ones below),
+split into what's provisioned vs. what's a live remote service.
 
 The pipeline never builds or checks reference data; operators provision it
 and pass paths (`--blastdb`, `--taxdb`). See NF-PA rows in

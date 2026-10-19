@@ -100,5 +100,5 @@ metabarcoding; databases other than Core Nt and BOLD
 | Python layer | [python/](python/) — P0–P6, [blast-vs-bold.md](python/blast-vs-bold.md) (every BLAST/BOLD difference, one place), `shared/` (config, throttle, cache, errors, secrets, flags) |
 | Data contracts | [contracts/](contracts/) — inputs, query-folder, filenames, hits, candidates, coverage-and-sources, loci, outputs |
 | Services | [services/input-validation.md](services/input-validation.md) |
-| Quality and delivery | [tests.md](tests.md), [deployment.md](deployment.md) |
+| Quality and delivery | [tests.md](tests.md), [deployment.md](deployment.md), [containers.md](containers.md) (detailed companion), [reference-data.md](reference-data.md) (detailed companion) |
 | Backlog and decisions | [defects.md](defects.md), [decisions.md](decisions.md) |

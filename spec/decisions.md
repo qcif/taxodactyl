@@ -49,7 +49,7 @@ spec in the same change.
 | D-30 | Params shown in the report: allow-list; never keys/emails/passwords. Rotate exposed NCBI keys. | P6-D-001, OUT-004 | open (**urgent**) |
 | D-31 | Enable Jinja autoescape and sanitise error HTML. | P6-D-002 | open |
 | D-32 | Stop writing full config to `report_context.json`. | P6-D-003 | open |
-| D-33 | Record reference-data versions (BLAST DB build date, taxdump date) in every report and `params_*.json`. | deployment §4, architecture §6 | open |
+| D-33 | Record reference-data versions (BLAST DB build date, taxdump date) in every report and `params_*.json`; separately, consider validating *identity*, not just presence, before a run starts — today `--blastdb` is only checked for being set and ending in `core_nt` (`NF-WF-013`, `DEP-030`), a purely superficial check a correctly-named but wrong/stale database trivially satisfies. BLAST+ itself catches a missing/corrupt database (its own index-loading error), but nothing catches a structurally valid, wrong one. | deployment §4, architecture §6, reference-data.md §1.1 | open |
 | D-34 | Vault authentication model (identity vs email). | SEC-D-001 | open |
 
 ## E. Engineering

@@ -161,13 +161,16 @@ template or code change.
 ### 10. Reference data is operator-provisioned, not pipeline-built.
 
 Unlike a pipeline that assembles its own versioned, checksummed reference
-bundle, Taxodactyl consumes BLAST Core Nt, taxdump, and BOLD's reference
-database as external paths the operator supplies
-([spec/deployment.md §4](spec/deployment.md)). This is a deliberate scope
-boundary (these are large, centrally-maintained resources unsuitable for
-per-pipeline bundling), but it is a weaker provenance guarantee than a
-versioned bundle would give — [decisions.md `D-33`](spec/decisions.md) is
-open on whether to tighten it.
+bundle, Taxodactyl consumes BLAST Core Nt and taxdump as external paths
+the operator supplies ([spec/deployment.md §4](spec/deployment.md)). This
+is a deliberate scope boundary (these are large, centrally-maintained
+resources unsuitable for per-pipeline bundling), but it is a weaker
+provenance guarantee than a versioned bundle would give —
+[decisions.md `D-33`](spec/decisions.md) is open on whether to tighten it.
+BOLD, GenBank/NCBI Entrez and GBIF are a different category entirely:
+live remote APIs queried at runtime (through the shared throttle/cache
+layer), never provisioned as a local path at all — not a weaker version
+of this principle, just outside its scope.
 
 ---
 

@@ -62,6 +62,8 @@ spec/
 ├── services/              input-validation
 ├── tests.md
 ├── deployment.md
+├── containers.md           detailed companion to deployment.md §2–3
+├── reference-data.md       detailed companion to deployment.md §4
 ├── defects.md             every bug found, by severity
 └── decisions.md           open questions needing an owner
 ```
