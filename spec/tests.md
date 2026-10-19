@@ -95,7 +95,7 @@ cannot pass (P1B-D-001..003).
 
 | Scenario | Samples | Character |
 |---|---|---|
-| `scenario_01` | 6 | FASTA + metadata; `Scenario_01`–`Scenario_05`-style animal COI samples with `preliminary_id`/`taxa_of_interest` populated. |
+| `scenario_01` | 6 | FASTA + metadata; `Scenario_01`–`Scenario_06`-style animal COI samples with `preliminary_id`/`taxa_of_interest` populated. |
 | `scenario_02` | dozens | Metadata-only (`sequence` column, no separate FASTA); `locus=NA`, `classification=viruses` — the viral/bacterial barcode case family (sample ids like `barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300`). |
 | `scenario_03` | 14 | FASTA + metadata; mixed animal/insect COI samples (e.g. `SME25-218`, `SME25-221` lineage). |
 | `scenario_04` | dozens | Metadata-only, mixed virus/bacteria/animal; `classification` sometimes blank. |
@@ -124,6 +124,17 @@ ground truth to preserve. Conversely, a change that leaves these
 baselines untouched is not proof a threshold fix was unnecessary — the
 20–100-sample fixtures were not constructed to exercise every flag value
 at every boundary.
+
+In other words: `bin/test_flags.py` only answers "did this change
+anything" — it diffs a fresh run against a saved snapshot of whatever the
+code did last time, not against an independently-known correct answer.
+A failing diff after a bug fix is not evidence the fix was wrong, and a
+clean diff after one is not evidence the fix was unnecessary; a human
+still has to look at *what* changed (or didn't) and judge whether that
+is correct, the same way they would review any other diff. The fixture
+itself cannot make that call in either direction — reviewing and, when
+warranted, promoting the new baseline (`testkit.py promote`) is a
+deliberate step for exactly this reason, not a rubber stamp.
 
 ---
 
