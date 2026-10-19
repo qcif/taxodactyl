@@ -201,7 +201,8 @@ still added while ≤ `phylogeny_min_seqs` have been collected.
 ## 10. Failure behaviour
 
 Uncaught exceptions fail `EXTRACT_CANDIDATES` for that query only, which
-removes the query's report (NF-D-003). Missing `all_hits.json`, a malformed
+removes the query's report — deliberate per `CONSTITUTION.md` rule 8, see
+`OUT-D-002` on discoverability. Missing `all_hits.json`, a malformed
 taxonomy CSV, or BOLD `similarity = None` (§11) are such cases.
 
 ## 11. Defects
@@ -209,7 +210,7 @@ taxonomy CSV, or BOLD `similarity = None` (§11) are such cases.
 | ID | Severity | Defect |
 |---|---|---|
 | P3-D-001 | High (*to confirm by run*) | A query with no hit ≥ `phylogeny_min_hit_identity` (includes every Flag `1E` query) gets an empty `candidates_phylogeny.fasta`. MAFFT then aligns the query alone and FastME has < 3 taxa; if FastME fails, the inner join drops the query and **no report is produced for a "no match" result** — the case where the report matters most. P6 also reads the tree file unconditionally. No test scenario contains a `1E` query. |
-| P3-D-002 | High | Hits lacking a taxonomy row (e.g. P2-D-001) cannot form candidate species. If all strict hits lack taxonomy the result silently degrades to `1D`/`1E`, with only a log warning — not surfaced in the report. |
+| P3-D-002 | High | Hits lacking a taxonomy row (e.g. P2-D-001) cannot form candidate species. If all strict hits lack taxonomy the result silently degrades to `1D`/`1E`, with only a log warning — not surfaced in the report. In short: a query with genuinely strong BLAST hits can still come back reading as "no confident match" if every one of those hits happens to lack taxonomy — the report can't distinguish "database lacks a close relative" from "taxonomy join failed," and the analyst sees only the former. |
 | P3-D-003 | Medium | Flag 6 (phylogenetic assessment) is defined in `flags.csv` and `FLAGS.INTRASPECIES_DIVERSITY` but **never computed or written** by any module. |
 | P3-D-004 | Medium | Flag 1 B/C boundary is hard-coded (`< 4`) while the boxplot, P4 gating and report prompts use `max_candidates_for_analysis`; changing that parameter desynchronises them. `flags.csv` text also hard-codes "98.5%" and "93.5%", which do not follow parameter changes. |
 | P3-D-005 | Medium | BOLD: `similarity` can be `None` (P1-BOLD), which raises `TypeError` in threshold comparisons. |

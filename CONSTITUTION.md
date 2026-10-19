@@ -16,9 +16,8 @@ of `spec/` — by reading the code, not by aspiration. Where the codebase
 itself falls short of a principle stated here, that is a **defect**
 (tracked in [spec/defects.md](spec/defects.md)), not a reason to weaken
 the principle. Where the codebase falls short of the *original product
-intent* instead — the [Design Proposal for Development of a Taxonomic
-Assignment Pipeline](../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)
-(QCIF, 2024-11-29) — that is noted explicitly wherever it applies, since
+intent* instead — the Design Proposal for Development of a Taxonomic
+Assignment Pipeline (QCIF, 2024-11-29) — that is noted explicitly wherever it applies, since
 it is a gap against intent, not against this constitution's own
 principles.
 
@@ -132,23 +131,28 @@ inline at the section it affects
 non-fatal error that never reaches the report (`ERR-D-001`) is a defect
 against this rule.
 
-### 8. One query's failure must not silently remove its report — and must never stop other queries.
+### 8. One query's failure must never stop other queries — and a missing report must be discoverable, not just inferred.
 
 A Nextflow task failure for one query MUST NOT abort or block any other
 query's processing: `process.errorStrategy` is `ignore` on every executor
 (`NF-ER-001`), and `workflow.failOnIgnore` is `true` so the run still
 exits non-zero overall even though siblings complete
 ([spec/nextflow/error-handling.md §1](spec/nextflow/error-handling.md)).
-This part of the principle holds today. What does **not** hold: a query
-whose own evaluation fails should be visibly flagged as failed within
-*its own* report, not simply absent from the output. **This half of the
-principle is currently violated** (`NF-D-003`): the report join is an
-inner join, so a missing tree or missing coverage result drops that one
-query with no trace beyond `<outdir>/errors/`. [decisions.md
-`D-02`](spec/decisions.md) is open on how to close this; until it is,
-treat any taxodactyl output as potentially missing queries that produced
-no visible failure — even though every other query in the same run was
-unaffected by the failure.
+This part of the principle holds today.
+
+Suppressing the report itself for a query whose evaluation didn't
+complete is **deliberate**, not a defect: a report built on an
+incomplete evaluation (no tree, no coverage data) risks exactly the
+false-confidence rule 2 exists to prevent, and an analyst is expected to
+notice the absence and repeat the analysis. What's missing is the
+mechanism that makes that absence noticeable: there is today no run-level
+summary of per-query outcome, so "notice the absence" means counting
+reports against submitted samples, then digging in `<outdir>/errors/` to
+find out why — nothing published states *which* queries got no report or
+why. [decisions.md `D-02`](spec/decisions.md) is open on closing that gap
+(`OUT-D-002`); until it is, treat the absence of a report as something an
+analyst must actively check for, not something the pipeline will surface
+on its own.
 
 ### 9. Locus panel and flag semantics are versioned config, not hardcoded.
 

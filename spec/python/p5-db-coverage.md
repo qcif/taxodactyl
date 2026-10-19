@@ -109,7 +109,8 @@ Target/related tasks run in a 5-thread pool; every outbound call uses the
 shared throttle and cache (`with_cache=True`). A task exception is written
 as a `DB_COVERAGE` error and its result becomes `null`; an exception of
 type `urllib.error.URLError` instead raises `APIError`, **failing P5 for
-the query** (and removing its report, NF-D-003).
+the query** (and removing its report — deliberate per `CONSTITUTION.md`
+rule 8, but see `OUT-D-002` on discoverability).
 
 ## 5. Flags
 

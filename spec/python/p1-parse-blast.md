@@ -82,15 +82,21 @@ This is the contract P3 consumes; see `../contracts/hits.md` (to write).
 
 Unreadable/invalid XML raises and fails `EXTRACT_HITS`, which fails the run
 (NF-ER-005). If the XML has more iterations than FASTA records,
-`IndexError` is raised when resolving the sample id.
+`IndexError` is raised when resolving the sample id (a positional list
+index into the parsed FASTA, `read_query_fasta`). If the XML has **fewer**
+iterations than FASTA records, the opposite happens: the parsing loop
+(`enumerate(blast_records)`) simply ends early, and every FASTA record
+past that point is never visited by this function at all — no error, no
+query folder, nothing (`P1-D-004`).
 
 ## 6. Defects
 
 | ID | Severity | Defect |
 |---|---|---|
 | P1-D-001 | High | `all_hits.fasta` holds the last HSP's aligned subject fragment (with `-` gaps; other HSPs dropped), not the subject sequence. It is the source for candidate FASTA, phylogeny sampling and MAFFT input. |
-| P1-D-002 | Medium | Iteration→query mapping is positional with no check against the query id in the XML. |
+| P1-D-002 | Medium | Iteration→query mapping is positional with no check against the query id in the XML. The fix is cheap: `create_query_dir` already receives the XML's `query_title` (the real `query-def` for that iteration) and writes it to `query_title.txt` — it just never compares it against `read_query_fasta(i).id`, the FASTA record actually selected by position. A mismatch (e.g. a stale/mock XML run against a different FASTA) produces no error, just silently mislabeled results. |
 | P1-D-003 | Medium | Zero hits across all queries ⇒ `accessions.txt` is `"\n"`; `blastdbcmd` behaviour on a blank entry is untested. |
+| P1-D-004 | Medium | If the BLAST XML has **fewer** iterations than the submitted FASTA has records (the reverse of P1-D-002's over-count `IndexError`), the parsing loop simply ends early: every FASTA record past that point gets no query folder, no `all_hits.json`, nothing — not even a log line, let alone a run failure. No count check exists between `len(blast_records)` and `len(query_fasta)` in either direction; only the over-count case happens to crash. |
 
 ## 7. Test mapping (`tests/test_blast_parser.py`)
 

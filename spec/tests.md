@@ -78,7 +78,7 @@ cannot pass (P1B-D-001..003).
 
 | ID | Gap |
 |---|---|
-| TST-G-001 | No test of a `1E` (no candidate) query, the case most exposed to NF-D-003 / P3-D-001. |
+| TST-G-001 | No test of a `1E` (no candidate) query, the case most exposed to report suppression (`OUT-D-002`) / `P3-D-001`. |
 | TST-G-002 | No test of Flag 5.1 thresholds (P5-D-001) or of taxid-less targets (P5-D-002). |
 | TST-G-003 | P3 filtering, Flags 1/2/7 and output files have no unit tests. |
 | TST-G-004 | P6 decision rules (§4 of `p6-report.md`) have no unit tests; only Selenium against generated HTML. |

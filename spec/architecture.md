@@ -82,7 +82,7 @@ Full producer/consumer matrix: [contracts/query-folder.md](contracts/query-folde
 
 | Property | Intent | Reality |
 |---|---|---|
-| Per-query isolation | one failure never affects another query | holds, but a failure silently removes that query's report (NF-D-003) |
+| Per-query isolation | one failure never affects another query | holds; the failed query's report is deliberately suppressed (not a violation), but there's no run-level summary saying which query that was (`OUT-D-002`) |
 | Non-silent degradation | missing evidence is shown, not hidden | holds for P5; P4 errors never reach the report (ERR-D-001); taxonomy gaps silently reduce candidates (P3-D-002) |
 | Config-driven behaviour | thresholds, text, loci in config | mostly; some thresholds hard-coded (P3-D-004, NF-PR-030), some params inert (NF-D-004, P5-D-003) |
 | Environment independence | same code on laptop/HPC/Azure | via backends; requires shared filesystem on HPC (THR-001) |

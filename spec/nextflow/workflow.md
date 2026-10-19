@@ -143,15 +143,16 @@ derived* copies of what should be the same id — one from stripping
 `query_\d\d\d_` off the folder name, one from Nextflow's own FASTA-id
 tokenization — rather than one canonical id carried through both paths.
 If they ever disagree, that query is dropped here with **no task failure
-and no `errors/` entry** — unlike `NF-D-003`, there is no trace of it
-anywhere in the outputs. *To confirm*: whether any input that passes P0
-validation on the Nextflow-launched path (where auto-fix is disabled and
-mismatches are rejected instead, `P0-042`) can actually trigger this
+and no `errors/` entry** — unlike an ordinary ignored task failure
+(`OUT-D-002`), which at least leaves a log there, there is no trace of
+this anywhere in the outputs. *To confirm*: whether any input that passes
+P0 validation on the Nextflow-launched path (where auto-fix is disabled
+and mismatches are rejected instead, `P0-042`) can actually trigger this
 today, or whether it is presently a structural risk without a confirmed
 live trigger — the risk exists either way, because nothing enforces that
 the two derivations stay in sync. [decisions.md `D-02`](../decisions.md)
-(closing `NF-D-003`) should cover this case too, since a fix that only
-makes failed *tasks* visible wouldn't catch a join that simply never ran.
+should cover this case too: a run-level summary that only names failed
+*tasks* wouldn't catch a join that simply never ran.
 
 ### 4.4 Source-diversity gating
 
@@ -172,12 +173,16 @@ makes failed *tasks* visible wouldn't catch a join that simply never ran.
 | NF-WF-063 | Skipped-source-diversity queries MUST be injected with an empty `[]` file list (NF-WF-052). |
 | NF-WF-064 | `REPORT(ch_files_for_report, ch_taxonomy_file, ch_metadata, ch_sequences)` MUST run once per joined tuple. |
 
-**Defect NF-D-003.** NF-WF-061 means a single ignored failure in
-`MAFFT_ALIGN`, `FASTME`, `EVALUATE_DATABASE_COVERAGE` or `EXTRACT_CANDIDATES`
-silently removes that query's report while the run continues. The only
-trace is `<outdir>/errors/` (NF-WF-004) and a non-zero exit status
-(`workflow.failOnIgnore`, see [error-handling.md](error-handling.md)).
-There is no per-query "analysis failed" report.
+**Consequence of NF-WF-061.** A single ignored failure in `MAFFT_ALIGN`,
+`FASTME`, `EVALUATE_DATABASE_COVERAGE` or `EXTRACT_CANDIDATES` removes
+that query's report while the run continues — this is deliberate
+(`CONSTITUTION.md` rule 8), not a defect: a report built on an
+incomplete evaluation would be misleading. What's still a real gap
+(`OUT-D-002`) is discoverability: the only trace is `<outdir>/errors/`
+(NF-WF-004) and an overall non-zero exit status
+(`workflow.failOnIgnore`, see [error-handling.md](error-handling.md)) —
+nothing names *which* query it was without an analyst counting reports
+and then searching `errors/`.
 
 ### 4.6 Provenance and logs
 

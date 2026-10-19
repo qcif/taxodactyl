@@ -158,7 +158,7 @@ missing tree file, missing `assigned_taxonomy.csv` with Flag 1A, missing
 | P6-D-006 | Low | `print()` used alongside logging for the context path. |
 | P6-D-007 | Low | The heading's "documented here" link is hard-coded to `qcif/daff-biosecurity-wf2` — the project's former name — not the current `qcif/taxodactyl` repo. |
 | P6-D-008 | Low | Tab labels and component filenames disagree: tab "1. Inputs" renders `overview.html`; tab "2. Overview" renders `results-summary.html`. Cosmetic (a future editor renaming one without the other risks confusion, not breakage). |
-| P6-D-009 | Medium **(vs Design Proposal)** | The [Design Proposal](../../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)'s "Conclusion A – Positive taxonomic identification" (§3.8) requires **both** Flag 1a (single species, ≥98.5% identity) **and** Flag 4a (≥5 independent sources) before a positive ID is reported. P6-010 sets `confirmed = true` from Flag 1 = `A` alone; `sources_verified` (whether Flag 4 is `A` for every entry) only changes the result's colour/level (`success` vs `warning`), it never flips `confirmed`. A single-species match backed by only 1–5 sources is therefore still rendered as a confirmed identification — just with a warning colour rather than a `confirmed = false` "inconclusive" state. [decisions.md `D-18`](../decisions.md) is open on whether `confirmed` should require source verification. |
+| P6-D-009 | Medium **(vs Design Proposal)** | The Design Proposal's "Conclusion A – Positive taxonomic identification" (§3.8) requires **both** Flag 1a (single species, ≥98.5% identity) **and** Flag 4a (≥5 independent sources) before a positive ID is reported. P6-010 sets `confirmed = true` from Flag 1 = `A` alone; `sources_verified` (whether Flag 4 is `A` for every entry) only changes the result's colour/level (`success` vs `warning`), it never flips `confirmed`. A single-species match backed by only 1–5 sources is therefore still rendered as a confirmed identification — just with a warning colour rather than a `confirmed = false` "inconclusive" state. [decisions.md `D-18`](../decisions.md) is open on whether `confirmed` should require source verification. |
 
 ## 7. Test mapping
 
@@ -170,8 +170,11 @@ nf-test asserts the number of HTML files produced.
 
 1. Which params may appear in the report? (Proposal: an allow-list, never
    anything matching `*key*`, `*password*`, `*secret*`, `*email*`.)
-2. Should the report show an explicit "analysis incomplete" state instead
-   of failing when the tree or coverage is missing (see NF-D-003, P3-D-001)?
+2. Settled, not open: no report for a query whose analysis didn't
+   complete is deliberate ([CONSTITUTION.md](../../CONSTITUTION.md) rule
+   8), not something to replace with an "analysis incomplete" state. What
+   remains open is discoverability — [decisions.md `D-02`](../decisions.md)
+   — not whether a partial report should exist.
 
 ---
 

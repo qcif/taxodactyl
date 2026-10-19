@@ -46,8 +46,18 @@ default memory is not a real requirement — it is only harmless on the
 `local` executor, which does not enforce `memory` at all (it's advisory
 there). Under a scheduler that *does* enforce `memory` (SLURM, LSF, etc.)
 every process without an override above would be OOM-killed outright.
-Real memory needs are undocumented (Azure config uses 2 GB for the light
-processes, as a reference point).
+Several of those "without an override" cases aren't obvious from the
+table alone: each `withName: <PROCESS>` block in `conf/process.config`
+replaces *only the directives it mentions*, so a process can override
+some resources and silently fall through to the `1MB`/`10m` global
+default for the rest. `MAFFT_ALIGN`'s block, for example, sets `cpus`
+(`2`) and `container` but says nothing about `memory`/`time` — so despite
+doing real alignment work, it still runs under the same `1MB`/`10m`
+defaults as a trivial housekeeping process like `PREPARE_LOG`. That's a
+silent fallthrough, not a deliberate choice to under-resource it — which
+is exactly why the table above shows "(default)" rather than an explicit
+value in several cells. Real memory needs are undocumented (Azure config
+uses 2 GB for the light processes, as a reference point).
 
 ## 3. Profiles (`conf/profiles.config`)
 

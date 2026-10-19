@@ -32,7 +32,7 @@ each is grounded in a specific, fetched source, not general impression.
 `modules.json` shows `blast/blastdbcmd`, `blast/blastn`, `fastme` and
 `mafft/align` were installed from the shared `nf-core/modules` registry at
 pinned commits (`installed_by: ["modules"]`), rather than hand-written —
-exactly what the [Design Proposal](../../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)
+exactly what the Design Proposal
 suggested ("Nf-core has an existing BLAST module that can be utilized for
 running BLAST locally," §2.1). This is correct nf-core practice, not a
 finding.
@@ -99,22 +99,26 @@ No process in this pipeline retries. A task that fails because it was
 briefly throttled, hit a transient network error Python's own retry layer
 didn't catch, or was killed for exceeding its (often placeholder, see
 `NF-D-011`) memory limit gets exactly one attempt, is ignored, and —
-because of the inner-join report structure — silently drops that query's
-report (`NF-D-003`). nf-core's canonical pattern exists specifically to
-absorb this class of failure before giving up. This is not a style
-preference: it is the direct mechanism by which `NF-D-003` manifests more
-often than it would need to.
+because of the inner-join report structure — drops that query's report.
+That suppression is itself deliberate
+([CONSTITUTION.md](../../CONSTITUTION.md) rule 8), but nf-core's
+canonical retry pattern exists specifically to avoid *needing* to make
+that call in the first place for a purely transient failure — this is
+not a style preference: adopting it would mean fewer queries ever reach
+the point of losing their report over something that would have
+succeeded on a second attempt.
 
 (The Nextflow reference docs confirm `ignore`'s own documented risk: "The
 failure is logged... By default, the run exits with status `0`." —
 [`errorStrategy` reference](https://docs.seqera.io/nextflow/reference/process/directives/error-strategy).
 This pipeline does set `workflow.failOnIgnore = true`, so the exit-status
 half of that risk is already mitigated — `NF-ER-002` — but the report
-instead just goes missing, not immediately or especially the process exit code.)
+still just goes missing, with nothing published naming which query it
+was, `OUT-D-002`.)
 
 | ID | Severity | Defect |
 |---|---|---|
-| NF-D-013 | Medium **(vs nf-core/Nextflow best practice)** | `errorStrategy` is a blanket `'ignore'`, applied globally with no `retry` tier and no `task.attempt` resource scaling, diverging from the nf-core template's default pattern (retry on transient-failure exit codes, `ignore` only as an explicit per-process opt-in label). [decisions.md `D-02`](../decisions.md) (closing `NF-D-003`) should consider adopting the retry pattern, not only a better join. |
+| NF-D-013 | Medium **(vs nf-core/Nextflow best practice)** | `errorStrategy` is a blanket `'ignore'`, applied globally with no `retry` tier and no `task.attempt` resource scaling, diverging from the nf-core template's default pattern (retry on transient-failure exit codes, `ignore` only as an explicit per-process opt-in label). [decisions.md `D-19`](../decisions.md) should consider adopting the retry pattern, independent of whether a run-level summary (`D-02`) is also added. |
 
 ### 2.2 No resource-label system; `NF-D-011`'s placeholder default has no safety net
 

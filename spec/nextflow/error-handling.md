@@ -43,12 +43,15 @@ would need to match.
 | `EVALUATE_SOURCE_DIVERSITY` | no `4.flag`/sources ⇒ **no report** (join needs `independent_sources_files`) | others unaffected |
 | `REPORT` | no HTML | others unaffected |
 
-**Consequence (NF-D-003).** Every non-skip failure between candidate
-extraction and report is invisible in the results tree except under
-`errors/`. Errors that Python catches (API failures inside P4/P5) are the
-exception: they are written as `errors/*` files inside the query folder,
-the process still succeeds, and the report renders them
-(see `python/shared/errors.md`).
+**Consequence.** Suppressing the report for a failed query is deliberate
+(`CONSTITUTION.md` rule 8) — not a defect. But every non-skip failure
+between candidate extraction and report is invisible in the results tree
+except under `errors/`, with no run-level file naming which query that
+was (`OUT-D-002`): an analyst has to count reports against submitted
+samples and then dig in `errors/` to find out why one's missing. Errors
+that Python catches (API failures inside P4/P5) are the exception: they
+are written as `errors/*` files inside the query folder, the process
+still succeeds, and the report renders them (see `python/shared/errors.md`).
 
 ## 3. Timeouts and resources
 
@@ -59,9 +62,10 @@ placeholder memory defaults.
 
 ## 4. Requirements that this design does NOT provide (candidates for future spec work)
 
-1. A run-level summary of per-query outcome (ok / partial / failed).
-2. A report (even a minimal one) for a query whose analysis failed.
-3. Retry logic for transient failures at process level (Python retries
+1. A run-level summary of per-query outcome (ok / failed / no report) —
+   the suppressed report itself is deliberate (`CONSTITUTION.md` rule 8),
+   but nothing published says *which* queries it happened to.
+2. Retry logic for transient failures at process level (Python retries
    only external HTTP calls — see `python/shared/throttle.md`).
 
 ---

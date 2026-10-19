@@ -2,9 +2,8 @@
 
 Specification of `qcif/taxodactyl`, derived from the source code — see
 **Version** below for exactly which commit. Documentation (`README.md`,
-`docs/`) and the original [Design Proposal for Development of a
-Taxonomic Assignment Pipeline](../../Design%20proposal%20-%20WF2%20Taxonomic%20Assignment%20-%20FINAL.pdf)
-(QCIF, 2024-11-29) were used only as a cross-check; where the code
+`docs/`) and the original Design Proposal for Development of a
+Taxonomic Assignment Pipeline (QCIF, 2024-11-29) were used only as a cross-check; where the code
 differs from docs, the code is described and the difference is logged as
 a defect. Where the code differs from the Design Proposal, that is a gap
 against the project's *original intent* rather than an internal

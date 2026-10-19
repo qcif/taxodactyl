@@ -99,7 +99,7 @@ Publication key ("repr"), first available of:
 |---|---|---|
 | P4-D-001 | Medium | Grouping is not transitive: a source matching two groups is added to both and the groups are not merged, so the number of independent sources can be **over-counted** and is order-dependent; this can raise Flag 4 from `B` to `A`. |
 | P4-D-002 | Medium | "Same source" requires an identical author list; two papers from the same lab with different co-authors count as independent. Automated records and records without publications are pooled with each other (P4-021), contradicting the class docstring ("automated only matches automated"). |
-| P4-D-003 | Medium | One Entrez failure after retries aborts P4 for the query, which removes its report (NF-D-003), instead of recording an error and continuing. |
+| P4-D-003 | Medium | One Entrez failure after retries aborts P4 for the query, which removes its report, instead of recording a non-fatal error and continuing the way other P4/P5 API failures do — the inconsistency is the defect, not the report being suppressed (`CONSTITUTION.md` rule 8). |
 | P4-D-004 | Medium (*to confirm*) | Entrez term for P5 record counts has an unbalanced `)` (`txid9606[Organism]) AND (...)`); correctness depends on NCBI tolerating it. |
 | P4-D-005 | Low | Accessions missing from the efetch result are silently treated as "no publications" (TODO in code), not reported. |
 | P4-D-006 | Low | `species[i]['hit_count']` is set to the last loop index over **all** hits (same wrong value for every species); unused, as is `hits[i]['source']`. |

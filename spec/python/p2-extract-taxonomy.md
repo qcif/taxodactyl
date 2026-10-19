@@ -56,7 +56,7 @@ Output: `<out>/taxonomy.csv` with header
 
 | ID | Severity | Defect |
 |---|---|---|
-| P2-D-001 | High | Result keyed by taxonkit's second column; for a merged taxid that is the new id (status column of `-c`), so P2-003's lookup by the original taxid misses and the accession disappears from `taxonomy.csv`. Deleted taxids behave likewise. *To confirm* with a merged-id fixture. Downstream effect on P3 of a hit with no taxonomy row: see p3 spec. |
+| P2-D-001 | High | Result keyed by taxonkit's second column; for a merged taxid that is the new id (status column of `-c`), so P2-003's lookup by the original taxid misses and the accession disappears from `taxonomy.csv`. Deleted taxids behave likewise. Example: accession `MH123456` has taxid `99999` in `taxids.csv` (the BLAST DB's old-vintage id); `99999` was since merged into `12345`; taxonkit resolves the lineage correctly but under key `12345`, so the lookup by `99999` fails and `MH123456` gets no row — its taxonomy was genuinely resolved, just filed under a key P2 never checks. *To confirm* with a merged-id fixture. Downstream effect on P3 of a hit with no taxonomy row: see p3 spec. |
 | P2-D-002 | Medium | A taxonkit failure aborts P2 and therefore all queries. |
 | — | Low | Log messages in `taxonomies()` say "name2taxid" for a `lineage` call. |
 
