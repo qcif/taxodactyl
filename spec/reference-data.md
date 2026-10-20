@@ -96,6 +96,19 @@ amount of local storage planning mitigates.
 
 ### 2.2 GBIF
 
+> **This section is already stale on current `main`, not just at risk of
+> becoming so.** PR [`#313`](https://github.com/qcif/taxodactyl/pull/313)
+> ("Refactor GBIF modules to pull data from new COL taxonomy backbone")
+> merged **2026-10-06** — five weeks after this spec's derivation commit
+> (`edaacae`, 2026-09-01; see [README.md § Version](README.md#version)).
+> Everything below describes the code accurately *at that commit*, but
+> `main` has since migrated P5's species/occurrence lookups from GBIF to
+> the Catalogue of Life taxonomy backbone. This is exactly the kind of
+> post-derivation drift the Version section warns about, called out
+> explicitly here because it's an architectural change, not a minor
+> tweak — re-derive this section against current `main` before trusting
+> it for anything GBIF/COL-related.
+
 - **Used for:** P5's database-coverage-within-genus/country assessment
   (species lookup, occurrence search) and P1-BOLD's kingdom lookup for
   BOLD hits without a GenBank accession.

@@ -116,6 +116,7 @@ ID Engine order (not re-sorted).
 | P1B-D-008 | Medium | Downstream alignment uses the **original** query from `sequences.fasta`, not `query_sequence`; a reverse-complemented query is aligned against forward hits (MAFFT runs without `--adjustdirection`). |
 | P1B-D-009 | Low | Any single HTTP failure aborts the search for all queries (no per-query isolation). |
 | P1B-D-010 | Low | Dead code: `taxon_count`, `taxon_collectors`, `taxon_taxonomy`, `_fetch_records`, `_fetch_kingdoms`, `self.raw_hits`, `gbif.taxonomy.fetch_kingdom` (only caller is dead). |
+| P1B-D-011 | Low | `docs/src/understanding-the-analysis.md` states orientation "is no longer required for BOLD API v5, so this functionality is no longer used" — false for the shipped code: `id_engine.py` still calls `orientate(sequences)` unconditionally unless `SKIP_ORIENTATION` is set. Likely why nobody noticed `P1B-D-001` (HMMER missing from the image) — the doc tells readers the HMM step is dead code. |
 
 ## 7. Test mapping
 

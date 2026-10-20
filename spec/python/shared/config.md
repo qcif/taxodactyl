@@ -194,6 +194,8 @@ Loci file schema: see `../../contracts/loci.md`.
 | CFG-D-005 | `conf/env.config` always exports `LOGGING_DEBUG="${params.logging_debug}"`, i.e. `"0"` by default; `os.getenv` returns the non-empty string `"0"`, so **every pipeline run logs at DEBUG**. `--logging_debug` has no effect. |
 | CFG-D-006 | Case-sensitive synonym matching (see P0-D-001). |
 | CFG-D-007 | `schema.throttle_backend` description mentions `local`/`azure`; valid values are `sqlite`/`redis`. `model_config.env_prefix="BIOSEC_"` has no effect on a plain `BaseModel`. |
+| CFG-D-008 | `scripts/README.md` links to `src/utils/config_schema.py` and `src/utils/config.py` — neither exists; the config module is the `src/utils/config/` package. |
+| CFG-D-009 | `scripts/config/README.md` documents a cascading multi-file config workflow (`base.yml`, `high_confidence.yml`, `lab_environment.yml`, `test.yml`, `example_custom.yml`) with worked `-c` examples. None of those files exist — deleted per git history ("Remove redundant example config.yml files"); only `default.yml` remains, and every example command in that README fails as written. The doc also no longer demonstrates the one real risk it should: `CFG-D-002`, a bare `-c custom.yml` dropping `default.yml`'s filenames entirely. |
 
 ## 7. Test mapping
 

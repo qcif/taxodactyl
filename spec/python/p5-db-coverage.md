@@ -6,6 +6,16 @@
 `shared/cache.md`, `shared/errors.md`, [p2-extract-taxonomy.md §3.2](p2-extract-taxonomy.md),
 [p4-source-diversity.md §7](p4-source-diversity.md), [p1-bold-search.md §5](p1-bold-search.md).
 
+> **GBIF references below are stale on current `main`.** PR
+> [`#313`](https://github.com/qcif/taxodactyl/pull/313) merged
+> **2026-10-06**, five weeks after this spec's derivation commit
+> (`edaacae`, 2026-09-01), migrating P5's species/occurrence lookups from
+> GBIF to the Catalogue of Life backbone. Everything below is accurate at
+> the derivation commit; re-derive against current `main` before relying
+> on the GBIF-specific detail (endpoints, rate limits, `P5-D-007`/`-009`/
+> `-010`) for anything beyond historical reference. See
+> [reference-data.md §2.2](../reference-data.md).
+
 ## 1. Purpose
 
 For each **target taxon** relevant to a query, estimate how well the

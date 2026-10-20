@@ -97,6 +97,7 @@ Azure Batch deployment of this pipeline, not just DAFF's:
 | DEP-D-006 | Low | Azure account names, pool, region and `/mnt/nvme/refdata` are hard-coded in `conf/azure.config`; a second tenant needs a fork or edit. |
 | DEP-D-007 | Low | `scripts/README.md`'s release section is out of date (`cloudgene.yml`, four locations); `scripts/dev/render_docs.py` is referenced for docs but docs rendering is not part of release automation. |
 | DEP-D-008 | Medium | `.env.sample` sets `NODE_AGENT_SKU="batch.node.ubuntu 24.04"` / `IMAGE_TAG=canonical:ubuntu-24_04-lts:server`, but the committed `deployment/azure/pool-setup.json.template` and every `docs/azure/*.md` walkthrough (01, 02, 04) consistently use Ubuntu **20.04** (`batch.node.ubuntu 20.04`, `ubuntu-server-container:20-04-lts`, container image `ubuntu:20.04`), with 02 explicitly stating "We use Ubuntu 20.04 for Docker container compatibility". An operator who copies `.env.sample` to `.env.azure` as instructed and runs `az batch pool create --image $IMAGE_TAG --node-agent-sku-id "$NODE_AGENT_SKU"` creates a pool on a different OS than the one every doc and template assumes, risking the exact container-compatibility problem the docs say 20.04 was chosen to avoid. Either `.env.sample` is stale relative to the template/docs, or the template/docs were never updated after a 24.04 migration — *to confirm which*. |
+| DEP-D-010 | Low | `docs/detailed_tech.md` lists the analysis image as `taxodactyl:v1.0.0`; the actual pinned tag, here and in `conf/azure.config`, is `v1.5.0` (`DEP-011`). |
 
 ---
 
