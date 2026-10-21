@@ -5,7 +5,7 @@
 | ID | Requirement |
 |---|---|
 | NF-CF-001 | `nextflow.config` MUST include, in this order: `params`, `process`, `filenames`, `manifest`, `validation`, `profiles`, `misc`, `env`. |
-| NF-CF-002 | `manifest.nextflowVersion` is `!>=24.10.6`: the pipeline MUST refuse to run on older Nextflow. `manifest.version` is the single source of the pipeline version used by `--version` — a fact about the code's own self-reporting, which changes at every release and is distinct from this spec's own provenance ([README.md § Version](../README.md#version)). It is one of **five** places a release must update in step — see `DEP-020` and the drift risk `DEP-D-001` in [../deployment.md](../deployment.md). The Nextflow *engine* version actually tested is a separate, weaker claim: the README's "Tested versions: 24.10.3, 24.10.6" note is itself inconsistent with the `!>=24.10.6` hard minimum (`NF-D-012`). |
+| NF-CF-002 | `manifest.nextflowVersion` is `!>=24.10.6`: the pipeline MUST refuse to run on older Nextflow. `manifest.version` is the single source of the pipeline version used by `--version` — a fact about the code's own self-reporting, which changes at every release and is distinct from this spec's own provenance ([README.md § Version](../README.md#version)). It is one of **five** places a release must update in step — see `DEP-020` and the drift risk `DEP-D-001` in [../deployment.md](../deployment.md). The Nextflow *engine* version actually tested is a separate, weaker claim: the README's "Tested versions: 24.10.3, 24.10.6" note is itself inconsistent with the `!>=24.10.6` hard minimum (`NF-D-012`), and the nf-test CI workflow pins a third version, **25.04.6**, with a comment that later releases' stricter syntax parsing breaks this config (GitHub issue `#304`). There is no upper bound in `nextflowVersion`. |
 | NF-CF-003 | `conf/filenames.config` MUST parse `scripts/config/default.yml` with `YamlSlurper` and expose filenames as `process.ext.*`. `blast_xml_filename`, `candidates_msa` and `versions_yml` are defined in Nextflow itself (`blast_result.xml`, `candidates_phylogeny.msa`, `versions.yml`); all others originate from the Python config. |
 | NF-CF-004 | Plugins: `nf-schema@2.1.1` and `nf-azure` (latest) MUST be declared in `misc.config`. |
 
@@ -108,10 +108,23 @@ isn't yet reflected in the code (`DEP-D-006`); [decisions.md
 ## 5. Environment (`conf/env.config`)
 
 The following environment variables MUST be exported into every task:
-`LOGGING_DEBUG`, `BOLD_SKIP_ORIENTATION`, `NCBI_API_KEY`, `USER_EMAIL`,
-`TAXONKIT_DATA` (= `params.taxdb` or `''`), `SECRET_KEY` (launcher env or
-`''`). Python behaviour keyed on these is specified in
+`LOGGING_DEBUG`, `BOLD_SKIP_ORIENTATION`, `HOME` (fixed to
+`/tmp/taxodactyl/config`), `NCBI_API_KEY`, `USER_EMAIL`, `TAXONKIT_DATA`
+(= `params.taxdb` or `''`), `SECRET_KEY` (launcher env or `''`). Python
+behaviour keyed on these is specified in
 [../python/shared/config.md](../python/shared/config.md).
+
+**Defect `NF-D-018` (Low, *to confirm*, [defects.md](../defects.md)).**
+`HOME` was added with the nf-test CI workflow (`a24581f`) but sits in
+`conf/env.config`, so it applies to every profile, not just CI. Two code
+paths read it through `Path.home()`/`expanduser`: the fallback local
+secrets directory, `~/.local/share/taxodactyl/<user>` (used when
+`/var/lib/taxodactyl` isn't writable — as in a read-only Singularity
+image), and the default `taxdb_dir`, `~/.taxonkit` (used only if no
+`--taxdb` is given). Both now resolve under `/tmp`, so per-user vault
+data could land in a shared `/tmp` on HPC. Whether Singularity/Apptainer
+actually honour a `HOME` passed this way is unconfirmed — they often
+override it.
 
 ## 6. Run reporting (`conf/misc.config`)
 

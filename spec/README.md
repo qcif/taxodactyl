@@ -14,23 +14,36 @@ non-negotiable principles this spec and every future change are held to.
 
 ## Version
 
-This spec was derived from `main` at commit `edaacae` (2026-09-01) — **not**
+This spec describes `main` at commit **`2e024f6`** (2026-10-19) — **not**
 a clean checkout of the `v1.5.0` tag (`640df66`, 2026-07-10). That commit
-is `v1.5.0` plus 20 further commits already merged to `main`, none of
-them reverted or superseded as of the derivation date (2026-09-23):
+is `v1.5.0` plus 26 further commits already merged to `main`:
 
 ```
-git log --oneline v1.5.0..edaacae
+git log --oneline v1.5.0..2e024f6
 ```
+
+It was derived in two steps. The bulk was derived from `edaacae`
+(2026-09-01, `v1.5.0` + 20 commits). It was then brought forward to
+`2e024f6` by reviewing the six commits in between and updating every
+spec file they touch:
+
+| Commit | Change | Spec updated |
+|---|---|---|
+| `cd6e10d` | Rank taxonkit `name2taxid` results (#316) | [p2-extract-taxonomy.md §3.2](python/p2-extract-taxonomy.md) |
+| `a24581f` | nf-test CI workflow for GitHub runner (#315); `HOME` exported to every task | [tests.md](tests.md), [nextflow/config-profiles.md §5](nextflow/config-profiles.md) |
+| `2decc0c` | GBIF queries moved to the Catalogue of Life backbone (#313); `cloudgene.yml` re-added as a symlink | [p5-db-coverage.md](python/p5-db-coverage.md), [reference-data.md §2.2](reference-data.md), [deployment.md](deployment.md) |
+| `b0be80b` | Selenium `flex` tolerance (#320) | [tests.md §4](tests.md) |
+| `0b63e39` | Report BLAST-hits modal shows every HSP | [p6-report.md §2a](python/p6-report.md) |
+| `2e024f6` | `ß-tub` locus key corrected to `β-tub` | [contracts/loci.md](contracts/loci.md) |
 
 Everywhere this spec says "v1.5.0" (container tags, version strings
 quoted from `conf/manifest.config`, footer provenance lines) it means
-**this commit**, not the tag. If you check out the `v1.5.0` tag itself to
-verify a requirement against source, expect it to be missing at least
-the 20 commits above — that is not a spec error. `main` has very likely
-advanced further since 2026-09-01; re-derive (or re-verify) against
-current `main` before trusting this spec on anything the newer commits
-may have touched.
+**this commit**, not the tag — the version files still read `1.5.0` at
+`2e024f6`. If you check out the `v1.5.0` tag itself to verify a
+requirement against source, expect it to be missing the 26 commits above
+— that is not a spec error. `main` will advance further; re-verify
+against current `main` before trusting this spec on anything newer
+commits may have touched.
 
 Use this spec for spec-driven development: change the spec first, then
 the code; cite requirement IDs (e.g. `NF-WF-061`) in tasks, commits and

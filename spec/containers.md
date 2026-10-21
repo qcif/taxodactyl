@@ -100,18 +100,19 @@ label `daff_tax_assign`): `v1.5.0` — matching `DEP-011`'s "no `latest`
 tags" requirement at the point of use, even though the image's own
 *contents* aren't reproducible from that tag alone (`IMG-D-001`).
 
-## 2. Off-the-shelf tools, via `nf-core/modules`
+## 2. Off-the-shelf tools
 
-`BLAST_BLASTN`, `BLAST_BLASTDBCMD`, `MAFFT_ALIGN` and `FASTME` were
-installed from the `nf-core/modules` registry at pinned commits
-(`modules.json`; see
+`BLAST_BLASTN`, `BLAST_BLASTDBCMD`, `MAFFT_ALIGN` and `FASTME` started
+as `nf-core/modules` installs, which each declared their own
+biocontainers image (e.g. `blast:2.15.0`). They were replaced by local
+rewrites in May 2025 (`e393a9c`/`7b6d96a`; see
 [nextflow/nf-core-conformance.md §0](nextflow/nf-core-conformance.md)).
-None of their `main.nf` files declare their own `container` directive —
-checked directly: `BLAST_BLASTN`/`BLAST_BLASTDBCMD` only carry
-`label 'blast'`, `MAFFT_ALIGN`/`FASTME` carry no label or container line
-at all. Every one of them is pinned entirely by
-`conf/process.config`/`conf/azure.config`'s `withLabel`/`withName`
-blocks:
+`modules.json` still lists them as nf-core installs (`NF-D-019`). None of
+the current `main.nf` files declares a `container` directive — checked
+directly: `BLAST_BLASTN`/`BLAST_BLASTDBCMD` only carry `label 'blast'`,
+`MAFFT_ALIGN`/`FASTME` carry no label or container line at all. Every one
+of them is pinned entirely by `conf/process.config`/`conf/azure.config`'s
+`withLabel`/`withName` blocks:
 
 | Tool | Container | How it's selected |
 |---|---|---|
@@ -145,8 +146,8 @@ All already registered in [defects.md](defects.md) — not repeated here
 with new IDs, just the pointer: `IMG-D-001` (floating base + taxonkit),
 `DEP-D-001` (only one of five version locations checked), `DEP-D-002`
 (unconditional `:latest`), `DEP-D-003` (dev tools in prod image),
-`NF-D-014` (the four `nf-core/modules`-sourced modules above are missing
-their `meta.yml`/`environment.yml`/`tests/`).
+`NF-D-014` (no module has `meta.yml`/`environment.yml`/`tests/`),
+`NF-D-019` (`modules.json` still lists the four removed nf-core modules).
 
 ---
 

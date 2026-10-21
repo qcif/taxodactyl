@@ -2,7 +2,7 @@
 
 **Project:** `qcif/taxodactyl` — High-confidence, evidence-based
 taxonomic assignment of DNA sequences
-**Status:** v1 · **Spec version:** `v1.5.0` + 20 commits (`edaacae`) — see
+**Status:** v1 · **Spec version:** `v1.5.0` + 26 commits (`2e024f6`) — see
 [spec/README.md § Version](spec/README.md#version) for the full
 explanation · **Companion:** [spec/](spec/)
 
@@ -51,8 +51,8 @@ evidence (flags, phylogeny/BIN diversity, database coverage, source
 diversity) and an editable field for the analyst's own conclusion — this
 is a structural part of every report, not something shown only when the
 result is ambiguous
-([spec/python/p6-report.md §2a.2](spec/python/p6-report.md) tab 2's
-analyst checklist and subjective textarea; design intent stated
+([spec/python/p6-report.md §2a.2](spec/python/p6-report.md): the
+subjective textareas on tabs 2–5 and tab 5's analyst checklist; design intent stated
 explicitly in the Design Proposal §4.1, "the reader will be prompted to
 contribute their subjective conclusions based on the information
 provided"). A high-confidence, single-species match is still presented as
@@ -204,7 +204,9 @@ the code without updating all five version locations
 `scripts/tests/*.py` MUST pass in CI on every push and PR to `main`
 ([spec/tests.md §1](spec/tests.md)). Integration tests, `nf-test`, and
 Selenium exist and must keep passing when run, but are not yet
-CI-enforced — that gap is tracked, not accepted as permanent
+CI-enforced: `nf-test` and Selenium now have a GitHub Actions workflow
+(`.github/workflows/nf-test.yml`), but it runs only when triggered by
+hand, not on push or PR. That gap is tracked, not accepted as permanent
 ([decisions.md `D-41`](spec/decisions.md)).
 
 ### 14. Every external API call goes through the shared throttle and cache.

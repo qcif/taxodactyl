@@ -37,8 +37,9 @@ short — it was only ever scoped to the first one:
   well-formed nucleotide DB is equally "valid" to search as far as BLAST
   is concerned. `decisions.md D-33` is open on whether to validate DB
   identity before a run, not only record it afterward.
-- **Size:** ≈220 GB on disk (per `deployment.md §5`'s Azure pool sizing,
-  `Standard_L8as_v3` with NVMe local storage).
+- **Size:** Core Nt plus taxdump is ≈250 GB on disk (`DEP-032`; the same
+  figure is in the `conf/azure.config` comment), which is why the Azure
+  pool uses `Standard_L8as_v3` nodes with local NVMe.
 - **Versioning in practice, not in the pipeline:** NCBI doesn't version
   Core Nt releases with a stable identifier; operators track this
   themselves. `docs/subset_blastdb.md` (a guide for building a small test
@@ -47,11 +48,18 @@ short — it was only ever scoped to the first one:
   **no** database build date, version, or checksum anywhere in its output
   — `decisions.md D-33` is open on adding this.
 - **Azure:** staged once per pool node to `/mnt/nvme/refdata` by the pool
-  start task via `azcopy`, from the **`daffpremium`** storage account's
-  `refdata` container — a separate account from `daffstandard` (which
-  holds the Nextflow work dir), with no lifecycle/deletion policy, since
-  this data is meant to persist (`DEP-032`, `deployment.md §5`). This
-  staging happens entirely outside Nextflow.
+  start task (`deployment/azure/setup.sh.template`) via `azcopy`, from the
+  **`daffstandard`** account's **`refdata-wf2`** container — the same
+  account as the Nextflow work dir — which has public, container-level
+  read access, so no SAS token is needed. `azcopy` lands it in
+  `/mnt/nvme/refdata-wf2`, then the script renames that to
+  `/mnt/nvme/refdata` so container mount paths stay stable. The storage
+  lifecycle rules only match the `workdata` and `cache` containers, so
+  this data is never auto-deleted (`DEP-032`, `deployment.md §5`). The
+  staging happens entirely outside Nextflow. Before `edaacae` (the commit
+  this spec was first derived from) it came from `daffpremium/refdata`
+  with a SAS token; the `docs/azure/*.md` walkthroughs still describe that
+  older setup (`DEP-D-011`).
 
 ### 1.2 Taxdump
 
@@ -83,8 +91,9 @@ amount of local storage planning mitigates.
   one call per accession) and P5's BLAST-mode record counts (`esearch`,
   one call per target taxid).
 - **Access:** via Biopython's `Entrez` module (`Entrez.email`,
-  `Entrez.api_key` set from `USER_EMAIL`/`NCBI_API_KEY`), not raw HTTP —
-  no literal base URL appears in this codebase.
+  `Entrez.api_key` set from `USER_EMAIL`/`NCBI_API_KEY`), not raw HTTP.
+  The E-utilities URL appears in the code only inside a user-facing error
+  hint (`src/coverage/threads.py`), never as a request target.
 - **Rate:** 5 req/s with `NCBI_API_KEY` set, else 2 req/s; scope is **per
   user** (`USER_EMAIL`, or `ANONYMOUS` if unset) — enforced by this
   pipeline's own throttle, not by NCBI rejecting requests
@@ -94,29 +103,30 @@ amount of local storage planning mitigates.
 - **Auth leak risk:** the same `NCBI_API_KEY` this throttle relies on is
   the credential `P6-D-001` writes unfiltered into every HTML report.
 
-### 2.2 GBIF
-
-> **This section is already stale on current `main`, not just at risk of
-> becoming so.** PR [`#313`](https://github.com/qcif/taxodactyl/pull/313)
-> ("Refactor GBIF modules to pull data from new COL taxonomy backbone")
-> merged **2026-10-06** — five weeks after this spec's derivation commit
-> (`edaacae`, 2026-09-01; see [README.md § Version](README.md#version)).
-> Everything below describes the code accurately *at that commit*, but
-> `main` has since migrated P5's species/occurrence lookups from GBIF to
-> the Catalogue of Life taxonomy backbone. This is exactly the kind of
-> post-derivation drift the Version section warns about, called out
-> explicitly here because it's an architectural change, not a minor
-> tweak — re-derive this section against current `main` before trusting
-> it for anything GBIF/COL-related.
+### 2.2 GBIF (Catalogue of Life backbone)
 
 - **Used for:** P5's database-coverage-within-genus/country assessment
-  (species lookup, occurrence search) and P1-BOLD's kingdom lookup for
-  BOLD hits without a GenBank accession.
-- **Access:** via the `pygbif` client library (`import pygbif`), which
-  targets GBIF's public REST API — again no literal URL in this codebase,
-  since the library owns that detail. Endpoints actually called:
-  `species/suggest` (fuzzy name lookup, `P5-010`) and `species/search`
-  (`name_lookup`, paged, `P5-040`).
+  (species lookup, relatives, occurrence search, occurrence maps) and
+  P1-BOLD's kingdom lookup for BOLD hits without a GenBank accession.
+- **Taxonomy backbone:** since PR `#313` (`2decc0c`, 2026-10-06) every
+  query is scoped to the **Catalogue of Life eXtended Release** checklist
+  (`COL_CHECKLIST_KEY = 7ddf754f-d193-4cc9-b351-99906754a03b`, in
+  `src/gbif/api.py`) instead of GBIF's legacy backbone. COL publishes
+  releases, so GBIF's view of a genus — and therefore Flag 5.2/5.3
+  denominators — can change when GBIF loads a new one. Like Core Nt, no
+  backbone version is recorded in the report (`D-33`). The COL taxonIDs
+  used for classification filtering are hard-coded in
+  `Config.HIGHER_CLASSIFICATIONS` (`gbif_col`). A live integration test
+  checks that they still resolve.
+- **Access:** mostly through the `pygbif` client library. The exception is
+  `/v1/species/suggest`, which is called directly
+  (`GBIF_SUGGEST_URL = https://api.gbif.org/v1/species/suggest`), because
+  `pygbif.species.name_suggest` silently drops `datasetKey`. Endpoints
+  called: `species/suggest` (fuzzy name lookup, `P5-010`), `species/search`
+  (`name_lookup`, paged, `P5-040`), `species/{key}` and
+  `species?datasetKey=…&sourceId=…` (`name_usage` — converting between
+  v1 usage keys and COL taxonIDs, cached), and `occurrence/search`
+  (`P5-051`, `P5-061`).
 - **Rate:** two separate endpoint buckets — `GBIF_SLOW` (1 req/s) and
   `GBIF_FAST` (5 req/s) — both **global**, i.e. shared across every
   concurrent query and every node in a run, not per-user like Entrez/BOLD
@@ -125,10 +135,11 @@ amount of local storage planning mitigates.
   `THR-D-003`: this backoff state is tracked per SQLite *endpoint* but
   per Redis *service* — a GBIF 429 only slows both GBIF endpoints
   together when Redis is the throttle backend.
-- **Known gaps:** `P5-D-007` (`name_lookup` without `datasetKey` searches
-  all GBIF checklists, not just the taxonomic backbone, inflating result
-  counts); `P5-D-010` (`name_suggest` is fuzzy — the first match may be
-  the wrong taxon, surfaced only as an informational error).
+- **Known gaps:** `P5-D-010` (`name_suggest` is fuzzy — the first match
+  may be the wrong taxon, surfaced only as an informational error);
+  `P5-D-014` (a synonym's accepted record isn't re-checked against the
+  classification). `P5-D-007` (relatives searched across all checklists)
+  was fixed by the COL migration.
 
 ### 2.3 BOLD
 
@@ -172,8 +183,10 @@ amount of local storage planning mitigates.
 ## Provenance
 
 **Initially derived from:** `docs/subset_blastdb.md`,
-`scripts/src/gbif/taxonomy.py` (`pygbif` import), cross-reference
-compilation of [p1-bold-search.md](python/p1-bold-search.md),
+`scripts/src/gbif/api.py`, `scripts/src/utils/throttle.py` (`ENDPOINTS`),
+`deployment/azure/setup.sh.template`, `deployment/azure/storage-policy.json`,
+`conf/azure.config`, plus cross-reference compilation of
+[p1-bold-search.md](python/p1-bold-search.md),
 [p4-source-diversity.md](python/p4-source-diversity.md),
 [p5-db-coverage.md](python/p5-db-coverage.md),
 [shared/throttle.md](python/shared/throttle.md),

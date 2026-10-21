@@ -19,8 +19,8 @@ One row per query sequence. Header names are configurable
    `metadata` parameter carries `"schema": "assets/schema_input.json"`;
    nf-schema reads that secondary schema and validates every CSV row
    against it **before any process starts** — independent of
-   `samplesheetToList`/`fromSamplesheet`, which this pipeline imports but
-   never calls. *Behaviour of this file-content validation is inferred
+   `samplesheetToList`, which this pipeline imports but never calls
+   (`NF-D-017`; `fromSamplesheet` is not imported at all). *Behaviour of this file-content validation is inferred
    from documented nf-schema conventions, not confirmed by running it
    here.*
 2. **P0** (`p0_validation.py`, [../python/p0-validation.md](../python/p0-validation.md)),

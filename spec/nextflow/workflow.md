@@ -221,8 +221,9 @@ beyond ordinary dead code.
 
 - No analysis in Groovy: thresholds and rules live in Python.
 - No sample-sheet parsing in Nextflow: `samplesheetToList` is imported but
-  unused (`NF-D-017`) — residual from the nf-core template
-  (`subworkflows/nf-core/utils_nfschema_plugin`), never wired up because
+  unused (`NF-D-017`) — imported from `plugin/nf-schema` in
+  `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`, a residual
+  of the nf-core template's samplesheet path, never wired up because
   this pipeline's input isn't a conventional nf-core samplesheet
   ([contracts/inputs.md](../contracts/inputs.md)).
 - No cross-query aggregation, and no run-level summary report.
