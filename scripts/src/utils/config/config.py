@@ -7,9 +7,11 @@ To view/modify default values for config attributes, refer to default.yml.
 
 import argparse
 import csv
+import hashlib
 import json
 import logging
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -35,6 +37,11 @@ logger = logging.getLogger(__name__)
 ROOT_DIR = Path(__file__).parents[4]
 MAP_FILENAME_TEMPLATE = "map_{taxon_str}.png"
 REPORT_FILENAME = "report_{prefix}{sample_id}_{timestamp}.html"
+COVERAGE_REPORT_FILENAME = "report_{prefix}coverage_{timestamp}.html"
+COVERAGE_ID_HASH_LENGTH = 8
+NO_LOCUS_NAME = 'na'
+BOLD_LOCUS_NAME = 'COI'
+LOCUS_GENE_SUFFIX_RE = re.compile(r'\s+gene$', re.IGNORECASE)
 QUERY_DIR_PREFIX = 'query_'
 DEFAULT_CONFIG_PATH = ROOT_DIR / 'scripts/config/default.yml'
 METADATA_IGNORE_FIELDS = (
@@ -375,7 +382,54 @@ class Config:
     def get_sample_id(self, query):
         """Resolve query index/dir to sample ID."""
         query_ix = self.get_query_ix(query)
+        if self.coverage_mode:
+            return self.coverage_sample_id(self.coverage_rows[query_ix])
         return self.read_query_fasta(query_ix).id
+
+    @property
+    def coverage_mode(self) -> bool:
+        """Check if this is a database coverage run (no input sequences)."""
+        return bool(self.inputs.coverage_taxa_csv)
+
+    @cached_property
+    def coverage_rows(self) -> list[dict]:
+        """Read the coverage taxa CSV, keyed by coverage_csv_header.
+
+        Values are stripped and blank values become None.
+        """
+        header = self.inputs.coverage_csv_header
+        rows = []
+        with self.inputs.coverage_taxa_csv.open(newline='') as f:
+            for raw in csv.DictReader(f):
+                row = {}
+                for key, colname in header.items():
+                    value = (raw.get(colname) or '').strip()
+                    row[key] = value or None
+                rows.append(row)
+        return rows
+
+    def coverage_sample_id(self, row: dict) -> str:
+        """Return the sample ID for a coverage CSV row.
+
+        This is a hash of the normalised taxon, locus, country and
+        classification, so that rows with identical analysis inputs share an
+        ID. It is the single source of truth for coverage sample IDs.
+        """
+        taxon = ' '.join((row.get('taxon') or '').split()).casefold()
+        if self.is_bold:
+            locus_name = NO_LOCUS_NAME
+        else:
+            locus = self._resolve_locus(row.get('locus'))
+            locus_name = locus.name if locus else NO_LOCUS_NAME
+        country = row.get('country')
+        fields = [
+            taxon,
+            locus_name,
+            (countries.get_code(country) or '') if country else '',
+            (row.get('classification') or '').strip().lower(),
+        ]
+        digest = hashlib.sha256('\t'.join(fields).encode()).hexdigest()
+        return f"{path_safe_str(taxon)}_{digest[:COVERAGE_ID_HASH_LENGTH]}"
 
     @property
     def bold_flag_file(self):
@@ -509,6 +563,9 @@ class Config:
                 ]
             return value
 
+        if self.coverage_mode:
+            return self._coverage_metadata()
+
         data = {}
         with self.inputs.metadata_csv.open() as f:
             reader = csv.DictReader(f)
@@ -529,25 +586,52 @@ class Config:
                 }
         return data
 
+    def _coverage_metadata(self) -> dict[str, dict]:
+        """Serve coverage CSV rows in the shape of metadata.csv."""
+        header = self.inputs.metadata_csv_header
+        return {
+            self.coverage_sample_id(row): {
+                header['locus']: row['locus'],
+                header['country']: row['country'],
+                header['classification']: row['classification'],
+                header['preliminary_id']: row['taxon'],
+                header['taxa_of_interest']: [],
+            }
+            for row in self.coverage_rows
+        }
+
     def _get_metadata_for_query(self, query, field) -> str:
         sample_id = self.get_sample_id(query)
         return self.metadata[sample_id][
             self.inputs.metadata_csv_header[field]
         ]
 
+    def _resolve_locus(self, name: str | None) -> Locus | None:
+        """Match a locus name or synonym to its canonical allowed Locus.
+
+        Blank and 'NA' names resolve to the NA locus, and a trailing " gene"
+        is ignored (any case). Returns None if the name is not recognised.
+        """
+        if name is None or name.lower().strip() == NO_LOCUS_NAME:
+            return Locus('NA', {})
+        name = LOCUS_GENE_SUFFIX_RE.sub('', name.strip())
+        for locus in self.allowed_loci:
+            if name in locus:
+                return locus
+        return None
+
     def get_locus_for_query(self, query) -> Locus:
         name = (
-            'COI'
+            BOLD_LOCUS_NAME
             if self.is_bold
             else self._get_metadata_for_query(query, "locus")
         )
-        if name.endswith(' gene'):
-            return name.rsplit(' ', 1)[0]
-        if name is None or name.lower().strip() == 'na':
+        if name is None or name.lower().strip() == NO_LOCUS_NAME:
             return Locus('NA', {})
-        for locus in self.allowed_loci:
-            if name in locus:
-                return locus.rename(name)
+        name = LOCUS_GENE_SUFFIX_RE.sub('', name.strip())
+        locus = self._resolve_locus(name)
+        if locus:
+            return locus.rename(name)
         loci_list = '\n- '.join([str(locus) for locus in self.allowed_loci])
         raise ValueError(
             f"Unrecognized locus '{name}' for query {query}. This should have"
@@ -592,6 +676,15 @@ class Config:
         return self.get_query_dir(query_ix) / path_safe_str(
             REPORT_FILENAME.format(
                 sample_id=self.get_sample_id(query_ix).replace('.', '_'),
+                timestamp='DEBUG' if self.report.debug else self.timestamp,
+                prefix='BOLD_' if bold else '',
+            )
+        )
+
+    def get_coverage_report_path(self, bold: bool = False) -> Path:
+        """Path to the coverage report, which sits at the output root."""
+        return self.output_dir / path_safe_str(
+            COVERAGE_REPORT_FILENAME.format(
                 timestamp='DEBUG' if self.report.debug else self.timestamp,
                 prefix='BOLD_' if bold else '',
             )
