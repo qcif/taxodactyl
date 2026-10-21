@@ -234,6 +234,7 @@ jobs:
           else
             MODE="copy"
           fi
+          echo "DEBUG: GITHUB_RUNNER: $GITHUB_RUNNER, MODE: $MODE"
           mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
@@ -252,7 +253,7 @@ jobs:
 
       - name: Upload error workdirs
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && runner.environment == 'github'
         with:
           name: error_workdirs
           path: ${{ runner.temp }}/nf-test/collected_errors
@@ -320,10 +321,10 @@ jobs:
 
       - name: Upload reports
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && runner.environment == 'github'
         with:
           name: reports
-          path: $TEST_DIR/output/reports
+          path: ${{ env.TEST_DIR }}/output/reports
 
       # Copies entire work directory including test outputs to a dedicated
       # location (/var/runner/) on the self-hosted runner VM
