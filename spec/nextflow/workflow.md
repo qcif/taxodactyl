@@ -146,8 +146,10 @@ If they ever disagree, that query is dropped here with **no task failure
 and no `errors/` entry** — unlike an ordinary ignored task failure
 (`OUT-D-002`), which at least leaves a log there, there is no trace of
 this anywhere in the outputs. *To confirm*: whether any input that passes
-P0 validation on the Nextflow-launched path (where auto-fix is disabled
-and mismatches are rejected instead, `P0-042`) can actually trigger this
+P0 validation on the Nextflow-launched path (where the space and
+duplicate-id auto-fixes are disabled and mismatches are rejected instead,
+`P0-042`; the `ß` → `beta` rename does run, but renames CSV and FASTA ids
+together, `P0-046`) can actually trigger this
 today, or whether it is presently a structural risk without a confirmed
 live trigger — the risk exists either way, because nothing enforces that
 the two derivations stay in sync. [decisions.md `D-02`](../decisions.md)
@@ -220,12 +222,12 @@ beyond ordinary dead code.
 ## 5. Non-goals
 
 - No analysis in Groovy: thresholds and rules live in Python.
-- No sample-sheet parsing in Nextflow: `samplesheetToList` is imported but
-  unused (`NF-D-017`) — imported from `plugin/nf-schema` in
-  `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`, a residual
-  of the nf-core template's samplesheet path, never wired up because
-  this pipeline's input isn't a conventional nf-core samplesheet
-  ([contracts/inputs.md](../contracts/inputs.md)).
+- No sample-sheet parsing or validation in Nextflow. The metadata CSV's
+  content is checked only by P0
+  ([contracts/inputs.md](../contracts/inputs.md)): since `3339050`
+  nf-schema validates just the `--metadata` path, and the unused
+  `samplesheetToList` import (`NF-D-017`, a residual of the nf-core
+  template's samplesheet path) has been removed.
 - No cross-query aggregation, and no run-level summary report.
 - No `stub:` blocks exist in any process; `-stub-run` is not a supported
   test path — tracked as an open enhancement, not a defect:

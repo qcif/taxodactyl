@@ -11,11 +11,15 @@
 Reject malformed user input before any search runs, with a message a
 submitter can act on, and emit a normalised `sequences.fasta` for the rest
 of the pipeline. P0 is the only content validation of the sample sheet
-and FASTA in the whole pipeline (Nextflow does none — NF-WF-014 note).
+and FASTA in the whole pipeline (Nextflow does none — NF-WF-014 note;
+since `3339050` nf-schema no longer reads the CSV either,
+[../contracts/inputs.md §1](../contracts/inputs.md)).
 
 **Non-goals:** it does not check taxonomic names exist, does not check the
-BLAST database, does not check the taxonkit binary or taxdump version, and
-does not rewrite `metadata.csv`.
+BLAST database, and does not check the taxonkit binary or taxdump version.
+It does not *normalise* `metadata.csv` (stripped ids, canonical locus
+names — `D-23`); it rewrites the file only for the encoding and `ß`
+repairs in §5.1.
 
 ## 2. Interface
 
@@ -38,7 +42,8 @@ A path argument that does not exist fails argument parsing
 ### 2.2 Programmatic (`validate_inputs(metadata_csv, query_fasta, bold=False, ignore_seq_count=False)`)
 
 Used by the input-validation web service. Differs from `main()`:
-- runs two **auto-fixes that mutate the input files in place** first (§5);
+- after the encoding and `ß` repairs that both paths run (§5.1), runs two
+  further **auto-fixes that mutate the input files in place** (§5.2);
 - does **not** validate the taxdb directory;
 - can skip the max-sequence-count check (`ignore_seq_count`);
 - requires `query_fasta` (auto-fixes read it unconditionally).
@@ -52,15 +57,21 @@ Used by the input-validation web service. Differs from `main()`:
 | `<output_dir>/run.log` | always | log |
 | exit status | — | 0 on success; non-zero with an exception message on any validation failure |
 
-`metadata.csv` is **not written** by P0; the Nextflow process relies on
-the staged input file having that name already (NF-PR-021).
+P0 writes no new `metadata.csv`; the Nextflow process relies on the
+staged input file having that name already (NF-PR-021). But P0 may
+**rewrite that staged file in place** (§5.1): `VALIDATE_INPUT` stages
+inputs with `stageInMode 'copy'` and emits the same `metadata.csv`, so the
+repaired copy is what every later step reads, and the user's original
+file is never touched. The same applies to the staged FASTA when `ß` is
+replaced in its headers.
 
 ## 3. Order of checks (`main()`)
 
 1. Parse args; `config.update_from_args(args)` (sets paths/limits, writes `BOLD` marker).
 2. `_validate_taxdbs(taxdb_dir)`.
-3. `_validate_fasta(query_fasta)` → list of sequence ids, or `None` if no FASTA.
-4. `_validate_metadata(metadata_csv, ids, bold)`.
+3. `_autofix_metadata_encoding(metadata_csv, query_fasta)` (§5.1).
+4. `_validate_fasta(query_fasta)` → list of sequence ids, or `None` if no FASTA.
+5. `_validate_metadata(metadata_csv, ids, bold)` — reads the CSV explicitly as UTF-8.
 
 The first failure raises and stops; only one error is reported per run.
 
@@ -120,13 +131,36 @@ classification, sequence`). Required fields:
 | P0-030 | `taxdb_dir` MUST be a directory, else `FileNotFoundError`. |
 | P0-031 | It MUST contain `citations.dmp, delnodes.dmp, division.dmp, gc.prt, gencode.dmp, images.dmp, merged.dmp, names.dmp, nodes.dmp`, else `FileNotFoundError` listing the missing files. No version or `taxonkit` binary check. |
 
-## 5. Auto-fixes (programmatic path only)
+## 5. Auto-fixes
+
+### 5.1 Encoding and `ß` repair (both paths)
+
+Added in `3339050` (#326). Runs first in `main()` (after the taxdb check)
+and in `validate_inputs()`, before any validation
+(`_autofix_metadata_encoding`, helpers in `src/utils/encoding.py`). Why:
+Excel on Windows saves CSVs as cp1252, and users type German `ß` for
+Greek `β` (e.g. `ß-tub`), which `loci.json` spells `β-tub` (LOC-005).
+
+| ID | Requirement |
+|---|---|
+| P0-043 | `normalise_csv_encoding` MUST read the metadata CSV as bytes and decide its encoding in this order: (1) starts with the ZIP signature `PK\x03\x04` → raise `MetadataFormatError` saying the file looks like an Excel workbook (`.xlsx`) renamed to `.csv` and must be re-exported as "CSV UTF-8 (Comma delimited)"; (2) UTF-16 BOM (LE or BE) → UTF-16; (3) UTF-8 BOM → UTF-8 with BOM; (4) otherwise the first of `utf-8`, `cp1252`, `latin-1` that decodes without error. It never rejects a file on encoding grounds alone (`latin-1` decodes any bytes — `P0-D-013`). |
+| P0-044 | A file that decodes as plain UTF-8 (no BOM) MUST be left byte-for-byte untouched, line endings included. Any other file MUST be rewritten in place as UTF-8 without BOM, with `\r\n` and `\r` line endings converted to `\n`, logging a warning that names the source encoding. |
+| P0-045 | Every `ß` in the `locus` column MUST be replaced with `β` (e.g. `ß-tub` → `β-tub`). |
+| P0-046 | Every `ß` in the `sample_id` column MUST be replaced with the ASCII text `beta`, because sample ids must be ASCII (P0-020). If that changed any row and a FASTA was given, every FASTA header line containing `ß` MUST get the same replacement (whole header line, description included), so ids still match (P0-012, P0-015); the FASTA is then rewritten as UTF-8. If no sample id changed, the FASTA is not touched. |
+| P0-047 | The `ß` repairs MUST rewrite the CSV with `csv.DictWriter` and the original header, only when something changed, logging a warning. Neither repair is reported to the submitter other than as a warning in `run.log` (`P0-D-014`). |
+
+Example: a cp1252 file with header `sample_id,locus,preliminary_id` and the
+row `VEß1,ß-tub,Fusarium oxysporum`, plus FASTA header `>VEß1`, comes out
+as UTF-8 with `VEbeta1,β-tub,Fusarium oxysporum` and `>VEbeta1`; the
+report for that query is named `VEbeta1`.
+
+### 5.2 Space and duplicate-id fixes (programmatic path only)
 
 | ID | Requirement |
 |---|---|
 | P0-040 | `_autofix_sample_id_spaces`: replace spaces with `_` in every `sample_id` in the CSV (rewriting the file with the same columns); for FASTA records whose full description with spaces→`_` equals a CSV sample id and differs from the record id, rename the record to it; rewrite the FASTA if changed. |
 | P0-041 | `_autofix_duplicate_fasta_ids`: drop all but the first record for each repeated id and rewrite the FASTA, logging a warning per duplicated id. |
-| P0-042 | These MUST NOT run in the Nextflow path (`main()`), where the same inputs are rejected instead (P0-003, P0-020). |
+| P0-042 | P0-040 and P0-041 MUST NOT run in the Nextflow path (`main()`), where the same inputs are rejected instead (P0-003, P0-020). The §5.1 repairs are the exception: they run in both paths. |
 
 ## 6. Errors and exit
 
@@ -147,11 +181,14 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | P0-D-005 | Regex range `A-z` also admits `[ \ ] ^ _` and backtick in `sample_id`, `preliminary_id`, `taxa_of_interest`. |
 | P0-D-006 | `--bold` help says it "accept[s] blank locus field", but P0-013 rejects blank locus before the BOLD exemption is reached. |
 | P0-D-007 | P0-012 compares the **unstripped** `sample_id` to FASTA ids, while P0-020 validates the stripped value; a trailing space yields a confusing "not present in FASTA" error. |
-| P0-D-008 | `classification` accepts 12 values here but `assets/schema_input.json` (nf-schema's secondary schema for `--metadata`, validated by `validateParameters()` before any process runs) enumerates only 7 — the bug is in the schema file, not here. `Config.HIGHER_CLASSIFICATIONS` has 12 keys, the 7 formal names (`animalia, plantae, fungi, chromista, bacteria, archaea, viruses`) plus 5 colloquial synonyms (`animal`, `animals`, `plant`, `plants`, `virus`), each a full entry of its own with identical values; P0-027 accepts any key, and the schema's `enum` lists only the 7 formal names. If that nf-schema layer validates CSV row content as documented (see [../contracts/inputs.md §1](../contracts/inputs.md)), those 5 values are rejected by nf-schema **before P0 ever sees the row**, through the Nextflow-launched pipeline — those P0 branches are reachable only via the validation web service or a direct script call, which bypass nf-schema. *To confirm nf-schema's file-content validation actually fires here, by running a metadata.csv with `classification=animal`.* |
+| P0-D-008 — **fixed in `3339050`** | `classification` accepts 12 values here but `assets/schema_input.json` enumerated only 7, and until `3339050` that schema was applied by nf-schema to every CSV row before P0 ran. `Config.HIGHER_CLASSIFICATIONS` has 12 keys: the 7 formal names (`animalia, plantae, fungi, chromista, bacteria, archaea, viruses`) plus 5 colloquial synonyms (`animal`, `animals`, `plant`, `plants`, `virus`). So through the Nextflow-launched pipeline those 5 values were rejected before P0 saw them. `3339050` removed the `"schema"` key from the `metadata` parameter, so nf-schema no longer reads the CSV and all 12 values now reach P0 and pass. The 7-value list survives only in the now-unused schema file (`P0-D-015`). |
 | P0-D-009 | `_autofix_sample_id_spaces` logs with `logger.debug("…:", repr(x))` (print-style args) — malformed log calls. |
 | P0-D-010 **(vs Design Proposal)** | The Design Proposal (§2.3 Workflow inputs) states BOLD mode is COI-only: "The BOLD database can only be used for query sequences at the COI locus. The locus is therefore not required for the BOLD workflow version." Nothing in P0 enforces a COI-specific check — `--bold` only relaxes the generic locus check (see P0-021, and the blank-locus bug P0-D-006); any locus value (not just COI) that resolves against `loci.json`, or in principle no restriction at all once P0-D-006 is fixed, is accepted in BOLD mode. [decisions.md `D-06`](../decisions.md) is open on whether to add the COI restriction or keep the current relaxed behaviour. |
 | P0-D-012 | `docs/params.md`'s `taxdb` requirement list includes `taxonkit` (the binary) and `readme.txt`; the actual check (`TAXDB_EXPECT_FILES`, `P0-031`) is 9 `*.dmp`/`gc.prt` files only — it never checks for a binary or a readme. |
-| P0-D-011 | A `country` cell containing the literal text `NA` — a standard "not applicable / missing" convention in spreadsheets, R, and plenty of real field datasheets — is **resolved to the real country Namibia** by `pycountry.countries.lookup` (`P0-024`), not treated as "no country supplied" (that's a *blank* cell instead, per the same rule). The metadata is read with `csv.DictReader`, so `NA` arrives as a plain string, not a missing value. The pitfall is known and documented — `assets/schema_input.json`'s `country` description and error message both tell the user to leave the field empty and not use `NA` "which is the country code for Namibia" — but nothing enforces it: nf-schema puts no constraint on the field and P0 raises no warning, so the false country feeds Flag 5.3's database-coverage-within-country computation. [decisions.md `D-24`](../decisions.md) is open on whether P0 should special-case a bare `NA`/`N/A` as "no country" rather than resolving it. |
+| P0-D-011 | A `country` cell containing the literal text `NA` — a standard "not applicable / missing" convention in spreadsheets, R, and plenty of real field datasheets — is **resolved to the real country Namibia** by `pycountry.countries.lookup` (`P0-024`), not treated as "no country supplied" (that's a *blank* cell instead, per the same rule). The metadata is read with `csv.DictReader`, so `NA` arrives as a plain string, not a missing value. The pitfall is known — `assets/schema_input.json`'s `country` description and error message both tell the user to leave the field empty and not use `NA` "which is the country code for Namibia" — but that file is no longer applied (`P0-D-015`), and it never enforced the rule anyway: P0 raises no warning, so the false country feeds Flag 5.3's database-coverage-within-country computation. [decisions.md `D-24`](../decisions.md) is open on whether P0 should special-case a bare `NA`/`N/A` as "no country" rather than resolving it. |
+| P0-D-013 | **The encoding repair never rejects a file, so a wrong guess goes unnoticed.** Anything that is not valid UTF-8 is decoded as cp1252, and if that fails as latin-1, which accepts every byte (`P0-043`). A CSV saved in another legacy encoding is converted with the wrong characters and no error. Example: a Polish Excel saves `Białowieża` in Windows-1250, where `ł` is byte `0xB3` and `ż` is `0xBF`; read as cp1252 these become `³` and `¿`, so the report shows host `Bia³owie¿a`. A UTF-16 file *without* a BOM is valid UTF-8 byte-wise (ASCII plus `NUL` bytes) and is left untouched, then fails later with a confusing missing-column error. |
+| P0-D-014 | **The `ß` → `beta` rename in sample ids can collide with an existing id, and the submitter is not told about it.** P0-046 renames silently: the only record is a warning in `run.log`, and the report is named after the new id. If the sheet already has the id the rename produces, two rows end up with the same id. Example: rows `VEß1` and `VEbeta1` both become `VEbeta1`. With a FASTA, P0-003 then rejects "Duplicate sequence ID VEbeta1", naming an id the submitter never typed. With sequences in the CSV, the duplicate goes through unchecked (`P0-D-004`). |
+| P0-D-015 | `assets/schema_input.json` is no longer used by anything since `3339050` removed the `"schema"` key from `nextflow_schema.json`'s `metadata` parameter, but it is still in the repo and still documented as the metadata schema: `README.md` ("For more details on the metadata schema, see `assets/schema_input.json`") and `docs/detailed_tech.md` (a section headed by it). Its rules differ from P0's (7 `classification` values instead of 12; no locus, country or taxa rules), so a reader who follows the docs gets the wrong rules. |
 
 ## 8. Test mapping (`tests/test_validation.py`)
 
@@ -165,9 +202,17 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | `test_it_allows_no_sequence_column_when_fasta_provided` | P0-011 |
 | `test_it_can_validate_metadata_{sample_id,locus,preliminary_id,taxa_of_interest,country,host}` | P0-020..025 |
 | `test_it_can_validate_taxdbs_path` | P0-030/031 |
+| `test_it_converts_latin1_metadata_to_utf8` | P0-043, P0-044 (cp1252 source, `\r` removed) |
+| `test_it_strips_utf8_bom_from_metadata` | P0-043, P0-044 |
+| `test_it_converts_utf16_metadata_to_utf8` | P0-043, P0-044 |
+| `test_it_leaves_utf8_metadata_untouched` | P0-044 |
+| `test_it_rejects_excel_workbook_with_csv_extension` | P0-043 (ZIP signature) |
+| `test_it_autofixes_eszett_locus_and_validates` | P0-045, then P0-021 accepts `β-tub` |
+| `test_it_replaces_eszett_in_sample_ids_and_fasta_headers` | P0-046 |
 
 **Not covered:** P0-027 (classification), P0-007 output content, auto-fixes
-(P0-040/041), `main()` end-to-end, every defect above. The unused fixture
+(P0-040/041), `main()` end-to-end (so the §5.1 repairs are only tested
+through `_autofix_metadata_encoding` directly), every defect above. The unused fixture
 `metadata_sequences_max_length.csv` suggests P0-D-002 was intended to be
 tested.
 
@@ -184,7 +229,7 @@ tested.
 
 ## Provenance
 
-**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the P0-D-008 fix added from `3339050` (`src/utils/encoding.py`, 120 lines). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the

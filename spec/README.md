@@ -14,17 +14,19 @@ non-negotiable principles this spec and every future change are held to.
 
 ## Version
 
-This spec describes `main` at commit **`2e024f6`** (2026-10-19) — **not**
+This spec describes `main` at commit **`3339050`** (2026-10-21) — **not**
 a clean checkout of the `v1.5.0` tag (`640df66`, 2026-07-10). That commit
-is `v1.5.0` plus 26 further commits already merged to `main`:
+is `v1.5.0` plus 27 further commits already merged to `main`. Its version
+files read `1.5.1`, but no `v1.5.1` git tag or `v1.5.1` container image
+exists yet (`DEP-D-013`):
 
 ```
-git log --oneline v1.5.0..2e024f6
+git log --oneline v1.5.0..3339050
 ```
 
-It was derived in two steps. The bulk was derived from `edaacae`
+It was derived in steps. The bulk was derived from `edaacae`
 (2026-09-01, `v1.5.0` + 20 commits). It was then brought forward to
-`2e024f6` by reviewing the six commits in between and updating every
+`3339050` by reviewing the seven commits in between and updating every
 spec file they touch:
 
 | Commit | Change | Spec updated |
@@ -35,13 +37,14 @@ spec file they touch:
 | `b0be80b` | Selenium `flex` tolerance (#320) | [tests.md §4](tests.md) |
 | `0b63e39` | Report BLAST-hits modal shows every HSP | [p6-report.md §2a](python/p6-report.md) |
 | `2e024f6` | `ß-tub` locus key corrected to `β-tub` | [contracts/loci.md](contracts/loci.md) |
+| `3339050` | Metadata CSV encoding repair and `ß` auto-correction (#326, #327); nf-schema no longer reads the CSV; `cloudgene.yml` removed; version bumped to `1.5.1` | [python/p0-validation.md](python/p0-validation.md), [contracts/inputs.md](contracts/inputs.md), [services/input-validation.md](services/input-validation.md), [deployment.md](deployment.md), [nextflow/workflow.md](nextflow/workflow.md) |
 
-Everywhere this spec says "v1.5.0" (container tags, version strings
-quoted from `conf/manifest.config`, footer provenance lines) it means
-**this commit**, not the tag — the version files still read `1.5.0` at
-`2e024f6`. If you check out the `v1.5.0` tag itself to verify a
-requirement against source, expect it to be missing the 26 commits above
-— that is not a spec error. `main` will advance further; re-verify
+Where this spec quotes `v1.5.0` as a **container tag**, that is what
+`conf/process.config` and `conf/azure.config` still pin at `3339050`.
+Where it says "the spec version" or quotes footer provenance, it means
+**this commit**, not the `v1.5.0` tag. If you check out the `v1.5.0` tag
+itself to verify a requirement against source, expect it to be missing
+the 27 commits above — that is not a spec error. `main` will advance further; re-verify
 against current `main` before trusting this spec on anything newer
 commits may have touched.
 

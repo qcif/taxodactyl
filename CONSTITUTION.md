@@ -2,7 +2,7 @@
 
 **Project:** `qcif/taxodactyl` — High-confidence, evidence-based
 taxonomic assignment of DNA sequences
-**Status:** v1 · **Spec version:** `v1.5.0` + 26 commits (`2e024f6`) — see
+**Status:** v1 · **Spec version:** `v1.5.0` + 27 commits (`3339050`, version files `1.5.1`) — see
 [spec/README.md § Version](spec/README.md#version) for the full
 explanation · **Companion:** [spec/](spec/)
 

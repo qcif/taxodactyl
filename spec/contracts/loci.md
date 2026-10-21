@@ -18,7 +18,7 @@ developers, or an operator-supplied override via `--allowed_loci_file`.
 | LOC-002 | **Every synonym MUST be lower case with no surrounding space**, and the lower-cased key SHOULD be a synonym. P0 and `Locus.__contains__` lower-case the input and compare case-sensitively. Violated today by `atpB`, `trnL`, `AChE` (P0-D-001). |
 | LOC-003 | A synonym MUST belong to only one locus (true today: no shared synonyms across the 31 loci). |
 | LOC-004 | *Ambiguous* synonyms (short tokens such as `coi`, `its`) are searched only in GenBank `[Title]` and `[GENE]`; *non-ambiguous* synonyms in all fields (CFG-042). |
-| LOC-005 | The file MUST be UTF-8; key `β-tub` (Greek beta) contains a non-ASCII character. Until `2e024f6` it was spelled `ß-tub` (German eszett), so a user typing the correct `β-tub` was rejected. Its ASCII synonyms (e.g. `beta-tubulin`) worked throughout. |
+| LOC-005 | The file MUST be UTF-8; key `β-tub` (Greek beta) contains a non-ASCII character. Until `2e024f6` it was spelled `ß-tub` (German eszett), so a user typing the correct `β-tub` was rejected. Its ASCII synonyms (e.g. `beta-tubulin`) worked throughout. Since `3339050`, P0 also turns a user's `ß-tub` into `β-tub` before checking it ([p0-validation.md P0-045](../python/p0-validation.md)), so both spellings are accepted — in the pipeline only once its container is updated (`DEP-D-013`). |
 
 Shipped panel (31 keys): 16s, 28s, act, alt-a1, β-tub, cmda, co2, coi,
 cytb, dnax, ef1a, fusa, gapa, gyrb, hsp60, its, its1, its2, leus, lsu,
