@@ -31,7 +31,7 @@ processes, queries and runs.
 |---|---|
 | CCH-020 | One blob per key named `[<prefix>/]<keyhash>` in container `cache_azure_container`; client from `cache_azure_connection_string`, else `cache_azure_account_url` + `DefaultAzureCredential`; connection pool 50. |
 | CCH-021 | `created_at` stored in blob metadata (fallback: last-modified converted to local time); writes use `overwrite=True` (last writer wins). The container is created if missing (permission errors ignored). |
-| CCH-022 | Authoritative expiry is the storage lifecycle policy (`deployment/azure/storage-policy.json`), not application code. |
+| CCH-022 | Application reads MUST enforce `cache_timeout_hours` as in CCH-004. The storage lifecycle policy (`deployment/azure/storage-policy.json`) additionally deletes old blobs independently of reads. |
 
 ## 3. Defects
 
