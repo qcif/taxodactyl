@@ -1,6 +1,5 @@
 name: nf-test
 
-# If not running on push, check workflow is enabled on GH UI
 on:
     # To run workflow, trigger manually using GH UI
     workflow_dispatch:
@@ -8,8 +7,12 @@ on:
     push:
       branches:
         - nf-test-sh-runner
-    # pull_request:
-
+    pull_request:
+        branches:
+          - main
+    schedule:
+      # Runs at 00:00 UTC every Sunday
+      - cron: '0 0 * * 0'
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
@@ -41,18 +44,9 @@ jobs:
         run: |
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-        # This step may not be required or give an error on self-hosted runner
-        # Add conditional if to step if there is an error and continues ok
-        continue-on-error: true
 
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
-      - uses: actions/checkout@v4
-
-      # Nextflow and nf-test both require a JVM
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      - uses: actions/checkout@v7
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
@@ -144,14 +138,14 @@ jobs:
             > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
             2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
 
-      # Test folder ends in unknown hash; set as env var here for later steps
-      - name: Set test folder as env var
+      # Test dir ends in unknown hash; set as env var here for later steps
+      - name: Set test dir as env var
         if: always ()
         run: |
           dirs=($RUNNER_TEMP/nf-test/tests/*)
           test_dir="${dirs[0]}"
           echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
-          echo "Saved test folder ending in unknown hash as env var for future steps."
+          echo "Saved test dir ending in hash as env var for future steps."
           echo "TEST_DIR=$test_dir"
 
       # Print trace.csv, temp file structure and command.err files
@@ -229,12 +223,12 @@ jobs:
         run: |
           # On the self-hosted runner, the whole work dir is copied and saved, 
           # so only links are required in the collected errors
-          if [[ "$GITHUB_RUNNER" == "self-hosted" ]]; then
+          if [[ "$RUNNER_ENVIRONMENT" == "self-hosted" ]]; then
             MODE="link"
           else
             MODE="copy"
           fi
-          echo "DEBUG: GITHUB_RUNNER: $GITHUB_RUNNER, MODE: $MODE"
+          echo "DEBUG: RUNNER_ENVIRONMENT: $RUNNER_ENVIRONMENT, MODE: $MODE"
           mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
@@ -252,8 +246,9 @@ jobs:
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
 
       - name: Upload error workdirs
-        uses: actions/upload-artifact@v4
-        if: always() && runner.environment == 'github'
+        uses: actions/upload-artifact@v7
+        # Only runs on GH runner
+        if: always() && runner.environment == 'github-hosted'
         with:
           name: error_workdirs
           path: ${{ runner.temp }}/nf-test/collected_errors
@@ -282,7 +277,7 @@ jobs:
                   continue
               fi
 
-              ln -s "$file" "$dest_path"
+              ln -sr "$file" "$dest_path"
               echo "Linked: $file -> $dest_path"
           done
 
@@ -306,22 +301,30 @@ jobs:
           if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
             echo "Running pytest"
             pytest test_reports.py -v --dir "$reports_dir"
+            pytest_status=$?
             echo "Running ./testkit.py render"
             ./testkit.py render
+
+            # Copy the review.html to the test dir for sh runner inspection
+            cp review.html $RUNNER_TEMP/nf-test/
+
+            # Always return pytest exit status as the step status
+            exit "$pytest_status"
           else
               echo "Reports folder is empty."
+              exit 1
           fi
 
       - name: Upload review.html
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: review.html
+          archive: false
           path: ${{ github.workspace }}/test/selenium/review.html
 
       - name: Upload reports
-        uses: actions/upload-artifact@v4
-        if: always() && runner.environment == 'github'
+        uses: actions/upload-artifact@v7
+        if: always() && runner.environment == 'github-hosted'
         with:
           name: reports
           path: ${{ env.TEST_DIR }}/output/reports
