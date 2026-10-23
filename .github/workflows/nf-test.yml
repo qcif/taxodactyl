@@ -1,15 +1,18 @@
 name: nf-test
 
-# If not running on push, check workflow is enabled on GH UI
 on:
     # To run workflow, trigger manually using GH UI
     workflow_dispatch:
     # Update to enable trigger on push of selected branch or on pull request
-    # push:
-    #   branches:
-    #     - nf-tests_ci_core
-    # pull_request:
-
+    push:
+      branches:
+        - nf-test-sh-runner
+    pull_request:
+        branches:
+          - main
+    schedule:
+      # Runs at 00:00 UTC every Sunday
+      - cron: '0 0 * * 0'
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
@@ -24,13 +27,16 @@ env:
 jobs:
   nf-test:
     name: core_test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     environment: testing
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
+        # Update here to run only on gh or sh runners:
+        runner: [ubuntu-latest, self-hosted]
 
     steps:
       # Enable creation of containers as an unprivileged user
@@ -40,13 +46,7 @@ jobs:
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
-      - uses: actions/checkout@v4
-
-      # Nextflow and nf-test both require a JVM
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+      - uses: actions/checkout@v7
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
@@ -138,19 +138,20 @@ jobs:
             > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
             2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
 
-      # Test folder ends in unknown hash; set as env var here for later steps
-      - name: Set test folder as env var
+      # Test dir ends in unknown hash; set as env var here for later steps
+      - name: Set test dir as env var
+        if: always ()
         run: |
           dirs=($RUNNER_TEMP/nf-test/tests/*)
           test_dir="${dirs[0]}"
           echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
-          echo "Saved test folder ending in unknown hash as env var for future steps."
+          echo "Saved test dir ending in hash as env var for future steps."
           echo "TEST_DIR=$test_dir"
 
       # Print trace.csv, temp file structure and command.err files
       - name: Debug failed nf-test
         # Only runs if nf-test step fails or if in debug mode
-        if: ${{ always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1') }}
+        if: always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1')
         run: |
           echo "##### trace.csv:"
           cat $TEST_DIR/meta/trace.csv
@@ -220,6 +221,13 @@ jobs:
         # Always run, nothing will happen if 
         if: always()
         run: |
+          # On the self-hosted runner, the whole work dir is copied and saved, 
+          # so only links are required in the collected errors
+          if [[ "$RUNNER_ENVIRONMENT" == "self-hosted" ]]; then
+            MODE="link"
+          else
+            MODE="copy"
+          fi
           mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
@@ -227,18 +235,19 @@ jobs:
               --outdir=$RUNNER_TEMP/nf-test/collected_errors \
               --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
               --nft_errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
-              --mode="copy"
+              --mode=$MODE
 
       - name: Debug copy error workdirs
         # Only runs if copy-workdirs step fails or runner is in debug mode
-        if: ${{ always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1') }}
+        if: always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1')
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
 
       - name: Upload error workdirs
-        uses: actions/upload-artifact@v4
-        if: always()
+        uses: actions/upload-artifact@v7
+        # Only runs on GH runner
+        if: always() && runner.environment == 'github-hosted'
         with:
           name: error_workdirs
           path: ${{ runner.temp }}/nf-test/collected_errors
@@ -267,7 +276,7 @@ jobs:
                   continue
               fi
 
-              ln -s "$file" "$dest_path"
+              ln -sr "$file" "$dest_path"
               echo "Linked: $file -> $dest_path"
           done
 
@@ -291,15 +300,43 @@ jobs:
           if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
             echo "Running pytest"
             pytest test_reports.py -v --dir "$reports_dir"
+            pytest_status=$?
             echo "Running ./testkit.py render"
             ./testkit.py render
+
+            # Copy the review.html to the test dir for sh runner inspection
+            cp review.html $RUNNER_TEMP/nf-test/
+
+            # Always return pytest exit status as the step status
+            exit "$pytest_status"
           else
               echo "Reports folder is empty."
+              exit 1
           fi
 
       - name: Upload review.html
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: review.html
+          archive: false
           path: ${{ github.workspace }}/test/selenium/review.html
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v7
+        if: always() && runner.environment == 'github-hosted'
+        with:
+          name: reports
+          path: ${{ env.TEST_DIR }}/output/reports
+
+      # Copies entire work directory including test outputs to a dedicated
+      # location (/var/runner/) on the self-hosted runner VM
+      - name: Save run files on self-hosted runner
+      # Only runs on self-hosted runner
+        if: always() && runner.environment == 'self-hosted'
+        run: |
+          # Run files will be saved in file with timestamp
+          timestamp=$(date "+%F_%H%M%S")
+
+          mkdir -p "/var/runner/$timestamp"
+
+          cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
