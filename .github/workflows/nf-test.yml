@@ -27,7 +27,6 @@ env:
 jobs:
   nf-test:
     name: core_test
-    # Currently set up to run on both GH runner and self-hosted runner
     runs-on: ${{ matrix.runner }}
     environment: testing
     # Can extend strategy in the future for different versions + nf-test ver
@@ -36,6 +35,7 @@ jobs:
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
+        # Update here to run only on gh or sh runners:
         runner: [ubuntu-latest, self-hosted]
 
     steps:
@@ -228,7 +228,6 @@ jobs:
           else
             MODE="copy"
           fi
-          echo "DEBUG: RUNNER_ENVIRONMENT: $RUNNER_ENVIRONMENT, MODE: $MODE"
           mkdir -p $RUNNER_TEMP/nf-test/collected_errors
 
           python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
