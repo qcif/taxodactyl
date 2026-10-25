@@ -18,7 +18,13 @@ fi
 
 cd "$DIR"
 mkdir reports
-cp query_*/report*.html reports
+# Normal mode produces query_*/report*.html, and database coverage mode
+# produces a single report at the output root. Each run has only one kind.
+shopt -s nullglob
+report_files=(query_*/report*.html report_*coverage_*.html)
+if [[ ${#report_files[@]} -gt 0 ]]; then
+    cp "${report_files[@]}" reports/
+fi
 zip -r reports.zip reports/ > /dev/null
 
 echo "All workflow reports have been zipped"
