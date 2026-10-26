@@ -20,7 +20,7 @@ them is in [workflow.md](workflow.md); parameters in
 
 ## 1. `PREPARE_INPUTS`
 
-- **Container:** none (`beforeScript` only) — runs in host shell / default image.
+- **Container:** none — no label, no `container` directive, and `conf/process.config` sets no default, so on local/HPC profiles it runs in the host shell (needs `cp`, `wc` and `bash` on the host); under `-profile azure` it gets the default `docker.io/library/ubuntu:22.04` (NF-CF-020). Defect `NF-D-020`.
 - **Input:** `sequences_file` (0 or 1 path), `metadata_file`.
 - **Output:** `sequences.fasta` (optional, `emit: sequences`), `metadata.csv` (`emit: metadata`).
 - **Behaviour:** copy the sequences file to `sequences.fasta` (only if a file was supplied and is not already named that); copy metadata to `metadata.csv`, or exit 1 with `ERROR: Metadata file not found` if it is already named `metadata.csv` but absent. Prints line counts.
@@ -219,7 +219,8 @@ wired successfully in the current workflow.
 
 ## 15. `PREPARE_LOG`
 
-- **Input/Output:** `combined_file`, republished unchanged as `<outdir>/<file>` (`publishDir mode copy`). Empty script; no container.
+- **Input/Output:** `combined_file`, republished unchanged as `<outdir>/<file>` (`publishDir mode copy`). Empty script.
+- **Container:** none, as for `PREPARE_INPUTS` (§1): host shell on local/HPC profiles, `docker.io/library/ubuntu:22.04` under `-profile azure`. Defect `NF-D-020`.
 
 ## 16. Defects raised in this document
 
@@ -228,6 +229,7 @@ wired successfully in the current workflow.
 | NF-D-004 | `phylogeny_min_hit_identity` not forwarded to P3. |
 | NF-D-005 | Report shows `blast_max_target_seqs_for_report` (default 2000) while BLAST is hard-coded to 500. |
 | NF-D-006 | Single-quoted CLI args in `REPORT` break on embedded `'`. |
+| NF-D-020 | `PREPARE_INPUTS` and `PREPARE_LOG` declare no container and no label, and `conf/process.config` sets no default, so on local/HPC profiles they run in the host shell rather than a container (CONSTITUTION rule 11). Their work is trivial (`cp`, `wc`, an empty script), so the practical risk is low: the run depends on the host having `bash` and coreutils, and those two steps are not reproducible from the pinned images. Under `-profile azure` they get the pinned default `docker.io/library/ubuntu:22.04`. |
 
 ---
 

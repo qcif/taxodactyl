@@ -24,7 +24,7 @@
 | ID | Requirement |
 |---|---|
 | NF-CF-010 | Default for every process: `errorStrategy 'ignore'`, `cpus 1`, `memory '1MB'`, `time '10m'`, and `beforeScript` = `mkdir -p "<temp_root_dir>"`. |
-| NF-CF-011 | Containers: label `daff_tax_assign` → `docker://neoformit/taxodactyl:v1.5.0`; label `blast` → `docker://ncbi/blast:2.16.0`; `MAFFT_ALIGN` → the pinned mulled-v2 image; `FASTME` → `quay.io/biocontainers/fastme:2.1.6.3--h7b50bb2_1`. No `latest` tags. |
+| NF-CF-011 | Containers: label `daff_tax_assign` → `docker://neoformit/taxodactyl:v1.5.0`; label `blast` → `docker://ncbi/blast:2.16.0`; `MAFFT_ALIGN` → the pinned mulled-v2 image; `FASTME` → `quay.io/biocontainers/fastme:2.1.6.3--h7b50bb2_1`. No `latest` tags. There is no process-wide default container, so `PREPARE_INPUTS` and `PREPARE_LOG`, which match none of these, run in the host shell (`NF-D-020`). |
 | NF-CF-012 | The image tag of `daff_tax_assign` MUST equal `manifest.version` and `scripts/VERSION` at release (see [../deployment.md](../deployment.md)). |
 
 Per-process overrides:

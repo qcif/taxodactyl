@@ -182,12 +182,19 @@ of this principle, just outside its scope.
 
 ### 11. Every process runs in a container; every tag is pinned.
 
-Every process/label in `conf/process.config` and `conf/azure.config`
-declares a container with an explicit tag or digest — never `latest`
-([spec/deployment.md §2](spec/deployment.md)). The image's own
-reproducibility (floating base, taxonkit from `latest`,
-`IMG-D-001`/`DEP-D-003`) is tracked as a defect against this rule, not an
-exception to it.
+Every container that `conf/process.config` and `conf/azure.config`
+assign, by label, by process name or as Azure's default, has an explicit
+tag or digest — never `latest`
+([spec/deployment.md §2](spec/deployment.md),
+[spec/containers.md](spec/containers.md)). Two housekeeping processes fall
+short of the first half of this rule: `PREPARE_INPUTS` (copies the inputs)
+and `PREPARE_LOG` (publishes `run.log`) have no label and no container,
+and `conf/process.config` sets no default, so on local and HPC profiles
+they run in the host shell. Only under `-profile azure` do they get a
+container, the pinned default `docker.io/library/ubuntu:22.04`
+(`NF-D-020`). That gap, and the image's own reproducibility (floating
+base, taxonkit from `latest`, `IMG-D-001`/`DEP-D-003`), are tracked as
+defects against this rule, not exceptions to it.
 
 ### 12. Custom logic ships as one versioned Python package, in its own image.
 

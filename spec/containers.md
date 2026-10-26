@@ -132,6 +132,16 @@ re-expresses the same two custom-logic/BLAST images with a `docker.io/...`
 prefix instead. The MAFFT/FastME biocontainer images, already fully
 qualified (`quay.io/...`), don't need this treatment.
 
+## 2a. Processes with no container
+
+`PREPARE_INPUTS` and `PREPARE_LOG` have no label and no `container`
+directive, and `conf/process.config` sets no process-wide default. So on
+local and HPC profiles they run in the host shell, even with Singularity
+enabled. Under `-profile azure` they fall back to the default
+`docker.io/library/ubuntu:22.04` (`NF-CF-020`), which is pinned. All
+other processes get a container through `daff_tax_assign`, `blast`, or a
+`withName` block (§1, §2). Defect `NF-D-020`.
+
 ## 3. Checking what's actually pinned right now
 
 `conf/process.config`'s `process { ... }` block (local/HPC) or
@@ -147,7 +157,8 @@ with new IDs, just the pointer: `IMG-D-001` (floating base + taxonkit),
 `DEP-D-001` (only one of five version locations checked), `DEP-D-002`
 (unconditional `:latest`), `DEP-D-003` (dev tools in prod image),
 `NF-D-014` (no module has `meta.yml`/`environment.yml`/`tests/`),
-`NF-D-019` (`modules.json` still lists the four removed nf-core modules).
+`NF-D-019` (`modules.json` still lists the four removed nf-core modules),
+`NF-D-020` (two housekeeping processes run on the host outside Azure, §2a).
 
 ---
 
