@@ -67,7 +67,7 @@ Run-level files read by P3/P6 from `<output_dir>` (not the query folder):
 | QF-002 | The sample id embedded in the name is the FASTA record id (P0-002) and MUST equal the id used to join query sequences in Nextflow (NF-WF-042). |
 | QF-003 | A step MUST NOT delete or rewrite files produced by an earlier step (append-only), except `*.flag` upserts (FLG-002). |
 | QF-004 | Filenames MUST come from configuration (CFG-010); the matrix above uses the shipped defaults. |
-| QF-005 | Sample ids containing characters other than `[A-Za-z0-9_.\-]` are rejected by P0 (P0-020), because they become part of folder and report names. |
+| QF-005 | Sample ids MUST contain only `[A-Za-z0-9_.\-]`, because they become part of folder and report names. This is not fully enforced today: P0-020 uses `A-z`, which additionally accepts brackets, backslash, caret and backtick (see [inputs.md](inputs.md); defect [`P0-D-005`](../defects.md)). |
 
 ---
 
