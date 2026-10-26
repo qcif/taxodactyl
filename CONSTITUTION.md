@@ -57,12 +57,12 @@ explicitly in the Design Proposal §4.1, "the reader will be prompted to
 contribute their subjective conclusions based on the information
 provided"). A high-confidence, single-species match is still presented as
 evidence for the analyst to weigh, never as a verdict the analyst may
-skip reviewing. Separately, above `max_candidates_for_analysis` species
-matches the pipeline withholds species-level computation altogether and
-explicitly escalates to a genus-level call
-([spec/python/p3-assign-taxonomy.md §5](spec/python/p3-assign-taxonomy.md)) —
-that is an additional escalation, not the only point at which analyst
-judgement is required. A report that reads as an unqualified
+skip reviewing. Separately, above `max_candidates_for_analysis` selected
+species, the pipeline skips source-diversity evaluation and provides a
+genus-grouped identity boxplot for the analyst's subjective assessment;
+it still retains the species-level candidates
+([spec/python/p3-assign-taxonomy.md §6.4](spec/python/p3-assign-taxonomy.md)).
+Analyst judgement is required in either case. A report that reads as an unqualified
 identification, or that lets the analyst conclude without seeing the
 corroborating evidence, is a defect against this constraint — not a style
 choice.
