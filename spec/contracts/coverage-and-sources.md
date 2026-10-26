@@ -21,7 +21,7 @@
 |---|---|
 | COV-001 | All three target-type keys are present (possibly empty). |
 | COV-002 | A target with no GBIF record has `target/related/country = null`. Higher-rank targets have `related` and `country` `null` and `target` = a record count. |
-| COV-003 | `country` is the literal string `"NA"` iff the query has no country. **This is a different rule from the input layer**: in `metadata.csv`, "no country" is a *blank* cell — the literal text `NA` there resolves to the real country Namibia (`P0-024`, `P0-D-011`). The same token means opposite things in the two files — a naming inconsistency (`P5-D-013`), though not an ambiguity *within this field*, since its real values are always a dict/`null`, never a bare country string. |
+| COV-003 | When country coverage is calculated, `country` is the literal string `"NA"` if the query has no country. Higher-rank targets, unresolved taxa and failed lookups can instead have `country = null` even without a query country. In `metadata.csv`, "no country" is a *blank* cell; the literal text `NA` there resolves to Namibia (`P0-024`, `P0-D-011`). This token reuse is tracked as `P5-D-013`. |
 | COV-004 | `null` means "could not be determined", never "zero". Zero is `0`. (Exceptions: P5-D-005 records failed per-species counts as 0.) |
 
 ## 2. `aggregated_sources.json`
