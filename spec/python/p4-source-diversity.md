@@ -109,7 +109,9 @@ Publication key ("repr"), first available of:
 
 `tests/test_genbank.py` covers parts of §4/§5 (fetch/parse). No unit test
 for `sources_per_species`, Flag 4, or `p4_source_diversity.main`. The
-nf-test baselines include `4.flag` files end-to-end.
+End to end, `4.flag` is covered only as a content hash in the nf-test
+channel snapshots (`ch_source_diversity_for_report`, TST-021); it is not
+in the `test/*/flags` baselines, which hold only the P5 flags (TST-022).
 
 ## 10. Open questions
 

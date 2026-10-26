@@ -51,7 +51,7 @@ cannot pass (P1B-D-001..003).
 |---|---|
 | TST-020 | `nf-test.config` selects one scenario (`testsDir`, `configFile`, `profile singularity`, `workDir`); scenarios 01/03 use FASTA+CSV, 02/04 sequences in CSV (02 = viral, locus `NA`, classification `viruses`); scenarios 01–04 set `mock_blast=true` with a stored `blast_result.xml`; `core` runs real BLAST against a subset DB (`mock_blast=false`). |
 | TST-021 | Assertions (scenario_01): snapshot of `ch_hits_for_report`, `ch_candidates_for_report`, `ch_source_diversity_for_report`, `ch_homology_trees`; 6 HTML reports; 1 versions file; 1 params JSON; 1 timestamp; 6 db-coverage map groups (11 map files); 6 coverage JSON; 6 flag groups each with 3 files (18). |
-| TST-022 | Flag regression check (post-run): `bin/collect_flags.sh` gathers `*.flag` from the run, `bin/test_flags.py` compares them with `test/<scenario>/flags` using normalised JSON (sorted keys; lists sorted by `(flag_id, target, target_type)`) and prints per-path differences. Not part of the nf-test assertions themselves; the CI workflow (TST-024) runs it after nf-test and fails the job on any difference. |
+| TST-022 | Database-coverage flag regression check (post-run): `bin/collect_flags.sh` gathers only the P5 flags `5.1.flag`, `5.2.flag` and `5.3.flag` from the run; `bin/test_flags.py` compares them with `test/<scenario>/flags` (which holds only those three per query) using normalised JSON (sorted keys; lists sorted by `(flag_id, target, target_type)`) and prints per-path differences. Not part of the nf-test assertions themselves; the CI workflow (TST-024) runs it after nf-test and fails the job on any difference. The P3 flags (`1.flag`, `2.flag`, `7.flag`) and P4's `4.flag` are **not** in this check: they are covered only as file hashes inside the channel snapshots of TST-021 (`test/<scenario>/taxodactyl.workflow.nf.test.snap`). |
 | TST-023 | Placeholders `CUSTOMISE` in each scenario's `nextflow.config` (`blastdb`, `taxdb`, `temp_root_dir`) and in `nf-test.config` (`workDir`) MUST be edited by the tester; the tests do not run out of the box. (The CI workflow fills them in with `sed`.) |
 | TST-024 | `.github/workflows/nf-test.yml` runs the `core` scenario on a GitHub-hosted runner, **only when dispatched by hand** — push and pull-request triggers are commented out. It pins Nextflow 25.04.6, nf-test 0.9.5 and Singularity 3.8.7. It downloads frozen reference data (taxdump `2026-05-08`, subset BLAST DB `2026-07-29`) from DAFF's public `daffstandard/test-data` blob container, takes `NCBI_API_KEY`/`USER_EMAIL` from repository secrets, and runs real BLAST (`MOCK_BLAST=false`). Then it runs TST-022's flag check, collects the work directories of failed or drifting tasks (`bin/collect_artifacts.py`) and uploads them as an artifact, runs Selenium (TST-030) on the produced reports, and uploads `review.html`. `mock-nf-test.yml` (also manual) re-runs only the post-processing steps on a downloaded, frozen work directory. |
 
@@ -72,9 +72,9 @@ cannot pass (P1B-D-001..003).
 | P0 validation | yes | – | – | – |
 | P1 parsing | yes (stats) | yes | yes | – |
 | P2 taxonomy | yes | yes | yes | – |
-| P3 flags/candidates | phylogeny sampling only | yes (no asserts) | yes (flags baseline) | yes (overview) |
-| P4 | partial (`fetch_sources`) | yes (no asserts) | yes | partial |
-| P5 | GBIF only | yes + `db_coverage.json` fixture | yes | yes |
+| P3 flags/candidates | phylogeny sampling only | yes (no asserts) | yes (channel snapshot hashes of `1/2/7.flag` and candidate files) | yes (overview) |
+| P4 | partial (`fetch_sources`) | yes (no asserts) | yes (channel snapshot hash of `4.flag`) | partial |
+| P5 | GBIF only | yes + `db_coverage.json` fixture | yes (flag baseline, TST-022, plus counts) | yes |
 | P6 | – | yes (no asserts) | report count | yes |
 | Shared throttle/cache/secrets/config | yes (cache, coalesce, secrets, config) | – | – | – |
 
@@ -134,7 +134,11 @@ off-by-one (`P5-D-001`) and the other threshold defects in
 correct outcome, not a regression, and the baseline must be regenerated
 deliberately — by re-running `bin/collect_flags.sh` over a reviewed run
 into `test/<scenario>/flags/` — rather than treated as ground truth to
-preserve. (There is no `promote` command for flag baselines.
+preserve. That baseline holds only the P5 flags (5.1–5.3, TST-022).
+A fix that changes P3 or P4 flags (1, 2, 4, 7) shows up instead as a
+changed hash in the channel snapshot (TST-021, TST-G-009), which is
+regenerated with nf-test's `--update-snapshot` after review; re-running
+`collect_flags.sh` does not touch it. (There is no `promote` command for flag baselines.
 `testkit.py promote` covers only the integration `db_coverage.json`
 fixtures, TST-013; the Selenium `testkit.py promote` covers only report
 YAMLs, TST-031.) Conversely, a change that leaves these
