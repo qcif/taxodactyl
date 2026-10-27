@@ -70,25 +70,37 @@ to be an accidental BOLD regression:
 - `docs/README.md`
 
 Leave `conf/test.config` unchanged in this task. Its current BOLD setting is
-useful for exercising the intentional unsupported-mode guard. Moving the test
-profile to the small Core database used by CI is tracked separately in
-`tasks/02_test_profile_small_core.md`.
+useful for exercising the intentional unsupported-mode guard. Task
+02_test_profile_small_core separately moves the profile to dedicated
+`test/smoke/` inputs and captured BLAST XML replay, retaining the small Core Nt
+database from `test/core` for `blastdbcmd` taxonomy lookup. It does not run the
+full Core test scenario.
 
 ## Validation
 
-Run the repository’s Nextflow/nf-test validation using
-`test/core/taxodactyl.workflow.nf.test` and verify:
+Validate through the pipeline entry point, `main.nf`, so each invocation runs
+`PIPELINE_INITIALISATION` before `TAXODACTYL`. Use explicit command-line
+invocations (or an entry-point nf-test) with fresh output/work directories and
+a separate trace file for each case. For the existing test profile, invoke
+`nextflow run main.nf -profile test --db_type bold` with those isolated paths.
+The existing `test/core/taxodactyl.workflow.nf.test` invokes `TAXODACTYL`
+directly and therefore cannot validate this initialization guard; it may be
+used separately for BLAST workflow regression coverage.
+
+Verify:
 
 - `--db_type bold` exits non-zero with the documented error.
-- No `BOLD_SEARCH` task is created.
-- No downstream process is scheduled.
+- No process is scheduled, including `PREPARE_INPUTS`, `VALIDATE_INPUT`,
+  `BOLD_SEARCH`, and downstream analysis processes.
 - The existing BOLD-based test profile returns the same documented unsupported
   mode error.
 - A supported BLAST invocation is not rejected by the new guard.
 - Existing BLAST startup validation still rejects missing `blastdb`.
 
-Inspect the generated task/work directories and final exit status as evidence
-that the block happens during initialization rather than after partial work.
+Capture the error message and final exit status, and inspect the invocation's
+trace, log, and fresh work directory to confirm zero scheduled tasks. An empty
+work directory alone is not sufficient: the failure must be the documented
+BOLD guard rather than a configuration, plugin, or missing-input error.
 
 ## Completion criteria
 
