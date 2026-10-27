@@ -70,7 +70,7 @@ required output (P1B-D-003).
 
 | ID | Requirement |
 |---|---|
-| P1B-020 | Fetch `API_Public/combined?ids=<id1|…|id50>&format=tsv` in batches of 50 (5 concurrent), keyed by `processid`; merge all TSV columns into the matching hit. |
+| P1B-020 | Fetch `API_Public/combined?ids=<id1\|…\|id50>&format=tsv` in batches of 50 (5 concurrent), keyed by `processid`; merge all TSV columns into the matching hit. |
 | P1B-021 | Then set `species` = `species_name` (or `''`), `taxonomy` = `{phylum, class, order, family, genus, species}` from `*_name` columns (no kingdom), `accession` = `genbank_accession` (or `''`), `identity` = `similarity`; remove the `*_name` columns. |
 | P1B-022 | Hits with no metadata keep empty species/taxonomy and therefore cannot become P3 candidates. |
 

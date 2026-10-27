@@ -13,7 +13,7 @@ processes, queries and runs.
 | ID | Requirement |
 |---|---|
 | CCH-001 | Public API: `keyhash(*items) -> sha256 hex`, `get(key) -> value or None`, `put(key, value)`. If `cache_disabled`, `get` returns `None` and `put` does nothing. |
-| CCH-002 | Key serialisation per item: callable → `function:<module>.<name>`; object with `serialize()` → its result; other object with `__dict__` → `object:<module>.<class>` (**instance data ignored**); anything else → `str(item)`. Items joined with `|`. |
+| CCH-002 | Key serialisation per item: callable → `function:<module>.<name>`; object with `serialize()` → its result; other object with `__dict__` → `object:<module>.<class>` (**instance data ignored**); anything else → `str(item)`. Items joined with `\|`. |
 | CCH-003 | Values are pickled. A cached `None` is indistinguishable from a miss. |
 | CCH-004 | Entries older than `cache_timeout_hours` (168) are treated as misses and deleted best-effort on read. |
 | CCH-005 | Every backend error (I/O, lock, SDK, unpickling) MUST be logged and treated as a miss / no-op; the cache never fails an analysis. |

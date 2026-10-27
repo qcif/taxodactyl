@@ -94,7 +94,7 @@ isn't yet reflected in the code (`DEP-D-006`); [decisions.md
 |---|---|
 | NF-CF-020 | Under `-profile azure`, every process MUST use executor `azurebatch`, `errorStrategy 'ignore'`, default memory 2 GB, default container `docker.io/library/ubuntu:22.04`. |
 | NF-CF-021 | Container refs MUST use `docker.io/...` (Azure Batch rejects `docker://`): `neoformit/taxodactyl:v1.5.0`, `ncbi/blast:2.16.0`. |
-| NF-CF-022 | Resource classes (single-node design, pool 0–1 nodes): **heavy** `BLAST_BLASTN|BLAST_BLASTDBCMD|EXTRACT_TAXONOMY` 8 cpu / 64 GB / `maxForks 1` / 1 h; **medium** `MAFFT_ALIGN|FASTME` 4 / 32 GB / `maxForks 2` / 1 h; **light** `VALIDATE_INPUT|EXTRACT_HITS|EXTRACT_CANDIDATES|REPORT` 1 / 2 GB / `maxForks 16` / 30 m; **API** `EVALUATE_SOURCE_DIVERSITY|EVALUATE_DATABASE_COVERAGE` 0.5 / 2 GB / `maxForks 16` / 1 h. |
+| NF-CF-022 | Resource classes (single-node design, pool 0–1 nodes): **heavy** `BLAST_BLASTN\|BLAST_BLASTDBCMD\|EXTRACT_TAXONOMY` 8 cpu / 64 GB / `maxForks 1` / 1 h; **medium** `MAFFT_ALIGN\|FASTME` 4 / 32 GB / `maxForks 2` / 1 h; **light** `VALIDATE_INPUT\|EXTRACT_HITS\|EXTRACT_CANDIDATES\|REPORT` 1 / 2 GB / `maxForks 16` / 30 m; **API** `EVALUATE_SOURCE_DIVERSITY\|EVALUATE_DATABASE_COVERAGE` 0.5 / 2 GB / `maxForks 16` / 1 h. |
 | NF-CF-024 | Azure env MUST forward: `THROTTLE_BACKEND` (default `sqlite`), `REDIS_HOST/PORT/PASSWORD`, `AZURE_KEY_VAULT_URL`, `CACHE_BACKEND` (default `azure_blob`), `CACHE_AZURE_ACCOUNT_URL`, `CACHE_AZURE_CONNECTION_STRING`, `CACHE_AZURE_CONTAINER`, `CACHE_AZURE_BLOB_PREFIX`. |
 | NF-CF-026 | Under Azure, `containerOptions` are overridden to `-v` syntax, so the `--bind` options in modules are not used for the listed processes. `PREPARE_INPUTS/PREPARE_LOG/BOLD_SEARCH/MOCK_BLASTN` have no override. |
 
