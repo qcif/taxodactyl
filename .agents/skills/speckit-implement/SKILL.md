@@ -84,10 +84,10 @@ when the repository has a top-level `tasks/` directory.
 
 3. Create an isolated worktree before modifying repository files. Use a branch
    named `task-<NN>-<short_name>` and a worktree under
-   `.claude/worktrees/task-<NN>-<short_name>`, for example:
+   `.worktrees/task-<NN>-<short_name>`, for example:
 
    ```sh
-   git worktree add .claude/worktrees/task-03-remove-obsolete-metadata-schema \
+   git worktree add .worktrees/task-03-remove-obsolete-metadata-schema \
      -b task-03-remove-obsolete-metadata-schema
    ```
 
@@ -99,7 +99,7 @@ when the repository has a top-level `tasks/` directory.
    the branch/worktree record:
 
    ```text
-   - 03_remove_obsolete_metadata_schema branch:task-03-remove-obsolete-metadata-schema worktree:.claude/worktrees/task-03-remove-obsolete-metadata-schema
+   - 03_remove_obsolete_metadata_schema branch:task-03-remove-obsolete-metadata-schema worktree:.worktrees/task-03-remove-obsolete-metadata-schema
    ```
 
 5. In the task worktree, inspect the repository’s source specifications,

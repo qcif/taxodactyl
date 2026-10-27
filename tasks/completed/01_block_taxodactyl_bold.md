@@ -141,11 +141,11 @@ repaired or retired, as recorded in `spec/decisions.md` D-01.
 - `nextflow lint subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`
   passed with four existing unused-variable warnings across included files.
   Shell syntax and `git diff --check` passed.
-- Added `.claude/worktrees/` to `.gitignore` for the isolated implementation
+- Added `.worktrees/` to `.gitignore` for the isolated implementation
   worktree. Existing Docker ignore coverage was inspected; no change needed.
 - No extension hooks or applicable feature checklists were present.
 - Branch: `task-01-block-taxodactyl-bold`.
-  Worktree: `.claude/worktrees/task-01-block-taxodactyl-bold`.
+  Worktree: `.worktrees/task-01-block-taxodactyl-bold`.
   The source-worktree active entry remains until the user merges the branch.
 - Follow-up: task 02_test_profile_small_core provides the supported smoke
   profile using manually provisioned references; its brief is unchanged.
