@@ -1,3 +1,14 @@
+# Supported execution mode
+
+BOLD execution (`--db_type bold`) is temporarily disabled. Initialization
+rejects it before any process is scheduled. Use `--db_type blast_core_nt`
+with `--blastdb` pointing to a BLAST Core Nt database.
+
+The `test` profile currently selects BOLD and therefore intentionally fails
+with this message. A supported smoke profile is tracked separately by task
+02_test_profile_small_core. The BOLD implementation is retained pending the
+[repair-or-retire decision](../spec/decisions.md).
+
 # Rendering the docs
 
 `scripts/dev/render_docs.py` should be run to render ./src/* templates into HTML 

@@ -11,6 +11,13 @@ spec in the same change.
 
 ## A. Product scope
 
+**D-01 operational policy (task 01_block_taxodactyl_bold):** BOLD execution
+is temporarily blocked during pipeline initialization (NF-WF-015), before
+any process is scheduled. The error directs users to BLAST Core Nt.
+This prevents partial execution of the unsupported mode; it does not repair
+or retire BOLD. D-01 remains open, and lifting the block requires an explicit
+repair-or-retire decision.
+
 | # | Question | Affects | Status | GitHub issue | Origin |
 |---|---|---|---|---|---|
 | D-01 | **BOLD: repair or retire?** Repair means BOLD v5 API, HMMER in the image (or drop orientation), regroup hits, write/remove `bold_taxonomy.json`. Retire means deleting the branch, `bold_*` params, BOLD tests and docs. | NF-D-002, NF-D-009, P1B-D-001..010, P3-D-005, testing | open | [`#328`](https://github.com/qcif/taxodactyl/issues/328) "Block execution of taxodactyl against BOLD for now"; [`#306`](https://github.com/qcif/taxodactyl/issues/306) "[Master] revisit BOLD implementation" — both open, same question tracked externally | v1 |

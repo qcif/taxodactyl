@@ -1,4 +1,5 @@
 .nextflow*
+.claude/worktrees/
 work/
 data/
 results/
