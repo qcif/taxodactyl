@@ -1,2 +1,2 @@
-- 01_block_taxodactyl_bold
+- 01_block_taxodactyl_bold branch:task-01-block-taxodactyl-bold worktree:.worktrees/task-01-block-taxodactyl-bold
 - 03_remove_obsolete_metadata_schema
