@@ -177,7 +177,7 @@ The metadata file provides essential information about each sequence and must fo
 #### Optional Columns
 1. **taxa_of_interest** - Taxa of interest for the sample. If multiple, separate them with a `|` character.
 2. **country** - Country of origin for the sample. If unknown, leave this field empty (do not use `NA`, which is the country code for Namibia).
-3. **classification** - High-level taxonomic classification for the sample. Must be one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`.
+3. **classification** - High-level taxonomic classification for the sample. If non-blank, must be one of `animalia`, `animal`, `animals`, `plantae`, `plant`, `plants`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`, `virus` (case-insensitive).
 4. **sequence** - Nucleotide sequence for the sample (required if `--sequences` is not provided).
 
 In addition to the above, you can include arbitrary columns (e.g., `host`, `sequencing_platform`, `sequencing_read_coverage`) which will be displayed in the workflow report's "Sample metadata" section.
@@ -228,7 +228,7 @@ In addition to the above, you can include arbitrary columns (e.g., `host`, `sequ
 > - All required columns must be present for every sample.
 > - Optional columns can be left blank or completely omitted if not applicable.
 > - Arbitrary columns (such as `host`, `sequencing_platform`, `sequencing_read_coverage`) will be displayed in the workflow report "Sample metadata" section.
-> - For more details on the metadata schema, see [`assets/schema_input.json`](assets/schema_input.json).
+> - Metadata contents are validated by [P0 (`scripts/p0_validation.py`)](scripts/p0_validation.py). See the [P0 validation specification](spec/python/p0-validation.md) for the complete rules.
 > - Example can be downloaded from [`test/metadata.csv`](test/metadata.csv).
 
 To run the pipeline against local BLAST Core Nt Database:

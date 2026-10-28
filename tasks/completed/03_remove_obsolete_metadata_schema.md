@@ -1,6 +1,6 @@
 # Task 03 — Remove the obsolete metadata schema documentation
 
-**Status:** active
+**Status:** completed
 
 **Priority:** P1
 
@@ -106,3 +106,52 @@ classification values:
 - Preserve the historical defect entry in
   `spec/python/p0-validation.md` if it is useful for provenance, but mark the
   obsolete-schema condition as resolved after the documentation change.
+
+
+## Outcomes
+
+Implemented on 2026-10-28 in branch
+`task-03-remove-obsolete-metadata-schema`, worktree
+`.worktrees/task-03-remove-obsolete-metadata-schema`.
+
+- Confirmed that no runtime code or test consumes `assets/schema_input.json`,
+  then removed it.
+- Updated `README.md`, `docs/detailed_tech.md`, and `docs/params.md` to identify
+  `scripts/p0_validation.py` and `spec/python/p0-validation.md` as the
+  metadata-content validation authority. Both user-facing classification
+  lists now include all 12 accepted values and state case-insensitive handling.
+- Updated `spec/contracts/inputs.md`, `spec/python/p0-validation.md`, and
+  `spec/defects.md`: the seven-value schema mismatch is historical and was
+  fixed in `3339050`; the obsolete artifact/documentation defect P0-D-015 is
+  resolved by this task. Preserved P0-D-011's outstanding country-warning
+  issue and D-24 decision, with current documentation as the reference.
+- Left `nextflow_schema.json`, Python implementation, and existing tests
+  unchanged. No new CSV schema or runtime behavior was introduced.
+
+Validation:
+
+- `PYTHONPATH=scripts /tmp/taxodactyl-task03-venv/bin/python -m unittest
+  discover -s scripts/tests -p test_validation.py -v`: **20 tests passed**
+  on Python 3.12.3. The host initially lacked Biopython; installed the
+  validator dependencies in the temporary virtual environment. The test run
+  needed no NCBI identity or external API access.
+- Compared both documented classification lists with the actual
+  `Config.HIGHER_CLASSIFICATIONS` keys and called
+  `_validate_metadata_classification` for all 12 values and uppercase aliases:
+  passed.
+- Parsed `nextflow_schema.json`, confirmed the metadata parameter retains
+  its file-path/existence rules without a `schema` property, and verified
+  no diff in that file or `scripts/`.
+- Audited `schema_input\.json|metadata schema` across `README.md`, `docs/`,
+  `spec/`, `assets/`, `scripts/`, and `nextflow_schema.json`: remaining
+  references occur only in explicitly historical specification records.
+- `git diff --check`: passed. Existing Git, Docker, and Prettier ignore files
+  were inspected; no additional ignore entries were needed for this change.
+- No configured feature directory or applicable feature checklists exist;
+  used the repository task brief, architecture, contracts, and constitution.
+  `.specify/extensions.yml` is absent, so no before/after implementation hooks
+  were registered.
+
+No implementation deviations or follow-up tasks. Task 02 remains on hold.
+The active branch/worktree record remains in the main checkout until merge;
+remove it after merging this branch.
