@@ -67,7 +67,7 @@ uses 2 GB for the light processes, as a reference point).
 | `apptainer`, `docker`, `podman`, `shifter`, `charliecloud`, `conda`, `mamba` | nf-core boilerplate, mutually exclusive engine flags. Not supported (NF-PR-005). |
 | `arm` | adds `--platform=linux/amd64` to docker runOptions. |
 | `azure` | `includeConfig 'azure.config'` (see §4). |
-| `test` | `includeConfig 'test.config'`: `metadata=test/metadata.csv`, `sequences=test/query.fasta`, `db_type='bold'`, analyst/facility placeholders. **The out-of-the-box test profile cannot succeed** — `db_type='bold'` selects the branch that cannot currently complete a run (`NF-D-009`, root cause `NF-D-002`; tracked under [decisions.md `D-01`](../decisions.md)). |
+| `test` | `includeConfig 'test.config'`: `metadata=test/metadata.csv`, `sequences=test/query.fasta`, `db_type='bold'`, analyst/facility placeholders. **Intentionally rejected during initialization** by the temporary BOLD block (`NF-WF-015`). The profile remains unchanged for task 01_block_taxodactyl_bold; a supported smoke profile is tracked by task 02_test_profile_small_core. BOLD repair or retirement remains open under [decisions.md `D-01`](../decisions.md). |
 | `debug` | `dumpHashes`, keep work dir (`cleanup=false`), echo hostname. |
 | `wave`, `gitpod` | nf-core boilerplate. |
 
