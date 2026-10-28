@@ -15,14 +15,18 @@ check_case() {
     shift 2
     local dir="$evidence/$name" status=0
     mkdir -p "$dir"
-    nextflow -log "$dir/nextflow.log" run "$repo/main.nf" \
+    local -a command=(nextflow -log "$dir/nextflow.log" run "$repo/main.nf" \
         -ansi-log false -work-dir "$dir/work" \
         --metadata "$repo/test/metadata.csv" \
         --sequences "$repo/test/query.fasta" \
         --taxdb "$evidence" --outdir "$dir/output" \
         --app_data_dir "$dir/app-data" --temp_root_dir "$dir/tmp" \
         --trace_file "$dir/trace.txt" --monochrome_logs true \
-        "$@" > "$dir/console.log" 2>&1 || status=$?
+        "$@")
+    printf 'RUN %s:' "$name"
+    printf ' %q' "${command[@]}"
+    printf '\n'
+    "${command[@]}" > "$dir/console.log" 2>&1 || status=$?
     printf '%s\n' "$status" > "$dir/exit-status.txt"
 
     if [[ "$expected" == success ]]; then
