@@ -174,9 +174,11 @@ This file defines the Nextflow schema for pipeline parameters. It is used for pa
 
 ---
 
-# [schema_input.json](../assets/schema_input.json)
+# Metadata content validation (P0)
 
-This JSON schema describes the required structure and columns for the metadata CSV file used as input to the pipeline. If you need to add columns or change the metadata format, update this schema accordingly to ensure proper validation and compatibility. The [Python P6 module](https://github.com/qcif/taxodactyl/tree/main/scripts#p6-report-generation) will handle the additional columns and put the metadata in the report.
+The [P0 validator](../scripts/p0_validation.py) validates metadata CSV contents and query FASTA files. The [P0 validation specification](../spec/python/p0-validation.md) describes the required columns, sample identifiers, locus panel, country lookup, taxa names, accepted classification values, and sequence checks. The validation web service calls the same validator through `validate_inputs()`.
+
+When changing the metadata contract, update P0 and its specification together. `nextflow_schema.json` validates pipeline parameters, including the metadata file path; it does not validate CSV rows. Additional metadata columns are permitted and displayed in the report by P6. For an unknown country, leave the cell blank: `NA` is accepted as Namibia.
 
 ---
 

@@ -27,7 +27,9 @@ file. Until `3339050` the parameter also carried
 `"schema": "assets/schema_input.json"`, which made nf-schema parse and
 validate every CSV row as UTF-8 before any process started. That crashed
 the run on cp1252 files exported from Excel (#326), so it was removed;
-`assets/schema_input.json` is now unused (`P0-D-015`).
+the obsolete `assets/schema_input.json` artifact was subsequently removed by
+task 03_remove_obsolete_metadata_schema (`P0-D-015`). P0 remains the
+metadata-content validation authority.
 
 | Column | Req. | Enforced by | Rule | Consumed as |
 |---|---|---|---|---|
@@ -67,7 +69,7 @@ See [../nextflow/params.md](../nextflow/params.md).
 
 ## Provenance
 
-**Initially derived from:** `assets/schema_input.json`, `nextflow_schema.json`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source. §1 rewritten for `3339050` (nf-schema no longer reads the CSV; encoding repair). See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `nextflow_schema.json`, `scripts/p0_validation.py`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source. §1 rewritten for `3339050` (nf-schema no longer reads the CSV; encoding repair). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
