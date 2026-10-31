@@ -317,6 +317,14 @@ readable by Python and other programs. It also extracts FASTA sequences for
 BLAST hit subjects, and writes a list of hit accessions to be used as the input
 for the next workflow step.
 
+For BLAST, `--blast-max-target-seqs` (default 2000) caps selection. Hits are
+stably sorted by aggregate identity and retained in blocks of up to 500 until
+the last hit is at or below `--blast-context-min-identity` (default 0.935),
+or hits/the cap run out. Whole stopping blocks survive, including lower
+identities. JSON, FASTA and accession output all use this retained set;
+FASTA preserves relative BLAST order. Candidate `min_identity` is independent.
+P6 accepts both arguments too, so its report describes P1's effective settings.
+
 ```
 $ python scripts/p1_parse_blast.py -h
 
@@ -331,7 +339,9 @@ options:
                         Directory to save parsed output files (JSON and FASTA).
                         Defaults to env variable 'OUTPUT_DIR' or 'output'.
   --blast-max-target-seqs BLAST_MAX_TARGET_SEQS
-                        Maximum number of target sequences for BLAST
+                        Maximum retrieved/selected BLAST hits per query
+  --blast-context-min-identity BLAST_CONTEXT_MIN_IDENTITY
+                        Aggregate identity stopping threshold (default 0.935)
 ```
 
 Output is in per-query directories corresponding to the sequence index in

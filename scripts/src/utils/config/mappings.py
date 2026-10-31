@@ -3,6 +3,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from ...blast.settings import positive_hit_cap, context_identity
+
 
 def get_mapper(
     name: str,
@@ -50,9 +52,19 @@ class IntMapping(AbstractMapping):
         return int(value) if value is not None else None
 
 
+class HitCapMapping(IntMapping):
+    def cast(self, value):
+        return positive_hit_cap(value)
+
+
 class FloatMapping(AbstractMapping):
     def cast(self, value):
         return float(value) if value is not None else None
+
+
+class ContextIdentityMapping(FloatMapping):
+    def cast(self, value):
+        return context_identity(value)
 
 
 class BoolMapping(AbstractMapping):
@@ -308,10 +320,16 @@ PARAMS = {
     ),
 
     # BLAST configuration
-    'blast_max_target_seqs': IntMapping(
+    'blast_max_target_seqs': HitCapMapping(
         'blast_max_target_seqs',
         cli_name='blast-max-target-seqs',
         env_name='BLAST_MAX_TARGET_SEQS',
+    ),
+
+    'blast_context_min_identity': ContextIdentityMapping(
+        'blast_context_min_identity',
+        cli_name='blast-context-min-identity',
+        env_name='BLAST_CONTEXT_MIN_IDENTITY',
     ),
 
     # BOLD configuration

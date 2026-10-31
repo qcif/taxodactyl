@@ -107,7 +107,8 @@ loaded), with schema defaults noted where they differ.
 | `report.debug` | `REPORT_DEBUG` / `--report-debug` | false |
 | `report.database_name` | `BLAST_DATABASE_NAME` / `--database-name` | `NCBI Core Nt` |
 | `report.title` | `REPORT_TITLE` | `Taxonomic identification report` |
-| `blast_max_target_seqs` | `BLAST_MAX_TARGET_SEQS` / `--blast-max-target-seqs` | 2000 |
+| `blast_max_target_seqs` | `BLAST_MAX_TARGET_SEQS` / `--blast-max-target-seqs` | 2000; positive integer, no fractional truncation |
+| `blast_context_min_identity` | `BLAST_CONTEXT_MIN_IDENTITY` / `--blast-context-min-identity` | 0.935; finite fraction 0–1, independent of candidate threshold |
 
 Not in mappings but read directly from the environment elsewhere:
 `LOGGING_DEBUG` (log level, §6), `SECRET_KEY` (vault), and module-specific

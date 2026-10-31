@@ -310,13 +310,21 @@
                     "hidden": true,
                     "errorMessage": "Parameter 'blast_database_name_for_report' must be a string. Default: NCBI Core Nt'."
                 },
-                "blast_max_target_seqs_for_report": {
+                "blast_max_target_seqs": {
                     "type": "integer",
                     "default": 2000,
                     "minimum": 1,
-                    "description": "The maximum number of hits collected for each query sequence in the BLAST search. Not used for analysis but rendered in the report.",
+                    "description": "Maximum BLAST hits retrieved per query and considered for context block selection; also shown in the report.",
                     "hidden": true,
-                    "errorMessage": "Parameter 'blast_max_target_seqs_for_report' must be an integer >= 1. Default: 2000."
+                    "errorMessage": "Parameter 'blast_max_target_seqs' must be an integer >= 1. Default: 2000."
+                },
+                "blast_context_min_identity": {
+                    "type": "number",
+                    "default": 0.935,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Stop expanding 500-hit context blocks when the last aggregate identity is at or below this fraction. Independent of min_identity; retain the whole stopping block.",
+                    "errorMessage": "Parameter 'blast_context_min_identity' must be a number in [0, 1]. Default: 0.935."
                 },
                 "report_debug": {
                     "type": "integer",

@@ -14,9 +14,15 @@
       </div>
       <div class="modal-body">
         <p>
-          This table shows all results that were returned by the BLAST search.
-            Each row represents a reference sequence that matched the query
-            sequence.
+          This table shows {{ hits | length }} retained BLAST hits from a search
+          capped at {{ config.blast_max_target_seqs }} sequences per query.
+          Retrieved hits are sorted by aggregate identity and retained in blocks
+          of up to 500 until the last hit is at or below
+          {{ (config.blast_context_min_identity * 100) | round(3) }}% identity,
+          or the available hits or cap are exhausted. The whole stopping block
+          is retained, including lower-identity hits. Candidate eligibility is
+          assessed separately; this table does not imply that every hit qualifies.
+          Each row represents a reference sequence that matched the query.
           Use <code>CTRL+F</code> to search the table, and click table headers
             to sort by column. Click on a row to show the corresponding BLAST
             alignment and taxonomy information in the bottom panes.
@@ -26,7 +32,7 @@
             <thead class="no-wrap">
               <th class="text-center" data-sort-method="number">
                 Rank
-                {{ info_badge("The hit rank determined in the BLAST program output.") }}
+                {{ info_badge("Aggregate-identity rank among retained hits; equal identities preserve BLAST order.") }}
               </th>
               <th>
                 Accession

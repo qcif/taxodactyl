@@ -56,7 +56,7 @@ The `BLAST_BLASTN` process runs a BLASTN search on input FASTA sequences against
 - `-outfmt 5`: Output format set to XML.
 - `-out $params.blast_xml_filename`: Output XML filename.
 - `-task megablast`: Uses the megablast algorithm for highly similar sequences.
-- `-max_target_seqs 500`: Reports up to 500 hits per query.
+- `-max_target_seqs ${params.blast_max_target_seqs}`: Retrieves up to the configured cap per query (default 2000).
 - `-evalue 0.05`: E-value threshold for reporting matches.
 - `-reward 1`: Match reward score.
 - `-penalty -3`: Mismatch penalty score.
@@ -200,3 +200,21 @@ You can overwrite the contents of `loci.json` to customise which loci (genes) an
    }
 
 
+
+### BLAST context selection (task 04_expand_blast_hit_context)
+
+BLAST runs once without `-perc_identity`. P1 computes aggregate HSP identity,
+rounds to three decimals and sorts descending (ties preserve BLAST order).
+It retains the first 500 hits, then further blocks until the last retained
+identity is at or below `blast_context_min_identity` (default 0.935), or the
+available hits/`blast_max_target_seqs` cap are exhausted. The complete stopping
+block survives. Replay XML is also capped after identity sorting; this cannot
+reproduce BLAST's own retrieval ranking.
+
+JSON, FASTA and the accession union contain the same retained hits; FASTA
+preserves their original BLAST order. Taxonomy lookup and P3 consume those
+records; candidate eligibility and phylogeny sampling rules are unchanged.
+More context can change counts, candidate summaries, flags and trees without
+making every retained sequence a candidate or a phylogeny input. P6 receives
+both settings explicitly and displays the retained count and effective cap/
+threshold. BLAST's scoring/heuristic ranking is not aggregate identity ranking.

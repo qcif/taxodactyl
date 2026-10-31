@@ -78,13 +78,18 @@ checked in Nextflow.
 | `bold_database_name` | `COX1_SPECIES_PUBLIC` | `BOLD_SEARCH --bold-database` |
 | `bold_skip_orientation` | 0 (`0`\|`1`, hidden) | env `BOLD_SKIP_ORIENTATION` |
 
-## 6. Report
+## 6. BLAST context and report
 
 | Param | Default | Consumer |
 |---|---|---|
 | `blast_database_name_for_report` | `BLAST Core Nt` in `params.config`; schema default text `NCBI Core Nt'` (stray quote) — **config wins** | `REPORT --database-name` |
-| `blast_max_target_seqs_for_report` | 2000 | `EXTRACT_HITS --blast-max-target-seqs` (display only; NF-D-005) |
+| `blast_max_target_seqs` | 2000 (integer ≥1) | `BLAST_BLASTN -max_target_seqs`, `EXTRACT_HITS` and `REPORT --blast-max-target-seqs` |
+| `blast_context_min_identity` | 0.935 (finite 0–1) | `EXTRACT_HITS` and `REPORT --blast-context-min-identity`; independent of candidate `min_identity` |
 | `report_debug` | 0 (`0`\|`1`) | `REPORT --report-debug` |
+
+Migrate old `blast_max_target_seqs_for_report` overrides to
+`blast_max_target_seqs`; no alias is provided. The cap now affects retrieval
+and downstream analysis as well as reporting.
 
 ## 7. External services and environment
 

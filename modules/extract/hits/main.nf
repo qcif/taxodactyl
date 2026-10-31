@@ -27,8 +27,6 @@ process EXTRACT_HITS {
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory
 
     script:
-    // Build optional CLI flags only when corresponding params are set.
-    def blast_max_target_seqs_arg = params.blast_max_target_seqs_for_report ? "--blast-max-target-seqs ${params.blast_max_target_seqs_for_report}" : ''
     """
     # Run the BLAST hit parsing Python script
     python /app/scripts/p1_parse_blast.py \
@@ -36,7 +34,8 @@ process EXTRACT_HITS {
         --query-fasta ${sequences_file} \
         --metadata-csv ${metadata_file} \
         --output-dir ./ \
-        ${blast_max_target_seqs_arg}
+        --blast-max-target-seqs ${params.blast_max_target_seqs} \
+        --blast-context-min-identity ${params.blast_context_min_identity}
 
     # Ensure each query folder has a FASTA file so downstream matching/publishing is stable.
     shopt -s nullglob

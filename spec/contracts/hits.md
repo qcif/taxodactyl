@@ -16,6 +16,7 @@ guarantees consumers rely on:
 |---|---|
 | HIT-001 | Top-level keys `query_title`, `query_length`, `hits`. |
 | HIT-002 | `hits` sorted by `identity` descending; each hit has `hit_id`, `hit_subject`, `accession` (no version), `alignment_length`, `subject_length`, `query_coverage`, `bitscore`, `e_value`, `identity` (0–1, 3 dp), `hsps[]`. |
+| HIT-004 | BLAST outputs contain only the selected 500-hit context blocks (P1-015/016), capped by `blast_max_target_seqs`; membership agrees across JSON, FASTA and accession union. Raw XML remains unfiltered retrieval evidence. |
 | HIT-003 | After P3 (in `candidates.json`, not in this file) hits gain `taxonomy`, `species`, `taxid`, `ncbi_blast_url`, `is_candidate_hit`. |
 
 ## 2. `all_hits.json` (BOLD)

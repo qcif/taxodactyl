@@ -96,7 +96,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 | Name                           | Type    | Default                | Description                                                                                      | Requirements                        |
 |--------------------------------|---------|------------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
 | `blast_database_name_for_report`| string | "NCBI Core Nt'"        | Name of the BLAST database for showing in the report.                                            | Must be a string.                   |
-| `blast_max_target_seqs_for_report`| int  | 2000                   | Maximum number of hits collected per query for BLAST search (for reporting only).                | Integer ≥ 1. Default: 2000.          |
+| `blast_max_target_seqs` | int | 2000 | Maximum retrieved hits per query and parser selection cap; also reported. | Integer ≥ 1. |
+| `blast_context_min_identity` | float | 0.935 | Stop expanding 500-hit context blocks at or below this aggregate identity; retain the whole final block. Independent of candidate `min_identity`. | Finite number, 0–1. |
 | `report_debug`                 | int     | 0                      | If 1, replaces the timestamp in the report file name with DEBUG.                                 | 0 or 1. Default: 0.                  |
 
 ---
@@ -173,3 +174,17 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 
 
 ---
+### BLAST parameter migration
+
+Replace `blast_max_target_seqs_for_report` with `blast_max_target_seqs` in
+command lines and parameter/config files. There is no compatibility alias.
+The renamed value now controls the search and parser selection, not just a
+report label. The default remains 2000. Changing it can change candidate
+summaries, flags and phylogeny membership.
+
+P1 sorts retrieved hits by rounded aggregate identity, then keeps blocks of
+up to 500 until the last retained hit is at or below
+`blast_context_min_identity` (default 0.935), or hits/the cap run out. The
+whole final block is retained, even below the threshold. Counts vary by query;
+the cap may produce a partial block. Raw XML remains the full retrieval result.
+`min_identity` continues to control candidate eligibility independently.

@@ -10,6 +10,7 @@ from src.blast.parse_xml import parse_blast_xml
 from src.utils import existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
+from src.blast.settings import positive_hit_cap, context_identity
 
 logger = logging.getLogger(__name__)
 config = Config()
@@ -18,7 +19,10 @@ config = Config()
 def main():
     args = _parse_args()
     config.update_from_args(args)
-    hits, fastas = parse_blast_xml(args.blast_xml_path)
+    hits, fastas = parse_blast_xml(
+        args.blast_xml_path, config.blast_max_target_seqs,
+        config.blast_context_min_identity,
+    )
     _write_hits(hits)
     _write_fastas(fastas)
     _write_accessions(hits)
@@ -54,8 +58,14 @@ def _parse_args():
     )
     parser.add_argument(
         f"--{CLI_ARGS['blast_max_target_seqs'].cli_name}",
-        type=int,
-        help="Maximum number of target sequences for BLAST",
+        type=positive_hit_cap,
+        help="Maximum retrieved/selected BLAST hits per query (default 2000)",
+    )
+    parser.add_argument(
+        f"--{CLI_ARGS['blast_context_min_identity'].cli_name}",
+        type=context_identity,
+        help="Aggregate identity stopping threshold for 500-hit blocks"
+             " (default 0.935)",
     )
     return parser.parse_args()
 

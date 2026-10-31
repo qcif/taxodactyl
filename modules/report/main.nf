@@ -111,6 +111,8 @@ process REPORT {
             --output-dir ./ \
             --versions_yml "${versions_file}" \
             --params_json "${params_file}" \
+            --blast-max-target-seqs ${params.blast_max_target_seqs} \
+            --blast-context-min-identity ${params.blast_context_min_identity} \
             ${bold_flag} \
             ${report_debug_arg} \
             ${database_name_arg} \

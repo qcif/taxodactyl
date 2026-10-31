@@ -6,6 +6,7 @@ from src.report import report
 from src.utils import existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
+from src.blast.settings import positive_hit_cap, context_identity
 
 config = Config()
 
@@ -86,6 +87,17 @@ def _parse_args():
         help="Path to CSV file containing flag definitions"
     )
 
+    parser.add_argument(
+        f"--{CLI_ARGS['blast_max_target_seqs'].cli_name}",
+        type=positive_hit_cap,
+        help="Effective BLAST retrieval/selection cap (default 2000)",
+    )
+    parser.add_argument(
+        f"--{CLI_ARGS['blast_context_min_identity'].cli_name}",
+        type=context_identity,
+        help="Aggregate identity stopping threshold for 500-hit blocks"
+             " (default 0.935)",
+    )
     return parser.parse_args()
 
 

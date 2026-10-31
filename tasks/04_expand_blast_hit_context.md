@@ -1,6 +1,6 @@
 # Task 04 — Expand BLAST context in 500-hit blocks
 
-**Status:** planned
+**Status:** active
 
 **Priority:** Unassigned; DAFF enhancement.
 
@@ -59,7 +59,7 @@ while bounding retrieval and downstream work. The agreed behavior is:
 
 **The stopping threshold defaults to 0.935 (93.5%).** It is a block stopping
 condition, not an individual-hit exclusion filter. Its configuration source
-is unresolved: see **Open decision — stopping threshold** below. Candidate
+is the independent `blast_context_min_identity` parameter (see decision below). Candidate
 eligibility remains a separate operation even if it shares `min_identity`.
 
 For each query, the implementation must be equivalent to:
@@ -269,42 +269,15 @@ retrieval result; they do not trigger repeated BLAST searches.
   document the chosen stopping-threshold option below, default 0.935. Preserve
   candidate eligibility and phylogeny selection algorithms.
 
-## Open decision — stopping threshold
+## Decision — stopping threshold
 
-**Status: unresolved.** Decide before implementing threshold configuration.
-The default is 0.935 in either option; do not silently hard-code that value or
-select an option during implementation.
-
-| Option | Behavior | Tradeoff |
-|---|---|---|
-| A — reuse `min_identity` | P1 uses the same effective value as P3's moderate candidate threshold (`criteria.alignment_min_identity`, default 0.935). | Fewer controls; changing candidate stringency also changes retained context and potentially downstream work. |
-| B — separate `blast_context_min_identity` | Add an independent block-stopping parameter, default 0.935; `min_identity` still controls candidate eligibility. | Independent control of context depth and candidate stringency, with extra configuration and documentation. |
-
-For option A, pass `params.min_identity` through
-`modules/extract/hits/main.nf` and `modules/report/main.nf` to P1/P6 via
-`--min-identity`. Add argument support in `scripts/p1_parse_blast.py` and
-`scripts/p6_report.py`, reusing the mapping in
-`scripts/src/utils/config/mappings.py` and existing criteria field. P1, P3
-and P6 must receive the same effective value, including zero; update the
-truthiness-based argument handling in `modules/extract/candidates/main.nf`
-so valid zero values are not omitted.
-
-For option B, add `blast_context_min_identity` to `conf/params.config`,
-`nextflow_schema.json`, `scripts/config/default.yml` and
-`scripts/src/utils/config/schema.py`, with default 0.935 and range 0–1.
-Add its environment/CLI mapping (`BLAST_CONTEXT_MIN_IDENTITY` /
-`--blast-context-min-identity`) in `scripts/src/utils/config/mappings.py`.
-Wire it through the same P1/P6 entry points and Nextflow modules; P3 continues
-to use `min_identity` unchanged.
-
-For either option, validate a finite numeric threshold in [0, 1] without
-omitting zero. Pass its effective value explicitly into
-`scripts/src/blast/parse_xml.py` and render it in the report templates listed
-above. Update `docs/params.md`, `spec/nextflow/params.md`,
-`spec/python/shared/config.md`, `spec/python/p1-parse-blast.md` and
-`spec/python/p6-report.md` to describe the selected behavior. Record the
-decision here and remove the unselected implementation branch before marking
-the task ready for implementation.
+Use independent `blast_context_min_identity`, default 0.935 and range 0–1.
+The user selected this option on 31 October 2026 pending client verification;
+`min_identity` continues to control candidate eligibility independently.
+Wire `--blast-context-min-identity` / `BLAST_CONTEXT_MIN_IDENTITY` through
+configuration, P1 selection and P6 reporting. Validate finite values, including
+zero, and render the effective threshold in reports. Client feedback may lead
+to a later change; it does not block this implementation.
 
 ## Validation
 
@@ -342,12 +315,10 @@ New automated test files are optional; record reproducible validation evidence.
    exactly the cap, including a partial last block. With cap 2500 and hit 500
    at or below threshold, retain 500. Reject zero, negative and fractional caps.
    Also validate a non-default stopping threshold (for example 0.95), equality,
-   endpoints 0 and 1, and rejection of out-of-range/non-finite values. For option
-   A, changing `min_identity` must change both block stopping and candidate
-   eligibility thresholds. For option B, changing `min_identity` alone must not
-   change P1 block selection, and changing `blast_context_min_identity` alone
-   must not change the candidate eligibility threshold. Verify P6 displays the
-   actual stopping threshold in each case.
+   endpoints 0 and 1, and rejection of out-of-range/non-finite values. Changing
+   `min_identity` alone must not change P1 block selection; changing
+   `blast_context_min_identity` alone must not change the candidate eligibility
+   threshold. Verify P6 displays the actual stopping threshold in each case.
 3. Compare selected record membership across JSON and FASTA, including repeated
    accessions if present, and verify `accessions.txt` equals the unique retained
    union across queries. Verify accession lookup and P3 receive that selection.
@@ -374,7 +345,7 @@ New automated test files are optional; record reproducible validation evidence.
 
 ## Dependencies and parallel opportunities
 
-Resolve the threshold decision first. Retrieval and parser edits can then
+The independent threshold decision is recorded above. Retrieval and parser edits can
 proceed independently against the agreed
 algorithm; report corrections depend on the retained-output contract. Finish
 with combined workflow validation and benchmarking. Coordinate overlapping
@@ -410,3 +381,96 @@ is a stated functional prerequisite.
   with a query containing no hits. Record any such fixture failure separately;
   this task does not require a general parser repair. The last-HSP FASTA defect
   P1-D-001 and existing empty/no-candidate workflow defects are also separate.
+
+## Outcomes
+
+Implementation committed on branch `task-04-expand-blast-hit-context` in
+`.worktrees/task-04-expand-blast-hit-context`. Status remains **active**, pending
+successful end-to-end validation; do not move this brief to completed yet.
+
+### Implemented
+
+- Renamed the Nextflow cap to `blast_max_target_seqs`, default 2000, and wired
+  it to live BLAST, P1 selection and P6 reporting. Legacy overrides require the
+  documented rename; no compatibility alias was added.
+- Added independent `blast_context_min_identity`, default 0.935, with YAML,
+  environment and CLI mappings. The user selected this pending client review.
+- Added per-query stable aggregate-identity block selection, preserving whole
+  final blocks, all retained HSPs and original hit/FASTA associations (including
+  duplicate accessions). Logs include counts, minimum identity and stop reason.
+- Validated caps without fractional truncation and finite thresholds in [0, 1]
+  at schema, CLI/environment mapping and direct-parser boundaries. Zero
+  thresholds pass through Nextflow explicitly.
+- Updated report count/rank/context wording, specifications and migration docs.
+  Existing candidate eligibility and phylogeny sampling algorithms are unchanged.
+
+### Validation completed (31 October 2026)
+
+- Full Python unit discovery: **155 tests run: 153 passed, 2 skipped**. Command from the
+  worktree: `python -m unittest discover -s scripts/tests -p 'test_*.py'` with
+  `PYTHONPATH=.:scripts`, using Python 3.12 in
+  `/mnt/data/images/neoformit-taxodactyl-v1.5.0.img`, mounting edited scripts at
+  `/app/scripts` and the worktree at `/workspace`. The image lacked `fakeredis`;
+  installed it only under `/tmp/task04-validation/test-deps` for the full run.
+  Earlier focused parser/context/phylogeny/config run: 35 tests passed.
+- `scripts/tests/test_blast_context.py` covers block boundaries, caps below 500,
+  partial blocks, excess XML hits, tied identities, repeated accessions,
+  multi-HSP aggregate identity, rounding, empty queries, non-default thresholds
+  and invalid settings. Syntax/name checks (`flake8 --select E9,F63,F7,F82`) and
+  `git diff --check` passed.
+- Actual P1 CLI output checks verified JSON/FASTA membership and accession union.
+  Actual P6 argument parsing/config updates plus rendering the modified BLAST
+  modal passed at cap/threshold pairs 2000/0.935, 750/0.95 and 300/0. The selected
+  counts were [1000, 500, 500], [750, 500, 500] and [300, 300, 300] respectively.
+- Live BLAST **2.16.0+**, four threads, same local reference subset and search
+  settings, compared 500 and 2000 retrieval. The pinned help confirms `-sorthits`
+  is not applicable to XML (`outfmt > 4`). No `-perc_identity` was supplied.
+  Commands, data identity, per-query candidates/flags/phylogeny membership and
+  measurements are in `tasks/validation/04_blast_hit_context.json`.
+
+| Query | Retrieved at cap 500 / 2000 | Retained at cap 500 / 2000 |
+|---|---:|---:|
+| Scenario_01 | 500 / 2000 | 500 / 1000 |
+| Scenario_02 | 500 / 2000 | 500 / 500 |
+| Scenario_03 | 500 / 2000 | 500 / 500 |
+| Grapevine virus E (barcode 57) | 170 / 170 | 170 / 170 |
+
+Candidate summaries and P3 flags were unchanged in these four cases.
+Scenario_01 phylogeny input expanded from 9 to 21 sequences; the other three
+were unchanged (24, 29 and 6). Shared hit membership was checked for the first
+three queries: each larger retrieval included all original 500 accessions.
+XML grew from 4,669,752 to 18,393,324 bytes. P1/P3 wall time was 12.07 versus
+16.70 seconds, including interpreter startup. Search time was 11.82 versus
+4.84 seconds, peak RSS 3,966,868 versus 4,001,164 KiB. These single trials had
+different filesystem cache states and concurrent host work; they demonstrate
+output/cost scope, **not** a search speedup or production performance guarantee.
+
+### Integration limits and follow-up
+
+- Ran `nf-test test -c /tmp/task04-validation/nf-test.config --ci
+  test/core/taxodactyl.workflow.nf.test` with local containers and edited scripts
+  bound into `/app/scripts`. The first attempt failed because the local override
+  had not propagated `TAXONKIT_DATA`; the corrected retry passed live BLAST,
+  P1, taxonomy lookup and all 20 P3 tasks. Retained counts ranged from 2 to 1000.
+  Actual generated BLAST/P1 commands used the same cap 2000 and threshold 0.935.
+- The existing `modules/fastme/main.nf` calls `rename_tip_labels.py`, which is
+  neither tracked in this checkout nor present in the local pinned FastME
+  image. Direct execution in that image fails with executable-not-found.
+  This predates task 04. The retry was deliberately interrupted during live
+  coverage lookups after identifying this blocker, so it is **not a passing
+  nf-test run**. No snapshots were refreshed. Restore/provision the existing
+  utility, then rerun the workflow with the intended reference-data versions.
+- Standalone full-report validation with a real FastME tree and manually mapped
+  validation-only tip labels also cannot establish the full workflow: missing
+  P5 output makes the existing `index.html` access to `db_coverage.full` fail
+  with an Undefined serialization error. No synthetic coverage data was supplied.
+  The changed modal and P6 effective settings did pass independently above.
+- Complete P4/P5/report integration, non-default Nextflow report verification,
+  downstream runtime measurement and expected-snapshot reconciliation remain
+  outstanding. The local BLAST subset is April 2026, while the core snapshot
+  documents July 2026 reference data; explain reference drift separately from
+  the intentional selection change.
+- Detailed logs and standalone validation scripts remain in
+  `/tmp/task04-validation/` on this host. No extension hooks were registered
+  (`.specify/extensions.yml` absent). The active branch/worktree record remains
+  on main and must remain until the implementation has been validated and merged.

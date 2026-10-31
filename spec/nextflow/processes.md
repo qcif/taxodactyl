@@ -57,20 +57,21 @@ Fixed command (values are **hard-coded**, not parameters):
 ```
 blastn -num_threads ${task.cpus} -db ${params.blastdb} -query <fasta> \
   -outfmt 5 -out blast_result.xml -task megablast \
-  -max_target_seqs 500 -evalue 0.05 -reward 1 -penalty -3
+  -max_target_seqs ${params.blast_max_target_seqs} -evalue 0.05 -reward 1 -penalty -3
 ```
 
 | ID | Requirement |
 |---|---|
-| NF-PR-030 | MUST run `megablast` with `-max_target_seqs 500`, `-evalue 0.05`, `-reward 1`, `-penalty -3`, XML output (`-outfmt 5`). Changing any is a scientific change (affects candidate selection) and needs a spec change. |
+| NF-PR-030 | MUST run `megablast` with `-max_target_seqs ${params.blast_max_target_seqs}`, `-evalue 0.05`, `-reward 1`, `-penalty -3`, XML output (`-outfmt 5`). Changing any is a scientific change (affects candidate selection) and needs a spec change. |
 | NF-PR-031 | If the input FASTA has extension `gz`, MUST decompress to `<basename>` first. |
 | NF-PR-032 | `versions.yml` MUST record `blast: <version>` derived from `blastn -version`. |
 
-**Note.** `params.blast_max_target_seqs_for_report` (default 2000) does
-not configure this BLAST run; it is only passed to `EXTRACT_HITS`
-(`--blast-max-target-seqs`) for display. The effective search limit is the
-hard-coded 500. The default report figure (2000) therefore disagrees with
-what BLAST actually used (**defect NF-D-005**).
+`params.blast_max_target_seqs` (default 2000) controls retrieval, P1 selection
+and the P6 reported cap. P1/P6 also receive `blast_context_min_identity`
+(default 0.935); P1 retains whole 500-hit blocks using aggregate identity
+(P1-015/016). No BLAST identity cutoff is set. NF-D-005 is corrected by this
+shared wiring; runtime validation evidence is recorded in task
+04_expand_blast_hit_context.
 
 ## 4. `MOCK_BLASTN`
 
@@ -227,7 +228,7 @@ wired successfully in the current workflow.
 | ID | Summary |
 |---|---|
 | NF-D-004 | `phylogeny_min_hit_identity` not forwarded to P3. |
-| NF-D-005 | Report shows `blast_max_target_seqs_for_report` (default 2000) while BLAST is hard-coded to 500. |
+| NF-D-005 | Corrected in task 04_expand_blast_hit_context: shared retrieval, parser and report cap (`blast_max_target_seqs`). |
 | NF-D-006 | Single-quoted CLI args in `REPORT` break on embedded `'`. |
 | NF-D-020 | `PREPARE_INPUTS` and `PREPARE_LOG` declare no container and no label, and `conf/process.config` sets no default, so on local/HPC profiles they run in the host shell rather than a container (CONSTITUTION rule 11). Their work is trivial (`cp`, `wc`, an empty script), so the practical risk is low: the run depends on the host having `bash` and coreutils, and those two steps are not reproducible from the pinned images. Under `-profile azure` they get the pinned default `docker.io/library/ubuntu:22.04`. |
 

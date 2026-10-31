@@ -1,0 +1,593 @@
+{
+  "blast_version": "blastn: 2.16.0+\n Package: blast 2.16.0, build Jun 25 2024 08:58:03",
+  "database": "/mnt/data/tests-wf-2/small_dbs/subset_core_nt_20260424/subset_core_nt",
+  "queries": "test/core/metadata.csv: Scenario_01, Scenario_02, Scenario_03, barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300",
+  "command": "blastn -query benchmark.fasta -db <database> -task megablast -outfmt 5 -max_target_seqs <500|2000> -evalue 0.05 -reward 1 -penalty -3 -num_threads 4 -out bench<cap>.xml",
+  "limitations": "Single sequential trials on a shared host, with different filesystem cache states; timings do not establish a speedup. P1/P3 elapsed includes interpreter startup. P4/P5 and complete report workflow not validated.",
+  "results": {
+    "500": {
+      "queries": [
+        {
+          "query": "Scenario_01",
+          "retrieved": 500,
+          "retained": 500,
+          "minimum": 0.982,
+          "candidates": [
+            {
+              "species": "Spodoptera frugiperda",
+              "hit_count": 496,
+              "min_identity": 0.982,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Spodoptera exigua",
+              "hit_count": 1,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Spodoptera sp. frugiperda 1 BOLD-2018",
+              "hit_count": 2,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            }
+          ],
+          "phylogeny": [
+            "MW349515",
+            "MT881730",
+            "MK493019",
+            "MW561308",
+            "HM388081",
+            "GU799699",
+            "MT872399",
+            "GU658451",
+            "MK492974"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "Scenario_02",
+          "retrieved": 500,
+          "retained": 500,
+          "minimum": 0.912,
+          "candidates": [
+            {
+              "species": "Phyllocnistinae sp. BOLD:ABZ3983",
+              "hit_count": 6,
+              "min_identity": 0.995,
+              "median_identity": 0.998
+            }
+          ],
+          "phylogeny": [
+            "KF919088",
+            "KF919089",
+            "KF919090",
+            "KF919086",
+            "KF919104",
+            "KT144425",
+            "KF919100",
+            "KT704097",
+            "KT702528",
+            "KT701269",
+            "KF919102",
+            "KR135067",
+            "MG469366",
+            "KR447786",
+            "KT701538",
+            "KR450692",
+            "KT701606",
+            "KR448183",
+            "MG362844",
+            "KR937669",
+            "OR596487",
+            "AB614514",
+            "KR937627",
+            "MG469625"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "Scenario_03",
+          "retrieved": 500,
+          "retained": 500,
+          "minimum": 0.884,
+          "candidates": [
+            {
+              "species": "Leptidea sinapis",
+              "hit_count": 226,
+              "min_identity": 0.987,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Ophiuroglypha carinifera",
+              "hit_count": 1,
+              "min_identity": 1.0,
+              "median_identity": 1.0
+            },
+            {
+              "species": "Erebia pandrose",
+              "hit_count": 1,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Leptidea reali",
+              "hit_count": 38,
+              "min_identity": 0.968,
+              "median_identity": 0.986
+            },
+            {
+              "species": "Lepidoptera sp. BOLD:AAA6298",
+              "hit_count": 2,
+              "min_identity": 0.985,
+              "median_identity": 0.985
+            }
+          ],
+          "phylogeny": [
+            "MW503190",
+            "GU669641",
+            "MW501510",
+            "GU669777",
+            "MN139254",
+            "KC866129",
+            "MW502091",
+            "GU676968",
+            "GU676645",
+            "MN142330",
+            "GU675656",
+            "EF599643",
+            "MW500629",
+            "MW750615",
+            "HQ004596",
+            "PX875796",
+            "JF512719",
+            "JF512717",
+            "JF512718",
+            "JF512619",
+            "GU372563",
+            "MN144389",
+            "JF512620",
+            "NC_022686",
+            "FJ663710",
+            "KR363157",
+            "MZ626727",
+            "PX875797",
+            "OQ359862"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "C",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300",
+          "retrieved": 170,
+          "retained": 170,
+          "minimum": 0.861,
+          "candidates": [
+            {
+              "species": "Vitivirus epsilonvitis",
+              "hit_count": 55,
+              "min_identity": 0.974,
+              "median_identity": 0.99
+            },
+            {
+              "species": "Vitivirus GVL",
+              "hit_count": 1,
+              "min_identity": 0.985,
+              "median_identity": 0.985
+            }
+          ],
+          "phylogeny": [
+            "LC746750",
+            "MW309639",
+            "OR400567",
+            "MW309736",
+            "MW309656",
+            "MW309653"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        }
+      ],
+      "p1_p3_seconds": 12.074764801189303,
+      "xml_bytes": 4669752,
+      "blast_wall_time": "0:11.82",
+      "blast_peak_rss_kib": 3966868
+    },
+    "2000": {
+      "queries": [
+        {
+          "query": "Scenario_01",
+          "retrieved": 2000,
+          "retained": 1000,
+          "minimum": 0.893,
+          "candidates": [
+            {
+              "species": "Spodoptera frugiperda",
+              "hit_count": 496,
+              "min_identity": 0.982,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Spodoptera exigua",
+              "hit_count": 1,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Spodoptera sp. frugiperda 1 BOLD-2018",
+              "hit_count": 2,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            }
+          ],
+          "phylogeny": [
+            "MW349515",
+            "MT881730",
+            "MK493019",
+            "MW561308",
+            "HM388081",
+            "GU799699",
+            "MT872399",
+            "GU658451",
+            "MK492974",
+            "EU768965",
+            "MN620616",
+            "MH850896",
+            "NC_072723",
+            "HQ949224",
+            "MH850897",
+            "HQ949223",
+            "EU779853",
+            "HQ949225",
+            "HQ950351",
+            "KF405925",
+            "KF396806"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "Scenario_02",
+          "retrieved": 2000,
+          "retained": 500,
+          "minimum": 0.912,
+          "candidates": [
+            {
+              "species": "Phyllocnistinae sp. BOLD:ABZ3983",
+              "hit_count": 6,
+              "min_identity": 0.995,
+              "median_identity": 0.998
+            }
+          ],
+          "phylogeny": [
+            "KF919088",
+            "KF919089",
+            "KF919090",
+            "KF919086",
+            "KF919104",
+            "KT144425",
+            "KF919100",
+            "KT704097",
+            "KT702528",
+            "KT701269",
+            "KF919102",
+            "KR135067",
+            "MG469366",
+            "KR447786",
+            "KT701538",
+            "KR450692",
+            "KT701606",
+            "KR448183",
+            "MG362844",
+            "KR937669",
+            "OR596487",
+            "AB614514",
+            "KR937627",
+            "MG469625"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "Scenario_03",
+          "retrieved": 2000,
+          "retained": 500,
+          "minimum": 0.884,
+          "candidates": [
+            {
+              "species": "Leptidea sinapis",
+              "hit_count": 226,
+              "min_identity": 0.987,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Ophiuroglypha carinifera",
+              "hit_count": 1,
+              "min_identity": 1.0,
+              "median_identity": 1.0
+            },
+            {
+              "species": "Erebia pandrose",
+              "hit_count": 1,
+              "min_identity": 0.998,
+              "median_identity": 0.998
+            },
+            {
+              "species": "Leptidea reali",
+              "hit_count": 38,
+              "min_identity": 0.968,
+              "median_identity": 0.986
+            },
+            {
+              "species": "Lepidoptera sp. BOLD:AAA6298",
+              "hit_count": 2,
+              "min_identity": 0.985,
+              "median_identity": 0.985
+            }
+          ],
+          "phylogeny": [
+            "MW503190",
+            "GU669641",
+            "MW501510",
+            "GU669777",
+            "MN139254",
+            "KC866129",
+            "MW502091",
+            "GU676968",
+            "GU676645",
+            "MN142330",
+            "GU675656",
+            "EF599643",
+            "MW500629",
+            "MW750615",
+            "HQ004596",
+            "PX875796",
+            "JF512719",
+            "JF512717",
+            "JF512718",
+            "JF512619",
+            "GU372563",
+            "MN144389",
+            "JF512620",
+            "NC_022686",
+            "FJ663710",
+            "KR363157",
+            "MZ626727",
+            "PX875797",
+            "OQ359862"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "C",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "A",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        },
+        {
+          "query": "barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300",
+          "retrieved": 170,
+          "retained": 170,
+          "minimum": 0.861,
+          "candidates": [
+            {
+              "species": "Vitivirus epsilonvitis",
+              "hit_count": 55,
+              "min_identity": 0.974,
+              "median_identity": 0.99
+            },
+            {
+              "species": "Vitivirus GVL",
+              "hit_count": 1,
+              "min_identity": 0.985,
+              "median_identity": 0.985
+            }
+          ],
+          "phylogeny": [
+            "LC746750",
+            "MW309639",
+            "OR400567",
+            "MW309736",
+            "MW309656",
+            "MW309653"
+          ],
+          "flags": {
+            "7.flag": [
+              {
+                "flag_id": "7",
+                "value": "NA",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "1.flag": [
+              {
+                "flag_id": "1",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ],
+            "2.flag": [
+              {
+                "flag_id": "2",
+                "value": "B",
+                "target": null,
+                "target_type": null
+              }
+            ]
+          }
+        }
+      ],
+      "p1_p3_seconds": 16.698920900002122,
+      "xml_bytes": 18393324,
+      "blast_wall_time": "0:04.84",
+      "blast_peak_rss_kib": 4001164
+    }
+  }
+}

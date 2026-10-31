@@ -16,5 +16,10 @@ vault_password.txt
 !.env*sample
 node_modules/
 venv/
+.venv/
+*.egg-info/
+dist/
 __pycache__/
 *.ignore
+
+.nf-test*

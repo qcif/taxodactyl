@@ -12,6 +12,8 @@ from pydantic import (
     field_validator,
 )
 
+from ...blast.settings import positive_hit_cap, context_identity
+
 SCRIPTS_ROOT = Path(__file__).parents[3]
 
 
@@ -246,7 +248,20 @@ class ConfigSchema(BaseModel):
 
     # BLAST configuration
     blast_max_target_seqs: int = Field(
-        default=2000, description="BLAST maximum target sequences")
+        default=2000, ge=1, description="BLAST retrieval and selection cap")
+    blast_context_min_identity: float = Field(
+        default=0.935, ge=0, le=1, allow_inf_nan=False,
+        description="Aggregate identity stopping threshold for BLAST context blocks")
+
+    @field_validator('blast_max_target_seqs', mode='before')
+    @classmethod
+    def validate_hit_cap(cls, value):
+        return positive_hit_cap(value)
+
+    @field_validator('blast_context_min_identity', mode='before')
+    @classmethod
+    def validate_context_identity(cls, value):
+        return context_identity(value)
 
     # BOLD configuration
     bold_database: str = Field(

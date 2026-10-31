@@ -22,6 +22,8 @@ suite (`test/selenium`); it is not restated here.
 | `--versions_yml` | no | path; rendered as "Software versions" |
 | `--report-debug` | no | filename timestamp → `DEBUG` |
 | `--database-name`, `--facility-name`, `--analyst-name` | no | header fields (facility also vault-resolved, CFG-036) |
+| `--blast-max-target-seqs` | no | effective retrieval/selection cap, positive integer, default 2000 |
+| `--blast-context-min-identity` | no | effective block stopping threshold, finite 0–1, default 0.935 |
 | `--flag-details-csv` | no | override `config/flags.csv` |
 
 **Reads** (in `query_dir` unless stated): `query_title.txt`,
@@ -45,6 +47,8 @@ debugging aid; not published by Nextflow).
 | P6-002 | A missing image MUST be replaced by `placeholder.png` (logged). |
 | P6-003 | In BOLD mode, every whole word `identity`/`Identity` in the **rendered HTML** (including inlined JS/CSS) MUST be replaced by `similarity`/`Similarity`, and the title prefixed `BOLD - `. |
 | P6-004 | The page MUST include a JavaScript "save report" function (`save-report.js`) that lets the analyst record answers to the subjective prompts and save a locked copy. |
+
+| P6-005 | BLAST table shows retained count, configured retrieval cap, effective block stopping threshold and aggregate-identity rank. Describe whole stopping blocks and independent candidate eligibility; do not claim all retrieved hits are retained or that BLAST retrieves globally highest-identity hits. P6 receives both values explicitly from Nextflow, independently of P1's process-local config. |
 
 ## 2a. Page structure
 
@@ -90,7 +94,7 @@ clicked candidate accession, `content-tabs.html`), `save-modal.html`,
 | `metadata` | `sample_id` + every metadata column except `sequence` (CFG-026) |
 | `locus_provided` | CFG-027 (`NA` ⇒ false; BOLD ⇒ true) |
 | `input_fasta` | the query record as FASTA |
-| `hits` | all hits from `all_hits.json` (up to 500 with printable alignments) |
+| `hits` | retained hits from `all_hits.json` (up to the configured cap, with printable alignments) |
 | `hits_taxonomy` | BLAST: `taxonomy.csv` row per hit accession (or `None`); BOLD: hit `taxonomy` fields |
 | `candidates` | `candidates.json` + `fasta` (`{id: FASTA}` from `candidates.fasta`) + `strict` (= Flag 1 not `D`/`E`) |
 | `candidates_boxplot_src` | data URI or `None` |

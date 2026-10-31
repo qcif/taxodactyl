@@ -11,3 +11,8 @@ dev/
 Dockerf*
 *.sh
 .dockerignore
+
+.venv/
+*.pyc
+.env*
+*.log

@@ -35,7 +35,7 @@ process BLAST_BLASTN {
         -outfmt 5 \\
         -out ${task.ext.blast_xml_filename} \\
         -task megablast \\
-        -max_target_seqs 500 \\
+        -max_target_seqs ${params.blast_max_target_seqs} \\
         -evalue 0.05 \\
         -reward 1 \\
         -penalty -3

@@ -29,6 +29,7 @@ boxplot_img_filename: candidates_identity_boxplot.png
 tree_nwk_filename: candidates_phylogeny.nwk
 db_coverage_json: db_coverage.json
 blast_max_target_seqs: 2000
+blast_context_min_identity: 0.935
 bold_database: COX1_SPECIES_PUBLIC
 bold_flag: BOLD
 bold_taxon_count_json: bold_taxon_counts.json

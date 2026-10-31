@@ -7,7 +7,7 @@
 
 Turn one BLAST XML file (all queries) into per-query hit files the rest of
 the pipeline reads, compute hit-level statistics that BLAST does not give,
-and list all hit accessions for taxid lookup. This is where the query
+and list retained hit accessions for taxid lookup. This is where the query
 folders `query_NNN_<sample_id>` are **created**.
 
 ## 2. Interface
@@ -18,7 +18,9 @@ folders `query_NNN_<sample_id>` are **created**.
 | `--query-fasta` | yes | defines query order and sample ids |
 | `--metadata-csv` | yes | loaded into config; not otherwise used by P1 |
 | `--output-dir` | no | default `config.output_dir` |
-| `--blast-max-target-seqs` | no | stored in config for the report; **does not affect parsing** |
+| `--blast-max-target-seqs` | no | positive integer cap on retained hits per query (default 2000) |
+
+| `--blast-context-min-identity` | no | finite fraction 0–1, default 0.935; independent of candidate eligibility |
 
 Outputs (names from [shared/config.md §3.5](shared/config.md)):
 
@@ -74,9 +76,12 @@ This is the contract P3 consumes; see `../contracts/hits.md` (to write).
 | P1-009 | Hit **query_coverage** = min(round(alignment_length / query_length, 3), 1); 0 if query length is 0. |
 | P1-010 | HSP `identity` = round(identities / align_length, 3). |
 | P1-011 | Hits MUST be sorted by `identity` descending (stable: ties keep BLAST order). HSPs keep BLAST order. |
-| P1-012 | `all_hits.fasta` records: id = accession (no version), description = `hit_subject`, sequence = the **aligned subject string of the last HSP** of the hit (P1-D-001). Order = BLAST order, not identity order. |
-| P1-013 | `accessions.txt` MUST contain each distinct hit accession across all queries once. |
+| P1-012 | `all_hits.fasta` records: id = accession (no version), description = `hit_subject`, sequence = the **aligned subject string of the last HSP** of the hit (P1-D-001). Only retained hits, in relative BLAST order, not identity order; associate by original hit position, including repeated accessions. |
+| P1-013 | `accessions.txt` MUST contain each distinct retained hit accession across all queries once. |
 | P1-014 | Printable alignment: 80-column blocks, 10-char groups, `Query`/`Sbjct` lines with start coordinates and the midline between. Display only. |
+
+| P1-015 | After stable aggregate-identity sorting, retain blocks of up to 500 until the last retained identity is ≤ `blast_context_min_identity` or available hits / `blast_max_target_seqs` are exhausted. Retain the entire stopping block, even below threshold. The first block is always retained if hits exist. |
+| P1-016 | Cap replay XML after sorting too; allow partial blocks and caps below 500. Preserve all retained HSP evidence and matching FASTA records. Log retrieved/retained counts, minimum retained identity and stopping reason per query. |
 
 ## 5. Failure behaviour
 
@@ -98,11 +103,16 @@ query folder, nothing (`P1-D-004`).
 | P1-D-003 | Medium | Zero hits across all queries ⇒ `accessions.txt` is `"\n"`; `blastdbcmd` behaviour on a blank entry is untested. |
 | P1-D-004 | Medium | If the BLAST XML has **fewer** iterations than the submitted FASTA has records (the reverse of P1-D-002's over-count `IndexError`), the parsing loop simply ends early: every FASTA record past that point gets no query folder, no `all_hits.json`, nothing — not even a log line, let alone a run failure. No count check exists between `len(blast_records)` and `len(query_fasta)` in either direction; only the over-count case happens to crash. |
 
+Invalid caps (zero, negative, fractional) and non-finite/out-of-range context
+thresholds fail configuration/CLI parsing rather than silently using defaults.
+
 ## 7. Test mapping (`tests/test_blast_parser.py`)
 
 P1-005 (`test_calculate_hit_bitscore`), P1-006 (single and multiple
 e-value), P1-007, P1-009, P1-008 (incl. overlap), `test_parse_blast_xml`
-(P1-002/011 structure). **Not covered:** P1-001, P1-003, P1-012 (FASTA
+(P1-002/011 structure). `test_blast_context.py` covers P1-012/015/016,
+rounding, ties, repeated accessions, multi-HSP aggregate stopping, empty queries
+and invalid/non-default configuration. **Not covered:** P1-001, P1-003, P1-012 (FASTA
 content), P1-013, `main()`.
 
 ---

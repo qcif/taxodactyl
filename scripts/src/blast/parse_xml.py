@@ -6,6 +6,8 @@ from Bio.Blast import NCBIXML
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
+from .settings import positive_hit_cap, context_identity
+
 logger = logging.getLogger(__name__)
 
 
@@ -102,11 +104,15 @@ def parse_hit_def(hit_def: str) -> str:
     return hit_def.split('>')[0].strip()
 
 
-def parse_blast_xml(blast_xml_path: str) -> tuple[
+def parse_blast_xml(
+    blast_xml_path: str, max_target_seqs=2000, stopping_identity=0.935,
+) -> tuple[
     list[dict],
     list[list[SeqRecord]],
 ]:
     """Parse BLAST XML output file and extract information about alignments."""
+    max_target_seqs = positive_hit_cap(max_target_seqs)
+    stopping_identity = context_identity(stopping_identity)
     with open(blast_xml_path, "r") as handle:
         blast_records = NCBIXML.parse(handle)
         results = []
@@ -181,14 +187,30 @@ def parse_blast_xml(blast_xml_path: str) -> tuple[
                     f" [{query_record['query_title']}]"
                 )
 
-            # Re-order hits by identity
-            query_record["hits"].sort(
-                key=lambda x: x["identity"],
-                reverse=True,
+            # Retain original positions: accessions need not uniquely identify hits.
+            hits = query_record["hits"]
+            positions = sorted(range(len(hits)),
+                               key=lambda pos: hits[pos]["identity"], reverse=True)
+            available = min(len(positions), max_target_seqs)
+            end = min(500, available)
+            while (end < available
+                   and hits[positions[end - 1]]["identity"] > stopping_identity):
+                end = min(end + 500, available)
+            selected = positions[:end]
+            query_record["hits"] = [hits[pos] for pos in selected]
+            retained_positions = set(selected)
+            fastas = [record for pos, record in enumerate(fastas)
+                      if pos in retained_positions]
+            minimum = hits[selected[-1]]["identity"] if selected else None
+            reason = ("no hits" if not selected else
+                      "threshold" if minimum <= stopping_identity else
+                      "cap" if end == max_target_seqs else "exhausted")
+            logger.info(
+                "Query [%s] - retrieved %s; retained %s; minimum identity %s; "
+                "stopped: %s (cap=%s, threshold=%s)",
+                i, len(hits), end, minimum, reason,
+                max_target_seqs, stopping_identity,
             )
-
-            logger.info(f"Query [{i}] - collected {len(query_record["hits"])}"
-                        f" BLAST hits")
             fasta_results.append(fastas)
             results.append(query_record)
 
