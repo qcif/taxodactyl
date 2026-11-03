@@ -453,13 +453,18 @@ output/cost scope, **not** a search speedup or production performance guarantee.
   had not propagated `TAXONKIT_DATA`; the corrected retry passed live BLAST,
   P1, taxonomy lookup and all 20 P3 tasks. Retained counts ranged from 2 to 1000.
   Actual generated BLAST/P1 commands used the same cap 2000 and threshold 0.935.
-- The existing `modules/fastme/main.nf` calls `rename_tip_labels.py`, which is
-  neither tracked in this checkout nor present in the local pinned FastME
-  image. Direct execution in that image fails with executable-not-found.
-  This predates task 04. The retry was deliberately interrupted during live
-  coverage lookups after identifying this blocker, so it is **not a passing
-  nf-test run**. No snapshots were refreshed. Restore/provision the existing
-  utility, then rerun the workflow with the intended reference-data versions.
+- **Correction (3 November 2026):** the earlier missing-helper diagnosis was
+  incorrect. `modules/fastme/main.nf:28` renames tree tips inline using `awk`
+  and `sed` with the supplied ID mapping file. This is also the implementation
+  in commit `55be0e3`; it does not call or require `rename_tip_labels.py`.
+  The standalone attempt to execute that nonexistent helper was an erroneous
+  validation step, not evidence of a workflow defect. No helper needs to be
+  restored or provisioned.
+- The retry was deliberately interrupted during live coverage lookups because
+  of that incorrect diagnosis, before the workflow could finish. It is
+  therefore **not a passing nf-test run**, but it does not demonstrate a
+  FastME helper failure either. No snapshots were refreshed. Rerun the workflow
+  with the intended reference-data versions to finish integration validation.
 - Standalone full-report validation with a real FastME tree and manually mapped
   validation-only tip labels also cannot establish the full workflow: missing
   P5 output makes the existing `index.html` access to `db_coverage.full` fail
