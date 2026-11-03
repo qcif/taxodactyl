@@ -7,7 +7,8 @@
 
 Turn one BLAST XML file (all queries) into per-query hit files the rest of
 the pipeline reads, compute hit-level statistics that BLAST does not give,
-and list retained hit accessions for taxid lookup. This is where the query
+preserve every parsed hit in internal `all_xml_hits.json`, then select context
+blocks and list only retained hit accessions for taxid lookup. This is where the query
 folders `query_NNN_<sample_id>` are **created**.
 
 ## 2. Interface
@@ -19,17 +20,17 @@ folders `query_NNN_<sample_id>` are **created**.
 | `--metadata-csv` | yes | loaded into config; not otherwise used by P1 |
 | `--output-dir` | no | default `config.output_dir` |
 | `--blast-max-target-seqs` | no | positive integer cap on retained hits per query (default 2000) |
-
 | `--blast-context-min-identity` | no | finite fraction 0–1, default 0.935; independent of candidate eligibility |
 
 Outputs (names from [shared/config.md §3.5](shared/config.md)):
 
 | File | Content |
 |---|---|
-| `<out>/accessions.txt` | unique hit accessions, one per line, unordered, trailing newline |
+| `<out>/accessions.txt` | unique retained hit accessions, one per line, unordered, trailing newline |
 | `<out>/query_NNN_<id>/query_title.txt` | BLAST query definition line |
-| `<out>/query_NNN_<id>/all_hits.json` | §3 schema |
-| `<out>/query_NNN_<id>/all_hits.fasta` | one record per hit (only if the query has ≥1 hit) |
+| `<out>/query_NNN_<id>/all_xml_hits.json` | §3 schema, every XML hit; internal only |
+| `<out>/query_NNN_<id>/all_hits.json` | §3 schema, only block-selected hits; published |
+| `<out>/query_NNN_<id>/all_hits.fasta` | one record per selected hit; empty file for zero hits; published |
 
 ## 3. `all_hits.json` schema
 
@@ -59,15 +60,18 @@ Outputs (names from [shared/config.md §3.5](shared/config.md)):
 }
 ```
 
-This is the contract P3 consumes; see `../contracts/hits.md` (to write).
+P3 and P6 consume only `all_hits.json`; see [hits contract](../contracts/hits.md).
+`all_xml_hits.json` uses the same schema but includes every XML hit. It is
+written before selection, never staged downstream or published, and has no
+FASTA counterpart. Filenames are working names and remain open to discussion.
 
 ## 4. Requirements
 
 | ID | Requirement |
 |---|---|
 | P1-001 | The *i*-th BLAST iteration (0-based) MUST be written to the query folder of the *i*-th record of `--query-fasta` (CFG-024). No id check is made between the two (P1-D-002). |
-| P1-002 | Every iteration MUST produce a query folder, `query_title.txt` and `all_hits.json`, even with zero hits (empty `hits`). |
-| P1-003 | `all_hits.fasta` MUST be written only when the query has ≥1 hit. (Nextflow then creates an empty one — NF-PR-050.) |
+| P1-002 | Every iteration MUST produce a query folder, `query_title.txt`, `all_xml_hits.json` and `all_hits.json`, even with zero hits (empty `hits`). |
+| P1-003 | `all_hits.fasta` MUST contain only selected sequences and MUST be empty for zero hits. No complete-extraction FASTA is written. Nextflow retains its empty-file fallback (NF-PR-050). |
 | P1-004 | `hit_subject` MUST be the hit definition truncated at the first `>` (drops merged "redundant" definitions) and stripped. |
 | P1-005 | Hit **bitscore** = Σ HSP bits. |
 | P1-006 | Hit **e-value** = the HSP e-value if exactly one HSP, else `effective_search_space · 2^(−Σ bits)`. |
@@ -79,9 +83,9 @@ This is the contract P3 consumes; see `../contracts/hits.md` (to write).
 | P1-012 | `all_hits.fasta` records: id = accession (no version), description = `hit_subject`, sequence = the **aligned subject string of the last HSP** of the hit (P1-D-001). Only retained hits, in relative BLAST order, not identity order; associate by original hit position, including repeated accessions. |
 | P1-013 | `accessions.txt` MUST contain each distinct retained hit accession across all queries once. |
 | P1-014 | Printable alignment: 80-column blocks, 10-char groups, `Query`/`Sbjct` lines with start coordinates and the midline between. Display only. |
-
 | P1-015 | After stable aggregate-identity sorting, retain blocks of up to 500 until the last retained identity is ≤ `blast_context_min_identity` or available hits / `blast_max_target_seqs` are exhausted. Retain the entire stopping block, even below threshold. The first block is always retained if hits exist. |
-| P1-016 | Cap replay XML after sorting too; allow partial blocks and caps below 500. Preserve all retained HSP evidence and matching FASTA records. Log retrieved/retained counts, minimum retained identity and stopping reason per query. |
+| P1-016 | Cap the selected set from replay XML after sorting too, without truncating `all_xml_hits.json`; allow partial blocks and caps below 500. Preserve all retained HSP evidence and matching FASTA records. Log retrieved/retained counts, minimum retained identity and stopping reason per query. |
+| P1-017 | Parse every XML hit independently of selection settings, write `all_xml_hits.json`, then select in a separate operation within P1 without modifying the complete records. The internal JSON must be invariant under cap/threshold changes on identical XML. No decision file or second accession list is produced. |
 
 ## 5. Failure behaviour
 
@@ -112,8 +116,11 @@ P1-005 (`test_calculate_hit_bitscore`), P1-006 (single and multiple
 e-value), P1-007, P1-009, P1-008 (incl. overlap), `test_parse_blast_xml`
 (P1-002/011 structure). `test_blast_context.py` covers P1-012/015/016,
 rounding, ties, repeated accessions, multi-HSP aggregate stopping, empty queries
-and invalid/non-default configuration. **Not covered:** P1-001, P1-003, P1-012 (FASTA
-content), P1-013, `main()`.
+and invalid/non-default configuration. Its P1 entrypoint regression covers
+P1-003/013/017: complete JSON is written before selection and remains invariant,
+only selected FASTA/accessions are written, duplicate accessions preserve
+sequence associations, and empty queries produce empty selected FASTA.
+**Not covered:** P1-001 positional query-ID validation.
 
 ---
 

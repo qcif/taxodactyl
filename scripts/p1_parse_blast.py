@@ -6,7 +6,7 @@ import logging
 from Bio import SeqIO
 from pathlib import Path
 
-from src.blast.parse_xml import parse_blast_xml
+from src.blast.parse_xml import parse_blast_xml, select_blast_hits
 from src.utils import existing_path
 from src.utils.config import Config
 from src.utils.config.mappings import CLI_ARGS
@@ -19,8 +19,10 @@ config = Config()
 def main():
     args = _parse_args()
     config.update_from_args(args)
-    hits, fastas = parse_blast_xml(
-        args.blast_xml_path, config.blast_max_target_seqs,
+    complete_hits, complete_fastas = parse_blast_xml(args.blast_xml_path)
+    _write_hits(complete_hits, filename=config.all_xml_hits_json)
+    hits, fastas = select_blast_hits(
+        complete_hits, complete_fastas, config.blast_max_target_seqs,
         config.blast_context_min_identity,
     )
     _write_hits(hits)
@@ -70,11 +72,11 @@ def _parse_args():
     return parser.parse_args()
 
 
-def _write_hits(hits):
+def _write_hits(hits, filename=None):
     """Write a JSON file of BLAST hits for each query sequence."""
     for i, query_hits in enumerate(hits):
         query_dir = config.create_query_dir(i, query_hits['query_title'])
-        path = query_dir / config.hits_json
+        path = query_dir / (filename or config.hits_json)
         with path.open("w") as f:
             json.dump(query_hits, f, indent=2)
             logger.info(f"BLAST hits for query [{i}] written to {path}")
@@ -83,8 +85,6 @@ def _write_hits(hits):
 def _write_fastas(query_fastas):
     """Write a fasta file of hit subjects for each query sequence."""
     for i, fastas in enumerate(query_fastas):
-        if not fastas:
-            continue
         path = config.get_query_dir(i) / config.hits_fasta
         with open(path, "w") as f:
             SeqIO.write(fastas, f, "fasta")

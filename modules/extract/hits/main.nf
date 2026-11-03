@@ -26,6 +26,12 @@ process EXTRACT_HITS {
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory
 
+    // Publish the selected downstream assets only; all_xml_hits.json stays internal.
+    publishDir "${params.outdir}", mode: 'copy',
+        pattern: "query_*/${task.ext.hits_json}"
+    publishDir "${params.outdir}", mode: 'copy',
+        pattern: "${task.ext.accessions_filename}"
+
     script:
     """
     # Run the BLAST hit parsing Python script

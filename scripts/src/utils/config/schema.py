@@ -199,6 +199,8 @@ class ConfigSchema(BaseModel):
         default='taxonomy.csv', description="Taxonomy filename")
     query_title_file: str = Field(
         default='query_title.txt', description="Query title filename")
+    all_xml_hits_json: str = Field(
+        default="all_xml_hits.json", description="Internal complete BLAST hits JSON filename")
     hits_json: str = Field(
         default='hits.json', description="Hits JSON filename")
     hits_fasta: str = Field(

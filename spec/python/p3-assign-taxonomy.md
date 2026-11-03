@@ -33,6 +33,10 @@ sequences go into the tree.
 **Reads** (in `query_dir` unless noted): `all_hits.json`, `all_hits.fasta`,
 `<output_dir>/taxonomy.csv` (BLAST mode), metadata via config.
 
+BLAST inputs contain only P1 block-selected hits. `all_xml_hits.json` is
+internal to P1 and is not staged here; existing readers and evaluation rules
+are unchanged.
+
 **Writes** (all in `query_dir`):
 
 | File | Always | Content |

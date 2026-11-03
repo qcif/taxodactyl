@@ -16,8 +16,19 @@ guarantees consumers rely on:
 |---|---|
 | HIT-001 | Top-level keys `query_title`, `query_length`, `hits`. |
 | HIT-002 | `hits` sorted by `identity` descending; each hit has `hit_id`, `hit_subject`, `accession` (no version), `alignment_length`, `subject_length`, `query_coverage`, `bitscore`, `e_value`, `identity` (0–1, 3 dp), `hsps[]`. |
-| HIT-004 | BLAST outputs contain only the selected 500-hit context blocks (P1-015/016), capped by `blast_max_target_seqs`; membership agrees across JSON, FASTA and accession union. Raw XML remains unfiltered retrieval evidence. |
+| HIT-004 | Downstream BLAST outputs (`all_hits.*` and `accessions.txt`) contain only the selected 500-hit context blocks (P1-015/016), capped by `blast_max_target_seqs`; membership agrees across JSON, FASTA and accession union. Raw XML remains unfiltered retrieval evidence. |
 | HIT-003 | After P3 (in `candidates.json`, not in this file) hits gain `taxonomy`, `species`, `taxid`, `ncbi_blast_url`, `is_candidate_hit`. |
+
+### Internal complete extraction (BLAST only)
+
+`all_xml_hits.json` preserves every XML hit using the same schema and stable
+identity sort as `all_hits.json`. P1 writes it before selecting context; its
+membership does not depend on the cap or stopping threshold, including replay
+XML above the cap. It stays in the extraction work directory, is not staged
+to downstream processes or published, and has no FASTA counterpart. P1 keeps
+sequence associations in memory until selected FASTA records are written.
+There is no separate decision file or complete-set accession list. These hit
+filenames are working names, open to discussion.
 
 ## 2. `all_hits.json` (BOLD)
 
@@ -31,7 +42,8 @@ no alignment statistics. See [../python/p1-bold-search.md §4](../python/p1-bold
 Record id = accession (BLAST) or BOLD `hit_id`; description = hit subject /
 taxonomic identification; sequence = **last HSP's aligned subject string
 including gaps** (BLAST, P1-D-001) or full nucleotides with gaps removed
-(BOLD). Written only when the query has hits.
+(BOLD). BLAST writes an empty file for zero selected hits; BOLD retains its
+existing output behavior.
 
 ## 4. `accessions.txt`, `taxids.csv`, `taxonomy.csv`
 

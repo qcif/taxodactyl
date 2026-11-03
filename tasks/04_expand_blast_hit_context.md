@@ -1,4 +1,4 @@
-# Task 04 — Expand BLAST context in 500-hit blocks
+# Task 04 — Preserve all BLAST hits and select context in 500-hit blocks
 
 **Status:** active
 
@@ -6,381 +6,358 @@
 
 **Issue:** [#160 — Consider blast hits down to 93.5% identity for better context](https://github.com/qcif/taxodactyl/issues/160)
 
-**Scope:** Rename the Nextflow maximum-hit parameter to
-`blast_max_target_seqs` (default 2000) and use it to limit
-BLAST retrieval per query, then retain blocks
-of 500 sorted by Taxodactyl aggregate identity until the last retained hit is
-at or below the effective stopping threshold (default 93.5%), or the available
-hits are exhausted. Use the retained set
-for downstream screening and the report.
+**Scope:** Rename the retrieval cap to `blast_max_target_seqs` (default 2000),
+extract every XML hit into `all_xml_hits.json`, then derive
+separate `all_hits.json` / `all_hits.fasta` using 500-hit blocks.
+Publish `all_hits.*`; keep `all_xml_hits.json` as an internal workflow artifact.
+All downstream analysis and reporting use selected hits only. Complete hits
+remain available internally for extraction/selection inspection.
 
-**Source material:** Issue #160 and its supplied discussion through 29 October
-2025; the user's clarification that blocks remain required and the stopping
-comparison uses aggregate identity after BLAST; `spec/python/p1-parse-blast.md`,
-`spec/contracts/hits.md`, `spec/python/p3-assign-taxonomy.md`,
+**Source material:** Existing issue discussion through 29 October 2025;
+user correction on 3 November 2026 requiring complete extraction followed by
+separate selection, and explicit confirmation to keep the 500-hit block rule;
+`spec/python/p1-parse-blast.md`, `spec/contracts/hits.md`,
+`spec/python/p3-assign-taxonomy.md`, `spec/python/p6-report.md`,
 `spec/nextflow/processes.md`, and `spec/nextflow/params.md`.
 
 ## Preconditions
 
-- No active Spec Kit feature directory is configured. The setup script
-  `.specify/scripts/bash/setup-tasks.sh --json` reported “Feature directory not
-  found”. This brief uses the existing `spec/` documents, source and tests.
+- Update this existing task, preserving number 04 and its entry in
+  `tasks/active.md`. Its implementation worktree is
+  `.worktrees/task-04-expand-blast-hit-context`; reconcile any implementation
+  there against this corrected contract before continuing it.
+- No active Spec Kit feature design directory is configured. Use the existing
+  `spec/` documents, source and tests rather than synthesizing feature files.
   `.specify/memory/constitution.md` is an unfilled template.
-- `modules/blast/blastn/main.nf` currently uses `-max_target_seqs 500` with
+- Baseline `modules/blast/blastn/main.nf` uses `-max_target_seqs 500`,
   `-task megablast`, XML output (`-outfmt 5`), `-evalue 0.05`, `-reward 1`
   and `-penalty -3`. `conf/process.config` pins BLAST 2.16.0.
-- `scripts/src/blast/parse_xml.py` already computes aggregate identity and
-  stably sorts JSON hits by it. Its FASTA list remains in original BLAST order.
-  `scripts/p1_parse_blast.py` currently writes all parsed hits and accessions.
-- The current Nextflow parameter `blast_max_target_seqs_for_report` defaults
-  to 2000 in `conf/params.config`
-  and is passed to P1 by `modules/extract/hits/main.nf`. It does not control
-  BLAST. P1 changing its in-process configuration does not propagate that
-  value to the separately launched P6 report process. Audit the actual report
-  path through `modules/report/main.nf`, `scripts/p6_report.py` and
-  `scripts/src/report/report.py` when correcting the reported cap.
+- Baseline P1 extracts all XML hits without coverage or identity filtering.
+  `scripts/src/blast/parse_xml.py` computes aggregate identity and stably sorts
+  JSON hits by it; FASTA records retain BLAST order.
+- `blast_max_target_seqs_for_report` currently defaults to 2000 and is passed
+  to P1, but does not control BLAST or parsing. P1's configuration changes do
+  not propagate to the separately launched P6 process.
 
 ## Objective
 
-Give analysts additional context when the first 500 hits are all very similar,
-while bounding retrieval and downstream work. The agreed behavior is:
+The complete extraction is an inspectable record, independent of subsequent
+selection. Never overwrite `all_xml_hits.json` with a selected subset. This
+internal JSON contains every hit present in the supplied XML, not every
+database match. The established downstream filename `all_hits.*` now means
+all block-selected hits available for downstream evaluation, not all XML hits.
 
-1. Run BLAST once with `-max_target_seqs` set from the renamed Nextflow
-   parameter `blast_max_target_seqs` (default 2000, integer >= 1),
-   leaving `-perc_identity` unset. This parameter
-   will control retrieval, parser selection limit and reported search cap.
-2. Compute each retrieved hit's aggregate identity using Taxodactyl's existing
-   calculation, then sort by that identity descending.
-3. Retain the first 500 hits, or all available hits if fewer exist.
-4. If the last retained hit has aggregate identity **greater than the effective stopping threshold**,
-   append another block of up to 500. Repeat until that last identity is
-   **at or below that threshold**, or the available hits/cap are exhausted.
-5. Keep the entire stopping block, including hits below the threshold.
+1. Run BLAST once with `-max_target_seqs` from `blast_max_target_seqs`
+   (default 2000, integer >= 1). Leave `-perc_identity` unset.
+2. Extract every retrieved hit and its HSP evidence. Calculate identity using
+   the existing length-weighted aggregate, rounded to three decimals, and
+   sort JSON hits descending with stable BLAST-order ties.
+3. Write the complete `all_xml_hits.json` before deriving a
+   separate selected set. Coverage/length and identity eligibility filters
+   must not remove records from the complete extraction.
+4. Select an initial block of up to 500 hits in aggregate-identity order.
+   If its last hit is above the effective stopping threshold (default 0.935),
+   append another block, until the last retained identity is at or below the
+   threshold or available hits/the configured cap are exhausted.
+5. Keep the whole stopping block, including below-threshold hits. This is a
+   block stopping condition, not a per-hit minimum-identity exclusion filter.
+6. Use the selected set for every downstream consumer, including taxonomy,
+   candidate evaluation and reporting. Keep the complete set and calculated
+   identities internal to extraction/selection for inspection in work files.
 
-**The stopping threshold defaults to 0.935 (93.5%).** It is a block stopping
-condition, not an individual-hit exclusion filter. Its configuration source
-is the independent `blast_context_min_identity` parameter (see decision below). Candidate
-eligibility remains a separate operation even if it shares `min_identity`.
-
-For each query, the implementation must be equivalent to:
+For each query, after complete extraction and stable identity sorting:
 
 ```python
-# stopping_identity is supplied by the chosen configuration option below
-# hits have already been stably sorted by aggregate identity, descending
-available = min(len(hits), max_target_seqs)  # configured cap, default 2000
+all_xml_hits = parsed_query["hits"]  # complete; never truncate or mutate membership
+available = min(len(all_xml_hits), max_target_seqs)
 end = min(500, available)
-while end < available and hits[end - 1]["identity"] > stopping_identity:
+while end < available and all_xml_hits[end - 1]["identity"] > stopping_identity:
     end = min(end + 500, available)
-retained = hits[:end]
+all_hits = all_xml_hits[:end]  # downstream selected set
 ```
 
-This also defines replay behavior for XML containing more hits than the
-configured cap: selection is limited to that cap in aggregate-identity order.
-That parser limit does not reproduce how BLAST would have limited the original
-search. A cap below 500 limits the first block; a cap not divisible by 500
-allows a partial final block. The cap does not change block size or threshold.
+Replay XML may contain more hits than the cap. Preserve every one in
+`all_xml_hits.json`; apply the cap only to selection. This replay cap does not
+reproduce which records a capped live BLAST search would retrieve.
 
-## Retrieval and downstream consequences
+## Output and consumer contracts
 
-### What does BLAST's “top” mean?
-
-BLAST selects/ranks matches using alignment significance and scoring, rather
-than Taxodactyl aggregate percent identity. Lower E-values indicate stronger
-statistical significance; a longer lower-identity alignment can outrank a
-short high-identity alignment. The [NCBI manual](https://www.ncbi.nlm.nih.gov/sites/books/NBK279684/)
-defines `max_target_seqs` as a retained sequence limit and describes database
-sequence order as the tie breaker. BLAST uses heuristic search and retention;
-2000 returned hits are not a guarantee of the globally highest-identity 2000
-sequences in the database. Python sorting only orders hits actually retrieved.
-
-Record the pinned runtime's version and relevant `blastn -help` descriptions
-with validation evidence. Do not equate its XML rank with the sum of HSP bit
-scores or aggregate identity calculated by this parser. The formatting option
-`-sorthits` is ignored for XML formats above 4 in the
-[NCBI implementation](https://www.ncbi.nlm.nih.gov/IEB/ToolBox/CPP_DOC/doxyhtml/blast__args_8cpp_source.html),
-so sorting and block selection belong in Python. No BLAST identity cutoff or
-new HSP/coverage filter is needed for this task.
-
-### Which hits proceed, and can query counts differ?
-
-Yes, with the default cap, counts vary independently by query: 500, 1000,
-1500 or 2000,
-with partial final blocks when results run out and zero when no hits exist.
-The first block is retained even if all its hits are below the effective stopping threshold.
-
-| Stage | Input and consequence |
+| Artifact | Membership and purpose |
 |---|---|
-| P1 parsing | Inspect all retrieved hits to calculate identity and choose the retained blocks. Keep raw XML as retrieval evidence. |
-| Taxonomy lookup | `accessions.txt` contains the unique union of retained hit accessions across queries. Discarded hits do not add lookup work. |
-| P3 screening | All retained hits are available to `scripts/p3_assign_taxonomy.py`; its alignment-length/coverage, identity and species-selection logic still determines downstream eligibility. |
-| Candidate summaries | Selected-species summaries can include lower-identity hits for those species. Additional context can change hit counts, minimum/median identity and flags. |
-| Phylogeny | `_get_accessions_for_phylogeny` samples from coverage/length-filtered hits, including context outside selected candidate species. Existing per-species and overall selection rules apply; the current overall maximum is soft because it is checked before adding a species. |
-| P4/P5 and report | `scripts/p4_source_diversity.py` and `scripts/p5_db_coverage.py` consume their existing downstream inputs. `scripts/src/report/report.py` reads the retained `all_hits.json` for the BLAST table. Candidate or tree changes may affect later conclusions. |
+| `blast_result.xml` | Complete raw retrieval evidence. |
+| `query_*/all_xml_hits.json` | Every XML hit, original top-level query schema and full HSP evidence, sorted by calculated identity. Internal only; not published. |
+| `query_*/all_hits.json` | Same query/hit schema, containing only block-selected hits, sorted by identity. Published. |
+| `query_*/all_hits.fasta` | Corresponding selected records in relative BLAST order. Published. |
+| `accessions.txt` | Unique union of selected-hit accessions across queries; the only accession list, used for downstream taxonomy lookup. |
 
-Retaining more hits therefore does not mean aligning every retained sequence
-or making every hit a candidate. It does mean more taxonomy/screening work and
-potentially different scientific outputs. Validate those effects without
-changing downstream eligibility or sampling rules as part of this task.
+Do not produce a separate selection-decision file or a complete-set accession
+list. `accessions.txt` is generated after block selection and contains only
+selected accessions. Selection runs in P1 in this implementation.
 
-## File-by-file impact map
+Selection must preserve an exact prefix of the stably identity-sorted complete
+list. Validate this internally, using original hit positions to preserve
+JSON/FASTA associations even when accessions repeat. Preserve the existing
+complete JSON schema. Log complete/selected counts, effective cap/threshold
+and termination reason in the selection process; do not add an audit artifact.
 
-“Required edit” means this task changes that file's behavior or descriptions.
-“Reuse / validate” means an existing interface already fits; edit only if the
-integration checks expose a concrete gap. Downstream consumers receive different
-records, but do not need new selection algorithms.
+Every downstream BLAST consumer uses `all_hits.*` or outputs derived
+from it. P3 reads selected JSON/FASTA; P6 reads selected JSON for its BLAST
+table. Taxonomy lookup uses the selected-only `accessions.txt`. Candidate
+outputs remain based on P3's existing coverage/length, identity and
+species-selection rules. A block-selected hit is not necessarily a candidate.
 
-### Nextflow modules and workflow
-
-| File | Change category | Impact |
-|---|---|---|
-| `modules/blast/blastn/main.nf` | Required edit | Replace hard-coded `-max_target_seqs 500` with `params.blast_max_target_seqs`; leave `-perc_identity` unset. |
-| `modules/extract/hits/main.nf` | Required edit | Read the renamed cap and pass it to P1 as `--blast-max-target-seqs`; also pass the chosen threshold setting. Verify non-default values and invalid-value handling; the returned JSON/FASTA/accessions now contain selected blocks. |
-| `modules/report/main.nf` | Required edit | Pass the same parameter explicitly to P6 as `--blast-max-target-seqs`; P6 runs separately from P1. |
-| `workflows/taxodactyl.nf` | Reuse / validate | Existing channels carry retained hit files and accession lists. Verify per-query routing with different retained counts; no new channel or workflow branch is planned. |
-| `modules/blast/blastdbcmd/main.nf` | Downstream validation | Looks up taxonomy IDs for the unique retained accession union; potentially more lookups. Existing command/interface suffices. |
-| `modules/extract/taxonomy/main.nf` | Downstream validation | Receives the resulting taxid list and runs P2; potentially more taxonomy rows. |
-| `modules/extract/candidates/main.nf` | Downstream validation | Runs P3 on retained hit bundles; candidate and phylogeny outputs may change. |
-| `modules/mafft/align/main.nf`, `modules/fastme/main.nf` | Downstream validation | Operate on P3's sampled phylogeny sequences, not all retrieved hits. Sequence membership and resulting trees may change. |
-| `modules/evaluate/sourcediversity/main.nf`, `modules/evaluate/databasecoverage/main.nf` | Downstream validation | Existing P4/P5 processes consume candidate-derived outputs; results and cost may change as candidates change. |
-
-### Python entry points and supporting modules
-
-| File | Change category | Impact |
-|---|---|---|
-| `scripts/p1_parse_blast.py` | Required edit | Reuse its existing cap argument, pass the effective cap into the parser, and write JSON/FASTA/accessions from the selected records. Update CLI help to describe its selection role. |
-| `scripts/src/blast/parse_xml.py` | Required edit | Accept the cap and effective stopping threshold, perform per-query aggregate-identity sorting and 500-hit block selection, preserve hit-to-FASTA associations, and log retrieved/retained counts. |
-| `scripts/p6_report.py` | Required edit | Accept `--blast-max-target-seqs` using the existing mapping and apply it to P6 configuration before rendering. |
-| `scripts/src/utils/config/schema.py` | Required edit | Constrain the existing `blast_max_target_seqs` field to a positive integer for standalone Python as well as Nextflow use. Ensure fractional values cannot be silently coerced/truncated along the CLI/config path. |
-| `scripts/src/utils/config/mappings.py` | Reuse / validate | The `blast-max-target-seqs` mapping already exists. Reuse it in P1/P6; inspect conversion/validation behavior before introducing any additional mapping. |
-| `scripts/src/report/report.py` | Reuse / validate | Already reads `all_hits.json` and exposes `hits` and `config` to templates. Verify the count comes from retained hits and the cap comes from P6's effective configuration; edit only if necessary. |
-| `scripts/p2_extract_taxonomy.py` | Downstream validation | Resolves taxonomy for retained accessions through its existing taxid input. |
-| `scripts/p3_assign_taxonomy.py` | Downstream validation | Screens the retained set, computes candidate counts/minimum/median identity, and samples phylogeny sequences. Preserve its existing eligibility and sampling rules. |
-| `scripts/p4_source_diversity.py`, `scripts/p5_db_coverage.py` | Downstream validation | Process existing candidate-derived inputs; inspect changed conclusions and runtime without adding the block algorithm here. |
-
-### Templates and configuration
-
-| File | Change category | Impact |
-|---|---|---|
-| `scripts/src/report/templates/components/results/1a-blast-hits-modal.html` | Required edit | Explain selected blocks, show retained count, and correct rank wording to aggregate-identity order. |
-| `scripts/src/report/templates/macros/db-coverage-target-modal.html` | Required edit | Distinguish the effective retrieval cap, retained context and candidate eligibility. |
-| `conf/params.config`, `nextflow_schema.json` | Required edit | Rename the parameter to `blast_max_target_seqs`, preserving default 2000 and the positive-integer constraint; update its documented role from reporting-only to retrieval/selection/reporting. |
-| `scripts/config/default.yml` | Reuse / validate | Already defaults `blast_max_target_seqs` to 2000; keep it aligned with the Nextflow default. |
-
-The specification/documentation edits and validation files are listed in their
-sections below. This map describes planned implementation; no runtime modules
-have been edited while preparing this brief.
+`all_xml_hits.json` is internal to extraction and selection, not an input to P2/P3,
+P4/P5, phylogeny or P6. Do not stage it to those processes or publish it.
+Internal work files allow comparison of complete and selected hits; the
+report does not show hits excluded by block selection. Selection runs in P1
+before emitting the selected-only downstream bundle.
 
 ## Implementation
 
-### 1. Rename the cap and increase retrieval
+**Provisional architecture and working filenames:** Use `all_hits.json` /
+`all_hits.fasta` for selected downstream hits and `all_xml_hits.json` for complete
+internal extraction for now. Final hit filenames remain open to discussion.
+Selection remains within P1 as recorded below; preserve the existing
+downstream interfaces. Complete extraction
+into `all_xml_hits.json` and taxonomy lookup on selected accessions are fixed
+requirements of this implementation. The accession-list filename is fixed
+as `accessions.txt`, containing only selected accessions.
 
-Rename `blast_max_target_seqs_for_report` to `blast_max_target_seqs` in
-`conf/params.config` and `nextflow_schema.json`, including schema error messages.
-Update `modules/extract/hits/main.nf` to read the renamed parameter. Python's
-`blast_max_target_seqs` field and `--blast-max-target-seqs` CLI already match;
-reuse them. Use the new name throughout active configuration, code and docs.
-Document the migration for existing command lines and parameter files. A
-compatibility alias is not part of this brief; do not add a second effective
-cap. Historical report artifacts may retain the original name; refresh expected
-reports when regenerated as validation evidence.
+### 1. Preserve complete extraction and derive selection
 
-In `modules/blast/blastn/main.nf`, replace the hard-coded limit with
-`-max_target_seqs ${params.blast_max_target_seqs}`. Keep the existing
-2000 default and integer >= 1 validation in `conf/params.config` and
-`nextflow_schema.json`. Preserve the other search settings, XML output,
-compressed-input handling and version recording. Leave `-perc_identity` unset. Blocks operate on this one
-retrieval result; they do not trigger repeated BLAST searches.
+- In `scripts/src/blast/parse_xml.py`, retain the existing complete parser
+  output. Implement selection as a separate helper/operation after parsing,
+  without truncating the parser's complete lists. Reuse stored identity:
+  `round(sum(hsp.identities) / sum(hsp.align_length), 3)`, capped at 1 for
+  positive-length alignments. Do not replace it with best-HSP identity.
+- In `scripts/p1_parse_blast.py`, write the complete internal JSON, then derive and
+  write selected assets and the single selected-only `accessions.txt`. Preserve all HSPs, stable ties and
+  original FASTA content/order. Do not extend blocks to include tied records.
+  Write empty selected JSON and an empty selected FASTA
+  when selection is empty. Preserve existing complete-set zero-hit behavior;
+  `modules/extract/hits/main.nf` still ensures the downstream `all_hits.fasta`
+  exists. Complete extraction with no hits still produces internal JSON
+  containing an empty hit list. Do not create a complete-extraction FASTA.
+- Keep the existing `hits_json` / `hits_fasta` defaults and readers pointing
+  to `all_hits.json` / `all_hits.fasta`. P1 writes the selected set to those
+  established paths; downstream readers need no filename migration. Add
+  internal complete-file name `all_xml_hits.json` in
+  P1 or, if configurable, `scripts/config/default.yml` and
+  `scripts/src/utils/config/schema.py`. Update
+  `scripts/src/utils/config/config.py` / `scripts/src/utils/config/mappings.py`
+  only if needed to support those internal settings, not to introduce new
+  selected-file readers.
+- Log complete and selected counts, minimum selected identity when present,
+  effective configuration and termination reason. Changing selection settings
+  on the same XML must not change complete-set content.
 
-### 2. Select blocks and preserve output associations
+### 2. Wire retrieval and downstream consumers
 
-1. Implement the objective's per-query selection in
-   `scripts/src/blast/parse_xml.py`, after aggregate identity calculation and
-   stable sorting. Use existing stored identity values:
-   `round(sum(hsp.identities) / sum(hsp.align_length), 3)`, capped at 1 for
-   valid positive-length alignments. This is a length-weighted aggregate over
-   all HSPs, not an average of HSP percentages or a best-HSP identity.
-   Compare those rounded values at block boundaries; equality stops expansion.
-   Pass the configured cap and effective stopping threshold from
-   `scripts/p1_parse_blast.py` into the parser;
-   reuse its existing `--blast-max-target-seqs` argument and the wiring in
-   `modules/extract/hits/main.nf`. Validate positive integer caps for standalone
-   Python use as well as Nextflow runs; reject zero, negative and fractional
-   values rather than silently falling back to a default.
-2. Preserve each hit's association with its original FASTA record while sorting
-   and selecting. Filter FASTA records by selected original hit positions or
-   another unambiguous association, rather than slicing the unsorted FASTA
-   list or relying solely on accession membership. Preserve retained FASTA
-   records' relative BLAST order and existing sequence content (P1-012).
-   Keep all HSP details for each selected hit and stable BLAST order for tied
-   identities. Do not extend block boundaries to include additional ties.
-3. In `scripts/p1_parse_blast.py`, ensure `all_hits.json`, `all_hits.fasta` and
-   `accessions.txt` derive from the same selected records. JSON keeps aggregate
-   identity order; FASTA keeps the relative order described above; accessions
-   remain unique across queries. Preserve existing filenames, query folders,
-   top-level JSON schema and zero-hit output behavior. The published
-   `blast_result.xml` remains the complete raw retrieval output.
-4. Log per-query retrieved and retained counts, minimum retained aggregate
-   identity when present, and whether the threshold or retrieval/selection
-   limit ended expansion. Confirm the retained bundles flow through
-   `workflows/taxodactyl.nf`, `modules/blast/blastdbcmd/main.nf`,
-   `modules/extract/taxonomy/main.nf` and `modules/extract/candidates/main.nf`.
-   Keep selection confined to the BLAST path.
+- Rename `blast_max_target_seqs_for_report` to `blast_max_target_seqs` in
+  `conf/params.config` and `nextflow_schema.json`; default 2000. Use it in
+  `modules/blast/blastn/main.nf`. Preserve other BLAST settings and version
+  recording. Blocks do not trigger repeated BLAST searches.
+- In `modules/extract/hits/main.nf`, pass the cap and effective threshold to P1.
+  Emit selected JSON/FASTA for downstream staging. Keep complete JSON local
+  to extraction; it is not a Nextflow downstream output.
+  Publish only the selected JSON/FASTA, plus the single selected-only
+  `accessions.txt`; do not publish `all_xml_hits.json`.
+  Update `conf/process.config` file-name bindings where needed. Audit all
+  downstream staging and publish rules so complete files cannot enter
+  analysis/report bundles or published output through wildcard patterns. Selected files must remain
+  published even if later analysis fails. Complete files remain in work
+  directories for internal inspection only.
+- Update `workflows/taxodactyl.nf` to carry the selected-only per-query bundle by
+  query identity and route `accessions.txt` to
+  `modules/blast/blastdbcmd/main.nf`. Verify
+  `modules/extract/taxonomy/main.nf` receives the resulting taxid list.
+- Preserve the existing hit filenames and readers in
+  `modules/extract/candidates/main.nf` and `scripts/p3_assign_taxonomy.py`:
+  `all_hits.*` already contains only the selected set when staged downstream.
+  Validate routing rather than adding filename remapping or new readers.
+  Preserve BOLD behavior and P3's existing eligibility/sampling algorithms.
+- Validate `modules/mafft/align/main.nf`, `modules/fastme/main.nf`,
+  `scripts/p4_source_diversity.py` and `scripts/p5_db_coverage.py` with their
+  existing downstream inputs. Retaining more context can change candidates,
+  summaries, flags and tree membership; it does not mean aligning every hit.
 
-### 3. Make reports describe the actual selection
+### 3. Report only selected hits
 
-1. Update `scripts/src/report/templates/components/results/1a-blast-hits-modal.html`
-   to describe retained context, show its actual count, and explain the
-   500-hit blocks and effective aggregate stopping threshold (93.5% by
-   default), rendered from configuration. Correct the rank
-   tooltip: the table position is aggregate-identity rank among retained hits.
-2. Update `scripts/src/report/templates/macros/db-coverage-target-modal.html`
-   so it distinguishes the configured retrieval limit from retained context and
-   candidate eligibility. A capped search may miss other useful hits;
-   reaching the configured threshold is not guaranteed. Avoid claiming every retained hit meets
-   candidate criteria or that BLAST retrieved the globally top identity hits.
-3. Pass the same `params.blast_max_target_seqs` value directly to
-   P6 from `modules/report/main.nf`. Add support for the existing Python
-   `--blast-max-target-seqs` CLI mapping to `scripts/p6_report.py`, using
-   `scripts/src/utils/config/mappings.py` and the `blast_max_target_seqs` field
-   in `scripts/src/utils/config/schema.py`. Ensure
-   `scripts/src/report/report.py` renders that effective value. P1's
-   in-process configuration does not propagate to P6. Keep the Python default
-   in `scripts/config/default.yml` aligned at 2000 and validate non-default
-   values end to end. Pass the effective stopping-threshold setting to P6
-   as well, using the option selected below, so report wording agrees with P1.
+- In `scripts/src/report/report.py` and
+  `scripts/src/report/templates/components/results/1a-blast-hits-modal.html`,
+  keep the existing `all_hits.json` reader and render only block-selected hits with their calculated
+  aggregate identity. Display the selected count, effective threshold, cap
+  and block rule. Define table rank as aggregate-identity rank among selected
+  hits, not BLAST score rank. Do not add All / Selected / Excluded views or
+  read complete extraction to derive excluded rows or counts.
+- Distinguish block selection from P3 candidate eligibility. Below-threshold
+  hits in the final selected block remain in the BLAST table; selection does
+  not itself mean they meet candidate criteria.
+- Update `scripts/src/report/templates/macros/db-coverage-target-modal.html`
+  to distinguish the retrieval cap, selected context and candidate eligibility.
+  Explain that retrieval may exhaust without reaching the stopping threshold;
+  do not present the selected count as the total XML hit count.
+- In `modules/report/main.nf` and `scripts/p6_report.py`, pass the same effective
+  cap and threshold used by selection. Stage only selected hit files through
+  `workflows/taxodactyl.nf` to P6. Keep complete hits/counts and termination
+  details in extraction/selection work files and logs for internal inspection.
+- Publish selected JSON/FASTA. Complete internal JSON must not be published or
+  read by the report, even as a fallback for missing selected files.
 
 ## Documentation and configuration
 
-- Update `docs/detailed_tech.md`, `docs/params.md` and the P1 description in
-  `scripts/README.md` to explain retrieval versus block selection, per-query
-  counts and downstream use. Update relevant parameter descriptions in
-  `conf/params.config` and `nextflow_schema.json` consistently. Remove the
-  obsolete reporting-only description of the maximum-hit parameter:
-  it now changes search results and downstream analysis. Document that
-  existing non-default values now affect retrieval, with 2000 remaining the
-  default. Document migration from `blast_max_target_seqs_for_report` to
-  `blast_max_target_seqs` in `docs/params.md`.
-- Update `spec/nextflow/processes.md` (including NF-PR-030),
-  `spec/nextflow/params.md`, `spec/python/p1-parse-blast.md` and
-  `spec/contracts/hits.md` with the changed scientific/output behavior.
-  Resolve NF-D-005 in `spec/defects.md` and its specification references only
-  once the effective retrieval cap and actual rendered report agree.
-- Keep the renamed cap at default 2000 and block size at 500. Implement and
-  document the chosen stopping-threshold option below, default 0.935. Preserve
-  candidate eligibility and phylogeny selection algorithms.
+- Update `docs/detailed_tech.md`, `docs/params.md`, `scripts/README.md`,
+  `spec/python/p1-parse-blast.md`, `spec/contracts/hits.md`,
+  `spec/python/p3-assign-taxonomy.md`, `spec/python/p6-report.md`,
+  `spec/python/shared/config.md`, `spec/nextflow/processes.md` and
+  `spec/nextflow/params.md` to describe complete extraction, separate block
+  selection, artifacts, selected-only consumer routing and report content.
+  Explicitly document that `all_hits.*` now contains the selected set, while
+  complete extraction is preserved internally as `all_xml_hits.json`.
+- Document parameter migration and that the cap now controls retrieval and
+  selection, while replay extraction always preserves every XML hit. Resolve
+  NF-D-005 in `spec/defects.md` only when live retrieval and report agree.
+- Validate the cap as an integer >= 1 across CLI/config/Nextflow paths; reject
+  zero, negative and fractional values. Preserve three-decimal identity and
+  block size 500. Validate thresholds as finite numbers in [0, 1], including
+  zero, using the configuration decision below.
 
-## Decision — stopping threshold
+## Open decision — hit artifact filenames
 
-Use independent `blast_context_min_identity`, default 0.935 and range 0–1.
-The user selected this option on 31 October 2026 pending client verification;
-`min_identity` continues to control candidate eligibility independently.
-Wire `--blast-context-min-identity` / `BLAST_CONTEXT_MIN_IDENTITY` through
-configuration, P1 selection and P6 reporting. Validate finite values, including
-zero, and render the effective threshold in reports. Client feedback may lead
-to a later change; it does not block this implementation.
+**Status: open to discussion.** This brief uses `all_xml_hits.json` as the
+working name for the complete internal extraction (JSON only),
+and `all_hits.json` / `all_hits.fasta` as working names for the selected,
+published downstream set. Use these names for now; final naming remains
+open and does not block implementation with the working names.
+
+Preserve the distinction between complete internal extraction and selected
+downstream inputs regardless of the final names. If names change, update
+producer/consumer configuration, staging, publishing, documentation and
+validation consistently. Document the membership of each file explicitly.
+The accession-list name remains `accessions.txt`, containing only selected
+accessions. No second accession list is required.
+
+## Implementation decisions carried forward
+
+Selection remains a separate Python operation within P1/`EXTRACT_HITS`,
+following the existing task-04 implementation and the user's request to keep
+changes concentrated in P1. P1 writes complete internal JSON before selection,
+then writes the selected files under the existing downstream names. No new
+Nextflow process is introduced. Sequence associations remain in memory; no
+complete-extraction FASTA or selection-decision file is written.
+
+The existing independent `blast_context_min_identity` setting (default 0.935)
+is retained. The prior implementation outcomes record that the user selected
+this option pending client review. This revision does not reopen or change
+that configuration choice. P1 and P6 receive the same effective value;
+P3's candidate `min_identity` remains independent.
 
 ## Validation
 
-Use the project Python environment and edited source. For workflow checks,
-ensure the container uses the edited scripts (a development bind or rebuilt
-image); the stock image in `conf/process.config` does not include local edits.
-New automated test files are optional; record reproducible validation evidence.
+New automated test files are optional. Record reproducible validation commands
+and evidence using edited source and the project environment.
 
-1. Run the existing parser and phylogeny checks from the repository root with
-   the project interpreter and dependencies:
+1. Run existing parser/phylogeny checks:
    `PYTHONPATH=.:scripts python -m unittest scripts.tests.test_blast_parser scripts.tests.test_phylogeny_sampling`.
-2. Exercise block selection with controlled hit lists or XML. In these cases,
-   identities refer to the stored rounded aggregate values and the cap is
-   the default 2000 and stopping threshold 0.935 unless specified otherwise:
+2. Exercise the following with default cap 2000 and threshold 0.935. Confirm
+   internal complete-set counts, selected-set counts and selected-only report rows.
 
-   | Retrieved hits / boundary condition | Retained count |
-   |---|---:|
-   | No hits | 0 |
-   | 37 hits, any identities | 37 |
-   | 2000 hits all below 0.935 | 500 |
-   | 500th hit exactly 0.935 | 500 |
-   | 500th hit above 0.935; 1000th at or below | 1000 |
-   | 600 above 0.935, followed by 600 below | 1000 |
-   | 80 above 0.935 among 2000 | 500 |
-   | First boundary at or below 0.935 is hit 1500 | 1500 |
-   | 2000 hits all above 0.935 | 2000 |
-   | 750 hits, first 500 above 0.935 | 750 |
+   | XML hits / identity condition | `all_xml_hits.json` count | `all_hits.*` count |
+   |---|---:|---:|
+   | No hits | 0 | 0 |
+   | 37 hits, any identities | 37 | 37 |
+   | 2000 all below threshold | 2000 | 500 |
+   | Hit 500 exactly at threshold | 2000 | 500 |
+   | Hit 500 above, hit 1000 at/below | 2000 | 1000 |
+   | 600 above followed by 600 below | 1200 | 1000 |
+   | Only 80 above threshold | 2000 | 500 |
+   | First stopping boundary at 1500 | 2000 | 1500 |
+   | 2000 all above threshold | 2000 | 2000 |
+   | 750, first 500 above threshold | 750 | 750 |
+   | Replay 2500, all above threshold | 2500 | 2000 |
 
-   Include near-threshold rounding, ties across block boundaries, a partial
-   final block, shuffled XML order, more than 2000 replay hits, and multiple
-   queries selecting different counts. Include a multi-HSP boundary hit whose
-   aggregate identity differs from its first/best HSP. Confirm the complete
-   stopping block and its HSP evidence survive selection. Also check caps of
-   1, 300, 750 and 2500: with enough hits all above the threshold, retain
-   exactly the cap, including a partial last block. With cap 2500 and hit 500
-   at or below threshold, retain 500. Reject zero, negative and fractional caps.
-   Also validate a non-default stopping threshold (for example 0.95), equality,
-   endpoints 0 and 1, and rejection of out-of-range/non-finite values. Changing
-   `min_identity` alone must not change P1 block selection; changing
-   `blast_context_min_identity` alone must not change the candidate eligibility
-   threshold. Verify P6 displays the actual stopping threshold in each case.
-3. Compare selected record membership across JSON and FASTA, including repeated
-   accessions if present, and verify `accessions.txt` equals the unique retained
-   union across queries. Verify accession lookup and P3 receive that selection.
-   Check candidate summaries, flags and phylogeny membership before/after;
-   explain changes caused by added context rather than updating snapshots blindly.
-4. Follow `docs/nf-tests.md` and `test/core/README.md` for
-   `test/core/taxodactyl.workflow.nf.test`, supplying local values for the
-   placeholders in `test/core/nextflow.config`. Inspect the generated BLAST
-   command and rendered report, including count/rank descriptions. For both
-   the default and a non-default cap, verify that the BLAST command, P1
-   argument/selection limit and P6 reported cap all agree under the new name.
-   Verify schema/help and captured parameters use `blast_max_target_seqs`,
-   and validate migration of a legacy parameter file. Captured XML can validate parsing
-   and reporting, but live BLAST is required to validate retrieval changes.
-5. Benchmark 500 versus 2000 retrieval on the same queries, database version,
-   BLAST version, threads and search settings. Include a query with more than
-   500 hits, a sparse query and a query whose retained boundary reaches 93.5%.
-   Record search and downstream elapsed time, peak memory where available,
-   XML size, retrieved/retained counts and changes to scientific outputs.
-   Compare shared hit membership rather than assuming the new search merely
-   appends hits. Record commands, data versions and results in this brief.
-   If runtime/data is unavailable, identify outstanding live checks explicitly;
-   do not claim replay proves search performance or mark the work fully validated.
+3. Check caps 1, 300, 750 and 2500, threshold 0/1 and a non-default 0.95;
+   reject invalid/non-finite settings. Include boundary rounding, ties,
+   shuffled XML order, a multi-HSP hit and different per-query counts.
+   Changing cap/threshold on identical XML must leave `all_xml_hits.json` unchanged,
+   while selected outputs and `accessions.txt` follow the new selection.
+4. Verify exact JSON/FASTA membership by original hit index, including duplicate
+   accessions. The single `accessions.txt` must equal the unique union of
+   selected accessions across queries. Confirm no complete-set accession list
+   or selection-decision file is emitted, and no complete-extraction FASTA is
+   created. Verify selected FASTA content still matches the corresponding
+   XML last-HSP subject strings. Compare complete/selected sets
+   internally, including block and cap exclusions in oversized replay.
+5. Confirm every downstream consumer uses selected hits or their derived
+   outputs. Check the P6 hit count/rows against selected JSON, including a
+   below-threshold final-block hit and zero-hit behavior. Verify report
+   rendering does not require `all_xml_hits.json`: inspect staging and render with
+   that file absent. Ensure selected JSON/FASTA is published and remains
+   available after downstream failure. Confirm complete files remain only in
+   extraction/selection work directories, never in analysis/report staging
+   or published output (including wildcard rules). Record existing empty/
+   no-candidate report defects if encountered rather than claiming success.
+6. Follow `docs/nf-tests.md` and `test/core/README.md` for
+   `test/core/taxodactyl.workflow.nf.test` using local values in
+   `test/core/nextflow.config`. Use a development bind or rebuilt image so
+   checks use edited scripts. Verify file staging, per-query joins, taxonomy
+   inputs, generated BLAST command and rendered report for default and
+   non-default settings. Compare candidate summaries, flags and phylogeny
+   membership; explain differences rather than blindly updating snapshots.
+7. Benchmark 500 versus 2000 live retrieval using the same queries, database
+   and BLAST versions. Include dense/sparse queries and a boundary-reaching
+   example. Record elapsed time, peak memory where available, XML size,
+   complete/selected counts, taxonomy work and changed scientific outputs.
+   Replay cannot prove live search membership or performance; record unavailable
+   live checks explicitly and do not claim full validation without them.
 
 ## Dependencies and parallel opportunities
 
-The independent threshold decision is recorded above. Retrieval and parser edits can
-proceed independently against the agreed
-algorithm; report corrections depend on the retained-output contract. Finish
-with combined workflow validation and benchmarking. Coordinate overlapping
-files with active task branches before implementation. No other numbered task
-is a stated functional prerequisite.
+Complete extraction and association tracking precede selected outputs;
+those contracts precede P3/P6 wiring, which precedes end-to-end validation.
+Use the working artifact names and the recorded P1 selection boundary and
+independent threshold configuration. Retrieval
+parameter changes and complete extraction work can proceed independently;
+report presentation can proceed against the selected JSON contract once
+fixed. Minimum deliverable includes complete internal JSON, separate selection,
+selected-only downstream routing and reporting together.
 
 ## Completion criteria
 
-- The live command, parser and report use the same validated maximum-hit
-  `blast_max_target_seqs` parameter (default 2000), without a BLAST identity cutoff.
-- The threshold decision is recorded and implemented consistently in P1/P6
-  configuration and documentation, with non-default behavior validated.
-- Each query follows the specified 500-hit block algorithm using aggregate
-  identity, retaining the whole stopping block and handling empty/partial input.
-- Selected record membership agrees across JSON, FASTA and accession lookup;
-  downstream analysis and the report use the retained set.
-- Reports show accurate retained counts, ranking and retrieval limits, including
-  when the configured cap is reached before the identity threshold.
-- Specifications and documentation match implementation; parser/phylogeny checks,
-  workflow evidence and benchmark results are recorded with differences explained.
-- On completion, move the brief to `tasks/completed/` and remove its entry from
-  the lifecycle index used when implementation finishes.
+- Every XML hit and calculated identity remains in `all_xml_hits.json`,
+  regardless of selection settings. No complete-extraction FASTA is created;
+  only selected hits are written to `all_hits.fasta`.
+- Separate selected assets follow the confirmed 500-hit block rule, including
+  the entire stopping block; no individual minimum-identity filter replaces it.
+- Complete and selected sets can be compared internally. The report shows
+  only selected hits and its counts agree with published selected JSON.
+- `all_hits.json` and `all_hits.fasta` are published; `all_xml_hits.json`
+  remains internal and is not copied into the published output.
+- Only one `accessions.txt` is produced, containing selected accessions, and
+  no selection-decision artifact is produced.
+- All downstream consumers use selected hits or their derived outputs: P3
+  evaluates selected assets, P6 shows selected hits, and taxonomy uses
+  `accessions.txt`. Complete files are not staged to analysis/report processes.
+- Retrieval, selection and report use consistent validated configuration;
+  threshold configuration and the selection process boundary are resolved and
+  documented. Use `all_hits.*` unless a later rename is explicitly agreed.
+- Specs and documentation match the new contract, and validation evidence
+  explains any remaining limitations and changes in scientific outputs.
+- Move this brief to `tasks/completed/` only after successful full validation.
+  Keep the main active-index entry until the branch is merged.
 
 ## Risks and limits
 
-- Neither the configured cap nor block selection guarantees finding every useful hit
-  or a hit at the configured stopping threshold. Added context can change scientific results and costs.
-- The stopping comparison uses the existing three-decimal aggregate identity.
-  Preserve that convention and document its rounding boundary; changing the
-  identity definition or precision is outside this task.
-- The existing zero-total-HSP-length calculation divides before checking for
-  zero. Do not describe that guard as working or confuse malformed alignments
-  with a query containing no hits. Record any such fixture failure separately;
-  this task does not require a general parser repair. The last-HSP FASTA defect
-  P1-D-001 and existing empty/no-candidate workflow defects are also separate.
+- BLAST retrieval rank is based on significance/scoring, not Taxodactyl
+  aggregate identity. Sorting only orders retrieved hits; increasing the cap
+  does not guarantee a simple appended set or globally highest-identity hits.
+- Keeping complete extraction internally adds work-directory storage, while
+  taxonomy and screening use only selected context. Excluded hits can lack resolved taxonomy.
+- Keep the existing last-HSP FASTA behavior (P1-D-001) and identity precision;
+  neither is fixed by this task. The zero-total-HSP-length calculation divides
+  before checking zero; record malformed-fixture failures separately.
+- Candidate eligibility and phylogeny sampling remain separate from block
+  selection. More context may change results without making every hit eligible.
 
 ## Outcomes
 
@@ -479,3 +456,60 @@ output/cost scope, **not** a search speedup or production performance guarantee.
   `/tmp/task04-validation/` on this host. No extension hooks were registered
   (`.specify/extensions.yml` absent). The active branch/worktree record remains
   on main and must remain until the implementation has been validated and merged.
+
+
+### Recent output-contract revision (3 November 2026)
+
+Implemented the revised contract in the existing task worktree, preserving
+prior implementation outcomes above. Naming remains open to discussion;
+current names are the working names requested by the user.
+
+- `parse_blast_xml` now returns the complete, stably identity-sorted extraction.
+  P1 writes it to internal `all_xml_hits.json` before calling a separate
+  `select_blast_hits` operation within the same process. Selection leaves
+  complete records unchanged; FASTA associations use internal identity ranks
+  on in-memory sequence records, including duplicate accessions.
+- Only selected hits are written to `all_hits.json` / `all_hits.fasta`, and
+  the single `accessions.txt` contains their unique union. Empty queries
+  produce empty JSON hit lists and empty selected FASTA. No complete FASTA,
+  decision file or second accession list is created.
+- Existing downstream readers and scientific algorithms are unchanged.
+  `EXTRACT_HITS` publishes selected JSON/FASTA and `accessions.txt`; its emitted
+  hit tuple excludes the complete JSON, which stays in the P1 work directory.
+- Added internal filename configuration `all_xml_hits_json` and updated P1,
+  hit/output/process contracts and user documentation. The existing independent
+  threshold configuration is preserved rather than reimplemented.
+
+Validation of this revision:
+
+- Focused parser/context/phylogeny suite: **17 tests passed**, including a new
+  P1 output regression with repeated accessions, an empty query, changing
+  caps/thresholds, complete JSON written before selection, and exact selected
+  sequence/accession membership. Complete-hit invariance is also checked
+  across existing block-boundary, rounding and oversized-replay cases.
+- Full Python discovery: **156 tests run, 154 passed, 2 skipped**, using the
+  same Python 3.12 Singularity image and temporary `fakeredis` dependency as
+  prior validation. No application dependencies were changed.
+- Actual P1 CLI on captured 2000-hit-per-query XML at cap/threshold pairs
+  2000/0.935, 750/0.95 and 300/0: complete counts remain [2000, 2000, 2000];
+  selected counts are [1000, 500, 500], [750, 500, 500], and [300, 300, 300].
+  Complete JSON is byte-identical across these settings. Selected JSON/FASTA
+  is byte-identical to the previous task-04 implementation's saved output.
+  The accession list equals the selected union, with no extra artifacts.
+- Actual Nextflow `EXTRACT_HITS` module executions passed at 2000/0.935 and
+  750/0.95 using the edited scripts. Verified published selected JSON/FASTA
+  and accessions, internal complete JSON only in work directories, and an
+  emitted tuple containing only selected JSON/FASTA and query titles.
+- The existing report BLAST modal rendered successfully from selected JSON
+  with the internal file absent at all three settings. This confirms the
+  changed output contract, not full-report/P4/P5 integration.
+- Validation commands, outputs and module harness are in
+  `/tmp/task04-revision/`; the durable count/compatibility summary is
+  `tasks/validation/04_output_contract_revision.json`.
+
+The recent output-contract revision is implemented and validated. The task
+remains **active** because the previously documented complete workflow,
+P4/P5/report integration and snapshot reconciliation are still outstanding.
+No new full-workflow or live-search benchmark success is claimed. The brief
+is not moved to completed, and the main active-index entry remains unchanged.
+No extension hooks are configured in this worktree.

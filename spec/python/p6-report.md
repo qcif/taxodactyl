@@ -189,3 +189,6 @@ nf-test asserts the number of HTML files produced.
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
+
+P6 uses only the selected `all_hits.json`; internal `all_xml_hits.json` is
+not staged, read or used as a fallback.

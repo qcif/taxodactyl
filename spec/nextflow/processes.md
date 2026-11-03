@@ -89,7 +89,8 @@ shared wiring; runtime validation evidence is recorded in task
 - **Label:** `daff_tax_assign`. **Bind:** outdir + app-data.
 - **Input:** `blast_xml`, `sequences_file`, `metadata_file`.
 - **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/all_hits.fasta`, `query_*/all_hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
-- **Publishes:** `query_*/all_hits.fasta` to `<outdir>`.
+- **Publishes:** selected `query_*/all_hits.fasta`, `query_*/all_hits.json` and selected-only `accessions.txt` to `<outdir>`.
+- **Internal only:** P1 writes `query_*/all_xml_hits.json` before selection. It is not an emitted downstream file and is not published; no complete-extraction FASTA exists.
 - **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty file named by `task.ext.hits_fasta` (default `all_hits.fasta`) if missing.
 
 | ID | Requirement |

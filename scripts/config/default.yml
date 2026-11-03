@@ -6,6 +6,7 @@ timestamp_filename: timestamp.txt
 accessions_filename: accessions.txt
 taxonomy_file: taxonomy.csv
 query_title_file: query_title.txt
+all_xml_hits_json: all_xml_hits.json
 hits_json: all_hits.json
 hits_fasta: all_hits.fasta
 taxonomy_id_csv: assigned_taxonomy.csv

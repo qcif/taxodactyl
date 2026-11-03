@@ -10,6 +10,7 @@ in the Nextflow work directory.
 
 ```
 <outdir>/
+├── accessions.txt                    selected BLAST accession union only
 ├── blast_result.xml                  BLAST XML, all queries (BLAST mode; mocked copy under mock_blast)
 ├── run.log                           concatenated process logs (arrival order)
 ├── pipeline_info/
@@ -20,6 +21,7 @@ in the Nextflow work directory.
 │   └── params_<ts>.json              ALL params, incl. secrets given on CLI (P6-D-001)
 ├── errors/<PROCESS>/<tag>.{out,err,log}     only if a task failed/aborted (NF-WF-004)
 └── query_<NNN>_<sample_id>/
+    ├── all_hits.json                 selected BLAST context only
     ├── all_hits.fasta                (see contracts/hits.md; last-HSP fragments, P1-D-001)
     ├── candidates.fasta
     ├── candidates.csv
@@ -41,7 +43,7 @@ in the Nextflow work directory.
 
 | ID | Gap |
 |---|---|
-| OUT-D-001 | Medium: **no machine-readable per-query result** is published. Flags (`*.flag`), `candidates.json`, `db_coverage.json`, `aggregated_sources.json` and `errors/*.json` stay in the work directory, so downstream systems must parse the HTML. (The nf-test flag baseline works from the work directory for this reason.) |
+| OUT-D-001 | Medium: **no machine-readable per-query evaluation result** is published (selected BLAST hits are published as `all_hits.json`). Flags (`*.flag`), `candidates.json`, `db_coverage.json`, `aggregated_sources.json` and `errors/*.json` stay in the work directory, so downstream systems must parse the HTML. (The nf-test flag baseline works from the work directory for this reason.) |
 | OUT-D-002 | Low: `docs/output.md` and README list `all_hits.fasta` etc. but not the absence of run-level status; there is no file saying which queries were skipped, failed or produced no report. Suppressing the report itself for a query whose analysis didn't complete is confirmed intentional design, not a defect (a report built on an incomplete evaluation would risk exactly the false-confidence [CONSTITUTION.md](../../CONSTITUTION.md) rule 2 exists to prevent) — the gap is narrower than it first looks: an analyst has no reliable way to *discover* that a report is missing and a repeat is needed, short of counting reports against submitted samples and then digging in `<outdir>/errors/` to find out why. |
 | OUT-D-003 | Low: `blast_result.xml` is published even for mocked runs, and `mode: 'copy'` is hard-coded (the `publish_dir_mode` parameter is inert), so outputs are duplicated from the work directory. |
 

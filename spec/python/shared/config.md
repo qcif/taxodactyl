@@ -122,6 +122,7 @@ reads `default.yml`, so Nextflow and Python agree.
 
 | Key | Value | Schema default |
 |---|---|---|
+| `all_xml_hits_json` | `all_xml_hits.json` | same (P1 internal only; not a cross-process output) |
 | `hits_json` | `all_hits.json` | `hits.json` |
 | `hits_fasta` | `all_hits.fasta` | `hits.fasta` |
 | `phylogeny_fasta` | `candidates_phylogeny.fasta` | `phylogeny.fasta` |

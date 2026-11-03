@@ -211,7 +211,11 @@ available hits/`blast_max_target_seqs` cap are exhausted. The complete stopping
 block survives. Replay XML is also capped after identity sorting; this cannot
 reproduce BLAST's own retrieval ranking.
 
-JSON, FASTA and the accession union contain the same retained hits; FASTA
+P1 first writes internal `all_xml_hits.json` with every XML hit and calculated
+identity, independent of selection settings. There is no complete-extraction
+FASTA. Only `all_hits.json`, `all_hits.fasta` and the selected-only
+`accessions.txt` are published and passed downstream. These downstream
+JSON, FASTA and accession outputs contain the same retained hits; FASTA
 preserves their original BLAST order. Taxonomy lookup and P3 consume those
 records; candidate eligibility and phylogeny sampling rules are unchanged.
 More context can change counts, candidate summaries, flags and trees without

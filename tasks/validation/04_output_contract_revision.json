@@ -1,0 +1,62 @@
+[
+  {
+    "cap": 2000,
+    "threshold": 0.935,
+    "complete_selected_counts": [
+      [
+        2000,
+        1000
+      ],
+      [
+        2000,
+        500
+      ],
+      [
+        2000,
+        500
+      ]
+    ],
+    "selected_outputs_identical_to_previous": true,
+    "report_modal_without_internal_json": true
+  },
+  {
+    "cap": 750,
+    "threshold": 0.95,
+    "complete_selected_counts": [
+      [
+        2000,
+        750
+      ],
+      [
+        2000,
+        500
+      ],
+      [
+        2000,
+        500
+      ]
+    ],
+    "selected_outputs_identical_to_previous": true,
+    "report_modal_without_internal_json": true
+  },
+  {
+    "cap": 300,
+    "threshold": 0,
+    "complete_selected_counts": [
+      [
+        2000,
+        300
+      ],
+      [
+        2000,
+        300
+      ],
+      [
+        2000,
+        300
+      ]
+    ],
+    "selected_outputs_identical_to_previous": true,
+    "report_modal_without_internal_json": true
+  }
+]

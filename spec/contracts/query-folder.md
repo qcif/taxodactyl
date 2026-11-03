@@ -13,18 +13,17 @@ producer/consumer matrix; formats are in the sibling contracts.
    staged from upstream and writes new files next to them, NF-PR-006).
 3. **Read** by MAFFT/FastME (only the phylogeny FASTA), and by P6 (all files).
 4. Only a subset is copied to `<outdir>` ([outputs.md](outputs.md)): from
-   the matrix below, just `all_hits.fasta`, `candidates.fasta`,
+   the matrix below, just `all_hits.fasta`, `all_hits.json` (BLAST), `candidates.fasta`,
    `candidates.csv`, `candidates_identity_boxplot.png` (conditional),
    `candidates_phylogeny.{fasta,msa,nwk}`, and the report HTML. Everything
    else in the matrix — `candidates.json`, every `*.flag`,
    `aggregated_sources.json`, `db_coverage.json`, `map_<target>.png`,
-   `errors/*.json`, `query_title.txt`, `all_hits.json`,
+   `errors/*.json`, `query_title.txt`,
    `candidates_count.txt`, `assigned_taxonomy.csv`,
    `preliminary_id_match.csv`, `taxa_of_concern_detected.csv`,
    `id_mapping.tsv` — stays only in the Nextflow work directory and is
-   never published. That's the entire set of machine-readable data behind
-   the report; only the rendered HTML itself reaches `<outdir>`
-   (`OUT-D-001`).
+   never published. Evaluation results remain available only in rendered HTML
+   (`OUT-D-001`); the selected BLAST hit data is published separately.
 
 ## 2. File matrix
 
@@ -78,3 +77,7 @@ Run-level files read by P3/P6 from `<output_dir>` (not the query folder):
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
+
+BLAST P1 additionally writes internal `all_xml_hits.json` for the full XML
+extraction. It stays in the P1 work directory and is not part of subsequent
+query-folder bundles. Only selected hits use the existing `all_hits.*` names.

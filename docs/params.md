@@ -130,8 +130,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing all BLAST hits.                                           | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
-| `hits_json_filename` | string | 'all_hits.json'   | Filename for the JSON file containing all BLAST hits.                                            | No spaces, `.json` extension.        |
+| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing block-selected BLAST hits.                                           | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
+| `hits_json_filename` | string | 'all_hits.json'   | Filename for the JSON file containing block-selected BLAST hits.                                            | No spaces, `.json` extension.        |
 
 ---
 
@@ -187,4 +187,8 @@ up to 500 until the last retained hit is at or below
 `blast_context_min_identity` (default 0.935), or hits/the cap run out. The
 whole final block is retained, even below the threshold. Counts vary by query;
 the cap may produce a partial block. Raw XML remains the full retrieval result.
+Internal `all_xml_hits.json` preserves every parsed XML hit and calculated
+identity, including replay hits beyond the cap, without an accompanying FASTA.
+Only selected `all_hits.json` / `all_hits.fasta` and their `accessions.txt`
+are published and used downstream.
 `min_identity` continues to control candidate eligibility independently.
