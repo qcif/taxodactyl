@@ -90,7 +90,7 @@ shared wiring; runtime validation evidence is recorded in task
 - **Input:** `blast_xml`, `sequences_file`, `metadata_file`.
 - **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/all_hits.fasta`, `query_*/all_hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
 - **Publishes:** selected `query_*/all_hits.fasta`, `query_*/all_hits.json` and selected-only `accessions.txt` to `<outdir>`.
-- **Internal only:** P1 writes `query_*/all_xml_hits.json` before selection. It is not an emitted downstream file and is not published; no complete-extraction FASTA exists.
+- **Internal only:** P1 writes `query_*/all_xml_hits.json` before selection. It is a required separate output (`all_xml_hits`, arity `1..*`) for inspection/tests, using `ext.all_xml_hits_json` from `conf/filenames.config`. It is not an analysis input or published; no complete-extraction FASTA exists.
 - **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty file named by `task.ext.hits_fasta` (default `all_hits.fasta`) if missing.
 
 | ID | Requirement |
@@ -242,3 +242,6 @@ wired successfully in the current workflow.
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
+
+The workflow exposes complete JSON as query-keyed `ch_all_xml_hits` for tests.
+This channel is separate from selected `hits_files` and report inputs.

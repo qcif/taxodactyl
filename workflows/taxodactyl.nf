@@ -94,6 +94,9 @@ workflow TAXODACTYL {
     ch_sequences = VALIDATE_INPUT.out.sequences.first()
     ch_metadata = VALIDATE_INPUT.out.metadata.first()
 
+    // Observation channel only: never mixed into downstream analysis inputs.
+    ch_all_xml_hits = Channel.empty()
+
     // Run BOLD or BLAST search depending on db_type
     if (params.db_type == 'bold') {
         // BOLD search branch
@@ -133,6 +136,10 @@ workflow TAXODACTYL {
             ch_metadata
         )
         
+        ch_all_xml_hits = EXTRACT_HITS.out.all_xml_hits
+            .flatten()
+            .map { file -> tuple(file.parent.name, file) }
+
         // Regroup hit files by sample for downstream joins
         ch_hits_files = EXTRACT_HITS.out.hits_files
         ch_hits_files = ch_hits_files
@@ -373,6 +380,7 @@ workflow TAXODACTYL {
         [folderVal, sortedFiles] }
 
     emit:
+    ch_all_xml_hits
     ch_hits_for_report
     ch_candidates_for_report
     ch_db_coverage_json

@@ -165,3 +165,20 @@ suite run.
    `testkit.py seed --case NAME` to write the fixture.
 5. Re-run the suite without `--keep` to confirm the case passes the walker.
 6. `git add scripts/tests/test-data/integration/blast/NAME/` and commit.
+
+
+## Offline P1 CLI output-contract checks
+
+`../test_p1_cli_integration.py` invokes the real P1 entry point with generated
+XML/FASTA/metadata and no mocks. It covers complete-versus-selected counts and
+hit IDs, stable identity ordering, repeated-accession sequence associations,
+empty queries, cap/threshold changes, and selected-only FASTA/accessions.
+Run from the repository root:
+
+```bash
+PYTHONPATH=.:scripts python -m unittest scripts.tests.test_p1_cli_integration
+```
+
+This test is also included by the existing unit-test CI discovery. It needs
+Python dependencies only; it does not run the network-dependent full Python
+workflow described above or require Nextflow, BLAST databases or a browser.

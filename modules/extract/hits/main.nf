@@ -20,6 +20,8 @@ process EXTRACT_HITS {
     tuple path("query_*/${task.ext.hits_fasta}"),
         path("query_*/${task.ext.hits_json}"),
         path("query_*/${task.ext.query_title_file}"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
+    // Required complete extraction for inspection/tests; never published or analysed.
+    path("query_*/${task.ext.all_xml_hits_json}"), arity: '1..*', emit: all_xml_hits
     // Process run log.
     path("${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
 

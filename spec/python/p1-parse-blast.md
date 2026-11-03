@@ -131,3 +131,7 @@ sequence associations, and empty queries produce empty selected FASTA.
 This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
+
+Complete BLAST JSON is emitted separately as `EXTRACT_HITS.out.all_xml_hits`
+and query-keyed workflow `ch_all_xml_hits` for inspection and nf-test access.
+It remains unpublished and is never staged to analysis or report consumers.

@@ -81,3 +81,7 @@ other way around.
 BLAST P1 additionally writes internal `all_xml_hits.json` for the full XML
 extraction. It stays in the P1 work directory and is not part of subsequent
 query-folder bundles. Only selected hits use the existing `all_hits.*` names.
+
+Complete BLAST JSON is emitted separately as `EXTRACT_HITS.out.all_xml_hits`
+and query-keyed workflow `ch_all_xml_hits` for inspection and nf-test access.
+It remains unpublished and is never staged to analysis or report consumers.
