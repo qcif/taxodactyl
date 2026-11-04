@@ -85,7 +85,7 @@ reproduce which records a capped live BLAST search would retrieve.
 | Artifact | Membership and purpose |
 |---|---|
 | `blast_result.xml` | Complete raw retrieval evidence. |
-| `query_*/all_xml_hits.json` | Every XML hit, original top-level query schema and full HSP evidence, sorted by calculated identity. Internal only; not published. |
+| `query_*/all_xml_hits.json` | Every XML hit, original top-level query schema and full HSP evidence, sorted by calculated identity. Internal, required output on `EXTRACT_HITS.out.all_xml_hits`; not published. |
 | `query_*/all_hits.json` | Same query/hit schema, containing only block-selected hits, sorted by identity. Published. |
 | `query_*/all_hits.fasta` | Corresponding selected records in relative BLAST order. Published. |
 | `accessions.txt` | Unique union of selected-hit accessions across queries; the only accession list, used for downstream taxonomy lookup. |
@@ -161,9 +161,8 @@ as `accessions.txt`, containing only selected accessions.
   `modules/blast/blastn/main.nf`. Preserve other BLAST settings and version
   recording. Blocks do not trigger repeated BLAST searches.
 - In `modules/extract/hits/main.nf`, pass the cap and effective threshold to P1.
-  Emit selected JSON/FASTA for downstream staging. Keep complete JSON
-  local to extraction, or emit it only to a separate selection process if
-  that architecture is chosen.
+  Emit selected JSON/FASTA for downstream analysis staging. Declare complete
+  JSON as a separate required output channel for validation, as specified below.
   Publish only the selected JSON/FASTA, plus the single selected-only
   `accessions.txt`; do not publish `all_xml_hits.json`.
   Update `conf/process.config` file-name bindings where needed. Audit all
@@ -184,6 +183,42 @@ as `accessions.txt`, containing only selected accessions.
   `scripts/p4_source_diversity.py` and `scripts/p5_db_coverage.py` with their
   existing downstream inputs. Retaining more context can change candidates,
   summaries, flags and tree membership; it does not mean aligning every hit.
+
+### 2a. Expose complete JSON for validation without publishing it
+
+**Requested 4 November 2026; pending implementation.** Declare the internal
+JSON in `modules/extract/hits/main.nf` as a required named process output:
+
+```nextflow
+path("query_*/${task.ext.all_xml_hits_json}"), arity: '1..*', emit: all_xml_hits
+```
+
+Bind `ext.all_xml_hits_json` in `conf/filenames.config` from
+`pyDefaults.all_xml_hits_json`, matching the Python filename setting. Do not
+hard-code a different filename in the process. Do not mark this output
+optional or create a placeholder: missing complete JSON must fail output
+collection. The glob requires at least one file. Python CLI integration tests must check
+that every XML iteration has its corresponding JSON, including empty hit
+lists; a glob alone does not prove per-query completeness.
+
+Keep `all_xml_hits` separate from `hits_files` and `hits_accessions`. Existing
+`publishDir` patterns must continue to match only selected assets and the
+selected accession list; declaring an output must not publish the complete
+JSON or put it into P3/P6 input bundles.
+
+In `workflows/taxodactyl.nf`, expose `ch_all_xml_hits` in the workflow `emit:`
+block for workflow nf-tests. In BLAST mode derive it from
+`EXTRACT_HITS.out.all_xml_hits`, flatten the file list, and map each path to
+`tuple(file.parent.name, file)` so assertions can join by query folder rather
+than channel arrival order. Initialize it as an empty channel for a branch
+that does not run BLAST. Do not mix it into `ch_hits_files`,
+`ch_hits_for_report`, taxonomy inputs or any scientific-analysis channel.
+
+Update `spec/nextflow/processes.md`, `spec/contracts/hits.md`,
+`spec/contracts/query-folder.md`, `spec/python/p1-parse-blast.md` and
+`spec/contracts/outputs.md` to distinguish an emitted internal process output
+from a published artifact and an analysis input. Keep complete JSON internal
+and unpublished, while making its existence and contents accessible to tests.
 
 ### 3. Report only selected hits
 
@@ -312,8 +347,10 @@ the task ready for implementation.
 
 ## Validation
 
-New automated test files are optional. Record reproducible validation commands
-and evidence using edited source and the project environment.
+Output-channel preparation and Python CLI integration tests are implementer
+work. The user adds the observation channel to the existing core nf-test and
+reviews existing nf-test/flag/Selenium results. Do not add new cases for those
+suites. Record automated evidence and pending manual checks separately.
 
 1. Run existing parser/phylogeny checks:
    `PYTHONPATH=.:scripts python -m unittest scripts.tests.test_blast_parser scripts.tests.test_phylogeny_sampling`.
@@ -369,6 +406,76 @@ and evidence using edited source and the project environment.
    Replay cannot prove live search membership or performance; record unavailable
    live checks explicitly and do not claim full validation without them.
 
+### Python integration coverage and existing CI suite handoff
+
+Do not create a new nf-test scenario, flag case or Selenium case for task 04.
+The user will add `workflow.out.ch_all_xml_hits` to the existing core nf-test
+in `test/core/taxodactyl.workflow.nf.test` and review its snapshot. The
+implementer supplies the process/workflow channel; exact per-query counts,
+identity order, hit IDs and FASTA/accession membership belong in Python
+integration tests rather than new workflow assertions.
+
+Add `scripts/tests/test_p1_cli_integration.py` using `unittest` and a real
+subprocess invocation of `scripts/p1_parse_blast.py`. Generate deterministic
+XML/FASTA/metadata in a temporary directory from the existing XML fixture;
+do not mock the parser, configuration or writers. Include 1200 hits (600 at
+0.99 followed in identity rank by 600 at 0.90), an empty query and 37 hits,
+with reversed XML order, identity ties and repeated accessions carrying
+different sequences. Exercise 2000/0.935, 750/0.935, 300/0 and 2000/0.99.
+Check exact complete/selected hit IDs and counts, identity values, stable
+order, original-order FASTA sequences, accession union/deduplication, empty
+outputs, complete JSON invariance and absence of extra FASTA/decision files.
+
+Run from the repository root:
+`PYTHONPATH=.:scripts python -m unittest scripts.tests.test_p1_cli_integration`.
+The existing `.github/workflows/unit-tests.yml` discovery command
+`python -m unittest discover -s scripts/tests -p 'test*.py' -v` will include
+this file without a new CI job. This offline P1 test needs project Python
+dependencies but no BLAST/taxonomy database, network, Nextflow or browser.
+It is separate from the existing network-dependent full Python integration
+suite under `scripts/tests/integration/`; do not add live-service dependencies
+to this focused test.
+
+## Test impact and manual review
+
+**Ownership:** The implementer adds the observation channels and offline Python
+CLI integration tests. The user adds the complete-hit channel to the existing
+core nf-test and reviews nf-test snapshots, flags and Selenium expectations.
+No new workflow/browser/flag test case is needed, and no baselines are
+regenerated or promoted automatically.
+
+**CI inspected:** `.github/workflows/nf-test.yml` runs only
+`test/core/taxodactyl.workflow.nf.test`, compares `test/core/flags`, then runs
+`test/selenium/test_reports.py` against the resulting reports. Its checked-in
+runner label is `ubuntu-latest`, not `self-hosted`; this advice concerns that
+version of the workflow, not an uninspected runner configuration. It uses
+BLAST data dated 2026-07-29 and taxonomy data dated 2026-05-08.
+`.github/workflows/mock-nf-test.yml` replays an archived 2026-08-04 run for
+flags/Selenium and cannot validate fresh P1 code or its new channel.
+
+| Existing CI coverage | Where task 04 can affect it | User action / implementer preparation |
+|---|---|---|
+| `test/core/taxodactyl.workflow.nf.test` and `.snap` | Currently snapshots `ch_hits_for_report`, `ch_candidates_for_report`, `ch_source_diversity_for_report`, `ch_homology_trees`. Increased BLAST context may change their file hashes/content. The new complete-hit channel is not yet in that snapshot. | Implementer exposes `EXTRACT_HITS.out.all_xml_hits` and query-keyed `ch_all_xml_hits`, without mixing it into the four existing channels. User adds the new channel to the existing nf-test snapshot and reviews changes. Exact hit counts/IDs are checked in Python. |
+| Core nf-test size assertions | Existing expectations include 20 reports, one versions/params/timestamp item, 18 map groups / 34 maps, 20 coverage JSONs, 20 flag groups / 60 P5 flags. The new observation channel itself does not justify changing any of these. Scientific output changes may affect map counts; missing reports require investigation. | Preserve these assertions unless the user determines an actual intended behavior change. Do not replace them with new hard-coded values simply to pass. |
+| `bin/collect_flags.sh`, `bin/test_flags.py`, `test/core/flags/*.flag` | The runner compares P5 flags **5.1–5.3**, not every flag. More context may affect candidate-derived coverage decisions; no change is guaranteed. Channel emission alone must not change flags. | Existing collector/comparator need no new case. User inspects `flags_results.txt` / `flags_errors.txt` and accepts any justified baseline changes. P3 flags 1/2/7 must be reviewed through existing report/snapshot coverage instead. |
+| `test/selenium/test_reports.py`, `test/selenium/lib/candidate.py`, `test/selenium/lib/schema.py`, `test/selenium/expected/*.yaml` and `expected/reports/*.html` | Existing candidate collectors assert strong/moderate/weak hit counts, lowest hit, per-species `no_of_hits`, `top_identity`, `median_identity`, `min_identity`; BLAST modal checks the first row's rank/accession/identity and other fields. Tree checks include `min_node`; flag/TOI fields may also change. These are possible scientific changes, not guaranteed replacements. The current BLAST collector does not assert the new block-description prose or total XML count. | Reuse current report cases. User reviews fresh reports and existing field diffs; adjust collectors/assertions only if desired for changed wording, and promote expected YAML/reference reports only after review. Complete JSON must not appear in report data. |
+| `.github/workflows/unit-tests.yml` | Discovers the new offline `scripts/tests/test_p1_cli_integration.py` through its existing `test*.py` pattern. | Implementer adds/runs exact count/identity/ID/sequence assertions without new nf-test/Selenium/flag cases. |
+
+The current runner does not execute `test/scenario_01/` through
+`test/scenario_04/` in this job. Do not claim CI covers them or require new
+cases there; the user may review them separately if they run those suites.
+
+Manual handoff: use the existing core command
+`nf-test test test/core/taxodactyl.workflow.nf.test` with the runner's resolved
+configuration. Review snapshot differences and flag result/error artifacts.
+From `test/selenium/`, run
+`pytest test_reports.py -v --dir <fresh-report-directory>`, then
+`python testkit.py render`; inspect `test-report.json`, `review.html` and
+reference/fresh HTML before promotion. Record data versions and effective
+cap/threshold so selection effects can be distinguished from database drift.
+Keep nf-test/flag/Selenium acceptance **pending user review** until results
+are supplied; successful Python tests do not replace manual acceptance.
+
 ## Dependencies and parallel opportunities
 
 Complete extraction and association tracking precede selected outputs;
@@ -381,6 +488,14 @@ fixed. Minimum deliverable includes complete internal JSON, separate selection,
 selected-only downstream routing and reporting together.
 
 ## Completion criteria
+
+- Complete JSON is a required, separately named `EXTRACT_HITS.out.all_xml_hits`
+  output, exposed as query-keyed `ch_all_xml_hits` for workflow nf-test access.
+  It is neither published nor routed to analysis/report consumers.
+- Implementation provides the channels and review handoff. User-owned nf-test,
+  flag and Selenium review remains explicitly pending until results are
+  supplied; snapshot/fixture/baseline acceptance is not automated. Required
+  manual validation must be recorded before overall task completion.
 
 - Every XML hit and calculated identity remains in `all_xml_hits.json`,
   regardless of selection settings. No complete-extraction FASTA is created;

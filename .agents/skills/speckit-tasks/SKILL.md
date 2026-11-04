@@ -15,6 +15,57 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Planning scope and implementation authorization
+
+Invoking this skill creates or revises a task brief; it does **not** authorize
+implementation. Limit changes to planning artifacts and lifecycle indexes.
+Inspect code/tests read-only as needed. Do not edit application code, test
+code, workflow channels, fixtures or baselines, or start implementation via
+another skill, agent or extension hook unless the user explicitly requests
+implementation. A request to add something **to the task**, an active task
+status, an existing implementation branch, or approval of a testing strategy
+is not permission to implement it.
+
+Record `Implementation authorization: pending explicit user instruction` for
+new scope unless the user has explicitly authorized that scope in the current
+conversation. Keep authorization scoped: an earlier request to implement an
+older task revision does not authorize newly discussed changes. An explicit
+request such as “implement task 04” or invocation of `speckit-implement`
+authorizes that implementation, subject to any stated limits. Do not ask
+again for authorization already supplied for the same scope.
+
+Task-planning hooks obey this boundary too: if a hook would implement code or
+change test expectations, leave that action pending and explain why rather
+than running it as an automatic consequence of planning.
+
+## Required testing decision
+
+For every task creation or revision, assess the relevant tests, then ask the
+user what they want done about testing **before settling the testing plan**.
+Do not silently choose automatic tests, manual drift review, or both. If the
+user has already explicitly supplied the testing choice for this scope, use
+and record it without asking the same question again. A materially changed
+test scope needs a new decision; routine clarification does not revoke a
+choice already given.
+
+Briefly name the affected suites and likely changes, then ask a concise
+question that distinguishes these responsibilities:
+
+- Writing or modifying automated tests and running existing checks.
+- Reviewing output drift and changing snapshots, flags or Selenium fixtures.
+
+Offer a mixed approach (agent implements agreed automated tests; user reviews
+drift), user-owned testing/review, or a per-suite allocation. The user may
+choose any combination; test creation and manual drift review are not mutually
+exclusive. Do not imply that allowing automated tests permits baseline updates.
+
+Record the answer in `## Testing decision`: affected suites, who implements
+new assertions, who runs checks, who reviews drift, who may update expected
+results, and the scope/date of the decision. Until answered, mark the decision
+**pending user input**. Continue independent planning, but do not finalize
+that choice or implement dependent tests/fixtures. No reply is not consent.
+The testing decision is separate from implementation authorization.
+
 ## Repository Customization (local): Task Brief Convention
 
 This repository keeps task briefs directly under the top-level `tasks/`
@@ -95,6 +146,8 @@ when both are present.
    - Generate tasks organized by user story (see Task Generation Rules below)
    - Generate dependency graph showing user story completion order
    - Create parallel execution examples per user story
+   - Assess affected tests and expected-result changes using the test-impact guidance below
+   - Obtain and record the required testing decision (or the explicit choice already supplied for this scope)
    - Validate task completeness (each user story has all needed tasks, independently testable)
 
 4. **Generate the task brief** at the next numbered path under `tasks/`. Use this structure:
@@ -106,7 +159,9 @@ when both are present.
    - `## Objective`
    - `## Implementation`
    - `## Documentation and configuration` when relevant
+   - `## Testing decision`
    - `## Validation`
+   - `## Test impact and manual review`
    - `## Completion criteria`
    - `## Open decision` or `## Risks` when relevant
    Use exact repository file paths throughout. Then update the lifecycle index
@@ -154,7 +209,8 @@ Output path to generated task brief and summary:
 - Task brief path and numeric task ID
 - Active-index update path
 - Scope and implementation summary
-- Validation criteria
+- Recorded testing decision (or pending question), implementation authorization,
+  validation criteria, affected expected-output paths, and pending manual checks
 - Parallel opportunities, if any
 - MVP scope, if applicable
 - Confirmation that the task follows the repository task-brief structure and uses exact file paths
@@ -167,7 +223,51 @@ The task brief should be immediately executable: each implementation and validat
 
 **CRITICAL**: The task brief MUST be organized around a concrete objective, implementation scope, validation evidence, and completion criteria. If the source specification contains user stories, preserve their priorities and independent test criteria in the brief, but do not force the output into a checklist template.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**New tests follow the explicit testing decision.** Feature requirements inform
+the proposed plan, but do not replace asking the user how test implementation
+and drift review should be handled. Assessing existing test impact is required;
+it does not authorize creating tests or replacing expected results.
+
+### Test impact and manual review
+
+Inspect the checked-in CI workflows (including the requested runner), actual
+suite commands and assertions before proposing test changes. Prefer extending
+existing suites; do not scaffold a new nf-test scenario, flag case or Selenium
+case merely because outputs change. Keep precise count/ID/sequence assertions
+in scoped Python integration tests when they exercise the Python behavior;
+workflow/browser tests cover their existing integration and presentation roles.
+Do not assume the runner's label or which scenarios it executes.
+
+For each task brief, inspect the relevant existing tests and include a concise
+`## Test impact and manual review` section. If none are affected, state that
+with a brief reason. Otherwise identify:
+
+- Exact test, snapshot, expected-output and fixture paths; the behavior or
+  fields likely to change; and why. Distinguish expected changes from possible
+  changes that need evidence. Do not invent new expected values.
+- Preparation the implementer should perform so results can be inspected:
+  for example, required named process/workflow output channels, stable query
+  keys, fixtures, comparison artifacts or report fields. Separate emitting a
+  channel from publishing its files or routing them into scientific analysis.
+- Automated checks the implementer can run, and tests/expected-result review
+  owned by the user. In this repository, explicitly flag affected nf-tests
+  and snapshots, flag baselines, and Selenium assertions/expected reports for
+  **manual user review**. Record the agreed owner for running validation and changing baselines;
+  proposing a manual review does not settle ownership without the testing decision.
+- A concrete handoff: commands, input/reference-data versions, output locations,
+  and what differences the user must inspect. Separate intended behavior
+  changes from reference-data drift and suspected regressions.
+
+Do not plan automatic snapshot acceptance, flag-baseline replacement or
+Selenium fixture promotion merely to make tests pass. Plan observability
+preparation and automated verification within the agreed testing scope. This
+skill remains planning-only unless implementation is explicitly requested.
+Manual review stays an explicit handoff requirement.
+Record implementation status separately from manual validation status. Never
+mark a manual check passed without user evidence, and retain pending checks
+in outcomes/completion reporting. When manual acceptance is required for task
+completion, keep it explicit rather than treating automated checks as a
+substitute.
 
 ### Task Brief Format (REQUIRED)
 
@@ -179,6 +279,9 @@ Every generated brief MUST:
 4. Separate implementation from validation evidence.
 5. State completion criteria and any unresolved product decision.
 6. Be detailed enough to execute without recovering context from the chat.
+7. Identify test impact, required preparation, and ownership of manual review.
+8. Record the explicit testing decision or pending user question, separately
+   from authorization to implement.
 
 ### Task Organization
 
@@ -216,6 +319,11 @@ Every generated brief MUST:
 - **Final Phase**: Polish & Cross-Cutting Concerns
 
 ## Done When
+
+- [ ] Testing decision is recorded, or the brief clearly remains draft pending
+      the user’s answer; do not claim the testing plan is finalized while pending
+- [ ] Implementation authorization is recorded separately; planning has not
+      triggered unrequested implementation
 
 - [ ] Numbered task brief generated under `tasks/`
 - [ ] The appropriate lifecycle index is updated (`tasks/active.md` for active
