@@ -1,0 +1,44 @@
+# Contract: loci panel (`scripts/config/loci.json`)
+
+**Producer:** none in the running pipeline — a static file maintained by
+developers, or an operator-supplied override via `--allowed_loci_file`.
+**Consumers:** [P0](../python/p0-validation.md) (validation, P0-021),
+[shared/config.md](../python/shared/config.md)
+(`get_locus_for_query`, CFG-027, CFG-040..042), and
+[P5](../python/p5-db-coverage.md) / [P4](../python/p4-source-diversity.md)
+(GenBank query construction).
+
+```json
+{ "<key>": { "ambiguous_synonyms": ["…"], "non_ambiguous_synonyms": ["…"] } }
+```
+
+| ID | Requirement |
+|---|---|
+| LOC-001 | Each key is a locus name; the union of its two synonym lists (`Locus.synonyms`) is what a user may enter. |
+| LOC-002 | **Every synonym MUST be lower case with no surrounding space**, and the lower-cased key SHOULD be a synonym. P0 and `Locus.__contains__` lower-case the input and compare case-sensitively. Violated today by `atpB`, `trnL`, `AChE` (P0-D-001). |
+| LOC-003 | A synonym MUST belong to only one locus (true today: no shared synonyms across the 31 loci). |
+| LOC-004 | *Ambiguous* synonyms (short tokens such as `coi`, `its`) are searched only in GenBank `[Title]` and `[GENE]`; *non-ambiguous* synonyms in all fields (CFG-042). |
+| LOC-005 | The file MUST be UTF-8; key `β-tub` (Greek beta) contains a non-ASCII character. Until `2e024f6` it was spelled `ß-tub` (German eszett), so a user typing the correct `β-tub` was rejected. Its ASCII synonyms (e.g. `beta-tubulin`) worked throughout. Since `3339050`, P0 also turns a user's `ß-tub` into `β-tub` before checking it ([p0-validation.md P0-045](../python/p0-validation.md)), so both spellings are accepted — in the pipeline only once its container is updated (`DEP-D-013`). |
+
+Shipped panel (31 keys): 16s, 28s, act, alt-a1, β-tub, cmda, co2, coi,
+cytb, dnax, ef1a, fusa, gapa, gyrb, hsp60, its, its1, its2, leus, lsu,
+matk, rbcl, recn, reca, rpob, rplb, rpod, rpb2, atpB, trnL, ache.
+A key spelled `ache` has synonyms `AChE`/`Acetylcholinesterase`.
+
+Override with `--allowed_loci_file`; the override replaces the panel (no
+merge). The `NA` value is accepted separately and is not in the file: it
+is hardcoded as a third, always-valid option directly in P0's validation
+logic (**`P0-021`**, [p0-validation.md §4.3](../python/p0-validation.md)
+— "the result MUST be `na` **or** equal to one of the synonyms of some
+locus in the loci file"), so no panel or override can add, remove or
+affect it.
+
+---
+
+## Provenance
+
+**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
+
+This spec is the source of truth from this point on: when the code and
+this document disagree, change the code to match the spec — not the
+other way around.

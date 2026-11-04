@@ -1,0 +1,95 @@
+# Taxodactyl specification
+
+Specification of `qcif/taxodactyl`, derived from the source code — see
+**Version** below for exactly which commit. Documentation (`README.md`,
+`docs/`) and the original Design Proposal for Development of a
+Taxonomic Assignment Pipeline (QCIF, 2024-11-29) were used only as a cross-check; where the code
+differs from docs, the code is described and the difference is logged as
+a defect. Where the code differs from the Design Proposal, that is a gap
+against the project's *original intent* rather than an internal
+contradiction, and is logged and labelled as such wherever it applies.
+
+Start with **[../CONSTITUTION.md](../CONSTITUTION.md)** — the
+non-negotiable principles this spec and every future change are held to.
+
+## Version
+
+This spec describes `main` at commit **`3339050`** (2026-10-21) — **not**
+a clean checkout of the `v1.5.0` tag (`640df66`, 2026-07-10). That commit
+is `v1.5.0` plus 27 further commits already merged to `main`. Its version
+files read `1.5.1`, but no `v1.5.1` git tag or `v1.5.1` container image
+exists yet (`DEP-D-013`):
+
+```
+git log --oneline v1.5.0..3339050
+```
+
+It was derived in steps. The bulk was derived from `edaacae`
+(2026-09-01, `v1.5.0` + 20 commits). It was then brought forward to
+`3339050` by reviewing the seven commits in between and updating every
+spec file they touch:
+
+| Commit | Change | Spec updated |
+|---|---|---|
+| `cd6e10d` | Rank taxonkit `name2taxid` results (#316) | [p2-extract-taxonomy.md §3.2](python/p2-extract-taxonomy.md) |
+| `a24581f` | nf-test CI workflow for GitHub runner (#315); `HOME` exported to every task | [tests.md](tests.md), [nextflow/config-profiles.md §5](nextflow/config-profiles.md) |
+| `2decc0c` | GBIF queries moved to the Catalogue of Life backbone (#313); `cloudgene.yml` re-added as a symlink | [p5-db-coverage.md](python/p5-db-coverage.md), [reference-data.md §2.2](reference-data.md), [deployment.md](deployment.md) |
+| `b0be80b` | Selenium `flex` tolerance (#320) | [tests.md §4](tests.md) |
+| `0b63e39` | Report BLAST-hits modal shows every HSP | [p6-report.md §2a](python/p6-report.md) |
+| `2e024f6` | `ß-tub` locus key corrected to `β-tub` | [contracts/loci.md](contracts/loci.md) |
+| `3339050` | Metadata CSV encoding repair and `ß` auto-correction (#326, #327); nf-schema no longer reads the CSV; `cloudgene.yml` removed; version bumped to `1.5.1` | [python/p0-validation.md](python/p0-validation.md), [contracts/inputs.md](contracts/inputs.md), [services/input-validation.md](services/input-validation.md), [deployment.md](deployment.md), [nextflow/workflow.md](nextflow/workflow.md) |
+
+Where this spec quotes `v1.5.0` as a **container tag**, that is what
+`conf/process.config` and `conf/azure.config` still pin at `3339050`.
+Where it says "the spec version" or quotes footer provenance, it means
+**this commit**, not the `v1.5.0` tag. If you check out the `v1.5.0` tag
+itself to verify a requirement against source, expect it to be missing
+the 27 commits above — that is not a spec error. `main` will advance further; re-verify
+against current `main` before trusting this spec on anything newer
+commits may have touched.
+
+Use this spec for spec-driven development: change the spec first, then
+the code; cite requirement IDs (e.g. `NF-WF-061`) in tasks, commits and
+tests.
+
+## Conventions
+
+- **Requirement IDs** — `<AREA>-<SECTION>-<nnn>`; never reused. MUST /
+  SHOULD / MAY per RFC 2119.
+- **Defects** — `*-D-nnn`: places where the code contradicts what its own
+  structure or interfaces imply. A defect is a backlog item; it does not
+  redefine the requirement.
+- **Open questions** — end of each file.
+
+## Layout
+
+```
+spec/
+├── README.md              this file
+├── overview.md            purpose, scope, actors, glossary
+├── architecture.md        layers, interface, per-query model, design properties
+├── nextflow/              workflow, processes, params, config-profiles, error-handling
+├── python/                p0-validation … p6-report (+ p1-bold-search,
+│                          blast-vs-bold)
+│   └── shared/            config, throttle, cache, errors, secrets, flags
+├── contracts/             query-folder, filenames, inputs, hits, candidates,
+│                          coverage-and-sources, loci, outputs
+├── services/              input-validation
+├── tests.md
+├── deployment.md
+├── containers.md           detailed companion to deployment.md §2–3
+├── reference-data.md       detailed companion to deployment.md §4
+├── defects.md             every bug found, by severity
+└── decisions.md           open questions needing an owner
+```
+
+## Status
+
+All areas drafted from code. Not yet done: verifying by execution the
+items marked *to confirm* in [defects.md](defects.md), and reviewing each
+spec with the code owner.
+
+## Defects
+
+All bugs found are collected in **[defects.md](defects.md)** (severity-ranked,
+with status). Module specs keep a local table under the same IDs.
