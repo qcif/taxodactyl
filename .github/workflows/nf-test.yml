@@ -318,7 +318,7 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          archive: false
+          name: review-${{ matrix.runner }}.html
           path: ${{ github.workspace }}/test/selenium/review.html
 
       - name: Upload reports
