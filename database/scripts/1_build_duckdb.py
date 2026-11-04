@@ -1,8 +1,10 @@
 import argparse
 import gzip
+from itertools import islice
 from pathlib import Path
 
 import duckdb
+import pandas as pd
 
 argument_parser = argparse.ArgumentParser(
     description="Build the Phase 1 DuckDB records table from compressed metadata."
@@ -33,52 +35,162 @@ argument_parser.add_argument(
 )
 
 
-def insert_record_batch(database_connection, record_batch, reject_log_file):
-    inserted_rows = 0
-    rejected_rows = 0
-
-    database_batch = []
-
-    for batch_record in record_batch:
-        database_batch.append(batch_record[1:])
-
-    database_connection.execute("BEGIN TRANSACTION")
-
-    try:
-        database_connection.executemany(
-            """
-            INSERT INTO records (accession, taxid, length, title)
-            VALUES (?, ?, ?, ?)
-            """,
-            database_batch,
+def validate_metadata_chunk(
+    lines,
+    processed_before_chunk,
+    min_integer,
+    max_integer,
+):
+    raw_lines = pd.Series(lines, dtype="object")
+    tab_counts = raw_lines.str.count("\t")
+    valid_structure_mask = tab_counts.eq(3)
+    rejected_frames = []
+    malformed_indices = raw_lines.index[~valid_structure_mask]
+    if len(malformed_indices) > 0:
+        malformed_rows = pd.DataFrame({
+            "row_number": processed_before_chunk + malformed_indices + 1,
+            "reason": "expected 4 fields",
+        })
+        rejected_frames.append(malformed_rows)
+    valid_lines = raw_lines[valid_structure_mask]
+    if valid_lines.empty:
+        valid_records = pd.DataFrame(columns=[
+            "row_number",
+            "accession",
+            "taxid",
+            "length",
+            "title",
+        ])
+        rejected_rows = pd.concat(rejected_frames, ignore_index=True)
+        return valid_records, rejected_rows
+    records = (
+        valid_lines
+        .str.rstrip("\n")
+        .str.split("\t", n=3, expand=True)
+    )
+    records.columns = ["accession", "taxid", "length", "title"]
+    records["row_number"] = processed_before_chunk + records.index + 1
+    records["taxid_numeric"] = pd.to_numeric(records["taxid"], errors="coerce")
+    records["length_numeric"] = pd.to_numeric(
+        records["length"], errors="coerce"
+    )
+    taxid_integer_format = records["taxid"].str.strip(
+    ).str.fullmatch(r"[+-]?\d+")
+    length_integer_format = records["length"].str.strip(
+    ).str.fullmatch(r"[+-]?\d+")
+    missing_accession = records["accession"].str.strip().eq("")
+    missing_taxid = ~missing_accession & records["taxid"].str.strip().eq("")
+    invalid_numeric = (
+        ~missing_accession
+        & ~missing_taxid
+        & (
+            ~taxid_integer_format
+            | ~length_integer_format
+            | records["taxid_numeric"].isna()
+            | records["length_numeric"].isna()
         )
+    )
+    out_of_range = (
+        ~missing_accession
+        & ~missing_taxid
+        & ~invalid_numeric
+        & (
+            (records["taxid_numeric"] < min_integer)
+            | (records["taxid_numeric"] > max_integer)
+            | (records["length_numeric"] < min_integer)
+            | (records["length_numeric"] > max_integer)
+        )
+    )
+    valid_mask = ~(
+        missing_accession
+        | missing_taxid
+        | invalid_numeric
+        | out_of_range
+    )
+    rejection_rules = [
+        (missing_accession, "missing accession"),
+        (missing_taxid, "missing taxid"),
+        (invalid_numeric, "invalid numeric metadata"),
+        (out_of_range, "numeric value outside INTEGER range"),
+    ]
+    for mask, reason in rejection_rules:
+        if mask.any():
+            rejected_frames.append(pd.DataFrame({
+                "row_number": records.loc[mask, "row_number"],
+                "reason": reason,
+            }))
+    valid_records = records.loc[
+        valid_mask,
+        ["row_number", "accession", "taxid_numeric", "length_numeric", "title"],
+    ].copy()
 
-        database_connection.execute("COMMIT")
-        inserted_rows = len(record_batch)
+    valid_records = valid_records.rename(
+        columns={"taxid_numeric": "taxid", "length_numeric": "length"}
+    )
+    valid_records["taxid"] = valid_records["taxid"].astype("int64")
+    valid_records["length"] = valid_records["length"].astype("int64")
+    if rejected_frames:
+        rejected_rows = pd.concat(
+            rejected_frames,
+            ignore_index=True,
+        ).sort_values("row_number")
+    else:
+        rejected_rows = pd.DataFrame(columns=["row_number", "reason"])
+    return valid_records, rejected_rows
 
-    except duckdb.ConstraintException:
-        database_connection.execute("ROLLBACK")
 
-        for batch_record in record_batch:
-            try:
-                database_connection.execute(
-                    """
-                    INSERT INTO records (accession, taxid, length, title)
-                    VALUES (?, ?, ?, ?)
-                    """,
-                    batch_record[1:]
-                )
+def insert_valid_chunk(database_connection, valid_records):
+    if valid_records.empty:
+        return 0, pd.DataFrame(columns=["row_number", "accession"])
 
-                inserted_rows += 1
-
-            except duckdb.ConstraintException:
-                rejected_rows += 1
-                reject_log_file.write(
-                    f"{batch_record[0]}\tduplicate accession "
-                    f"{batch_record[1]}\n"
-                )
-
-    return inserted_rows, rejected_rows
+    database_connection.register("valid_chunk", valid_records)
+    duplicate_rows = database_connection.execute("""
+        WITH ranked AS (
+            SELECT
+                row_number,
+                accession,
+                ROW_NUMBER() OVER (
+                    PARTITION BY accession
+                    ORDER BY row_number
+                ) AS accession_rank
+            FROM valid_chunk
+        )
+        SELECT ranked.row_number, ranked.accession
+        FROM ranked
+        LEFT JOIN records
+            ON records.accession = ranked.accession
+        WHERE records.accession IS NOT NULL
+           OR ranked.accession_rank > 1
+        ORDER BY ranked.row_number
+    """).fetchdf()
+    database_connection.execute("""
+        INSERT INTO records (accession, taxid, length, title)
+        SELECT
+            ranked.accession,
+            ranked.taxid,
+            ranked.length,
+            ranked.title
+        FROM (
+            SELECT
+                accession,
+                taxid,
+                length,
+                title,
+                row_number,
+                ROW_NUMBER() OVER (
+                    PARTITION BY accession
+                    ORDER BY row_number
+                ) AS accession_rank
+            FROM valid_chunk
+        ) AS ranked
+        LEFT JOIN records
+            ON records.accession = ranked.accession
+        WHERE ranked.accession_rank = 1
+        AND records.accession IS NULL
+    """)
+    inserted_rows = len(valid_records) - len(duplicate_rows)
+    database_connection.unregister("valid_chunk")
+    return inserted_rows, duplicate_rows
 
 
 arguments = argument_parser.parse_args()
@@ -97,7 +209,7 @@ except (OSError, UnicodeDecodeError) as error:
         f"Unable to read input file '{input_path}': {error}"
     )
 
-reject_log_file = reject_log_path.open("w", encoding="utf-8")
+reject_log_file = reject_log_path.open("w", encoding="utf-8", newline="")
 
 reject_log_file.write("row_number\treason\n")
 
@@ -121,88 +233,75 @@ rejected_count = 0
 inserted_count = 0
 
 progress_interval = 100_000
-batch_size = 50_000
-record_batch = []
+chunk_size = 50_000
 MIN_DUCKDB_INTEGER = -2_147_483_648
 MAX_DUCKDB_INTEGER = 2_147_483_647
-
 with gzip.open(input_path, "rt", encoding="utf-8") as metadata_file:
-    for metadata_line in metadata_file:
-        processed_count += 1
+    while True:
+        if row_limit is not None:
+            remaining_rows = row_limit - processed_count
 
-        metadata_fields = metadata_line.rstrip("\n").split("\t")
+            if remaining_rows <= 0:
+                break
 
-        if len(metadata_fields) == 4:
-            accession, taxid, sequence_length, title = metadata_fields
-            if accession.strip() == "":
-                rejected_count += 1
-                reject_log_file.write(
-                    f"{processed_count}\tmissing accession\n"
-                )
-            elif taxid.strip() == "":
-                rejected_count += 1
-                reject_log_file.write(
-                    f"{processed_count}\tmissing taxid\n"
-                )
-            else:
-                try:
-                    taxid = int(taxid)
-                    sequence_length = int(sequence_length)
-
-                    if not (
-                       MIN_DUCKDB_INTEGER <= taxid <= MAX_DUCKDB_INTEGER
-                       and MIN_DUCKDB_INTEGER <= sequence_length <= MAX_DUCKDB_INTEGER
-                       ):
-                        rejected_count += 1
-                        reject_log_file.write(
-                            f"{processed_count}\tnumeric value outside INTEGER range\n"
-                        )
-                    else:
-                        record_batch.append(
-                            (processed_count, accession,
-                             taxid, sequence_length, title)
-                        )
-                        valid_count += 1
-
-                        if len(record_batch) == batch_size:
-                            batch_inserted, batch_rejected = insert_record_batch(
-                                database_connection,
-                                record_batch,
-                                reject_log_file,
-                            )
-                            inserted_count += batch_inserted
-                            rejected_count += batch_rejected
-                            record_batch.clear()
-
-                except ValueError:
-                    rejected_count += 1
-                    reject_log_file.write(
-                        f"{processed_count}\tinvalid numeric metadata\n"
-                    )
-                    print("Invalid numeric metadata")
+            rows_to_read = min(chunk_size, remaining_rows)
         else:
-            rejected_count += 1
-            reject_log_file.write(
-                f"{processed_count}\texpected 4 fields\n")
-            print("Invalid metadata row")
+            rows_to_read = chunk_size
+
+        lines = list(islice(metadata_file, rows_to_read))
+
+        if not lines:
+            break
+
+        processed_before_chunk = processed_count
+        processed_count += len(lines)
+
+        valid_records, rejected_rows = validate_metadata_chunk(
+            lines,
+            processed_before_chunk,
+            MIN_DUCKDB_INTEGER,
+            MAX_DUCKDB_INTEGER,
+        )
+
+        valid_count += len(valid_records)
+        rejected_count += len(rejected_rows)
+        chunk_inserted, duplicate_rows = insert_valid_chunk(
+            database_connection,
+            valid_records,
+        )
+
+        inserted_count += chunk_inserted
+        rejected_count += len(duplicate_rows)
+        if not duplicate_rows.empty:
+            duplicate_log = duplicate_rows.copy()
+            duplicate_log["reason"] = (
+                "duplicate accession "
+                + duplicate_log["accession"].astype(str)
+            )
+
+        else:
+            duplicate_log = pd.DataFrame(columns=["row_number", "reason"])
+
+        chunk_rejections = pd.concat(
+            [
+                rejected_rows[["row_number", "reason"]],
+                duplicate_log[["row_number", "reason"]],
+            ],
+            ignore_index=True,
+        ).sort_values("row_number")
+
+        if not chunk_rejections.empty:
+            chunk_rejections.to_csv(
+                reject_log_file,
+                sep="\t",
+                header=False,
+                index=False,
+            )
         if processed_count % progress_interval == 0:
             print("Processed so far:", processed_count)
-        if row_limit is not None and processed_count >= row_limit:
-            break
-if record_batch:
-    batch_inserted, batch_rejected = insert_record_batch(
-        database_connection,
-        record_batch,
-        reject_log_file,
-    )
-    inserted_count += batch_inserted
-    rejected_count += batch_rejected
-    record_batch.clear()
-
 print("Processed rows:", processed_count)
 print("Valid rows:", valid_count)
 print("Rejected rows:", rejected_count)
-print("Records in batch:", len(record_batch))
 print("Inserted rows:", inserted_count)
 
 database_row_count = database_connection.execute(
