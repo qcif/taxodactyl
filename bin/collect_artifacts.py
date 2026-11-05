@@ -205,15 +205,21 @@ def link_dirs(workdirs: dict[Path, Path], outdir: Path) -> None:
         full_dest = outdir.joinpath(dest)
         # Create parent directories for the destination
         full_dest.parent.mkdir(parents=True, exist_ok=True)
-    # Include this if the errors don't show it anyway
-    # if not src.exists():
-    #     print(f"Error: Source directory does not exist: {src}"")
 
         try:
-            # Debug line to be removed
-            print(f"Attempting to link: {src} -> {full_dest}")
-            os.symlink(src, full_dest, target_is_directory=True)
+            # Calculate the relative path from the destination's parent to the source
+            # Example:
+            # src = /mnt/data/test/work/01/337ca066d73b31ca2a795423c4af15
+            # full_dest = /mnt/data/test/collected_errors/EXTRACT_CANDIDATES/query_002_Scenario_02
+            # rel_path = ../../work/01/337ca066d73b31ca2a795423c4af15
+            rel_path = os.path.relpath(src, full_dest.parent)
+
+            print(f"Attempting to link: {
+                  src} -> {full_dest} (via relative link: {rel_path})")
+
+            os.symlink(rel_path, full_dest, target_is_directory=True)
             print(f"Linked: {src} -> {full_dest}")
+
         except FileExistsError:
             print(f"Warning: Destination link already exists: {full_dest}")
         except PermissionError:
