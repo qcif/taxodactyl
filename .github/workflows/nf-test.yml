@@ -4,9 +4,9 @@ on:
     # To run workflow, trigger manually using GH UI
     workflow_dispatch:
     # Update to enable trigger on push of selected branch or on pull request
-    push:
-      branches:
-        - nf-test-sh-runner
+    # push:
+    #   branches:
+    #     - nf-test-sh-runner
     pull_request:
         branches:
           - main
@@ -36,7 +36,7 @@ jobs:
         python-version: [3.12]
         nextflow-version: [25.04.6]
         # Update here to run only on gh or sh runners:
-        runner: [ubuntu-latest, self-hosted]
+        runner: [ubuntu-24.04, self-hosted]
 
     steps:
       # Enable creation of containers as an unprivileged user
