@@ -1,0 +1,30 @@
+nextflow_workflow {
+
+    name "Test Workflow TAXODACTYL_COVERAGE"
+    script "workflows/coverage.nf"
+    workflow "TAXODACTYL_COVERAGE"
+
+    // Database coverage mode: no sequences, one report for all taxa.
+    // coverage.csv has 5 rows, one of which is a duplicate that is dropped
+    // at validation, leaving 4 taxa. Output contents are not snapshotted
+    // because record counts drift with live GenBank and GBIF data.
+    test("coverage") {
+
+        when {
+            workflow {
+            }
+        }
+
+        then {
+
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.ch_html_report.size() == 1 },
+                { assert workflow.out.ch_db_coverage_json.size() == 4 },
+                { assert workflow.out.ch_db_coverage_flags.size() == 4 },
+                { assert workflow.out.ch_db_coverage_flags.every { it[1].size() == 3 } },
+                { assert workflow.out.ch_db_coverage_maps.size() >= 3 } )
+        }
+    }
+
+}

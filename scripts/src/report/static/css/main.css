@@ -190,10 +190,6 @@ tr.interactive.active {
   position: relative;
   cursor: pointer;
 }
-.occurrence-map img {
-  max-width: 100%;
-  height: auto;
-}
 .occurrence-map p {
   position: absolute;
   bottom: 0;

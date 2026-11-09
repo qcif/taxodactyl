@@ -3,7 +3,9 @@
 from src.utils.config import Config
 
 
-def build_blast_url(taxon: str, taxid: int, config: Config) -> str:
+def build_blast_url(taxon: str, taxid: int, config: Config) -> str | None:
+    if config.coverage_mode:
+        return None  # No query sequence to search with
     query_seq = config.read_query_fasta(
         index=config.get_query_ix(config.query_dir)
     ).seq

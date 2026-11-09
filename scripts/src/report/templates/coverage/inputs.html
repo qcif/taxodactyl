@@ -1,0 +1,82 @@
+{% from "macros/info-badge.html" import info_badge %}
+
+<h4>
+  Inputs
+  {{ info_badge("These details are derived from your coverage taxa CSV input file.") }}
+</h4>
+
+<table class="table table-striped my-3 tight">
+  <tbody>
+    <tr>
+      <td class="fw-bold">Input file</td>
+      <td><code>{{ config.inputs.coverage_taxa_csv.name }}</code></td>
+    </tr>
+    <tr>
+      <td class="fw-bold">Number of taxa</td>
+      <td>{{ taxa | length }}</td>
+    </tr>
+    <tr>
+      <td class="fw-bold">Reference database</td>
+      <td>{{ config.database_name }}</td>
+    </tr>
+    <tr>
+      <td class="fw-bold">Validated input</td>
+      <td>
+        <a
+          href="#"
+          data-bs-toggle="modal"
+          data-bs-target="#coverageInputModal"
+        >View</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+{% include "components/workflow-info.html" %}
+
+<div class="modal fade" id="coverageInputModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Validated coverage taxa</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped tight">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Taxon</th>
+              <th>Locus</th>
+              <th>Country</th>
+              <th>Classification</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in taxa %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td><em>{{ t.taxon }}</em></td>
+              <td>{{ t.metadata.locus or '-' }}</td>
+              <td>{{ t.metadata.country or '-' }}</td>
+              <td>{{ t.metadata.classification or '-' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>

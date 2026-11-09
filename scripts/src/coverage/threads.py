@@ -60,6 +60,7 @@ def parallel_process_tasks(
                 target_source = (
                     "candidate" if species_name in candidate_list
                     else "taxon of interest" if species_name in toi_list
+                    else "target taxon" if config.coverage_mode
                     else "preliminary ID"
                 )
                 msg = (

@@ -3,7 +3,7 @@
     <div class="col-9 mr-3">
       <h1>{{ title }}</h1>
       <p class="lead">
-        Sample ID: <code>{{ metadata.sample_id }}</code>
+        {% if coverage_mode %}Taxa assessed: <code>{{ taxa | length }}</code>{% else %}Sample ID: <code>{{ metadata.sample_id }}</code>{% endif %}
         <br>
         Reference database: <code>{% if bold %}BOLD{% else %}BLAST{% endif %}</code>
       </p>
