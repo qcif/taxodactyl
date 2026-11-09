@@ -14,8 +14,10 @@ from utils import (
     run_p0_validation,
     parse_errors,
     find_taxa_zero_rows,
-    find_invalid_pmi
+    find_invalid_pmi,
+    normalise_csv_encoding,
 )
+from src.utils.errors import MetadataFormatError
 import tempfile
 import os
 import logging
@@ -70,6 +72,20 @@ async def validate(
             logger.info("Metadata CSV created from edited text")
         elif metadata_csv:
             metadata_path = save_upload_to_tempfile(metadata_csv)
+            try:
+                normalise_csv_encoding(metadata_path)
+            except MetadataFormatError as exc:
+                tmp_files.append(metadata_path)
+                logger.warning("Metadata CSV unreadable | %s", exc)
+                return JSONResponse(status_code=400, content={
+                    "ok": False,
+                    "error": {
+                        "type": "invalid_encoding",
+                        "message": str(exc),
+                        "sample_id": None,
+                        "value": None,
+                    },
+                })
             logger.info("Metadata CSV uploaded: %s", metadata_csv.filename)
         else:
             logger.warning("No metadata CSV provided")

@@ -14,6 +14,7 @@ sys.path.append(
     str(Path(__file__).resolve().parents[3] / "scripts")
 )
 from p0_validation import validate_inputs
+from src.utils.encoding import normalise_csv_encoding  # noqa: F401,E402
 
 COUNTRY_SUGGESTIONS = {
     "turkey": 'Use ISO alpha-2 code "TR".',

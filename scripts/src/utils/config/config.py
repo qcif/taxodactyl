@@ -567,7 +567,7 @@ class Config:
             return self._coverage_metadata()
 
         data = {}
-        with self.inputs.metadata_csv.open() as f:
+        with self.inputs.metadata_csv.open(encoding='utf-8') as f:
             reader = csv.DictReader(f)
             header = self.inputs.metadata_csv_header.copy()
             header.update({

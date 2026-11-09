@@ -1,6 +1,7 @@
 """Test input validation functions."""
 
 import logging
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,9 +17,11 @@ from p0_validation import (
     _validate_metadata_preliminary_id,
     _validate_metadata_sample_id,
     _validate_metadata_taxa_of_interest,
+    _autofix_metadata_encoding,
     _validate_taxdbs,
 )
 
+from src.utils.encoding import normalise_csv_encoding
 from src.utils.errors import FASTAFormatError, MetadataFormatError
 
 logging.disable(logging.CRITICAL)
@@ -51,6 +54,10 @@ METADATA_NO_SEQUENCES = (
     TEST_DATA_DIR / 'validation/metadata_no_sequences.csv')
 METADATA_SEQUENCES_WITH_WHITESPACE = (
     TEST_DATA_DIR / 'validation/metadata_sequences_with_whitespace.csv')
+METADATA_LATIN1 = TEST_DATA_DIR / 'validation/metadata_latin1.csv'
+METADATA_UTF8_BOM = TEST_DATA_DIR / 'validation/metadata_utf8_bom.csv'
+METADATA_UTF16 = TEST_DATA_DIR / 'validation/metadata_utf16.csv'
+XLSX_MAGIC_BYTES = b'PK\x03\x04' + bytes(32)
 METADATA_EXPECT_IDS = [
     'LC438549.1',
     'ON075825.1',
@@ -89,6 +96,65 @@ class ValidationTestCase(unittest.TestCase):
                 METADATA_MISSING_SEQUENCE_ID,
                 METADATA_EXPECT_IDS
             )
+
+    def _copy_to_tmp(self, source: Path) -> Path:
+        tmp_dir = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp_dir)
+        return Path(shutil.copy(source, tmp_dir))
+
+    def test_it_converts_latin1_metadata_to_utf8(self):
+        path = self._copy_to_tmp(METADATA_LATIN1)
+        self.assertEqual(normalise_csv_encoding(path), 'cp1252')
+        text = path.read_bytes().decode('utf-8')
+        self.assertIn('ß-tub', text)
+        self.assertNotIn('\r', text)
+
+    def test_it_autofixes_eszett_locus_and_validates(self):
+        path = self._copy_to_tmp(METADATA_LATIN1)
+        _autofix_metadata_encoding(path)
+        text = path.read_text(encoding='utf-8')
+        self.assertIn('β-tub', text)
+        self.assertNotIn('ß', text)
+        _validate_metadata(path, METADATA_EXPECT_IDS)
+
+    def test_it_replaces_eszett_in_sample_ids_and_fasta_headers(self):
+        tmp_dir = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp_dir)
+        csv_path = tmp_dir / 'metadata.csv'
+        fasta_path = tmp_dir / 'queries.fasta'
+        csv_path.write_bytes(
+            'sample_id,locus,preliminary_id\r\n'
+            'S1_ß-tub,ß-tub,Fungi\r\n'.encode('latin-1'))
+        fasta_path.write_bytes('>S1_ß-tub\nACGT\n'.encode('latin-1'))
+        _autofix_metadata_encoding(csv_path, fasta_path)
+        self.assertIn(
+            'S1_beta-tub,β-tub,Fungi', csv_path.read_text(encoding='utf-8'))
+        self.assertEqual(
+            fasta_path.read_text(encoding='utf-8'), '>S1_beta-tub\nACGT\n')
+
+    def test_it_strips_utf8_bom_from_metadata(self):
+        path = self._copy_to_tmp(METADATA_UTF8_BOM)
+        self.assertEqual(normalise_csv_encoding(path), 'utf-8-sig')
+        self.assertFalse(path.read_bytes().startswith(b'\xef\xbb\xbf'))
+        _validate_metadata(path, METADATA_EXPECT_IDS)
+
+    def test_it_converts_utf16_metadata_to_utf8(self):
+        path = self._copy_to_tmp(METADATA_UTF16)
+        self.assertEqual(normalise_csv_encoding(path), 'utf-16')
+        _validate_metadata(path, METADATA_EXPECT_IDS)
+
+    def test_it_leaves_utf8_metadata_untouched(self):
+        path = self._copy_to_tmp(METADATA_VALID)
+        before = path.read_bytes()
+        self.assertIsNone(normalise_csv_encoding(path))
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_it_rejects_excel_workbook_with_csv_extension(self):
+        path = Path(tempfile.mkdtemp()) / 'metadata.csv'
+        self.addCleanup(shutil.rmtree, path.parent)
+        path.write_bytes(XLSX_MAGIC_BYTES)
+        with self.assertRaisesRegex(MetadataFormatError, 'Excel workbook'):
+            normalise_csv_encoding(path)
 
     def test_it_creates_fasta_from_csv_sequences(self):
         """Test that FASTA file is created when sequences in CSV."""

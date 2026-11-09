@@ -159,19 +159,17 @@
     }
 
     function showBlastAlignment(hit) {
-      let ix = 1;
-      alignments = hit.hsps.reduce((acc, hsp) => {
-        title = `HSP ${ix}/${hit.hsps.length}`;
-        length = `Alignment length: ${hsp.alignment_length}`;
-        identity = `Identity: ${100 * hsp.identity}%`;
-        evalue = `E-value: ${hsp.e_value}`;
-        bitscore = `Bitscore: ${hsp.bitscore}`;
-        alignment = [title, length, identity, evalue, bitscore].join('  ') + '\n';
+      const alignments = hit.hsps.reduce((acc, hsp, i) => {
+        const title = `HSP ${i + 1}/${hit.hsps.length}`;
+        const length = `Alignment length: ${hsp.alignment_length}`;
+        const identity = `Identity: ${100 * hsp.identity}%`;
+        const evalue = `E-value: ${hsp.e_value}`;
+        const bitscore = `Bitscore: ${hsp.bitscore}`;
+        let alignment = [title, length, identity, evalue, bitscore].join('  ') + '\n';
         alignment += hsp.alignment + '\n\n';
-        ix ++;
         return acc + alignment;
       }, '');
-      $('#selectedHitAlignment').text(alignment);
+      $('#selectedHitAlignment').text(alignments);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
