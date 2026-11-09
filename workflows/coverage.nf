@@ -43,9 +43,9 @@ workflow TAXODACTYL_COVERAGE {
         .flatten()
         .map { f -> [f.parent.name, [f]] }
 
-    // There are no sequences in this mode: pass the optional-file placeholder
-    ch_no_fasta = channel.fromPath("${projectDir}/assets/NO_FILE_PLACEHOLDER")
-        .ifEmpty(file('OPTIONAL_FILE')).first()
+    // There are no sequences in this mode: pass an empty placeholder file (the
+    // process ignores it). It must exist, because fromPath() emits missing paths.
+    ch_no_fasta = channel.value(file("${projectDir}/assets/optional_input/NO_SEQUENCES"))
 
     // Evaluate database coverage of each taxon in parallel
     EVALUATE_DATABASE_COVERAGE (
