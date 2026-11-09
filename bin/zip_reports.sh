@@ -1,30 +1,39 @@
 #!/usr/bin/bash
 
 # Zip all workflow reports into a single file for easy download
+#
+# Pass --coverage_taxa (with or without the coverage CSV path) when the
+# workflow was run in database coverage mode, where there is nothing to zip.
+
+COVERAGE_MODE=false
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --dir) DIR="$2"; shift ;;
+        --coverage_taxa)
+            COVERAGE_MODE=true
+            # Optional value: the coverage CSV path
+            if [[ -n "${2:-}" && "$2" != --* ]]; then shift; fi
+            ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
 
+if [[ "$COVERAGE_MODE" == true ]]; then
+    echo "Running in database coverage mode - samples are aggregated into a single run-level report. Nothing to zip."
+    exit 0
+fi
+
 if [[ -z "$DIR" ]]; then
-    echo "Usage: $0 --dir <directory>"
+    echo "Usage: $0 --dir <directory> [--coverage_taxa]"
     exit 1
 fi
 
 
 cd "$DIR"
 mkdir reports
-# Normal mode produces query_*/report*.html, and database coverage mode
-# produces a single report at the output root. Each run has only one kind.
-shopt -s nullglob
-report_files=(query_*/report*.html report_*coverage_*.html)
-if [[ ${#report_files[@]} -gt 0 ]]; then
-    cp "${report_files[@]}" reports/
-fi
+cp query_*/report*.html reports
 zip -r reports.zip reports/ > /dev/null
 
 echo "All workflow reports have been zipped"
