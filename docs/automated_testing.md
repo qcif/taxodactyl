@@ -7,7 +7,7 @@ Actions can only return either success or failure. This workflow is designed to 
 ## Workflow action
 
 - The `nf-test.yml` workflow is designed to run on both:
-	- GitHub-hosted runner: `ubuntu-latest`
+	- GitHub-hosted runner: `ubuntu-24.04`
 	- self-hosted runner: 4C/8G, 25GB+ disk free
 - If one test fails the other will continue, due to `fail-fast: false` setting. 
 
@@ -17,7 +17,7 @@ Actions can only return either success or failure. This workflow is designed to 
 	- on pull requests for `main`, or;
 	- on manual trigger.
 
-- All runs are intended to be ephemeral, but an archive of runs is saved on the SH runner to allow for easy error investigation. 
+- All runs are intended to be ephemeral, but output and work files for runs on the self-hosted runner are archived to allow for easy error investigation.
 
 - All test steps are set to run, even if `nf-test` returns a failure. 
 
