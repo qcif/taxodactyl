@@ -60,7 +60,7 @@ workflow TAXODACTYL_COVERAGE {
     // A single report gathers every taxon's query folder. If every taxon fails,
     // collect() emits nothing and no report is produced.
     REPORT_COVERAGE (
-        EVALUATE_DATABASE_COVERAGE.out.query_dir.map { it[1] }.collect(),
+        EVALUATE_DATABASE_COVERAGE.out.query_archive.collect(),
         ch_coverage_csv,
         ch_params_json,
         ch_workflow_timestamp

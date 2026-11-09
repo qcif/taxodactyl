@@ -11,7 +11,7 @@ process REPORT_COVERAGE {
     publishDir "${params.outdir}", mode: 'copy', pattern: "report_*.html" // Publish HTML report to output directory
 
     input:
-    path(query_dirs) // Every taxon's query folder (names are unique: query_NNN_<sample_id>)
+    path(query_archives) // One archive per taxon: query_NNN_<sample_id>.tar.gz
     path(coverage_csv) // Validated coverage taxa CSV
     path(params_file) // File with pipeline parameters
     path(timestamp_file) // File with timestamps (read by the report as the analysis start time)
@@ -30,6 +30,12 @@ process REPORT_COVERAGE {
 
     // No --versions_yml: no versioned tools run in this mode
     """
+    # Unpack each taxon's query folder (query_NNN_<sample_id>/)
+    for archive in *.tar.gz; do
+        [ -e "\$archive" ] || continue
+        tar -xzf "\$archive"
+    done
+
     # Run the report generation Python script
     python /app/scripts/p6_report.py \
             --coverage-taxa "${coverage_csv}" \
