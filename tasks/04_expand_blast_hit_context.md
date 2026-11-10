@@ -7,9 +7,9 @@
 **Issue:** [#160 — Consider blast hits down to 93.5% identity for better context](https://github.com/qcif/taxodactyl/issues/160)
 
 **Scope:** Rename the retrieval cap to `blast_max_target_seqs` (default 2000),
-extract every XML hit into `all_xml_hits.json`, then derive
-separate `all_hits.json` / `all_hits.fasta` using 500-hit blocks.
-Publish `all_hits.*`; keep `all_xml_hits.json` as internal workflow artifacts.
+extract every XML hit into `all_hits.json`, then derive
+separate `filtered_hits.json` / `filtered_hits.fasta` using 500-hit blocks.
+Publish `filtered_hits.json` / `filtered_hits.fasta`; keep `all_hits.json` as internal workflow artifacts.
 All downstream analysis and reporting use selected hits only. Complete hits
 remain available internally for extraction/selection inspection.
 
@@ -42,9 +42,9 @@ separate selection, and explicit confirmation to keep the 500-hit block rule;
 ## Objective
 
 The complete extraction is an inspectable record, independent of subsequent
-selection. Never overwrite `all_xml_hits.json` with a selected subset. This
+selection. Never overwrite `all_hits.json` with a selected subset. This
 internal JSON contains every hit present in the supplied XML, not every
-database match. The established downstream filename `all_hits.*` now means
+database match. The downstream filenames `filtered_hits.json` / `filtered_hits.fasta` contain
 all block-selected hits available for downstream evaluation, not all XML hits.
 
 1. Run BLAST once with `-max_target_seqs` from `blast_max_target_seqs`
@@ -52,7 +52,7 @@ all block-selected hits available for downstream evaluation, not all XML hits.
 2. Extract every retrieved hit and its HSP evidence. Calculate identity using
    the existing length-weighted aggregate, rounded to three decimals, and
    sort JSON hits descending with stable BLAST-order ties.
-3. Write the complete `all_xml_hits.json` before deriving a
+3. Write the complete `all_hits.json` before deriving a
    separate selected set. Coverage/length and identity eligibility filters
    must not remove records from the complete extraction.
 4. Select an initial block of up to 500 hits in aggregate-identity order.
@@ -77,7 +77,7 @@ all_hits = all_xml_hits[:end]  # downstream selected set
 ```
 
 Replay XML may contain more hits than the cap. Preserve every one in
-`all_xml_hits.json`; apply the cap only to selection. This replay cap does not
+`all_hits.json`; apply the cap only to selection. This replay cap does not
 reproduce which records a capped live BLAST search would retrieve.
 
 ## Output and consumer contracts
@@ -85,9 +85,9 @@ reproduce which records a capped live BLAST search would retrieve.
 | Artifact | Membership and purpose |
 |---|---|
 | `blast_result.xml` | Complete raw retrieval evidence. |
-| `query_*/all_xml_hits.json` | Every XML hit, original top-level query schema and full HSP evidence, sorted by calculated identity. Internal, required output on `EXTRACT_HITS.out.all_xml_hits`; not published. |
-| `query_*/all_hits.json` | Same query/hit schema, containing only block-selected hits, sorted by identity. Published. |
-| `query_*/all_hits.fasta` | Corresponding selected records in relative BLAST order. Published. |
+| `query_*/all_hits.json` | Every XML hit, original top-level query schema and full HSP evidence, sorted by calculated identity. Internal, required output on `EXTRACT_HITS.out.all_xml_hits`; not published. |
+| `query_*/filtered_hits.json` | Same query/hit schema, containing only block-selected hits, sorted by identity. Published. |
+| `query_*/filtered_hits.fasta` | Corresponding selected records in relative BLAST order. Published. |
 | `accessions.txt` | Unique union of selected-hit accessions across queries; the only accession list, used for downstream taxonomy lookup. |
 
 Do not produce a separate selection-decision file or a complete-set accession
@@ -100,13 +100,13 @@ JSON/FASTA associations even when accessions repeat. Preserve the existing
 complete JSON schema. Log complete/selected counts, effective cap/threshold
 and termination reason in the selection process; do not add an audit artifact.
 
-Every downstream BLAST consumer uses `all_hits.*` or outputs derived
+Every downstream BLAST consumer uses `filtered_hits.json` / `filtered_hits.fasta` or outputs derived
 from it. P3 reads selected JSON/FASTA; P6 reads selected JSON for its BLAST
 table. Taxonomy lookup uses the selected-only `accessions.txt`. Candidate
 outputs remain based on P3's existing coverage/length, identity and
 species-selection rules. A block-selected hit is not necessarily a candidate.
 
-`all_xml_hits.json` is internal to extraction and selection, not an input to P2/P3,
+`all_hits.json` is internal to extraction and selection, not an input to P2/P3,
 P4/P5, phylogeny or P6. Do not stage it to those processes or publish it.
 Internal work files allow comparison of complete and selected hits; the
 report does not show hits excluded by block selection. If selection becomes
@@ -115,16 +115,18 @@ before emitting the selected-only downstream bundle (see open decision).
 
 ## Implementation
 
-**Provisional architecture and working filenames:** Use `all_hits.json` /
-`all_hits.fasta` for selected downstream hits and `all_xml_hits.json` for complete
-internal extraction for now. Final hit filenames remain open to discussion.
-Instructions placing selection in P1 describe
-the in-process option, not a settled architecture. Resolve the
-process-boundary decision before implementing the affected wiring, then
-update all paths and producer references consistently. Complete extraction
-into `all_xml_hits.json` and taxonomy lookup on selected accessions are fixed
-requirements under either architecture. The accession-list filename is fixed
-as `accessions.txt`, containing only selected accessions.
+**Confirmed filenames (10 November 2026):** Complete internal extraction uses
+`all_hits_json` with default `all_hits.json`. Selected downstream files use
+`hits_json: filtered_hits.json` and `hits_fasta: filtered_hits.fasta`.
+Rename the former
+`all_xml_hits_json` setting and references to `all_hits_json`. The process
+output `all_xml_hits` and workflow channel `ch_all_xml_hits` retain their names;
+they are distinct from the filename configuration key.
+
+Selection in P1 remains a provisional architecture. Resolve the process-boundary
+decision before implementing affected wiring. Complete extraction and
+selected-only taxonomy lookup remain required under either architecture.
+The single accession-list filename remains `accessions.txt`.
 
 ### 1. Preserve complete extraction and derive selection
 
@@ -138,18 +140,20 @@ as `accessions.txt`, containing only selected accessions.
   original FASTA content/order. Do not extend blocks to include tied records.
   Write empty selected JSON and an empty selected FASTA
   when selection is empty. Preserve existing complete-set zero-hit behavior;
-  `modules/extract/hits/main.nf` still ensures the downstream `all_hits.fasta`
+  `modules/extract/hits/main.nf` still ensures the downstream `filtered_hits.fasta`
   exists. Complete extraction with no hits still produces internal JSON
   containing an empty hit list. Do not create a complete-extraction FASTA.
-- Keep the existing `hits_json` / `hits_fasta` defaults and readers pointing
-  to `all_hits.json` / `all_hits.fasta`. P1 writes the selected set to those
-  established paths; downstream readers need no filename migration. Add
-  internal complete-file name `all_xml_hits.json` in
-  P1 or, if configurable, `scripts/config/default.yml` and
-  `scripts/src/utils/config/schema.py`. Update
-  `scripts/src/utils/config/config.py` / `scripts/src/utils/config/mappings.py`
-  only if needed to support those internal settings, not to introduce new
-  selected-file readers.
+- In `scripts/config/default.yml` and `scripts/src/utils/config/schema.py`,
+  set `all_hits_json: all_hits.json`, `hits_json: filtered_hits.json` and
+  `hits_fasta: filtered_hits.fasta`. Rename any existing `all_xml_hits_json`
+  setting/references to `all_hits_json`. Align YAML and schema defaults.
+  In `scripts/p1_parse_blast.py`, write complete extraction using `all_hits_json`
+  and selected outputs using `hits_json` / `hits_fasta`. Audit
+  `scripts/src/utils/config/config.py` and `scripts/src/utils/config/mappings.py`
+  for corresponding filename settings/readers. Retain selected reader keys
+  with their new defaults. Update `conf/filenames.config` and hard-coded
+  producer/consumer, staging and publishing references consistently. Complete
+  and selected JSON must resolve to distinct default paths.
 - Log complete and selected counts, minimum selected identity when present,
   effective configuration and termination reason. Changing selection settings
   on the same XML must not change complete-set content.
@@ -164,7 +168,7 @@ as `accessions.txt`, containing only selected accessions.
   Emit selected JSON/FASTA for downstream analysis staging. Declare complete
   JSON as a separate required output channel for validation, as specified below.
   Publish only the selected JSON/FASTA, plus the single selected-only
-  `accessions.txt`; do not publish `all_xml_hits.json`.
+  `accessions.txt`; do not publish `all_hits.json`.
   Update `conf/process.config` file-name bindings where needed. Audit all
   downstream staging and publish rules so complete files cannot enter
   analysis/report bundles or published output through wildcard patterns. Selected files must remain
@@ -174,10 +178,10 @@ as `accessions.txt`, containing only selected accessions.
   query identity and route `accessions.txt` to
   `modules/blast/blastdbcmd/main.nf`. Verify
   `modules/extract/taxonomy/main.nf` receives the resulting taxid list.
-- Preserve the existing hit filenames and readers in
+- Migrate selected filenames while retaining configured readers in
   `modules/extract/candidates/main.nf` and `scripts/p3_assign_taxonomy.py`:
-  `all_hits.*` already contains only the selected set when staged downstream.
-  Validate routing rather than adding filename remapping or new readers.
+  `filtered_hits.json` / `filtered_hits.fasta` already contains only the selected set when staged downstream.
+  Validate routing and migrate any hard-coded old filename references.
   Preserve BOLD behavior and P3's existing eligibility/sampling algorithms.
 - Validate `modules/mafft/align/main.nf`, `modules/fastme/main.nf`,
   `scripts/p4_source_diversity.py` and `scripts/p5_db_coverage.py` with their
@@ -190,11 +194,11 @@ as `accessions.txt`, containing only selected accessions.
 JSON in `modules/extract/hits/main.nf` as a required named process output:
 
 ```nextflow
-path("query_*/${task.ext.all_xml_hits_json}"), arity: '1..*', emit: all_xml_hits
+path("query_*/${task.ext.all_hits_json}"), arity: '1..*', emit: all_xml_hits
 ```
 
-Bind `ext.all_xml_hits_json` in `conf/filenames.config` from
-`pyDefaults.all_xml_hits_json`, matching the Python filename setting. Do not
+Bind `ext.all_hits_json` in `conf/filenames.config` from
+`pyDefaults.all_hits_json`, matching the Python filename setting. Do not
 hard-code a different filename in the process. Do not mark this output
 optional or create a placeholder: missing complete JSON must fail output
 collection. The glob requires at least one file. Python CLI integration tests must check
@@ -224,7 +228,7 @@ and unpublished, while making its existence and contents accessible to tests.
 
 - In `scripts/src/report/report.py` and
   `scripts/src/report/templates/components/results/1a-blast-hits-modal.html`,
-  keep the existing `all_hits.json` reader and render only block-selected hits with their calculated
+  use the configured `hits_json` reader (default `filtered_hits.json`) and render only block-selected hits with their calculated
   aggregate identity. Display the selected count, effective threshold, cap
   and block rule. Define table rank as aggregate-identity rank among selected
   hits, not BLAST score rank. Do not add All / Selected / Excluded views or
@@ -251,8 +255,8 @@ and unpublished, while making its existence and contents accessible to tests.
   `spec/python/shared/config.md`, `spec/nextflow/processes.md` and
   `spec/nextflow/params.md` to describe complete extraction, separate block
   selection, artifacts, selected-only consumer routing and report content.
-  Explicitly document that `all_hits.*` now contains the selected set, while
-  complete extraction is preserved internally as `all_xml_hits.json`.
+  Explicitly document that `filtered_hits.json` / `filtered_hits.fasta` now contains the selected set, while
+  complete extraction is preserved internally as `all_hits.json`.
 - Document parameter migration and that the cap now controls retrieval and
   selection, while replay extraction always preserves every XML hit. Resolve
   NF-D-005 in `spec/defects.md` only when live retrieval and report agree.
@@ -261,20 +265,22 @@ and unpublished, while making its existence and contents accessible to tests.
   block size 500. Validate thresholds as finite numbers in [0, 1], including
   zero, using the configuration decision below.
 
-## Open decision — hit artifact filenames
+## Confirmed decision — hit artifact filenames
 
-**Status: open to discussion.** This brief uses `all_xml_hits.json` as the
-working name for the complete internal extraction (JSON only),
-and `all_hits.json` / `all_hits.fasta` as working names for the selected,
-published downstream set. Use these names for now; final naming remains
-open and does not block implementation with the working names.
+**Confirmed 10 November 2026.** These Python defaults supersede the previous
+provisional names:
 
-Preserve the distinction between complete internal extraction and selected
-downstream inputs regardless of the final names. If names change, update
-producer/consumer configuration, staging, publishing, documentation and
-validation consistently. Document the membership of each file explicitly.
-The accession-list name remains `accessions.txt`, containing only selected
-accessions. No second accession list is required.
+```yaml
+all_hits_json: all_hits.json
+hits_fasta: filtered_hits.fasta
+hits_json: filtered_hits.json
+```
+
+`all_hits_json` replaces `all_xml_hits_json`. Complete `all_hits.json` remains
+internal and unpublished. Selected `filtered_hits.json` and
+`filtered_hits.fasta` are published and consumed downstream. Update configuration, documentation,
+staging, publishing and validation consistently. `accessions.txt` remains
+selected-only; there is no complete-extraction FASTA.
 
 ## Open decision — selection in P1 or a separate process
 
@@ -345,11 +351,42 @@ above. Update `docs/params.md`, `spec/nextflow/params.md`,
 decision here and remove the unselected implementation branch before marking
 the task ready for implementation.
 
+## Testing decision
+
+**Naming revision, 10 November 2026: confirmed by the user.** The implementer
+updates Python assertions and runs Python checks. All other testing and review
+is manual and user-owned: running nf-tests, flag comparisons and Selenium;
+reviewing output drift; and deciding/editing snapshots, flag baselines and
+Selenium fixtures or expected reports. Manual checks remain pending until the
+user supplies evidence. No automatic baseline regeneration or promotion.
+
+**Bug-detection requirement:** Derive Python expectations independently from
+the specified contract and deterministic input fixtures, not from the output
+under test. Preserve exact membership, count, identity, ordering, sequence,
+accession and complete/selected separation assertions. Change filename/default
+expectations only as required by the confirmed naming contract. Do not weaken,
+remove or skip assertions, copy failing actual output into expected values, or
+mock away the behavior being tested to make checks pass. Investigate failures;
+fix implementation defects within authorized scope or report unresolved bugs.
+Record commands and results, including failures and unavailable checks.
+
+**Implementation authorization: pending explicit user instruction** for this
+naming revision. This brief update authorizes no application or test edits.
+
+Agreed Python checks and manual handoff: verify YAML/schema defaults and
+Nextflow bindings, then assert the three distinct output paths in the planned
+`scripts/tests/test_p1_cli_integration.py`. Confirm downstream consumers read
+selected files and complete `all_hits.json` stays unpublished. Use the existing
+unit discovery command below for implementer-run Python checks; the user
+runs the core workflow and other manual checks below. Filename
+changes alone must preserve membership, sequences, report values and flags.
+
 ## Validation
 
 Output-channel preparation and Python CLI integration tests are implementer
 work. The user adds the observation channel to the existing core nf-test and
-reviews existing nf-test/flag/Selenium results. Do not add new cases for those
+runs and reviews existing nf-test/flag/Selenium checks manually. Live retrieval
+benchmarks and other non-Python validation are also user-owned. Do not add new cases for those
 suites. Record automated evidence and pending manual checks separately.
 
 1. Run existing parser/phylogeny checks:
@@ -357,7 +394,7 @@ suites. Record automated evidence and pending manual checks separately.
 2. Exercise the following with default cap 2000 and threshold 0.935. Confirm
    internal complete-set counts, selected-set counts and selected-only report rows.
 
-   | XML hits / identity condition | `all_xml_hits.json` count | `all_hits.*` count |
+   | XML hits / identity condition | `all_hits.json` count | `filtered_hits.json` / `filtered_hits.fasta` count |
    |---|---:|---:|
    | No hits | 0 | 0 |
    | 37 hits, any identities | 37 | 37 |
@@ -374,7 +411,7 @@ suites. Record automated evidence and pending manual checks separately.
 3. Check caps 1, 300, 750 and 2500, threshold 0/1 and a non-default 0.95;
    reject invalid/non-finite settings. Include boundary rounding, ties,
    shuffled XML order, a multi-HSP hit and different per-query counts.
-   Changing cap/threshold on identical XML must leave `all_xml_hits.json` unchanged,
+   Changing cap/threshold on identical XML must leave `all_hits.json` unchanged,
    while selected outputs and `accessions.txt` follow the new selection.
 4. Verify exact JSON/FASTA membership by original hit index, including duplicate
    accessions. The single `accessions.txt` must equal the unique union of
@@ -386,7 +423,7 @@ suites. Record automated evidence and pending manual checks separately.
 5. Confirm every downstream consumer uses selected hits or their derived
    outputs. Check the P6 hit count/rows against selected JSON, including a
    below-threshold final-block hit and zero-hit behavior. Verify report
-   rendering does not require `all_xml_hits.json`: inspect staging and render with
+   rendering does not require `all_hits.json`: inspect staging and render with
    that file absent. Ensure selected JSON/FASTA is published and remains
    available after downstream failure. Confirm complete files remain only in
    extraction/selection work directories, never in analysis/report staging
@@ -444,6 +481,20 @@ core nf-test and reviews nf-test snapshots, flags and Selenium expectations.
 No new workflow/browser/flag test case is needed, and no baselines are
 regenerated or promoted automatically.
 
+**Naming revision impact:** `scripts/tests/test_blast_parser.py` asserts parsed
+content using `scripts/tests/test-data/one_hit.json` and
+`scripts/tests/test-data/one_hit.fasta`; these fixtures need no rename for output
+configuration changes. Update filename assertions in the planned
+`scripts/tests/test_p1_cli_integration.py`. Review
+`test/core/taxodactyl.workflow.nf.test.snap` for selected-output filename/path
+drift. Flag baselines in `test/core/flags/*.flag` and Selenium expectations in
+`test/selenium/expected/*.yaml` and `test/selenium/expected/reports/*.html` need
+manual user review if changed; scientific values should not change from this
+rename alone. Capture before/after output inventories with the handoff artifacts
+to distinguish path changes from content drift. Ownership follows the confirmed
+testing decision above: implementer-run Python checks, all other validation
+and expected-result review/changes manually performed by the user.
+
 **CI inspected:** `.github/workflows/nf-test.yml` runs only
 `test/core/taxodactyl.workflow.nf.test`, compares `test/core/flags`, then runs
 `test/selenium/test_reports.py` against the resulting reports. Its checked-in
@@ -497,14 +548,14 @@ selected-only downstream routing and reporting together.
   supplied; snapshot/fixture/baseline acceptance is not automated. Required
   manual validation must be recorded before overall task completion.
 
-- Every XML hit and calculated identity remains in `all_xml_hits.json`,
+- Every XML hit and calculated identity remains in `all_hits.json`,
   regardless of selection settings. No complete-extraction FASTA is created;
-  only selected hits are written to `all_hits.fasta`.
+  only selected hits are written to `filtered_hits.fasta`.
 - Separate selected assets follow the confirmed 500-hit block rule, including
   the entire stopping block; no individual minimum-identity filter replaces it.
 - Complete and selected sets can be compared internally. The report shows
   only selected hits and its counts agree with published selected JSON.
-- `all_hits.json` and `all_hits.fasta` are published; `all_xml_hits.json`
+- `filtered_hits.json` and `filtered_hits.fasta` are published; `all_hits.json`
   remains internal and is not copied into the published output.
 - Only one `accessions.txt` is produced, containing selected accessions, and
   no selection-decision artifact is produced.
@@ -513,7 +564,7 @@ selected-only downstream routing and reporting together.
   `accessions.txt`. Complete files are not staged to analysis/report processes.
 - Retrieval, selection and report use consistent validated configuration;
   threshold configuration and the selection process boundary are resolved and
-  documented. Use `all_hits.*` unless a later rename is explicitly agreed.
+  documented. Use the confirmed filenames and `all_hits_json` configuration key consistently.
 - Specs and documentation match the new contract, and validation evidence
   explains any remaining limitations and changes in scientific outputs.
 - On implementation completion, move this brief to `tasks/completed/` and

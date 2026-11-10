@@ -228,6 +228,32 @@ the proposed plan, but do not replace asking the user how test implementation
 and drift review should be handled. Assessing existing test impact is required;
 it does not authorize creating tests or replacing expected results.
 
+### Preserve bug detection; avoid test-hacking
+
+Carry these requirements into each brief's testing/validation instructions
+when automated test changes are in scope:
+
+- Derive expected results from the agreed behavior and independently understood
+  inputs. Do not calculate expectations with the production logic being tested
+  or copy actual output into expected values merely to obtain a passing run.
+- Preserve meaningful assertions about content, membership, ordering, boundaries
+  and error behavior where relevant. Do not weaken or remove assertions, skip
+  failing cases, broaden tolerances, or mock away the behavior under test just
+  to make checks pass.
+- Change an existing expectation only when the agreed contract changes or
+  evidence establishes that the test was wrong. Explain that reason and retain
+  coverage for the intended behavior. For a filename-only change, update path
+  expectations while preserving content and scientific-result assertions.
+- Treat failures as evidence to investigate. Distinguish implementation bugs,
+  incorrect tests and environment/data issues; plan fixes within authorized
+  scope and report unresolved failures instead of hiding them. Record checks
+  actually run and their outcomes, including failures and skipped/unavailable
+  checks. Passing checks do not replace pending manual review.
+
+These constraints do not authorize test implementation or expected-result
+updates. Preserve the explicit testing allocation and manual baseline-review
+requirements below.
+
 ### Test impact and manual review
 
 Inspect the checked-in CI workflows (including the requested runner), actual
