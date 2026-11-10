@@ -55,7 +55,7 @@ loaded), with schema defaults noted where they differ.
 | `query_dir` | `QUERY_DIR` | positional/`query_dir` | none |
 | `inputs.query_fasta` | `INPUT_FASTA_FILEPATH` | `--query-fasta` | none |
 | `inputs.metadata_csv` | `INPUT_METADATA_CSV_FILEPATH` | `--metadata-csv` | none |
-| `taxdb_dir` | `TAXONKIT_DATA` | `--taxdb-dir` | `/home/cameron/.taxonkit` (**developer path**; schema default `~/.taxonkit`) |
+| `taxdb_dir` | `TAXONKIT_DATA` | `--taxdb-dir` | `~/.taxonkit` |
 | `allowed_loci_file` | `ALLOWED_LOCI_FILE` | `--allowed-loci-file` | `config/loci.json` (resolved relative to `scripts/`) |
 | `flag_details_csv_path` | `FLAG_DETAILS_CSV_PATH` | `--flag-details-csv` | `config/flags.csv` |
 | `temp_root` | `TEMP_ROOT` | `--temp-root` | none ⇒ OS temp dir |
@@ -190,7 +190,6 @@ Loci file schema: see `../../contracts/loci.md`.
 | CFG-D-001 | `default.yml` is out of sync with `schema.py` (filenames in §3.5, `taxdb_dir`, `report.database_name`); the documented regeneration step would **change runtime filenames** and break Nextflow. `default.yml` is the de-facto spec; the schema defaults should be aligned to it. |
 | CFG-D-002 | `-c` replaces rather than extends `default.yml` (CFG-002, CFG-011). |
 | CFG-D-003 | `get_locus_for_query` returns `str` for values ending in ` gene`, and calls `.endswith` before its `None` check. |
-| CFG-D-004 | `default.yml` hard-codes `taxdb_dir: /home/cameron/.taxonkit`. |
 | CFG-D-005 | `conf/env.config` always exports `LOGGING_DEBUG="${params.logging_debug}"`, i.e. `"0"` by default; `os.getenv` returns the non-empty string `"0"`, so **every pipeline run logs at DEBUG**. `--logging_debug` has no effect. |
 | CFG-D-006 | Case-sensitive synonym matching (see P0-D-001). |
 | CFG-D-007 | `schema.throttle_backend` description mentions `local`/`azure`; valid values are `sqlite`/`redis`. `model_config.env_prefix="BIOSEC_"` has no effect on a plain `BaseModel`. |
