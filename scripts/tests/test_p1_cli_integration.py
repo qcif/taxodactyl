@@ -101,10 +101,10 @@ class TestP1CliIntegration(unittest.TestCase):
                     complete_bytes = []
                     union = set()
                     for folder, indices, count in zip(folders, query_indices, expected_counts, strict=True):
-                        complete_path = folder / 'all_xml_hits.json'
+                        complete_path = folder / 'all_hits.json'
                         complete_bytes.append(complete_path.read_bytes())
                         complete = json.loads(complete_path.read_text())['hits']
-                        selected = json.loads((folder/'all_hits.json').read_text())['hits']
+                        selected = json.loads((folder/'filtered_hits.json').read_text())['hits']
                         ranked = [i for i in indices if i < 600] + [i for i in indices if i >= 600]
                         expected = ranked[:count]
                         self.assertEqual(len(complete), len(indices))
@@ -113,13 +113,17 @@ class TestP1CliIntegration(unittest.TestCase):
                         self.assertEqual([h['hit_id'] for h in selected], [f'hit_{i}' for i in expected])
                         self.assertEqual(selected, complete[:count])
                         self.assertTrue(all(h['hsps'] for h in complete))
-                        with (folder/'all_hits.fasta').open() as handle:
+                        with (folder/'filtered_hits.fasta').open() as handle:
                             records = list(SeqIO.parse(handle, 'fasta'))
                         expected_set = set(expected)
                         original_order = [i for i in indices if i in expected_set]
                         self.assertEqual([r.id for r in records], [accession(i) for i in original_order])
                         self.assertEqual([str(r.seq) for r in records], [subject(i) for i in original_order])
                         union.update(accession(i) for i in expected)
+                        self.assertEqual(
+                            {p.name for p in folder.iterdir() if p.suffix in {'.json', '.fasta'}},
+                            {'all_hits.json', 'filtered_hits.json', 'filtered_hits.fasta'},
+                        )
                         self.assertFalse((folder/'all_xml_hits.fasta').exists())
                         self.assertFalse((folder/'hit_selection.json').exists())
                     if original_complete is None:

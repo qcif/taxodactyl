@@ -1,13 +1,13 @@
 # Contract: hits and taxonomy files
 
 **Producers:** [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md)
-(`all_hits.json`, `all_hits.fasta`, `accessions.txt`), `blastdbcmd`
+(`filtered_hits.json`, `filtered_hits.fasta`, `accessions.txt`), `blastdbcmd`
 ([processes.md §6](../nextflow/processes.md)) (`taxids.csv`),
 [P2](../python/p2-extract-taxonomy.md) (`taxonomy.csv`).
 **Consumers:** [P3](../python/p3-assign-taxonomy.md),
 [P6](../python/p6-report.md).
 
-## 1. `all_hits.json` (BLAST)
+## 1. `filtered_hits.json` (BLAST)
 
 Schema in [../python/p1-parse-blast.md §3](../python/p1-parse-blast.md). Key
 guarantees consumers rely on:
@@ -21,23 +21,23 @@ guarantees consumers rely on:
 
 ### Internal complete extraction (BLAST only)
 
-`all_xml_hits.json` preserves every XML hit using the same schema and stable
-identity sort as `all_hits.json`. P1 writes it before selecting context; its
+`all_hits.json` preserves every XML hit using the same schema and stable
+identity sort as `filtered_hits.json`. P1 writes it before selecting context; its
 membership does not depend on the cap or stopping threshold, including replay
 XML above the cap. It stays in the extraction work directory, is not staged
 to downstream processes or published, and has no FASTA counterpart. P1 keeps
 sequence associations in memory until selected FASTA records are written.
 There is no separate decision file or complete-set accession list. These hit
-filenames are working names, open to discussion.
+filenames are the confirmed defaults for task 04_expand_blast_hit_context.
 
-## 2. `all_hits.json` (BOLD)
+## 2. `filtered_hits.json` (BOLD)
 
 Additional top-level keys `query_index, query_id, query_frame, query_strand,
 query_sequence, query_orientation`; hits carry `similarity` and a copy in
 `identity`, `species`, `taxonomy` (no `accession` guaranteed non-empty), and
 no alignment statistics. See [../python/p1-bold-search.md §4](../python/p1-bold-search.md).
 
-## 3. `all_hits.fasta`
+## 3. `filtered_hits.fasta`
 
 Record id = accession (BLAST) or BOLD `hit_id`; description = hit subject /
 taxonomic identification; sequence = **last HSP's aligned subject string

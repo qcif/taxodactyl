@@ -30,10 +30,10 @@ sequences go into the tree.
 | `--phylogeny-min-hit-identity` | no | 0.935 — **never passed by Nextflow** (NF-D-004) |
 | `--phylogeny-min-seqs` / `-max-seqs` / `-species-max-seqs` / `-candidate-max-seqs` | no | 20 / 50 / 3 / 5 |
 
-**Reads** (in `query_dir` unless noted): `all_hits.json`, `all_hits.fasta`,
+**Reads** (in `query_dir` unless noted): `filtered_hits.json`, `filtered_hits.fasta`,
 `<output_dir>/taxonomy.csv` (BLAST mode), metadata via config.
 
-BLAST inputs contain only P1 block-selected hits. `all_xml_hits.json` is
+BLAST inputs contain only P1 block-selected hits. `all_hits.json` is
 internal to P1 and is not staged here; existing readers and evaluation rules
 are unchanged.
 
@@ -157,7 +157,7 @@ species:
 
 | ID | Requirement |
 |---|---|
-| P3-042 | Records of `all_hits.fasta` whose id is the accession (BLAST) / `hit_id` (BOLD) of any selected-species hit, in `all_hits.fasta` order. Sequence content inherits P1-D-001. |
+| P3-042 | Records of `filtered_hits.fasta` whose id is the accession (BLAST) / `hit_id` (BOLD) of any selected-species hit, in `filtered_hits.fasta` order. Sequence content inherits P1-D-001. |
 
 ### 6.4 Identity boxplot
 
@@ -196,7 +196,7 @@ Input: **all filtered hits** (not only selected species).
 | P3-071 | Candidate threshold for this step = strict if the top hit ≥ strict, else moderate. A species is a *candidate species* here iff its top hit ≥ that threshold. |
 | P3-072 | Iterate species in order of their best hit (hits without species form one group keyed `None`). Before adding a species, stop if already `≥ phylogeny_max_seqs` selected, or if `> phylogeny_min_seqs` selected **and** this species' top identity < `phylogeny_min_hit_identity`. |
 | P3-073 | Per species cap: `phylogeny_candidate_max_seqs` for candidate species, `phylogeny_species_max_seqs` otherwise. If the species has more hits than the cap, take a **systematic sample** of size cap from its identity-sorted hits: indices `round(i·(N−1)/(n−1))` for `i < n−1`, plus the last; `n == 1` picks the middle element. Otherwise take all. |
-| P3-074 | Write `candidates_phylogeny.fasta` = records of `all_hits.fasta` whose id is selected, in `all_hits.fasta` order. The query sequence is **not** included (MAFFT_ALIGN adds it). |
+| P3-074 | Write `candidates_phylogeny.fasta` = records of `filtered_hits.fasta` whose id is selected, in `filtered_hits.fasta` order. The query sequence is **not** included (MAFFT_ALIGN adds it). |
 
 Consequences: the max is soft (checked before adding a species; can be
 exceeded by up to cap−1); species below `phylogeny_min_hit_identity` are
@@ -206,7 +206,7 @@ still added while ≤ `phylogeny_min_seqs` have been collected.
 
 Uncaught exceptions fail `EXTRACT_CANDIDATES` for that query only, which
 removes the query's report — deliberate per `CONSTITUTION.md` rule 8, see
-`OUT-D-002` on discoverability. Missing `all_hits.json`, a malformed
+`OUT-D-002` on discoverability. Missing `filtered_hits.json`, a malformed
 taxonomy CSV, or BOLD `similarity = None` (§11) are such cases.
 
 ## 11. Defects

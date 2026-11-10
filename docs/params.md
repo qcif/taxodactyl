@@ -130,8 +130,8 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 
 | Name                | Type    | Default           | Description                                                                                      | Requirements                        |
 |---------------------|---------|-------------------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| `hits_fasta_filename`| string | 'all_hits.fasta'  | Filename for the FASTA file containing block-selected BLAST hits.                                           | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
-| `hits_json_filename` | string | 'all_hits.json'   | Filename for the JSON file containing block-selected BLAST hits.                                            | No spaces, `.json` extension.        |
+| `hits_fasta_filename`| string | 'filtered_hits.fasta'  | Filename for the FASTA file containing block-selected BLAST hits.                                           | No spaces, `.fa`, `.fas`, `.fna`, or `.fasta` extension. |
+| `hits_json_filename` | string | 'filtered_hits.json'   | Filename for the JSON file containing block-selected BLAST hits.                                            | No spaces, `.json` extension.        |
 
 ---
 
@@ -187,8 +187,18 @@ up to 500 until the last retained hit is at or below
 `blast_context_min_identity` (default 0.935), or hits/the cap run out. The
 whole final block is retained, even below the threshold. Counts vary by query;
 the cap may produce a partial block. Raw XML remains the full retrieval result.
-Internal `all_xml_hits.json` preserves every parsed XML hit and calculated
+Internal `all_hits.json` preserves every parsed XML hit and calculated
 identity, including replay hits beyond the cap, without an accompanying FASTA.
-Only selected `all_hits.json` / `all_hits.fasta` and their `accessions.txt`
+Only selected `filtered_hits.json` / `filtered_hits.fasta` and their `accessions.txt`
 are published and used downstream.
 `min_identity` continues to control candidate eligibility independently.
+
+
+Task 04 filename migration: the Python setting `all_xml_hits_json` is renamed
+`all_hits_json`, defaulting to `all_hits.json` for complete internal extraction.
+The existing `hits_json` and `hits_fasta` settings now default to
+`filtered_hits.json` and `filtered_hits.fasta`. Update custom configuration and
+external consumers accordingly: `all_hits.json` no longer names the selected,
+published set. The Python schema and YAML defaults agree on these three names;
+Nextflow reads them through `conf/filenames.config`. The observation channels
+`all_xml_hits` and `ch_all_xml_hits` keep their names.

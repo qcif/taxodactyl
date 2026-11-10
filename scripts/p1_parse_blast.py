@@ -20,7 +20,7 @@ def main():
     args = _parse_args()
     config.update_from_args(args)
     complete_hits, complete_fastas = parse_blast_xml(args.blast_xml_path)
-    _write_hits(complete_hits, filename=config.all_xml_hits_json)
+    _write_hits(complete_hits, filename=config.all_hits_json)
     hits, fastas = select_blast_hits(
         complete_hits, complete_fastas, config.blast_max_target_seqs,
         config.blast_context_min_identity,

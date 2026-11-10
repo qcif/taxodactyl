@@ -21,14 +21,14 @@ process EXTRACT_HITS {
         path("query_*/${task.ext.hits_json}"),
         path("query_*/${task.ext.query_title_file}"), emit: hits_files // Output: tuple of hits FASTA, JSON, and title files
     // Required complete extraction for inspection/tests; never published or analysed.
-    path("query_*/${task.ext.all_xml_hits_json}"), arity: '1..*', emit: all_xml_hits
+    path("query_*/${task.ext.all_hits_json}"), arity: '1..*', emit: all_xml_hits
     // Process run log.
     path("${task.ext.log_filename}"), emit: extract_hits_log // Output: log file
 
     publishDir "${params.outdir}", mode: 'copy',
         pattern:    "query_*/${task.ext.hits_fasta}" // Publish hit FASTA files to output directory
 
-    // Publish the selected downstream assets only; all_xml_hits.json stays internal.
+    // Publish the selected downstream assets only; all_hits.json stays internal.
     publishDir "${params.outdir}", mode: 'copy',
         pattern: "query_*/${task.ext.hits_json}"
     publishDir "${params.outdir}", mode: 'copy',

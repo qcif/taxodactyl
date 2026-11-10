@@ -38,8 +38,8 @@ Outputs per query (folder from `config.create_query_dir(query_index, query_title
 | File | Content |
 |---|---|
 | `query_title.txt` | FASTA description of the query |
-| `all_hits.json` | §4 |
-| `all_hits.fasta` | one record per hit: id `hit_id`, description `taxonomic_identification`, sequence = BOLD `nucleotides` with `-` removed (full barcode sequence, unlike BLAST P1-D-001) |
+| `filtered_hits.json` | §4 |
+| `filtered_hits.fasta` | one record per hit: id `hit_id`, description `taxonomic_identification`, sequence = BOLD `nucleotides` with `-` removed (full barcode sequence, unlike BLAST P1-D-001) |
 
 **Not written:** `bold_taxonomy.json` (the call is commented out:
 "Not actually used downstream"), although `BOLD_SEARCH` declares it as a
@@ -74,7 +74,7 @@ required output (P1B-D-003).
 | P1B-021 | Then set `species` = `species_name` (or `''`), `taxonomy` = `{phylum, class, order, family, genus, species}` from `*_name` columns (no kingdom), `accession` = `genbank_accession` (or `''`), `identity` = `similarity`; remove the `*_name` columns. |
 | P1B-022 | Hits with no metadata keep empty species/taxonomy and therefore cannot become P3 candidates. |
 
-## 4. `all_hits.json` (BOLD)
+## 4. `filtered_hits.json` (BOLD)
 
 ```json
 {

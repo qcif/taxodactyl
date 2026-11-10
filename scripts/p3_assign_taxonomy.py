@@ -1,6 +1,6 @@
 """Run logic for pipeline phase 1-2.
 
-- Attempt species ID from BLAST all_hits.json (flag 1)
+- Attempt species ID from BLAST filtered_hits.json (flag 1)
 - Detect Taxa of Interest (flag 2)
 
 Taxa of Interest output has the following CSV fields:

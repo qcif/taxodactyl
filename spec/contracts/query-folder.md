@@ -13,7 +13,7 @@ producer/consumer matrix; formats are in the sibling contracts.
    staged from upstream and writes new files next to them, NF-PR-006).
 3. **Read** by MAFFT/FastME (only the phylogeny FASTA), and by P6 (all files).
 4. Only a subset is copied to `<outdir>` ([outputs.md](outputs.md)): from
-   the matrix below, just `all_hits.fasta`, `all_hits.json` (BLAST), `candidates.fasta`,
+   the matrix below, just `filtered_hits.fasta`, `filtered_hits.json` (BLAST), `candidates.fasta`,
    `candidates.csv`, `candidates_identity_boxplot.png` (conditional),
    `candidates_phylogeny.{fasta,msa,nwk}`, and the report HTML. Everything
    else in the matrix — `candidates.json`, every `*.flag`,
@@ -30,8 +30,8 @@ producer/consumer matrix; formats are in the sibling contracts.
 | File (default name) | Producer | Consumers | Format |
 |---|---|---|---|
 | `query_title.txt` | [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md) | [P6](../python/p6-report.md) (via config) | text |
-| `all_hits.json` | [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md) | [P3](../python/p3-assign-taxonomy.md), [P6](../python/p6-report.md) | [hits.md](hits.md) |
-| `all_hits.fasta` | [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md) | [P3](../python/p3-assign-taxonomy.md) | [hits.md](hits.md) |
+| `filtered_hits.json` | [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md) | [P3](../python/p3-assign-taxonomy.md), [P6](../python/p6-report.md) | [hits.md](hits.md) |
+| `filtered_hits.fasta` | [P1](../python/p1-parse-blast.md) / [P1-BOLD](../python/p1-bold-search.md) | [P3](../python/p3-assign-taxonomy.md) | [hits.md](hits.md) |
 | `candidates.json` | [P3](../python/p3-assign-taxonomy.md) | [P4](../python/p4-source-diversity.md), [P5](../python/p5-db-coverage.md), [P6](../python/p6-report.md) | [candidates.md](candidates.md) |
 | `candidates.csv` | [P3](../python/p3-assign-taxonomy.md) | P3 (copy to `assigned_taxonomy.csv`), analyst | [candidates.md](candidates.md) |
 | `candidates.fasta` | [P3](../python/p3-assign-taxonomy.md) | [P6](../python/p6-report.md) | FASTA |
@@ -78,7 +78,7 @@ This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
 
-BLAST P1 additionally writes internal `all_xml_hits.json` for the full XML
+BLAST P1 additionally writes internal `all_hits.json` for the full XML
 extraction. It stays in the P1 work directory and is not part of subsequent
 query-folder bundles. Only selected hits use the existing `all_hits.*` names.
 

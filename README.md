@@ -284,7 +284,7 @@ After running the pipeline, the output directory will contain a separate folder 
 │   ├── params_2025-06-22_22-53-29.json
 │   └── pipeline_dag_2025-06-22_22-53-15.html
 ├── query_001_VE24-1075_COI
-│   ├── all_hits.fasta
+│   ├── filtered_hits.fasta
 │   ├── candidates.csv
 │   ├── candidates.fasta
 │   ├── candidates_identity_boxplot.png
@@ -293,7 +293,7 @@ After running the pipeline, the output directory will contain a separate folder 
 │   ├── candidates_phylogeny.nwk
 │   └── report_VE24-1075_COI_20250622_225319.html
 └── query_002_VE24-1079_COI
-    ├── all_hits.fasta
+    ├── filtered_hits.fasta
     ├── candidates.csv
     ├── candidates.fasta
     ├── candidates_phylogeny.fasta

@@ -12,8 +12,9 @@ the schema-default discrepancies are tabulated in
 |---|---|---|---|
 | `accessions_filename` | `accessions_filename` | `accessions.txt` | EXTRACT_HITS output |
 | `blast_xml_filename` | — (Nextflow constant) | `blast_result.xml` | BLAST_BLASTN, MOCK_BLASTN, publish |
-| `hits_fasta` | `hits_fasta` | `all_hits.fasta` | EXTRACT_HITS output + publish |
-| `hits_json` | `hits_json` | `all_hits.json` | EXTRACT_HITS output |
+| `all_hits_json` | `all_hits_json` | `all_hits.json` | EXTRACT_HITS internal observation output; not published |
+| `hits_fasta` | `hits_fasta` | `filtered_hits.fasta` | EXTRACT_HITS output + publish |
+| `hits_json` | `hits_json` | `filtered_hits.json` | EXTRACT_HITS output |
 | `query_title_file` | `query_title_file` | `query_title.txt` | EXTRACT_HITS output |
 | `taxonomy_file` | `taxonomy_file` | `taxonomy.csv` | EXTRACT_TAXONOMY output |
 | `bold_taxonomy_json` | `bold_taxonomy_json` | `bold_taxonomy.json` | BOLD_SEARCH output (never written, P1B-D-003) |

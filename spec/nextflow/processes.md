@@ -88,14 +88,14 @@ shared wiring; runtime validation evidence is recorded in task
 
 - **Label:** `daff_tax_assign`. **Bind:** outdir + app-data.
 - **Input:** `blast_xml`, `sequences_file`, `metadata_file`.
-- **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/all_hits.fasta`, `query_*/all_hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
-- **Publishes:** selected `query_*/all_hits.fasta`, `query_*/all_hits.json` and selected-only `accessions.txt` to `<outdir>`.
-- **Internal only:** P1 writes `query_*/all_xml_hits.json` before selection. It is a required separate output (`all_xml_hits`, arity `1..*`) for inspection/tests, using `ext.all_xml_hits_json` from `conf/filenames.config`. It is not an analysis input or published; no complete-extraction FASTA exists.
-- **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty file named by `task.ext.hits_fasta` (default `all_hits.fasta`) if missing.
+- **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/filtered_hits.fasta`, `query_*/filtered_hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
+- **Publishes:** selected `query_*/filtered_hits.fasta`, `query_*/filtered_hits.json` and selected-only `accessions.txt` to `<outdir>`.
+- **Internal only:** P1 writes `query_*/all_hits.json` before selection. It is a required separate output (`all_xml_hits`, arity `1..*`) for inspection/tests, using `ext.all_hits_json` from `conf/filenames.config`. It is not an analysis input or published; no complete-extraction FASTA exists.
+- **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty file named by `task.ext.hits_fasta` (default `filtered_hits.fasta`) if missing.
 
 | ID | Requirement |
 |---|---|
-| NF-PR-050 | After P1 runs, every `query_*/` directory MUST contain the file named by `task.ext.hits_fasta` (default `all_hits.fasta`, empty if P1 wrote none) so the output glob and publishing are stable. |
+| NF-PR-050 | After P1 runs, every `query_*/` directory MUST contain the file named by `task.ext.hits_fasta` (default `filtered_hits.fasta`, empty if P1 wrote none) so the output glob and publishing are stable. |
 | NF-PR-051 | All queries are processed in **one** task; per-query parallelism starts after this process. |
 
 ## 6. `BLAST_BLASTDBCMD`

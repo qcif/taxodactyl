@@ -17,6 +17,21 @@ XML = Path(__file__).parent / 'test-data/one_output.xml'
 
 
 class TestBlastContext(unittest.TestCase):
+    def test_hit_filename_defaults(self):
+        import yaml
+        defaults = yaml.safe_load((Path(__file__).parents[1] / 'config/default.yml').read_text())
+        expected = {
+            'all_hits_json': 'all_hits.json',
+            'hits_json': 'filtered_hits.json',
+            'hits_fasta': 'filtered_hits.fasta',
+        }
+        for key, filename in expected.items():
+            with self.subTest(key=key):
+                self.assertEqual(defaults[key], filename)
+                self.assertEqual(ConfigSchema.model_fields[key].default, filename)
+        self.assertNotIn('all_xml_hits_json', defaults)
+        self.assertNotIn('all_xml_hits_json', ConfigSchema.model_fields)
+
     @classmethod
     def setUpClass(cls):
         with XML.open() as handle:
@@ -146,8 +161,8 @@ class TestBlastContext(unittest.TestCase):
                 path.mkdir(exist_ok=True)
                 return path
             config = SimpleNamespace(
-                output_dir=root, hits_json="all_hits.json", hits_fasta="all_hits.fasta",
-                all_xml_hits_json="all_xml_hits.json", accessions_filename="accessions.txt",
+                output_dir=root, hits_json="filtered_hits.json", hits_fasta="filtered_hits.fasta",
+                all_hits_json="all_hits.json", accessions_filename="accessions.txt",
                 blast_max_target_seqs=1, blast_context_min_identity=.935,
                 update_from_args=lambda args: None,
                 create_query_dir=query_dir, get_query_dir=query_dir,
@@ -156,7 +171,7 @@ class TestBlastContext(unittest.TestCase):
             original_json = None
             real_select = p1.select_blast_hits
             def select_after_write(*args):
-                self.assertEqual(json.loads((query_dir(0) / 'all_xml_hits.json').read_text()), complete[0])
+                self.assertEqual(json.loads((query_dir(0) / 'all_hits.json').read_text()), complete[0])
                 return real_select(*args)
             with patch.object(p1, 'config', config), patch.object(p1, '_parse_args', return_value=args), \
                     patch.object(p1, 'parse_blast_xml', return_value=(complete, sequences)), \
@@ -165,19 +180,19 @@ class TestBlastContext(unittest.TestCase):
                     config.blast_max_target_seqs = cap
                     config.blast_context_min_identity = threshold
                     p1.main()
-                    full = (query_dir(0) / 'all_xml_hits.json').read_bytes()
+                    full = (query_dir(0) / 'all_hits.json').read_bytes()
                     if original_json is None:
                         original_json = full
                     self.assertEqual(full, original_json)
-                    selected = json.loads((query_dir(0) / 'all_hits.json').read_text())['hits']
+                    selected = json.loads((query_dir(0) / 'filtered_hits.json').read_text())['hits']
                     self.assertEqual(selected, complete[0]['hits'][:cap])
-                    with (query_dir(0) / 'all_hits.fasta').open() as handle:
+                    with (query_dir(0) / 'filtered_hits.fasta').open() as handle:
                         fasta = list(SeqIO.parse(handle, 'fasta'))
                     expected_sequences = {1: ['GT'], 2: ['AC', 'GT'], 3: ['AC', 'GT', 'AC']}
                     self.assertEqual([str(rec.seq) for rec in fasta], expected_sequences[cap])
                     self.assertEqual(set((root / 'accessions.txt').read_text().splitlines()),
                                      {hit['accession'] for hit in selected})
-                    self.assertEqual((query_dir(1) / 'all_hits.fasta').read_bytes(), b'')
-                    self.assertEqual(json.loads((query_dir(1) / 'all_xml_hits.json').read_text())['hits'], [])
+                    self.assertEqual((query_dir(1) / 'filtered_hits.fasta').read_bytes(), b'')
+                    self.assertEqual(json.loads((query_dir(1) / 'all_hits.json').read_text())['hits'], [])
                     self.assertEqual({file.name for file in query_dir(0).iterdir()},
-                                     {'all_xml_hits.json', 'all_hits.json', 'all_hits.fasta'})
+                                     {'all_hits.json', 'filtered_hits.json', 'filtered_hits.fasta'})

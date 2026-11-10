@@ -17,7 +17,7 @@
 
 Each query sequence gets its folder `query_<NUM>_<SAMPLE_ID>`. Inside each folder:
 
-- **all_hits.fasta**
+- **filtered_hits.fasta**
   FASTA file containing all database hits for the query sequence.
 
 - **candidates.csv**

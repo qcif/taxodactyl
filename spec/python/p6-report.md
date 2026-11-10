@@ -27,7 +27,7 @@ suite (`test/selenium`); it is not restated here.
 | `--flag-details-csv` | no | override `config/flags.csv` |
 
 **Reads** (in `query_dir` unless stated): `query_title.txt`,
-`all_hits.json`, `candidates.json`, `candidates.fasta`,
+`filtered_hits.json`, `candidates.json`, `candidates.fasta`,
 `candidates_phylogeny.fasta`, `candidates_phylogeny.nwk` (**required**),
 `assigned_taxonomy.csv` (required iff Flag 1A), `taxa_of_concern_detected.csv`
 (optional), `aggregated_sources.json` (optional), `db_coverage.json`
@@ -94,7 +94,7 @@ clicked candidate accession, `content-tabs.html`), `save-modal.html`,
 | `metadata` | `sample_id` + every metadata column except `sequence` (CFG-026) |
 | `locus_provided` | CFG-027 (`NA` ⇒ false; BOLD ⇒ true) |
 | `input_fasta` | the query record as FASTA |
-| `hits` | retained hits from `all_hits.json` (up to the configured cap, with printable alignments) |
+| `hits` | retained hits from `filtered_hits.json` (up to the configured cap, with printable alignments) |
 | `hits_taxonomy` | BLAST: `taxonomy.csv` row per hit accession (or `None`); BOLD: hit `taxonomy` fields |
 | `candidates` | `candidates.json` + `fasta` (`{id: FASTA}` from `candidates.fasta`) + `strict` (= Flag 1 not `D`/`E`) |
 | `candidates_boxplot_src` | data URI or `None` |
@@ -190,5 +190,5 @@ This spec is the source of truth from this point on: when the code and
 this document disagree, change the code to match the spec — not the
 other way around.
 
-P6 uses only the selected `all_hits.json`; internal `all_xml_hits.json` is
+P6 uses only the selected `filtered_hits.json`; internal `all_hits.json` is
 not staged, read or used as a fallback.

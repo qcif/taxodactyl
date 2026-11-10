@@ -39,7 +39,7 @@ one row per TOI in metadata order; match columns empty when not detected;
 
 ## 4. `candidates_phylogeny.fasta`
 
-Sampled hit sequences (id as in `all_hits.fasta`), no query. MAFFT prepends
+Sampled hit sequences (id as in `filtered_hits.fasta`), no query. MAFFT prepends
 the query as `QUERY`; ids are temporarily renamed `HIT<n>` and restored
 (NF-PR-080..083). See [p3 §9](../python/p3-assign-taxonomy.md).
 
