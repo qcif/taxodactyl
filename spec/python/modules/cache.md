@@ -13,7 +13,7 @@ processes, queries and runs.
 | ID | Requirement |
 |---|---|
 | CCH-001 | Public API: `keyhash(*items) -> sha256 hex`, `get(key) -> value or None`, `put(key, value)`. If `cache_disabled`, `get` returns `None` and `put` does nothing. |
-| CCH-002 | Key serialisation per item: callable → `function:<module>.<name>`; object with `serialize()` → its result; other object with `__dict__` → `object:<module>.<class>` (**instance data ignored**); anything else → `str(item)`. Items joined with `|`. |
+| CCH-002 | Key serialisation per item: callable → `function:<module>.<name>`; object with `serialize()` → its result; other object with `__dict__` → `object:<module>.<class>` (**instance data ignored**); anything else → `str(item)`. Items joined with `\|`. |
 | CCH-003 | Values are pickled. A cached `None` is indistinguishable from a miss. |
 | CCH-004 | Entries older than `cache_timeout_hours` (168) are treated as misses and deleted best-effort on read. |
 | CCH-005 | Every backend error (I/O, lock, SDK, unpickling) MUST be logged and treated as a miss / no-op; the cache never fails an analysis. |
@@ -31,7 +31,7 @@ processes, queries and runs.
 |---|---|
 | CCH-020 | One blob per key named `[<prefix>/]<keyhash>` in container `cache_azure_container`; client from `cache_azure_connection_string`, else `cache_azure_account_url` + `DefaultAzureCredential`; connection pool 50. |
 | CCH-021 | `created_at` stored in blob metadata (fallback: last-modified converted to local time); writes use `overwrite=True` (last writer wins). The container is created if missing (permission errors ignored). |
-| CCH-022 | Authoritative expiry is the storage lifecycle policy (`deployment/azure/storage-policy.json`), not application code. |
+| CCH-022 | Application reads MUST enforce `cache_timeout_hours` as in CCH-004. The storage lifecycle policy (`deployment/azure/storage-policy.json`) additionally deletes old blobs independently of reads. |
 
 ## 3. Defects
 

@@ -226,9 +226,14 @@ taxonomy CSV, or BOLD `similarity = None` (§11) are such cases.
 `tests/test_phylogeny_sampling.py`: strict-candidate selection, moderate-
 candidate selection, sampling above the per-species cap (P3-070..073).
 **Not covered:** everything else — hit filtering (P3-001..004), Flag 1
-branches, Flag 2/7, outputs §6, BOLD mode, empty-hit queries. The nf-test
-flag baselines (`test/*/flags`) exercise P3 end-to-end but contain no `1E`
-case.
+branches, Flag 2/7, outputs §6, BOLD mode, empty-hit queries. End to end,
+P3's outputs are covered only by the nf-test channel snapshots
+(`test/*/taxodactyl.workflow.nf.test.snap`, TST-021), which pin
+`1.flag`, `2.flag`, `7.flag` and the candidate files as content hashes.
+A hash change says *that* an output changed, not which flag or why. The
+`test/*/flags` baselines (TST-022) hold only the P5 flags 5.1–5.3, so
+regenerating them does not update P3's regression expectations. No
+scenario contains a `1E` query (TST-G-001).
 
 ## 13. Open questions
 

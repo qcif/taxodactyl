@@ -20,7 +20,7 @@ them is in [workflow.md](workflow.md); parameters in
 
 ## 1. `PREPARE_INPUTS`
 
-- **Container:** none (`beforeScript` only) — runs in host shell / default image.
+- **Container:** none — no label, no `container` directive, and `conf/process.config` sets no default, so on local/HPC profiles it runs in the host shell (needs `cp`, `wc` and `bash` on the host); under `-profile azure` it gets the default `docker.io/library/ubuntu:22.04` (NF-CF-020). Defect `NF-D-020`.
 - **Input:** `sequences_file` (0 or 1 path), `metadata_file`.
 - **Output:** `sequences.fasta` (optional, `emit: sequences`), `metadata.csv` (`emit: metadata`).
 - **Behaviour:** copy the sequences file to `sequences.fasta` (only if a file was supplied and is not already named that); copy metadata to `metadata.csv`, or exit 1 with `ERROR: Metadata file not found` if it is already named `metadata.csv` but absent. Prints line counts.
@@ -87,13 +87,13 @@ what BLAST actually used (**defect NF-D-005**).
 
 - **Label:** `daff_tax_assign`. **Bind:** outdir + app-data.
 - **Input:** `blast_xml`, `sequences_file`, `metadata_file`.
-- **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/hits.fasta`, `query_*/hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
-- **Publishes:** `query_*/hits.fasta` to `<outdir>`.
-- **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty `hits.fasta` if missing.
+- **Output:** `accessions.txt` (`ext.accessions_filename`) as `hits_accessions`; per-query `query_*/all_hits.fasta`, `query_*/all_hits.json`, `query_*/query_title.txt` as one tuple `hits_files`; log.
+- **Publishes:** `query_*/all_hits.fasta` to `<outdir>`.
+- **Command:** `python /app/scripts/p1_parse_blast.py <xml> --query-fasta <f> --metadata-csv <f> --output-dir ./ [--blast-max-target-seqs N]`, then for every `query_*/` create an empty file named by `task.ext.hits_fasta` (default `all_hits.fasta`) if missing.
 
 | ID | Requirement |
 |---|---|
-| NF-PR-050 | After P1 runs, every `query_*/` directory MUST contain a `hits.fasta` (empty if P1 wrote none) so the output glob and publishing are stable. |
+| NF-PR-050 | After P1 runs, every `query_*/` directory MUST contain the file named by `task.ext.hits_fasta` (default `all_hits.fasta`, empty if P1 wrote none) so the output glob and publishing are stable. |
 | NF-PR-051 | All queries are processed in **one** task; per-query parallelism starts after this process. |
 
 ## 6. `BLAST_BLASTDBCMD`
@@ -219,7 +219,8 @@ wired successfully in the current workflow.
 
 ## 15. `PREPARE_LOG`
 
-- **Input/Output:** `combined_file`, republished unchanged as `<outdir>/<file>` (`publishDir mode copy`). Empty script; no container.
+- **Input/Output:** `combined_file`, republished unchanged as `<outdir>/<file>` (`publishDir mode copy`). Empty script.
+- **Container:** none, as for `PREPARE_INPUTS` (§1): host shell on local/HPC profiles, `docker.io/library/ubuntu:22.04` under `-profile azure`. Defect `NF-D-020`.
 
 ## 16. Defects raised in this document
 
@@ -228,6 +229,7 @@ wired successfully in the current workflow.
 | NF-D-004 | `phylogeny_min_hit_identity` not forwarded to P3. |
 | NF-D-005 | Report shows `blast_max_target_seqs_for_report` (default 2000) while BLAST is hard-coded to 500. |
 | NF-D-006 | Single-quoted CLI args in `REPORT` break on embedded `'`. |
+| NF-D-020 | `PREPARE_INPUTS` and `PREPARE_LOG` declare no container and no label, and `conf/process.config` sets no default, so on local/HPC profiles they run in the host shell rather than a container (CONSTITUTION rule 11). Their work is trivial (`cp`, `wc`, an empty script), so the practical risk is low: the run depends on the host having `bash` and coreutils, and those two steps are not reproducible from the pinned images. Under `-profile azure` they get the pinned default `docker.io/library/ubuntu:22.04`. |
 
 ---
 

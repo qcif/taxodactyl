@@ -235,8 +235,10 @@ beyond ordinary dead code.
 
 ## 6. Open questions
 
-1. Should `NF-WF-061` be replaced with a left-join plus an explicit
-   "analysis failed" report so no query disappears silently?
+1. Should the workflow publish a run-level summary of per-query outcome
+   (ok / failed / no report), so an analyst can see which queries need
+   repeating, while keeping deliberate report suppression
+   ([decisions.md `D-02`](../decisions.md))?
 2. Should `params.mock_blast` without `params.blast_xml` be a start-up
    error (NF-WF-031)?
 3. Is `phylogeny_min_hit_identity` intended to reach `p3_assign_taxonomy.py`

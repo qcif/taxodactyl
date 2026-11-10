@@ -151,7 +151,7 @@ missing tree file, missing `assigned_taxonomy.csv` with Flag 1A, missing
 | ID | Severity | Defect |
 |---|---|---|
 | P6-D-001 | High (security) | **The NCBI API key is written into every report.** The "Workflow parameters" modal renders the whole params JSON unfiltered, and the README instructs users to pass `--ncbi_api_key` (and `--ncbi_user_email`) on the command line. The same data is in `pipeline_info/params_*.json`. |
-| P6-D-002 | Medium (security) | Jinja2 `Environment` is created without autoescaping and templates do not escape values: metadata cells (arbitrary user columns), GenBank titles and error messages (`| safe`) are injected as raw HTML/JS into a file meant to be shared. |
+| P6-D-002 | Medium (security) | Jinja2 `Environment` is created without autoescaping and templates do not escape values: metadata cells (arbitrary user columns), GenBank titles and error messages (`\| safe`) are injected as raw HTML/JS into a file meant to be shared. |
 | P6-D-003 | Medium (security) | `report_context.json` serialises the full `Config`, including `ncbi_api_key`, `redis_password` and `cache_azure_connection_string`, into the task work directory (on Azure: blob storage). |
 | P6-D-004 | Medium | BOLD mode rewrites `identity` → `similarity` across all inlined JS/CSS, which can rename identifiers in vendored libraries (e.g. Plotly). |
 | P6-D-005 | Low | Wall time is computed per query at render time; reports from the same run show different end/wall times. |

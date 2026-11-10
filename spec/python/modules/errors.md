@@ -11,7 +11,7 @@ negative.
 
 | ID | Requirement |
 |---|---|
-| ERR-001 | `write(location, msg, exc=None, query_dir=None, context=None)` MUST write `{location, message, exception: str(exc)|null, context}` as JSON to `<query_dir or output_dir>/errors/<md5(content)[:8]>.json`. Identical errors therefore collapse to one file. |
+| ERR-001 | `write(location, msg, exc=None, query_dir=None, context=None)` MUST write `{location, message, exception: str(exc)\|null, context}` as JSON to `<query_dir or output_dir>/errors/<md5(content)[:8]>.json`. Identical errors therefore collapse to one file. |
 | ERR-002 | Callers inside a per-query step MUST pass `query_dir`; Nextflow only collects `<query_folder>/errors/*` (NF-PR-101, NF-PR-111). |
 | ERR-003 | `ErrorLog(query_dir)` MUST load every `errors/*.json` under `query_dir` (or `output_dir`), removing exact duplicates. |
 | ERR-004 | `ErrorLog.filter(...)` supports `location`, `location_not`, `location_gt/gte/lt/lte`, `location_in` (string prefix of the location number), and `context` (an error is excluded only if it **has** a context key with a different value; errors without that key are kept). |

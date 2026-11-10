@@ -118,7 +118,7 @@ classification, sequence`). Required fields:
 | P0-020 | `sample_id` | After strip, MUST match `^[A-z0-9_\-\.]*$` (see P0-D-005 on `A-z`). |
 | P0-021 | `locus` | If `config.allowed_loci` is empty, accept anything. If `--bold` and value is empty, accept (unreachable — P0-013 rejects blanks first). Otherwise lowercase, strip, remove a trailing `" gene"`, and the result MUST be `na` or equal to one of the synonyms of some locus in the loci file; else raise listing all loci. |
 | P0-022 | `preliminary_id` | After strip, MUST match `^[A-z ]*$` — letters and spaces only (no digits, `.`, `-`, `×`). |
-| P0-023 | `taxa_of_interest` | If present: after strip, MUST match `^[A-z| ]*$`. `|` separates taxa. |
+| P0-023 | `taxa_of_interest` | If present: after strip, MUST match `^[A-z\| ]*$`. `\|` separates taxa. |
 | P0-024 | `country` | If non-blank: MUST resolve with `pycountry.countries.lookup` (name, official name, alpha-2 or alpha-3; case-insensitive). `NA` resolves to Namibia (`P0-D-011`). |
 | P0-025 | `host` | No validation. |
 | P0-026 | `sequence` | If non-blank: sanitised value MUST be IUPAC DNA (P0-004). **Length and count limits are not applied** (P0-D-002). |

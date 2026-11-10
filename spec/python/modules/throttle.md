@@ -38,7 +38,7 @@ all nodes with working `fcntl` locks (see [../../nextflow/config-profiles.md](..
 
 | ID | Requirement |
 |---|---|
-| THR-010 | Token buckets (`limiters.SyncTokenBucket`) named `throttle[:<email>]:<endpoint>:rps|rpm[:f<factor>]`, one per configured limit; `acquire()` takes one token from each. `max_sleep = 0` (unbounded wait). |
+| THR-010 | Token buckets (`limiters.SyncTokenBucket`) named `throttle[:<email>]:<endpoint>:rps\|rpm[:f<factor>]`, one per configured limit; `acquire()` takes one token from each. `max_sleep = 0` (unbounded wait). |
 | THR-011 | Backoff state per **service**: key `…:<service>:BACKOFF_FACTOR` (TTL 2 h) multiplied by `backoff_factor` on a 429, debounced by `…:BACKOFF_DEBOUNCE` (30 s, `SET NX`); buckets are rebuilt when the factor changes. |
 | THR-012 | Connection: `REDIS_HOST/PORT/PASSWORD`; TLS iff port 6380. A new client is created per `Throttle` instance. |
 
