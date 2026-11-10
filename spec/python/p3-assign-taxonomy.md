@@ -19,7 +19,7 @@ sequences go into the tree.
 |---|---|---|
 | `query_dir` (positional) | yes; must exist | `config.query_dir` |
 | `--query-fasta`, `--metadata-csv` | yes | config |
-| `--output-dir` | no; must exist | config |
+| `--output-dir` | no; must exist (default `config.output_dir`) | config |
 | `--bold` | no | BOLD mode (hit schema differs, §3.2) |
 | `--min-alignment-length` | no | `criteria.alignment_min_nt` (300) |
 | `--min-query-coverage` | no | `criteria.alignment_min_q_coverage` (0.85) |

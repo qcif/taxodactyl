@@ -16,7 +16,7 @@ suite (`test/selenium`); it is not restated here.
 |---|---|---|
 | `query_dir` (positional) | yes | |
 | `--query-fasta`, `--metadata-csv` | yes | (Nextflow also exports `INPUT_FASTA_FILEPATH`, `INPUT_METADATA_CSV_FILEPATH`) |
-| `--output-dir` | no | |
+| `--output-dir` | no (default `config.output_dir`) | |
 | `--bold` | no | BOLD wording and taxonomy source |
 | `--params_json` | no | path; rendered as "Workflow parameters" |
 | `--versions_yml` | no | path; rendered as "Software versions" |

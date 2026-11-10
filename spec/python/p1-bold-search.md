@@ -20,7 +20,7 @@ hit files in a shape P3 can consume (BOLD branch of P3, §3.2 there).
 |---|---|---|
 | `--query-fasta` | yes | |
 | `--metadata-csv` | yes | config only |
-| `--output-dir` | no | |
+| `--output-dir` | no (default `config.output_dir`) | |
 | `--bold-database` | no | default `COX1_SPECIES_PUBLIC` |
 
 Environment: `SKIP_ORIENTATION` (any non-empty value skips HMM

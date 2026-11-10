@@ -29,7 +29,8 @@ occurrence map per target.
 |---|---|
 | `query_dir` (positional, required) | |
 | `--query-fasta`, `--metadata-csv` (required) | config |
-| `--output-dir`, `--temp-root`, `--temp-dir-name` | config |
+| `--output-dir` | no (default `config.output_dir`) |
+| `--temp-root`, `--temp-dir-name` | config |
 | `--bold` | use BOLD record counts instead of GenBank |
 | `--db-coverage-toi-limit` | `db_coverage_toi_limit` (10) |
 | `--db-coverage-max-candidates` | `db_coverage_max_candidates` (3) |

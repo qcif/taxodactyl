@@ -17,7 +17,7 @@ folders `query_NNN_<sample_id>` are **created**.
 | `blast_xml_path` (positional) | yes | must exist; BLAST `-outfmt 5` |
 | `--query-fasta` | yes | defines query order and sample ids |
 | `--metadata-csv` | yes | loaded into config; not otherwise used by P1 |
-| `--output-dir` | no | default `config.output_dir` |
+| `--output-dir` | no (default `config.output_dir`) | |
 | `--blast-max-target-seqs` | no | stored in config for the report; **does not affect parsing** |
 
 Outputs (names from [shared/config.md §3.5](shared/config.md)):

@@ -17,7 +17,7 @@ table P3 and P6 join hits against.
 |---|---|
 | `taxids_csv` (positional) | yes — lines `accession,taxid`, no header (`blastdbcmd -outfmt "%a,%T"`) |
 | `--query-fasta`, `--metadata-csv` | yes (config only) |
-| `--output-dir` | no; must exist |
+| `--output-dir` | no; must exist (default `config.output_dir`) |
 
 Output: `<out>/taxonomy.csv` with header
 `accession,taxid,domain,superkingdom,kingdom,phylum,class,order,family,genus,species`.
@@ -48,10 +48,10 @@ Output: `<out>/taxonomy.csv` with header
 | P2-020 | Run `taxonkit name2taxid <file> --data-dir <taxdb_dir>`; each non-blank line is `name[\ttaxid]`. Names with no taxid are returned with `None`. |
 | P2-021 | Whenever `name2taxid` returns at least one taxid, run one `taxonkit lineage -R` (no `-c`) over the distinct taxids — **whether or not** `classification` is given. If `classification` is given (a `HIGHER_CLASSIFICATIONS` entry, CFG-029), keep only taxids whose lineage contains the pair (rank == `ncbi.rank`, name == `ncbi.taxon`, case-insensitive); otherwise keep every taxid the lineage call returned. Names without a taxid are always kept (returned last, with `None`). |
 | P2-022 | If the classification matches none of the taxids, all taxid-bearing results are dropped and a warning lists the ranks observed. |
-| P2-023 | If the lineage call fails, results MUST be returned unfiltered and unscored (logged as an error, not raised). |
+| P2-023 | If the lineage call fails, results MUST be returned unfiltered and unscored (logged as an error, not raised). Classification enhances the result accuracy but is not required for completion. |
 | P2-024 | If one name maps to several taxids after filtering, the **highest-scoring** one (P2-026) is used, and an HTML error message with links to each taxid MUST be written to `errors` location `DB_COVERAGE_TAXONKIT_ERROR` for the current query dir with context `{'target': name}`. The message text still says "the first taxid returned". |
-| P2-025 | All taxonkit invocations in a process MUST be serialised (module-level semaphore of 1). |
-| P2-026 | Each kept `(name, taxid)` is scored from its lineage: **+1** if the lineage's terminal rank is one of the 9 ranks of `taxonomy.csv`; **+1** if the name equals the terminal lineage name (case-insensitive), otherwise **+0.5** if it is a substring of it. Results are sorted by score, highest first (Python's stable sort; see P2-D-004 for ties). Introduced by PR `#316`, which cites GitHub issue `#314` (still open) as its motivation. It resolves #314's own example: for *Drosophila*, genus 7215 scores 2 and subgenus 32281 scores 1 (`subgenus` is not one of the 9 ranks), so the genus now wins. |
+| P2-025 | All taxonkit invocations in a process MUST be serialised (module-level semaphore of 1) as they consume up to 2GB RAM. |
+| P2-026 | Each kept `(name, taxid)` is scored from its lineage: **+1** if the lineage's terminal rank is one of the 9 ranks of `taxonomy.csv` (this reduces matches to infra-ranks like subgenus Drosophila); **+1** if the name equals the terminal lineage name (case-insensitive), otherwise **+0.5** if it is a substring of it. Results are sorted by score, highest first (Python's stable sort; see P2-D-004 for ties). |
 
 ## 4. Defects
 

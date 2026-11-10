@@ -19,7 +19,7 @@ one lab's submissions is visibly weaker than one corroborated by several
 |---|---|---|
 | `query_dir` (positional) | yes | |
 | `--query-fasta`, `--metadata-csv` | yes | config |
-| `--output-dir` | no | |
+| `--output-dir` | no (default `config.output_dir`) | |
 | `--min-source-count` | no | `criteria.sources_min_count` (5) |
 | `--temp-root`, `--temp-dir-name` | no | cache/throttle location |
 
