@@ -30,7 +30,7 @@ exports (P1B-D-002).
 External services: `http://v4.boldsystems.org/index.php/Ids_xml` (ID
 Engine), `…/API_Public/combined` (record metadata, TSV),
 `…/API_Public/stats` (P5 record counts, https). All calls go through
-`Throttle(ENDPOINTS.BOLD)` ([shared/throttle.md](shared/throttle.md)).
+`Throttle(ENDPOINTS.BOLD)` ([modules/throttle.md](modules/throttle.md)).
 External tool: `hmmsearch` (HMMER) unless orientation is skipped.
 
 Outputs per query (folder from `config.create_query_dir(query_index, query_title)`):

@@ -2,7 +2,7 @@
 
 **Called by:** Nextflow `VALIDATE_INPUT` ([../nextflow/processes.md §2](../nextflow/processes.md));
 `services/input_validation/api` (programmatic `validate_inputs()`).
-**Depends on:** [shared/config.md](shared/config.md).
+**Depends on:** [modules/config.md](modules/config.md).
 
 ---
 
@@ -34,7 +34,7 @@ repairs in §5.1.
 | `--bold` | flag | no | writes the BOLD marker file (`<output_dir>/BOLD`) and relaxes locus validation (§4.3) |
 | `--allowed-loci-file` | existing path | no | overrides the loci panel |
 | `--fasta-max-sequences`, `--fasta-min-length`, `--fasta-max-length` | int | no | override limits |
-| `-c/--config` (repeatable) | path | no | config cascade (shared/config.md) |
+| `-c/--config` (repeatable) | path | no | config cascade (modules/config.md) |
 
 A path argument that does not exist fails argument parsing
 (`FileNotFoundError`) before validation starts.

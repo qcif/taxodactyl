@@ -2,8 +2,8 @@
 
 **Called by:** Nextflow `EVALUATE_SOURCE_DIVERSITY`, once per query whose
 candidate count is 1..`max_candidates_for_analysis` (NF-WF-051).
-**Depends on:** [shared/config.md](shared/config.md), `shared/throttle.md`,
-`shared/cache.md`, `shared/errors.md`; input `candidates.json` from
+**Depends on:** [modules/config.md](modules/config.md), `modules/throttle.md`,
+`modules/cache.md`, `modules/errors.md`; input `candidates.json` from
 [p3-assign-taxonomy.md](p3-assign-taxonomy.md).
 
 ## 1. Purpose

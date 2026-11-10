@@ -1,7 +1,7 @@
 # Spec: P1 BLAST parser (`scripts/p1_parse_blast.py`)
 
 **Called by:** Nextflow `EXTRACT_HITS` (BLAST mode only; once per run).
-**Depends on:** [shared/config.md](shared/config.md).
+**Depends on:** [modules/config.md](modules/config.md).
 
 ## 1. Purpose
 
@@ -20,7 +20,7 @@ folders `query_NNN_<sample_id>` are **created**.
 | `--output-dir` | no (default `config.output_dir`) | |
 | `--blast-max-target-seqs` | no | stored in config for the report; **does not affect parsing** |
 
-Outputs (names from [shared/config.md §3.5](shared/config.md)):
+Outputs (names from [modules/config.md §3.5](modules/config.md)):
 
 | File | Content |
 |---|---|

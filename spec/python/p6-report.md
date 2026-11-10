@@ -4,7 +4,7 @@
 join (NF-WF-060/061).
 **Depends on:** outputs of P1/P2 (or BOLD), P3, P4 (optional), P5,
 MAFFT/FastME tree, `software_versions.yml`, `params_<ts>.json`,
-`timestamp.txt`; [shared/config.md](shared/config.md), `shared/errors.md`.
+`timestamp.txt`; [modules/config.md](modules/config.md), `modules/errors.md`.
 
 This spec covers the **data contract and decision rules** of the report.
 Visual layout is defined by the templates and verified by the Selenium
@@ -138,7 +138,7 @@ Flag 4 set to `None` if no `4.flag` exists).
 |---|---|
 | P6-040 | `conclusions.hits.lowest_identity` = minimum hit identity, or `None` without hits. |
 | P6-041 | Flag texts shown for a query without a locus MUST have locus phrases (" given locus for this", " at the given locus", " for this locus") removed. |
-| P6-042 | Error files MUST be rendered at their report location, filtered by location code and `context.target` (see `shared/errors.md`). |
+| P6-042 | Error files MUST be rendered at their report location, filtered by location code and `context.target` (see `modules/errors.md`). |
 
 ## 5. Failure behaviour
 

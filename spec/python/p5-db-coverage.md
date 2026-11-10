@@ -2,8 +2,8 @@
 
 **Called by:** Nextflow `EVALUATE_DATABASE_COVERAGE`, once per query
 (always; not gated by candidate count at Nextflow level).
-**Depends on:** [shared/config.md](shared/config.md), `shared/throttle.md`,
-`shared/cache.md`, `shared/errors.md`, [p2-extract-taxonomy.md §3.2](p2-extract-taxonomy.md),
+**Depends on:** [modules/config.md](modules/config.md), `modules/throttle.md`,
+`modules/cache.md`, `modules/errors.md`, [p2-extract-taxonomy.md §3.2](p2-extract-taxonomy.md),
 [p4-source-diversity.md §7](p4-source-diversity.md), [p1-bold-search.md §5](p1-bold-search.md).
 
 > **GBIF taxonomy is the Catalogue of Life backbone.** Since PR `#313`
@@ -200,7 +200,7 @@ test kit compares this file semantically across runs
 `DB_COVERAGE` (general, maps, TOI truncation, name substitutions, task
 failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 `DB_COVERAGE_RELATED`, `DB_COVERAGE_RELATED_COUNTRY`. All carry
-`context.target`. See `shared/errors.md`.
+`context.target`. See `modules/errors.md`.
 
 ## 8. Defects
 

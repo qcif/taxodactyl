@@ -1,7 +1,7 @@
 # Spec: P3 candidate selection and taxonomic assignment (`scripts/p3_assign_taxonomy.py`)
 
 **Called by:** Nextflow `EXTRACT_CANDIDATES`, once per query folder.
-**Depends on:** [shared/config.md](shared/config.md), P1/P2 outputs
+**Depends on:** [modules/config.md](modules/config.md), P1/P2 outputs
 ([p1-parse-blast.md](p1-parse-blast.md), [p2-extract-taxonomy.md](p2-extract-taxonomy.md)),
 or BOLD equivalents.
 
