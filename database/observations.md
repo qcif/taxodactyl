@@ -47,3 +47,23 @@
 - Maximum sequence length observed was 97,909,271.
 - Duplicate-accession handling was tested separately using a controlled test file. The failed batch was rolled back and retried row-by-row, with the duplicate written to the reject log.
 - The 2-million-row run output was also saved locally to `step5_2m_run.log`.
+## Step 6 locus classification
+
+- Loaded the locus registry from `scripts/config/loci.json`.
+- The registry contains 31 distinct loci and 82 synonym rows.
+- Both ambiguous and non-ambiguous synonyms are matched against record titles for Phase 1.
+- Matching is case-insensitive and handles differences in spaces and hyphens.
+- Word boundaries are used to avoid false-positive substring matches such as `act` inside `bacterial` or `its` inside `units`.
+- Complete-genome titles are treated as `unknown` for all 31 loci because the title alone cannot reliably determine which individual loci are present.
+- In the 2,000,000-record development sample, 53,210 records were identified as complete-genome records.
+- These records produced 1,649,510 `unknown` rows, which equals 53,210 records × 31 loci.
+- The `record_locus` table uses sparse storage. Only `present` and `unknown` rows are stored; a missing `(accession, locus_id)` pair represents `absent`.
+- The final 2,000,000-record development run produced 2,066,022 rows in `record_locus`.
+- Of these, 416,512 rows were classified as `present` and 1,649,510 rows as `unknown`.
+- Final validation found 0 duplicate `(accession, locus_id)` pairs.
+- Final validation found 0 orphan accessions in `record_locus`.
+- All `record_locus` rows use `title` as the evidence source.
+- The final database contained 31 distinct locus IDs and 82 locus synonym rows.
+- During development, the initial matching approach was too slow for larger runs.
+- The implementation was optimized to process records in 50,000-row batches, use Pandas for title processing, use a combined synonym matcher, and bulk insert sparse results into DuckDB.
+- The optimized implementation successfully processed the complete 2,000,000-record development sample.
