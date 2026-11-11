@@ -1,18 +1,20 @@
 name: nf-test
 
 on:
-    # To run workflow, trigger manually using GH UI
+    # Workflow runs weekly
+    schedule:
+      # Runs at 00:00 UTC, only on Sunday
+      - cron: '0 0 * * 0'
+    # And on pull request to main
+    pull_request:
+      branches:
+        - main
+    # Can also be triggered manually using GH UI
     workflow_dispatch:
-    # Update to enable trigger on push of selected branch or on pull request
+    # Update here to enable trigger on push of selected branch
     # push:
     #   branches:
     #     - nf-test-sh-runner
-    pull_request:
-        branches:
-          - main
-    schedule:
-      # Runs at 00:00 UTC every Sunday
-      - cron: '0 0 * * 0'
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
@@ -35,8 +37,9 @@ jobs:
       matrix:
         python-version: [3.12]
         nextflow-version: [25.04.6]
-        # Update here to run only on gh or sh runners:
-        runner: [ubuntu-24.04, self-hosted]
+        # Currently only running on self-hosted (sh) runner. 
+        # Add "ubuntu-24.04" here to run on github-hosted runner.
+        runner: [self-hosted]
 
     steps:
       # Enable creation of containers as an unprivileged user
@@ -215,7 +218,7 @@ jobs:
 
       # Copies work directories for process/samples with failed/aborted nf-test, 
       # diff flags or diff snapshots (may be large number!) to single dir with
-      # human readable PROCESS/SAMPLE file structure for uploading as artifact.
+      # human readable PROCESS/SAMPLE file structure.
       - name: Copy error workdirs
         id: copy-workdirs
         # Always run, nothing will happen if 
@@ -243,14 +246,6 @@ jobs:
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
-
-      - name: Upload error workdirs
-        uses: actions/upload-artifact@v7
-        # Only runs on GH runner
-        if: always() && runner.environment == 'github-hosted'
-        with:
-          name: error_workdirs
-          path: ${{ runner.temp }}/nf-test/collected_errors
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest
@@ -340,3 +335,6 @@ jobs:
           mkdir -p "/var/runner/$timestamp"
 
           cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
+
+          echo "Location of files on self-hosted runner:"
+          echo "/var/runner/$timestamp/"
