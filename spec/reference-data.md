@@ -108,8 +108,11 @@ amount of local storage planning mitigates.
 - **Used for:** P5's database-coverage-within-genus/country assessment
   (species lookup, relatives, occurrence search, occurrence maps). A
   P1-BOLD kingdom lookup (`gbif.taxonomy.fetch_kingdom`) also exists but
-  is unused: its only caller is the dead `taxon_taxonomy` writer
-  (`P1B-D-010`), so BOLD runs make no GBIF calls before P5.
+  is unused (`P1B-D-010`): it is reached only through the
+  `taxon_taxonomy` writer, which the entrypoint comments out
+  (`_write_taxa_metadata`). Active hit enrichment (`P1B-021`) supplies
+  phylum through species from BOLD, with no kingdom, so BOLD runs make
+  no GBIF calls before P5.
 - **Taxonomy backbone:** since PR `#313` (`2decc0c`, 2026-10-06) every
   query is scoped to the **Catalogue of Life eXtended Release** checklist
   (`COL_CHECKLIST_KEY = 7ddf754f-d193-4cc9-b351-99906754a03b`, in
