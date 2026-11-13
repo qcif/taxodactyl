@@ -209,7 +209,7 @@ taxonomy CSV, or BOLD `similarity = None` (§11) are such cases.
 
 | ID | Severity | Defect |
 |---|---|---|
-| P3-D-001 | High (*to confirm by run*) | A query with no hit ≥ `phylogeny_min_hit_identity` (includes every Flag `1E` query) gets an empty `candidates_phylogeny.fasta`. MAFFT then aligns the query alone and FastME has < 3 taxa; if FastME fails, the inner join drops the query and **no report is produced for a "no match" result** — the case where the report matters most. P6 also reads the tree file unconditionally. No test scenario contains a `1E` query. |
+| P3-D-001 | High (*unverified hypothesis*) | *Hypothesis, not observed:* a phylogeny set too small for FastME (one or two hits plus the query) might make FastME fail, in which case the inner join would drop the query and **no report would be produced**. Two cases are already ruled out or narrowed. (1) An **empty** `candidates_phylogeny.fasta` does not suppress the report: the core nf-test has three `1E` queries (`SME25-221`, `barcode_71_RID8937-1_MOL-016_cluster_14_RC424` and `barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62`) whose `candidates_phylogeny.fasta` and `.nwk` snapshots are both empty, and all are among the 20 reports it asserts. (2) Flag `1E` alone is not the trigger: the phylogeny FASTA is drawn from hits ≥ `phylogeny_min_hit_identity` whether or not they form candidate species, so a `1E` query whose high-identity hits lack species taxonomy (P3-D-002) gets a **non-empty** FASTA. *To confirm by run* with a small phylogeny set. |
 | P3-D-002 | High | Hits lacking a taxonomy row (e.g. P2-D-001) cannot form candidate species. If all strict hits lack taxonomy the result silently degrades to `1D`/`1E`, with only a log warning — not surfaced in the report. In short: a query with genuinely strong BLAST hits can still come back reading as "no confident match" if every one of those hits happens to lack taxonomy — the report can't distinguish "database lacks a close relative" from "taxonomy join failed," and the analyst sees only the former. |
 | P3-D-003 | Medium | Flag 6 (phylogenetic assessment) is defined in `flags.csv` and `FLAGS.INTRASPECIES_DIVERSITY` but **never computed or written** by any module. |
 | P3-D-004 | Medium | Flag 1 B/C boundary is hard-coded (`< 4`) while the boxplot, P4 gating and report prompts use `max_candidates_for_analysis`; changing that parameter desynchronises them. `flags.csv` text also hard-codes "98.5%" and "93.5%", which do not follow parameter changes. |
@@ -232,8 +232,13 @@ P3's outputs are covered only by the nf-test channel snapshots
 `1.flag`, `2.flag`, `7.flag` and the candidate files as content hashes.
 A hash change says *that* an output changed, not which flag or why. The
 `test/*/flags` baselines (TST-022) hold only the P5 flags 5.1–5.3, so
-regenerating them does not update P3's regression expectations. No
-scenario contains a `1E` query (TST-G-001).
+regenerating them does not update P3's regression expectations. Flag
+`1E` with an empty phylogeny FASTA is covered end to end: the core
+scenario's three `1E` queries (`SME25-221`, `barcode_71_RID8937-1_MOL-016_cluster_14_RC424` and `barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62`)
+have empty phylogeny FASTA/Newick snapshots, Selenium asserts `Flag 1E`
+for them, and the core test expects 20 reports for 20 samples. Not
+covered: a small, non-empty phylogeny set, including a `1E` query with
+high-identity hits but no species taxonomy (P3-D-001, TST-G-001).
 
 ## 13. Open questions
 

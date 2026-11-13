@@ -82,7 +82,7 @@ cannot pass (P1B-D-001..003).
 
 | ID | Gap |
 |---|---|
-| TST-G-001 | No test of a `1E` (no candidate) query, the case most exposed to report suppression (`OUT-D-002`) / `P3-D-001`. |
+| TST-G-001 | No test of a small, non-empty phylogeny set (one or two hits plus the query), the case `P3-D-001` hypothesises could fail FastME and suppress the report (`OUT-D-002`). This includes a `1E` query whose high-identity hits lack species taxonomy. A `1E` query with an *empty* phylogeny FASTA is already covered by the core fixtures (`SME25-221` and two others: empty FASTA/Newick snapshots, Selenium `Flag 1E`, 20 reports expected). |
 | TST-G-002 | No test of Flag 5.1 thresholds (P5-D-001) or of taxid-less targets (P5-D-002). |
 | TST-G-003 | P3 filtering, Flags 1/2/7 and output files have no unit tests. |
 | TST-G-004 | P6 decision rules (§4 of `p6-report.md`) have no unit tests; only Selenium against generated HTML. |
