@@ -34,7 +34,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | Severity | Count |
 |---|---|
 | High | 18 |
-| Medium | 69 (2 of them fixed: `P5-D-007`, `P0-D-008`) |
+| Medium | 70 (2 of them fixed: `P5-D-007`, `P0-D-008`) |
 | Low | 67 (2 of them fixed: `NF-D-017`, `DEP-D-012`) |
 
 ## High
@@ -107,6 +107,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | P6-D-003 | P6 / security | `report_context.json` stores the full config incl. API key, Redis password and Azure connection string in the work dir. | [python/p6-report.md](python/p6-report.md) | — | v1 |
 | P6-D-004 | P6 | BOLD mode rewrites `identity`→`similarity` across inlined vendored JS/CSS. | [python/p6-report.md](python/p6-report.md) | — | v1 |
 | P6-D-009 | P6 **(vs Design Proposal)** | The Design Proposal's "Conclusion A – Positive taxonomic identification" requires **both** Flag 1a (single species, ≥98.5%) **and** Flag 4a (≥5 independent sources) (§3.8). The shipped code's `confirmed` result (P6-010) is set from Flag 1 = `A` alone; `sources_verified` (Flag 4a) only downgrades the badge colour (success→warning), it never flips `confirmed` to false. A single-species match with weak source support is therefore still reported as a confirmed identification, just in a different colour. [decisions.md `D-18`](decisions.md). | [python/p6-report.md §4.1](python/p6-report.md) | — | v1 |
+| P6-D-010 | P6 | The Tab 3 screening-criteria table can show different thresholds from those P3 applied. `REPORT` does not forward `--min_nt`, `--min_q_coverage`, `--min_identity` or `--min_identity_strict` (and `p6_report.py` does not accept them), so P6 renders its own defaults: `--min_nt 500` filters at 500 bp while the report says 300 bp. The analyst is shown the wrong criteria for the result in front of them. | [python/p6-report.md §2a.2](python/p6-report.md) | — | v1 |
 | ERR-D-001 | P4 / errors | P4 non-fatal errors are written without `query_dir` ⇒ outside the collected folder ⇒ **never shown in the report**. | [python/shared/errors.md](python/shared/errors.md) | — | v1 |
 | THR-D-002 | throttle | Any exception whose text contains `429` is treated as rate limiting; for Entrez/BOLD this sleeps 10 min and resets retries **indefinitely** ⇒ task hangs to timeout ⇒ report lost. | [python/shared/throttle.md](python/shared/throttle.md) | — | v1 |
 | THR-D-001 | throttle | SQLite per-minute limit checked over 12 s (not 60/90 s) ⇒ up to 5× the configured per-minute rate (BOLD). | [python/shared/throttle.md](python/shared/throttle.md) | — | v1 |
