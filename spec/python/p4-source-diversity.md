@@ -28,7 +28,8 @@ Env used via config: `USER_EMAIL` (→ `Entrez.email`), `NCBI_API_KEY`
 
 **Reads:** `<query_dir>/candidates.json`.
 **Writes:** `<query_dir>/4.flag`, `<query_dir>/aggregated_sources.json`,
-`<query_dir>/errors/*` (non-fatal errors, §6).
+`<query_dir>/errors/*` (non-fatal errors, §6 — currently written to
+`<task>/errors/*` instead, ERR-D-001).
 
 ## 3. Algorithm
 
@@ -84,7 +85,7 @@ Publication key ("repr"), first available of:
 
 | ID | Requirement |
 |---|---|
-| P4-030 | A hit with an empty accession and no `collectors` MUST produce `errors.write(SOURCE_DIVERSITY_ACCESSION_ERROR, …, context={index, hit_id, species, accession})` and contribute no source; P4 continues. These files surface in the report (NF-PR-101). |
+| P4-030 | A hit with an empty accession and no `collectors` MUST produce `errors.write(SOURCE_DIVERSITY_ACCESSION_ERROR, …, context={index, hit_id, species, accession}, query_dir=<query_dir>)` and contribute no source; P4 continues. Writing into `<query_dir>/errors/` is what makes the error reach the report (NF-PR-101). **Currently unmet:** `src/sources/collect.py` omits `query_dir`, so the file lands in `<task>/errors/`, which Nextflow does not collect, and the error never appears in the report (ERR-D-001). |
 
 ## 7. Library function used by P5: `genbank.fetch_gb_records(locus, taxid, count)`
 
