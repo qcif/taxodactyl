@@ -39,6 +39,7 @@ affect it.
 
 **Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

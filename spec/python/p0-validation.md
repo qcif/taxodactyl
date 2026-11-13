@@ -231,6 +231,7 @@ tested.
 
 **Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the P0-D-008 fix added from `3339050` (`src/utils/encoding.py`, 120 lines). See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

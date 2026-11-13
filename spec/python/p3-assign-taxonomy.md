@@ -250,6 +250,7 @@ scenario contains a `1E` query (TST-G-001).
 
 **Initially derived from:** `p3_assign_taxonomy.py` (687), `src/utils/flags.py` (`Flag.write`), `src/utils/ncbi.py`, `src/utils/utils.py` (`deduplicate`), `tests/test_phylogeny_sampling.py`, `config/flags.csv`. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

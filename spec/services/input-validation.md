@@ -63,6 +63,7 @@ None. No unit, integration or UI tests exist for this service
 
 **Initially derived from:** `api/main.py` (~330), `api/utils.py` (~480), `client/src/App.jsx` (439), `client/src/components/CsvEditor.jsx` (129), `deployment/validation.{service,nginx.conf}`, `README.md`. SVC-008 added from `3339050`. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

@@ -69,6 +69,7 @@ See [../nextflow/params.md](../nextflow/params.md).
 
 **Initially derived from:** `assets/schema_input.json`, `nextflow_schema.json`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source. §1 rewritten for `3339050` (nf-schema no longer reads the CSV; encoding repair). See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

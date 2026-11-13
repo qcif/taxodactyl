@@ -75,6 +75,7 @@ Run-level files read by P3/P6 from `<output_dir>` (not the query folder):
 
 **Initially derived from:** cross-reference compilation of every producer/consumer spec listed in the matrix above — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

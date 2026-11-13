@@ -26,9 +26,12 @@ workflow used by `qcif/daff-mito-assembly`:
 - Record the task ID, branch, and worktree in `tasks/active.md` on the main
   worktree.
 - Write implementation outcomes into the task brief.
-- On completion, move the brief to `tasks/completed/`, commit the worktree, and
-  ask the user to merge it.
-- Remove the active entry only after the merge is complete.
+- On completion, set the brief to `**Status:** done`, move it to
+  `tasks/completed/`, and remove its active entry in the created task worktree.
+  Commit these lifecycle changes with the implementation and ask the user to
+  merge it.
+- The main worktree may retain its branch/worktree record pending merge; this
+  must not leave the completed task marked active in the task worktree.
 
 The generic Spec Kit `tasks.md`/feature-directory workflow below is retained
 only as compatibility context and is superseded by these local instructions
@@ -274,21 +277,37 @@ Check if `.specify/extensions.yml` exists in the project root.
 
 ## Task completion and handoff
 
-When implementation and validation are complete:
+When implementation, required validation, and mandatory hooks are complete,
+finish the task lifecycle in the same dedicated worktree created for the task.
+Resolve all paths below relative to that worktree, not the main checkout.
 
-1. Add an `## Outcomes` section to the task brief with completed work,
-   validation results, deviations, and any follow-up tasks.
-2. Move the task brief from `tasks/` to `tasks/completed/` in the worktree.
-3. Update any links to the task brief to point to `tasks/completed/`; when
+1. Verify the task's completion criteria are satisfied. If required work or
+   validation remains unresolved, keep the task active and report the blocker.
+2. Update the task brief's `## Outcomes` section with completed work,
+   validation results, deviations, and any separate follow-up tasks. Mark
+   completed implementation checklist items where the brief uses them, and
+   replace the brief's lifecycle status with `**Status:** done`.
+3. Move the brief from `tasks/<NN>_<short_name>.md` to
+   `tasks/completed/<NN>_<short_name>.md` within the task worktree.
+4. Remove this task's entry from the task worktree's `tasks/active.md` and
+   remove any stale entry for this task from `tasks/todo.md`. Preserve other
+   tasks and record any distinct follow-up work separately.
+5. Update links to the moved brief to point to `tasks/completed/`; when
    modifying specs, prefer saying `task NN_short_name` rather than linking to
    the movable task file.
-4. Commit all implementation, documentation, tests, and task-file changes in
-   the task worktree.
-5. Report the commit, branch, worktree, tests, and merge command to the user.
-   Do not merge into main automatically.
-6. After the user merges the branch, remove the task’s entry from
-   `tasks/active.md` on main. Until then, leave the branch/worktree record in
-   place.
+6. Before committing, verify in the task worktree that the completed brief
+   exists with status `done`, the original brief is absent, and the task is no
+   longer listed as active or to-do. Completion includes these lifecycle edits;
+   do not defer them until merge or leave them only in the main checkout.
+7. Commit the implementation, documentation, tests, and lifecycle changes
+   together in the task worktree. Check the commit includes the completed
+   brief and index changes, with no uncommitted task changes remaining.
+8. Report the commit, branch, worktree, completed brief path, tests, and merge
+   command to the user. Do not merge into main automatically.
+9. After the user merges the branch, verify the main worktree reflects the
+   completed lifecycle and remove any remaining tracking entry for this task
+   from its `tasks/active.md`. A pending merge does not keep the task active
+   in the implementation worktree.
 
 ## Completion Report
 
@@ -303,7 +322,11 @@ the task active and report the blocker rather than moving it to completed.
 - [ ] Implementation was performed in a dedicated branch/worktree
 - [ ] The task brief was moved to `tasks/completed/` only after successful
       validation
-- [ ] Changes were committed and the user received a merge handoff
+- [ ] In the created task worktree, the completed brief has `**Status:** done`,
+      the original brief is absent, and the task is absent from `tasks/active.md`
+      and `tasks/todo.md`
+- [ ] Lifecycle changes were committed with the implementation, and the user
+      received the completed brief path and a merge handoff
 - [ ] Implementation validated against specification, plan, and test coverage
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
 - [ ] Completion reported to user with summary of completed work
