@@ -22,7 +22,7 @@ to the file with the full requirement.
 | Per-hit fields | `identity`, `alignment_length`, `query_coverage`, `bitscore`, `e_value`, full HSP list, `accession` (version-stripped), computed `taxonomy`/`species`/`taxid` via `taxonomy.csv` join | `similarity` (copied into `identity` at source), `taxonomic_identification`, `accession` (may be empty — no GenBank record), `taxonomy` dict already attached, no alignment statistics | same |
 | Hit sequence content | Last HSP's aligned subject fragment, **including gap characters** (`P1-D-001`) | Full nucleotide sequence, gaps stripped | [p1-parse-blast.md §3](p1-parse-blast.md), [p1-bold-search.md §4](p1-bold-search.md) |
 | Orientation handling | N/A | Historical HMM-based orientation step runs **unconditionally** unless env `SKIP_ORIENTATION` is set (not `BOLD_SKIP_ORIENTATION`, which Nextflow actually exports — `P1B-D-002`); needs `hmmsearch`, absent from the image (`P1B-D-001`) | [p1-bold-search.md §3.1](p1-bold-search.md) |
-| Taxonomy source | `blastdbcmd` + `taxonkit lineage`, one shared `taxonomy.csv` for the whole run | Per-hit, from BOLD's "Full data retrieval" endpoint + a GBIF kingdom lookup; no `taxonomy.csv` | [p2-extract-taxonomy.md](p2-extract-taxonomy.md), [p1-bold-search.md §3.3](p1-bold-search.md) |
+| Taxonomy source | `blastdbcmd` + `taxonkit lineage`, one shared `taxonomy.csv` for the whole run | Per-hit, phylum through species from BOLD's "Full data retrieval" endpoint (no kingdom); no `taxonomy.csv`. A GBIF kingdom lookup exists but is reachable only through the unused `taxon_taxonomy` writer (`P1B-D-010`) | [p2-extract-taxonomy.md](p2-extract-taxonomy.md), [p1-bold-search.md §3.3](p1-bold-search.md) |
 
 ## 2. Candidate selection (P3)
 

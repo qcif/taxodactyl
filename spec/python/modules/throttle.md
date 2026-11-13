@@ -1,7 +1,7 @@
 # Spec: API throttling, retry and request coalescing (`src/utils/throttle.py`, `src/utils/coalesce.py`)
 
-**Used by:** every external HTTP call — Entrez (P4, P5), GBIF (P5, BOLD
-kingdom lookup), BOLD (P1-BOLD, P5).
+**Used by:** every external HTTP call — Entrez (P4, P5), GBIF (P5; the BOLD
+kingdom lookup is unused, `P1B-D-010`), BOLD (P1-BOLD, P5).
 
 ## 1. Purpose
 

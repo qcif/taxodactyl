@@ -106,8 +106,10 @@ amount of local storage planning mitigates.
 ### 2.2 GBIF (Catalogue of Life backbone)
 
 - **Used for:** P5's database-coverage-within-genus/country assessment
-  (species lookup, relatives, occurrence search, occurrence maps) and
-  P1-BOLD's kingdom lookup for BOLD hits without a GenBank accession.
+  (species lookup, relatives, occurrence search, occurrence maps). A
+  P1-BOLD kingdom lookup (`gbif.taxonomy.fetch_kingdom`) also exists but
+  is unused: its only caller is the dead `taxon_taxonomy` writer
+  (`P1B-D-010`), so BOLD runs make no GBIF calls before P5.
 - **Taxonomy backbone:** since PR `#313` (`2decc0c`, 2026-10-06) every
   query is scoped to the **Catalogue of Life eXtended Release** checklist
   (`COL_CHECKLIST_KEY = 7ddf754f-d193-4cc9-b351-99906754a03b`, in
