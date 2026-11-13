@@ -29,7 +29,7 @@
 | Environment variables | `conf/env.config`, Azure env | [config-profiles.md §5](nextflow/config-profiles.md) |
 | Files in the query folder | named by `default.yml`, exposed as `task.ext.*` | [contracts/](contracts/) |
 | Run-level files | `sequences.fasta`, `metadata.csv`, `taxonomy.csv`, `timestamp.txt`, `BOLD` marker | [contracts/query-folder.md](contracts/query-folder.md) |
-| Exit status | non-zero = task failure; Python catches non-fatal API errors and writes `errors/*.json` instead | [error-handling.md](nextflow/error-handling.md), [errors.md](python/shared/errors.md) |
+| Exit status | non-zero = task failure; Python catches non-fatal API errors and writes `errors/*.json` instead | [error-handling.md](nextflow/error-handling.md), [errors.md](python/modules/errors.md) |
 
 There is no other channel: Python never calls Nextflow and Nextflow never
 imports Python.
@@ -52,12 +52,12 @@ this spec the BOLD branch cannot currently complete a run (`NF-D-002`).
 
 | Concern | Module | Behaviour | Spec |
 |---|---|---|---|
-| Configuration | `utils/config` | singleton; YAML + env + CLI precedence; filenames; per-query helpers | [config.md](python/shared/config.md) |
-| External API rate | `utils/throttle` | SQLite or Redis token windows, 429 backoff, retry | [throttle.md](python/shared/throttle.md) |
-| Response caching | `utils/cache`, `coalesce` | SQLite or Azure Blob; Redis lease coalescing | [cache.md](python/shared/cache.md) |
-| Non-fatal errors | `utils/errors` | JSON files rendered in report | [errors.md](python/shared/errors.md) |
-| Secrets | `utils/secrets` | local Fernet file or Azure Key Vault | [secrets.md](python/shared/secrets.md) |
-| Flags | `utils/flags` | outcome records + text from `flags.csv` | [flags.md](python/shared/flags.md) |
+| Configuration | `utils/config` | singleton; YAML + env + CLI precedence; filenames; per-query helpers | [config.md](python/modules/config.md) |
+| External API rate | `utils/throttle` | SQLite or Redis token windows, 429 backoff, retry | [throttle.md](python/modules/throttle.md) |
+| Response caching | `utils/cache`, `coalesce` | SQLite or Azure Blob; Redis lease coalescing | [cache.md](python/modules/cache.md) |
+| Non-fatal errors | `utils/errors` | JSON files rendered in report | [errors.md](python/modules/errors.md) |
+| Secrets | `utils/secrets` | local Fernet file or Azure Key Vault | [secrets.md](python/modules/secrets.md) |
+| Flags | `utils/flags` | outcome records + text from `flags.csv` | [flags.md](python/modules/flags.md) |
 
 ## 5. Data-flow summary
 

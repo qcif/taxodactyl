@@ -112,7 +112,7 @@ The following environment variables MUST be exported into every task:
 `/tmp/taxodactyl/config`), `NCBI_API_KEY`, `USER_EMAIL`, `TAXONKIT_DATA`
 (= `params.taxdb` or `''`), `SECRET_KEY` (launcher env or `''`). Python
 behaviour keyed on these is specified in
-[../python/shared/config.md](../python/shared/config.md).
+[../python/modules/config.md](../python/modules/config.md).
 
 **Defect `NF-D-018` (Low, *to confirm*, [defects.md](../defects.md)).**
 `HOME` was added with the nf-test CI workflow (`a24581f`) but sits in

@@ -4,9 +4,9 @@
 developers — no process writes it). **Consumers:** Nextflow, via
 `conf/filenames.config` → `task.ext.*`
 ([config-profiles.md §1](../nextflow/config-profiles.md)); every
-Python entrypoint, via [`Config`](../python/shared/config.md). Values and
+Python entrypoint, via [`Config`](../python/modules/config.md). Values and
 the schema-default discrepancies are tabulated in
-[../python/shared/config.md §3.5](../python/shared/config.md).
+[../python/modules/config.md §3.5](../python/modules/config.md).
 
 | `task.ext.*` key | `default.yml` key | Value | Used in Nextflow by |
 |---|---|---|---|
@@ -47,7 +47,7 @@ the schema-default discrepancies are tabulated in
 
 ## Provenance
 
-**Initially derived from:** `scripts/config/default.yml`, `conf/filenames.config`, [shared/config.md](../python/shared/config.md) §3.5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `scripts/config/default.yml`, `conf/filenames.config`, [modules/config.md](../python/modules/config.md) §3.5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

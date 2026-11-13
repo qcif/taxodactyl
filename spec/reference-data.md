@@ -81,7 +81,7 @@ short — it was only ever scoped to the first one:
 
 None of these are provisioned, downloaded, or staged — they're external
 HTTP APIs called at runtime, every run, subject to the shared throttle
-layer ([shared/throttle.md](python/shared/throttle.md)). If one of them
+layer ([modules/throttle.md](python/modules/throttle.md)). If one of them
 is unreachable, slow, or changes its API, that's an availability risk no
 amount of local storage planning mitigates.
 
@@ -97,7 +97,7 @@ amount of local storage planning mitigates.
 - **Rate:** 5 req/s with `NCBI_API_KEY` set, else 2 req/s; scope is **per
   user** (`USER_EMAIL`, or `ANONYMOUS` if unset) — enforced by this
   pipeline's own throttle, not by NCBI rejecting requests
-  ([throttle.md §2](python/shared/throttle.md)). `THR-D-004`: several
+  ([throttle.md §2](python/modules/throttle.md)). `THR-D-004`: several
   users sharing one host can still exceed NCBI's *actual* per-IP/key
   limit together, since the throttle only tracks per-`USER_EMAIL`.
 - **Auth leak risk:** the same `NCBI_API_KEY` this throttle relies on is
@@ -135,7 +135,7 @@ amount of local storage planning mitigates.
 - **Rate:** two separate endpoint buckets — `GBIF_SLOW` (1 req/s) and
   `GBIF_FAST` (5 req/s) — both **global**, i.e. shared across every
   concurrent query and every node in a run, not per-user like Entrez/BOLD
-  ([throttle.md §2](python/shared/throttle.md)). A 429 halves the
+  ([throttle.md §2](python/modules/throttle.md)). A 429 halves the
   effective rate (floor 0.1 req/s), recovering over 2 hours.
   `THR-D-003`: this backoff state is tracked per SQLite *endpoint* but
   per Redis *service* — a GBIF 429 only slows both GBIF endpoints
@@ -194,7 +194,7 @@ amount of local storage planning mitigates.
 [p1-bold-search.md](python/p1-bold-search.md),
 [p4-source-diversity.md](python/p4-source-diversity.md),
 [p5-db-coverage.md](python/p5-db-coverage.md),
-[shared/throttle.md](python/shared/throttle.md),
+[modules/throttle.md](python/modules/throttle.md),
 [deployment.md](deployment.md) — each already derived from source. See
 [README.md § Version](README.md#version) for the exact commit.
 

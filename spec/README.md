@@ -71,7 +71,7 @@ spec/
 ├── nextflow/              workflow, processes, params, config-profiles, error-handling
 ├── python/                p0-validation … p6-report (+ p1-bold-search,
 │                          blast-vs-bold)
-│   └── shared/            config, throttle, cache, errors, secrets, flags
+│   └── modules/           config, throttle, cache, errors, secrets, flags
 ├── contracts/             query-folder, filenames, inputs, hits, candidates,
 │                          coverage-and-sources, loci, outputs
 ├── services/              input-validation

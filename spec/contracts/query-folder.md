@@ -42,7 +42,7 @@ producer/consumer matrix; formats are in the sibling contracts.
 | `preliminary_id_match.csv` | [P3](../python/p3-assign-taxonomy.md) (Flag 7A only) | — (unread, `P3-D-008`) | `rank,taxon…` |
 | `taxa_of_concern_detected.csv` | [P3](../python/p3-assign-taxonomy.md) (TOIs given) | [P6](../python/p6-report.md) | [candidates.md](candidates.md) |
 | `candidates_identity_boxplot.png` | [P3](../python/p3-assign-taxonomy.md) (> max candidates) | [P6](../python/p6-report.md) | PNG |
-| `1.flag`, `2.flag`, `7.flag` | [P3](../python/p3-assign-taxonomy.md) | [P6](../python/p6-report.md) | [../python/shared/flags.md](../python/shared/flags.md) |
+| `1.flag`, `2.flag`, `7.flag` | [P3](../python/p3-assign-taxonomy.md) | [P6](../python/p6-report.md) | [../python/modules/flags.md](../python/modules/flags.md) |
 | `4.flag` | [P4](../python/p4-source-diversity.md) | [P6](../python/p6-report.md) | same |
 | `aggregated_sources.json` | [P4](../python/p4-source-diversity.md) | [P6](../python/p6-report.md) | [coverage-and-sources.md](coverage-and-sources.md) |
 | `5.1.flag`, `5.2.flag`, `5.3.flag` | [P5](../python/p5-db-coverage.md) | [P6](../python/p6-report.md) | same |

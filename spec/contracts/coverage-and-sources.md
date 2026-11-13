@@ -3,7 +3,7 @@
 **Producers:** [P5](../python/p5-db-coverage.md) (`db_coverage.json`,
 `5.*.flag`, `map_*.png`), [P4](../python/p4-source-diversity.md)
 (`aggregated_sources.json`, `4.flag`), both via
-[shared/errors.md](../python/shared/errors.md) for `errors/*.json`.
+[modules/errors.md](../python/modules/errors.md) for `errors/*.json`.
 **Consumer:** [P6](../python/p6-report.md).
 
 ## 1. `db_coverage.json`
@@ -37,18 +37,18 @@ MUST tolerate absence (P6 does).
 ## 3. `errors/<hash8>.json`
 
 `{ "location": <float>, "message": <str, may contain HTML>, "exception": <str|null>, "context": <object|null> }`.
-Locations: [errors.md §3](../python/shared/errors.md). Only files inside
+Locations: [errors.md §3](../python/modules/errors.md). Only files inside
 the query folder reach the report (ERR-D-001).
 
 ## 4. `*.flag`
 
-See [../python/shared/flags.md](../python/shared/flags.md) §3.
+See [../python/modules/flags.md](../python/modules/flags.md) §3.
 
 ---
 
 ## Provenance
 
-**Initially derived from:** [p5-db-coverage.md](../python/p5-db-coverage.md) §6, [p4-source-diversity.md](../python/p4-source-diversity.md) §7, [shared/errors.md](../python/shared/errors.md) §3 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** [p5-db-coverage.md](../python/p5-db-coverage.md) §6, [p4-source-diversity.md](../python/p4-source-diversity.md) §7, [modules/errors.md](../python/modules/errors.md) §3 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

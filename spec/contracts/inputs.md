@@ -5,7 +5,7 @@
 which returns a cleaned copy. **Consumers:** [P0](../python/p0-validation.md)
 (validation, see the per-column table below); every `p0`–`p6` script
 downstream, which reads values via
-[`Config.metadata`](../python/shared/config.md).
+[`Config.metadata`](../python/modules/config.md).
 
 ## 1. `metadata.csv`
 

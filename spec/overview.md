@@ -97,7 +97,7 @@ metabarcoding; databases other than Core Nt and BOLD
 | Original design intent | Design Proposal for Development of a Taxonomic Assignment Pipeline (QCIF, 2024-11-29) — a second cross-check source, same role as `docs/`: code is authoritative where they differ, but a divergence from this document is logged as a gap against *original intent*, distinct from an internal defect |
 | Architecture | [architecture.md](architecture.md) |
 | Nextflow layer | [nextflow/](nextflow/) — workflow, processes, params, config-profiles, error-handling, [nf-core-conformance.md](nextflow/nf-core-conformance.md) |
-| Python layer | [python/](python/) — P0–P6, [blast-vs-bold.md](python/blast-vs-bold.md) (every BLAST/BOLD difference, one place), `shared/` (config, throttle, cache, errors, secrets, flags) |
+| Python layer | [python/](python/) — P0–P6, [blast-vs-bold.md](python/blast-vs-bold.md) (every BLAST/BOLD difference, one place), `modules/` (config, throttle, cache, errors, secrets, flags) |
 | Data contracts | [contracts/](contracts/) — inputs, query-folder, filenames, hits, candidates, coverage-and-sources, loci, outputs |
 | Services | [services/input-validation.md](services/input-validation.md) |
 | Quality and delivery | [tests.md](tests.md), [deployment.md](deployment.md), [containers.md](containers.md) (detailed companion), [reference-data.md](reference-data.md) (detailed companion) |

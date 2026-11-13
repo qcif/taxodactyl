@@ -3,7 +3,7 @@
 **Producer:** none in the running pipeline — a static file maintained by
 developers, or an operator-supplied override via `--allowed_loci_file`.
 **Consumers:** [P0](../python/p0-validation.md) (validation, P0-021),
-[shared/config.md](../python/shared/config.md)
+[modules/config.md](../python/modules/config.md)
 (`get_locus_for_query`, CFG-027, CFG-040..042), and
 [P5](../python/p5-db-coverage.md) / [P4](../python/p4-source-diversity.md)
 (GenBank query construction).
@@ -37,7 +37,7 @@ affect it.
 
 ## Provenance
 
-**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [shared/config.md](../python/shared/config.md) §5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `scripts/config/loci.json`, `src/utils/locus.py`, [p0-validation.md](../python/p0-validation.md) §4.3, [modules/config.md](../python/modules/config.md) §5 — each already derived from source. See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict
