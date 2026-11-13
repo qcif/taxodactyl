@@ -1,7 +1,7 @@
 allowed_loci_file: config/loci.json
 flag_details_csv_path: config/flags.csv
 placeholder_img_path: src/report/static/img/placeholder.png
-taxdb_dir: /home/cameron/.taxonkit
+taxdb_dir: ~/.taxonkit
 timestamp_filename: timestamp.txt
 accessions_filename: accessions.txt
 taxonomy_file: taxonomy.csv
