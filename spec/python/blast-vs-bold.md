@@ -80,6 +80,7 @@ each already derived from source. See
 file adds no new facts; it is a navigational aid. If it drifts from the
 files it summarises, those files are authoritative.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

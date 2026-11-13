@@ -182,6 +182,7 @@ nf-test asserts the number of HTML files produced.
 
 **Initially derived from:** `p6_report.py` (93), `src/report/report.py` (476), `src/report/outcomes.py`, `src/report/filters/css_hash.py`, `src/utils/flags.py` (`Flag.read`), `src/report/templates/**` (1,552 lines of Jinja2), `src/report/static/**`. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

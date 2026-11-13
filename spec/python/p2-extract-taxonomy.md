@@ -77,6 +77,7 @@ malformed stdout.
 
 **Initially derived from:** `p2_extract_taxonomy.py` (88), `src/taxonomy/extract.py` (352), `tests/test_taxonkit.py`, `tests/test-data/taxonkit.stdout`. §3.2 brought forward to `2e024f6` from the diff of `cd6e10d` (`src/taxonomy/extract.py`, now 378 lines). See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.

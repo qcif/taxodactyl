@@ -243,6 +243,7 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 
 **Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. Brought forward to `2e024f6` from the diffs of `2decc0c` (`src/gbif/api.py` new; `relatives.py`, `maps.py`, `taxonomy.py`, `coverage/assess.py`, `config.py`; `tests/test_gbif.py`; `scripts/tasks/01-gbif-api-refactor.md`) and `cd6e10d`. See [README.md Version](../README.md#version) for the exact commit.
 
-This spec is the source of truth from this point on: when the code and
-this document disagree, change the code to match the spec — not the
-other way around.
+This spec describes the intended behaviour. If the agent identifies a
+suspected error, ambiguity, or inconsistency in the spec, including a conflict
+with existing code, it must explain the concern to the user and agree on a
+resolution before changing the affected code or spec.
