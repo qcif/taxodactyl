@@ -120,7 +120,7 @@ test/run**. Items marked *to confirm* depend on external tool behaviour.
 | SVC-D-005 | validation service | "Validated" input can still fail in the pipeline (taxdb, limits in force). | [services/input-validation.md](services/input-validation.md) | — | v1 |
 | OUT-D-001 | outputs | No machine-readable per-query result is published (flags, coverage, sources, errors stay in work dir). | [contracts/outputs.md](contracts/outputs.md) | — | v1 |
 | DEP-D-001 | release | Only `scripts/VERSION` is checked against the release tag; 4 other version locations can drift. | [deployment.md](deployment.md) | — | v1 |
-| DEP-D-002 | release | `docker_build.sh` always pushes `latest`; `Dockerfile.update` builds on `latest`. | [deployment.md](deployment.md) | — | v1 |
+| DEP-D-002 | release | `docker_build.sh` always re-tags `latest` locally and pushes it with `-p` (every CI release); `Dockerfile.update` builds on `latest`. | [deployment.md](deployment.md) | — | v1 |
 | DEP-D-008 | deployment | `.env.sample` specifies Ubuntu 24.04 for Azure Batch nodes; the committed pool-setup template and every `docs/azure/*.md` walkthrough consistently specify Ubuntu 20.04 (chosen there for "Docker container compatibility"). Following `.env.sample` as instructed provisions a pool on the OS none of the docs or templates were written for. *To confirm which side is stale.* | [deployment.md §6](deployment.md) | — | v1 |
 | DEP-D-003 | image | Image not reproducible (floating base + taxonkit `latest`). Same as IMG-D-001. | [deployment.md](deployment.md) | — | v1 |
 | TST-G-001 | testing | No test of a `1E` (no-candidate) query — the case most exposed to report suppression (`OUT-D-002`) and `P3-D-001` (an empty phylogeny FASTA that can fail `FastME`). | [tests.md](tests.md) | — | v1 |

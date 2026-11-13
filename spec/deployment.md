@@ -91,7 +91,7 @@ Azure Batch deployment of this pipeline, not just DAFF's:
 | ID | Severity | Defect |
 |---|---|---|
 | DEP-D-001 | Medium | Release consistency is checked only for `scripts/VERSION` vs the tag; the other four version locations can drift silently (e.g. image tag ≠ code). |
-| DEP-D-002 | Medium | `docker_build.sh` always pushes `latest`, and `Dockerfile.update` derives from `latest`, so a code-only update can be layered on a different base than the versioned tag intended. |
+| DEP-D-002 | Medium | `docker_build.sh` always re-tags `latest` locally and, with `-p` (every CI release), pushes it to Docker Hub, and `Dockerfile.update` derives from `latest`, so a code-only update can be layered on a different base than the versioned tag intended. |
 | DEP-D-003 | Medium | `Dockerfile` is not reproducible: floating `python:3.12` base and taxonkit from `releases/latest` (IMG-D-001); `apt install nano less` in production. |
 | DEP-D-005 | Low | `run-taxodactyl.sh` uses `set -e` before `exit_code=$?`, so a failed run exits before the failure message. |
 | DEP-D-006 | Low | Azure account names, pool, region and `/mnt/nvme/refdata` are hard-coded in `conf/azure.config`; a second tenant needs a fork or edit. |

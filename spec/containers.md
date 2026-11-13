@@ -54,22 +54,31 @@ RUN mkdir -p /var/lib/taxodactyl/
   in-container as `python /app/scripts/<pN_*.py>` (`NF-PR-003`) — there is
   no separate "deploy the code" step; the image *is* the code.
 
-**Build and push** (`scripts/docker_build.sh`):
+**Build, and optionally push** (`scripts/docker_build.sh`):
 
 ```bash
 docker build -t $IMAGE:$TAG -f $DOCKERFILE .
-docker tag $IMAGE:$TAG $IMAGE:latest     # always, unconditionally
-if [ "$PUSH" = true ]; then
+docker tag $IMAGE:$TAG $IMAGE:latest     # always, but local only
+if [ "$PUSH" = true ]; then              # PUSH=false unless -p
   docker push $IMAGE:$TAG
   docker push $IMAGE:latest              # both tags pushed together
 fi
 ```
 
-Run manually as `./docker_build.sh -t <tag> -p`. If `-t` is omitted, it
-reads `scripts/VERSION`, prompts "Have you updated the VERSION file?",
-and uses `v$(cat VERSION)` as the tag. Every build — manual or CI — tags
-and pushes `:latest` alongside the versioned tag, unconditionally; this
-is `DEP-D-002`'s root cause, not a separate bug.
+Run manually as `./docker_build.sh -t <tag>` to build locally, adding
+`-p` to also publish to Docker Hub. If `-t` is omitted, it reads
+`scripts/VERSION`, prompts "Have you updated the VERSION file?", and
+uses `v$(cat VERSION)` as the tag.
+
+- **Every build** tags the new image `:latest` **locally**,
+  unconditionally. Without `-p` nothing is pushed and Docker Hub is
+  unchanged.
+- **With `-p`** (always the case in CI, below), both the versioned tag
+  and `:latest` are pushed, so every published build moves Docker Hub's
+  `:latest`.
+
+Both behaviours feed `DEP-D-002`; they are its root cause, not separate
+bugs.
 
 **CI** (`.github/workflows/build.yml`, triggered on a published GitHub
 release):
