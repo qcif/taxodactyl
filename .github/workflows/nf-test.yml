@@ -53,7 +53,7 @@ jobs:
 
       # Ensure container with latest commit to main is pulled
       - name: Force pull latest Docker image
-        run: docker pull neoformit/taxodactyl:main
+        run: docker pull neoformit/taxodactyl:latest
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
