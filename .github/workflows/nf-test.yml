@@ -51,6 +51,10 @@ jobs:
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v7
 
+      # Ensure container with latest commit to main is pulled
+      - name: Force pull latest Docker image
+        run: docker pull --force neoformit/taxodactyl:main
+
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
       # (later versions use stricter syntax parsing)
