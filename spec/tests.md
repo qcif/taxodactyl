@@ -23,6 +23,19 @@ hand.
 
 ## 2. Surface details
 
+### Entry-point startup regression
+
+Run `bash test/startup/test_initialisation.sh` to verify NF-WF-013 and
+NF-WF-015 through `main.nf`. It requires Nextflow and the configured plugins
+but no reference databases or analysis containers. It checks explicit BOLD,
+the unchanged BOLD test profile, BOLD precedence over coverage checks, and
+BOLD rejection with schema validation disabled. BLAST cases check the
+existing missing-database and coverage errors, followed by a successful
+`-preview` startup. Preview verifies workflow construction, not analysis.
+Every case uses isolated paths and checks for zero scheduled processes;
+logs, trace files (when emitted), and exit statuses are retained in the
+temporary evidence directory printed by the script. This check is manual.
+
 ### 2.1 Unit tests
 
 14 modules: `test_blast_parser`, `test_cache`, `test_cache_azure`,

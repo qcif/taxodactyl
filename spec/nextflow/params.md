@@ -17,7 +17,7 @@ determined from code, not from schema descriptions.
 | `metadata` | path, none (required) | `.csv`, exists | `PREPARE_INPUTS` |
 | `sequences` | path, none | fasta ext, exists | `PREPARE_INPUTS` (absent ⇒ P0 reads `sequence` column) |
 | `outdir` | dir, `output` | — | publishDir everywhere; bind mounts; trace/report paths |
-| `db_type` | enum, `blast_core_nt` | `blast_core_nt`\|`bold` | branch (NF-WF-030); `--bold` on P0/P3/P5/P6 |
+| `db_type` | enum, `blast_core_nt` | `blast_core_nt`\|`bold` | `bold` remains recognized but is temporarily blocked during initialization (NF-WF-015); use `blast_core_nt` with `blastdb`. |
 | `blastdb` | path, none | required if `blast_core_nt` (NF-WF-013) | `BLAST_BLASTN`, `BLAST_BLASTDBCMD` |
 | `taxdb` | dir, none (schema-required) | — | bind; P0 `--taxdb-dir`; env `TAXONKIT_DATA` |
 | `blast_xml` | path, none | `.xml`, exists | `MOCK_BLASTN` only (with `mock_blast`) |
@@ -119,7 +119,7 @@ directives hard-code `mode: 'copy'` — already tracked as `OUT-D-003`,
 | NF-D-004 | `phylogeny_min_hit_identity` has no effect. |
 | NF-D-007 | Schema `errorMessage` texts drift from defaults: `phylogeny_min_hit_identity` says "Default: 0.95" (actual 0.935); `phylogeny_max_seqs` says "Default: 10" (actual 50). |
 | NF-D-008 | `analyst_name`, `facility_name`, `blast_xml`, `allowed_loci_file`-related placeholders are absent from `params.config`; they rely on Nextflow returning `null` for undefined params. |
-| NF-D-009 | `conf/test.config` (`-profile test`) sets `db_type = 'bold'`, which cannot run (NF-D-002). |
+| NF-D-009 | `conf/test.config` (`-profile test`) sets `db_type = 'bold'`, now intentionally rejected during initialization (NF-WF-015). A supported smoke profile is tracked by task 02_test_profile_small_core; the underlying BOLD defects (NF-D-002) remain unresolved. |
 | NF-D-010 | Schema's `taxdb` is required, but `params.config` default is `null` and the schema description does not state it is required for BOLD too (P0 always needs it). |
 
 ---

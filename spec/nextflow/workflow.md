@@ -47,6 +47,7 @@ logic**; every analytical decision is made inside the Python entrypoints
 | NF-WF-012 | The workflow MUST attempt to create `params.temp_root_dir`; failure MUST warn only. |
 | NF-WF-013 | `PIPELINE_INITIALISATION` MUST fail the run (before any process) if: `db_type == blast_core_nt` and `blastdb` is unset/empty; `db_cov_min_a <= db_cov_min_b`; or `db_cov_related_min_a <= db_cov_related_min_b`. |
 | NF-WF-014 | `PIPELINE_INITIALISATION` MUST honour `--version` (print `<name> v<version>[-g<sha7>]` and exit 0), validate params against `nextflow_schema.json` when `validate_params` is true, and, under `conda`/`mamba` profiles, warn on missing `conda-forge`/`bioconda` channel ordering. |
+| NF-WF-015 | `PIPELINE_INITIALISATION` MUST reject `db_type == 'bold'` in custom parameter validation, before the BLAST-database and coverage-threshold checks and before any process is scheduled. The error MUST state that `--db_type bold` is temporarily disabled and direct users to `--db_type blast_core_nt` with `--blastdb`. The parameter remains recognized; repair or retirement remains open under D-01. |
 
 Note: `metadata` is passed to `PIPELINE_INITIALISATION` but not used inside
 it; sample-sheet content validation is **not** performed in Nextflow (see
@@ -106,7 +107,7 @@ rely on the placeholder path.
 
 | ID | Requirement |
 |---|---|
-| NF-WF-030 | `params.db_type == 'bold'` MUST select the BOLD branch; any other value MUST select the BLAST branch. (`nextflow_schema.json` restricts values to `blast_core_nt`, `bold`.) |
+| NF-WF-030 | Within `TAXODACTYL`, `params.db_type == 'bold'` selects the retained BOLD branch; any other value selects BLAST. The pipeline entry point rejects BOLD before invoking this workflow (NF-WF-015). (`nextflow_schema.json` restricts values to `blast_core_nt`, `bold`.) |
 | NF-WF-031 | BLAST branch: if `params.mock_blast && params.blast_xml` then `MOCK_BLASTN(ch_sequences, ready, file(params.blast_xml))` MUST replace `BLAST_BLASTN`; otherwise `BLAST_BLASTN(ch_sequences, ready)` runs. `mock_blast` without `blast_xml` silently runs real BLAST. |
 | NF-WF-032 | BLAST branch: `EXTRACT_HITS(blast_xml, sequences, metadata)` MUST run once for the whole run; its three per-query output lists MUST be `flatten()`ed, keyed by `file.parent.name`, and `groupTuple()`d into `[query_folder, [hits.fasta, hits.json, query_title.txt]]`. |
 | NF-WF-033 | BLAST branch: `BLAST_BLASTDBCMD(hits_accessions)` then `EXTRACT_TAXONOMY(taxids.csv, sequences, metadata)`; the taxonomy file becomes a value channel via `.first()`. |
@@ -121,11 +122,12 @@ faults, either sufficient on its own:
    `[query_folder, files]` as the BLAST branch is, but
    `EXTRACT_CANDIDATES` declares `tuple val(query_folder), path(...)` input.
 
-This matches the live README caution that BOLD is "not operational", and
-`conf/test.config` (`-profile test`) sets `db_type = 'bold'`, so the
-default test profile cannot succeed. Any BOLD work MUST start by fixing
-these two faults. All BOLD-specific statements in this spec describe the
-process/script contracts, not an end-to-end verified run.
+These faults remain unresolved. The pipeline now intentionally rejects BOLD
+during initialization (NF-WF-015); `conf/test.config` (`-profile test`)
+still selects BOLD and therefore exercises that guard. Restoring BOLD
+execution requires resolving D-01 and these faults. BOLD-specific statements
+below describe the retained process/script contracts, not an end-to-end
+verified run.
 
 ### 4.3 Candidate extraction and per-query fan-out
 

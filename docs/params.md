@@ -10,7 +10,7 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 |----------------|---------|-------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | `analyst_name` | string  |                   | Name of the analyst running the workflow.                                                        | Must be a string.                                                                             |
 | `blast_xml`    | string  |                   | Path to a pre-existing BLAST XML results file to skip the BLAST search step.                     | Must be a valid file path, `.xml` extension.                                                  |
-| `db_type`      | string  | 'blast_core_nt'   | Type of reference database to use for taxonomic assignment. Allowed: `blast_core_nt`, `bold`.     | Must be one of `blast_core_nt`, `bold`. Default: `blast_core_nt`.                             |
+| `db_type` | string | 'blast_core_nt' | Reference database. `bold` remains recognized but execution is temporarily blocked during initialization. | Use `blast_core_nt` with `blastdb` for supported execution. |
 | `facility_name`| string  |                   | Name of the facility where the workflow is executed.                                             | Must be a string.                                                                             |
 | `metadata`     | string  | 'metadata.csv'    | CSV file containing sample metadata. Required columns: `sample_id`, `locus`, `preliminary_id`. Optional columns include `country` (if unknown, leave empty; do not use `NA`) and `classification` (one of `animalia`, `plantae`, `fungi`, `chromista`, `bacteria`, `archaea`, `viruses`).  | Must be a valid CSV file path, no spaces, `.csv` extension, required columns.                 |
 | `outdir`       | string  | 'output'          | Directory where output files will be saved.                                                      | Must be a valid directory path. Default: `output`.                                            |
@@ -37,6 +37,11 @@ This document describes the parameters available for the **qcif/taxodactyl** Nex
 ---
 
 ### Search BOLD database
+
+BOLD execution (`--db_type bold`) is temporarily disabled and rejected during
+pipeline initialization before any process is scheduled. These parameters
+remain recognized for the retained implementation. Use `--db_type blast_core_nt`
+with `--blastdb` for supported execution.
 
 | Name                  | Type    | Default | Description                                                                                      | Requirements                        |
 |-----------------------|---------|---------|--------------------------------------------------------------------------------------------------|--------------------------------------|

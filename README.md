@@ -15,7 +15,7 @@
 </p>
 
 > [!CAUTION]
-> The BOLD database search functionality is currently not operational. Please use the BLAST Core Nucleotide Database option instead.
+> BOLD execution (`--db_type bold`) is temporarily disabled. The pipeline rejects this mode during initialization, before any process is scheduled. Use `--db_type blast_core_nt` with `--blastdb` pointing to a BLAST Core Nt database. This is an intentional operational block while the BOLD repair-or-retire decision remains open.
 
 ### Quick links
 
@@ -36,7 +36,7 @@ The pipeline orchestrates a series of analytical steps, each encapsulated in a d
 
 3. **Sequence Search**
    - **[BLAST Core Nucleotide Database](https://ncbiinsights.ncbi.nlm.nih.gov/2024/07/18/new-blast-core-nucleotide-database/) ([BLASTN](https://blast.ncbi.nlm.nih.gov/Blast.cgi)):** Queries input sequences against the NCBI nucleotide database using BLASTN.
-   - **[BOLD v4](https://v4.boldsystems.org/) ([API](https://v4.boldsystems.org/index.php/api_home)):** Queries input sequences against the Barcode of Life Data Systems. Taxonomic lineage included in the results.
+   - **[BOLD v4](https://v4.boldsystems.org/) ([API](https://v4.boldsystems.org/index.php/api_home)):** Retained implementation for Barcode of Life Data Systems searches; execution is temporarily blocked during initialization.
 
 4. **Hit Extraction** Parses BLAST results to extract relevant hits for each query.
 
@@ -169,7 +169,7 @@ The metadata file provides essential information about each sequence and must fo
 2. **preliminary_id** - Preliminary morphology ID of the sample.
 3. **locus** - Name of the genetic locus for the sample, which must be in the [list of permitted loci](https://qcif.github.io/taxodactyl/allowed-loci.html). If deliberately providing no locus, the value `NA` is also accepted.
 > [!NOTE]
-> - By default, `COX1_SPECIES_PUBLIC`  (all published COI records from BOLD and GenBank with a minimum sequence length of 500bp) is used for BOLD search, so the locus from metadata will be ignored when `db_type = bold`.
+> - BOLD execution is temporarily blocked. The retained implementation defaults to `COX1_SPECIES_PUBLIC` (published COI records from BOLD and GenBank with a minimum sequence length of 500bp) and ignores the metadata locus in BOLD mode.
 > - You can modify the BOLD database by changing the `bold_database_name` parameter (see [docs/params.md](docs/params.md)). However, we have not tested other BOLD databases besides `COX1_SPECIES_PUBLIC`.
 > - Loci synonyms will be checked as well (see [`scripts/config/loci.json`](scripts/config/loci.json)).
 > - If you need to modify which loci and synonyms are permitted, see the [technical documentation](docs/detailed_tech.md).

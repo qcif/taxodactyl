@@ -1,6 +1,6 @@
 # Task 01 — Block taxodactyl execution against BOLD
 
-**Status:** active
+**Status:** completed (awaiting merge)
 
 **Priority:** P1
 
@@ -115,3 +115,37 @@ BOLD guard rather than a configuration, plugin, or missing-input error.
 
 Removing this guard requires an explicit decision on whether BOLD will be
 repaired or retired, as recorded in `spec/decisions.md` D-01.
+
+## Outcomes
+
+- Implemented the BOLD rejection at the start of `validateInputParameters()`.
+  It identifies the temporary block and directs users to `--db_type
+  blast_core_nt` with `--blastdb`. Existing BLAST checks and initialization
+  order are unchanged, as is `conf/test.config`.
+- Updated README, parameter documentation, documentation index, workflow and
+  parameter specifications, and D-01. Also reconciled the test-profile
+  specification and documented the startup regression suite in `spec/tests.md`.
+  D-01 remains open; no BOLD repair or retirement was attempted.
+- Added `test/startup/test_initialisation.sh`. All eight entry-point cases
+  passed using Nextflow 25.04.6: explicit BOLD, BOLD test profile, BOLD before
+  coverage validation, BOLD with schema validation disabled, BLAST missing
+  database, BLAST coverage threshold, BLAST related-coverage threshold, and
+  successful BLAST startup in preview mode. Each case verified zero process
+  submissions, trace task rows, and process command scripts.
+- Validation command: `bash test/startup/test_initialisation.sh`.
+  Logs, exit statuses, and trace evidence are retained at
+  `/tmp/taxodactyl-startup.FuIMwt` in the implementation environment.
+  BLAST preview confirms startup/workflow construction only; full BLAST
+  analysis and the Core nf-test scenario were not run. Reference databases
+  and analysis containers were not needed for these startup tests.
+- `nextflow lint subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`
+  passed with four existing unused-variable warnings across included files.
+  Shell syntax and `git diff --check` passed.
+- Added `.worktrees/` to `.gitignore` for the isolated implementation
+  worktree. Existing Docker ignore coverage was inspected; no change needed.
+- No extension hooks or applicable feature checklists were present.
+- Branch: `task-01-block-taxodactyl-bold`.
+  Worktree: `.worktrees/task-01-block-taxodactyl-bold`.
+  The source-worktree active entry remains until the user merges the branch.
+- Follow-up: task 02_test_profile_small_core provides the supported smoke
+  profile using manually provisioned references; its brief is unchanged.

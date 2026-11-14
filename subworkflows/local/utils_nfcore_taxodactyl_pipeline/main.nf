@@ -120,6 +120,10 @@ workflow PIPELINE_COMPLETION {
 
 def validateInputParameters() {
 
+    if (params.db_type == 'bold') {
+        error("BOLD execution (--db_type bold) is temporarily disabled. Use --db_type blast_core_nt with --blastdb pointing to a BLAST Core Nt database.")
+    }
+
     if (params.db_type == "blast_core_nt" && !params.blastdb) {
         error("'blastdb' parameter must be set when using blast_core_nt database type. 'blastdb' must be a valid path to BLAST database files, and needs to end with 'core_nt', e.g. '/folder_path/blast_db/202505/core_nt'. The folder should contain files with the core_nt prefix and extensions: .nal, .ndb, .njs, .nos, .not, .ntf, .nto. In addition, it should contain multiple volumes of core_nt, named core_nt.NUM with extensions .nhr, .nin, .nnd, .nni, .nog and .nsq.")
     }
