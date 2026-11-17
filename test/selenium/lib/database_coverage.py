@@ -16,6 +16,7 @@ from lib.schema import GROUPED_COMPONENTS
 
 SUMMARY_TAB_ID = "results-summary-tab"
 SUMMARY_PANE_ID = "results-summary"
+FLAG_LABEL_PREFIX = "Flag "
 
 # These fields are counts pulled from GenBank, which is not a static
 # resource - records are added/removed between workflow runs. Allow +/-10%
@@ -34,13 +35,19 @@ def _find_text(modal, css_selector, default=""):
     return elements[0].text.strip() if elements else default
 
 
-def _flag_text(modal, *css_selectors):
+def _flag_text(scope, *css_selectors):
+    """Return the flag code (e.g. '5.1A') from the first alert in `scope`
+    whose <strong> label starts with 'Flag'. Other alerts (e.g. the
+    'Warning: no locus provided' banner, or the 'No database coverage
+    information' notice, which has no <strong>) are skipped."""
     for selector in css_selectors:
-        elements = modal.find_elements(By.CSS_SELECTOR, selector)
-        if elements:
-            flag_text = elements[0].find_element(
-                By.TAG_NAME, "strong").text.strip()
-            return flag_text.replace("Flag ", "").replace(":", "")
+        for element in scope.find_elements(By.CSS_SELECTOR, selector):
+            strongs = element.find_elements(By.TAG_NAME, "strong")
+            if not strongs:
+                continue
+            label = strongs[0].text.strip()
+            if label.startswith(FLAG_LABEL_PREFIX):
+                return label.replace(FLAG_LABEL_PREFIX, "").replace(":", "")
     return ""
 
 
@@ -92,7 +99,7 @@ class CoverageRowCollector:
     def _target_scope(self, modal):
         target = modal.find_elements(
             By.CSS_SELECTOR, "div[id^='dbCovTarget']")
-        return target[0] if target else modal
+        return target[0] if target else None
 
     def _related_scope(self, modal):
         related = modal.find_elements(
@@ -103,7 +110,12 @@ class CoverageRowCollector:
         return [_find_text(modal, "h5.modal-title")]
 
     def _extract_flag_text1(self, modal):
-        return [_flag_text(self._target_scope(modal), "p.alert")]
+        # No target section when the target couldn't be evaluated (e.g. no
+        # GBIF record) - don't fall back to modal-level alerts.
+        target = self._target_scope(modal)
+        if target is None:
+            return [""]
+        return [_flag_text(target, "p.alert")]
 
     def _extract_record_count(self, modal):
         return [str(_big_number(modal))]
