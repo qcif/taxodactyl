@@ -9,3 +9,9 @@ an empty list.
 One bullet per item: what needs doing and why, its origin
 (`task NN_short_name`, issue) and the date.
 
+- Remove the now-unreachable `KINGDOM_TAXA` query rewrite in
+  `RelatedTaxaGBIF._get_taxon_record` (`scripts/src/gbif/relatives.py`):
+  root names are stopped before any lookup, so the rewrite, and the
+  "protozoa → protista" half of P5-D-009, no longer affect any target.
+  Update P5-D-009 and P5-010 to match. Origin: task 07_kingdom_targets_not_assessed,
+  #354, 2026-11-18.

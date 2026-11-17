@@ -26,6 +26,11 @@ logger = logging.getLogger(__name__)
 config = Config()
 
 MODULE_NAME = "Database Coverage"
+ROOT_TAXON_NOT_ASSESSED_MSG = (
+    "Database coverage is not assessed for taxa at kingdom or domain rank"
+    " ({target}), because they are too broad for this analysis to be"
+    " meaningful."
+)
 
 
 def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
@@ -95,7 +100,8 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     }.union({
         # Extract those for which no GBIF record was found
         t for t in targets
-        if t not in [
+        if t not in target_records.root_taxa
+        and t not in [
             r.taxon
             for r in target_records.all_taxa.values()
         ] + [
@@ -143,7 +149,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         if target in target_records.higher_taxa
     ]
 
-    if not (len(tasks) + len(unknown_taxa)):
+    if not (
+        len(tasks)
+        + len(unknown_taxa)
+        + len(target_records.root_taxa)
+    ):
         raise ValueError(
             "No tasks created for database coverage assessment. This likely"
             " indicates a bug in the code - please report this issue.")
@@ -171,6 +181,16 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
                     'related': None,
                     'country': None,
                 }
+    for taxon in target_records.root_taxa:
+        for target_type, targets in original_targets.items():
+            if taxon in targets:
+                results[target_type][taxon] = {
+                    'target': None,
+                    'related': None,
+                    'country': None,
+                    'not_assessed': ROOT_TAXON_NOT_ASSESSED_MSG.format(
+                        target=taxon),
+                }
 
     # Rename synonyms back to original target names
     reindexed_results = {
@@ -187,6 +207,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         reindexed_results,
         query_dir,
         target_records.original_higher_taxa,
+        root_taxa=target_records.root_taxa,
     )
     results = {
         'coverage': reindexed_results,
@@ -204,7 +225,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
             for taxon in target_records.original_taxa
         },
     }
-    for taxon in unknown_taxa:
+    for taxon in [*unknown_taxa, *target_records.root_taxa]:
         results['ncbi_urls'][taxon] = {
             'blast': None,
             'taxonomy': None,
@@ -309,15 +330,25 @@ def failed_coverage(query_dir, exc: Exception):
             taxon: {'target': None, 'related': None, 'country': None},
         },
     }
-    _set_flags(coverage, query_dir, {})
+    _set_flags(coverage, query_dir, {}, root_taxa=[])
     return {
         'coverage': coverage,
         'ncbi_urls': {taxon: {'blast': None, 'taxonomy': None}},
     }
 
 
-def _set_flags(db_coverage, query_dir, higher_target_gbif_records):
-    """Set flags 5.1 - 5.3 (DB coverage) for each target."""
+def _set_flags(
+    db_coverage,
+    query_dir,
+    higher_target_gbif_records,
+    root_taxa=(),
+):
+    """Set flags 5.1 - 5.3 (DB coverage) for each target.
+
+    Targets in `higher_target_gbif_records` (family to phylum) and
+    `root_taxa` (kingdom, domain or COL root) are not assessed, so all three
+    flags are NA for them.
+    """
     def set_target_coverage_flag(
         target,
         target_type,
@@ -440,24 +471,28 @@ def _set_flags(db_coverage, query_dir, higher_target_gbif_records):
 
     for target_type, target_data in db_coverage.items():
         for target_species, coverage_data in target_data.items():
+            not_assessed = (
+                target_species in higher_target_gbif_records
+                or target_species in root_taxa
+            )
             try:
                 set_target_coverage_flag(
                     target_species,
                     target_type,
                     coverage_data['target'],
-                    higher_taxon=target_species in higher_target_gbif_records,
+                    higher_taxon=not_assessed,
                 )
                 set_related_coverage_flag(
                     target_species,
                     target_type,
                     coverage_data['related'],
-                    higher_taxon=target_species in higher_target_gbif_records,
+                    higher_taxon=not_assessed,
                 )
                 set_country_coverage_flag(
                     target_species,
                     target_type,
                     coverage_data['country'],
-                    higher_taxon=target_species in higher_target_gbif_records,
+                    higher_taxon=not_assessed,
                 )
             except Exception as exc:
                 raise RuntimeError(

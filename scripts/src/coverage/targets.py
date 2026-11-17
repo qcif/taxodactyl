@@ -4,7 +4,13 @@ import logging
 from pprint import pformat
 from dataclasses import dataclass
 
-from src.gbif.relatives import GBIFRecordNotFound, RANK, RelatedTaxaGBIF
+from src.gbif.relatives import (
+    GBIFRecordNotFound,
+    RANK,
+    ROOT_RANKS,
+    RelatedTaxaGBIF,
+    is_root_taxon,
+)
 from src.taxonomy import extract
 from src.utils import errors
 from src.utils.config import Config
@@ -27,6 +33,11 @@ class TargetGbifRecords:
 
     `original_to_canonical` / `canonical_to_original` are inverse
     translation maps for renaming between the two name-spaces.
+
+    `root_taxa` holds the original names of targets at kingdom, domain or
+    COL-root level (e.g. "Fungi", "Viruses"), in input order without
+    duplicates. These are too broad for database coverage, so they are not
+    assessed and are absent from every other field.
     """
 
     original_to_canonical: dict[str, str]
@@ -37,6 +48,7 @@ class TargetGbifRecords:
     original_taxa: dict[str, RelatedTaxaGBIF]         # keyed by original
     original_lower_taxa: dict[str, RelatedTaxaGBIF]   # keyed by original
     original_higher_taxa: dict[str, RelatedTaxaGBIF]  # keyed by original
+    root_taxa: list[str]
 
 
 def _read_candidate_species(query_dir):
@@ -85,6 +97,9 @@ def get_taxids(target_gbif_records, query_dir):
         t.canonical_name
         for t in target_gbif_records.values()
     ]
+    if not targets:
+        # e.g. every target is a root taxon - nothing to look up
+        return {}
     classification = config.get_classification_for_query(query_dir)
     target_taxids = extract.taxids(targets, classification=classification)
     if not all(target_taxids.values()):
@@ -118,8 +133,19 @@ def fetch_target_taxa(targets, query_dir):
     higher_target_gbif_records = {}  # Taxa at rank 'family' or higher
     original_lower_taxa = {}
     original_higher_taxa = {}
+    root_taxa = []
+
+    def add_root_taxon(target, detail=''):
+        if target not in root_taxa:
+            root_taxa.append(target)
+        logger.info(
+            f"Target taxon '{target}' is at kingdom, domain or root level"
+            f"{detail}. Database coverage will not be assessed for it.")
 
     for target in targets:
+        if is_root_taxon(target):
+            add_root_taxon(target)
+            continue
         try:
             gbif_target = RelatedTaxaGBIF(
                 target,
@@ -136,6 +162,15 @@ def fetch_target_taxa(targets, query_dir):
                 exc=exc,
                 query_dir=query_dir,
                 context={"target": target},
+            )
+            continue
+
+        if gbif_target.rank in ROOT_RANKS:
+            add_root_taxon(
+                target,
+                f" (GBIF key {gbif_target.key}:"
+                f" '{gbif_target.canonical_name}',"
+                f" rank {RANK.to_string(gbif_target.rank)})",
             )
             continue
 
@@ -217,4 +252,5 @@ def fetch_target_taxa(targets, query_dir):
         original_lower_taxa=original_lower_taxa,
         original_higher_taxa=original_higher_taxa,
         original_taxa={**original_lower_taxa, **original_higher_taxa},
+        root_taxa=root_taxa,
     )

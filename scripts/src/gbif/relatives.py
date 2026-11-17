@@ -114,6 +114,16 @@ class RANK:
         return None
 
 
+# Ranks of COL root taxa (kingdoms, domains and unranked roots such as
+# Viruses). Targets at these ranks are too broad for database coverage.
+ROOT_RANKS = {RANK.KINGDOM, RANK.DOMAIN, RANK.UNRANKED}
+
+
+def is_root_taxon(name: str) -> bool:
+    """Return True if the name is a kingdom, domain or COL root taxon."""
+    return name.strip().lower() in KINGDOM_TAXA
+
+
 class RelatedTaxaGBIF:
     """Fetch taxonomic relatives for a given taxon from GBIF API.
 

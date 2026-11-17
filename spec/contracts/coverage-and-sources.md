@@ -13,7 +13,8 @@
       "target":  <int | null>,
       "related": { "<species>": <int|null> } | {} | null,
       "country": { "<species>": <int> } | {} | "NA" | null,
-      "genus":   "<string, only if a GBIF record was found>" } } },
+      "genus":   "<string, only if a GBIF record was found>",
+      "not_assessed": "<message, only for root targets (COV-005)>" } } },
   "ncbi_urls": { "<target>": {"blast": <url|null>, "taxonomy": <url|null>} } }
 ```
 
@@ -22,7 +23,8 @@
 | COV-001 | All three target-type keys are present (possibly empty). |
 | COV-002 | A target with no GBIF record has `target/related/country = null`. Higher-rank targets have `related` and `country` `null` and `target` = a record count. |
 | COV-003 | When country coverage is calculated, `country` is the literal string `"NA"` if the query has no country. Higher-rank targets, unresolved taxa and failed lookups can instead have `country = null` even without a query country. In `metadata.csv`, "no country" is a *blank* cell; the literal text `NA` there resolves to Namibia (`P0-024`, `P0-D-011`). This token reuse is tracked as `P5-D-013`. |
-| COV-004 | `null` means "could not be determined", never "zero". Zero is `0`. (Exceptions: P5-D-005 records failed per-species counts as 0.) |
+| COV-004 | `null` means "could not be determined", never "zero". Zero is `0`. (Exceptions: P5-D-005 records failed per-species counts as 0; for a target with `not_assessed` (COV-005), `null` means "not assessed by design".) |
+| COV-005 | A root target (kingdom, domain or COL root, e.g. "Fungi", "Viruses"; `P5-015`) has `target/related/country = null` plus a `not_assessed` string explaining why it was not assessed. Its flags 5.1-5.3 are `NA` and no error is written for it. |
 
 ## 2. `aggregated_sources.json`
 
