@@ -23,6 +23,19 @@ _SENTINEL = object()
 
 FLAG_BADGE_PREFIX = "Flag "
 
+# Drift labels name the target taxon of each grouped row, e.g.
+# "database_coverage.min_bar_count (Homo sapiens)". Coverage rows take the
+# taxon from the modal title; publication rows from the row name.
+COVERAGE_COMPONENT_ID = "database_coverage"
+PUBLICATION_COMPONENT_ID = "publication_modal"
+PUBLICATION_GROUP = "candidates"
+COVERAGE_TITLE_PREFIX = "Database coverage of "
+COVERAGE_ROLE_PREFIXES = (
+    "Preliminary Morphology ID ",
+    "Taxon of Interest ",
+    "Candidate ",
+)
+
 # Workflow output: `[<prefix>_]report_<sample_id>_<YYYY-MM-DD>_...`.
 # Reference HTMLs (expected/reports/): shorter `<prefix>_<sample_id>.html`.
 # The sample_id may itself contain underscores (e.g. VE24-1351_COI), so we
@@ -178,6 +191,46 @@ class TabCollector(Collector):
         return open_tab(driver, self.tab_id, self.pane_id)
 
 
+def coverage_subject(title) -> Optional[str]:
+    """Return the target taxon from a database coverage modal title, e.g.
+    "Database coverage of Taxon of Interest Nicotiana tabacum" ->
+    "Nicotiana tabacum". Unrecognised titles are returned unchanged."""
+    if isinstance(title, (list, tuple)):
+        title = title[0] if title else None
+    if title is None:
+        return None
+    text = normalize_whitespace(str(title))
+    if not text:
+        return None
+    if text.startswith(COVERAGE_TITLE_PREFIX):
+        text = text[len(COVERAGE_TITLE_PREFIX):]
+    for prefix in COVERAGE_ROLE_PREFIXES:
+        if text.startswith(prefix):
+            text = text[len(prefix):]
+            break
+    return text.strip() or None
+
+
+def _coverage_row_subject(ns) -> Optional[str]:
+    """Taxon for a coverage row, preferring the fixture's expected title so
+    the label matches the YAML a reviewer would edit."""
+    title = getattr(ns, "title", None)
+    if not isinstance(title, Assertion):
+        return None
+    return coverage_subject(title.expected) or coverage_subject(
+        title.observed)
+
+
+def _fallback_subject(group: str, index: int) -> str:
+    return f"{group} row {index + 1}"
+
+
+def _set_row_subject(ns, subject: str) -> None:
+    for a in vars(ns).values():
+        if isinstance(a, Assertion):
+            a.subject = subject
+
+
 class Assertion:
     """A single leaf in a Report: id, type, expected value, observed value.
 
@@ -202,6 +255,9 @@ class Assertion:
         # fixture is kept as fixture_flex so promote can detect changes.
         self.flex = None
         self.fixture_flex = None
+        # Target taxon of the grouped row this assertion belongs to; set by
+        # Report.annotate_subjects() and shown in drift labels.
+        self.subject: Optional[str] = None
 
         if assertion_data is None:
             if assertion_id is None or assertion_type is None:
@@ -224,6 +280,13 @@ class Assertion:
 
         self.label = self.assertion_id.replace("_", " ").strip()
         self.expected = self._parse_value()
+
+    @property
+    def display_id(self) -> str:
+        """`component.assertion_id`, followed by the row's target taxon in
+        parentheses when known."""
+        base = f"{self.component}.{self.assertion_id}"
+        return f"{base} ({self.subject})" if self.subject else base
 
     def set_observed(self, value: Any) -> None:
         self.observed = value
@@ -539,6 +602,29 @@ class Report:
                 if flex is not None:
                     assertion.flex = flex.get(key)
 
+    def annotate_subjects(self) -> None:
+        """Set `subject` (the target taxon) on every assertion in
+        database_coverage and publication_modal rows. Idempotent."""
+        coverage = getattr(self, COVERAGE_COMPONENT_ID, None)
+        if coverage is not None:
+            for group in GROUPED_COMPONENTS[COVERAGE_COMPONENT_ID]["groups"]:
+                for index, ns in enumerate(getattr(coverage, group, [])):
+                    subject = (
+                        _coverage_row_subject(ns)
+                        or _fallback_subject(group, index)
+                    )
+                    _set_row_subject(ns, subject)
+
+        publications = getattr(self, PUBLICATION_COMPONENT_ID, None)
+        if publications is not None:
+            rows = getattr(publications, PUBLICATION_GROUP, [])
+            for index, ns in enumerate(rows):
+                subject = (
+                    normalize_whitespace(getattr(ns, "_name", None))
+                    or _fallback_subject(PUBLICATION_GROUP, index)
+                )
+                _set_row_subject(ns, subject)
+
     def assert_all(self) -> None:
         drifted = self.drifted()
         if not drifted:
@@ -546,12 +632,13 @@ class Report:
         lines = ["Drifted assertions:"]
         for a in drifted:
             lines.append(
-                f"  [{a.component}.{a.assertion_id}] "
+                f"  [{a.display_id}] "
                 f"expected {a.expected!r}, observed {a.observed!r}"
             )
         raise AssertionError("\n".join(lines))
 
     def drifted(self, strict: bool = False) -> list:
+        self.annotate_subjects()
         return [
             a for a in self.iter_assertions()
             if a.is_drifted(strict=strict)

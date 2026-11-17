@@ -81,7 +81,7 @@ When drift is detected, the fastest review path is:
    ```
    Defaults to reading `./test-report.json` and writing `./review.html`. `--open` launches the page in your default browser.
 
-The page has a summary banner (total / passed / failed / errored), a results table, and an expanded card for each failing test showing the `component.field | type | expected | observed` matrix plus one-click "Open observed" / "Open reference" links to the two HTML reports.
+The page has a summary banner (total / passed / failed / errored), a results table, and an expanded card for each failing test showing the `component.field | type | expected | observed` matrix (rows for `database_coverage` and `publication_modal` name the target taxon, e.g. `database_coverage.min_bar_count (Homo sapiens)`) plus one-click "Open observed" / "Open reference" links to the two HTML reports.
 
 For iterating on the review page itself, a sample JSON with drift is checked in at `.testkit-fixtures/test-report.sample.json`. Render straight from it to skip a pytest run:
 

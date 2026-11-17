@@ -60,7 +60,7 @@ cannot pass (P1B-D-001..003).
 | ID | Requirement |
 |---|---|
 | TST-030 | Fixtures `test/selenium/expected/*.yaml` (20) describe, per sample id, the values a browser must find in the report (overview, candidates, TOIs, database coverage, sample metadata; collectors in `lib/`). Reports are matched to fixtures by `sample_id`. A further 3 fixtures live in `expected/test/`, each fixture directory keeping its reference HTMLs in a sibling `reports/`. |
-| TST-031 | `test/selenium/testkit.py render` builds a review page of differences; `promote` accepts drift into fixtures, backing up the previous YAML in `expected/.backups/` (last 3 kept). |
+| TST-031 | `test/selenium/testkit.py render` builds a review page of differences. Drift rows for `database_coverage` and `publication_modal` name the target taxon, taken from the coverage modal title or the candidate row name respectively; `promote` accepts drift into fixtures, backing up the previous YAML in `expected/.backups/` (last 3 kept). |
 | TST-032 | `--dir` is required so a run states whether it validates new output or the checked-in reference reports (`expected/reports`). |
 | TST-033 | Fields that come from live GenBank counts (`record_count`, `species_count`, `species_total`, `first_bar_count` in database coverage) carry a `flex` tolerance of ±10% (`GENBANK_FLEX_FIELDS`, `lib/database_coverage.py`). `pytest` passes a value within tolerance. `promote` still offers every difference, including ones within tolerance, so fixtures never silently drift. `flex` is set in code and stamped onto fixtures on ingest/promote; it is not edited by hand. |
 
