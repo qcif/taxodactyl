@@ -67,7 +67,7 @@
       <tr><th>Field</th><th>Type</th><th>Expected</th><th>Observed</th></tr>
       {% for d in r.drifted %}
       <tr>
-        <td><code style="white-space: nowrap;">{{ d.component | e }}.{{ d.assertion_id | e }}</code></td>
+        <td><code style="white-space: nowrap;">{{ d.component | e }}.{{ d.assertion_id | e }}{% if d.subject %} ({{ d.subject | e }}){% endif %}</code></td>
         <td>{{ d.type | e }}{% if d.flex %} ±{{ "%.0f"|format(d.flex * 100) }}%{% endif %}</td>
         <td><code>{{ d.expected | pretty | e }}</code></td>
         <td><code>{{ d.observed | pretty | e }}</code></td>

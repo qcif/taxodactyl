@@ -155,7 +155,7 @@ def promote_yaml(
         new_value = a.observed_for_yaml()
         flex_label = f" ±{a.flex:.0%}" if a.flex is not None else ""
         print(
-            f"\n  [{a.component}.{a.assertion_id}] "
+            f"\n  [{a.display_id}] "
             f"({a.assertion_type}{flex_label})"
         )
         print(f"    expected: {a.expected!r}")
