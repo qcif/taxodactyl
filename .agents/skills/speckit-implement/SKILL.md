@@ -302,9 +302,8 @@ Resolve all paths below relative to that worktree, not the main checkout.
 7. Commit the implementation, documentation, tests, and lifecycle changes
    together in the task worktree. Check the commit includes the completed
    brief and index changes, with no uncommitted task changes remaining.
-8. Report the commit, branch, worktree, completed brief path, tests, and merge
-   command to the user. Do not merge into main automatically.
-9. After the user merges the branch, verify the main worktree reflects the
+8. Report the commit, branch, worktree, completed brief path and tests to the user. Do not merge into main automatically, offer to open a pull-request in https://github.com/qcif/taxodactyl instead.
+9. After the user merges the branch (locally or via PR), verify the main worktree reflects the
    completed lifecycle and remove any remaining tracking entry for this task
    from its `tasks/active.md`. A pending merge does not keep the task active
    in the implementation worktree.
