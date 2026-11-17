@@ -83,7 +83,7 @@ when the repository has a top-level `tasks/` directory.
    numbered task filename. Read exactly one matching brief from
    `tasks/<NN>_*.md`. Check `tasks/todo.md` for related preconditions or
    follow-up items. If the task is planned, move its lifecycle state to active
-   and update the indexes before implementation.
+   and update the indexes before implementation. Commit active.md (your changes only) and the task file to `main` before proceeding.
 
 3. Create an isolated worktree before modifying repository files. Use a branch
    named `task-<NN>-<short_name>` and a worktree under
