@@ -1,5 +1,5 @@
 sample_id: barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -114,7 +114,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - ''
     - id: species_count
       type: list
       flex: 0.1
@@ -159,7 +159,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - ''
     - id: species_count
       type: list
       flex: 0.1

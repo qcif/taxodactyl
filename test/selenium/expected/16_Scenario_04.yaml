@@ -1,5 +1,5 @@
 sample_id: Scenario_04
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -123,17 +123,17 @@ components:
     - id: flag_text2
       type: list
       value:
-      - 5.2B
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - '15'
+      - '16'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '124'
+      - '182'
     - id: min_bar_count
       type: min
       value: '124'
@@ -168,17 +168,17 @@ components:
     - id: flag_text2
       type: list
       value:
-      - 5.2B
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - '15'
+      - '16'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '124'
+      - '182'
     - id: min_bar_count
       type: min
       value: '124'
@@ -212,17 +212,17 @@ components:
     - id: flag_text2
       type: list
       value:
-      - 5.2B
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - '15'
+      - '16'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '124'
+      - '182'
     - id: min_bar_count
       type: min
       value: '124'
@@ -256,17 +256,17 @@ components:
     - id: flag_text2
       type: list
       value:
-      - 5.2B
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - '15'
+      - '16'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '124'
+      - '182'
     - id: min_bar_count
       type: min
       value: '124'
@@ -301,17 +301,17 @@ components:
     - id: flag_text2
       type: list
       value:
-      - 5.2B
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - '15'
+      - '16'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '124'
+      - '182'
     - id: min_bar_count
       type: min
       value: '124'

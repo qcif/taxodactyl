@@ -1,5 +1,5 @@
 sample_id: barcode84_contig1_PE250203-B_REP1_KAPA
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -126,7 +126,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '23155'
+      - '23778'
     - id: flag_text2
       type: list
       value:
@@ -230,10 +230,10 @@ components:
       type: list
       flex: 0.1
       value:
-      - '33'
+      - '30'
     - id: min_bar_count
       type: min
-      value: '33'
+      value: '30'
     - id: first_bar_species
       type: list
       value:

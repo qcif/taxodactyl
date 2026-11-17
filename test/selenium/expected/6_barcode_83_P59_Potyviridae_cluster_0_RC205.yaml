@@ -1,5 +1,5 @@
 sample_id: barcode_83_P59_Potyviridae_cluster_0_RC205
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -117,7 +117,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36153'
+      - '36934'
     - id: flag_text2
       type: list
       value:
@@ -162,7 +162,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36153'
+      - '36934'
     - id: flag_text2
       type: list
       value:
@@ -211,7 +211,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - 5.2A
     - id: species_count
       type: list
       flex: 0.1
@@ -233,7 +233,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '4932'
     - id: country_message
       type: list
       value:

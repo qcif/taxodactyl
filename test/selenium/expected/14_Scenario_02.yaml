@@ -1,5 +1,5 @@
 sample_id: Scenario_02
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -118,7 +118,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '1297468'
+      - '1306746'
     - id: flag_text2
       type: list
       value:
@@ -177,7 +177,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '466'
+      - '497'
     - id: min_bar_count
       type: min
       value: '466'
@@ -189,7 +189,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '858'
+      - '862'
     - id: country_message
       type: list
       value:

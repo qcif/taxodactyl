@@ -1,5 +1,5 @@
 sample_id: MP23-0432_matK
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -214,7 +214,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '289'
+      - '290'
     - id: flag_text2
       type: list
       value:
@@ -223,15 +223,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '66'
+      - '65'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '300'
+      - '245'
     - id: min_bar_count
       type: min
-      value: '300'
+      value: '245'
     - id: first_bar_species
       type: list
       value:
@@ -273,10 +273,10 @@ components:
       type: list
       flex: 0.1
       value:
-      - '146'
+      - '113'
     - id: min_bar_count
       type: min
-      value: '146'
+      value: '113'
     - id: first_bar_species
       type: list
       value:

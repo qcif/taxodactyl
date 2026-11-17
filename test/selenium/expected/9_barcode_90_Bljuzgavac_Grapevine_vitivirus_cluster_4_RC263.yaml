@@ -1,5 +1,5 @@
 sample_id: barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -121,7 +121,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - ''
     - id: species_count
       type: list
       flex: 0.1
@@ -166,7 +166,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - ''
     - id: species_count
       type: list
       flex: 0.1
@@ -207,11 +207,11 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '194'
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - 5.2B
     - id: species_count
       type: list
       flex: 0.1
@@ -233,7 +233,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '754'
     - id: country_message
       type: list
       value:

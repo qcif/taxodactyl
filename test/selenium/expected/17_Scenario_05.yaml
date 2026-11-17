@@ -1,5 +1,5 @@
 sample_id: Scenario_05
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -247,7 +247,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36'
+      - '38'
     - id: flag_text2
       type: list
       value:
@@ -256,12 +256,12 @@ components:
       type: list
       flex: 0.1
       value:
-      - '295'
+      - '307'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '956'
+      - '991'
     - id: min_bar_count
       type: min
       value: '956'
@@ -273,7 +273,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '5801'
+      - '5950'
     - id: country_message
       type: list
       value:
@@ -292,7 +292,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36'
+      - '38'
     - id: flag_text2
       type: list
       value:
@@ -301,12 +301,12 @@ components:
       type: list
       flex: 0.1
       value:
-      - '295'
+      - '307'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '956'
+      - '991'
     - id: min_bar_count
       type: min
       value: '956'
@@ -318,7 +318,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '5801'
+      - '5950'
     - id: country_message
       type: list
       value:

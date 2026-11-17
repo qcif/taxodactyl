@@ -1,5 +1,5 @@
 sample_id: Scenario_01
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -124,7 +124,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: flag_text2
       type: list
       value:
@@ -133,15 +133,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '29'
+      - '28'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '35'
     - id: min_bar_count
       type: min
-      value: '39'
+      value: '35'
     - id: first_bar_species
       type: list
       value:
@@ -150,7 +150,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: country_message
       type: list
       value:
@@ -169,7 +169,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: flag_text2
       type: list
       value:
@@ -178,15 +178,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '29'
+      - '28'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '35'
     - id: min_bar_count
       type: min
-      value: '39'
+      value: '35'
     - id: first_bar_species
       type: list
       value:
@@ -195,7 +195,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: country_message
       type: list
       value:
@@ -214,7 +214,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: flag_text2
       type: list
       value:
@@ -223,15 +223,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '29'
+      - '28'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '35'
     - id: min_bar_count
       type: min
-      value: '39'
+      value: '35'
     - id: first_bar_species
       type: list
       value:
@@ -240,7 +240,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: country_message
       type: list
       value:
@@ -258,7 +258,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '618'
+      - '619'
     - id: flag_text2
       type: list
       value:
@@ -267,15 +267,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '29'
+      - '28'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '35'
     - id: min_bar_count
       type: min
-      value: '39'
+      value: '35'
     - id: first_bar_species
       type: list
       value:
@@ -284,7 +284,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4458'
+      - '4470'
     - id: country_message
       type: list
       value:

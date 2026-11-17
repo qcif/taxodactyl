@@ -1,5 +1,5 @@
 sample_id: 512503_1_Andrew
-date: '2026-08-04T00:37:50'
+date: '2026-11-17T01:27:54'
 components:
 - id: input_sequence_modal
   assertions:
@@ -127,15 +127,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '9'
+      - '7'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '101'
+      - '72'
     - id: min_bar_count
       type: min
-      value: '101'
+      value: '72'
     - id: first_bar_species
       type: list
       value:
@@ -172,15 +172,15 @@ components:
       type: list
       flex: 0.1
       value:
-      - '9'
+      - '7'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - '101'
+      - '72'
     - id: min_bar_count
       type: min
-      value: '101'
+      value: '72'
     - id: first_bar_species
       type: list
       value:

@@ -3,3 +3,4 @@ __pycache__/
 .pytest_cache/
 test-report.json
 review.html
+expected/.backups/
