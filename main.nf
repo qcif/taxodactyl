@@ -14,6 +14,7 @@
 */
 
 include { TAXODACTYL  } from './workflows/taxodactyl'
+include { TAXODACTYL_COVERAGE } from './workflows/coverage'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_taxodactyl_pipeline'
 
@@ -41,9 +42,12 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    TAXODACTYL (
-
-    )
+    if (params.coverage_taxa) {
+        // Database coverage mode: target taxa only, no input sequences
+        TAXODACTYL_COVERAGE ()
+    } else {
+        TAXODACTYL ()
+    }
     //
     // SUBWORKFLOW: Run completion tasks
     //

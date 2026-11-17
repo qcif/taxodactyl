@@ -1,0 +1,19 @@
+{
+  "coverage": {
+    "candidate": {},
+    "toi": {},
+    "pmi": {
+      "Aphididae": {
+        "target": 47018,
+        "related": null,
+        "country": null
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Aphididae": {
+      "blast": null,
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=27482"
+    }
+  }
+}

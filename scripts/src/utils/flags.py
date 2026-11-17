@@ -249,8 +249,16 @@ class Flag:
                         flag_5_2,
                         flag_5_3,
                     ], key=lambda x: get_level(x))
+                    repr_value = (
+                        repr_flag['value']
+                        if as_json
+                        else repr_flag.value
+                    )
+                    # An error means that coverage was not assessed at all,
+                    # so don't replace it with the "no locus" warning
                     needs_special_flag = (
                         get_level(repr_flag) < 2 and
+                        repr_value != FLAGS.ERROR and
                         not config.locus_was_provided_for(query)
                     )
                     if needs_special_flag:

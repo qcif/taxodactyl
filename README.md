@@ -269,6 +269,42 @@ nextflow run /path/to/pipeline/taxodactyl/main.nf \
 > - You can find detailed instructions and practical examples for customising the pipeline configuration in the [docs/customise.md](docs/customise.md) file. This guide covers how to set parameters, adjust resources, change error strategies, and modify the Singularity cache directory for your Nextflow runs.
 
 
+## Database coverage mode
+
+Database coverage mode evaluates how well the reference database represents a list of target taxa, **without any input sequences**. Use it to find out in advance whether a taxon can be identified at a given locus. For each taxon it runs the same analysis as the "database coverage" section of a normal run (flags 5.1, 5.2 and 5.3), and writes a single one-page report.
+
+Provide a CSV of target taxa with `--coverage_taxa` in place of `--metadata` and `--sequences`:
+
+```csv
+taxon,locus,country,classification
+Drosophila melanogaster,COI,Australia,animalia
+Bactrocera,COI,Australia,animalia
+Aphididae,COI,,
+```
+
+- `taxon` (required): one taxon name per row, at any rank.
+- `locus` (required): as for `metadata.csv`. Enter `NA` to count whole-genome records with no locus.
+- `country` and `classification` (optional): as for `metadata.csv`. If you leave the country empty, flag 5.3 is not assessed.
+- Rows that repeat the same taxon, locus, country and classification are duplicates: the first is kept and the rest are dropped with a warning. The same taxon may appear more than once with a different locus, country or classification.
+- A maximum of 100 taxa is allowed (counted after removing duplicates).
+
+```bash
+nextflow run /path/to/pipeline/taxodactyl/main.nf \
+    --coverage_taxa coverage.csv \
+    --taxdb /path/to/.taxonkit/ \
+    --outdir output \
+    -profile singularity
+```
+
+> [!NOTE]
+> - `metadata`, `sequences` and `blastdb` are not used in this mode, and `metadata` and `sequences` cannot be set together with `coverage_taxa`.
+> - Each taxon is analysed in parallel and queries the GBIF and NCBI APIs for every related species, so long lists of taxa can take a long time to run.
+> - The error strategy for the workflow is `ignore`: a taxon whose analysis fails is shown in the report as "Analysis did not complete". If every taxon fails, no report is produced.
+> - An example can be downloaded from [`test/coverage_example.csv`](test/coverage_example.csv). It deliberately contains a misspelled taxon (`Aphididiae`) and a duplicate row.
+
+The report is written to `<outdir>/report_coverage_<timestamp>.html` (see the [output documentation](docs/output.md)).
+
+
 ## Pipeline output
 After running the pipeline, the output directory will contain a separate folder for each query sequence and a folder with information about the run. Here, we show the results folder structure when using the two databases. For more information, see the [output documentation](docs/output.md). See [this document](https://qcif.github.io/taxodactyl/understanding-the-analysis.html) for a detailed description of the analysis and interpretation of the workflow report.
 

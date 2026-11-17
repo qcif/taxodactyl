@@ -35,10 +35,7 @@ def render(
 ):
     """Render to HTML report to the configured output directory."""
     query_ix = config.get_query_ix(query)
-    j2 = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
-    j2.filters['css_hash'] = css_hash
-    j2.filters['bs_class'] = level_to_bs_class
-    template = j2.get_template('index.html')
+    template = _get_j2_env().get_template('index.html')
     context = _get_report_context(query_ix, bold, params_json, versions_yml)
 
     path = config.output_dir / 'report_context.json'
@@ -50,13 +47,44 @@ def render(
     rendered_html = template.render(**context, **static_files)
 
     if bold:
-        rendered_html = re.sub(r"\bidentity\b", "similarity", rendered_html)
-        rendered_html = re.sub(r"\bIdentity\b", "Similarity", rendered_html)
+        rendered_html = _bold_wording(rendered_html)
 
     report_path = config.get_report_path(query_ix, bold=bold)
     with open(report_path, 'w', encoding="utf-8") as f:
         f.write(rendered_html)
     logger.info(f"HTML document written to {report_path}")
+
+
+def render_coverage(
+    bold=False,
+    params_json=None,
+    versions_yml=None,
+):
+    """Render the database coverage mode report to the output directory."""
+    template = _get_j2_env().get_template('coverage/index.html')
+    context = _get_coverage_report_context(bold, params_json, versions_yml)
+    rendered_html = template.render(**context, **_get_static_file_contents())
+
+    if bold:
+        rendered_html = _bold_wording(rendered_html)
+
+    report_path = config.get_coverage_report_path(bold=bold)
+    with open(report_path, 'w', encoding="utf-8") as f:
+        f.write(rendered_html)
+    logger.info(f"HTML document written to {report_path}")
+
+
+def _get_j2_env() -> Environment:
+    j2 = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+    j2.filters['css_hash'] = css_hash
+    j2.filters['bs_class'] = level_to_bs_class
+    return j2
+
+
+def _bold_wording(html: str) -> str:
+    """BOLD reports refer to "similarity" rather than "identity"."""
+    html = re.sub(r"\bidentity\b", "similarity", html)
+    return re.sub(r"\bIdentity\b", "Similarity", html)
 
 
 def _get_static_file_contents():
@@ -161,6 +189,68 @@ def _get_report_context(query_ix, bold, params_json, versions_yml):
         # rendering functions:
         'url_from_accession': config.url_from_accession,
         'error_locations': LOCATIONS,
+    }
+
+
+def _get_coverage_report_context(bold, params_json, versions_yml):
+    """Build the context for the database coverage report template."""
+    taxa = [
+        _get_coverage_taxon(ix, row)
+        for ix, row in enumerate(config.coverage_rows)
+    ]
+    db_coverage_js = {'pmi': {}}
+    for t in taxa:
+        if t['completed']:
+            data = t['db_coverage'].get('full', {}).get('pmi', {})
+            if t['taxon'] in data:
+                db_coverage_js['pmi'][t['sample_id']] = data[t['taxon']]
+    return {
+        'title': 'Database Coverage Report',
+        'html_title': (
+            'BOLD - Database Coverage Report'
+            if bold
+            else 'Database Coverage Report'
+        ),
+        'workflow_params': _read_params_json(params_json),
+        'workflow_versions': _read_versions_yml(versions_yml),
+        'facility': config.inputs.facility_name,
+        'analyst_name': config.inputs.analyst_name,
+        'start_time': config.timestamp,
+        'end_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'wall_time': _get_walltime(),
+        'config': config,
+        'flag_definitions': config.read_flag_details_csv(),
+        'bold': bold,
+        'error_locations': LOCATIONS,
+        'error_log': ErrorLog(),
+        'coverage_mode': True,
+        'taxa': taxa,
+        'db_coverage_js': db_coverage_js,
+    }
+
+
+def _get_coverage_taxon(ix, row):
+    """Collect everything the report needs for one coverage CSV row."""
+    query_dir = config.get_query_dir(ix)
+    sample_id = config.get_sample_id(ix)
+    completed = (query_dir / config.db_coverage_json).exists()
+    return {
+        'ix': ix,
+        'taxon': row['taxon'],
+        'sample_id': sample_id,
+        'target_id': 'pmi-' + css_hash(sample_id),
+        'query_dir': query_dir,
+        'completed': completed,
+        'metadata': {
+            'sample_id': sample_id,
+            'locus': row['locus'],
+            'country': row['country'],
+            'classification': row['classification'],
+        },
+        'locus_provided': config.locus_was_provided_for(ix),
+        'flags': Flag.read(query_dir) if completed else {},
+        'db_coverage': _read_db_coverage(query_dir) if completed else {},
+        'error_log': ErrorLog(query_dir),
     }
 
 
@@ -401,9 +491,10 @@ def _read_source_diversity(query_ix):
         return json.load(f)
 
 
-def _read_db_coverage(query_ix):
+def _read_db_coverage(query):
     """Read the database coverage table from the CSV file."""
-    path = config.get_query_dir(query_ix) / config.db_coverage_json
+    query_dir = config.get_query_dir(query)
+    path = query_dir / config.db_coverage_json
     if not path.exists():
         logger.warning(f'No database coverage file found at {path}')
         return {}
@@ -412,10 +503,7 @@ def _read_db_coverage(query_ix):
     coverage_data = data['coverage']
     for target_type, targets in coverage_data.items():
         for target in targets:
-            path = (
-                config.get_query_dir(query_ix)
-                / config.get_map_filename_for_target(target)
-            )
+            path = query_dir / config.get_map_filename_for_target(target)
             coverage_data[target_type][target]['map_exists'] = path.exists()
             coverage_data[target_type][target][
                 'map_src_base64'] = _get_img_src(path)

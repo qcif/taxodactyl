@@ -64,6 +64,26 @@
             "justMyCode": true
         },
         {
+            "name": "Integration test DB-cov",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s", "scripts/tests/integration",
+                "-p", "test_integration_coverage.py",
+                "-f",  // fail fast
+                "-v",  // show stdout instead of dots
+            ],
+            "env": {
+                "KEEP_OUTPUTS": "1",  // Always retain outputs for debugging
+                "PYTHONPATH": "${workspaceFolder}/scripts",
+                "TAXONKIT_DATA": "${env:HOME}/.taxonkit",
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "type": "debugpy",
             "request": "launch",
             "name": "P0 Validate inputs",
@@ -75,6 +95,45 @@
                 "--taxdb-dir", "~/.taxonkit",
 
                 // "--metadata-csv", "tests/test-data/validation/metadata_with_sequences.csv",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P0 Validate coverage",
+            "program": "${workspaceFolder}/scripts/p0_validation_coverage.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "--coverage-taxa", "tests/test-data/coverage/coverage.csv",
+                "--taxdb-dir", "~/.taxonkit",
+                "--output-dir", "output/coverage",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P5 DB coverage – coverage mode",
+            "program": "${workspaceFolder}/scripts/p5_db_coverage.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                // Run P0 Validate coverage first; pick a query dir it created
+                "output/coverage/query_001_drosophila_melanogaster_9ae106b9",
+                "--coverage-taxa", "output/coverage/coverage.csv",
+                "--output-dir", "output/coverage",
+            ],
+            "preLaunchTask": "clear-log-files"
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "P6 Coverage report",
+            "program": "${workspaceFolder}/scripts/p6_report.py",
+            "cwd": "${workspaceFolder}/scripts",
+            "args": [
+                "--coverage-taxa", "output/coverage/coverage.csv",
+                "--output-dir", "output/coverage",
             ],
             "preLaunchTask": "clear-log-files"
         },
