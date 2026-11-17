@@ -38,7 +38,7 @@ linked issue keep the record.
 |---|---|
 | High | 17 |
 | Medium | 69 |
-| Low | 65 |
+| Low | 64 |
 
 ## High
 
@@ -154,7 +154,6 @@ linked issue keep the record.
 | CFG-D-006 | config | Case-sensitive synonym matching (root cause of P0-D-001). | [python/modules/config.md](python/modules/config.md) | — | v1 |
 | CFG-D-007 | config | Wrong `throttle_backend` description; inert `env_prefix`. Two unrelated issues: (1) the field's description names the options `local` (SQLite) and `azure` (Redis via Azure Cache for Redis), but the enum accepts only `sqlite`/`redis` — passing the documented value fails validation. (2) `env_prefix="BIOSEC_"` only does anything on Pydantic's `BaseSettings`; `ConfigSchema` is a plain `BaseModel`, which has no env-var-reading behaviour at all, so it looks like `BIOSEC_*` env vars configure this and silently don't. | [python/modules/config.md](python/modules/config.md) | — | v1 |
 | DEP-D-010 | docs | `docs/detailed_tech.md` lists the analysis image as `taxodactyl:v1.0.0`; the actual pinned tag is `v1.5.0` (`conf/process.config`, `conf/azure.config`). | [deployment.md §2](deployment.md) | — | v1 |
-| DEP-D-011 | docs / deployment | Reference-data staging docs describe the setup from before `edaacae`. The pool start-task template (`deployment/azure/setup.sh.template`) pulls Core Nt/taxdump from `daffstandard/refdata-wf2` (public read, no token), but `docs/azure/01-initial-setup.md`, `03-reference-data.md`, `04-start-tasks.md` and `05-troubleshooting.md` still walk an operator through uploading to, and generating SAS tokens for, `daffpremium/refdata`. `.env.sample` still defines `STORAGE_ACCOUNT_PREM`, `STORAGE_CONTAINER_REF=refdata` and `NXF_AZURE_REFERENCE_ACCOUNT`/`_KEY`, none of which staging now uses. An operator following the docs would stage data where the start task never reads it. | [deployment.md §5](deployment.md), [reference-data.md §1.1](reference-data.md) | [`#338`](https://github.com/qcif/taxodactyl/issues/338) | v1 |
 | CFG-D-008 | docs | `scripts/README.md` links to `src/utils/config_schema.py` and `src/utils/config.py` — neither file exists (the config module is `src/utils/config/`, a package, not those two files). | [python/modules/config.md](python/modules/config.md) | — | v1 |
 | P1B-D-011 | docs | `docs/src/understanding-the-analysis.md` states orientation "is no longer required for BOLD API v5, so this functionality is no longer used" — **false for the shipped code**: `id_engine.py` still calls `orientate(sequences)` unconditionally unless env `SKIP_ORIENTATION` is set. This doc claim is likely why nobody noticed `P1B-D-001` (HMMER missing from the image) — the doc tells readers the HMM step is dead code. | [python/p1-bold-search.md](python/p1-bold-search.md) | — | v1 |
 | P0-D-012 | docs | `docs/params.md`'s `taxdb` requirement list includes `taxonkit` (the binary) and `readme.txt`; the code's actual check (`TAXDB_EXPECT_FILES`, P0-031) is 9 `*.dmp`/`gc.prt` files only and never checks for a binary or readme. | [python/p0-validation.md](python/p0-validation.md) | — | v1 |

@@ -110,7 +110,6 @@ az_load_env() {
     _info "Batch account: ${AZURE_BATCH_ACCOUNT_NAME:-not set}"
     _info "Batch endpoint: ${AZURE_BATCH_ENDPOINT:-not set}"
     _info "Storage account (std): ${STORAGE_ACCOUNT_STD:-not set}"
-    _info "Storage account (prem): ${STORAGE_ACCOUNT_PREM:-not set}"
 }
 
 #
@@ -1462,7 +1461,6 @@ Utility:
 Default Values:
   Pool ID: taxodactyl
   Storage Account (std): $STORAGE_ACCOUNT_STD
-  Storage Account (prem): $STORAGE_ACCOUNT_PREM
   Container (scripts): $STORAGE_CONTAINER_SCRIPTS
 
 Examples:

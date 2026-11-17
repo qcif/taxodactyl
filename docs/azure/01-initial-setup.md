@@ -32,9 +32,8 @@ Create all required Azure resources:
 SUBSCRIPTION="DAFF Biosecurity"
 REGION=australiaeast
 RESOURCE_GROUP=daff-biosecurity
-STORAGE_ACCOUNT_PREM=daffpremium
 STORAGE_ACCOUNT_STD=daffstandard
-STORAGE_CONTAINER_REF=refdata
+STORAGE_CONTAINER_REF=refdata-wf2
 STORAGE_CONTAINER_WORK=workdata
 STORAGE_CONTAINER_SCRIPTS=scripts
 STORAGE_CONTAINER_CACHE=cache
@@ -53,21 +52,8 @@ az account set --subscription "$SUBSCRIPTION"
 # Create resource group
 az group create -n $RESOURCE_GROUP -l $REGION
 
-# Create premium storage account for reference data
-az storage account create \
-  -n $STORAGE_ACCOUNT_PREM \
-  -g $RESOURCE_GROUP \
-  -l $REGION \
-  --sku Premium_LRS \
-  --kind BlockBlobStorage \
-  --allow-blob-public-access true
-
-az storage container create \
-  --name $STORAGE_CONTAINER_REF \
-  --account-name $STORAGE_ACCOUNT_PREM \
-  --public-access blob
-
-# Create standard storage account for work directory and scripts
+# Create standard storage account for work directory, scripts and
+# reference data
 az storage account create \
   -n $STORAGE_ACCOUNT_STD \
   -g $RESOURCE_GROUP \
@@ -84,6 +70,13 @@ az storage container create \
   --account-name $STORAGE_ACCOUNT_STD \
   --public-access blob
 
+# Reference data container: public container-level read so the pool
+# start task can download without a SAS token.
+az storage container create \
+  --name $STORAGE_CONTAINER_REF \
+  --account-name $STORAGE_ACCOUNT_STD \
+  --public-access container
+
 # Create the cache container used by the API-response cache
 # (shared across all Batch nodes; see Step 3b below for the
 # connection string that the workflow uses to authenticate).
@@ -98,6 +91,10 @@ az batch account create \
   --location $REGION \
   --storage-account $STORAGE_ACCOUNT_STD
 ```
+
+> [!WARNING]
+> Anyone can list and read the `$STORAGE_CONTAINER_REF` container. Only
+> public NCBI reference data may be stored in it.
 
 Optionally, you can set a storage policy on the work container.
 We have written one that results in work data being retained for 14 days only:
@@ -131,7 +128,6 @@ az batch account login \
 
 # These should be saved in 1Password/DevOps and added to .env.azure:
 az storage account keys list -g daff-biosecurity -n daffstandard
-az storage account keys list -g daff-biosecurity -n daffpremium
 az batch account keys list -g daff-biosecurity -n daffbatch
 ```
 
@@ -142,7 +138,6 @@ AZURE_BATCH_ACCOUNT_NAME=daffbatch
 AZURE_BATCH_ACCESS_KEY=<primary_key>
 AZURE_BATCH_ENDPOINT=https://daffbatch.australiaeast.batch.azure.com
 AZURE_STORAGE_ACCOUNT_KEY=<standard_storage_key>
-NXF_AZURE_REFERENCE_KEY=<premium_storage_key>
 ```
 
 ### Step 3b: Cache Connection String

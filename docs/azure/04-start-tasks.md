@@ -9,7 +9,7 @@ A start task is a script that runs automatically when a node is provisioned. We 
 1. Detect and format the NVMe storage device
 2. Mount NVMe to `/mnt/nvme`
 3. Install azcopy
-4. Download reference data from premium blob storage
+4. Download reference data from the public `refdata-wf2` blob container
 5. Verify the setup completed successfully
 
 ## Start Task Script
@@ -70,10 +70,8 @@ az storage blob upload \
 
 ## Generating SAS Tokens
 
-Since storage accounts have public blob access disabled (for security), create SAS tokens for:
-
-1. **Start task script** (standard storage)
-2. **Reference data** (premium storage)
+Only the start task script (`scripts/setup.sh`) needs a SAS token. Reference
+data is served from the public `refdata-wf2` container and needs no token.
 
 ### Start Task Script SAS Token
 
@@ -90,21 +88,6 @@ az storage blob generate-sas \
 ```
 
 **Helper equivalent:** `az_sas_generate setup.sh`
-
-### Reference Data SAS Token
-
-```sh
-# Generate a SAS token for the refdata container
-az storage container generate-sas \
-  --account-name $STORAGE_ACCOUNT_PREM \
-  --name $STORAGE_CONTAINER_REF \
-  --permissions r \
-  --expiry $(date -u -d "+1 year" '+%Y-%m-%dT%H:%MZ') \
-  --https-only \
-  --output tsv
-```
-
-**Note**: For container-level SAS tokens, use the `az` command above (not available in helpers).
 
 **Important Notes**:
 - Keep SAS tokens secure - anyone with the token can access the blob
@@ -166,16 +149,28 @@ Create a pool configuration JSON file with the start task:
 - `userIdentity.elevationLevel: "admin"`: Gives script root privileges
 - `userIdentity.scope: "pool"`: Script runs in pool context
 
-### Update the Start Task Script with SAS Token
+### Reference Data URL
 
-Edit `deployment/azure/setup.sh.ignore` (gitignored file) to include the reference data SAS token:
+`BLOB_URL` in `deployment/azure/setup.sh.template` is the plain public
+container URL with no token:
 
 ```bash
-BLOB_URL="https://daffpremium.blob.core.windows.net/refdata/core_nt?<REFDATA_SAS_TOKEN>"
+BLOB_URL="https://daffstandard.blob.core.windows.net/refdata-wf2"
 ```
 
+If the container changes, edit `BLOB_URL` and also the rename in
+`stage_refdata()`. azcopy downloads into a directory named after the
+container, and the script renames it to keep `/mnt/nvme/refdata` stable:
+
+```bash
+mv "${REFDATA_DIR}/refdata-wf2" "${REFDATA_DIR}/refdata"
+```
+
+Change the source (`refdata-wf2`) to the new container name and keep the
+destination (`refdata`) as is.
+
 **Security Pattern**:
-- `*.ignore` files: contain actual SAS tokens (gitignored)
+- `*.ignore` files: contain actual SAS tokens, e.g. the script SAS in the pool JSON (gitignored)
 - `*.template` files: contain placeholders (version controlled)
 
 ## Applying the Configuration
@@ -257,7 +252,7 @@ cat /tmp/start-task-stderr.txt
 **Reference Data Staging** (225GB dataset):
 - **Time**: 2.3 minutes
 - **Throughput**: 1.6 GB/second
-- **Source**: Premium blob storage → NVMe SSD
+- **Source**: Public blob container (`refdata-wf2`) → NVMe SSD
 - **Tool**: azcopy v10.31.0
 
 **azcopy Optimization**:
