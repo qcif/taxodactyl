@@ -158,7 +158,16 @@ container URL with no token:
 BLOB_URL="https://daffstandard.blob.core.windows.net/refdata-wf2"
 ```
 
-If the container changes, only that line needs editing.
+If the container changes, edit `BLOB_URL` and also the rename in
+`stage_refdata()`. azcopy downloads into a directory named after the
+container, and the script renames it to keep `/mnt/nvme/refdata` stable:
+
+```bash
+mv "${REFDATA_DIR}/refdata-wf2" "${REFDATA_DIR}/refdata"
+```
+
+Change the source (`refdata-wf2`) to the new container name and keep the
+destination (`refdata`) as is.
 
 **Security Pattern**:
 - `*.ignore` files: contain actual SAS tokens, e.g. the script SAS in the pool JSON (gitignored)

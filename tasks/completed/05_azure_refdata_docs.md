@@ -320,3 +320,10 @@ Agent-run checks (record the commands and outcomes in the PR description):
   `deployment/azure/issues.md` item 1 now covers fewer tokens; `daffpremium`
   may be decommissioned.
 - **Manual review:** pending user confirmation.
+- **PR #350 review (Copilot), both addressed:**
+  - `03-reference-data.md`: the taxdump upload now targets `taxdump/taxdump/`
+    (matching `TAXDB_PATH` in `run-taxodactyl.sh`), and the expected local
+    layout is stated.
+  - `04-start-tasks.md`: a container change needs both `BLOB_URL` and the
+    `mv .../refdata-wf2 .../refdata` source in `stage_refdata()` edited. The
+    brief's "only that line" claim (step 5) was wrong.

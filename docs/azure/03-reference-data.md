@@ -60,7 +60,12 @@ az role assignment create \
 
 ### Upload with azcopy
 
-Use azcopy for large data uploads (faster and more reliable than `az storage blob upload-batch`):
+Use azcopy for large data uploads (faster and more reliable than `az storage blob upload-batch`).
+
+The commands below expect this local layout:
+- `$REFDATA/blast/core_nt/`: the `core_nt.*` BLAST database files
+- `$REFDATA/taxonkit/`: the extracted taxdump files (`names.dmp`,
+  `nodes.dmp`, etc.) directly in this directory
 
 ```sh
 cd $REFDATA/blast/core_nt/
@@ -74,11 +79,15 @@ azcopy copy \
 cd $REFDATA/taxonkit/
 azcopy copy \
   './*' \
-  "https://${STORAGE_ACCOUNT_STD}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/" \
+  "https://${STORAGE_ACCOUNT_STD}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/taxdump/" \
   --recursive   \
   --overwrite=ifSourceNewer   \
   --log-level INFO
 ```
+
+The taxdump goes under `taxdump/taxdump/` because the Azure runner reads
+`/mnt/nvme/refdata/taxdump/taxdump` (`TAXDB_PATH` in
+`deployment/azure/run-taxodactyl.sh`).
 
 Uploading requires authenticated write access (the role above); only reads
 are anonymous.
