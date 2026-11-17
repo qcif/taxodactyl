@@ -1,13 +1,13 @@
 # Task 07 — Report kingdom/domain-level DB coverage targets as not assessed
 
-**Status:** planned
+**Status:** active
 
 **Priority:** High: regression from #313 (COL refactor). Any sample whose PMI
 or TOI names its own kingdom loses all of flag 5.
 
 **Issue:** [#354 — DB coverage: kingdom-level PMI/TOI fails GBIF lookup since #313; should report 5.*NA](https://github.com/qcif/taxodactyl/issues/354)
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** granted by user via `/speckit-implement 07` on 2026-11-18.
 
 **Scope:** P5 database coverage target handling (`scripts/src/coverage/`,
 `scripts/src/gbif/relatives.py`) and the DB coverage modal template. A target
@@ -168,10 +168,9 @@ In `scripts/src/coverage/targets.py`:
 
 ## Testing decision
 
-**Pending user input.** The proposed split is below. It is not settled until
-the user answers.
+**Decided 2026-11-18** (user accepted the proposal).
 
-- Proposed: the agent writes and runs the automated unit tests listed under
+- The agent writes and runs the automated unit tests listed under
   Validation. The user reviews nf-test flag/snapshot drift and Selenium drift,
   and owns any baseline or fixture updates.
 
