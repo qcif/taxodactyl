@@ -27,9 +27,9 @@ workflow used by `qcif/daff-mito-assembly`:
   worktree.
 - Write implementation outcomes into the task brief.
 - On completion, set the brief to `**Status:** done`, move it to
-  `tasks/completed/`, and remove its active entry in the created task worktree.
-  Commit these lifecycle changes with the implementation and ask the user to
-  merge it.
+  `tasks/completed/`, remove its active entry in the created task worktree,
+  and add a line to `tasks/changelog.md`. Commit these lifecycle changes
+  with the implementation and ask the user to merge it.
 - The main worktree may retain its branch/worktree record pending merge; this
   must not leave the completed task marked active in the task worktree.
 
@@ -302,15 +302,22 @@ Resolve all paths below relative to that worktree, not the main checkout.
    the defect or its fix, rewrite it to describe current behaviour rather
    than history. Do not mark rows as fixed: git history and the linked issue
    keep the record. Include these edits in the task's commit and PR.
-7. Before committing, verify in the task worktree that the completed brief
+7. Append one line to `tasks/changelog.md` (create it with a short heading
+   if missing) in the form
+   `- <summary> (task <NN>_<short_name>, #<issue>)`. Write the summary as a
+   release note for users or operators: what changed, not how. Omit the
+   issue reference if there is none. The file is read and cleared at release
+   time, so do not edit or reorder other entries.
+8. Before committing, verify in the task worktree that the completed brief
    exists with status `done`, the original brief is absent, and the task is no
-   longer listed as active or to-do. Completion includes these lifecycle edits;
+   longer listed as active or to-do, and that `tasks/changelog.md` has this
+   task's line. Completion includes these lifecycle edits;
    do not defer them until merge or leave them only in the main checkout.
-8. Commit the implementation, documentation, tests, and lifecycle changes
+9. Commit the implementation, documentation, tests, and lifecycle changes
    together in the task worktree. Check the commit includes the completed
-   brief and index changes, with no uncommitted task changes remaining.
-9. Report the commit, branch, worktree, completed brief path and tests to the user. Do not merge into main automatically, offer to open a pull-request in https://github.com/qcif/taxodactyl instead.
-10. After the user merges the branch (locally or via PR), verify the main worktree reflects the
+   brief, index and changelog changes, with no uncommitted task changes remaining.
+10. Report the commit, branch, worktree, completed brief path and tests to the user. Do not merge into main automatically, offer to open a pull-request in https://github.com/qcif/taxodactyl instead.
+11. After the user merges the branch (locally or via PR), verify the main worktree reflects the
    completed lifecycle and remove any remaining tracking entry for this task
    from its `tasks/active.md`. A pending merge does not keep the task active
    in the implementation worktree.
