@@ -20,6 +20,7 @@
 - [ ] Replace the `{{ version }}` placeholders in this template
 - [ ] Copy the release notes from the Python release
 - [ ] Ensure that version is updated in `conf/manifest.config`
+- [ ] Ensure that the `neoformit/taxodactyl` image tag is set to the release version (e.g. `v{{ version }}`, not `main`) in `conf/process.config` and `conf/azure.config`
 - [ ] Ensure that any feature updates have been documented
 - [ ] Ensure that tests pass (especially for any feature updates)
 - [ ] Delete this checklist

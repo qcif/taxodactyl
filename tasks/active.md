@@ -1,0 +1,4 @@
+- 01_block_taxodactyl_bold branch:task-01-block-taxodactyl-bold worktree:.worktrees/task-01-block-taxodactyl-bold
+- 03_remove_obsolete_metadata_schema branch:task-03-remove-obsolete-metadata-schema worktree:.worktrees/task-03-remove-obsolete-metadata-schema
+- 04_expand_blast_hit_context branch:task-04-expand-blast-hit-context worktree:.worktrees/task-04-expand-blast-hit-context
+- 05_azure_refdata_docs branch:task-05-azure-refdata-docs worktree:.worktrees/task-05-azure-refdata-docs
