@@ -1,6 +1,6 @@
 # Task 06 — Show target species in Selenium drift rows
 
-**Status:** active
+**Status:** done
 
 **Priority:** Unassigned; developer-experience improvement to test review.
 
@@ -32,7 +32,8 @@ format, flex handling and pass/fail outcomes stay exactly as they are.
 (TST-030 to TST-033). No active Spec Kit feature directory is configured, so
 this brief works from the `spec/` documents and the code directly.
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** granted by the user on 2026-11-17
+(`/speckit-implement task 06`).
 
 ## Preconditions
 
@@ -266,7 +267,7 @@ before changing anything.
      that row, and that other components look as they did.
   4. Any drifted values are reference-data drift or regressions to be
      handled separately. They are not part of this task.
-- **Manual validation status:** pending user evidence.
+- **Manual validation status:** accepted by the user on 2026-11-17.
 
 ## Completion criteria
 
@@ -296,8 +297,9 @@ Both resolved by the user on 2026-11-17:
 `task-06-review-drift-species-label` (worktree
 `.worktrees/task-06-review-drift-species-label`), 2026-11-17.
 
-**Manual validation status:** pending user evidence (see Test impact and
-manual review). The task stays active until the user confirms it.
+**Manual validation status:** accepted by the user on 2026-11-17
+("looks good") after reviewing the implementation. The user ran the manual
+check; the agent has no run output of its own to record here.
 
 ### Completed work
 
@@ -347,11 +349,8 @@ manual review). The task stays active until the user confirms it.
 - Not run by the agent: the full Selenium pytest (left to the user per the
   testing decision).
 
-### Remaining before completion
+### Completion
 
-- User runs `pytest test_reports.py` and `python testkit.py render --open`
-  (or `mock-nf-test.yml`). They confirm that pass/fail counts match `main`
-  and that `database_coverage.*` / `publication_modal.*` rows show the
-  correct taxon.
-- Then: set status to done, move the brief to `tasks/completed/`, remove it
-  from `tasks/active.md`, and add the changelog line.
+- Status set to done after user acceptance. The brief moved to
+  `tasks/completed/`, the active entry was removed, and a changelog line
+  was added.
