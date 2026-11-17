@@ -83,9 +83,29 @@ directory, following the convention used by `qcif/daff-mito-assembly`:
 - Preserve existing task numbering. Choose the next unused numeric prefix by
   inspecting active, completed, and shelved task filenames.
 - When creating a task, use its lifecycle status to place it correctly:
-  `active` tasks belong in `tasks/active.md`; `planned` or backlog tasks belong
-  in `tasks/todo.md`; completed and shelved tasks belong in their respective
+  `active` tasks are listed in `tasks/active.md`; `planned` briefs stay at
+  `tasks/<NN>_<short_name>.md` with `**Status:** planned` and are not listed
+  in any index; completed and shelved tasks belong in their respective
   directories. Do not alter unrelated entries.
+
+### `tasks/todo.md`: out-of-scope spin-offs
+
+`tasks/todo.md` is **not** a backlog of planned tasks. It records spin-off
+work found while planning or implementing a task that falls outside that
+task's scope, so the work isn't lost and can be picked up later by a
+relevant or dedicated task. The aim is an empty file.
+
+- Add an item when planning identifies related work you deliberately leave
+  out of the brief's scope (e.g. a deferred phase, an adjacent defect, a
+  needed refactor). Each item is one bullet: what needs doing and why, where
+  it came from (`task NN_short_name`, issue number), and the date.
+- Do not add an item for anything a task brief already covers. Planned
+  briefs are tracked by their own files.
+- Before writing a brief, read `tasks/todo.md`. If the new brief takes on an
+  item, cite the item in the brief's source material and remove it from
+  `tasks/todo.md` in the same change.
+- Remove an item once it's addressed: taken into a task brief's scope,
+  completed, or judged unnecessary by the user.
 
 The generated artifact is a task brief, not a Spec Kit `tasks.md` checklist.
 The repository convention takes precedence over the generic Spec Kit template
@@ -164,9 +184,11 @@ when both are present.
    - `## Test impact and manual review`
    - `## Completion criteria`
    - `## Open decision` or `## Risks` when relevant
-   Use exact repository file paths throughout. Then update the lifecycle index
-   matching the task status: `tasks/active.md` for active work or
-   `tasks/todo.md` for planned/backlog work.
+   Use exact repository file paths throughout. If the status is `active`, add
+   the task to `tasks/active.md`; a `planned` brief needs no index entry.
+   Add any out-of-scope spin-offs identified during planning to
+   `tasks/todo.md`, and remove any `tasks/todo.md` items this brief now
+   covers (see "`tasks/todo.md`: out-of-scope spin-offs").
 
 ## Mandatory Post-Execution Hooks
 
@@ -352,7 +374,9 @@ Every generated brief MUST:
       triggered unrequested implementation
 
 - [ ] Numbered task brief generated under `tasks/`
-- [ ] The appropriate lifecycle index is updated (`tasks/active.md` for active
-      work or `tasks/todo.md` for planned/backlog work)
+- [ ] `tasks/active.md` is updated if the task is active (planned briefs are
+      not indexed)
+- [ ] `tasks/todo.md` holds only out-of-scope spin-offs: new spin-offs from
+      this planning are added, and items this brief covers are removed
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
 - [ ] Completion reported with the task path, scope, validation criteria, and lifecycle status

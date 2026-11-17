@@ -7,7 +7,7 @@
 **Hold:** Paused at the user's request on 2026-10-28, pending the merge of
 Task 01. Task 01 is implemented in a different worktree; its absence from
 this checkout is not outstanding implementation work. Keep Task 02 planned
-in `tasks/todo.md` until the user resumes it after that merge.
+(`**Status:** planned`) until the user resumes it after that merge.
 
 **Required review on resume:** Inspect Task 01's merged implementation and
 validation coverage before deciding whether `test/smoke/test_bold_guard.sh`
@@ -32,7 +32,7 @@ Automatic reference-setup workflows and launchers are out of scope.
 `spec/tests.md`.
 
 **Planning context:** Argument `02` selects this existing brief for refinement;
-retain its number and planned status in `tasks/todo.md`. No new task number
+retain its number and planned status. No new task number
 is allocated (the next unused prefix is `04`).
 `.specify/scripts/bash/setup-tasks.sh --json` reports no configured feature
 directory, so this brief uses the repository's `spec/` documents and current
@@ -250,8 +250,8 @@ script must exit zero only when all negative-case assertions pass.
 - Profile/workflow specifications and the test inventory describe the smoke
   scenario and its retained dependencies accurately.
 - BOLD guard validation remains a separate, explicit check.
-- The brief stays in `tasks/todo.md` while planned. At implementation start,
-  change its status to active and move its index entry to `tasks/active.md`;
+- The brief stays planned (not indexed) until resumed. At implementation
+  start, change its status to active and add it to `tasks/active.md`;
   on completion, move it to `tasks/completed/02_test_profile_small_core.md`
   and remove its active entry according to the implementation workflow.
 

@@ -1,6 +1,11 @@
 # To-do items
 
-- 02_test_profile_small_core — Add a quick supported BLAST smoke check using
-  `test/smoke/`, then switch the routine check to captured XML replay;
-  paused pending Task 01 merge. On resume, review whether a dedicated
-  `test_bold_guard.sh` is needed against Task 01's merged validation coverage.
+Out-of-scope spin-offs found while planning or implementing a task, recorded
+so a relevant or dedicated task can pick them up later. This is not a list of
+planned tasks: planned briefs are tracked by their own `tasks/<NN>_*.md`
+files. Remove an item once a task brief takes it on or it's done. The aim is
+an empty list.
+
+One bullet per item: what needs doing and why, its origin
+(`task NN_short_name`, issue) and the date.
+

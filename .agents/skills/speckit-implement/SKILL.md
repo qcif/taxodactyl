@@ -81,9 +81,10 @@ when the repository has a top-level `tasks/` directory.
 
 2. Resolve the requested task from `$ARGUMENTS`. Accept a task number or the
    numbered task filename. Read exactly one matching brief from
-   `tasks/<NN>_*.md`. Check `tasks/todo.md` for related preconditions or
-   follow-up items. If the task is planned, move its lifecycle state to active
-   and update the indexes before implementation. Commit active.md (your changes only) and the task file to `main` before proceeding.
+   `tasks/<NN>_*.md`. Check `tasks/todo.md` for spin-off items related to
+   this task; if the task will address one, say so in the brief. If the task
+   is planned, set its brief to `**Status:** active` and add it to
+   `tasks/active.md` before implementation. Commit active.md (your changes only) and the task file to `main` before proceeding.
 
 3. Create an isolated worktree before modifying repository files. Use a branch
    named `task-<NN>-<short_name>` and a worktree under
@@ -289,9 +290,13 @@ Resolve all paths below relative to that worktree, not the main checkout.
    replace the brief's lifecycle status with `**Status:** done`.
 3. Move the brief from `tasks/<NN>_<short_name>.md` to
    `tasks/completed/<NN>_<short_name>.md` within the task worktree.
-4. Remove this task's entry from the task worktree's `tasks/active.md` and
-   remove any stale entry for this task from `tasks/todo.md`. Preserve other
-   tasks and record any distinct follow-up work separately.
+4. Remove this task's entry from the task worktree's `tasks/active.md`.
+   Update `tasks/todo.md`, which records only out-of-scope spin-offs, not
+   planned tasks. Remove the items this task addressed. Add one item for
+   each out-of-scope spin-off found during implementation that isn't
+   already covered by a task brief: what needs doing and why, the origin
+   (`task NN_short_name`, issue) and the date. Also list them in the brief's
+   Outcomes. Leave unrelated items alone.
 5. Update links to the moved brief to point to `tasks/completed/`; when
    modifying specs, prefer saying `task NN_short_name` rather than linking to
    the movable task file.
@@ -337,7 +342,8 @@ the task active and report the blocker rather than moving it to completed.
       validation
 - [ ] In the created task worktree, the completed brief has `**Status:** done`,
       the original brief is absent, and the task is absent from `tasks/active.md`
-      and `tasks/todo.md`
+- [ ] `tasks/todo.md` no longer lists spin-offs this task addressed, and
+      lists any new out-of-scope spin-offs found during implementation
 - [ ] Lifecycle changes were committed with the implementation, and the user
       received the completed brief path and a merge handoff
 - [ ] Implementation validated against specification, plan, and test coverage
