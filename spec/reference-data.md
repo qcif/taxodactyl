@@ -58,8 +58,7 @@ short — it was only ever scoped to the first one:
   this data is never auto-deleted (`DEP-032`, `deployment.md §5`). The
   staging happens entirely outside Nextflow. Before `edaacae` (the commit
   this spec was first derived from) it came from `daffpremium/refdata`
-  with a SAS token; the `docs/azure/*.md` walkthroughs still describe that
-  older setup (`DEP-D-011`).
+  with a SAS token.
 
 ### 1.2 Taxdump
 

@@ -1,6 +1,6 @@
 # Task 05 — Document reference-data staging from `daffstandard/refdata-wf2`
 
-**Status:** active
+**Status:** done
 
 **Priority:** Low (documentation drift; spec severity Low, defect `DEP-D-011`).
 
@@ -291,3 +291,39 @@ Agent-run checks (record the commands and outcomes in the PR description):
 - If the Phase 1 listing shows a layout that differs from the
   `run-taxodactyl.sh` paths, that is a possible runtime defect, not a docs
   issue. Report it rather than working around it.
+
+## Outcomes
+
+- **Phase 1 (live layout, anonymous listing succeeded):** top-level prefixes
+  `core_nt/` and `taxdump/`. `core_nt/` holds `core_nt.NN.*` volumes (00–87),
+  `core_nt.n{al,db,js,os,ot,tf,to}`, `taxdb.btd/.bti`,
+  `taxonomy4blast.sqlite3` and `checksums/`. `taxdump/` holds only
+  `taxdump/*.dmp` plus `gc.prt` and `readme.txt` (i.e. `taxdump/taxdump/`).
+  This matches the `run-taxodactyl.sh` paths; no discrepancy.
+- **Done:** `.env.sample`, `docs/azure/01`, `03`, `04`, `05`, `06`,
+  `deployment/azure/batch-helpers.sh` (two display lines), and `spec/`
+  (`DEP-D-011` rows deleted from `defects.md` and `deployment.md`, Low count
+  updated, references in `deployment.md` §5 and `reference-data.md` §1.1
+  rewritten to describe current state, per the convention changed on main in
+  `1552713`; this supersedes the brief's "mark as fixed" steps 10–12).
+- **Validation:** stale-reference sweep returns no hits; remaining SAS mentions
+  refer to the script SAS or cache connection string; `bash -n` passes;
+  Phase 1 listing matches documented prefixes; diff touches only permitted files.
+- **Link check:** pre-existing broken links left untouched (outside rewritten
+  sections): `03-reference-data.md` → `../../../README.md`;
+  `04-start-tasks.md` → `../../deployment/azure/setup.sh`, `status.md`;
+  `05-troubleshooting.md` → `status.md`.
+- **Deviations / leftovers:** `05-troubleshooting.md` still shows
+  `params.refdata_path = ...` (only exists in `hello-world.nf`); not in brief.
+  Operators may drop the removed variables from their `.env.azure`.
+- **Follow-ups (not actioned):** unused `AZCOPY_SAS_TOKEN` in `.env.sample`;
+  `deployment/azure/issues.md` item 1 now covers fewer tokens; `daffpremium`
+  may be decommissioned.
+- **Manual review:** pending user confirmation.
+- **PR #350 review (Copilot), both addressed:**
+  - `03-reference-data.md`: the taxdump upload now targets `taxdump/taxdump/`
+    (matching `TAXDB_PATH` in `run-taxodactyl.sh`), and the expected local
+    layout is stated.
+  - `04-start-tasks.md`: a container change needs both `BLOB_URL` and the
+    `mv .../refdata-wf2 .../refdata` source in `stage_refdata()` edited. The
+    brief's "only that line" claim (step 5) was wrong.

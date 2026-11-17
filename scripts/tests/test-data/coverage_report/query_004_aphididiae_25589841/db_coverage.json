@@ -1,0 +1,19 @@
+{
+  "coverage": {
+    "candidate": {},
+    "toi": {},
+    "pmi": {
+      "Aphididiae": {
+        "target": null,
+        "related": null,
+        "country": null
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Aphididiae": {
+      "blast": null,
+      "taxonomy": null
+    }
+  }
+}

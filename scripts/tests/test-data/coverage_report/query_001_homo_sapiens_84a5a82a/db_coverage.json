@@ -1,0 +1,24 @@
+{
+  "coverage": {
+    "candidate": {},
+    "toi": {},
+    "pmi": {
+      "Homo sapiens": {
+        "target": 66600,
+        "related": {
+          "Homo sapiens": 66600
+        },
+        "country": {
+          "Homo sapiens": 66600
+        },
+        "genus": "Homo"
+      }
+    }
+  },
+  "ncbi_urls": {
+    "Homo sapiens": {
+      "blast": null,
+      "taxonomy": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=9606"
+    }
+  }
+}

@@ -43,9 +43,9 @@ cat /tmp/startup-stderr.txt
    - Check VM SKU has NVMe storage (L-series)
    - Verify device path in script matches actual device (`/dev/nvme0n1`)
 
-2. **SAS token expired**:
-   - Regenerate SAS tokens
-   - Update `*.ignore` files with new tokens
+2. **Start task script SAS token expired**:
+   - Regenerate the `scripts/setup.sh` SAS token
+   - Update `*.ignore` files with the new token
    - Re-upload scripts if needed
 
 3. **Permission errors**:
@@ -116,10 +116,9 @@ az batch node file download \
    - Verify URL points to actual container/directory
    - Check for typos in container name or path
 
-2. **SAS token issues**:
-   - Ensure token has read (`r`) permissions
-   - Check token has not expired
-   - Verify token is properly URL-encoded
+2. **Container not publicly readable**:
+   - Reference data is anonymous (no SAS); check the container's public
+     access level is `container` and the account allows public blob access
 
 3. **Network issues**:
    - Check Azure service health
@@ -130,15 +129,15 @@ az batch node file download \
 ```bash
 # Test azcopy manually from a working machine
 azcopy copy \
-  "https://daffpremium.blob.core.windows.net/refdata/core_nt?<SAS_TOKEN>" \
+  "https://daffstandard.blob.core.windows.net/refdata-wf2/core_nt" \
   "./test_download" \
   --recursive \
   --log-level DEBUG
 
 # Check blob exists
 az storage blob list \
-  --account-name daffpremium \
-  --container-name refdata \
+  --account-name daffstandard \
+  --container-name refdata-wf2 \
   --prefix core_nt/
 ```
 
@@ -196,8 +195,7 @@ az batch task list \
 **Solution**:
 
 ```bash
-# Regenerate tokens (all currently expire 2026-12-29)
-# For start task script
+# Regenerate the start task script token (currently expires 2026-12-29)
 az storage blob generate-sas \
   --account-name daffstandard \
   --container-name scripts \
@@ -207,16 +205,7 @@ az storage blob generate-sas \
   --https-only \
   --output tsv
 
-# For reference data
-az storage container generate-sas \
-  --account-name daffpremium \
-  --name refdata \
-  --permissions r \
-  --expiry $(date -u -d "+1 year" '+%Y-%m-%dT%H:%MZ') \
-  --https-only \
-  --output tsv
-
-# Update *.ignore files with new tokens
+# Update *.ignore files with the new token
 # Re-upload scripts to blob storage if setup.sh token changed
 ```
 

@@ -51,6 +51,25 @@ jobs:
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v7
 
+      # Record which code was tested, saved with the run files on the
+      # self-hosted runner. On pull_request events the checked-out commit is a
+      # temporary merge commit, so the PR head commit is recorded too.
+      # Values are passed via env (not inlined) as branch names are untrusted.
+      - name: Record run info
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/nf-test"
+          {
+            echo "event: $GITHUB_EVENT_NAME"
+            echo "branch: $HEAD_REF"
+            echo "checkout_sha: $(git rev-parse HEAD)"
+            echo "pr_head_sha: ${PR_HEAD_SHA:-n/a}"
+            echo "run_url: $RUN_URL"
+          } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
+
       # Ensure container with latest commit to main is pulled
       - name: Force pull latest Docker image
         run: docker pull neoformit/taxodactyl:main

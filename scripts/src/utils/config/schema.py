@@ -66,6 +66,21 @@ class InputsConfig(BaseModel):
         description="Required CSV fields"
     )
 
+    # Database coverage mode CSV configuration
+    coverage_csv_header: dict = Field(
+        default={
+            "taxon": "taxon",
+            "locus": "locus",
+            "country": "country",
+            "classification": "classification",
+        },
+        description="Coverage CSV header mapping"
+    )
+    coverage_csv_required_fields: tuple = Field(
+        default=("taxon", "locus"),
+        description="Required coverage CSV fields"
+    )
+
     # FASTA validation limits
     fasta_max_length: int = Field(
         default=3000, description="Maximum sequence length")
@@ -80,6 +95,9 @@ class InputsConfig(BaseModel):
     )
     metadata_csv: Path | None = Field(
         default=None, description="Input metadata CSV path"
+    )
+    coverage_taxa_csv: Path | None = Field(
+        default=None, description="Input coverage taxa CSV path"
     )
 
 
@@ -263,6 +281,8 @@ class ConfigSchema(BaseModel):
     # Database coverage configuration
     db_coverage_toi_limit: int = Field(
         default=10, description="DB coverage TOI limit")
+    coverage_taxa_max: int = Field(
+        default=100, description="Maximum taxa in database coverage mode")
     db_coverage_max_candidates: int = Field(
         default=3, description="DB coverage max candidates")
     hmmsearch_min_evalue: float = Field(

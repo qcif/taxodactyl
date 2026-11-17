@@ -48,7 +48,12 @@ def _read_candidate_species(query_dir):
 
 
 def get_targets(query_dir):
-    candidates = _read_candidate_species(query_dir)
+    # No candidates file exists in database coverage mode
+    candidates = (
+        []
+        if config.coverage_mode
+        else _read_candidate_species(query_dir)
+    )
     if len(candidates) > config.db_coverage_max_candidates:
         logger.info(
             f"Skipping database coverage assessment for"
@@ -59,8 +64,8 @@ def get_targets(query_dir):
     pmi = config.get_pmi_for_query(query_dir)
     toi_list = config.get_toi_list_for_query(query_dir)
     if len(toi_list) > config.db_coverage_toi_limit:
-        toi_list = toi_list[:config.db_coverage_toi_limit]
         excluded_tois = toi_list[config.db_coverage_toi_limit:]
+        toi_list = toi_list[:config.db_coverage_toi_limit]
         msg = (
             f"Only the first {config.db_coverage_toi_limit} taxa of interest"
             f" will be evaluated. The following taxa of interest will be"

@@ -279,6 +279,43 @@ def _draw_occurrence_maps(
                 )
 
 
+def failed_coverage(query_dir, exc: Exception):
+    """Record an unexpected failure of the assessment, in coverage mode.
+
+    The error is logged for display in the report, and ERR flags and an empty
+    result are produced for the target taxon, so that the report can show what
+    went wrong. Without this, the task would fail and leave no outputs.
+    """
+    taxon = config.get_pmi_for_query(query_dir)
+    msg = (
+        f"Database coverage assessment failed for target taxon '{taxon}'"
+        f" because of an unexpected error ({type(exc).__name__}: {exc})."
+        " This taxon could not be evaluated. Please try re-running the"
+        " analysis; if the problem persists, report this error to the"
+        " workflow maintainers."
+    )
+    logger.error(msg, exc_info=exc)
+    errors.write(
+        errors.LOCATIONS.DB_COVERAGE,
+        msg,
+        exc=exc,
+        query_dir=query_dir,
+        context={"target": taxon},
+    )
+    coverage = {
+        'candidate': {},
+        'toi': {},
+        'pmi': {
+            taxon: {'target': None, 'related': None, 'country': None},
+        },
+    }
+    _set_flags(coverage, query_dir, {})
+    return {
+        'coverage': coverage,
+        'ncbi_urls': {taxon: {'blast': None, 'taxonomy': None}},
+    }
+
+
 def _set_flags(db_coverage, query_dir, higher_target_gbif_records):
     """Set flags 5.1 - 5.3 (DB coverage) for each target."""
     def set_target_coverage_flag(

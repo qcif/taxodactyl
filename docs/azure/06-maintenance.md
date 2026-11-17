@@ -24,7 +24,6 @@ rotate them on a schedule.
 | Token | Where it's configured | Step in initial setup |
 |---|---|---|
 | Cache container SAS connection string | `.env.azure` → `CACHE_AZURE_CONNECTION_STRING` | [Step 3b, Option B](01-initial-setup.md#step-3b-cache-connection-string) |
-| Reference data SAS URLs | Pool start task config | [Reference Data](03-reference-data.md) |
 
 > [!TIP]
 > Set a calendar reminder for **one month before** each token's expiry
@@ -279,9 +278,6 @@ every 90 days, or immediately if you suspect a key has been exposed.
 
 4. **Next rotation cycle**: repeat the procedure in reverse — move
    consumers back to `key1`, then regenerate `key2`.
-
-Repeat `STORAGE_ACCOUNT_PREM` separately for the premium account that
-hosts reference data.
 
 ## Lifecycle Policy Review
 

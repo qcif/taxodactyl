@@ -144,6 +144,7 @@ nextflow run main.nf \
     --analyst_name "${ANALYST_NAME:-}" \
     $RESUME
 
+    # Will be retrieved from Az key vault:
     # --ncbi_api_key "${NCBI_API_KEY:-}" \
     # --facility_name "${FACILITY_NAME:-QCIF}" \
 

@@ -107,6 +107,12 @@ PARAMS = {
         cli_name='metadata-csv',
         env_name='INPUT_METADATA_CSV_FILEPATH',
     ),
+    'coverage_taxa_csv': PathMapping(
+        'coverage_taxa_csv',
+        namespace='inputs',
+        cli_name='coverage-taxa',
+        env_name='COVERAGE_TAXA_CSV',
+    ),
     'taxdb_dir': PathMapping(
         'taxdb_dir',
         cli_name='taxdb-dir',
