@@ -37,16 +37,20 @@ def name_suggest(q=None, rank=None, limit=20, higher_taxon_key=None):
     return gbif_GET(GBIF_SUGGEST_URL, args)
 
 
-def get_col_taxon_id(usage_key) -> str:
-    """Resolve a v1 usage key to its COL taxonID (cached)."""
+def name_usage(usage_key) -> dict:
+    """Fetch the full /v1/species/{key} record for a usage key (cached)."""
     throttle = Throttle(ENDPOINTS.GBIF_FAST)
-    record = throttle.with_retry(
+    return throttle.with_retry(
         pygbif.species.name_usage,
         kwargs={'key': usage_key},
         with_cache=True,
         task_description=f"GBIF name_usage: key={usage_key}",
-    )
-    return record.get('taxonID')
+    ) or {}
+
+
+def get_col_taxon_id(usage_key) -> str:
+    """Resolve a v1 usage key to its COL taxonID (cached)."""
+    return name_usage(usage_key).get('taxonID')
 
 
 def get_usage_key(col_id) -> int:

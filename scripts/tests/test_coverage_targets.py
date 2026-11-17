@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 from src.coverage import assess
 from src.coverage.targets import fetch_target_taxa
 from src.gbif.relatives import RANK
+from src.utils import errors
 from src.utils.config import Config
 
 logging.disable(logging.CRITICAL)
@@ -35,6 +36,7 @@ def _fake_gbif_target(name, canonical_name, rank):
     record.rank = rank
     record.key = 1234
     record.from_synonym = None
+    record.tie_break = None
     record.genus = canonical_name
     return record
 
@@ -191,3 +193,38 @@ class SetFlagsTestCase(CoverageModeTestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TieBreakErrorTestCase(CoverageModeTestCase):
+    """Duplicate COL records with the same name are noted in the report."""
+
+    @patch('src.coverage.targets.RelatedTaxaGBIF')
+    def test_tie_break_writes_one_db_coverage_error(self, mock_cls):
+        target = _fake_gbif_target('Drosophila', 'Drosophila', RANK.GENUS)
+        target.tie_break = {
+            'chosen': (298353264, 'Drosophila Fallén, 1823'),
+            'rejected': [(314480147, 'Drosophila Fallen-Nominotypical')],
+            'name': 'Drosophila',
+            'rank': 'GENUS',
+        }
+        mock_cls.return_value = target
+        fetch_target_taxa(['Drosophila'], self.query_dir)
+
+        error_files = self._error_files()
+        self.assertEqual(len(error_files), 1)
+        error = json.loads(error_files[0].read_text())
+        self.assertEqual(error['location'], errors.LOCATIONS.DB_COVERAGE)
+        self.assertEqual(error['context'], {'target': 'Drosophila'})
+        self.assertEqual(
+            error['message'],
+            "GBIF returned 2 accepted records named 'Drosophila' (genus)."
+            " Using key 298353264 'Drosophila Fallén, 1823'; ignoring"
+            " 314480147 'Drosophila Fallen-Nominotypical'.",
+        )
+
+    @patch('src.coverage.targets.RelatedTaxaGBIF')
+    def test_no_tie_break_writes_no_error(self, mock_cls):
+        mock_cls.return_value = _fake_gbif_target(
+            'Drosophila', 'Drosophila', RANK.GENUS)
+        fetch_target_taxa(['Drosophila'], self.query_dir)
+        self.assertEqual(self._error_files(), [])

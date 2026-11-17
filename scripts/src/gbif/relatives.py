@@ -1,6 +1,7 @@
 """Fetch species under the given taxon from GBIF API."""
 
 import logging
+import re
 from functools import cached_property
 
 import pygbif
@@ -13,6 +14,13 @@ logger = logging.getLogger(__name__)
 config = config.Config()
 
 MODULE_NAME = 'GBIF API'
+
+# Tie-break signals for duplicate accepted COL records with the same name
+# and rank (issue #351, e.g. 'Drosophila Fallen-Nominotypical').
+NOMINOTYPICAL_RE = re.compile(r'nominotypical', re.IGNORECASE)
+# Well-formed authorship ending in a 4-digit year, e.g. 'Fallén, 1823' or
+# '(Linnaeus, 1758)'.
+AUTHORSHIP_YEAR_RE = re.compile(r'\b\d{4}\)?\s*$')
 
 KINGDOM_TAXA = {
     "fungi": {"rank": "Kingdom", "canonical_name": "fungi"},
@@ -142,6 +150,10 @@ class RelatedTaxaGBIF:
             else None
         )
         self.from_synonym = None
+        # Set when GBIF returns several accepted records with the same name
+        # and rank: {'chosen': (key, name), 'rejected': [(key, name), ...],
+        # 'name': str, 'rank': str}. See tie_break_message().
+        self.tie_break = None
         self.taxon = taxon
         self.record = self._get_taxon_record(taxon)
         self.key = self.record.key
@@ -175,10 +187,65 @@ class RelatedTaxaGBIF:
             with_cache=True,
             task_description=f"GBIF name_suggest: {kwargs}",
         )
-        for raw_record in res_name:
-            record = GBIFRecord(raw_record) if raw_record else None
+        candidates = self._get_accepted_candidates(
+            taxon, res_name or [], throttle)
+        if not candidates:
+            raise GBIFRecordNotFound(
+                f"No GBIF record found for '{taxon}'. Taxonomic records"
+                " cannot be retrieved. Please check that this species name"
+                " is correct.")
 
-            if raw_record.get('status') == 'SYNONYM':
+        record, from_synonym = candidates[0]
+        if len(candidates) > 1:
+            record, from_synonym = self._resolve_tie(taxon, candidates)
+        if from_synonym:
+            self.from_synonym = taxon
+
+        if record.taxon_id is None:
+            # /v1/species/suggest (unlike /v1/species/search or
+            # /v1/species/{key}) doesn't return taxonID at all, so
+            # the common non-synonym path needs an extra lookup.
+            record.taxon_id = api.get_col_taxon_id(record.key)
+        logger.info(
+            f"Record found for taxon"
+            f" '{taxon}' - rank:{record.rank}"
+            f" genusKey:{record.genus_key}")
+        return record
+
+    def _get_accepted_candidates(
+        self,
+        taxon: str,
+        res_name: list[dict],
+        throttle: Throttle,
+    ) -> list[tuple['GBIFRecord', bool]]:
+        """Return the first accepted record and any same-name/rank ties.
+
+        Each item is ``(record, from_synonym)``, in suggest order. The first
+        item is the first accepted suggestion (after synonym replacement).
+        Later items are other accepted, non-synonym suggestions with the same
+        lower-cased canonical name and rank. Synonyms after the first accepted
+        record are not resolved, so a response without ties makes exactly the
+        same requests as before tie-breaking was added.
+        """
+        first = None
+        ties = []
+        for raw_record in res_name:
+            if not raw_record:
+                continue
+            is_synonym = raw_record.get('status') == 'SYNONYM'
+            if first is not None:
+                if is_synonym:
+                    continue
+                record = GBIFRecord(raw_record)
+                if self._is_accepted(record) and _same_name_and_rank(
+                    first[0], record,
+                ):
+                    ties.append((record, False))
+                continue
+
+            record = GBIFRecord(raw_record)
+            from_synonym = False
+            if is_synonym:
                 # Replace the synonym record with its accepted name record
                 synonym_key = self._get_synonym_key(raw_record)
                 canonical_record = throttle.with_retry(
@@ -199,23 +266,42 @@ class RelatedTaxaGBIF:
                         f" '{_get_scientific_name(canonical_record)}'."
                     )
                     record = GBIFRecord(canonical_record)
-                    self.from_synonym = taxon
+                    from_synonym = True
 
-            if record and self._is_accepted(record):
-                if record.taxon_id is None:
-                    # /v1/species/suggest (unlike /v1/species/search or
-                    # /v1/species/{key}) doesn't return taxonID at all, so
-                    # the common non-synonym path needs an extra lookup.
-                    record.taxon_id = api.get_col_taxon_id(record.key)
-                logger.info(
-                    f"Record found for taxon"
-                    f" '{taxon}' - rank:{record.rank}"
-                    f" genusKey:{record.genus_key}")
-                return record
+            if self._is_accepted(record):
+                first = (record, from_synonym)
 
-        raise GBIFRecordNotFound(
-            f"No GBIF record found for '{taxon}'. Taxonomic records cannot"
-            " be retrieved. Please check that this species name is correct.")
+        if first is None:
+            return []
+        return [first] + ties
+
+    def _resolve_tie(
+        self,
+        taxon: str,
+        candidates: list[tuple['GBIFRecord', bool]],
+    ) -> tuple['GBIFRecord', bool]:
+        """Choose between accepted records sharing a name and rank.
+
+        /v1/species/suggest returns neither ``authorship`` nor
+        ``publishedIn``, so each tied record is enriched from its (cached)
+        /v1/species/{key} record before ``_break_tie`` is applied.
+        """
+        for record, _ in candidates:
+            _enrich_record(record)
+        records = [record for record, _ in candidates]
+        chosen = _break_tie(records)
+        rejected = [r for r in records if r is not chosen]
+        self.tie_break = {
+            'chosen': (chosen.key, _display_name(chosen)),
+            'rejected': [(r.key, _display_name(r)) for r in rejected],
+            'name': chosen.canonical_name,
+            'rank': chosen.rank,
+        }
+        logger.warning(
+            f"Taxon '{taxon}': {tie_break_message(self.tie_break)}")
+        from_synonym = next(
+            flag for record, flag in candidates if record is chosen)
+        return chosen, from_synonym
 
     def _is_accepted(self, record):
         if not record:
@@ -395,3 +481,91 @@ def _get_scientific_name(record: dict) -> str:
         if record.get(k):
             return record[k]
     return None
+
+
+def _same_name_and_rank(a: GBIFRecord, b: GBIFRecord) -> bool:
+    """Return True if both records share a canonical name and rank."""
+    return bool(
+        a.canonical_name
+        and b.canonical_name
+        and a.canonical_name.lower() == b.canonical_name.lower()
+        and (a.rank or '').upper() == (b.rank or '').upper()
+    )
+
+
+def _get_authorship(record: GBIFRecord) -> str:
+    """Return the record's authorship.
+
+    Falls back to the scientificName with the canonical name removed, since
+    /v1/species/suggest doesn't return ``authorship``.
+    """
+    if record.get('authorship'):
+        return record['authorship'].strip()
+    scientific_name = (record.get('scientificName') or '').strip()
+    canonical_name = record.canonical_name or ''
+    if (
+        canonical_name
+        and scientific_name.lower().startswith(canonical_name.lower())
+    ):
+        return scientific_name[len(canonical_name):].strip()
+    return ''
+
+
+def _display_name(record: GBIFRecord) -> str:
+    """Return the scientificName (with authorship) for messages."""
+    return record.get('scientificName') or record.canonical_name
+
+
+def _enrich_record(record: GBIFRecord) -> None:
+    """Add authorship, publishedIn and taxonID from /v1/species/{key}.
+
+    Only used for tied records. The lookup is cached and shares its cache
+    key with api.get_col_taxon_id, so the chosen record needs no further
+    request for its taxonID.
+    """
+    usage = api.name_usage(record.key)
+    for field in ('authorship', 'publishedIn'):
+        if usage.get(field) and not record.get(field):
+            record.data[field] = usage[field]
+    if record.taxon_id is None and usage.get('taxonID'):
+        record.taxon_id = usage['taxonID']
+
+
+def _break_tie(records: list[GBIFRecord]) -> GBIFRecord:
+    """Choose one of several accepted records with the same name and rank.
+
+    In order of preference (ties at each step fall through to the next):
+
+    1. No "nominotypical" marker in scientificName or authorship.
+    2. Authorship ending in a 4-digit year, e.g. 'Fallén, 1823'.
+    3. Non-empty publishedIn.
+    4. Suggest order (the order of ``records``).
+    """
+    def score(record):
+        authorship = _get_authorship(record)
+        nominotypical = bool(
+            NOMINOTYPICAL_RE.search(record.get('scientificName') or '')
+            or NOMINOTYPICAL_RE.search(authorship)
+        )
+        return (
+            not nominotypical,
+            bool(AUTHORSHIP_YEAR_RE.search(authorship)),
+            bool((record.get('publishedIn') or '').strip()),
+        )
+
+    # max() returns the first maximal item, which preserves suggest order.
+    return max(records, key=score)
+
+
+def tie_break_message(tie_break: dict) -> str:
+    """Describe a tie-break for logs and the report."""
+    chosen_key, chosen_name = tie_break['chosen']
+    rejected = '; '.join(
+        f"{key} '{name}'" for key, name in tie_break['rejected'])
+    count = 1 + len(tie_break['rejected'])
+    rank = (tie_break.get('rank') or '').lower()
+    return (
+        f"GBIF returned {count} accepted records named"
+        f" '{tie_break['name']}' ({rank}). Using key {chosen_key}"
+        f" '{chosen_name}'; ignoring {rejected}."
+    )
