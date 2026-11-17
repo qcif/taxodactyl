@@ -66,6 +66,24 @@ class FlagRollupTestCase(unittest.TestCase):
         self.assertEqual(flag.value, FLAGS.B)
         self.assertEqual(flag.bs_class, 'warning')
 
+    def test_not_assessed_without_locus_is_na(self):
+        # All 5.* NA (e.g. a kingdom target) is not a "no locus" warning
+        flag = self._roll_up(CSV_NO_LOCUS, 'NA', 'NA', 'NA')
+        self.assertEqual(flag.value, FLAGS.NA)
+        self.assertEqual(flag.level, 0)
+        self.assertEqual(flag.bs_class, 'secondary')
+
+    def test_not_assessed_with_locus_is_na(self):
+        flag = self._roll_up(CSV_LOCUS, 'NA', 'NA', 'NA')
+        self.assertEqual(flag.value, FLAGS.NA)
+        self.assertEqual(flag.bs_class, 'secondary')
+
+    def test_partly_na_without_locus_is_still_a_warning(self):
+        # e.g. 5.3 NA because no country was given
+        flag = self._roll_up(CSV_NO_LOCUS, 'A', 'A', 'NA')
+        self.assertEqual(flag.flag_id, FLAGS.DB_COVERAGE_ALL)
+        self.assertEqual(flag.value, FLAGS.B)
+
 
 if __name__ == '__main__':
     unittest.main()

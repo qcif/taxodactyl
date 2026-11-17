@@ -6,7 +6,10 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+import p5_db_coverage
+from src.coverage import assess_coverage
 from src.report import report
 from src.utils.config import Config
 
@@ -25,6 +28,15 @@ TAXA = [
 ]
 INCOMPLETE_TAXON = 'Bactrocera'
 INCOMPLETE_TEXT = 'Analysis did not complete for this taxon'
+ROOT_TAXON = 'Fungi'
+ROOT_TAXON_ROW = 'Fungi,COI,Australia,fungi\n'
+NOT_ASSESSED_HTML = (
+    'Database coverage is not assessed for taxa at kingdom or domain rank'
+    ' (<em>Fungi</em>), because they are too broad for this analysis to be'
+    ' meaningful.'
+)
+GENERIC_NO_DATA_TEXT = 'an error was encountered during the analysis'
+ISSUES_TEXT = 'Issues encountered'
 
 
 class ReportCoverageTestCase(unittest.TestCase):
@@ -112,6 +124,66 @@ class ReportCoverageTestCase(unittest.TestCase):
         self.assertIn('id="coverageInputModal"', self.html)
         self.assertIn('id="flagsModal"', self.html)
         self.assertIn('id="errorModal"', self.html)
+
+
+class ReportRootTaxonTestCase(unittest.TestCase):
+    """A kingdom-level taxon is shown as not assessed, not as an error."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.out = Path(cls.tmp.name) / 'out'
+        shutil.copytree(FIXTURE_DIR, cls.out)
+        (cls.out / config.timestamp_filename).write_text(TIMESTAMP + '\n')
+        csv_path = cls.out / 'coverage.csv'
+        csv_path.write_text(csv_path.read_text() + ROOT_TAXON_ROW)
+        cls.original = (
+            config.output_dir,
+            config.inputs.coverage_taxa_csv,
+        )
+        config.output_dir = cls.out
+        config.inputs.coverage_taxa_csv = csv_path
+        config.__dict__.pop('coverage_rows', None)
+        config.__dict__.pop('metadata', None)
+        query_dir = config.get_query_dir(len(TAXA))
+        query_dir.mkdir(exist_ok=True)
+        with (
+            patch('src.gbif.api.name_suggest') as mock_suggest,
+            patch('src.taxonomy.extract.taxids') as mock_taxids,
+        ):
+            results, _ = assess_coverage(query_dir, is_bold=False)
+        assert not mock_suggest.called and not mock_taxids.called
+        p5_db_coverage.write_db_coverage(query_dir, results)
+        report.render_coverage()
+        paths = list(cls.out.glob(REPORT_GLOB))
+        assert len(paths) == 1, paths
+        cls.html = paths[0].read_text()
+        modal = cls.html[cls.html.index(
+            f'Database coverage of Target taxon <em>{ROOT_TAXON}</em>'):]
+        end = modal.find('class="modal fade"')
+        cls.modal = modal if end < 0 else modal[:end]
+
+    @classmethod
+    def tearDownClass(cls):
+        config.output_dir, config.inputs.coverage_taxa_csv = cls.original
+        config.__dict__.pop('coverage_rows', None)
+        config.__dict__.pop('metadata', None)
+        cls.tmp.cleanup()
+
+    def test_modal_shows_not_assessed_message(self):
+        self.assertIn(NOT_ASSESSED_HTML, ' '.join(self.modal.split()))
+        self.assertIn('alert alert-secondary', self.modal)
+        self.assertNotIn(GENERIC_NO_DATA_TEXT, self.modal)
+        self.assertNotIn(ISSUES_TEXT, self.modal)
+
+    def test_summary_row_is_na(self):
+        table = self.html[self.html.index('<table class="table tight border'):]
+        table = table[:table.index('</table>')]
+        rows = re.findall(r'<tr>.*?</tr>', table, re.DOTALL)
+        row = next(r for r in rows if f'<em>{ROOT_TAXON}</em>' in r)
+        self.assertNotIn(INCOMPLETE_TEXT, row)
+        self.assertIn('btn btn-secondary', row)
+        self.assertNotRegex(row, r'bg-(danger|warning|success)')
 
 
 if __name__ == '__main__':

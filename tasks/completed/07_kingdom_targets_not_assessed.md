@@ -1,13 +1,13 @@
 # Task 07 — Report kingdom/domain-level DB coverage targets as not assessed
 
-**Status:** planned
+**Status:** done
 
 **Priority:** High: regression from #313 (COL refactor). Any sample whose PMI
 or TOI names its own kingdom loses all of flag 5.
 
 **Issue:** [#354 — DB coverage: kingdom-level PMI/TOI fails GBIF lookup since #313; should report 5.*NA](https://github.com/qcif/taxodactyl/issues/354)
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** granted by user via `/speckit-implement 07` on 2026-11-18.
 
 **Scope:** P5 database coverage target handling (`scripts/src/coverage/`,
 `scripts/src/gbif/relatives.py`) and the DB coverage modal template. A target
@@ -168,10 +168,9 @@ In `scripts/src/coverage/targets.py`:
 
 ## Testing decision
 
-**Pending user input.** The proposed split is below. It is not settled until
-the user answers.
+**Decided 2026-11-18** (user accepted the proposal).
 
-- Proposed: the agent writes and runs the automated unit tests listed under
+- The agent writes and runs the automated unit tests listed under
   Validation. The user reviews nf-test flag/snapshot drift and Selenium drift,
   and owns any baseline or fixture updates.
 
@@ -247,3 +246,93 @@ runner (`.github/workflows/nf-test.yml`, or `bin/nf-test.sh`). Then use the
 - `KINGDOM_TAXA` has a "chlorophyta" → plantae entry. Chlorophyta is a
   phylum, so a target "Chlorophyta" would now get NA rather than family+
   handling. That's acceptable (still far too broad), but note it in the spec.
+
+## Outcomes
+
+Completed 2026-11-18 on branch `task-07-kingdom-targets-not-assessed`.
+
+### Implemented
+
+- `scripts/src/gbif/relatives.py`: `is_root_taxon(name)` (stripped,
+  lower-cased name in `KINGDOM_TAXA`) and `ROOT_RANKS = {KINGDOM, DOMAIN,
+  UNRANKED}`.
+- `scripts/src/coverage/targets.py`: `TargetGbifRecords.root_taxa` (original
+  names, input order, no duplicates). `fetch_target_taxa` stops root names
+  before building `RelatedTaxaGBIF`, and moves records that resolve to a
+  `ROOT_RANKS` rank into `root_taxa` (key, name and rank logged at INFO). No
+  errors are written for either, and root taxa are kept out of every other
+  field. `get_taxids` now returns `{}` without running taxonkit when there
+  are no targets left, so a root-only query makes no taxonkit call.
+- `scripts/src/coverage/assess.py`: `ROOT_TAXON_NOT_ASSESSED_MSG`; root taxa
+  are excluded from `unknown_taxa`, get
+  `{target, related, country: null, not_assessed: <message>}` for each role
+  they appear in, `ncbi_urls` of `null`, count in the "No tasks created"
+  guard, and are passed to `_set_flags(..., root_taxa=...)`, which writes
+  `NA` for 5.1-5.3. `failed_coverage` passes `root_taxa=[]`.
+- Occurrence maps: **no placeholder map is drawn** for root taxa. The report
+  already handles a missing map file (`_get_img_src` falls back to the
+  placeholder image, and the map is only rendered in the modal's assessed
+  branch, which root taxa never reach).
+- `scripts/src/report/templates/macros/db-coverage-target-modal.html`: when
+  `not_assessed` is set, the modal shows it in `alert alert-secondary` with
+  the target name in `<em>`, in place of the generic message. The macro is
+  shared by the main and coverage-mode reports, and the main report's PMI,
+  TOI and candidate views use the same `db_coverage.json` shape that
+  unresolved targets already render with; only the coverage-mode report is
+  exercised by a unit test.
+
+### Summary Flag 5 (§4 of this brief)
+
+The check found a bug: an all-`NA` target with no locus rolled up to `5B`
+("locus was not provided"). `Flag._post_process_flags`
+(`scripts/src/utils/flags.py`) now skips the `5B` replacement when 5.1, 5.2
+and 5.3 are all `NA`, so the summary stays `NA` (level 0) with or without a
+locus. With a locus the representative flag is still the `5.1NA` flag, as
+before, to avoid report drift. This also changes family-to-phylum targets
+on queries **without a locus** from `5B` (warning) to `NA`; documented in
+spec §5.4. Targets with only some 5.* flags `NA` (e.g. 5.3 when there is no
+country) still get `5B`.
+
+### Documentation
+
+- `spec/python/p5-db-coverage.md`: new P5-015 (incl. the Chlorophyta and
+  `UNRANKED` notes from Risks); P5-010, P5-014 and P5-060 amended; root rows
+  in §5.1-5.3; §5.4 rollup rule; `not_assessed` in §6; tests in §9.
+- `spec/contracts/coverage-and-sources.md`: `not_assessed` in the JSON shape,
+  COV-004 amended, new COV-005.
+- `spec/defects.md` and p5 §8: P5-D-009 narrowed to its below-genus rank
+  half. Its "protozoa → protista" half is resolved by P5-015: a "protozoa"
+  target is now reported not assessed before any lookup, so the wrong
+  canonical name is never used. No row was added for #354.
+
+### Validation
+
+- Unit tests (agent-owned, per the testing decision): new
+  `scripts/tests/test_coverage_targets.py` (6 tests: no lookups for root
+  names, ordering and de-duplication, root-rank resolution for kingdom,
+  domain and unranked, family still higher, end-to-end `assess_coverage` for
+  a Fungi-only query with no GBIF/taxonkit/Entrez calls, NA flags, no errors
+  or map, and `_set_flags` keeping `ERR` for a failed lower target);
+  `TestIsRootTaxon` in `test_gbif.py`; three roll-up cases in
+  `test_flags_coverage.py` (both all-NA cases failed before the fix);
+  `ReportRootTaxonTestCase` in `test_report_coverage.py`. Full suite: 202
+  tests OK (1 skipped), run from `scripts/` with `PYTHONPATH=.:..` (the
+  repo root is needed for `test_phylogeny_sampling.py`, as in launch.json).
+- flake8: clean on all changed Python files.
+- Integration test data (`scripts/tests/test-data/integration/blast/206/metadata.csv`)
+  has no kingdom-level targets, so the integration suite should be unaffected.
+
+### Pending manual review (user-owned)
+
+Not run by the agent: nf-test core (`test/core/flags/query_018_FungusB_Btub_5.*.flag`,
+snapshot drift for FungusB_Btub `db_coverage.json` and report hashes) and the
+Selenium review of `test/selenium/expected/10_FungusB_Btub.yaml`
+(`testkit promote 10`), as described under "Test impact and manual review".
+Also watch for flag 5 summary drift on family-to-phylum targets in samples
+without a locus (now `NA` instead of `5B`).
+
+### Spin-offs (added to `tasks/todo.md`)
+
+- `RelatedTaxaGBIF._get_taxon_record`'s `KINGDOM_TAXA` rewrite is now
+  unreachable (its only caller, `fetch_target_taxa`, stops those names
+  first). Left in place to keep this task's code change minimal.

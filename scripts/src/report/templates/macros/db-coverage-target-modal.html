@@ -72,6 +72,17 @@
 
           {% if context.data.target is none and context.data.related is none and context.data.country is none %}
 
+          {% if context.data.not_assessed %}
+          {% set msg = context.data.not_assessed %}
+          {% set name_at = msg.find(context.target_taxon) %}
+          <p class="alert alert-secondary">
+            {% if name_at >= 0 %}
+            {{ msg[:name_at] }}<em>{{ context.target_taxon }}</em>{{ msg[name_at + context.target_taxon | length:] }}
+            {% else %}
+            {{ msg }}
+            {% endif %}
+          </p>
+          {% else %}
           {% set flag_1 = context.flags.get('1') %}
           <p class="alert alert-info">
             No database coverage information is available for this taxon.
@@ -81,6 +92,7 @@
             This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
             {% endif %}
           </p>
+          {% endif %}
 
           {% else %}
 

@@ -9,6 +9,7 @@ from src.gbif.relatives import (
     GBIFRecord,
     GBIFRecordNotFound,
     RelatedTaxaGBIF,
+    is_root_taxon,
 )
 
 TEST_DATA_DIR = Path(__file__).parent / 'test-data'
@@ -265,6 +266,19 @@ class TestFetchRelatedSpecies(unittest.TestCase):
         result = taxon.for_country('AU')
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].taxon_id, 'MT4KV')
+
+
+class TestIsRootTaxon(unittest.TestCase):
+
+    def test_kingdom_domain_and_root_names(self):
+        for name in ('Fungi', 'fungi', ' Viruses ', 'metazoa'):
+            with self.subTest(name=name):
+                self.assertTrue(is_root_taxon(name))
+
+    def test_lower_taxa_and_partial_matches(self):
+        for name in ('Drosophila', 'Fungus gnat'):
+            with self.subTest(name=name):
+                self.assertFalse(is_root_taxon(name))
 
 
 class TestNameSuggestWrapper(unittest.TestCase):

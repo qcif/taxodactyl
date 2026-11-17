@@ -255,10 +255,17 @@ class Flag:
                         else repr_flag.value
                     )
                     # An error means that coverage was not assessed at all,
-                    # so don't replace it with the "no locus" warning
+                    # and all-NA means it was not assessed by design (e.g.
+                    # a kingdom or family target), so don't replace either
+                    # with the "no locus" warning
+                    all_na = all(
+                        (f['value'] if as_json else f.value) == FLAGS.NA
+                        for f in (flag_5_1, flag_5_2, flag_5_3)
+                    )
                     needs_special_flag = (
                         get_level(repr_flag) < 2 and
                         repr_value != FLAGS.ERROR and
+                        not all_na and
                         not config.locus_was_provided_for(query)
                     )
                     if needs_special_flag:

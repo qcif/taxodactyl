@@ -69,11 +69,12 @@ stderr when any lower-rank target has a missing result.
 
 | ID | Requirement |
 |---|---|
-| P5-010 | Query `/v1/species/suggest` (`q=<target>`, limit 20, `datasetKey=<COL>`). If the lower-cased target is in `KINGDOM_TAXA` (e.g. `animals`, `metazoa`, `fungus`, `viral`), replace `q` with the canonical root name and add `rank` — `Kingdom` for animals/plants/fungi/protists/chromista, `Domain` for bacteria/archaea, `Unranked` for viruses (COL's ranks for those roots). If the query has a classification, also pass `higherTaxonKey` = the usage key resolved at runtime from `HIGHER_CLASSIFICATIONS[c].gbif_col`, a COL taxonID (`api.get_usage_key`, cached). Classification filtering is therefore done by GBIF, server-side. |
+| P5-010 | Query `/v1/species/suggest` (`q=<target>`, limit 20, `datasetKey=<COL>`). Kingdom-level target names never reach this call: P5-015 stops them first. Within `RelatedTaxaGBIF` itself, if the lower-cased name is in `KINGDOM_TAXA` (e.g. `animals`, `metazoa`, `fungus`, `viral`), replace `q` with the canonical root name and add `rank` — `Kingdom` for animals/plants/fungi/protists/chromista, `Domain` for bacteria/archaea, `Unranked` for viruses (COL's ranks for those roots). If the query has a classification, also pass `higherTaxonKey` = the usage key resolved at runtime from `HIGHER_CLASSIFICATIONS[c].gbif_col`, a COL taxonID (`api.get_usage_key`, cached). Classification filtering is therefore done by GBIF, server-side. |
 | P5-011 | Take the **first** suggestion that has status in `gbif_accepted_status`, is not extinct (`extinct`, falling back to `isExtinct`), and has a rank in {species, genus, family, order, class, phylum, kingdom, domain, unranked}. A `SYNONYM` suggestion is replaced by its accepted record (`name_usage` on `acceptedKey` if present, else the first of `speciesKey…kingdomKey`) and `from_synonym` is set. Suggest results carry no COL taxonID, so an accepted record without one gets an extra cached `name_usage` lookup to fill it (`api.get_col_taxon_id`). |
 | P5-012 | No qualifying suggestion ⇒ `GBIFRecordNotFound`; error `DB_COVERAGE_NO_GBIF_RECORD`; the target gets `{target, related, country} = null` and all three flags `ERR`. |
 | P5-013 | Informational errors (location `DB_COVERAGE`) MUST be written when the target is a synonym, or when the accepted canonical name differs from the input (case-insensitive) — the analysis proceeds on the GBIF name. |
-| P5-014 | Rank species or genus ⇒ **lower** target (all three analyses). Family or above ⇒ **higher** target: only the record count is fetched and all three flags are `NA`. |
+| P5-014 | Rank species or genus ⇒ **lower** target (all three analyses). Family to phylum ⇒ **higher** target: only the record count is fetched and all three flags are `NA`. |
+| P5-015 | A **root** target is one whose stripped, lower-cased name is in `KINGDOM_TAXA` (`is_root_taxon`), or whose GBIF record has rank kingdom, domain or unranked (`ROOT_RANKS`). It is too broad to assess: it makes no further GBIF, taxonkit, Entrez/BOLD or occurrence requests (a name in `KINGDOM_TAXA` makes none at all), writes no error and no map, gets all three flags `NA`, and its `db_coverage.json` entry is `{target, related, country} = null` plus a `not_assessed` message: "Database coverage is not assessed for taxa at kingdom or domain rank (*<target>*), because they are too broad for this analysis to be meaningful." The report's coverage modal shows that message instead of the generic "no information" text. `fetch_target_taxa` lists these targets in `TargetGbifRecords.root_taxa`, by original name. Notes: `KINGDOM_TAXA` maps "chlorophyta" (a phylum) to Plantae, so a Chlorophyta target is root, not higher; and treating `UNRANKED` as root assumes COL's only accepted unranked taxa are roots such as Viruses (the resolved key and name are logged at INFO). |
 
 ### 4.2 Taxids
 
@@ -111,7 +112,7 @@ stderr when any lower-rank target has a missing result.
 
 | ID | Requirement |
 |---|---|
-| P5-060 | For every target with a GBIF record, write `map_<path_safe(original target)>.png`. |
+| P5-060 | For every target with a GBIF record, except root targets (P5-015), write `map_<path_safe(original target)>.png`. |
 | P5-061 | Lower targets: fetch GBIF occurrences (`taxonKey=<target COL taxonID>`, `checklistKey=<COL>`) page by page until `endOfRecords` or `gbif_max_occurrence_records`; plot a log-scaled hexbin of coordinates on a Natural Earth 110m base map (bundled zip), 16×12 in at 300 dpi, with `n=<count> occurrences`, or a "No occurrence records" message. |
 | P5-062 | Higher or unknown-rank targets: placeholder map with "Occurrence maps are only generated for taxa at rank genus or species". |
 | P5-063 | Map errors MUST be written as `DB_COVERAGE` errors and not stop the analysis. |
@@ -134,7 +135,7 @@ and the **original** (user-supplied) target name.
 
 | Condition | Value |
 |---|---|
-| higher target | `NA` |
+| higher or root target | `NA` |
 | count `null` | `ERR` |
 | count > `db_cov_target_min_a` (5) | `A` |
 | count > `db_cov_target_min_b` (1) | `B` |
@@ -147,7 +148,7 @@ With the defaults a count of exactly 1 is graded `C` (P5-D-001).
 
 | Condition | Value |
 |---|---|
-| higher target | `NA` |
+| higher or root target | `NA` |
 | `null` | `ERR` |
 | `{}` (no relatives) | `ERR` + error |
 | % of relatives with count > 0: > `db_cov_related_min_a` (90) | `A` |
@@ -158,7 +159,7 @@ With the defaults a count of exactly 1 is graded `C` (P5-D-001).
 
 | Condition | Value |
 |---|---|
-| higher target, or no country (`"NA"`) | `NA` |
+| higher or root target, or no country (`"NA"`) | `NA` |
 | `null` | `ERR` |
 | `{}` (no relatives observed in country) | `C` (level 0 in `flags.csv`: "unlikely to be another species in this genus") |
 | every in-country species has count > 0 | `A` |
@@ -173,7 +174,10 @@ With the defaults a count of exactly 1 is graded `C` (P5-D-001).
 Not written by P5. For each target, when a report reads the flags: take the
 5.1/5.2/5.3 flag with the **highest** level, or the **lowest** if any has
 level 0; if that level is < 2 and the query has no locus, replace it with
-`5B` ("locus was not provided"). Targets with no flags fall back to `5NA`.
+`5B` ("locus was not provided"). The replacement is skipped when that flag
+is `ERR`, or when all three of 5.1/5.2/5.3 are `NA` (the target was not
+assessed by design: higher or root targets, P5-014/P5-015), so the summary
+stays `NA`. Targets with no flags fall back to `5NA`.
 
 ## 6. `db_coverage.json`
 
@@ -183,7 +187,8 @@ level 0; if that level is < 2 and the query has no locus, replace it with
     "candidate": { "<original name>": {"target": <int|null>,
                                        "related": {"<species>": <int|null>} | {} | null,
                                        "country": {"<species>": <int>} | {} | "NA" | null,
-                                       "genus": "<GBIF genus>"} },
+                                       "genus": "<GBIF genus>",
+                                       "not_assessed": "<message>"} },
     "toi": { … },
     "pmi": { "<pmi>": { … } }
   },
@@ -191,7 +196,8 @@ level 0; if that level is < 2 and the query has no locus, replace it with
 }
 ```
 
-`genus` is present only when a GBIF record was found. The integration
+`genus` is present only when a GBIF record was found. `not_assessed` is
+present only for root targets (P5-015), whose other fields are all `null`. The integration
 test kit compares this file semantically across runs
 (`tests/integration/kit/coverage_assert.py`).
 
@@ -213,7 +219,7 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 | P5-D-005 | Medium | A failed per-species count in 5.2 is recorded as 0 (unrepresented), lowering the 5.2/5.3 grade instead of yielding `ERR`. |
 | P5-D-006 | Medium | A locus value ending in ` gene` (accepted by P0) makes `get_locus_for_query` return a `str` (CFG-D-003); `fetch_gb_records` then fails for every target ⇒ every 5.x flag is `ERR`. |
 | P5-D-008 | Low | TOI truncation message computes excluded TOIs after truncating, so it always lists none. |
-| P5-D-009 | Low | Ranks such as subspecies, subgenus, tribe, subfamily are rejected (`RANK` has no entry), so such targets always hit P5-012; COL adds more such ranks, still mapped to `NONE`. Separately, `KINGDOM_TAXA` maps protozoa to "protista", but COL's kingdom is named Protozoa, so a target of "protozoa" is very likely not found. |
+| P5-D-009 | Low | Ranks such as subspecies, subgenus, tribe, subfamily are rejected (`RANK` has no entry), so such targets always hit P5-012; COL adds more such ranks, still mapped to `NONE`. |
 | P5-D-014 | Low (*to confirm*) | Classification filtering now relies on `higherTaxonKey` on the suggest call (P5-010), but a `SYNONYM` suggestion is then replaced by its accepted record through a `name_usage` lookup that has no classification restriction. If the accepted name sits outside the classification, it is used anyway. The refactor's own task note (`scripts/tasks/01-gbif-api-refactor.md`, task B.3) flags this as possible "in theory" and leaves it open. |
 | P5-D-010 | Low | `name_suggest` is a prefix/fuzzy suggest; the first accepted suggestion may be a different taxon. This is reported as an informational error (P5-013) but the analysis proceeds. |
 | P5-D-011 | Low | Occurrence maps are 300 dpi 16×12 in PNGs (~4800×3600 px), embedded in the HTML report, which inflates its size. |
@@ -224,6 +230,10 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 
 - `tests/test_gbif.py`: relatives lookup, country request, classification filter as a request-shape test (`higherTaxonKey` passed — P5-010), extinct records excluded and synonym via `acceptedKey` (P5-011), country facets matched to COL taxonID as strings (P5-051), the direct suggest request (P5-010).
 - `tests/integration/test_integration.py::GBIFClassificationsTest`: every `HIGHER_CLASSIFICATIONS` COL taxonID still resolves through `get_usage_key()` to the expected root (live; catches a COL release retiring an ID).
+- `tests/test_gbif.py::TestIsRootTaxon`: root-name matching (P5-015).
+- `tests/test_coverage_targets.py`: root targets make no lookups, write no errors or maps, get `NA` flags and the `not_assessed` message, also when GBIF resolves a name to a root rank; family targets are still higher targets; a failed lower target in the same call is still `ERR` (P5-015, P5-014, §5).
+- `tests/test_flags_coverage.py`: summary Flag 5 roll-up, including all-`NA` targets staying `NA` without a locus (§5.4).
+- `tests/test_report_coverage.py::ReportRootTaxonTestCase`: the coverage-mode report shows the `not_assessed` message and an NA badge, without the generic error text (P5-015).
 - `tests/test_genbank.py`: `fetch_gb_records` count/ids (P5-030).
 - `tests/integration/` + `testkit.py`: live end-to-end comparison of `db_coverage.json` against reviewed fixtures (manual).
 - **Not covered:** flag thresholds §5 (including P5-D-001), taxid-less targets, higher-rank targets, TOI limit, country paging, maps.
