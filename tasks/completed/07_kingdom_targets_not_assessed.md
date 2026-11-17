@@ -300,7 +300,10 @@ country) still get `5B`.
   in §5.1-5.3; §5.4 rollup rule; `not_assessed` in §6; tests in §9.
 - `spec/contracts/coverage-and-sources.md`: `not_assessed` in the JSON shape,
   COV-004 amended, new COV-005.
-- `spec/defects.md`: unchanged (no row for #354).
+- `spec/defects.md` and p5 §8: P5-D-009 narrowed to its below-genus rank
+  half. Its "protozoa → protista" half is resolved by P5-015: a "protozoa"
+  target is now reported not assessed before any lookup, so the wrong
+  canonical name is never used. No row was added for #354.
 
 ### Validation
 
@@ -332,5 +335,4 @@ without a locus (now `NA` instead of `5B`).
 
 - `RelatedTaxaGBIF._get_taxon_record`'s `KINGDOM_TAXA` rewrite is now
   unreachable (its only caller, `fetch_target_taxa`, stops those names
-  first), which also makes the "protozoa → protista" half of P5-D-009 moot.
-  Left in place because this brief said not to fix P5-D-009.
+  first). Left in place to keep this task's code change minimal.
