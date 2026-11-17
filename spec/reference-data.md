@@ -143,8 +143,7 @@ amount of local storage planning mitigates.
 - **Known gaps:** `P5-D-010` (`name_suggest` is fuzzy — the first match
   may be the wrong taxon, surfaced only as an informational error);
   `P5-D-014` (a synonym's accepted record isn't re-checked against the
-  classification). `P5-D-007` (relatives searched across all checklists)
-  was fixed by the COL migration.
+  classification).
 
 ### 2.3 BOLD
 

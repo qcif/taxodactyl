@@ -225,9 +225,7 @@ beyond ordinary dead code.
 - No sample-sheet parsing or validation in Nextflow. The metadata CSV's
   content is checked only by P0
   ([contracts/inputs.md](../contracts/inputs.md)): since `3339050`
-  nf-schema validates just the `--metadata` path, and the unused
-  `samplesheetToList` import (`NF-D-017`, a residual of the nf-core
-  template's samplesheet path) has been removed.
+  nf-schema validates just the `--metadata` path.
 - No cross-query aggregation, and no run-level summary report.
 - No `stub:` blocks exist in any process; `-stub-run` is not a supported
   test path — tracked as an open enhancement, not a defect:

@@ -295,15 +295,22 @@ Resolve all paths below relative to that worktree, not the main checkout.
 5. Update links to the moved brief to point to `tasks/completed/`; when
    modifying specs, prefer saying `task NN_short_name` rather than linking to
    the movable task file.
-6. Before committing, verify in the task worktree that the completed brief
+6. If the task fixes defects listed in `spec/defects.md`, delete each fixed
+   defect's row there and in its module spec, and update the severity counts
+   in the summary table. Then `git grep` the defect ID across `spec/` and
+   remove or correct every reference. Where the surrounding text describes
+   the defect or its fix, rewrite it to describe current behaviour rather
+   than history. Do not mark rows as fixed: git history and the linked issue
+   keep the record. Include these edits in the task's commit and PR.
+7. Before committing, verify in the task worktree that the completed brief
    exists with status `done`, the original brief is absent, and the task is no
    longer listed as active or to-do. Completion includes these lifecycle edits;
    do not defer them until merge or leave them only in the main checkout.
-7. Commit the implementation, documentation, tests, and lifecycle changes
+8. Commit the implementation, documentation, tests, and lifecycle changes
    together in the task worktree. Check the commit includes the completed
    brief and index changes, with no uncommitted task changes remaining.
-8. Report the commit, branch, worktree, completed brief path and tests to the user. Do not merge into main automatically, offer to open a pull-request in https://github.com/qcif/taxodactyl instead.
-9. After the user merges the branch (locally or via PR), verify the main worktree reflects the
+9. Report the commit, branch, worktree, completed brief path and tests to the user. Do not merge into main automatically, offer to open a pull-request in https://github.com/qcif/taxodactyl instead.
+10. After the user merges the branch (locally or via PR), verify the main worktree reflects the
    completed lifecycle and remove any remaining tracking entry for this task
    from its `tasks/active.md`. A pending merge does not keep the task active
    in the implementation worktree.

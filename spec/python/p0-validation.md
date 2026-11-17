@@ -181,7 +181,6 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | P0-D-005 | Regex range `A-z` also admits `[ \ ] ^ _` and backtick in `sample_id`, `preliminary_id`, `taxa_of_interest`. |
 | P0-D-006 | `--bold` help says it "accept[s] blank locus field", but P0-013 rejects blank locus before the BOLD exemption is reached. |
 | P0-D-007 | P0-012 compares the **unstripped** `sample_id` to FASTA ids, while P0-020 validates the stripped value; a trailing space yields a confusing "not present in FASTA" error. |
-| P0-D-008 — **fixed in `3339050`** | `classification` accepts 12 values here but `assets/schema_input.json` enumerated only 7, and until `3339050` that schema was applied by nf-schema to every CSV row before P0 ran. `Config.HIGHER_CLASSIFICATIONS` has 12 keys: the 7 formal names (`animalia, plantae, fungi, chromista, bacteria, archaea, viruses`) plus 5 colloquial synonyms (`animal`, `animals`, `plant`, `plants`, `virus`). So through the Nextflow-launched pipeline those 5 values were rejected before P0 saw them. `3339050` removed the `"schema"` key from the `metadata` parameter, so nf-schema no longer reads the CSV and all 12 values now reach P0 and pass. The 7-value list survives only in the now-unused schema file (`P0-D-015`). |
 | P0-D-009 | `_autofix_sample_id_spaces` logs with `logger.debug("…:", repr(x))` (print-style args) — malformed log calls. |
 | P0-D-010 **(vs Design Proposal)** | The Design Proposal (§2.3 Workflow inputs) states BOLD mode is COI-only: "The BOLD database can only be used for query sequences at the COI locus. The locus is therefore not required for the BOLD workflow version." Nothing in P0 enforces a COI-specific check — `--bold` only relaxes the generic locus check (see P0-021, and the blank-locus bug P0-D-006); any locus value (not just COI) that resolves against `loci.json`, or in principle no restriction at all once P0-D-006 is fixed, is accepted in BOLD mode. [decisions.md `D-06`](../decisions.md) is open on whether to add the COI restriction or keep the current relaxed behaviour. |
 | P0-D-012 | `docs/params.md`'s `taxdb` requirement list includes `taxonkit` (the binary) and `readme.txt`; the actual check (`TAXDB_EXPECT_FILES`, `P0-031`) is 9 `*.dmp`/`gc.prt` files only — it never checks for a binary or a readme. |
@@ -229,7 +228,7 @@ tested.
 
 ## Provenance
 
-**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the P0-D-008 fix added from `3339050` (`src/utils/encoding.py`, 120 lines). See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the removal of nf-schema's metadata CSV validation added from `3339050` (`src/utils/encoding.py`, 120 lines). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict
