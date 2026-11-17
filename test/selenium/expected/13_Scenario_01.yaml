@@ -151,7 +151,7 @@ components:
       flex: 0.1
       value:
       - '4458'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -196,7 +196,7 @@ components:
       flex: 0.1
       value:
       - '4458'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -241,7 +241,7 @@ components:
       flex: 0.1
       value:
       - '4458'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -285,7 +285,7 @@ components:
       flex: 0.1
       value:
       - '4458'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''

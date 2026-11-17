@@ -152,7 +152,7 @@ components:
       flex: 0.1
       value:
       - '750'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
@@ -197,7 +197,7 @@ components:
       flex: 0.1
       value:
       - '750'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
@@ -242,7 +242,7 @@ components:
       flex: 0.1
       value:
       - '0'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -286,7 +286,7 @@ components:
       flex: 0.1
       value:
       - '750'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - A country of origin was not provided in the sample metadata, so this analysis could not be performed.

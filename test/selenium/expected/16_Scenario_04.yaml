@@ -146,7 +146,7 @@ components:
       flex: 0.1
       value:
       - '18'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -191,7 +191,7 @@ components:
       flex: 0.1
       value:
       - '18'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -235,7 +235,7 @@ components:
       flex: 0.1
       value:
       - '18'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -279,7 +279,7 @@ components:
       flex: 0.1
       value:
       - '18'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -324,7 +324,7 @@ components:
       flex: 0.1
       value:
       - '18'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''

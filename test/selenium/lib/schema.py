@@ -101,7 +101,7 @@ GROUPED_COMPONENTS = {
             "min_bar_count": "min",
             "first_bar_species": "list",
             "first_bar_count": "list",
-            "final_text": "list",
+            "country_message": "list",
         },
     },
     "publication_modal": {

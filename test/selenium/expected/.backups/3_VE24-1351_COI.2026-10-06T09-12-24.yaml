@@ -156,7 +156,7 @@ components:
       type: list
       value:
       - '0'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -197,7 +197,7 @@ components:
       type: list
       value:
       - '749'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -238,7 +238,7 @@ components:
       type: list
       value:
       - '749'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -278,7 +278,7 @@ components:
       type: list
       value:
       - '926'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -318,7 +318,7 @@ components:
       type: list
       value:
       - '749'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''

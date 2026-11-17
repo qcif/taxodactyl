@@ -97,23 +97,22 @@ class CoverageRowCollector:
     def _related_scope(self, modal):
         related = modal.find_elements(
             By.CSS_SELECTOR, "div[id^='dbCovRelated']")
-        return related[0] if related else modal
+        return related[0] if related else None
 
     def _extract_title(self, modal):
         return [_find_text(modal, "h5.modal-title")]
 
     def _extract_flag_text1(self, modal):
-        return [_flag_text(
-            self._target_scope(modal),
-            "p.alert.alert-success", "p.alert.alert-secondary")]
+        return [_flag_text(self._target_scope(modal), "p.alert")]
 
     def _extract_record_count(self, modal):
         return [str(_big_number(modal))]
 
     def _extract_flag_text2(self, modal):
-        return [_flag_text(
-            self._related_scope(modal),
-            "p.alert.alert-warning", "p.alert.alert-secondary")]
+        related = self._related_scope(modal)
+        if related is None:
+            return [""]
+        return [_flag_text(related, "p.alert")]
 
     def _extract_species_count(self, modal):
         return [_find_text(
@@ -141,7 +140,7 @@ class CoverageRowCollector:
         x = [int(v) for v in self._chart_cache["x"]]
         return [str(max(x)) if x else "0"]
 
-    def _extract_final_text(self, modal):
+    def _extract_country_message(self, modal):
         return [_find_text(
             modal, "div[id^='dbCovCountry'] p.alert.alert-info")]
 

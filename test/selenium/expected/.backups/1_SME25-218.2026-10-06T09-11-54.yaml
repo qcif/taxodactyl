@@ -143,7 +143,7 @@ components:
     - id: first_bar_count
       type: list
       value: '1162'
-    - id: final_text
+    - id: country_message
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
   toi:
@@ -178,7 +178,7 @@ components:
     - id: first_bar_count
       type: list
       value: '1162'
-    - id: final_text
+    - id: country_message
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
   candidate:
@@ -213,7 +213,7 @@ components:
     - id: first_bar_count
       type: list
       value: '1162'
-    - id: final_text
+    - id: country_message
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
   - name: Drosophila mauritiana
@@ -246,7 +246,7 @@ components:
     - id: first_bar_count
       type: list
       value: '1162'
-    - id: final_text
+    - id: country_message
       type: list
       value: A country of origin was not provided in the sample metadata, so this analysis could not be performed
 - id: publication_modal

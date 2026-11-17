@@ -241,7 +241,7 @@ components:
       flex: 0.1
       value:
       - '38'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
@@ -286,7 +286,7 @@ components:
       flex: 0.1
       value:
       - '34'
-    - id: final_text
+    - id: country_message
       type: list
       value:
       - ''
