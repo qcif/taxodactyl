@@ -6,23 +6,36 @@ Required reference data is documented in [README.md](../../../README.md)
 
 ## Overview
 
-Reference data is stored in premium blob storage and staged to each compute node's local NVMe storage during node initialization. This provides:
+Reference data (Core Nt and the NCBI taxdump) is stored in the public
+`refdata-wf2` container of the standard storage account and staged to each
+compute node's local NVMe storage during node initialization. This provides:
 
 - **Fast access**: NVMe SSDs offer extremely high IOPS and throughput
-- **Cost efficiency**: Premium blob storage billed only for storage, not data transfer within same region
+- **Simple access**: the container is public (read-only), so the start task
+  needs no credentials
 - **Scalability**: Each node gets its own copy, eliminating network bottlenecks
 
 ## Storage Structure
 
 **Blob Storage Hierarchy**:
-- Premium storage account: `daffpremium`
-- Container: `refdata`
-- Virtual directory: `core_nt/` (or your reference data name)
+- Storage account: `daffstandard` (`$STORAGE_ACCOUNT_STD`)
+- Container: `refdata-wf2` (`$STORAGE_CONTAINER_REF`), public container-level read
+- `core_nt/`: the BLAST database (`core_nt.*` volumes and index files,
+  `taxdb.*`, `taxonomy4blast.sqlite3` and `checksums/`)
+- `taxdump/taxdump/`: the NCBI taxdump (`*.dmp` files)
+
+> [!WARNING]
+> Anyone can list and read this container. Only public NCBI reference data
+> may be stored in it.
 
 **Node Storage Paths**:
-- Host path: `/mnt/nvme/refdata/core_nt/` (created by start task)
-- Container path: `/mnt/nvme/refdata/core_nt/` (read-only mount)
-- Nextflow param: `params.refdata_path = "/mnt/nvme/refdata/core_nt"`
+- The start task downloads the container to `/mnt/nvme/refdata-wf2` and
+  renames it to `/mnt/nvme/refdata`, so node paths stay `/mnt/nvme/refdata/...`
+- Host path: `/mnt/nvme/refdata/` (created by start task)
+- Container path: `/mnt/nvme/refdata/` (read-only mount)
+- Pipeline params (set in `deployment/azure/run-taxodactyl.sh`):
+  - `--blastdb /mnt/nvme/refdata/core_nt/core_nt`
+  - `--taxdb /mnt/nvme/refdata/taxdump/taxdump`
 
 ## Uploading Reference Data
 
@@ -40,7 +53,7 @@ SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 az role assignment create \
   --role "Storage Blob Data Contributor" \
   --assignee "$USER_OBJECT_ID" \
-  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$STORAGE_ACCOUNT_PREM"
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$STORAGE_ACCOUNT_STD"
 
 # Wait a few minutes for role assignment to propagate
 ```
@@ -53,7 +66,7 @@ Use azcopy for large data uploads (faster and more reliable than `az storage blo
 cd $REFDATA/blast/core_nt/
 azcopy copy \
   './*' \
-  "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/core_nt/" \
+  "https://${STORAGE_ACCOUNT_STD}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/core_nt/" \
   --recursive \
   --overwrite=ifSourceNewer \
   --log-level INFO
@@ -61,11 +74,14 @@ azcopy copy \
 cd $REFDATA/taxonkit/
 azcopy copy \
   './*' \
-  "https://${STORAGE_ACCOUNT_PREM}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/" \
+  "https://${STORAGE_ACCOUNT_STD}.blob.core.windows.net/${STORAGE_CONTAINER_REF}/taxdump/" \
   --recursive   \
   --overwrite=ifSourceNewer   \
   --log-level INFO
 ```
+
+Uploading requires authenticated write access (the role above); only reads
+are anonymous.
 
 **Important**: The blob path should include the virtual directory that matches where Nextflow will expect to find it on the NVMe mount point.
 
@@ -75,8 +91,10 @@ Reference data is automatically staged during node initialization by the start t
 
 ### Performance Metrics
 
+> These figures were measured on the earlier premium-storage setup.
+
 Our 225GB reference dataset downloads in **2.3 minutes** (~1.6 GB/second) thanks to:
-- Premium blob storage with high IOPS
+- Blob storage with high throughput
 - NVMe local storage (extremely fast writes)
 - azcopy's parallel transfer engine
 - Optimized settings (no MD5 validation, unlimited bandwidth)
@@ -96,46 +114,14 @@ Our 225GB reference dataset downloads in **2.3 minutes** (~1.6 GB/second) thanks
 
 **Available space after formatting**: 1.7TB
 
-## Authentication for Reference Data Access
+## Access
 
-The start task needs access to premium blob storage. You have three options:
-
-### Option 1: SAS Token (Recommended)
-
-Generate a SAS token for the premium blob container:
+Downloads are anonymous: the container has public container-level access, so
+there is no token to generate or rotate. To check anonymous access:
 
 ```sh
-# Generate a SAS token with read permission
-az storage blob generate-sas \
-  --account-name $STORAGE_ACCOUNT_PREM \
-  --container-name $STORAGE_CONTAINER_REF \
-  --name core_nt \
-  --permissions r \
-  --expiry $(date -u -d "+1 year" '+%Y-%m-%dT%H:%MZ') \
-  --https-only \
-  --output tsv
+azcopy list "https://daffstandard.blob.core.windows.net/refdata-wf2"
 ```
-
-**Helper equivalent:** `az_sas_generate core_nt daffpremium refdata 365`
-
-Use this token in the start task script's `BLOB_URL`:
-
-```bash
-BLOB_URL="https://daffpremium.blob.core.windows.net/refdata/core_nt?<SAS_TOKEN>"
-```
-
-### Option 2: Storage Account Key
-
-Set environment variable in start task:
-
-```bash
-export AZCOPY_AUTO_LOGIN_TYPE=SPN
-# Provide storage account key via secure method
-```
-
-### Option 3: Managed Identity
-
-Enable managed identity on Azure Batch nodes (more complex setup).
 
 ## Verifying Reference Data
 
@@ -156,22 +142,26 @@ Expected output:
 ### Reference Data Not Found
 
 1. Check start task logs (see [Troubleshooting](05-troubleshooting.md))
-2. Verify blob URL points to correct container/directory
-3. Ensure SAS token has not expired
-4. Check NVMe mount succeeded in start task
+2. Verify `BLOB_URL` in `deployment/azure/setup.sh.template` points to the
+   `refdata-wf2` container
+3. Check NVMe mount succeeded in start task
 
 ### Slow Download Speed
 
-1. Verify using premium blob storage (not standard)
-2. Check azcopy version (`azcopy --version` should be v10.x)
-3. Ensure no bandwidth throttling (`--cap-mbps 0`)
-4. Verify VM SKU has NVMe storage (L-series)
+1. Check azcopy version (`azcopy --version` should be v10.x)
+2. Ensure no bandwidth throttling (`--cap-mbps 0`)
+3. Verify VM SKU has NVMe storage (L-series)
 
 ### Permission Errors
 
-1. Check SAS token permissions include read (`r`)
-2. Verify SAS token has not expired
-3. Ensure SAS token is properly URL-encoded in BLOB_URL
+1. Check the container's public access level is `container`:
+   ```sh
+   az storage container show-permission \
+     --name $STORAGE_CONTAINER_REF \
+     --account-name $STORAGE_ACCOUNT_STD
+   ```
+2. Check the storage account still allows public blob access
+   (`az storage account show -n $STORAGE_ACCOUNT_STD --query allowBlobPublicAccess`)
 
 ## Next Steps
 
