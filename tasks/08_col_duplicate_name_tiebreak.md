@@ -1,13 +1,13 @@
 # Task 08 — Break ties between duplicate COL records with the same name
 
-**Status:** planned
+**Status:** active
 
 **Priority:** High: intermittent 5.2 `ERR` for genus-level targets such as
 *Drosophila* (SME25-218), which makes nf-test and Selenium results flaky.
 
 **Issue:** [#351 — Selection of GBIF name_suggests result creates error for Drosophila](https://github.com/qcif/taxodactyl/issues/351)
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** granted by user via `/speckit-implement 08` (2026-11-18).
 
 **Scope:** `RelatedTaxaGBIF._get_taxon_record` in
 `scripts/src/gbif/relatives.py`, and recording of tie-break events in
@@ -117,7 +117,7 @@ configured, so this brief uses `spec/`, source and tests directly.
 
 ## Testing decision
 
-**Pending user input.** Proposed: the agent writes and runs the unit tests
+Agreed 2026-11-18: the agent writes and runs the unit tests
 below. The user reviews nf-test and Selenium drift and owns baselines and
 fixtures.
 
