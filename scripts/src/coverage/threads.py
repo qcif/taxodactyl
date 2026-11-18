@@ -9,6 +9,7 @@ from src.utils import errors
 from src.utils.config import Config
 from src.utils.flags import TARGETS
 
+from .targets import NcbiOnlyTarget
 from .fetch import (
     get_related_country_coverage,
     get_related_coverage,
@@ -53,7 +54,7 @@ def parallel_process_tasks(
                 results[func.__name__][target] = future.result()
             except Exception as exc:
                 species_name = target
-                if isinstance(target, RelatedTaxaGBIF):
+                if isinstance(target, (RelatedTaxaGBIF, NcbiOnlyTarget)):
                     species_name = target.taxon
                 elif isinstance(target, str):
                     species_name = taxid_to_taxon[target]

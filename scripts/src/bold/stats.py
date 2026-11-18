@@ -12,6 +12,8 @@ from src.utils.throttle import ENDPOINTS, Throttle
 logger = logging.getLogger(__name__)
 
 STATS_URL = "https://v4.boldsystems.org/index.php/API_Public/stats"
+# Ranks at which fetch_bold_records_count can return a record count
+COUNT_RANKS = ('species', 'genus', 'family', 'order')
 
 
 def fetch_bold_records_count(taxon: str, rank=None) -> dict:
@@ -21,12 +23,7 @@ def fetch_bold_records_count(taxon: str, rank=None) -> dict:
     Consider returning NA if rank is higher than family level.
 
     """
-    if rank and rank.lower() not in (
-        'species',
-        'genus',
-        'family',
-        'order',
-    ):
+    if rank and rank.lower() not in COUNT_RANKS:
         logger.warning(
             f'Cannot retrieve BOLD record count for taxon at rank={rank}.'
             'Rank must be at family level or lower.'
