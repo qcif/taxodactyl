@@ -316,6 +316,12 @@ jobs:
           echo "#### tree $TEST_DIR/output/reports"
           tree $TEST_DIR/output/reports
 
+      - name: Zip reports
+        if: always()
+        run: |
+          cd $TEST_DIR/output
+          zip -r reports.zip reports/
+
       # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
@@ -376,3 +382,6 @@ jobs:
 
           echo "Location of files on self-hosted runner:"
           echo "/var/runner/$timestamp/"
+
+          echo "Download reports with:
+              `scp ubuntu@daff-runner:$TEST_DIR/output/reports.zip`"
