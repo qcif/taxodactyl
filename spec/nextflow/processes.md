@@ -21,15 +21,16 @@ them is in [workflow.md](workflow.md); parameters in
 ## 1. `PREPARE_INPUTS`
 
 - **Container:** none — no label, no `container` directive, and `conf/process.config` sets no default, so on local/HPC profiles it runs in the host shell (needs `cp`, `wc` and `bash` on the host); under `-profile azure` it gets the default `docker.io/library/ubuntu:22.04` (NF-CF-020). Defect `NF-D-020`.
-- **Input:** `sequences_file` (0 or 1 path), `metadata_file`.
+- **Input:** `sequences_file` (0 or 1 path, staged as `input_sequences.fasta`), `metadata_file` (staged as `input_metadata.csv`).
 - **Output:** `sequences.fasta` (optional, `emit: sequences`), `metadata.csv` (`emit: metadata`).
-- **Behaviour:** copy the sequences file to `sequences.fasta` (only if a file was supplied and is not already named that); copy metadata to `metadata.csv`, or exit 1 with `ERROR: Metadata file not found` if it is already named `metadata.csv` but absent. Prints line counts.
+- **Behaviour:** copy `input_sequences.fasta` to `sequences.fasta` (only if a file was supplied); copy `input_metadata.csv` to `metadata.csv`, or exit 1 with `ERROR: Metadata file not found` if it is absent. Prints line counts. The `tag` is the staged name `input_metadata.csv`, not the user filename, so error-log paths (NF-WF-005) stay well formed.
 - **Purpose:** guarantee inputs live in the work dir (needed for remote executors).
 
 | ID | Requirement |
 |---|---|
 | NF-PR-010 | MUST NOT emit `sequences.fasta` when no sequences file was supplied (so downstream sees the `[]` fallback). |
 | NF-PR-011 | MUST NOT modify content of either file. |
+| NF-PR-012 | MUST stage user inputs under fixed names and MUST NOT interpolate the user-supplied filename into the task script (#358). |
 
 ## 2. `VALIDATE_INPUT`
 
