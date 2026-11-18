@@ -54,6 +54,10 @@ METADATA_NO_SEQUENCES = (
     TEST_DATA_DIR / 'validation/metadata_no_sequences.csv')
 METADATA_SEQUENCES_WITH_WHITESPACE = (
     TEST_DATA_DIR / 'validation/metadata_sequences_with_whitespace.csv')
+METADATA_DUPLICATE_SAMPLE_ID = (
+    TEST_DATA_DIR / 'validation/metadata_duplicate_sample_id.csv')
+METADATA_WITH_SEQUENCES_DUPLICATE_SAMPLE_ID = TEST_DATA_DIR.joinpath(
+    'validation/metadata_with_sequences_duplicate_sample_id.csv')
 METADATA_LATIN1 = TEST_DATA_DIR / 'validation/metadata_latin1.csv'
 METADATA_UTF8_BOM = TEST_DATA_DIR / 'validation/metadata_utf8_bom.csv'
 METADATA_UTF16 = TEST_DATA_DIR / 'validation/metadata_utf16.csv'
@@ -95,6 +99,26 @@ class ValidationTestCase(unittest.TestCase):
             _validate_metadata(
                 METADATA_MISSING_SEQUENCE_ID,
                 METADATA_EXPECT_IDS
+            )
+
+    def test_it_rejects_duplicate_metadata_sample_ids(self):
+        with self.assertRaisesRegex(
+            MetadataFormatError,
+            'Duplicate sample ID "LC438549.1" in rows 1 and 2',
+        ):
+            _validate_metadata(
+                METADATA_DUPLICATE_SAMPLE_ID,
+                METADATA_EXPECT_IDS,
+            )
+
+    def test_it_rejects_duplicate_sample_ids_with_sequence_column(self):
+        with self.assertRaisesRegex(
+            MetadataFormatError,
+            'Duplicate sample ID "LC438549.1" in rows 1 and 2',
+        ):
+            _validate_metadata(
+                METADATA_WITH_SEQUENCES_DUPLICATE_SAMPLE_ID,
+                None,
             )
 
     def _copy_to_tmp(self, source: Path) -> Path:

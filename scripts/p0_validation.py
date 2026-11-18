@@ -257,6 +257,7 @@ def _validate_metadata(
     """Assert that input metadata CSV is valid.
 
     Each row['sample_id'] must match a sequence ID
+    Each row['sample_id'] must be unique
     Locus must be listed in ALLOWED_LOCI
     Must contain required columns (see config.py - colnames configurable)
       - which are required?
@@ -267,6 +268,7 @@ def _validate_metadata(
     """
     expect_seq_col = seq_ids is None
     sample_ids = []
+    sample_id_rows = {}
     columns = config.inputs.metadata_csv_header
     with path.open(encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -289,6 +291,13 @@ def _validate_metadata(
                 ' CSV.'
             )
         sample_id = row[columns['sample_id']]
+        if sample_id in sample_id_rows:
+            raise MetadataFormatError(
+                f'Duplicate sample ID "{sample_id}" in rows'
+                f' {sample_id_rows[sample_id]} and {i + 1} of the metadata'
+                ' CSV file. Each sample ID must be unique.'
+            )
+        sample_id_rows[sample_id] = i + 1
         if seq_ids and sample_id not in seq_ids:
             raise MetadataFormatError(
                 f'sample ID "{sample_id}" listed in metadata CSV file is not'
