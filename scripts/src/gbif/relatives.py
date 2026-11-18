@@ -191,9 +191,9 @@ class RelatedTaxaGBIF:
             taxon, res_name or [], throttle)
         if not candidates:
             raise GBIFRecordNotFound(
-                f"No GBIF record found for '{taxon}'. Taxonomic records"
-                " cannot be retrieved. Please check that this species name"
-                " is correct.")
+                f"'{taxon}' is not in the Catalogue of Life (COL) taxonomy"
+                " used by GBIF. This is common for unclassified viruses and"
+                " virus common names.")
 
         record, from_synonym = candidates[0]
         if len(candidates) > 1:

@@ -85,6 +85,19 @@ class TaxonkitName2TaxidResult:
 
 def taxonomies(taxids: list[str]) -> dict[str, dict[str, str]]:
     """Use taxonkit lineage to extract taxonomic data for given taxids."""
+    return {
+        taxid: lineage.filtered_taxonomy
+        for taxid, lineage in lineages(taxids).items()
+    }
+
+
+def lineages(taxids: list[str]) -> dict[str, TaxonLineage]:
+    """Return the taxonkit lineage of each taxid, keyed by taxid.
+
+    Unlike `taxonomies`, the lineage keeps every rank, so the taxid's own
+    rank is `lineage.ranks[-1]` even when it is not a major rank (e.g.
+    "no rank" or "strain").
+    """
 
     # Because temporary file handling in Windows is different,
     # need to closed and delete temp file explicitly...
@@ -126,10 +139,10 @@ def taxonomies(taxids: list[str]) -> dict[str, dict[str, str]]:
             + result.stderr
         )
 
-    taxonomy_data = {}
-    for res in _parse_taxonkit_lineage(result.stdout):
-        taxonomy_data[res.taxid] = res.filtered_taxonomy
-    return taxonomy_data
+    return {
+        res.taxid: res
+        for res in _parse_taxonkit_lineage(result.stdout)
+    }
 
 
 def taxids(

@@ -170,6 +170,22 @@ class TestFetchRelatedSpecies(unittest.TestCase):
             RelatedTaxaGBIF('Palaeotherium magnum')
 
     @patch('src.utils.cache.get', return_value=None)
+    @patch('src.gbif.api.name_suggest', return_value=[])
+    def test_not_found_message_mentions_col(
+        self,
+        mock_suggest,
+        mock_cache_get,
+    ):
+        """A name with no COL record is explained, not called incorrect."""
+        mock_suggest.__name__ = 'name_suggest'
+        with self.assertRaises(GBIFRecordNotFound) as ctx:
+            RelatedTaxaGBIF('Apple hammerhead viroid')
+        message = str(ctx.exception)
+        self.assertIn('Catalogue of Life (COL)', message)
+        self.assertIn('Apple hammerhead viroid', message)
+        self.assertNotIn('check that this species name is correct', message)
+
+    @patch('src.utils.cache.get', return_value=None)
     @patch('pygbif.species.name_usage')
     @patch('src.gbif.api.name_suggest')
     def test_synonym_resolved_via_accepted_key(
