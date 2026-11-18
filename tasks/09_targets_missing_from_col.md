@@ -1,6 +1,6 @@
 # Task 09 — Assess DB coverage for targets missing from the COL taxonomy
 
-**Status:** planned
+**Status:** active
 
 **Priority:** High: since #313, every target whose name isn't in COL is
 dropped from flag 5. This includes unclassified-virus placeholders and virus
@@ -8,7 +8,7 @@ common names.
 
 **Issue:** [#353 — DB coverage fails for targets missing from COL (e.g. unclassified viruses) since #313](https://github.com/qcif/taxodactyl/issues/353)
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** user-authorized 2026-11-18 (`/speckit-implement 09`).
 
 **Scope:** P5 target resolution (`scripts/src/gbif/relatives.py`,
 `scripts/src/coverage/targets.py`, `assess.py`, `fetch.py`). A target with no
