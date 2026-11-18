@@ -2,7 +2,7 @@
 
 import logging
 from pprint import pformat
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from src.gbif.relatives import (
     GBIFRecordNotFound,
@@ -20,6 +20,58 @@ logger = logging.getLogger(__name__)
 config = Config()
 
 MODULE_NAME = "Database Coverage"
+NO_GENUS_FALLBACK_PREFIX = (
+    "Related-species checks (flags 5.2 and 5.3) could not be run for"
+    " '{target}': "
+)
+
+
+@dataclass(eq=False)
+class NcbiOnlyTarget:
+    """A target that is not in COL, resolved through NCBI taxonomy instead.
+
+    It stands in for a `RelatedTaxaGBIF` record wherever database coverage
+    needs one: `taxon` and `canonical_name` are the original target name,
+    and `rank` is the taxid's own NCBI rank (`RANK.NONE` if it is not one of
+    the ranks in `RANK`, e.g. "no rank" or "strain").
+
+    `genus_record` is the COL record of the target's NCBI genus (genus
+    fallback). When set, `relatives` and `for_country` come from it, so
+    related-species and in-country coverage are computed as for a lower
+    target. `eq=False` keeps instances hashable by identity, since coverage
+    results are keyed by target record.
+    """
+
+    taxon: str
+    taxid: str | None = None
+    rank: int = RANK.NONE
+    ncbi_genus: str | None = None
+    genus_record: RelatedTaxaGBIF | None = None
+    canonical_name: str = field(init=False)
+
+    def __post_init__(self):
+        self.canonical_name = self.taxon
+
+    @property
+    def genus(self):
+        """The COL genus name used for related-species checks, if any."""
+        return (
+            self.genus_record.canonical_name
+            if self.genus_record
+            else None
+        )
+
+    @property
+    def is_higher(self):
+        """True if the NCBI rank is above genus (family or higher)."""
+        return self.rank > RANK.GENUS
+
+    @property
+    def relatives(self):
+        return self.genus_record.relatives
+
+    def for_country(self, country_code):
+        return self.genus_record.for_country(country_code)
 
 
 @dataclass
@@ -39,6 +91,11 @@ class TargetGbifRecords:
     COL-root level (e.g. "Fungi", "Viruses"), in input order without
     duplicates. These are too broad for database coverage, so they are not
     assessed and are absent from every other field.
+
+    `col_missing_taxa` holds targets with no COL record, keyed by original
+    name, resolved through NCBI taxonomy (`NcbiOnlyTarget`). Those without
+    a taxid have `taxid=None` and are not assessed. These are also absent
+    from every other field.
     """
 
     original_to_canonical: dict[str, str]
@@ -50,6 +107,7 @@ class TargetGbifRecords:
     original_lower_taxa: dict[str, RelatedTaxaGBIF]   # keyed by original
     original_higher_taxa: dict[str, RelatedTaxaGBIF]  # keyed by original
     root_taxa: list[str]
+    col_missing_taxa: dict[str, NcbiOnlyTarget] = field(default_factory=dict)
 
 
 def _read_candidate_species(query_dir):
@@ -135,6 +193,7 @@ def fetch_target_taxa(targets, query_dir):
     original_lower_taxa = {}
     original_higher_taxa = {}
     root_taxa = []
+    col_missing = {}  # original name -> GBIFRecordNotFound message
 
     def add_root_taxon(target, detail=''):
         if target not in root_taxa:
@@ -153,17 +212,8 @@ def fetch_target_taxa(targets, query_dir):
                 classification=classification,
             )
         except GBIFRecordNotFound as exc:
-            msg = (f"No GBIF record found for target taxon '{target}'."
-                   " This target could not be evaluated.")
-            logger.warning(
-                f"{msg}")
-            errors.write(
-                errors.LOCATIONS.DB_COVERAGE_NO_GBIF_RECORD,
-                msg,
-                exc=exc,
-                query_dir=query_dir,
-                context={"target": target},
-            )
+            logger.warning(f"Target taxon '{target}': {exc}")
+            col_missing[target] = str(exc)
             continue
 
         if gbif_target.tie_break:
@@ -254,6 +304,12 @@ def fetch_target_taxa(targets, query_dir):
         + pformat(list(higher_target_gbif_records.keys()), indent=2)
     )
 
+    col_missing_taxa = _resolve_col_missing_taxa(
+        col_missing,
+        classification,
+        query_dir,
+    )
+
     return TargetGbifRecords(
         lower_taxa=target_gbif_records,
         higher_taxa=higher_target_gbif_records,
@@ -264,4 +320,164 @@ def fetch_target_taxa(targets, query_dir):
         original_higher_taxa=original_higher_taxa,
         original_taxa={**original_lower_taxa, **original_higher_taxa},
         root_taxa=root_taxa,
+        col_missing_taxa=col_missing_taxa,
+    )
+
+
+def _resolve_col_missing_taxa(
+    col_missing: dict[str, str],
+    classification: dict,
+    query_dir,
+) -> dict[str, NcbiOnlyTarget]:
+    """Resolve targets that are not in COL through NCBI taxonomy.
+
+    `col_missing` maps each original target name to its GBIFRecordNotFound
+    message. Each target gets a taxid from taxonkit name2taxid (filtered by
+    the query's classification) and, if found, its NCBI rank and genus from
+    taxonkit lineage. A lower target whose NCBI genus is a genus in COL gets
+    that genus record for related-species checks (genus fallback).
+
+    One `DB_COVERAGE_NO_GBIF_RECORD` error is written per target, saying
+    which checks could still be run.
+    """
+    if not col_missing:
+        return {}
+    taxids = extract.taxids(list(col_missing), classification=classification)
+    found_taxids = [
+        taxids.get(name)
+        for name in col_missing
+        if taxids.get(name)
+    ]
+    lineages = extract.lineages(found_taxids) if found_taxids else {}
+
+    resolved = {}
+    for name, not_found_msg in col_missing.items():
+        taxid = taxids.get(name)
+        target = NcbiOnlyTarget(name, taxid=taxid)
+        resolved[name] = target
+        if not taxid:
+            _write_no_taxid_errors(target, not_found_msg, query_dir)
+            continue
+
+        lineage = lineages.get(taxid)
+        if lineage:
+            target.rank = RANK.from_string(lineage.ranks[-1])
+            target.ncbi_genus = lineage.filtered_taxonomy.get('genus')
+        logger.info(
+            f"Target taxon '{name}' is not in COL. Resolved by taxonkit to"
+            f" NCBI taxid {taxid}"
+            + (
+                f" ('{lineage.lineage[-1]}', rank {lineage.ranks[-1]},"
+                f" genus {target.ncbi_genus})."
+                if lineage else
+                " (no lineage found)."
+            )
+        )
+        if not target.is_higher:
+            _apply_genus_fallback(target, classification, query_dir)
+
+        if target.genus_record:
+            outcome = (
+                " Reference sequence records (flag 5.1) were counted using"
+                f" its NCBI taxid {taxid}. No occurrence map is available.")
+        else:
+            outcome = (
+                " Reference sequence records (flag 5.1) were counted using"
+                f" its NCBI taxid {taxid}, but GBIF-based checks (related"
+                " species, related species in country and occurrence map)"
+                " could not be run.")
+        errors.write(
+            errors.LOCATIONS.DB_COVERAGE_NO_GBIF_RECORD,
+            not_found_msg + outcome,
+            query_dir=query_dir,
+            context={"target": name},
+        )
+
+    return resolved
+
+
+def _write_no_taxid_errors(target, not_found_msg, query_dir):
+    """Explain that a target in neither COL nor NCBI was not evaluated."""
+    msg = (
+        not_found_msg
+        + " No NCBI taxid was found for it either, so its database coverage"
+        " could not be evaluated.")
+    logger.warning(msg)
+    errors.write(
+        errors.LOCATIONS.DB_COVERAGE_NO_GBIF_RECORD,
+        msg,
+        query_dir=query_dir,
+        context={"target": target.taxon},
+    )
+    errors.write(
+        errors.LOCATIONS.DB_COVERAGE_TAXONKIT_ERROR,
+        "Taxonkit failed to produce a taxid for this taxon. If this seems"
+        " unlikely, perhaps check that the taxon name and the"
+        " classification provided in the sample metadata are correct for"
+        " this sample?",
+        query_dir=query_dir,
+        context={"target": target.taxon},
+    )
+
+
+def _apply_genus_fallback(target, classification, query_dir):
+    """Set `target.genus_record` from the COL record of its NCBI genus.
+
+    The COL record is accepted only if it is a genus with the same name as
+    the NCBI genus. Otherwise an informational error says why the
+    related-species checks could not be run.
+    """
+    name = target.taxon
+    prefix = NO_GENUS_FALLBACK_PREFIX.format(target=name)
+    if not target.ncbi_genus:
+        _write_info(
+            prefix + f"its NCBI lineage (taxid {target.taxid}) has no genus.",
+            name,
+            query_dir,
+        )
+        return
+
+    genus = target.ncbi_genus
+    try:
+        record = RelatedTaxaGBIF(genus, classification=classification)
+    except GBIFRecordNotFound:
+        _write_info(
+            prefix + f"its NCBI genus '{genus}' is not in COL either.",
+            name,
+            query_dir,
+        )
+        return
+
+    if (
+        record.rank != RANK.GENUS
+        or (record.canonical_name or '').lower() != genus.lower()
+    ):
+        _write_info(
+            prefix
+            + f"its NCBI genus '{genus}' matched the COL record"
+            f" '{record.canonical_name}' (key {record.key}, rank"
+            f" {RANK.to_string(record.rank)}), which is not the same genus.",
+            name,
+            query_dir,
+        )
+        return
+
+    if record.tie_break:
+        _write_info(tie_break_message(record.tie_break), name, query_dir)
+    target.genus_record = record
+    _write_info(
+        f"'{name}' is not in COL; related-species checks use its NCBI genus"
+        f" '{genus}' (COL key {record.key}).",
+        name,
+        query_dir,
+    )
+
+
+def _write_info(msg, target, query_dir):
+    logger.info(f"Target taxon '{target}': {msg}")
+    errors.write(
+        errors.LOCATIONS.DB_COVERAGE,
+        msg,
+        query_dir=query_dir,
+        context={"target": target},
     )

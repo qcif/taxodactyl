@@ -8,6 +8,7 @@ file is used to limit the number of concurrent requests.
 import logging
 from pprint import pformat
 
+from src.bold.stats import COUNT_RANKS as BOLD_COUNT_RANKS
 from src.gbif.maps import draw_occurrence_map, draw_placeholder_map
 from src.gbif.relatives import RANK
 from src.utils import errors
@@ -30,6 +31,9 @@ ROOT_TAXON_NOT_ASSESSED_MSG = (
     "Database coverage is not assessed for taxa at kingdom or domain rank"
     " ({target}), because they are too broad for this analysis to be"
     " meaningful."
+)
+COL_MISSING_MAP_MSG = (
+    "Occurrence maps are unavailable for taxa not in the Catalogue of Life."
 )
 
 
@@ -80,7 +84,21 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     resolved_pmi = target_records.original_to_canonical.get(pmi, pmi)
 
     target_taxids = get_taxids(target_records.all_taxa, query_dir)
+    # Targets not in COL, resolved to an NCBI taxid (P5-012)
+    ncbi_taxa = {
+        name: t for name, t in target_records.col_missing_taxa.items()
+        if t.taxid
+    }
+    ncbi_higher_taxa = {
+        name: t for name, t in ncbi_taxa.items()
+        if t.is_higher
+    }
+    ncbi_lower_taxa = {
+        name: t for name, t in ncbi_taxa.items()
+        if t.genus_record and not t.is_higher
+    }
     taxid_to_taxon = {v: k for k, v in target_taxids.items()}
+    taxid_to_taxon.update({t.taxid: name for name, t in ncbi_taxa.items()})
     for record, record_og in zip(
         target_records.all_taxa.values(),
         target_records.original_taxa.values(),
@@ -101,6 +119,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         # Extract those for which no GBIF record was found
         t for t in targets
         if t not in target_records.root_taxa
+        and t not in ncbi_taxa
         and t not in [
             r.taxon
             for r in target_records.all_taxa.values()
@@ -115,6 +134,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         target_records.original_higher_taxa,
         query_dir,
     )
+    for name in ncbi_taxa:
+        draw_placeholder_map(
+            query_dir / config.get_map_filename_for_target(name),
+            message=COL_MISSING_MAP_MSG,
+        )
 
     target_canonical_names = [
         r.canonical_name
@@ -148,11 +172,14 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         for target, taxid in target_taxids.items()
         if target in target_records.higher_taxa
     ]
+    tasks += _ncbi_target_tasks(
+        ncbi_taxa, ncbi_lower_taxa, locus, query_dir, is_bold)
 
     if not (
         len(tasks)
         + len(unknown_taxa)
         + len(target_records.root_taxa)
+        + len(ncbi_taxa)
     ):
         raise ValueError(
             "No tasks created for database coverage assessment. This likely"
@@ -161,8 +188,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     results, is_error = parallel_process_tasks(
         tasks,
         query_dir,
-        target_taxids,
-        target_records.lower_taxa,
+        {
+            **target_taxids,
+            **{name: t.taxid for name, t in ncbi_taxa.items()},
+        },
+        {**target_records.lower_taxa, **ncbi_lower_taxa},
         taxid_to_taxon,
         resolved_candidate_list,
         resolved_toi_list,
@@ -206,7 +236,7 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
     _set_flags(
         reindexed_results,
         query_dir,
-        target_records.original_higher_taxa,
+        {**target_records.original_higher_taxa, **ncbi_higher_taxa},
         root_taxa=target_records.root_taxa,
     )
     results = {
@@ -225,6 +255,11 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
             for taxon in target_records.original_taxa
         },
     }
+    for taxon, target in ncbi_taxa.items():
+        results['ncbi_urls'][taxon] = {
+            'blast': ncbi.build_blast_url(taxon, target.taxid, config),
+            'taxonomy': ncbi.build_taxonomy_url(target.taxid),
+        }
     for taxon in [*unknown_taxa, *target_records.root_taxa]:
         results['ncbi_urls'][taxon] = {
             'blast': None,
@@ -232,6 +267,39 @@ def assess_coverage(query_dir, is_bold) -> dict[str, dict[str, dict]]:
         }
 
     return results, is_error
+
+
+def _ncbi_target_tasks(ncbi_taxa, ncbi_lower_taxa, locus, query_dir,
+                       is_bold):
+    """Return coverage tasks for targets resolved through NCBI only.
+
+    Every such target gets a record count by taxid (flag 5.1); in BOLD mode
+    the count is skipped when BOLD cannot count at the target's NCBI rank.
+    Targets with a COL genus record (genus fallback) also get related-species
+    coverage.
+    """
+    tasks = []
+    for name, target in ncbi_taxa.items():
+        rank_str = RANK.to_string(target.rank)
+        if is_bold and rank_str not in BOLD_COUNT_RANKS:
+            msg = (
+                f"BOLD record counts are not available for '{name}' because"
+                f" its NCBI rank ({rank_str}) is not one of:"
+                f" {', '.join(BOLD_COUNT_RANKS)}.")
+            logger.info(msg)
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                msg,
+                query_dir=query_dir,
+                context={'target': name},
+            )
+        else:
+            tasks.append(
+                (get_target_coverage, target.taxid, target, locus, is_bold))
+        if name in ncbi_lower_taxa:
+            tasks.append(
+                (get_related_coverage, target, locus, query_dir, is_bold))
+    return tasks
 
 
 def _draw_occurrence_maps(

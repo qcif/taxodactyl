@@ -1,6 +1,6 @@
 # Task 09 — Assess DB coverage for targets missing from the COL taxonomy
 
-**Status:** active
+**Status:** done
 
 **Priority:** High: since #313, every target whose name isn't in COL is
 dropped from flag 5. This includes unclassified-virus placeholders and virus
@@ -166,14 +166,13 @@ directly.
 - Without Phase B: they get 5.1 only, with 5.2/5.3 `ERR` and a clear
   explanation.
 
-**Pending user decision.** If Phase B is deferred, record it in `tasks/todo.md`
-as a follow-up when this task completes.
+**Decided 2026-11-18:** Phase B is in scope.
 
 ## Testing decision
 
-**Pending user input.** Proposed: the agent writes and runs the unit tests
-below. The user reviews nf-test and Selenium drift and owns baselines and
-fixtures.
+**Decided 2026-11-18:** as proposed. The agent writes and runs the unit
+tests below. The user reviews nf-test and Selenium drift and owns baselines
+and fixtures.
 
 ## Validation
 
@@ -240,3 +239,95 @@ reports. Check:
   the informational error make this visible.
 - `threads.py` result keying is the most likely source of mistakes in Phase B.
   Test that results land under the original target name.
+
+## Outcomes
+
+Implemented 2026-11-18 on branch `task-09-targets-missing-from-col`, with
+Phase A and Phase B.
+
+### Completed work
+
+- `scripts/src/gbif/relatives.py`: `GBIFRecordNotFound` now reads "'<name>'
+  is not in the Catalogue of Life (COL) taxonomy used by GBIF. This is common
+  for unclassified viruses and virus common names."
+- `scripts/src/coverage/targets.py`:
+  - New `NcbiOnlyTarget` dataclass (`taxon`, `canonical_name`, `taxid`,
+    `rank`, `ncbi_genus`, `genus_record`). It uses `eq=False` so it is
+    hashable by identity, since `threads.py` keys results by target record.
+    With a genus record, `relatives`, `for_country` and `genus` delegate to
+    it, so the existing related/country machinery runs unchanged.
+  - `TargetGbifRecords.col_missing_taxa`, filled by
+    `_resolve_col_missing_taxa`: one `extract.taxids` call (with the query's
+    classification) and one `extract.lineages` call for all COL-missing
+    targets, then the genus fallback. Exactly one reworded
+    `DB_COVERAGE_NO_GBIF_RECORD` error is written per target, stating the
+    outcome. This replaces the "could not be evaluated" companion message.
+    Without a taxid, a `DB_COVERAGE_TAXONKIT_ERROR` is also written.
+  - Genus fallback (`_apply_genus_fallback`): accepts the COL record only if
+    it is rank genus **and** its name equals the NCBI genus. Writes the
+    informational message, or a "Related-species checks (flags 5.2 and 5.3)
+    could not be run for '<target>': ..." message with the reason (no NCBI
+    genus, genus not in COL, or a different COL record).
+- `scripts/src/taxonomy/extract.py`: new `lineages(taxids)` returns
+  `TaxonLineage` objects, so the taxid's own (lowest) NCBI rank is available.
+  `taxonomies()` now wraps it, with unchanged output.
+- `scripts/src/coverage/assess.py`: COL-missing targets with a taxid are
+  removed from `unknown_taxa`. They get a 5.1 task, plus a related task with
+  the genus fallback, and NCBI BLAST/taxonomy URLs. They also get the "not in
+  the Catalogue of Life" placeholder map. In BOLD mode, an NCBI rank outside
+  `bold.stats.COUNT_RANKS` (new constant) skips the request, giving 5.1
+  `ERR` with an informational error. Targets without a taxid stay unknown
+  (all `null`, `ERR`), and no Entrez or lineage request is made for them.
+- `scripts/src/coverage/threads.py`: task-failure messages name
+  `NcbiOnlyTarget`s by their target name.
+- Spec: P5-012 rewritten; new P5-016 (NCBI path) and P5-017 (genus
+  fallback); P5-060/P5-062, the §5.1 flag table, §6 and §9 updated.
+  COV-002 updated. `spec/defects.md` has no row for #353, so it is unchanged.
+
+### Deviations from the brief
+
+- The COL genus record must also match the NCBI genus name, not just have
+  rank genus. This guards against suggest prefix matches (P5-D-010), per the
+  brief's Risks section.
+- A COL-missing target whose NCBI rank is family or higher is handled like
+  a COL higher target (count only, flags `NA`, no genus fallback), for
+  consistency with P5-014. The brief didn't cover this case.
+- The `DB_COVERAGE_NO_GBIF_RECORD` error is written once per target, after
+  NCBI resolution, so its wording can state the outcome. The exception is
+  folded into the message rather than passed as `exc`, so the modal doesn't
+  show the same text twice.
+- The no-taxid `DB_COVERAGE_TAXONKIT_ERROR` uses a message without "assumed
+  to be zero", because such targets get `ERR` rather than a zero count.
+
+### Validation
+
+- Unit tests (as in `.vscode/launch.json`): 223 run, OK (1 skipped);
+  baseline was 215. New tests:
+  - `test_gbif.py::test_not_found_message_mentions_col`
+  - `test_coverage_targets.py::ColMissingTargetTestCase`, 7 cases: NCBI
+    resolution; reworded error; Phase A grades (5.1 `A`, 5.2/5.3 `ERR`,
+    taxonomy URL, no "No related species found", placeholder map); no taxid
+    ⇒ no Entrez or lineage call; Phase B under the original name with
+    `genus`, flags and exactly one informational error; non-genus COL record
+    rejected; BOLD unsupported rank skipped.
+- flake8 clean on all changed Python files.
+
+### Pending manual review (user)
+
+Not run by the agent, per the testing decision:
+
+- Core nf-test: `test/core/flags/query_006_barcode_57_*` and
+  `query_007_barcode_59_*` 5.1-5.3 baselines, and the
+  `taxodactyl.workflow.nf.test.snap` hashes for barcode_57/59.
+- Selenium review (`selenium-report` skill) of fixtures `2_*` and `3_*`. This
+  includes the stale `flag_text2 "Warning no locus provided"` values. Also
+  check that no target found in COL changed.
+- PR note: issue #353's "Interim" note (accept ERR flags in nf-test) no
+  longer applies.
+
+### Follow-ups
+
+- Added to `tasks/todo.md`: BOLD related-species counts pass the target's
+  rank to `fetch_bold_records_count` for every relative (P5-043). For a
+  genus-rank target (COL genus or NCBI genus fallback) or an NCBI target with
+  no rank, this can't return species counts.
