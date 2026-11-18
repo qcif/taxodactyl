@@ -56,13 +56,53 @@ def load_loci_registry(loci_config_path):
 
 
 def build_locus_id_mapping(loci_config):
-    """Assign stable IDs using the current registry order."""
-    return {
-        locus_name: locus_id
-        for locus_id, locus_name in enumerate(
-            loci_config.keys(),
-            start=1,
+    """Load and validate permanent locus IDs."""
+    registry_path = (
+        Path(__file__).resolve().parent
+        / "config"
+        / "locus_ids.json"
+    )
+
+    with registry_path.open("r", encoding="utf-8") as file:
+        registry = json.load(file)
+
+    active = registry.get("active")
+    retired = registry.get("retired", {})
+    next_id = registry.get("next_id")
+
+    if not isinstance(active, dict) or not isinstance(retired, dict):
+        raise ValueError("Invalid permanent locus ID registry.")
+
+    if set(active) != set(loci_config):
+        missing = sorted(set(loci_config) - set(active))
+        extra = sorted(set(active) - set(loci_config))
+        raise ValueError(
+            f"Locus ID mismatch. Missing: {missing}; Extra: {extra}"
         )
+
+    if set(active) & set(retired):
+        raise ValueError("Active and retired locus names overlap.")
+
+    all_ids = list(active.values()) + list(retired.values())
+
+    if not all(
+        type(locus_id) is int and locus_id > 0
+        for locus_id in all_ids
+    ):
+        raise ValueError("Locus IDs must be positive integers.")
+
+    if len(all_ids) != len(set(all_ids)):
+        raise ValueError("Duplicate permanent locus IDs detected.")
+
+    if (
+        type(next_id) is not int
+        or next_id <= max(all_ids, default=0)
+    ):
+        raise ValueError("Invalid next_id in locus registry.")
+
+    return {
+        locus_name: active[locus_name]
+        for locus_name in loci_config
     }
 
 
@@ -219,7 +259,7 @@ def compile_complete_genome_pattern():
         r"\bcomplete\s+genome\b"
         r"|\bcomplete\s+mitochondrial\s+genome\b"
         r"|\bcomplete\s+chromosome\b"
-        r"|\bchloroplast\s+genome\b",
+        r"|\bcomplete\s+chloroplast\s+genome\b",
         re.IGNORECASE,
     )
 
@@ -366,6 +406,8 @@ def create_record_locus_indexes(database_path):
     finally:
         connection.close()
 
+
+
 def populate_record_locus(
     database_path,
     complete_genome_pattern,
@@ -376,71 +418,73 @@ def populate_record_locus(
     limit=None,
 ):
     """
-    Populate record_locus using one combined synonym scan.
+    Build sparse record-locus assessments from record titles.
 
-    Reads and writes are performed batch-by-batch using one DuckDB
-    connection. This avoids keeping a long-running read cursor open
-    while another connection modifies the database.
-
-    Missing record/locus combinations represent absent.
+    Process records in bounded batches using DuckDB row IDs.
+    Missing record-locus pairs represent absent classifications.
     """
-    db_path = str(Path(database_path))
+    from time import perf_counter
 
-    connection = duckdb.connect(db_path)
+    if record_batch_size <= 0:
+        raise ValueError("record_batch_size must be positive")
+
+    if limit is not None and limit < 0:
+        raise ValueError("limit cannot be negative")
+
+    connection = duckdb.connect(str(Path(database_path)))
 
     processed_records = 0
     inserted_rows = 0
     present_rows = 0
     unknown_rows = 0
 
-    locus_ids_df = pd.DataFrame(
-        {"locus_id": locus_ids}
-    )
+    locus_ids_df = pd.DataFrame({"locus_id": locus_ids})
 
     try:
-        while True:
-            if limit is not None:
-                remaining = limit - processed_records
+        first_rowid, last_rowid = connection.execute(
+            "SELECT MIN(rowid), MAX(rowid) FROM records"
+        ).fetchone()
 
-                if remaining <= 0:
-                    break
+        if last_rowid is None:
+            return (0, 0, 0, 0)
 
-                rows_to_read = min(
-                    record_batch_size,
-                    remaining,
-                )
-            else:
-                rows_to_read = record_batch_size
+        next_rowid = first_rowid
 
-            # Read only one completed batch at a time.
-            # No long-running SELECT cursor remains open.
-            rows = connection.execute(
-                f"""
-                SELECT accession, title
-                FROM records
-                LIMIT {rows_to_read}
-                OFFSET {processed_records}
-                """
-            ).fetchall()
-
-            if not rows:
+        while next_rowid <= last_rowid:
+            if limit is not None and processed_records >= limit:
                 break
 
+            start = perf_counter()
+
+            upper_rowid = next_rowid + record_batch_size
+
+            rows = connection.execute(
+                """
+                SELECT accession, title
+                FROM records
+                WHERE rowid >= ? AND rowid < ?
+                ORDER BY rowid
+                """,
+                [next_rowid, upper_rowid],
+            ).fetchall()
+
+            next_rowid = upper_rowid
+            read_seconds = perf_counter() - start
+
+            if not rows:
+                continue
+
+            if limit is not None:
+                rows = rows[:limit - processed_records]
+
+            start = perf_counter()
+
             batch_df = pd.DataFrame(
-                rows,
-                columns=[
-                    "accession",
-                    "title",
-                ],
+                rows, columns=["accession", "title"]
             )
 
-            titles = (
-                batch_df["title"]
-                .fillna("")
-                .astype(str)
-            )
+            titles = batch_df["title"].fillna("").astype(str)
 
-            # Complete-genome records are unknown for all 31 loci.
             unknown_mask = titles.str.contains(
                 complete_genome_pattern,
                 regex=True,
@@ -448,13 +492,12 @@ def populate_record_locus(
             )
 
             sparse_frames = []
+            batch_unknown_rows = 0
+            batch_present_rows = 0
 
             if unknown_mask.any():
                 unknown_accessions = (
-                    batch_df.loc[
-                        unknown_mask,
-                        ["accession"],
-                    ]
+                    batch_df.loc[unknown_mask, ["accession"]]
                     .reset_index(drop=True)
                 )
 
@@ -466,14 +509,10 @@ def populate_record_locus(
                 unknown_df["status"] = "unknown"
                 unknown_df["evidence_source"] = "title"
 
-                unknown_rows += len(unknown_df)
-
+                batch_unknown_rows = len(unknown_df)
                 sparse_frames.append(unknown_df)
 
-            # Complete-genome records are not assessed as present.
-            assessable_df = batch_df.loc[
-                ~unknown_mask
-            ].copy()
+            assessable_df = batch_df.loc[~unknown_mask].copy()
 
             if not assessable_df.empty:
                 normalized_titles = (
@@ -482,22 +521,15 @@ def populate_record_locus(
                     .astype(str)
                     .str.lower()
                     .str.replace(
-                        r"[\s-]+",
-                        " ",
-                        regex=True,
+                        r"[\s-]+", " ", regex=True
                     )
                 )
 
-                # One combined regex scan.
                 matches = normalized_titles.str.findall(
                     combined_locus_pattern
                 )
 
-                exploded_matches = (
-                    matches
-                    .explode()
-                    .dropna()
-                )
+                exploded_matches = matches.explode().dropna()
 
                 if not exploded_matches.empty:
                     locus_matches = (
@@ -507,38 +539,33 @@ def populate_record_locus(
                         .dropna()
                     )
 
-                    present_pairs = pd.DataFrame(
-                        {
+                    if not locus_matches.empty:
+                        present_pairs = pd.DataFrame({
                             "row_id": locus_matches.index,
-                            "locus_id": (
-                                locus_matches.astype(int).values
-                            ),
-                        }
-                    )
+                            "locus_id": locus_matches.astype(int).values,
+                        })
 
-                    present_pairs = (
-                        present_pairs.drop_duplicates(
+                        present_pairs = present_pairs.drop_duplicates(
                             ["row_id", "locus_id"]
                         )
-                    )
 
-                    present_df = present_pairs.merge(
-                        assessable_df[["accession"]],
-                        left_on="row_id",
-                        right_index=True,
-                        how="left",
-                    )
+                        present_df = present_pairs.merge(
+                            assessable_df[["accession"]],
+                            left_on="row_id",
+                            right_index=True,
+                            how="left",
+                        )[["accession", "locus_id"]]
 
-                    present_df = present_df[
-                        ["accession", "locus_id"]
-                    ]
+                        present_df["status"] = "present"
+                        present_df["evidence_source"] = "title"
 
-                    present_df["status"] = "present"
-                    present_df["evidence_source"] = "title"
+                        batch_present_rows = len(present_df)
+                        sparse_frames.append(present_df)
 
-                    present_rows += len(present_df)
+            classify_seconds = perf_counter() - start
 
-                    sparse_frames.append(present_df)
+            start = perf_counter()
+            batch_inserted_rows = 0
 
             if sparse_frames:
                 sparse_batch = pd.concat(
@@ -547,38 +574,38 @@ def populate_record_locus(
                 )
 
                 connection.register(
-                    "record_locus_batch",
-                    sparse_batch,
+                    "record_locus_batch", sparse_batch
                 )
 
                 try:
                     connection.execute(
                         """
                         INSERT INTO record_locus
+                            (accession, locus_id, status, evidence_source)
                         SELECT
-                            accession,
-                            locus_id,
-                            status,
-                            evidence_source
+                            accession, locus_id, status, evidence_source
                         FROM record_locus_batch
                         """
                     )
-
                 finally:
-                    connection.unregister(
-                        "record_locus_batch"
-                    )
+                    connection.unregister("record_locus_batch")
 
-                inserted_rows += len(sparse_batch)
+                batch_inserted_rows = len(sparse_batch)
+
+            insert_seconds = perf_counter() - start
 
             processed_records += len(batch_df)
+            inserted_rows += batch_inserted_rows
+            present_rows += batch_present_rows
+            unknown_rows += batch_unknown_rows
 
-            if processed_records % 100000 == 0:
-                print(
-                    f"Processed "
-                    f"{processed_records:,} "
-                    f"records..."
-                )
+            print(
+                f"Processed {processed_records:,} records | "
+                f"read {read_seconds:.2f}s | "
+                f"classify {classify_seconds:.2f}s | "
+                f"insert {insert_seconds:.2f}s",
+                flush=True,
+            )
 
     finally:
         connection.close()
@@ -589,6 +616,7 @@ def populate_record_locus(
         present_rows,
         unknown_rows,
     )
+
 
 if __name__ == "__main__":
     args = parse_arguments()
