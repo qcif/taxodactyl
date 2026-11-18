@@ -42,6 +42,19 @@ jobs:
         runner: [self-hosted]
 
     steps:
+      # Singularity (rootfs-*) and Chrome/Selenium (com.google.*) leave dirs
+      # behind in /tmp. Remove any older than an hour so concurrent runs
+      # aren't affected. sudo is needed as rootfs contents may be read-only.
+      - name: Clean up stale /tmp dirs
+        if: always()
+        continue-on-error: true
+        run: |
+          sudo find /tmp -maxdepth 1 -type d \
+            \( -name 'rootfs*' -o -name 'com.google*' \) \
+            -mmin +60 \
+            -print \
+            -exec rm -rf {} +
+
       # Enable creation of containers as an unprivileged user
       - name: Enable unprivileged user namespaces
         run: |
