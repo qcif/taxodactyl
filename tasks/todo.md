@@ -23,3 +23,10 @@ One bullet per item: what needs doing and why, its origin
   none, the per-species counts are looked up at the wrong rank (0) or
   rejected (`None`), so 5.2/5.3 are understated. Origin: task
   09_targets_missing_from_col, #353, 2026-11-18.
+- `allowed_loci_file` paths with spaces in the directory break
+  `VALIDATE_INPUT` / `VALIDATE_COVERAGE_TAXA`: `containerOptions` binds
+  `${file(params.allowed_loci_file).parent}` unquoted
+  (`modules/validate/input/main.nf:7`), while `docs/params.md:64` says "no
+  spaces" and the schema has no pattern. Either quote the bind or add a
+  pattern so it fails at parameter validation. Origin: task
+  10_input_filenames_with_spaces, #358, 2026-11-19.
