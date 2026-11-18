@@ -49,7 +49,8 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          sudo find /tmp -maxdepth 1 -type d \
+          # Trailing slash: /tmp may be a symlink (e.g. -> /mnt/data/tmp)
+          sudo find /tmp/ -maxdepth 1 -type d \
             \( -name 'rootfs*' -o -name 'com.google*' \) \
             -mmin +60 \
             -print \
