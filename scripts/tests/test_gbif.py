@@ -9,6 +9,7 @@ from src.gbif.relatives import (
     GBIFRecord,
     GBIFRecordNotFound,
     RelatedTaxaGBIF,
+    _break_tie,
     is_root_taxon,
 )
 
@@ -305,3 +306,173 @@ class TestNameSuggestWrapper(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+# Duplicate accepted COL genus records named 'Drosophila' (issue #351).
+DROSOPHILA_KEY = 298353264
+DROSOPHILA_EMPTY_KEY = 314480147
+DROSOPHILA_SUGGEST = {
+    DROSOPHILA_KEY: {
+        'key': DROSOPHILA_KEY,
+        'scientificName': 'Drosophila Fallén, 1823',
+        'canonicalName': 'Drosophila',
+        'genusKey': DROSOPHILA_KEY,
+        'kingdomKey': 296374190,
+        'rank': 'GENUS',
+        'status': 'ACCEPTED',
+    },
+    DROSOPHILA_EMPTY_KEY: {
+        'key': DROSOPHILA_EMPTY_KEY,
+        'scientificName': 'Drosophila Fallen-Nominotypical',
+        'canonicalName': 'Drosophila',
+        'genusKey': DROSOPHILA_EMPTY_KEY,
+        'kingdomKey': 296374190,
+        'rank': 'GENUS',
+        'status': 'ACCEPTED',
+    },
+}
+DROSOPHILA_USAGE = {
+    DROSOPHILA_KEY: {
+        'authorship': 'Fallén, 1823',
+        'publishedIn': 'Fallén, C.F. (1823) Geomyzides Sveciae.',
+        'taxonID': 'BXWZ6',
+    },
+    DROSOPHILA_EMPTY_KEY: {
+        'authorship': 'Fallen-Nominotypical',
+        'publishedIn': None,
+        'taxonID': '87FQG',
+    },
+}
+
+
+def _record(**data):
+    data.setdefault('canonicalName', 'Taxon')
+    data.setdefault('rank', 'GENUS')
+    data.setdefault('status', 'ACCEPTED')
+    return GBIFRecord(data)
+
+
+@patch('src.utils.cache.get', return_value=None)
+@patch('pygbif.species.name_usage')
+@patch('src.gbif.api.name_suggest')
+class TestDuplicateNameTieBreak(unittest.TestCase):
+    """Same-name, same-rank accepted records are chosen deterministically."""
+
+    def _setup(self, mock_suggest, mock_name_usage, suggest_keys):
+        mock_suggest.__name__ = 'name_suggest'
+        mock_suggest.return_value = [
+            dict(DROSOPHILA_SUGGEST[key]) for key in suggest_keys
+        ]
+        mock_name_usage.__name__ = 'name_usage'
+        mock_name_usage.side_effect = (
+            lambda key, **kw: dict(DROSOPHILA_USAGE[key]))
+
+    def test_empty_duplicate_listed_first_is_rejected(
+        self, mock_suggest, mock_name_usage, mock_cache_get,
+    ):
+        self._setup(
+            mock_suggest, mock_name_usage,
+            [DROSOPHILA_EMPTY_KEY, DROSOPHILA_KEY])
+        taxon = RelatedTaxaGBIF('Drosophila')
+        self.assertEqual(taxon.key, DROSOPHILA_KEY)
+        self.assertEqual(taxon.record.taxon_id, 'BXWZ6')
+        self.assertIsNone(taxon.from_synonym)
+        self.assertEqual(
+            taxon.tie_break['chosen'],
+            (DROSOPHILA_KEY, 'Drosophila Fallén, 1823'))
+        self.assertEqual(
+            taxon.tie_break['rejected'],
+            [(DROSOPHILA_EMPTY_KEY, 'Drosophila Fallen-Nominotypical')])
+        # One enrichment lookup per tied record; none for the taxonID.
+        self.assertEqual(mock_name_usage.call_count, 2)
+
+    def test_opposite_order_gives_same_record(
+        self, mock_suggest, mock_name_usage, mock_cache_get,
+    ):
+        self._setup(
+            mock_suggest, mock_name_usage,
+            [DROSOPHILA_KEY, DROSOPHILA_EMPTY_KEY])
+        taxon = RelatedTaxaGBIF('Drosophila')
+        self.assertEqual(taxon.key, DROSOPHILA_KEY)
+        self.assertEqual(
+            taxon.tie_break['rejected'][0][0], DROSOPHILA_EMPTY_KEY)
+
+    def test_single_record_has_no_tie_break(
+        self, mock_suggest, mock_name_usage, mock_cache_get,
+    ):
+        self._setup(mock_suggest, mock_name_usage, [DROSOPHILA_KEY])
+        with patch(
+            'src.gbif.relatives.api.get_col_taxon_id',
+            return_value='BXWZ6',
+        ) as mock_taxon_id:
+            taxon = RelatedTaxaGBIF('Drosophila')
+        self.assertEqual(taxon.key, DROSOPHILA_KEY)
+        self.assertIsNone(taxon.tie_break)
+        mock_taxon_id.assert_called_once_with(DROSOPHILA_KEY)
+        mock_name_usage.assert_not_called()
+
+    def test_same_name_different_rank_is_not_a_tie(
+        self, mock_suggest, mock_name_usage, mock_cache_get,
+    ):
+        self._setup(
+            mock_suggest, mock_name_usage,
+            [DROSOPHILA_EMPTY_KEY, DROSOPHILA_KEY])
+        for rank in ('SUBGENUS', 'SPECIES'):
+            with self.subTest(rank=rank):
+                mock_suggest.return_value[1]['rank'] = rank
+                mock_name_usage.reset_mock()
+                with patch(
+                    'src.gbif.relatives.api.get_col_taxon_id',
+                    return_value='87FQG',
+                ):
+                    taxon = RelatedTaxaGBIF('Drosophila')
+                self.assertEqual(taxon.key, DROSOPHILA_EMPTY_KEY)
+                self.assertIsNone(taxon.tie_break)
+                mock_name_usage.assert_not_called()
+
+
+class TestBreakTie(unittest.TestCase):
+    """Each tie-break signal works on its own, in priority order."""
+
+    def test_nominotypical_marker_rejected(self):
+        a = _record(key=1, scientificName='Taxon Nominotypical, 1900')
+        b = _record(key=2, scientificName='Taxon')
+        self.assertIs(_break_tie([a, b]), b)
+
+    def test_nominotypical_marker_in_authorship_rejected(self):
+        a = _record(key=1, authorship='Smith-NOMINOTYPICAL')
+        b = _record(key=2, authorship='Smith')
+        self.assertIs(_break_tie([a, b]), b)
+
+    def test_authorship_with_year_preferred(self):
+        for authorship in ('Fallén, 1823', '(Linnaeus, 1758)'):
+            with self.subTest(authorship=authorship):
+                a = _record(key=1, authorship='Fallen')
+                b = _record(key=2, authorship=authorship)
+                self.assertIs(_break_tie([a, b]), b)
+
+    def test_authorship_year_from_scientific_name(self):
+        """suggest has no `authorship`, so derive it from scientificName."""
+        a = _record(key=1, scientificName='Taxon Smith')
+        b = _record(key=2, scientificName='Taxon Smith, 1900')
+        self.assertIs(_break_tie([a, b]), b)
+
+    def test_published_in_preferred(self):
+        a = _record(key=1, publishedIn='')
+        b = _record(key=2, publishedIn='Smith (1900) Journal.')
+        self.assertIs(_break_tie([a, b]), b)
+
+    def test_falls_back_to_suggest_order(self):
+        a = _record(key=1, authorship='Smith, 1900')
+        b = _record(key=2, authorship='Jones, 1901')
+        self.assertIs(_break_tie([a, b]), a)
+        self.assertIs(_break_tie([b, a]), b)
+
+    def test_signal_priority(self):
+        """Nominotypical outranks year, which outranks publishedIn."""
+        nominotypical = _record(
+            key=1, authorship='Nominotypical, 1900', publishedIn='X')
+        no_year = _record(key=2, authorship='Smith', publishedIn='X')
+        year = _record(key=3, authorship='Smith, 1900')
+        self.assertIs(_break_tie([nominotypical, no_year]), no_year)
+        self.assertIs(_break_tie([no_year, year]), year)

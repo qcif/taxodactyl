@@ -10,6 +10,7 @@ from src.gbif.relatives import (
     ROOT_RANKS,
     RelatedTaxaGBIF,
     is_root_taxon,
+    tie_break_message,
 )
 from src.taxonomy import extract
 from src.utils import errors
@@ -164,6 +165,16 @@ def fetch_target_taxa(targets, query_dir):
                 context={"target": target},
             )
             continue
+
+        if gbif_target.tie_break:
+            msg = tie_break_message(gbif_target.tie_break)
+            logger.warning(f"Target taxon '{target}': {msg}")
+            errors.write(
+                errors.LOCATIONS.DB_COVERAGE,
+                msg,
+                query_dir=query_dir,
+                context={"target": target},
+            )
 
         if gbif_target.rank in ROOT_RANKS:
             add_root_taxon(

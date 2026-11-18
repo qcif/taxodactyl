@@ -1,13 +1,13 @@
 # Task 08 — Break ties between duplicate COL records with the same name
 
-**Status:** planned
+**Status:** done
 
 **Priority:** High: intermittent 5.2 `ERR` for genus-level targets such as
 *Drosophila* (SME25-218), which makes nf-test and Selenium results flaky.
 
 **Issue:** [#351 — Selection of GBIF name_suggests result creates error for Drosophila](https://github.com/qcif/taxodactyl/issues/351)
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** granted by user via `/speckit-implement 08` (2026-11-18).
 
 **Scope:** `RelatedTaxaGBIF._get_taxon_record` in
 `scripts/src/gbif/relatives.py`, and recording of tie-break events in
@@ -117,7 +117,7 @@ configured, so this brief uses `spec/`, source and tests directly.
 
 ## Testing decision
 
-**Pending user input.** Proposed: the agent writes and runs the unit tests
+Agreed 2026-11-18: the agent writes and runs the unit tests
 below. The user reviews nf-test and Selenium drift and owns baselines and
 fixtures.
 
@@ -173,3 +173,86 @@ tie-break note. Run the `selenium-report` skill on the reports.
 - Other COL duplicates may not have a "nominotypical" marker. The authorship
   and publishedIn signals reduce that risk but don't remove it. The new
   informational error makes any such cases visible in reports for follow-up.
+
+## Outcomes
+
+Completed 2026-11-18 on branch `task-08-col-duplicate-name-tiebreak`.
+
+### Implementation
+
+- `scripts/src/gbif/relatives.py`: `_get_taxon_record` now (1) builds
+  candidates with `_get_accepted_candidates`: the first accepted suggestion
+  (same accepted/extinct/rank rules and synonym replacement as before), plus
+  any later accepted suggestions with the same lower-cased canonical name and
+  rank; (2) when there are several, `_resolve_tie` enriches them and calls the
+  pure `_break_tie`, sets `self.tie_break`, and takes `from_synonym` from the
+  chosen record. Added `NOMINOTYPICAL_RE`, `AUTHORSHIP_YEAR_RE`,
+  `_same_name_and_rank`, `_get_authorship`, `_enrich_record`, `_break_tie` and
+  `tie_break_message`.
+- `scripts/src/gbif/api.py`: new cached `name_usage(key)` that returns the
+  full `/v1/species/{key}` record. `get_col_taxon_id` now uses it, so both
+  share one cache key.
+- `scripts/src/coverage/targets.py`: `fetch_target_taxa` logs a warning and
+  writes one informational `DB_COVERAGE` error with
+  `context={'target': target}` when `gbif_target.tie_break` is set. This runs
+  straight after a successful lookup, before the root-rank check.
+- `spec/python/p5-db-coverage.md`: amended P5-011 and P5-013 and the §9 test
+  mapping.
+
+### Suggest fields (precondition check)
+
+Live `/v1/species/suggest` returns `scientificName` but **not** `authorship`,
+`publishedIn` or `taxonID`. `/v1/species/{key}` returns all three (e.g.
+298353264 → `Fallén, 1823`, published in Fallén (1823), `BXWZ6`; 314480147 →
+`Fallen-Nominotypical`, `publishedIn: null`, `87FQG`). So, only when there is
+a tie, each tied record gets one cached `name_usage` call
+(`api.name_usage`). This adds `authorship`, `publishedIn` and `taxonID`. The
+chosen record's `taxonID` comes from that same lookup, so
+`get_col_taxon_id` makes no further request. If `authorship` is still
+missing, it is derived from `scientificName` minus the canonical name.
+
+### Deviations
+
+- Rejected tied records do get a cached `name_usage` lookup, for
+  enrichment, as the brief allows. They get no separate taxonID lookup.
+- Synonym suggestions **after** the first accepted record are not resolved
+  and are never tie candidates. This keeps requests for responses without
+  ties exactly as before (Completion criterion 2). A tie made only through
+  a later synonym's accepted record is therefore not detected.
+- `tie_break` also stores `name` and `rank`, which the message uses.
+
+### Validation
+
+- Unit tests: `python -m unittest discover -s scripts/tests -p 'test*.py' -b`
+  (project venv) → 215 tests OK, 1 skipped. New tests:
+  `test_gbif.TestDuplicateNameTieBreak` (empty duplicate first, opposite
+  order, single record makes no extra calls, same name with a different rank
+  (SUBGENUS/SPECIES) is not a tie), `test_gbif.TestBreakTie` (each signal,
+  authorship from scientificName, suggest-order fallback, priority), and
+  `test_coverage_targets.TieBreakErrorTestCase` (exactly one `DB_COVERAGE`
+  error with the target context; none without a tie). `_fake_gbif_target`
+  now sets `tie_break = None`.
+- flake8 clean on all changed Python files.
+- Live check: `RelatedTaxaGBIF('Drosophila')` (no classification) →
+  298353264 / `BXWZ6`, 1704 relatives. Without the animal `higherTaxonKey`
+  it sees 4 accepted genus records (including the fungus *Drosophila* Quél.
+  and a bare *Drosophila*), and rejects the other 3.
+- Integration tests were not run (testing decision).
+
+### Pending user review
+
+- nf-test core: run at least twice. Confirm SME25-218 PMI 5.2 is `B` every
+  time (`test/core/flags/query_013_SME25-218_5.2.flag`) and the modal shows
+  the tie-break note. The snapshot (`test/core/taxodactyl.workflow.nf.test.snap`)
+  error/report hashes will change for SME25-218 and any other duplicated
+  name. Not updated.
+- Python integration (`test_integration_coverage.py`, SME25-218..220): with
+  live GBIF, a tie-break error is now written for PMI *Drosophila*. Check
+  whether any error-count assertions are affected.
+- Selenium: run the `selenium-report` skill. Fixture 18
+  (`test/selenium/expected/18_SME25-218.yaml`) should no longer show
+  `5.2ERR` for Drosophila. Promote it if so.
+
+### Spin-offs
+
+None.
