@@ -1,5 +1,5 @@
 sample_id: barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -202,7 +202,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1A
     - id: record_count
       type: list
       flex: 0.1
@@ -216,19 +216,19 @@ components:
       type: list
       flex: 0.1
       value:
-      - ''
+      - '17'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - ''
+      - '22'
     - id: min_bar_count
       type: min
       value: '0'
     - id: first_bar_species
       type: list
       value:
-      - ''
+      - Vitivirus alphavitis
     - id: first_bar_count
       type: list
       flex: 0.1
@@ -237,7 +237,7 @@ components:
     - id: country_message
       type: list
       value:
-      - ''
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
 - id: publication_modal
   candidates:
   - name: Vitivirus etavitis

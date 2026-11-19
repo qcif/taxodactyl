@@ -167,7 +167,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
@@ -203,7 +203,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1A
     - id: record_count
       type: list
       flex: 0.1
@@ -212,7 +212,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2ERR
     - id: species_count
       type: list
       flex: 0.1

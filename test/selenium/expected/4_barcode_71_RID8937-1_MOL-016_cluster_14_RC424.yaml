@@ -119,24 +119,24 @@ components:
       type: list
       flex: 0.1
       value:
-      - ''
+      - '6'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - ''
+      - '6'
     - id: min_bar_count
       type: min
       value: '0'
     - id: first_bar_species
       type: list
       value:
-      - ''
+      - Orthotospovirus tomatomaculae
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '6051'
     - id: country_message
       type: list
       value:
@@ -164,24 +164,24 @@ components:
       type: list
       flex: 0.1
       value:
-      - ''
+      - '6'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - ''
+      - '6'
     - id: min_bar_count
       type: min
       value: '0'
     - id: first_bar_species
       type: list
       value:
-      - ''
+      - Orthotospovirus tomatomaculae
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '6051'
     - id: country_message
       type: list
       value:
