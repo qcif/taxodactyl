@@ -38,6 +38,13 @@ Task-planning hooks obey this boundary too: if a hook would implement code or
 change test expectations, leave that action pending and explain why rather
 than running it as an automatic consequence of planning.
 
+## Overview
+
+After scope, the task brief should begin with an overview section that should
+summarize the issue, intended fix, and outstanding issues/decisions in language
+that a new junior developer can understand. Brevity and simple language is
+appreciated here.
+
 ## Required testing decision
 
 For every task creation or revision, assess the relevant tests, then ask the
