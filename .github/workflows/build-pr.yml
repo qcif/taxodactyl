@@ -1,0 +1,130 @@
+name: build-pr
+# Builds a neoformit/taxodactyl:<branch> image when a PR changes the Python
+# scripts, then runs nf-test against that image (or :main if unchanged).
+# The branch tag is deleted from Docker Hub when the PR is closed.
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, closed]
+
+# Cancel a run if a newer one is started for the same PR (incl. on close)
+concurrency:
+  group: build-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_REPO: neoformit/taxodactyl
+  DEFAULT_IMAGE: docker.io/neoformit/taxodactyl:main
+
+jobs:
+  build:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.tag.outputs.image }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Same paths as build-main.yml: only rebuild if the image would differ
+      - name: Detect Python changes
+        id: changes
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          changed_files=$(git diff --name-only "origin/$BASE_REF...HEAD")
+          echo "$changed_files"
+          if echo "$changed_files" | grep -qE \
+            '^scripts/(.*\.py|Dockerfile|requirements\.txt|config/.*)$'
+          then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Branch names are untrusted, so pass via env and sanitise for docker
+      - name: Compute image tag
+        id: tag
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          CHANGED: ${{ steps.changes.outputs.changed }}
+        run: |
+          tag=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-128)
+          if [[ "$CHANGED" == "true" ]]; then
+            image="docker.io/$IMAGE_REPO:$tag"
+          else
+            image="$DEFAULT_IMAGE"
+          fi
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "Image for nf-test: $image"
+
+      - name: Log in to Docker Hub
+        if: steps.changes.outputs.changed == 'true'
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          IMAGE: ${{ steps.tag.outputs.image }}
+        run: |
+          cd scripts
+          docker build -t "$IMAGE" -f Dockerfile .
+          docker push "$IMAGE"
+
+      - name: Verify image exists remotely
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          IMAGE: ${{ steps.tag.outputs.image }}
+        run: docker manifest inspect "$IMAGE" > /dev/null
+
+  nf-test:
+    needs: build
+    uses: ./.github/workflows/nf-test.yml
+    with:
+      image: ${{ needs.build.outputs.image }}
+    secrets: inherit
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete branch tag from Docker Hub
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          tag=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-128)
+
+          # Never delete protected tags, whatever the branch is called
+          if [[ "$tag" =~ ^(main|latest|v[0-9].*)$ ]]; then
+            echo "Refusing to delete protected tag '$tag'"
+            exit 0
+          fi
+
+          token=$(
+            jq -n --arg u "$DOCKER_USERNAME" --arg p "$DOCKER_PASSWORD" \
+              '{username: $u, password: $p}' \
+            | curl -sf -X POST \
+              -H "Content-Type: application/json" \
+              -d @- \
+              https://hub.docker.com/v2/users/login \
+            | jq -r .token
+          )
+          echo "::add-mask::$token"
+
+          status=$(
+            curl -s -o /dev/null -w '%{http_code}' -X DELETE \
+              -H "Authorization: JWT $token" \
+              "https://hub.docker.com/v2/repositories/$IMAGE_REPO/tags/$tag/"
+          )
+          case "$status" in
+            204) echo "Deleted $IMAGE_REPO:$tag" ;;
+            404) echo "No tag $IMAGE_REPO:$tag to delete (no image was built)" ;;
+            *) echo "Failed to delete $IMAGE_REPO:$tag (HTTP $status)"; exit 1 ;;
+          esac

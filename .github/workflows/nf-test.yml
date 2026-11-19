@@ -5,20 +5,31 @@ on:
     schedule:
       # Runs at 00:00 UTC, only on Sunday
       - cron: '0 0 * * 0'
-    # And on pull request to main
-    pull_request:
-      branches:
-        - main
+    # Called by build-pr.yml on pull request to main, after building the
+    # PR's taxodactyl image (if the PR changes the Python scripts)
+    workflow_call:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
     # Can also be triggered manually using GH UI
     workflow_dispatch:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
     # Update here to enable trigger on push of selected branch
     # push:
     #   branches:
     #     - nf-test-sh-runner
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+# Literal "nf-test-" prefix: when called from build-pr.yml, github.workflow is
+# the caller's name, which would clash with build-pr's own concurrency group
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: nf-test-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -31,6 +42,9 @@ jobs:
     name: core_test
     runs-on: ${{ matrix.runner }}
     environment: testing
+    # Read by conf/process.config to select the taxodactyl container
+    env:
+      TAXODACTYL_IMAGE: ${{ inputs.image || 'docker.io/neoformit/taxodactyl:main' }}
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
       fail-fast: false
@@ -82,11 +96,12 @@ jobs:
             echo "checkout_sha: $(git rev-parse HEAD)"
             echo "pr_head_sha: ${PR_HEAD_SHA:-n/a}"
             echo "run_url: $RUN_URL"
+            echo "image: $TAXODACTYL_IMAGE"
           } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
 
-      # Ensure container with latest commit to main is pulled
+      # Ensure the latest build of the image under test is pulled
       - name: Force pull latest Docker image
-        run: docker pull neoformit/taxodactyl:main
+        run: docker pull "$TAXODACTYL_IMAGE"
         continue-on-error: true
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
