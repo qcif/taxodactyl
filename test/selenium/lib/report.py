@@ -426,7 +426,7 @@ class Assertion:
         use_flex = self.flex is not None and not strict
         for expected_item in self.expected:
             needle = normalize_whitespace(str(expected_item))
-            if any(needle in item for item in normalized_actual):
+            if self._list_item_matches(needle, normalized_actual):
                 continue
             # Flex only ever relaxes the strict substring match above
             if use_flex and self._is_number(needle):
@@ -439,6 +439,20 @@ class Assertion:
                 )
                 continue
             raise AssertionError(f"{context} Expected '{needle}' not found")
+
+    @classmethod
+    def _list_item_matches(cls, needle: str, items: list) -> bool:
+        """True when `needle` is found in `items`. Numbers must equal a
+        numeric item exactly - a substring match would accept '0' in '10'
+        or '41226' in '412262'. Text is matched as a substring."""
+        if cls._is_number(needle):
+            value = float(needle.replace(",", ""))
+            return any(
+                cls._is_number(item)
+                and float(item.replace(",", "")) == value
+                for item in items
+            )
+        return any(needle in item for item in items)
 
     @staticmethod
     def _is_number(value: str) -> bool:
@@ -485,8 +499,13 @@ class Assertion:
     def is_drifted(self, strict: bool = False) -> bool:
         """True when the observed value violates the expected value under
         this assertion's type semantics. Returns False when either side is
-        None (nothing to compare). `strict=True` ignores flex."""
-        if self.expected is None or self.observed is None:
+        None (nothing to compare). `strict=True` ignores flex, and also
+        reports a blank expected value that now has an observed value, so
+        promote can fill in fields that were empty when the fixture was
+        written."""
+        if self.expected is None:
+            return strict and not _is_blank(self.observed)
+        if self.observed is None:
             return False
         try:
             self.assert_value(strict=strict)
@@ -508,6 +527,15 @@ class Assertion:
         if self.assertion_type in ("int", "float", "min"):
             return str(val)
         return normalize_whitespace(str(val))
+
+
+def _is_blank(value: Any) -> bool:
+    """True for None, empty strings and lists holding only empty strings."""
+    if value is None:
+        return True
+    if isinstance(value, (list, tuple)):
+        return all(_is_blank(item) for item in value)
+    return not str(value).strip()
 
 
 class Report:
