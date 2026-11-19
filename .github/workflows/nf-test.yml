@@ -411,9 +411,10 @@ jobs:
           mkdir -p "/var/runner/$timestamp"
 
           cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
+          mv $TEST_DIR/output/reports.zip /var/runner/$timestamp/
 
           echo "Location of files on self-hosted runner:"
           echo "/var/runner/$timestamp/"
 
           echo "Download reports with:
-          echo '\`scp ubuntu@daff-runner:$TEST_DIR/output/reports.zip\`'
+          echo "    scp ubuntu@daff-runner:/var/runner/$timestamp/reports.zip ."
