@@ -23,3 +23,13 @@ One bullet per item: what needs doing and why, its origin
   none, the per-species counts are looked up at the wrong rank (0) or
   rejected (`None`), so 5.2/5.3 are understated. Origin: task
   09_targets_missing_from_col, #353, 2026-11-18.
+- Directory parameters with spaces break containerised processes:
+  `containerOptions` binds `${file(params.outdir)}` (9 modules, e.g.
+  `modules/validate/input/main.nf:7`), `${file(params.taxdb)}` and
+  `${file(params.allowed_loci_file).parent}` unquoted, so singularity sees
+  a truncated path (`FATAL: could not open image .../dir/out_cov`, seen in
+  task 10's smoke run with `--outdir "<scratch>/smoke dir/out_cov"`).
+  `docs/params.md:64` says "no spaces" only for `allowed_loci_file`, and
+  none of these has a schema pattern. Either quote the binds or add
+  patterns so they fail at parameter validation. Origin: task
+  10_input_filenames_with_spaces, #358, 2026-11-19.

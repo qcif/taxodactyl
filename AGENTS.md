@@ -1,4 +1,6 @@
-# Instructions for Claude
+# Instructions for agents
+
+Before doing anything, check what branch you're on. Don't assume you're on main.
 
 Before running python code, run `source scripts/venv/bin/activate` to obtain required environment variables and activate the virtual environment.
 

@@ -100,6 +100,7 @@ echo "Coverage taxa: $COVERAGE_TAXA"
 echo "Output dir:    $OUTDIR"
 echo "Tax DB:        $TAXDB_PATH (on Azure Batch nodes)"
 echo "Profile:       azure"
+echo "Image:         ${TAXODACTYL_IMAGE:-docker.io/neoformit/taxodactyl:main}"
 echo "Resume:        ${RESUME:-false}"
 echo ""
 

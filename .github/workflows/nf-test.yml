@@ -5,20 +5,31 @@ on:
     schedule:
       # Runs at 00:00 UTC, only on Sunday
       - cron: '0 0 * * 0'
-    # And on pull request to main
-    pull_request:
-      branches:
-        - main
+    # Called by build-pr.yml on pull request to main, after building the
+    # PR's taxodactyl image (if the PR changes the Python scripts)
+    workflow_call:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
     # Can also be triggered manually using GH UI
     workflow_dispatch:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
     # Update here to enable trigger on push of selected branch
     # push:
     #   branches:
     #     - nf-test-sh-runner
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+# Literal "nf-test-" prefix: when called from build-pr.yml, github.workflow is
+# the caller's name, which would clash with build-pr's own concurrency group
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: nf-test-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -31,6 +42,9 @@ jobs:
     name: core_test
     runs-on: ${{ matrix.runner }}
     environment: testing
+    # Read by conf/process.config to select the taxodactyl container
+    env:
+      TAXODACTYL_IMAGE: ${{ inputs.image || 'docker.io/neoformit/taxodactyl:main' }}
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
       fail-fast: false
@@ -42,6 +56,20 @@ jobs:
         runner: [self-hosted]
 
     steps:
+      # Singularity (rootfs-*) and Chrome/Selenium (com.google.*) leave dirs
+      # behind in /tmp. Remove any older than an hour so concurrent runs
+      # aren't affected. sudo is needed as rootfs contents may be read-only.
+      - name: Clean up stale /tmp dirs
+        if: always()
+        continue-on-error: true
+        run: |
+          # Trailing slash: /tmp may be a symlink (e.g. -> /mnt/data/tmp)
+          sudo find /tmp/ -maxdepth 1 -type d \
+            \( -name 'rootfs*' -o -name 'com.google*' \) \
+            -mmin +60 \
+            -print \
+            -exec rm -rf {} +
+
       # Enable creation of containers as an unprivileged user
       - name: Enable unprivileged user namespaces
         run: |
@@ -68,11 +96,12 @@ jobs:
             echo "checkout_sha: $(git rev-parse HEAD)"
             echo "pr_head_sha: ${PR_HEAD_SHA:-n/a}"
             echo "run_url: $RUN_URL"
+            echo "image: $TAXODACTYL_IMAGE"
           } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
 
-      # Ensure container with latest commit to main is pulled
+      # Ensure the latest build of the image under test is pulled
       - name: Force pull latest Docker image
-        run: docker pull neoformit/taxodactyl:main
+        run: docker pull "$TAXODACTYL_IMAGE"
         continue-on-error: true
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
@@ -302,6 +331,12 @@ jobs:
           echo "#### tree $TEST_DIR/output/reports"
           tree $TEST_DIR/output/reports
 
+      - name: Zip reports
+        if: always()
+        run: |
+          cd $TEST_DIR/output
+          zip -r reports.zip reports/
+
       # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
@@ -326,6 +361,9 @@ jobs:
             # Copy the review.html to the test dir for sh runner inspection
             cp review.html $RUNNER_TEMP/nf-test/
 
+            # Zip report and review.html into one artifact
+            zip report.zip review.html test-report.json
+
             # Always return pytest exit status as the step status
             exit "$pytest_status"
           else
@@ -338,7 +376,7 @@ jobs:
         if: always()
         with:
           name: review-${{ matrix.runner }}.html
-          path: ${{ github.workspace }}/test/selenium/review.html
+          path: ${{ github.workspace }}/test/selenium/report.zip
 
       - name: Upload reports
         uses: actions/upload-artifact@v7
@@ -362,3 +400,6 @@ jobs:
 
           echo "Location of files on self-hosted runner:"
           echo "/var/runner/$timestamp/"
+
+          echo "Download reports with:
+              `scp ubuntu@daff-runner:$TEST_DIR/output/reports.zip`"
