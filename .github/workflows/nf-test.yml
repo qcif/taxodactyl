@@ -169,7 +169,15 @@ jobs:
           mkdir -p \
             "$RUNNER_TEMP/taxodactyl" \
             "$RUNNER_TEMP/singularity" \
+            "$RUNNER_TEMP/singularity-tmp" \
+            "$RUNNER_TEMP/singularity-layers" \
             "$RUNNER_TEMP/nf-test"
+          # Keep Singularity build scratch (rootfs-*) and layer cache out of
+          # /tmp and $HOME so they are wiped with $RUNNER_TEMP after each job
+          {
+            echo "SINGULARITY_TMPDIR=$RUNNER_TEMP/singularity-tmp"
+            echo "SINGULARITY_CACHEDIR=$RUNNER_TEMP/singularity-layers"
+          } >> "$GITHUB_ENV"
           # Fill in each CUSTOMISE placeholder with a real value/path
           # and toggle mock_blast per env variable
           sed -i \
