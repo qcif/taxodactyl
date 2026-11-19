@@ -1,5 +1,7 @@
 # Instructions for agents
 
+Before doing anything, check what branch you're on. Don't assume you're on main.
+
 Before running python code, run `source scripts/venv/bin/activate` to obtain required environment variables and activate the virtual environment.
 
 For running units tests, you can find instructions for doing so in ./.vscode/launch.json.
