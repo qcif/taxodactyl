@@ -1,4 +1,4 @@
-# Instructions for Claude
+# Instructions for agents
 
 Before running python code, run `source scripts/venv/bin/activate` to obtain required environment variables and activate the virtual environment.
 
