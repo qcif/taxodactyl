@@ -70,7 +70,9 @@ def validate_arguments(args):
                 raise RuntimeError("ssh executable is not on PATH")
         else:
             binary = Path(args.taxonkit).expanduser()
-            if not binary.is_file() and shutil.which(args.taxonkit) is None:
+            if binary.is_file():
+                args.taxonkit = str(binary.resolve())
+            elif shutil.which(args.taxonkit) is None:
                 raise FileNotFoundError(f"TaxonKit executable not found: {args.taxonkit}")
             if not Path(args.taxdb).expanduser().is_dir():
                 raise FileNotFoundError(f"Taxdump directory not found: {args.taxdb}")
@@ -125,6 +127,13 @@ def validate_database(database):
         ).fetchone()
         if bad or present + unknown > records * len(expected):
             raise ValueError("Invalid sparse record_locus statuses or counts")
+        orphan = db.execute(
+            "SELECT 1 FROM record_locus rl "
+            "WHERE NOT EXISTS (SELECT 1 FROM records r WHERE r.accession = rl.accession) "
+            "LIMIT 1"
+        ).fetchone()
+        if orphan:
+            raise ValueError("record_locus refers to an unknown accession")
         duplicate = db.execute(
             "SELECT 1 FROM record_locus GROUP BY accession, locus_id "
             "HAVING COUNT(*) > 1 LIMIT 1"
