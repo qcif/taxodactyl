@@ -22,8 +22,10 @@ same checks by calling `validate_inputs()` directly
 
 nf-schema (`validateParameters()`, `UTILS_NFSCHEMA_PLUGIN`, on by default
 via `validate_params`) checks only the `--metadata` *parameter*: the path
-must match `^\S+\.csv$` (no spaces, `.csv` extension), exist, and be a
-file. Until `3339050` the parameter also carried
+must match `^.+\.csv$` (`.csv` extension; spaces are allowed), exist,
+and be a file. `PREPARE_INPUTS` stages it under the fixed name
+`input_metadata.csv`, so the original filename is not used after
+staging (NF-PR-012). Until `3339050` the parameter also carried
 `"schema": "assets/schema_input.json"`, which made nf-schema parse and
 validate every CSV row as UTF-8 before any process started. That crashed
 the run on cp1252 files exported from Excel (#326), so it was removed;

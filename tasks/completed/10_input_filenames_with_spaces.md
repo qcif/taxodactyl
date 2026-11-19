@@ -1,6 +1,6 @@
 # Task 10 — Accept input filenames containing spaces
 
-**Status:** active
+**Status:** done
 
 **Priority:** Medium. A submitter whose sample sheet is named e.g.
 `My samples.csv` passes the validator web tool, then nf-schema rejects the
@@ -251,15 +251,15 @@ marking them passed.
 
 ## Completion criteria
 
-- [ ] `modules/prepare/inputs/main.nf` stages inputs as
+- [x] `modules/prepare/inputs/main.nf` stages inputs as
       `input_sequences.fasta` / `input_metadata.csv`, and its script contains
       no user filename.
-- [ ] `nextflow_schema.json` patterns and error messages for `metadata`,
+- [x] `nextflow_schema.json` patterns and error messages for `metadata`,
       `sequences` and `coverage_taxa` updated as in §B.
-- [ ] `docs/params.md`, `spec/nextflow/params.md`,
+- [x] `docs/params.md`, `spec/nextflow/params.md`,
       `spec/contracts/inputs.md` and `spec/nextflow/processes.md` updated;
       `tasks/changelog.md` line added.
-- [ ] Validation checks 1–7 recorded with their outcomes. Any not run are
+- [x] Validation checks 1–7 recorded with their outcomes. Any not run are
       listed as pending for the user.
 - [ ] **Manual (user):** CI nf-test run reviewed, with no unexpected
       snapshot or flag drift. Pending until the user confirms.
@@ -278,3 +278,92 @@ marking them passed.
 - Relaxing `^\S+` to `^.+` also allows leading or trailing whitespace and
   other unusual characters. That's fine, because no script sees the
   original name, but say so in the PR.
+
+## Outcomes
+
+Implemented 2026-11-19 on branch `task-10-input-filenames-with-spaces`.
+
+### Implementation status: complete
+
+- **A. Staging.** `PREPARE_INPUTS` stages its inputs as
+  `input_sequences.fasta` / `input_metadata.csv` and copies only those fixed
+  names. The `sequences_source` Groovy line and the "already named
+  `metadata.csv`" special case are gone. The script contains no user
+  filename (NF-PR-012).
+  - **A3 tag:** kept `tag "$metadata_file"`, which renders as
+    `input_metadata.csv` (seen in the run log:
+    `TAXODACTYL:PREPARE_INPUTS (input_metadata.csv)`). I didn't use the user
+    filename: NF-WF-005 takes the `<tag>` from the first `(...)` in the task
+    name, so a name like `My samples (v2).csv` would garble the
+    `<outdir>/errors/PREPARE_INPUTS/<tag>.*` path. There's a comment in the
+    module saying so.
+  - **A4 empty list:** a fixed `stageAs` name with `[]` (no `--sequences`)
+    works. Nothing is staged, there's no error, and no `sequences.fasta` is
+    emitted, so the glob fallback wasn't needed.
+- **B. Schema.** The `metadata` / `coverage_taxa` pattern is `^.+\.csv$` and
+  the `sequences` pattern is `^.+\.(fasta|fas|fna|fa)$`. The three
+  `errorMessage`s no longer mention spaces. `format`/`exists`/`mimeType`
+  are unchanged.
+- **Docs/spec:** `docs/params.md` (3 rows), `spec/nextflow/params.md`
+  NF-PA-004 (now also covers `coverage_taxa`), `spec/contracts/inputs.md` §1,
+  and `spec/nextflow/processes.md` §1 (Input, Behaviour, new NF-PR-012).
+  `tasks/changelog.md` has the release note line.
+- No test, snapshot, flag baseline or Selenium fixture was changed.
+- Relaxing `^\S+` to `^.+` also accepts leading/trailing whitespace and other
+  unusual characters in the path. That's acceptable because no task script
+  sees the original name after staging.
+
+### Validation (agent)
+
+Local environment: Nextflow 26.04.6 is installed. It can't compile the
+pipeline under its default strict parser (known, #304 / NF-CF-002), so runs
+used `NXF_VER=25.04.6`, the version CI pins. Fixtures lived in
+`<scratch>/smoke dir/`, so the directory has a space as well as the files.
+
+| # | Check | Result |
+|---|---|---|
+| 1 | `nextflow lint modules/prepare/inputs/main.nf` | **Pass**: no errors |
+| 2 | `python -m json.tool nextflow_schema.json` (scripts/venv) | **Pass** |
+| 3 | Sequence mode, `--metadata "…/smoke dir/My samples.csv" --sequences "…/smoke dir/my query.fasta"` | **Pass**, see deviations: parameter validation OK, `PREPARE_INPUTS` and `VALIDATE_INPUT` exit 0. `cmp`: `metadata.csv` and `sequences.fasta` byte-identical to the originals. `.command.sh` has 0 matches for `My samples`/`my query`. Got as far as `MOCK_BLASTN`; `EXTRACT_HITS` then failed with `IndexError` because the reused `test/core/blast_result.xml` doesn't match these queries (same failure with the space-free paths in check 7, so unrelated). |
+| 4 | No `--sequences`, `--metadata "…/smoke dir/with seqs.csv"` | **Pass**: `PREPARE_INPUTS` staged only `input_metadata.csv`, printed "Sequences file: not provided", emitted no `sequences.fasta`. `metadata.csv` byte-identical. `VALIDATE_INPUT` exit 0 with no `--query-fasta` (sequences taken from the CSV column). |
+| 5 | Coverage mode, `--coverage_taxa "…/smoke dir/my taxa.csv"` | **Pass**: `VALIDATE_COVERAGE_TAXA`, 4× `EVALUATE_DATABASE_COVERAGE`, `REPORT_COVERAGE`, `PREPARE_LOG`; "Pipeline completed successfully". |
+| 6 | Negative: `--metadata "…/My samples.txt"`, `--sequences "…/my query.txt"` | **Pass**: both stop at parameter validation with the new messages (no mention of spaces). |
+| 7 | Space-free defaults `test/metadata.csv` + `test/query.fasta` | **Pass**: `PREPARE_INPUTS` outputs byte-identical, `VALIDATE_INPUT` exit 0. CI nf-test run still to be reviewed (below). |
+
+**Deviations from the planned commands** (environment, not code):
+
+- `-profile test` (`db_type=bold`) can't build the workflow on `main`:
+  `EXTRACT_HITS.out` is referenced unconditionally
+  (`workflows/taxodactyl.nf:316`, known defect NF-D-002, tasks 01/02). So
+  checks 3, 4 and 7 used BLAST mode with mock BLAST
+  (`--db_type blast_core_nt --mock_blast true --blast_xml
+  test/core/blast_result.xml`, placeholder `--blastdb`) instead of the
+  `test` profile with live BOLD.
+- Pulling `docker://neoformit/taxodactyl:main` from Docker Hub failed locally
+  with a registry auth error. The `daff_tax_assign` container was instead a
+  SIF built from the locally cached `neoformit/taxodactyl:latest` Docker
+  image, passed via `-c` override. That image may lag `main`, but this task
+  changes no code inside the container.
+- `--outdir` had to be outside the spaced directory. With a spaced
+  `--outdir`, `VALIDATE_COVERAGE_TAXA` failed (`FATAL: could not open image
+  …/dir/out_cov`) because `containerOptions` binds `--outdir` unquoted.
+  That's out of scope and recorded in `tasks/todo.md`.
+
+### Pending (user)
+
+- **CI nf-test run** (`.github/workflows/nf-test.yml`, self-hosted runner)
+  on the PR: check the zipped report for snapshot mismatches and any change
+  in `flags_results.txt` / `flags_errors.txt`. None are expected. Only the
+  `PREPARE_INPUTS` task hash changes.
+- **Optional Azure check:** a `-profile azure` run with a space-containing
+  blob path for `--metadata` / `--sequences` (not run).
+- The PR description should report implementation status (complete) and
+  manual-validation status (pending the above) separately.
+
+### Spin-offs (`tasks/todo.md`)
+
+- Widened the existing `allowed_loci_file` item: unquoted `containerOptions`
+  binds also break on spaces in `--outdir` (9 modules) and `--taxdb`. Seen
+  directly in the coverage smoke run.
+- No new item for the BOLD-branch build failure (NF-D-002) or the Nextflow
+  ≥25.10 strict-syntax failure (#304, NF-CF-002); both are already tracked.
