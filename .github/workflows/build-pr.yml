@@ -16,14 +16,15 @@ concurrency:
 
 env:
   IMAGE_REPO: neoformit/taxodactyl
-  DEFAULT_IMAGE: docker.io/neoformit/taxodactyl:main
 
 jobs:
   build:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
+    # Output the tag only: the repo name contains DOCKER_USERNAME, and GitHub
+    # silently drops job outputs that contain a secret value
     outputs:
-      image: ${{ steps.tag.outputs.image }}
+      tag: ${{ steps.tag.outputs.tag }}
 
     steps:
       - uses: actions/checkout@v7
@@ -53,14 +54,14 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           CHANGED: ${{ steps.changes.outputs.changed }}
         run: |
-          tag=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-128)
           if [[ "$CHANGED" == "true" ]]; then
-            image="docker.io/$IMAGE_REPO:$tag"
+            tag=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-128)
           else
-            image="$DEFAULT_IMAGE"
+            tag="main"
           fi
-          echo "image=$image" >> "$GITHUB_OUTPUT"
-          echo "Image for nf-test: $image"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "image=docker.io/$IMAGE_REPO:$tag" >> "$GITHUB_OUTPUT"
+          echo "Tag for nf-test: $tag"
 
       - name: Log in to Docker Hub
         if: steps.changes.outputs.changed == 'true'
@@ -85,7 +86,8 @@ jobs:
     needs: build
     uses: ./.github/workflows/nf-test.yml
     with:
-      image: ${{ needs.build.outputs.image }}
+      # env context isn't available here, so the repo is spelled out
+      image: docker.io/neoformit/taxodactyl:${{ needs.build.outputs.tag }}
     secrets: inherit
 
   cleanup:
