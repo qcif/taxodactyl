@@ -369,9 +369,6 @@ jobs:
             # Copy the review.html to the test dir for sh runner inspection
             cp review.html $RUNNER_TEMP/nf-test/
 
-            # Zip report and review.html into one artifact
-            zip report.zip review.html test-report.json
-
             # Always return pytest exit status as the step status
             exit "$pytest_status"
           else
@@ -379,12 +376,21 @@ jobs:
               exit 1
           fi
 
+      # archive: false uploads the file as-is (no zip); the artifact takes
+      # the file's own name and the `name` input is ignored
       - name: Upload review.html
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: review-${{ matrix.runner }}.html
-          path: ${{ github.workspace }}/test/selenium/report.zip
+          path: ${{ github.workspace }}/test/selenium/review.html
+          archive: false
+
+      - name: Upload test-report.json
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          path: ${{ github.workspace }}/test/selenium/test-report.json
+          archive: false
 
       - name: Upload reports
         uses: actions/upload-artifact@v7
