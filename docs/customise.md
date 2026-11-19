@@ -22,6 +22,16 @@ singularity {
 }
 ```
 
+### Overriding the analysis image
+
+The analysis steps (processes with the `daff_tax_assign` label) run in the `docker.io/neoformit/taxodactyl:main` image by default. To test a different build, set `TAXODACTYL_IMAGE` in the shell that launches Nextflow:
+
+```bash
+TAXODACTYL_IMAGE=docker.io/neoformit/taxodactyl:ds87dyc nextflow run main.nf -profile singularity ...
+```
+
+This works for local, HPC and Azure Batch (`-profile azure`) runs. Give the image without a scheme. A leading `docker://` is accepted and removed. To check which image will be used, run `nextflow config -profile <profile> . | grep -A1 daff_tax_assign`.
+
 ### Customising resources for a process
 
 To change the memory or CPU allocation for a specific process, add or modify a `withName` block in your config file. For example, to set the `BLAST_BLASTN` process to use 8 CPUs and 16GB of memory, set the following:

@@ -108,6 +108,7 @@ echo "Output dir:    $OUTDIR"
 echo "BLAST DB:      $BLASTDB_PATH (on Azure Batch nodes)"
 echo "Tax DB:        $TAXDB_PATH (on Azure Batch nodes)"
 echo "Profile:       azure"
+echo "Image:         ${TAXODACTYL_IMAGE:-docker.io/neoformit/taxodactyl:main}"
 echo "Resume:        ${RESUME:-false}"
 echo ""
 
