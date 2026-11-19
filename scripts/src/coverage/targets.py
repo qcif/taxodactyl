@@ -35,17 +35,24 @@ class NcbiOnlyTarget:
     and `rank` is the taxid's own NCBI rank (`RANK.NONE` if it is not one of
     the ranks in `RANK`, e.g. "no rank" or "strain").
 
-    `genus_record` is the COL record of the target's NCBI genus (genus
-    fallback). When set, `relatives` and `for_country` come from it, so
-    related-species and in-country coverage are computed as for a lower
-    target. `eq=False` keeps instances hashable by identity, since coverage
-    results are keyed by target record.
+    `closest_col_name` / `closest_col_genus` are set when COL suggested a
+    different accepted name for the target (a near miss, e.g. 'Grapevine
+    virus' -> 'Grapevine virus A') and NCBI has the exact name.
+
+    `genus_record` is the COL record of the target's genus (genus fallback):
+    its NCBI genus or, failing that, the genus of its closest COL match.
+    When set, `relatives` and `for_country` come from it, so related-species
+    and in-country coverage are computed as for a lower target. `eq=False`
+    keeps instances hashable by identity, since coverage results are keyed
+    by target record.
     """
 
     taxon: str
     taxid: str | None = None
     rank: int = RANK.NONE
     ncbi_genus: str | None = None
+    closest_col_name: str | None = None
+    closest_col_genus: str | None = None
     genus_record: RelatedTaxaGBIF | None = None
     canonical_name: str = field(init=False)
 
@@ -193,7 +200,7 @@ def fetch_target_taxa(targets, query_dir):
     original_lower_taxa = {}
     original_higher_taxa = {}
     root_taxa = []
-    col_missing = {}  # original name -> GBIFRecordNotFound message
+    col_missing = {}  # original name -> _col_missing_entry()
 
     def add_root_taxon(target, detail=''):
         if target not in root_taxa:
@@ -213,8 +220,39 @@ def fetch_target_taxa(targets, query_dir):
             )
         except GBIFRecordNotFound as exc:
             logger.warning(f"Target taxon '{target}': {exc}")
-            col_missing[target] = str(exc)
+            col_missing[target] = _col_missing_entry(str(exc))
             continue
+
+        if gbif_target.rank in ROOT_RANKS:
+            add_root_taxon(
+                target,
+                f" (GBIF key {gbif_target.key}:"
+                f" '{gbif_target.canonical_name}',"
+                f" rank {RANK.to_string(gbif_target.rank)})",
+            )
+            continue
+
+        is_inexact = (
+            gbif_target.canonical_name.lower() != target.lower()
+            and not gbif_target.from_synonym
+        )
+        if is_inexact:
+            taxid = extract.taxids(
+                [target], classification=classification).get(target)
+            if taxid:
+                msg = (
+                    f"'{target}' is not in the Catalogue of Life (COL)"
+                    " taxonomy used by GBIF; its closest COL name,"
+                    f" '{gbif_target.canonical_name}', is a different taxon."
+                    " NCBI has this exact name, so it is used instead.")
+                logger.warning(f"Target taxon '{target}': {msg}")
+                col_missing[target] = _col_missing_entry(
+                    msg,
+                    taxid=taxid,
+                    closest_col_name=gbif_target.canonical_name,
+                    closest_col_genus=gbif_target.genus,
+                )
+                continue
 
         if gbif_target.tie_break:
             msg = tie_break_message(gbif_target.tie_break)
@@ -225,15 +263,6 @@ def fetch_target_taxa(targets, query_dir):
                 query_dir=query_dir,
                 context={"target": target},
             )
-
-        if gbif_target.rank in ROOT_RANKS:
-            add_root_taxon(
-                target,
-                f" (GBIF key {gbif_target.key}:"
-                f" '{gbif_target.canonical_name}',"
-                f" rank {RANK.to_string(gbif_target.rank)})",
-            )
-            continue
 
         if not gbif_target.rank:
             msg = (
@@ -280,10 +309,8 @@ def fetch_target_taxa(targets, query_dir):
             original_lower_taxa[target] = gbif_target
             target_gbif_records[target_key] = gbif_target
 
-        if (
-            gbif_target.canonical_name.lower() != target.lower()
-            and not gbif_target.from_synonym
-        ):
+        if is_inexact:
+            # No exact NCBI name either: analyse the closest COL name
             errors.write(
                 errors.LOCATIONS.DB_COVERAGE,
                 f"The query taxon '{target}' has been analyzed based on the"
@@ -324,25 +351,53 @@ def fetch_target_taxa(targets, query_dir):
     )
 
 
+def _col_missing_entry(
+    message,
+    taxid=None,
+    closest_col_name=None,
+    closest_col_genus=None,
+):
+    """Describe a target that is not in COL, for _resolve_col_missing_taxa.
+
+    `message` explains why the target is not in COL. `taxid` is set when the
+    target's NCBI taxid is already known (near-miss COL matches).
+    """
+    return {
+        'message': message,
+        'taxid': taxid,
+        'closest_col_name': closest_col_name,
+        'closest_col_genus': closest_col_genus,
+    }
+
+
 def _resolve_col_missing_taxa(
-    col_missing: dict[str, str],
+    col_missing: dict[str, dict],
     classification: dict,
     query_dir,
 ) -> dict[str, NcbiOnlyTarget]:
     """Resolve targets that are not in COL through NCBI taxonomy.
 
-    `col_missing` maps each original target name to its GBIFRecordNotFound
-    message. Each target gets a taxid from taxonkit name2taxid (filtered by
-    the query's classification) and, if found, its NCBI rank and genus from
-    taxonkit lineage. A lower target whose NCBI genus is a genus in COL gets
-    that genus record for related-species checks (genus fallback).
+    `col_missing` maps each original target name to a `_col_missing_entry`.
+    Each target without a known taxid gets one from taxonkit name2taxid
+    (filtered by the query's classification) and, if found, its NCBI rank
+    and genus from taxonkit lineage. A lower target whose genus (NCBI, else
+    its closest COL match's) is a genus in COL gets that genus record for
+    related-species checks (genus fallback).
 
     One `DB_COVERAGE_NO_GBIF_RECORD` error is written per target, saying
     which checks could still be run.
     """
     if not col_missing:
         return {}
-    taxids = extract.taxids(list(col_missing), classification=classification)
+    taxids = {
+        name: entry['taxid']
+        for name, entry in col_missing.items()
+        if entry['taxid']
+    }
+    unknown = [name for name in col_missing if name not in taxids]
+    if unknown:
+        taxids.update(
+            extract.taxids(unknown, classification=classification))
     found_taxids = [
         taxids.get(name)
         for name in col_missing
@@ -351,9 +406,15 @@ def _resolve_col_missing_taxa(
     lineages = extract.lineages(found_taxids) if found_taxids else {}
 
     resolved = {}
-    for name, not_found_msg in col_missing.items():
+    for name, entry in col_missing.items():
+        not_found_msg = entry['message']
         taxid = taxids.get(name)
-        target = NcbiOnlyTarget(name, taxid=taxid)
+        target = NcbiOnlyTarget(
+            name,
+            taxid=taxid,
+            closest_col_name=entry['closest_col_name'],
+            closest_col_genus=entry['closest_col_genus'],
+        )
         resolved[name] = target
         if not taxid:
             _write_no_taxid_errors(target, not_found_msg, query_dir)
@@ -421,15 +482,25 @@ def _write_no_taxid_errors(target, not_found_msg, query_dir):
 
 
 def _apply_genus_fallback(target, classification, query_dir):
-    """Set `target.genus_record` from the COL record of its NCBI genus.
+    """Set `target.genus_record` from the COL record of its genus.
 
-    The COL record is accepted only if it is a genus with the same name as
-    the NCBI genus. Otherwise an informational error says why the
-    related-species checks could not be run.
+    The genus is the target's NCBI genus or, if NCBI gives none, the genus
+    of its closest COL match. Among same-name COL genera, the tie-break
+    picks the one with the most descendants. The COL record is accepted only
+    if it is a genus with the same name. Otherwise an informational error
+    says why the related-species checks could not be run.
     """
     name = target.taxon
     prefix = NO_GENUS_FALLBACK_PREFIX.format(target=name)
-    if not target.ncbi_genus:
+    if target.ncbi_genus:
+        genus = target.ncbi_genus
+        source = f"its NCBI genus '{genus}'"
+    elif target.closest_col_genus:
+        genus = target.closest_col_genus
+        source = (
+            f"the genus '{genus}' of its closest COL match,"
+            f" '{target.closest_col_name}',")
+    else:
         _write_info(
             prefix + f"its NCBI lineage (taxid {target.taxid}) has no genus.",
             name,
@@ -437,12 +508,11 @@ def _apply_genus_fallback(target, classification, query_dir):
         )
         return
 
-    genus = target.ncbi_genus
     try:
         record = RelatedTaxaGBIF(genus, classification=classification)
     except GBIFRecordNotFound:
         _write_info(
-            prefix + f"its NCBI genus '{genus}' is not in COL either.",
+            prefix + f"{source} is not in COL.",
             name,
             query_dir,
         )
@@ -454,7 +524,7 @@ def _apply_genus_fallback(target, classification, query_dir):
     ):
         _write_info(
             prefix
-            + f"its NCBI genus '{genus}' matched the COL record"
+            + f"{source} matched the COL record"
             f" '{record.canonical_name}' (key {record.key}, rank"
             f" {RANK.to_string(record.rank)}), which is not the same genus.",
             name,
@@ -465,12 +535,17 @@ def _apply_genus_fallback(target, classification, query_dir):
     if record.tie_break:
         _write_info(tie_break_message(record.tie_break), name, query_dir)
     target.genus_record = record
-    _write_info(
-        f"'{name}' is not in COL; related-species checks use its NCBI genus"
-        f" '{genus}' (COL key {record.key}).",
-        name,
-        query_dir,
-    )
+    if target.ncbi_genus:
+        msg = (
+            f"'{name}' is not in COL; related-species checks use its NCBI"
+            f" genus '{genus}' (COL key {record.key}).")
+    else:
+        msg = (
+            f"'{name}' is not in COL and NCBI gives it no genus;"
+            f" related-species checks use the genus '{genus}' (COL key"
+            f" {record.key}) of its closest COL match,"
+            f" '{target.closest_col_name}'.")
+    _write_info(msg, name, query_dir)
 
 
 def _write_info(msg, target, query_dir):
