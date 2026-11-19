@@ -3,16 +3,20 @@
 set -e
 
 PUSH=false
+LATEST=false
 IMAGE=neoformit/taxodactyl
 DOCKERFILE="Dockerfile"
 
-while getopts "t:pu" opt; do
+while getopts "t:plu" opt; do
   case $opt in
     t)
       TAG=$OPTARG  # Tag to use for the build
       ;;
     p)
       PUSH=true  # Whether to push the image after building
+      ;;
+    l)
+      LATEST=true  # Also tag (and push, with -p) as latest
       ;;
     u)
       DOCKERFILE="Dockerfile.update"  # Code update only
@@ -32,9 +36,14 @@ if [[ -z $TAG ]]; then
 fi
 
 docker build -t $IMAGE:$TAG -f $DOCKERFILE .
-docker tag $IMAGE:$TAG $IMAGE:latest
+
+if [ "$LATEST" = true ]; then
+  docker tag $IMAGE:$TAG $IMAGE:latest
+fi
 
 if [ "$PUSH" = true ]; then
   docker push $IMAGE:$TAG
-  docker push $IMAGE:latest
+  if [ "$LATEST" = true ]; then
+    docker push $IMAGE:latest
+  fi
 fi
