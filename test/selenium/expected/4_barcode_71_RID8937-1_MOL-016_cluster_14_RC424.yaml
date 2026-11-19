@@ -1,5 +1,5 @@
 sample_id: barcode_71_RID8937-1_MOL-016_cluster_14_RC424
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -110,7 +110,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '10042'
+      - '10071'
     - id: flag_text2
       type: list
       value:
@@ -155,7 +155,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '10042'
+      - '10071'
     - id: flag_text2
       type: list
       value:

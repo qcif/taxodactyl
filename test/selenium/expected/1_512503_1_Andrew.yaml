@@ -1,5 +1,5 @@
 sample_id: 512503_1_Andrew
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -234,7 +234,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '19'
     - id: country_message
       type: list
       value:

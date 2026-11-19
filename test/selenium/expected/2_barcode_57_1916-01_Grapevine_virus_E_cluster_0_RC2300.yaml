@@ -1,5 +1,5 @@
 sample_id: barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300
-date: '2026-08-04T00:37:50'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -120,12 +120,12 @@ components:
     - id: flag_text1
       type: list
       value:
-      - 5.1A
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '0'
     - id: flag_text2
       type: list
       value:
@@ -139,19 +139,19 @@ components:
       type: list
       flex: 0.1
       value:
-      - '17'
+      - '22'
     - id: min_bar_count
       type: min
       value: '17'
     - id: first_bar_species
       type: list
       value:
-      - Grapevine virus A
+      - Vitivirus alphavitis
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '750'
+      - '754'
     - id: country_message
       type: list
       value:
@@ -165,12 +165,12 @@ components:
     - id: flag_text1
       type: list
       value:
-      - 5.1A
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
       value:
-      - '39'
+      - '0'
     - id: flag_text2
       type: list
       value:
@@ -184,19 +184,19 @@ components:
       type: list
       flex: 0.1
       value:
-      - '17'
+      - '22'
     - id: min_bar_count
       type: min
       value: '17'
     - id: first_bar_species
       type: list
       value:
-      - Grapevine virus A
+      - Vitivirus alphavitis
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '750'
+      - '754'
     - id: country_message
       type: list
       value:
@@ -215,11 +215,11 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '165'
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - 5.2B
     - id: species_count
       type: list
       flex: 0.1
@@ -241,7 +241,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '754'
     - id: country_message
       type: list
       value:
@@ -259,7 +259,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '194'
+      - '197'
     - id: flag_text2
       type: list
       value:
@@ -273,19 +273,19 @@ components:
       type: list
       flex: 0.1
       value:
-      - '17'
+      - '22'
     - id: min_bar_count
       type: min
       value: '17'
     - id: first_bar_species
       type: list
       value:
-      - Grapevine virus A
+      - Vitivirus alphavitis
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '750'
+      - '754'
     - id: country_message
       type: list
       value:

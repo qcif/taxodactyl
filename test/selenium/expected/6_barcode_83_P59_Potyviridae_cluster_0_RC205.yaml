@@ -1,5 +1,5 @@
 sample_id: barcode_83_P59_Potyviridae_cluster_0_RC205
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -117,7 +117,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36934'
+      - '36936'
     - id: flag_text2
       type: list
       value:
@@ -162,7 +162,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '36934'
+      - '36936'
     - id: flag_text2
       type: list
       value:
