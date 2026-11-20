@@ -4,6 +4,7 @@ import argparse
 import csv
 import os
 import re
+from collections import defaultdict
 from pathlib import Path
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -11,8 +12,10 @@ from Bio.Data import IUPACData
 
 from src.utils import countries, existing_path
 from src.utils.config import Config
+from src.utils.config.config import LOCUS_GENE_SUFFIX_RE
 from src.utils.config.mappings import CLI_ARGS
 from src.utils.encoding import (
+    BETA,
     BETA_ASCII,
     fix_eszett_in_column,
     fix_eszett_in_fasta_headers,
@@ -45,6 +48,8 @@ TAXDB_EXPECT_FILES = {
 }
 # If sequences are included in the metadata CSV, we split them:
 OUTPUT_FASTA_FILENAME = 'sequences.fasta'
+# Characters not permitted in the locus suffix of a multi-locus sample ID
+LOCUS_SUFFIX_ILLEGAL_CHARS_RE = re.compile(r'[^A-Za-z0-9.\-]+')
 
 
 def main():
@@ -52,6 +57,7 @@ def main():
     config.update_from_args(args)
     _validate_taxdbs(args.taxdb_dir)
     _autofix_metadata_encoding(args.metadata_csv, args.query_fasta)
+    _autofix_multi_locus_sample_ids(args.metadata_csv, args.query_fasta)
     ids = _validate_fasta(args.query_fasta)
     _validate_metadata(args.metadata_csv, ids, bold=args.bold)
 
@@ -74,6 +80,7 @@ def validate_inputs(
         metadata_path=metadata_csv,
         fasta_path=query_fasta,
     )
+    _autofix_multi_locus_sample_ids(metadata_csv, query_fasta)
     _autofix_duplicate_fasta_ids(query_fasta)
     ids = _validate_fasta(args.query_fasta, ignore_seq_count=ignore_seq_count)
     _validate_metadata(
@@ -218,6 +225,7 @@ def _validate_fasta(path: Path, ignore_seq_count=False) -> list[str]:
                 SeqIO.SeqRecord(
                     Seq(_sanitize_dna(seq.seq)),
                     id=seq.id,
+                    description='',
                 )
             )
     path = config.output_dir / OUTPUT_FASTA_FILENAME
@@ -257,6 +265,7 @@ def _validate_metadata(
     """Assert that input metadata CSV is valid.
 
     Each row['sample_id'] must match a sequence ID
+    Each row['sample_id'] must be unique
     Locus must be listed in ALLOWED_LOCI
     Must contain required columns (see config.py - colnames configurable)
       - which are required?
@@ -267,6 +276,7 @@ def _validate_metadata(
     """
     expect_seq_col = seq_ids is None
     sample_ids = []
+    sample_id_rows = {}
     columns = config.inputs.metadata_csv_header
     with path.open(encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -289,6 +299,15 @@ def _validate_metadata(
                 ' CSV.'
             )
         sample_id = row[columns['sample_id']]
+        if sample_id and sample_id in sample_id_rows:
+            raise MetadataFormatError(
+                f'Duplicate sample ID "{sample_id}" in rows'
+                f' {sample_id_rows[sample_id]} and {i + 1} of the metadata'
+                ' CSV file. Each sample ID must be unique. A sample ID may'
+                ' only be repeated to submit the same sample at different'
+                ' loci, with one row (and one FASTA sequence) per locus.'
+            )
+        sample_id_rows[sample_id] = i + 1
         if seq_ids and sample_id not in seq_ids:
             raise MetadataFormatError(
                 f'sample ID "{sample_id}" listed in metadata CSV file is not'
@@ -446,6 +465,171 @@ def _autofix_sample_id_spaces(
         SeqIO.write(records, fasta_path, "fasta")
 
     return changed or fasta_changed
+
+
+def _autofix_multi_locus_sample_ids(
+    metadata_path: Path,
+    fasta_path: Path | None = None,
+) -> bool:
+    """Rename a sample ID repeated at different loci to "<id>_<locus>".
+
+    Users may submit one sample at several loci, which repeats its sample ID
+    across metadata rows (and FASTA records). Each of those rows is renamed
+    to "<sample_id>_<locus>". FASTA records with that ID are renamed in the
+    order they appear: the nth record gets the nth row's new ID.
+
+    Raises MetadataFormatError, saying why, if a repeated ID cannot be
+    renamed: two of its rows share a locus, a locus is blank, the FASTA
+    holds a different number of records with that ID, or a new ID is
+    already in use. Nothing is rewritten in that case.
+
+    Returns True if any sample ID was renamed.
+    """
+    header = config.inputs.metadata_csv_header
+    sample_id_col = header['sample_id']
+    locus_col = header['locus']
+    with metadata_path.open(newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        fieldnames = reader.fieldnames or []
+    if sample_id_col not in fieldnames or locus_col not in fieldnames:
+        return False
+
+    row_ixs = defaultdict(list)
+    for i, row in enumerate(rows):
+        if row[sample_id_col]:
+            row_ixs[row[sample_id_col]].append(i)
+    fasta_records = (
+        list(SeqIO.parse(fasta_path, 'fasta'))
+        if fasta_path
+        else None
+    )
+    # Row number (1-based) that already holds each sample ID
+    taken_ids = {
+        sample_id: ixs[0] + 1
+        for sample_id, ixs in row_ixs.items()
+    }
+    renames = {}
+    for sample_id, ixs in row_ixs.items():
+        if len(ixs) < 2:
+            continue
+        new_ids = _multi_locus_sample_ids(
+            sample_id,
+            {i + 1: rows[i][locus_col] for i in ixs},
+        )
+        for new_id in new_ids:
+            if new_id in taken_ids:
+                raise MetadataFormatError(
+                    f'Sample ID "{sample_id}" is repeated at different loci'
+                    f' (rows {_join_rows(ixs)}), so it must be renamed to'
+                    f' "{new_id}", but that sample ID is already used in'
+                    f' row {taken_ids[new_id]}. Please rename one of these'
+                    ' samples.'
+                )
+        if fasta_records is not None:
+            fasta_count = sum(rec.id == sample_id for rec in fasta_records)
+            if fasta_count != len(ixs):
+                raise MetadataFormatError(
+                    f'Sample ID "{sample_id}" is repeated at {len(ixs)}'
+                    f' different loci (rows {_join_rows(ixs)}), but the FASTA'
+                    f' file has {fasta_count} sequence(s) with this ID.'
+                    ' Please provide one FASTA sequence per locus, in the'
+                    ' same order as the metadata rows.'
+                )
+        for i, new_id in zip(ixs, new_ids):
+            taken_ids[new_id] = i + 1
+        renames[sample_id] = new_ids
+
+    if not renames:
+        return False
+
+    for sample_id, new_ids in renames.items():
+        for i, new_id in zip(row_ixs[sample_id], new_ids):
+            rows[i][sample_id_col] = new_id
+        logger.warning(
+            f'Sample ID "{sample_id}" is repeated at different loci and was'
+            f' renamed to: {", ".join(new_ids)}'
+        )
+    with metadata_path.open('w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    if fasta_records is not None:
+        new_id_queues = {
+            sample_id: iter(new_ids)
+            for sample_id, new_ids in renames.items()
+        }
+        for rec in fasta_records:
+            if rec.id in new_id_queues:
+                new_id = next(new_id_queues[rec.id])
+                rec.id = rec.name = rec.description = new_id
+        SeqIO.write(fasta_records, fasta_path, 'fasta')
+
+    return True
+
+
+def _multi_locus_sample_ids(
+    sample_id: str,
+    loci: dict[int, str],
+) -> list[str]:
+    """Return "<sample_id>_<locus>" for each locus, given by row number.
+
+    Loci are compared by their canonical allowed locus, so synonyms (e.g.
+    COI and COX1) count as the same locus. Raises MetadataFormatError if
+    any locus is blank or two loci are the same.
+    """
+    rows = list(loci)
+    for row, locus in loci.items():
+        if not locus.strip():
+            raise MetadataFormatError(
+                f'Sample ID "{sample_id}" is repeated (rows'
+                f' {_join_rows(rows, offset=0)}), but row {row} has no'
+                ' locus. A sample ID may only be repeated to submit the'
+                ' same sample at different loci.'
+            )
+    seen = {}
+    for row, locus in loci.items():
+        resolved = config._resolve_locus(locus)
+        key = (
+            resolved.name.lower()
+            if resolved
+            else _locus_suffix(locus).lower()
+        )
+        if key in seen:
+            first_row = seen[key]
+            first_locus = loci[first_row]
+            same = (
+                f'locus "{locus}"'
+                if first_locus.strip().lower() == locus.strip().lower()
+                else f'locus ("{first_locus}" and "{locus}" are synonyms)'
+            )
+            raise MetadataFormatError(
+                f'Sample ID "{sample_id}" is repeated at the same {same} in'
+                f' rows {first_row} and {row}. Each sample ID must be'
+                ' unique, unless it is repeated to submit the same sample'
+                ' at different loci.'
+            )
+        seen[key] = row
+    return [
+        f'{sample_id}_{_locus_suffix(locus)}'
+        for locus in loci.values()
+    ]
+
+
+def _join_rows(row_ixs: list[int], offset: int = 1) -> str:
+    """Format row numbers for a message, e.g. "1, 3 and 4"."""
+    rows = [str(i + offset) for i in row_ixs]
+    if len(rows) < 2:
+        return ''.join(rows)
+    return ', '.join(rows[:-1]) + ' and ' + rows[-1]
+
+
+def _locus_suffix(locus: str) -> str:
+    """Make a locus safe to append to a sample ID (e.g. "β-tub gene")."""
+    locus = LOCUS_GENE_SUFFIX_RE.sub('', locus.strip())
+    locus = locus.replace(BETA, BETA_ASCII)
+    return LOCUS_SUFFIX_ILLEGAL_CHARS_RE.sub('_', locus).strip('_')
 
 
 def _autofix_duplicate_fasta_ids(fasta_path: Path) -> bool:

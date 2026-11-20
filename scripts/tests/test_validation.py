@@ -1,14 +1,19 @@
 """Test input validation functions."""
 
+import csv
 import logging
 import shutil
 import tempfile
 import unittest
 from pathlib import Path
 
+from Bio import SeqIO
+
 from p0_validation import (
     OUTPUT_FASTA_FILENAME,
     TAXDB_EXPECT_FILES,
+    _autofix_multi_locus_sample_ids,
+    _locus_suffix,
     _validate_fasta,
     _validate_metadata,
     _validate_metadata_country,
@@ -19,6 +24,7 @@ from p0_validation import (
     _validate_metadata_taxa_of_interest,
     _autofix_metadata_encoding,
     _validate_taxdbs,
+    config,
 )
 
 from src.utils.encoding import normalise_csv_encoding
@@ -54,6 +60,10 @@ METADATA_NO_SEQUENCES = (
     TEST_DATA_DIR / 'validation/metadata_no_sequences.csv')
 METADATA_SEQUENCES_WITH_WHITESPACE = (
     TEST_DATA_DIR / 'validation/metadata_sequences_with_whitespace.csv')
+METADATA_DUPLICATE_SAMPLE_ID = (
+    TEST_DATA_DIR / 'validation/metadata_duplicate_sample_id.csv')
+METADATA_WITH_SEQUENCES_DUPLICATE_SAMPLE_ID = TEST_DATA_DIR.joinpath(
+    'validation/metadata_with_sequences_duplicate_sample_id.csv')
 METADATA_LATIN1 = TEST_DATA_DIR / 'validation/metadata_latin1.csv'
 METADATA_UTF8_BOM = TEST_DATA_DIR / 'validation/metadata_utf8_bom.csv'
 METADATA_UTF16 = TEST_DATA_DIR / 'validation/metadata_utf16.csv'
@@ -65,11 +75,26 @@ METADATA_EXPECT_IDS = [
     'JQ585746.1',
     'LC547004.1',
 ]
+MULTI_LOCUS_SEQUENCES = [
+    'ACGT' * 10,
+    'TTGGCCAA' * 5,
+    'GATTACA' * 6,
+]
 MOCK_TAXONKIT_DIR = Path(tempfile.gettempdir())
 MOCK_TAXONKIT_DIR.mkdir(exist_ok=True, parents=True)
 
 
 class ValidationTestCase(unittest.TestCase):
+
+    def test_it_writes_fasta_headers_with_id_only(self):
+        ids = _validate_fasta(FASTA_VALID)
+        output_path = config.output_dir / OUTPUT_FASTA_FILENAME
+        headers = [
+            line[1:].rstrip('\n')
+            for line in output_path.open()
+            if line.startswith('>')
+        ]
+        self.assertEqual(headers, ids)
 
     def test_it_can_validate_fasta_input(self):
         _validate_fasta(FASTA_VALID)
@@ -95,6 +120,26 @@ class ValidationTestCase(unittest.TestCase):
             _validate_metadata(
                 METADATA_MISSING_SEQUENCE_ID,
                 METADATA_EXPECT_IDS
+            )
+
+    def test_it_rejects_duplicate_metadata_sample_ids(self):
+        with self.assertRaisesRegex(
+            MetadataFormatError,
+            'Duplicate sample ID "LC438549.1" in rows 1 and 2',
+        ):
+            _validate_metadata(
+                METADATA_DUPLICATE_SAMPLE_ID,
+                METADATA_EXPECT_IDS,
+            )
+
+    def test_it_rejects_duplicate_sample_ids_with_sequence_column(self):
+        with self.assertRaisesRegex(
+            MetadataFormatError,
+            'Duplicate sample ID "LC438549.1" in rows 1 and 2',
+        ):
+            _validate_metadata(
+                METADATA_WITH_SEQUENCES_DUPLICATE_SAMPLE_ID,
+                None,
             )
 
     def _copy_to_tmp(self, source: Path) -> Path:
@@ -299,3 +344,132 @@ class ValidationTestCase(unittest.TestCase):
         path.unlink()
         with self.assertRaises(FileNotFoundError):
             _validate_taxdbs(MOCK_TAXONKIT_DIR)
+
+
+class MultiLocusSampleIdTestCase(unittest.TestCase):
+    """A sample ID repeated at different loci is renamed <id>_<locus>."""
+
+    def setUp(self):
+        self.tmp_dir = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp_dir)
+        self.csv_path = self.tmp_dir / 'metadata.csv'
+        self.fasta_path = self.tmp_dir / 'queries.fasta'
+
+    def _write_csv(self, rows: list[str], sequences=False):
+        header = 'sample_id,locus,preliminary_id'
+        if sequences:
+            header += ',sequence'
+        self.csv_path.write_text('\n'.join([header] + rows) + '\n')
+
+    def _write_fasta(self, ids: list[str]):
+        self.fasta_path.write_text(''.join(
+            f'>{seq_id}\n{MULTI_LOCUS_SEQUENCES[i]}\n'
+            for i, seq_id in enumerate(ids)
+        ))
+
+    def _sample_ids(self) -> list[str]:
+        with self.csv_path.open() as f:
+            return [row['sample_id'] for row in csv.DictReader(f)]
+
+    def test_it_renames_multi_locus_sample_ids_in_fasta_mode(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S2,COI,Culex pipiens',
+            'S1,ITS gene,Aedes aegypti',
+        ])
+        self._write_fasta(['S1', 'S2', 'S1'])
+        self.assertTrue(
+            _autofix_multi_locus_sample_ids(self.csv_path, self.fasta_path))
+        self.assertEqual(self._sample_ids(), ['S1_COI', 'S2', 'S1_ITS'])
+        fasta = {
+            rec.id: str(rec.seq)
+            for rec in SeqIO.parse(self.fasta_path, 'fasta')
+        }
+        self.assertEqual(fasta, {
+            'S1_COI': MULTI_LOCUS_SEQUENCES[0],
+            'S2': MULTI_LOCUS_SEQUENCES[1],
+            'S1_ITS': MULTI_LOCUS_SEQUENCES[2],
+        })
+        ids = _validate_fasta(self.fasta_path)
+        _validate_metadata(self.csv_path, ids)
+
+    def test_it_renames_multi_locus_sample_ids_in_sequence_column(self):
+        self._write_csv([
+            f'S1,COI,Aedes aegypti,{MULTI_LOCUS_SEQUENCES[0]}',
+            f'S1,β-tub,Aedes aegypti,{MULTI_LOCUS_SEQUENCES[1]}',
+        ], sequences=True)
+        self.assertTrue(_autofix_multi_locus_sample_ids(self.csv_path))
+        self.assertEqual(self._sample_ids(), ['S1_COI', 'S1_beta-tub'])
+        _validate_metadata(self.csv_path, None)
+        fasta_ids = [
+            rec.id for rec in SeqIO.parse(
+                config.output_dir / OUTPUT_FASTA_FILENAME, 'fasta')
+        ]
+        self.assertEqual(fasta_ids, ['S1_COI', 'S1_beta-tub'])
+
+    def _assert_rejected(self, pattern: str, fasta=True):
+        csv_before = self.csv_path.read_text()
+        fasta_before = self.fasta_path.read_text() if fasta else None
+        with self.assertRaisesRegex(MetadataFormatError, pattern):
+            _autofix_multi_locus_sample_ids(
+                self.csv_path,
+                self.fasta_path if fasta else None,
+            )
+        self.assertEqual(self.csv_path.read_text(), csv_before)
+        if fasta:
+            self.assertEqual(self.fasta_path.read_text(), fasta_before)
+
+    def test_it_rejects_sample_id_repeated_at_same_locus(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,COI,Culex pipiens',
+        ])
+        self._write_fasta(['S1', 'S1'])
+        self._assert_rejected(
+            'Sample ID "S1" is repeated at the same locus "COI" in rows 1'
+            ' and 2')
+
+    def test_it_rejects_sample_id_repeated_at_synonym_locus(self):
+        # COX1 is a synonym of COI, so these rows share a locus
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,COX1,Culex pipiens',
+        ])
+        self._write_fasta(['S1', 'S1'])
+        self._assert_rejected(
+            r'same locus \("COI" and "COX1" are synonyms\) in rows 1 and 2')
+
+    def test_it_rejects_sample_id_repeated_with_blank_locus(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,,Aedes aegypti',
+        ])
+        self._write_fasta(['S1', 'S1'])
+        self._assert_rejected(
+            r'"S1" is repeated \(rows 1 and 2\), but row 2 has no locus')
+
+    def test_it_rejects_when_fasta_count_differs(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,ITS,Aedes aegypti',
+        ])
+        self._write_fasta(['S1'])
+        self._assert_rejected(
+            'FASTA file has 1 sequence\\(s\\) with this ID')
+
+    def test_it_rejects_when_new_id_is_taken(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,ITS,Aedes aegypti',
+            'S1_ITS,ITS,Culex pipiens',
+        ])
+        self._assert_rejected(
+            'must be renamed to "S1_ITS", but that sample ID is already used'
+            ' in row 3',
+            fasta=False,
+        )
+
+    def test_it_makes_locus_suffix_safe_for_sample_id(self):
+        self.assertEqual(_locus_suffix('β-tub gene'), 'beta-tub')
+        self.assertEqual(_locus_suffix(' 28S rRNA '), '28S_rRNA')
+        self.assertEqual(_locus_suffix('EF-1a'), 'EF-1a')
