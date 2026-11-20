@@ -416,5 +416,5 @@ jobs:
           echo "Location of files on self-hosted runner:"
           echo "/var/runner/$timestamp/"
 
-          echo "Download reports with:
+          echo "Download reports with:"
           echo "    scp ubuntu@daff-runner:/var/runner/$timestamp/reports.zip ."
