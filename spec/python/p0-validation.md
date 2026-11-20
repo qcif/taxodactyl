@@ -19,7 +19,7 @@ since `3339050` nf-schema no longer reads the CSV either,
 BLAST database, and does not check the taxonkit binary or taxdump version.
 It does not *normalise* `metadata.csv` (stripped ids, canonical locus
 names — `D-23`); it rewrites the file only for the encoding and `ß`
-repairs in §5.1.
+repairs in §5.1 and the multi-locus sample id rename in §5.3.
 
 ## 2. Interface
 
@@ -59,19 +59,20 @@ Used by the input-validation web service. Differs from `main()`:
 
 P0 writes no new `metadata.csv`; the Nextflow process relies on the
 staged input file having that name already (NF-PR-021). But P0 may
-**rewrite that staged file in place** (§5.1): `VALIDATE_INPUT` stages
+**rewrite that staged file in place** (§5.1, §5.3): `VALIDATE_INPUT` stages
 inputs with `stageInMode 'copy'` and emits the same `metadata.csv`, so the
 repaired copy is what every later step reads, and the user's original
 file is never touched. The same applies to the staged FASTA when `ß` is
-replaced in its headers.
+replaced in its headers or multi-locus ids are renamed.
 
 ## 3. Order of checks (`main()`)
 
 1. Parse args; `config.update_from_args(args)` (sets paths/limits, writes `BOLD` marker).
 2. `_validate_taxdbs(taxdb_dir)`.
 3. `_autofix_metadata_encoding(metadata_csv, query_fasta)` (§5.1).
-4. `_validate_fasta(query_fasta)` → list of sequence ids, or `None` if no FASTA.
-5. `_validate_metadata(metadata_csv, ids, bold)` — reads the CSV explicitly as UTF-8.
+4. `_autofix_multi_locus_sample_ids(metadata_csv, query_fasta)` (§5.3).
+5. `_validate_fasta(query_fasta)` → list of sequence ids, or `None` if no FASTA.
+6. `_validate_metadata(metadata_csv, ids, bold)` — reads the CSV explicitly as UTF-8.
 
 The first failure raises and stops; only one error is reported per run.
 
@@ -83,7 +84,7 @@ The first failure raises and stops; only one error is reported per run.
 |---|---|
 | P0-001 | If no FASTA path is given, MUST return `None` (sequences expected in metadata). |
 | P0-002 | Records are parsed with Biopython; the **id** is the header text up to the first whitespace. |
-| P0-003 | A repeated id MUST raise `FASTAFormatError("Duplicate sequence ID …")`. |
+| P0-003 | A repeated id MUST raise `FASTAFormatError("Duplicate sequence ID …")`. Ids repeated for a multi-locus sample have already been renamed by P0-048. |
 | P0-004 | Each sequence is sanitised (remove all whitespace and `-`, uppercase) and MUST then contain only IUPAC ambiguous DNA letters `GATCRYWSMKHBVDN`; otherwise raise naming the first illegal residue and its position in the sanitised sequence. |
 | P0-005 | When the running count exceeds `inputs.fasta_max_sequences` (default 150) and `ignore_seq_count` is false, MUST raise. |
 | P0-006 | Raw (unsanitised) length MUST be `>= fasta_min_length` (default 20) and `<= fasta_max_length` (default 3000); otherwise raise with the length and limit. |
@@ -110,6 +111,7 @@ classification, sequence`). Required fields:
 | P0-015 | If a FASTA was given, every FASTA id MUST appear as a `sample_id` in the sheet, else raise listing the missing ids. |
 | P0-016 | If no FASTA was given, MUST write `<output_dir>/sequences.fasta` with one record per metadata row (`>sample_id` + sanitised `sequence`), in row order. |
 | P0-017 | Extra columns are allowed and ignored by P0 (they flow to the report via `config.metadata`). |
+| P0-018 | Every `sample_id` (unstripped) MUST be unique, else raise `MetadataFormatError("Duplicate sample ID X in rows M and N …")` for the first repeat, saying an id may only be repeated for the same sample at different loci. Checked before P0-012. Ids repeated at different loci have already been renamed by P0-048. |
 
 ### 4.3 Field validators
 
@@ -160,7 +162,26 @@ report for that query is named `VEbeta1`.
 |---|---|
 | P0-040 | `_autofix_sample_id_spaces`: replace spaces with `_` in every `sample_id` in the CSV (rewriting the file with the same columns); for FASTA records whose full description with spaces→`_` equals a CSV sample id and differs from the record id, rename the record to it; rewrite the FASTA if changed. |
 | P0-041 | `_autofix_duplicate_fasta_ids`: drop all but the first record for each repeated id and rewrite the FASTA, logging a warning per duplicated id. |
-| P0-042 | P0-040 and P0-041 MUST NOT run in the Nextflow path (`main()`), where the same inputs are rejected instead (P0-003, P0-020). The §5.1 repairs are the exception: they run in both paths. |
+| P0-042 | P0-040 and P0-041 MUST NOT run in the Nextflow path (`main()`), where the same inputs are rejected instead (P0-003, P0-020). The §5.1 repairs and the §5.3 rename are the exception: they run in both paths. |
+
+### 5.3 Multi-locus sample ids (both paths)
+
+Added for [#359](https://github.com/qcif/taxodactyl/issues/359). Submitters may send one sample
+at several loci, repeating its `sample_id` on one row (and one FASTA record) per
+locus. `_autofix_multi_locus_sample_ids` runs after §5.1 (and, in `validate_inputs()`,
+after P0-040 and before P0-041), so the renamed ids are what P0-003, P0-012,
+P0-015 and P0-018 see.
+
+| ID | Requirement |
+|---|---|
+| P0-048 | For each `sample_id` on more than one row, if every row's locus is non-blank and no two rows share a locus, each row MUST be renamed `<sample_id>_<locus suffix>`. Loci are compared by their canonical allowed locus (`config._resolve_locus`), so synonyms such as `COI` and `COX1` are the same locus; an unrecognised locus is compared by its suffix, case-insensitively. The suffix is the submitted locus, stripped, with a trailing `" gene"` removed, `β` replaced with `beta`, and each run of characters outside `[A-Za-z0-9.-]` replaced with `_` (leading and trailing `_` removed), so the new id passes P0-020. |
+| P0-049 | If a FASTA was given, its records with that id MUST be renamed in file order: the nth record takes the nth row's new id (header becomes the new id, description dropped), and the FASTA is rewritten. The rename MUST be skipped if the FASTA holds a different number of records with that id than the CSV has rows. |
+| P0-050 | The rename MUST be skipped if any new id is already a `sample_id` in the sheet or the new id of another renamed sample. A skipped id is left unchanged, logging a warning, so P0-003 or P0-018 rejects it. |
+| P0-051 | The CSV MUST be rewritten with `csv.DictWriter` and the original header only when an id was renamed, logging a warning per sample that lists the new ids. As with §5.1, the submitter sees the rename only in `run.log` and the report names. |
+
+Example: rows `S1,COI,…` and `S1,ITS gene,…` with FASTA records `>S1` (COI sequence)
+then `>S1` (ITS sequence) become `S1_COI` and `S1_ITS` in both files. Rows
+`S1,COI,…` and `S1,COX1,…` are left alone and rejected.
 
 ## 6. Errors and exit
 
@@ -177,7 +198,6 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | P0-D-001 | **Loci `atpB`, `trnL`, `AChE` can never validate.** Why: P0 lowercases the user's *input* before comparing, but never lowercases the *synonym list* it compares against, and none of the three loci's synonyms are already lower-case (`atpB`, `ATP synthase subunit B`, `trnL`, `tRNA leu`, `AChE`, `Acetylcholinesterase`). Example: a user enters `atpB` → P0 lowercases it to `atpb` → checks `atpb` against `[atpB, ATP synthase subunit B]` → no match (case-sensitive) → rejected. Entering `atpb` instead doesn't help either, since `atpb` isn't literally in that list. `Locus.__contains__` has the same asymmetry. |
 | P0-D-002 | Sequences supplied via the metadata `sequence` column bypass `fasta_min_length`, `fasta_max_length` and `fasta_max_sequences`. A blank `sequence` cell passes and writes an empty FASTA record. |
 | P0-D-003 | An empty FASTA passes validation with any metadata (P0-012 is skipped when the id list is empty and P0-015 compares against an empty set). |
-| P0-D-004 | Duplicate `sample_id` rows in metadata are not rejected; with CSV sequences they produce duplicate FASTA ids, and `config.metadata` keeps only the last row. |
 | P0-D-005 | Regex range `A-z` also admits `[ \ ] ^ _` and backtick in `sample_id`, `preliminary_id`, `taxa_of_interest`. |
 | P0-D-006 | `--bold` help says it "accept[s] blank locus field", but P0-013 rejects blank locus before the BOLD exemption is reached. |
 | P0-D-007 | P0-012 compares the **unstripped** `sample_id` to FASTA ids, while P0-020 validates the stripped value; a trailing space yields a confusing "not present in FASTA" error. |
@@ -186,7 +206,7 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | P0-D-012 | `docs/params.md`'s `taxdb` requirement list includes `taxonkit` (the binary) and `readme.txt`; the actual check (`TAXDB_EXPECT_FILES`, `P0-031`) is 9 `*.dmp`/`gc.prt` files only — it never checks for a binary or a readme. |
 | P0-D-011 | A `country` cell containing the literal text `NA` — a standard "not applicable / missing" convention in spreadsheets, R, and plenty of real field datasheets — is **resolved to the real country Namibia** by `pycountry.countries.lookup` (`P0-024`), not treated as "no country supplied" (that's a *blank* cell instead, per the same rule). The metadata is read with `csv.DictReader`, so `NA` arrives as a plain string, not a missing value. The pitfall is known — `assets/schema_input.json`'s `country` description and error message both tell the user to leave the field empty and not use `NA` "which is the country code for Namibia" — but that file is no longer applied (`P0-D-015`), and it never enforced the rule anyway: P0 raises no warning, so the false country feeds Flag 5.3's database-coverage-within-country computation. [decisions.md `D-24`](../decisions.md) is open on whether P0 should special-case a bare `NA`/`N/A` as "no country" rather than resolving it. |
 | P0-D-013 | **The encoding repair never rejects a file, so a wrong guess goes unnoticed.** Anything that is not valid UTF-8 is decoded as cp1252, and if that fails as latin-1, which accepts every byte (`P0-043`). A CSV saved in another legacy encoding is converted with the wrong characters and no error. Example: a Polish Excel saves `Białowieża` in Windows-1250, where `ł` is byte `0xB3` and `ż` is `0xBF`; read as cp1252 these become `³` and `¿`, so the report shows host `Bia³owie¿a`. A UTF-16 file *without* a BOM is valid UTF-8 byte-wise (ASCII plus `NUL` bytes) and is left untouched, then fails later with a confusing missing-column error. |
-| P0-D-014 | **The `ß` → `beta` rename in sample ids can collide with an existing id, and the submitter is not told about it.** P0-046 renames silently: the only record is a warning in `run.log`, and the report is named after the new id. If the sheet already has the id the rename produces, two rows end up with the same id. Example: rows `VEß1` and `VEbeta1` both become `VEbeta1`. With a FASTA, P0-003 then rejects "Duplicate sequence ID VEbeta1", naming an id the submitter never typed. With sequences in the CSV, the duplicate goes through unchecked (`P0-D-004`). |
+| P0-D-014 | **The `ß` → `beta` rename in sample ids can collide with an existing id, and the submitter is not told about it.** P0-046 renames silently: the only record is a warning in `run.log`, and the report is named after the new id. If the sheet already has the id the rename produces, two rows end up with the same id. Example: rows `VEß1` and `VEbeta1` both become `VEbeta1`. P0 then rejects the duplicate, naming an id the submitter never typed: "Duplicate sequence ID VEbeta1" with a FASTA (P0-003), or "Duplicate sample ID VEbeta1" with sequences in the CSV (P0-018). If the two rows have different loci, P0-048 instead renames both to `VEbeta1_<locus>`, so the report names drift further from what was submitted. |
 | P0-D-015 | `assets/schema_input.json` is no longer used by anything since `3339050` removed the `"schema"` key from `nextflow_schema.json`'s `metadata` parameter, but it is still in the repo and still documented as the metadata schema: `README.md` ("For more details on the metadata schema, see `assets/schema_input.json`") and `docs/detailed_tech.md` (a section headed by it). Its rules differ from P0's (7 `classification` values instead of 12; no locus, country or taxa rules), so a reader who follows the docs gets the wrong rules. |
 
 ## 8. Test mapping (`tests/test_validation.py`)
@@ -208,6 +228,9 @@ task's `.command.err` (collected to `<outdir>/errors/VALIDATE_INPUT/`).
 | `test_it_rejects_excel_workbook_with_csv_extension` | P0-043 (ZIP signature) |
 | `test_it_autofixes_eszett_locus_and_validates` | P0-045, then P0-021 accepts `β-tub` |
 | `test_it_replaces_eszett_in_sample_ids_and_fasta_headers` | P0-046 |
+| `test_it_rejects_duplicate_metadata_sample_ids` | P0-018 |
+| `test_it_rejects_duplicate_sample_ids_with_sequence_column` | P0-018 |
+| `MultiLocusSampleIdTestCase` | P0-048..050, P0-018 (same locus via synonyms), P0-016 with renamed ids |
 
 **Not covered:** P0-027 (classification), P0-007 output content, auto-fixes
 (P0-040/041), `main()` end-to-end (so the §5.1 repairs are only tested

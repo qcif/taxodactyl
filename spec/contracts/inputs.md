@@ -33,7 +33,7 @@ the run on cp1252 files exported from Excel (#326), so it was removed;
 
 | Column | Req. | Enforced by | Rule | Consumed as |
 |---|---|---|---|---|
-| `sample_id` | yes | P0-020 | `[A-Za-z0-9_.-]+` (P0-020 is looser than it looks: also `[ \ ] ^ _` `` ` ``); unique (not enforced, P0-D-004); equals a FASTA id. `ß` is rewritten to `beta` first (P0-046) | folder/report name; join key |
+| `sample_id` | yes | P0-020 | `[A-Za-z0-9_.-]+` (P0-020 is looser than it looks: also `[ \ ] ^ _` `` ` ``); unique (P0-018), except that a sample repeated at different loci is first renamed `<id>_<locus>` (P0-048); equals a FASTA id. `ß` is rewritten to `beta` first (P0-046) | folder/report name; join key |
 | `locus` | yes | P0-021 | a synonym in `loci.json` (case-insensitive, optional trailing ` gene`) or `NA`. `ß` is rewritten to `β` first (P0-045) | Flag 5 queries; report; `NA` disables locus filter |
 | `preliminary_id` | yes | P0-022 | letters and spaces only | Flag 7; P5 target |
 | `taxa_of_interest` | no | P0-023 | `\|`-separated names, letters/spaces | Flag 2; P5 targets (first 10) |
