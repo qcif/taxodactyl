@@ -215,10 +215,6 @@ tr.interactive.active {
   position: relative;
   cursor: pointer;
 }
-.occurrence-map img {
-  max-width: 100%;
-  height: auto;
-}
 .occurrence-map p {
   position: absolute;
   bottom: 0;
@@ -631,18 +627,18 @@ document.addEventListener('DOMContentLoaded', () => {
   </tr>
   <tr>
     <td class="fw-bold">Analysis start</td>
-    <td><code>2026-11-17 01:27:54</code></td>
+    <td><code>2026-11-19 21:40:34</code></td>
   </tr>
   <tr>
     <td class="fw-bold">Analysis end</td>
-    <td><code>2026-11-17 02:03:18</code></td>
+    <td><code>2026-11-19 22:22:50</code></td>
   </tr>
   <tr>
     <td class="fw-bold">Wall time</td>
     <td>
       <code>
         
-        0:35:24
+        0:42:16
         hours
         
       </code>
@@ -797,37 +793,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </p>
 </div>
 
-
-<div class="modal fade" id="inputFastaModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Input DNA sequence</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <pre>>barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263
-GAAAGGGGTTCATTTGAGTAGTGCACCTTTGCCTTCAAGGTCAGGCTCTTGATCACCTCA
-TCATACTCATGCTTCTGTTTGAGGGTACCTGGGCTGTACATGTCATCTCCGGCGAAGCAG
-AGTGGGGTTTCTTTAGTTACATGATAGCGCATGCATGTGAAAGCCATGTTGCATATCGTG
-TTAAAAAAAAA
-</pre>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <div class="modal fade" id="inputParamsModal" tabindex="-1">
@@ -1556,7 +1521,7 @@ TTAAAAAAAAA
               </td>
               <td>
                 <code class="text-dark">
-                  2026-11-17_01-27-52
+                  2026-11-19_21-40-32
                 </code>
               </td>
             </tr>
@@ -1582,7 +1547,7 @@ TTAAAAAAAAA
               </td>
               <td>
                 <code class="text-dark">
-                  output/pipeline_info/execution_trace_2026-11-17_01-27-52.txt
+                  output/pipeline_info/execution_trace_2026-11-19_21-40-32.txt
                 </code>
               </td>
             </tr>
@@ -1802,6 +1767,37 @@ TTAAAAAAAAA
   </div>
 </div>
 
+
+<div class="modal fade" id="inputFastaModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Input DNA sequence</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <pre>>barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263
+GAAAGGGGTTCATTTGAGTAGTGCACCTTTGCCTTCAAGGTCAGGCTCTTGATCACCTCA
+TCATACTCATGCTTCTGTTTGAGGGTACCTGGGCTGTACATGTCATCTCCGGCGAAGCAG
+AGTGGGGTTTCTTTAGTTACATGATAGCGCATGCATGTGAAAGCCATGTTGCATATCGTG
+TTAAAAAAAAA
+</pre>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 </div>
   </div>
@@ -2019,7 +2015,7 @@ TTAAAAAAAAA
           style="display: inline-block;"
         >
           <button
-            class="btn btn-warning p-0 my-1"
+            class="btn btn-secondary p-0 my-1"
             data-bs-toggle="modal"
             data-bs-target="#pmi-84e63d9545Modal"
             type="button"
@@ -2027,8 +2023,8 @@ TTAAAAAAAAA
           >
             
   
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"/>
 </svg>
   
 
@@ -2127,7 +2123,7 @@ TTAAAAAAAAA
         <p class="alert alert-warning">
           <strong>Warning: no locus provided</strong>
           <br>
-          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown correspnds to the
+          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown corresponds to the
           <strong>entire genome</strong>
           of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
         </p>
@@ -2158,16 +2154,12 @@ TTAAAAAAAAA
   <ul>
     
     <li>
-      No GBIF record found for target taxon 'Grapevine vitivirus'. This target could not be evaluated.
+      'Grapevine vitivirus' is not in the Catalogue of Life (COL) taxonomy used by GBIF. This is common for unclassified viruses and virus common names. No NCBI taxid was found for it either, so its database coverage could not be evaluated.
       
-      <br>
-      <small>
-        <strong>Exception:</strong>
-        <code class="text-danger exception-text">
-          <span class="exception-content">No GBIF record found for 'Grapevine vitivirus'. Taxonomic records cannot be retrieved. Please check that this species name is correct.</span>
-          <a href="#" class="text-primary show-more-link" style="display: none; text-decoration: underline; margin-left: 0.5em;">Show more</a>
-        </code>
-      </small>
+    </li>
+    
+    <li>
+      Taxonkit failed to produce a taxid for this taxon. If this seems unlikely, perhaps check that the taxon name and the classification provided in the sample metadata are correct for this sample?
       
     </li>
     
@@ -2230,12 +2222,14 @@ TTAAAAAAAAA
           
 
           
+          
           <p class="alert alert-info">
             No database coverage information is available for this taxon.
             
             This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
             
           </p>
+          
 
           
         </div>
@@ -2303,7 +2297,7 @@ TTAAAAAAAAA
           style="display: inline-block;"
         >
           <button
-            class="btn btn-warning p-0 my-1"
+            class="btn btn-secondary p-0 my-1"
             data-bs-toggle="modal"
             data-bs-target="#toi-84e63d9545Modal"
             type="button"
@@ -2311,8 +2305,8 @@ TTAAAAAAAAA
           >
             
   
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"/>
 </svg>
   
 
@@ -2788,7 +2782,7 @@ TTAAAAAAAAA
         <p class="alert alert-warning">
           <strong>Warning: no locus provided</strong>
           <br>
-          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown correspnds to the
+          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown corresponds to the
           <strong>entire genome</strong>
           of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
         </p>
@@ -2910,7 +2904,7 @@ TTAAAAAAAAA
                   
                   across the entire genome because
                   <strong>no locus was provided</strong>.
-                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider provising a locus in <code>metadata.csv</code> to obtain a more relevant analysis.
+                  If the sample is a virus, this is the expected behaviour. Otherwise, you should consider providing a locus in <code>metadata.csv</code> to obtain a more relevant analysis.
                   
                 </p>
 
@@ -7582,20 +7576,20 @@ TTAAAAAAAAA
       <div
         data-bs-toggle="tooltip"
         data-bs-placement="bottom"
-        title="Database coverage could not be fully assessed for this taxon."
+        title="The analysis could not be completed because an error occurred"
       >
         <button
           data-bs-toggle="modal"
           data-bs-target="#toi-84e63d9545Modal"
-          class="btn btn-warning"
+          class="btn btn-secondary"
           type="button"
           style="min-width: 3rem;"
         >
           <!-- Modals are rendered in index.html -->
           
   
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"/>
 </svg>
   
 
@@ -8617,7 +8611,7 @@ TTAAAAAAAAA
         <p class="alert alert-warning">
           <strong>Warning: no locus provided</strong>
           <br>
-          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown correspnds to the
+          Database coverage results are compromised, because a locus was not provided for this sample in <code>metadata.csv</code>. The coverage shown corresponds to the
           <strong>entire genome</strong>
           of the target taxon, and therefore provides weak evidence for database coverage at the locus of the sample sequence. Therefore, it is possible that the database has no representation of this taxon, which means that it cannot be confidently excluded as an identity for the sample based on sequence alignment alone.
         </p>
@@ -8648,16 +8642,12 @@ TTAAAAAAAAA
   <ul>
     
     <li>
-      No GBIF record found for target taxon 'Grapevine vitivirus'. This target could not be evaluated.
+      'Grapevine vitivirus' is not in the Catalogue of Life (COL) taxonomy used by GBIF. This is common for unclassified viruses and virus common names. No NCBI taxid was found for it either, so its database coverage could not be evaluated.
       
-      <br>
-      <small>
-        <strong>Exception:</strong>
-        <code class="text-danger exception-text">
-          <span class="exception-content">No GBIF record found for 'Grapevine vitivirus'. Taxonomic records cannot be retrieved. Please check that this species name is correct.</span>
-          <a href="#" class="text-primary show-more-link" style="display: none; text-decoration: underline; margin-left: 0.5em;">Show more</a>
-        </code>
-      </small>
+    </li>
+    
+    <li>
+      Taxonkit failed to produce a taxid for this taxon. If this seems unlikely, perhaps check that the taxon name and the classification provided in the sample metadata are correct for this sample?
       
     </li>
     
@@ -8720,12 +8710,14 @@ TTAAAAAAAAA
           
 
           
+          
           <p class="alert alert-info">
             No database coverage information is available for this taxon.
             
             This is likely because the data are insufficient or inappropriate for this analysis, or because an error was encountered during the analysis.
             
           </p>
+          
 
           
         </div>

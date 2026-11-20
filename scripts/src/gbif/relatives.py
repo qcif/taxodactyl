@@ -296,6 +296,11 @@ class RelatedTaxaGBIF:
             'rejected': [(r.key, _display_name(r)) for r in rejected],
             'name': chosen.canonical_name,
             'rank': chosen.rank,
+            'descendants': {
+                r.key: r.get('numDescendants')
+                for r in records
+                if r.get('numDescendants') is not None
+            },
         }
         logger.warning(
             f"Taxon '{taxon}': {tie_break_message(self.tie_break)}")
@@ -517,15 +522,16 @@ def _display_name(record: GBIFRecord) -> str:
 
 
 def _enrich_record(record: GBIFRecord) -> None:
-    """Add authorship, publishedIn and taxonID from /v1/species/{key}.
+    """Add authorship, publishedIn, numDescendants and taxonID from
+    /v1/species/{key}.
 
     Only used for tied records. The lookup is cached and shares its cache
     key with api.get_col_taxon_id, so the chosen record needs no further
     request for its taxonID.
     """
     usage = api.name_usage(record.key)
-    for field in ('authorship', 'publishedIn'):
-        if usage.get(field) and not record.get(field):
+    for field in ('authorship', 'publishedIn', 'numDescendants'):
+        if usage.get(field) is not None and record.get(field) is None:
             record.data[field] = usage[field]
     if record.taxon_id is None and usage.get('taxonID'):
         record.taxon_id = usage['taxonID']
@@ -536,10 +542,13 @@ def _break_tie(records: list[GBIFRecord]) -> GBIFRecord:
 
     In order of preference (ties at each step fall through to the next):
 
-    1. No "nominotypical" marker in scientificName or authorship.
-    2. Authorship ending in a 4-digit year, e.g. 'Fallén, 1823'.
-    3. Non-empty publishedIn.
-    4. Suggest order (the order of ``records``).
+    1. Most descendants (``numDescendants``, missing counts as 0). COL can
+       hold a stray duplicate with few or no children, e.g. a 'Vitivirus'
+       genus with 1 species beside the real one with 22.
+    2. No "nominotypical" marker in scientificName or authorship.
+    3. Authorship ending in a 4-digit year, e.g. 'Fallén, 1823'.
+    4. Non-empty publishedIn.
+    5. Suggest order (the order of ``records``).
     """
     def score(record):
         authorship = _get_authorship(record)
@@ -548,6 +557,7 @@ def _break_tie(records: list[GBIFRecord]) -> GBIFRecord:
             or NOMINOTYPICAL_RE.search(authorship)
         )
         return (
+            record.get('numDescendants') or 0,
             not nominotypical,
             bool(AUTHORSHIP_YEAR_RE.search(authorship)),
             bool((record.get('publishedIn') or '').strip()),
@@ -559,13 +569,22 @@ def _break_tie(records: list[GBIFRecord]) -> GBIFRecord:
 
 def tie_break_message(tie_break: dict) -> str:
     """Describe a tie-break for logs and the report."""
-    chosen_key, chosen_name = tie_break['chosen']
+    descendants = tie_break.get('descendants') or {}
+
+    def describe(key, name):
+        count = descendants.get(key)
+        if count is None:
+            return f"{key} '{name}'"
+        plural = '' if count == 1 else 's'
+        return f"{key} '{name}' ({count} descendant{plural})"
+
+    chosen = describe(*tie_break['chosen'])
     rejected = '; '.join(
-        f"{key} '{name}'" for key, name in tie_break['rejected'])
+        describe(key, name) for key, name in tie_break['rejected'])
     count = 1 + len(tie_break['rejected'])
     rank = (tie_break.get('rank') or '').lower()
     return (
         f"GBIF returned {count} accepted records named"
-        f" '{tie_break['name']}' ({rank}). Using key {chosen_key}"
-        f" '{chosen_name}'; ignoring {rejected}."
+        f" '{tie_break['name']}' ({rank}). Using key {chosen};"
+        f" ignoring {rejected}."
     )

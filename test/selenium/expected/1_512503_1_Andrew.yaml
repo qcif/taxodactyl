@@ -1,5 +1,5 @@
 sample_id: 512503_1_Andrew
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -113,7 +113,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
@@ -122,7 +122,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
@@ -158,7 +158,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
@@ -167,7 +167,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
@@ -203,7 +203,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
@@ -212,33 +212,33 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2C
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - ''
+      - '7'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - ''
+      - '72'
     - id: min_bar_count
       type: min
       value: '0'
     - id: first_bar_species
       type: list
       value:
-      - ''
+      - Bulimulus guadalupensis
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '19'
     - id: country_message
       type: list
       value:
-      - ''
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
 - id: publication_modal
   candidates:
   - name: Bulimulus aff. sporadicus ASHB-2015

@@ -215,10 +215,6 @@ tr.interactive.active {
   position: relative;
   cursor: pointer;
 }
-.occurrence-map img {
-  max-width: 100%;
-  height: auto;
-}
 .occurrence-map p {
   position: absolute;
   bottom: 0;
@@ -631,18 +627,18 @@ document.addEventListener('DOMContentLoaded', () => {
   </tr>
   <tr>
     <td class="fw-bold">Analysis start</td>
-    <td><code>2026-11-17 01:27:54</code></td>
+    <td><code>2026-11-19 21:40:34</code></td>
   </tr>
   <tr>
     <td class="fw-bold">Analysis end</td>
-    <td><code>2026-11-17 02:01:16</code></td>
+    <td><code>2026-11-19 22:21:42</code></td>
   </tr>
   <tr>
     <td class="fw-bold">Wall time</td>
     <td>
       <code>
         
-        0:33:22
+        0:41:8
         hours
         
       </code>
@@ -801,44 +797,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </p>
 </div>
 
-
-<div class="modal fade" id="inputFastaModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Input DNA sequence</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <pre>>Scenario_04
-GTATTTTATATTTTATTTTTGGTATGTGGTCTGGGATTTTTGGATTGTCATTAAGAATAA
-TAATTCGTTTGGAATTAGGTTCTCCTGGATCTTTAATTGGCAATGATCAAATTTATAATT
-CTATTGTAACGGCTCATGCTTTTATTATAATTTTTTTTTGTAATACCAGTGATAATAGGG
-GGTTTGGGAATTATTTGGTTCCTTTAATTTTAGGGTCTCCTGATATAGCATTTCCTCGGA
-TAAATAATATAAGTTTTTGATTGTTAATTCCAAGAATTATATTATTAATTTCTAGAATAT
-TTGTTGGTAGTGGTACAGGTACTGGGTGGACTATTTATCCTCCTTTATCTGGAAATTTAT
-TTCATAGAAGATCTTCAGTCGATTTATCAATTTTTAGACTTCATATTGCTGGTATAAGAT
-CTATTATAGGTTCAATTAATTTTATTTCTACTGTTTTAAATATAAAAATTTATAGGTTTG
-AATTAATTCCTTTATTTGCTTGATCTGTTTTATTGACTGCTATTTTATTATTATTAGCTT
-TACCTGTATTAGCAGGGGCTATTACAATATTATTGTTTGACCGAAATTTGAATACATCAT
-TTTTTGATCCTGCCGGGGGTGGGGATCCAATTTTGTTTCAACATTTATTT
-</pre>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <div class="modal fade" id="inputParamsModal" tabindex="-1">
@@ -1567,7 +1525,7 @@ TTTTTGATCCTGCCGGGGGTGGGGATCCAATTTTGTTTCAACATTTATTT
               </td>
               <td>
                 <code class="text-dark">
-                  2026-11-17_01-27-52
+                  2026-11-19_21-40-32
                 </code>
               </td>
             </tr>
@@ -1593,7 +1551,7 @@ TTTTTGATCCTGCCGGGGGTGGGGATCCAATTTTGTTTCAACATTTATTT
               </td>
               <td>
                 <code class="text-dark">
-                  output/pipeline_info/execution_trace_2026-11-17_01-27-52.txt
+                  output/pipeline_info/execution_trace_2026-11-19_21-40-32.txt
                 </code>
               </td>
             </tr>
@@ -1813,6 +1771,44 @@ TTTTTGATCCTGCCGGGGGTGGGGATCCAATTTTGTTTCAACATTTATTT
   </div>
 </div>
 
+
+<div class="modal fade" id="inputFastaModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Input DNA sequence</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <pre>>Scenario_04
+GTATTTTATATTTTATTTTTGGTATGTGGTCTGGGATTTTTGGATTGTCATTAAGAATAA
+TAATTCGTTTGGAATTAGGTTCTCCTGGATCTTTAATTGGCAATGATCAAATTTATAATT
+CTATTGTAACGGCTCATGCTTTTATTATAATTTTTTTTTGTAATACCAGTGATAATAGGG
+GGTTTGGGAATTATTTGGTTCCTTTAATTTTAGGGTCTCCTGATATAGCATTTCCTCGGA
+TAAATAATATAAGTTTTTGATTGTTAATTCCAAGAATTATATTATTAATTTCTAGAATAT
+TTGTTGGTAGTGGTACAGGTACTGGGTGGACTATTTATCCTCCTTTATCTGGAAATTTAT
+TTCATAGAAGATCTTCAGTCGATTTATCAATTTTTAGACTTCATATTGCTGGTATAAGAT
+CTATTATAGGTTCAATTAATTTTATTTCTACTGTTTTAAATATAAAAATTTATAGGTTTG
+AATTAATTCCTTTATTTGCTTGATCTGTTTTATTGACTGCTATTTTATTATTATTAGCTT
+TACCTGTATTAGCAGGGGCTATTACAATATTATTGTTTGACCGAAATTTGAATACATCAT
+TTTTTGATCCTGCCGGGGGTGGGGATCCAATTTTGTTTCAACATTTATTT
+</pre>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 </div>
   </div>

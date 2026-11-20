@@ -1,5 +1,5 @@
 sample_id: FungusB_Btub
-date: '2026-08-04T00:37:50'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -160,16 +160,16 @@ components:
     - id: flag_text1
       type: list
       value:
-      - 5.1NA
+      - ''
     - id: record_count
       type: list
       flex: 0.1
       value:
-      - '188547'
+      - '0'
     - id: flag_text2
       type: list
       value:
-      - 5.2NA
+      - ''
     - id: species_count
       type: list
       flex: 0.1
