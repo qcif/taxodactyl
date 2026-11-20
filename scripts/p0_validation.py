@@ -225,6 +225,7 @@ def _validate_fasta(path: Path, ignore_seq_count=False) -> list[str]:
                 SeqIO.SeqRecord(
                     Seq(_sanitize_dna(seq.seq)),
                     id=seq.id,
+                    description='',
                 )
             )
     path = config.output_dir / OUTPUT_FASTA_FILENAME
@@ -298,7 +299,7 @@ def _validate_metadata(
                 ' CSV.'
             )
         sample_id = row[columns['sample_id']]
-        if sample_id in sample_id_rows:
+        if sample_id and sample_id in sample_id_rows:
             raise MetadataFormatError(
                 f'Duplicate sample ID "{sample_id}" in rows'
                 f' {sample_id_rows[sample_id]} and {i + 1} of the metadata'
@@ -477,9 +478,10 @@ def _autofix_multi_locus_sample_ids(
     to "<sample_id>_<locus>". FASTA records with that ID are renamed in the
     order they appear: the nth record gets the nth row's new ID.
 
-    A repeated ID is left unchanged, to be rejected by validation, when two
-    of its rows share a locus, a locus is blank, the FASTA holds a different
-    number of records with that ID, or a new ID is already in use.
+    Raises MetadataFormatError, saying why, if a repeated ID cannot be
+    renamed: two of its rows share a locus, a locus is blank, the FASTA
+    holds a different number of records with that ID, or a new ID is
+    already in use. Nothing is rewritten in that case.
 
     Returns True if any sample ID was renamed.
     """
@@ -502,34 +504,40 @@ def _autofix_multi_locus_sample_ids(
         if fasta_path
         else None
     )
-    taken_ids = set(row_ixs)
+    # Row number (1-based) that already holds each sample ID
+    taken_ids = {
+        sample_id: ixs[0] + 1
+        for sample_id, ixs in row_ixs.items()
+    }
     renames = {}
     for sample_id, ixs in row_ixs.items():
         if len(ixs) < 2:
             continue
         new_ids = _multi_locus_sample_ids(
             sample_id,
-            [rows[i][locus_col] for i in ixs],
+            {i + 1: rows[i][locus_col] for i in ixs},
         )
-        if not new_ids:
-            continue
-        if taken_ids & set(new_ids):
-            logger.warning(
-                f'Sample ID "{sample_id}" is repeated at different loci but'
-                ' could not be renamed: one of the new IDs'
-                f' {new_ids} is already in use.'
-            )
-            continue
+        for new_id in new_ids:
+            if new_id in taken_ids:
+                raise MetadataFormatError(
+                    f'Sample ID "{sample_id}" is repeated at different loci'
+                    f' (rows {_join_rows(ixs)}), so it must be renamed to'
+                    f' "{new_id}", but that sample ID is already used in'
+                    f' row {taken_ids[new_id]}. Please rename one of these'
+                    ' samples.'
+                )
         if fasta_records is not None:
             fasta_count = sum(rec.id == sample_id for rec in fasta_records)
             if fasta_count != len(ixs):
-                logger.warning(
-                    f'Sample ID "{sample_id}" is repeated at different loci'
-                    f' but could not be renamed: it has {len(ixs)} metadata'
-                    f' rows and {fasta_count} FASTA sequences.'
+                raise MetadataFormatError(
+                    f'Sample ID "{sample_id}" is repeated at {len(ixs)}'
+                    f' different loci (rows {_join_rows(ixs)}), but the FASTA'
+                    f' file has {fasta_count} sequence(s) with this ID.'
+                    ' Please provide one FASTA sequence per locus, in the'
+                    ' same order as the metadata rows.'
                 )
-                continue
-        taken_ids.update(new_ids)
+        for i, new_id in zip(ixs, new_ids):
+            taken_ids[new_id] = i + 1
         renames[sample_id] = new_ids
 
     if not renames:
@@ -563,31 +571,58 @@ def _autofix_multi_locus_sample_ids(
 
 def _multi_locus_sample_ids(
     sample_id: str,
-    loci: list[str],
-) -> list[str] | None:
-    """Return "<sample_id>_<locus>" for each locus, if the loci all differ.
+    loci: dict[int, str],
+) -> list[str]:
+    """Return "<sample_id>_<locus>" for each locus, given by row number.
 
     Loci are compared by their canonical allowed locus, so synonyms (e.g.
-    COI and COX1) count as the same locus. Returns None if any locus is
-    blank or two loci are the same.
+    COI and COX1) count as the same locus. Raises MetadataFormatError if
+    any locus is blank or two loci are the same.
     """
-    if any(not locus.strip() for locus in loci):
-        return None
-    keys = []
-    for locus in loci:
+    rows = list(loci)
+    for row, locus in loci.items():
+        if not locus.strip():
+            raise MetadataFormatError(
+                f'Sample ID "{sample_id}" is repeated (rows'
+                f' {_join_rows(rows, offset=0)}), but row {row} has no'
+                ' locus. A sample ID may only be repeated to submit the'
+                ' same sample at different loci.'
+            )
+    seen = {}
+    for row, locus in loci.items():
         resolved = config._resolve_locus(locus)
-        keys.append(
+        key = (
             resolved.name.lower()
             if resolved
             else _locus_suffix(locus).lower()
         )
-    new_ids = [f'{sample_id}_{_locus_suffix(locus)}' for locus in loci]
-    if (
-        len(set(keys)) < len(keys)
-        or len(set(new_ids)) < len(new_ids)
-    ):
-        return None
-    return new_ids
+        if key in seen:
+            first_row = seen[key]
+            first_locus = loci[first_row]
+            same = (
+                f'locus "{locus}"'
+                if first_locus.strip().lower() == locus.strip().lower()
+                else f'locus ("{first_locus}" and "{locus}" are synonyms)'
+            )
+            raise MetadataFormatError(
+                f'Sample ID "{sample_id}" is repeated at the same {same} in'
+                f' rows {first_row} and {row}. Each sample ID must be'
+                ' unique, unless it is repeated to submit the same sample'
+                ' at different loci.'
+            )
+        seen[key] = row
+    return [
+        f'{sample_id}_{_locus_suffix(locus)}'
+        for locus in loci.values()
+    ]
+
+
+def _join_rows(row_ixs: list[int], offset: int = 1) -> str:
+    """Format row numbers for a message, e.g. "1, 3 and 4"."""
+    rows = [str(i + offset) for i in row_ixs]
+    if len(rows) < 2:
+        return ''.join(rows)
+    return ', '.join(rows[:-1]) + ' and ' + rows[-1]
 
 
 def _locus_suffix(locus: str) -> str:

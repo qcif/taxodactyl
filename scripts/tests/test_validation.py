@@ -86,6 +86,16 @@ MOCK_TAXONKIT_DIR.mkdir(exist_ok=True, parents=True)
 
 class ValidationTestCase(unittest.TestCase):
 
+    def test_it_writes_fasta_headers_with_id_only(self):
+        ids = _validate_fasta(FASTA_VALID)
+        output_path = config.output_dir / OUTPUT_FASTA_FILENAME
+        headers = [
+            line[1:].rstrip('\n')
+            for line in output_path.open()
+            if line.startswith('>')
+        ]
+        self.assertEqual(headers, ids)
+
     def test_it_can_validate_fasta_input(self):
         _validate_fasta(FASTA_VALID)
         with self.assertRaises(FASTAFormatError):
@@ -397,37 +407,67 @@ class MultiLocusSampleIdTestCase(unittest.TestCase):
         ]
         self.assertEqual(fasta_ids, ['S1_COI', 'S1_beta-tub'])
 
+    def _assert_rejected(self, pattern: str, fasta=True):
+        csv_before = self.csv_path.read_text()
+        fasta_before = self.fasta_path.read_text() if fasta else None
+        with self.assertRaisesRegex(MetadataFormatError, pattern):
+            _autofix_multi_locus_sample_ids(
+                self.csv_path,
+                self.fasta_path if fasta else None,
+            )
+        self.assertEqual(self.csv_path.read_text(), csv_before)
+        if fasta:
+            self.assertEqual(self.fasta_path.read_text(), fasta_before)
+
     def test_it_rejects_sample_id_repeated_at_same_locus(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,COI,Culex pipiens',
+        ])
+        self._write_fasta(['S1', 'S1'])
+        self._assert_rejected(
+            'Sample ID "S1" is repeated at the same locus "COI" in rows 1'
+            ' and 2')
+
+    def test_it_rejects_sample_id_repeated_at_synonym_locus(self):
         # COX1 is a synonym of COI, so these rows share a locus
         self._write_csv([
             'S1,COI,Aedes aegypti',
             'S1,COX1,Culex pipiens',
         ])
         self._write_fasta(['S1', 'S1'])
-        self.assertFalse(
-            _autofix_multi_locus_sample_ids(self.csv_path, self.fasta_path))
-        self.assertEqual(self._sample_ids(), ['S1', 'S1'])
-        with self.assertRaisesRegex(MetadataFormatError, 'Duplicate'):
-            _validate_metadata(self.csv_path, ['S1'])
+        self._assert_rejected(
+            r'same locus \("COI" and "COX1" are synonyms\) in rows 1 and 2')
 
-    def test_it_does_not_rename_when_fasta_count_differs(self):
+    def test_it_rejects_sample_id_repeated_with_blank_locus(self):
+        self._write_csv([
+            'S1,COI,Aedes aegypti',
+            'S1,,Aedes aegypti',
+        ])
+        self._write_fasta(['S1', 'S1'])
+        self._assert_rejected(
+            r'"S1" is repeated \(rows 1 and 2\), but row 2 has no locus')
+
+    def test_it_rejects_when_fasta_count_differs(self):
         self._write_csv([
             'S1,COI,Aedes aegypti',
             'S1,ITS,Aedes aegypti',
         ])
         self._write_fasta(['S1'])
-        self.assertFalse(
-            _autofix_multi_locus_sample_ids(self.csv_path, self.fasta_path))
-        self.assertEqual(self._sample_ids(), ['S1', 'S1'])
+        self._assert_rejected(
+            'FASTA file has 1 sequence\\(s\\) with this ID')
 
-    def test_it_does_not_rename_when_new_id_is_taken(self):
+    def test_it_rejects_when_new_id_is_taken(self):
         self._write_csv([
             'S1,COI,Aedes aegypti',
             'S1,ITS,Aedes aegypti',
             'S1_ITS,ITS,Culex pipiens',
         ])
-        self.assertFalse(_autofix_multi_locus_sample_ids(self.csv_path))
-        self.assertEqual(self._sample_ids(), ['S1', 'S1', 'S1_ITS'])
+        self._assert_rejected(
+            'must be renamed to "S1_ITS", but that sample ID is already used'
+            ' in row 3',
+            fasta=False,
+        )
 
     def test_it_makes_locus_suffix_safe_for_sample_id(self):
         self.assertEqual(_locus_suffix('β-tub gene'), 'beta-tub')
