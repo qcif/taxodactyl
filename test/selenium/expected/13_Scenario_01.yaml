@@ -1,5 +1,5 @@
 sample_id: Scenario_01
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -124,7 +124,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: flag_text2
       type: list
       value:
@@ -150,7 +150,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: country_message
       type: list
       value:
@@ -169,7 +169,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: flag_text2
       type: list
       value:
@@ -195,7 +195,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: country_message
       type: list
       value:
@@ -214,7 +214,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: flag_text2
       type: list
       value:
@@ -240,7 +240,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: country_message
       type: list
       value:
@@ -284,7 +284,7 @@ components:
       type: list
       flex: 0.1
       value:
-      - '4470'
+      - '4471'
     - id: country_message
       type: list
       value:

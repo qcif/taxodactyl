@@ -140,7 +140,7 @@ amount of local storage planning mitigates.
   per Redis *service* — a GBIF 429 only slows both GBIF endpoints
   together when Redis is the throttle backend.
 - **Known gaps:** `P5-D-010` (`name_suggest` is fuzzy — the first match
-  may be the wrong taxon, surfaced only as an informational error);
+  may be the wrong taxon; mitigated only when NCBI has the exact name);
   `P5-D-014` (a synonym's accepted record isn't re-checked against the
   classification).
 

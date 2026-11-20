@@ -365,7 +365,8 @@ class ColMissingTargetTestCase(CoverageModeTestCase):
         self.assertEqual(
             self._errors(errors.LOCATIONS.DB_COVERAGE_RELATED), [])
         [info] = self._errors(errors.LOCATIONS.DB_COVERAGE)
-        self.assertIn(f"'{NCBI_GENUS}' is not in COL either", info['message'])
+        self.assertIn(
+            f"its NCBI genus '{NCBI_GENUS}' is not in COL", info['message'])
         self.assertTrue(
             (self.query_dir / config.get_map_filename_for_target(
                 COL_MISSING_TARGET)).exists())
@@ -464,6 +465,133 @@ class ColMissingTargetTestCase(CoverageModeTestCase):
         ]
         self.assertTrue(any(
             'BOLD record counts are not available' in m for m in messages))
+
+
+NEAR_MISS_TARGET = 'Grapevine virus'
+NEAR_MISS_COL_NAME = 'Grapevine virus A'
+NEAR_MISS_TAXID = '2934366'
+NEAR_MISS_COUNT = 39
+NEAR_MISS_CSV = (
+    'taxon,locus,country,classification\n'
+    f'{NEAR_MISS_TARGET},,Australia,\n'
+)
+# NCBI files 'Grapevine virus' under 'unclassified viruses', with no genus
+NEAR_MISS_LINEAGE = TaxonLineage([
+    NEAR_MISS_TAXID,
+    f'Viruses;unclassified viruses;{NEAR_MISS_TARGET}',
+    'acellular root;no rank;species',
+])
+
+
+def _near_miss_taxids(names, classification=None):
+    known = {
+        NEAR_MISS_TARGET: NEAR_MISS_TAXID,
+        **{name: taxid for name, (taxid, _) in RELATED_SPECIES.items()},
+    }
+    return {name: known.get(name) for name in names}
+
+
+def _near_miss_gb_count(locus, taxid, count=True):
+    counts = {
+        NEAR_MISS_TAXID: NEAR_MISS_COUNT,
+        **{taxid: n for taxid, n in RELATED_SPECIES.values()},
+    }
+    return counts[taxid]
+
+
+@patch('src.coverage.fetch.genbank.fetch_gb_records',
+       side_effect=_near_miss_gb_count)
+@patch('src.taxonomy.extract.lineages',
+       return_value={NEAR_MISS_TAXID: NEAR_MISS_LINEAGE})
+@patch('src.taxonomy.extract.taxids', side_effect=_near_miss_taxids)
+@patch('src.coverage.targets.RelatedTaxaGBIF')
+class NearMissColMatchTestCase(ColMissingTargetTestCase):
+    """COL suggests a different taxon, but NCBI has the exact name."""
+
+    coverage_csv = NEAR_MISS_CSV
+
+    def _set_col(self, mock_cls, genus_record=None):
+        """COL near-misses the target; `genus_record` for 'Vitivirus'."""
+        closest = _fake_gbif_target(
+            NEAR_MISS_TARGET, NEAR_MISS_COL_NAME, RANK.SPECIES)
+        closest.genus = NCBI_GENUS
+
+        def lookup(name, **kwargs):
+            if name == NEAR_MISS_TARGET:
+                return closest
+            if genus_record is None:
+                raise GBIFRecordNotFound(f"'{name}' is not in COL.")
+            return genus_record
+        mock_cls.side_effect = lookup
+
+    def _p5_013_warnings(self):
+        return [
+            e for e in self._errors(errors.LOCATIONS.DB_COVERAGE)
+            if 'first GBIF-accepted name' in e['message']
+        ]
+
+    def test_near_miss_with_ncbi_name_is_not_in_col(self, mock_cls, *mocks):
+        self._set_col(mock_cls)
+        records = fetch_target_taxa([NEAR_MISS_TARGET], self.query_dir)
+        target = records.col_missing_taxa[NEAR_MISS_TARGET]
+        self.assertEqual(target.taxid, NEAR_MISS_TAXID)
+        self.assertEqual(target.closest_col_name, NEAR_MISS_COL_NAME)
+        self.assertEqual(target.closest_col_genus, NCBI_GENUS)
+        self.assertIsNone(target.ncbi_genus)
+        self.assertEqual(records.all_taxa, {})
+        self.assertEqual(records.original_to_canonical, {})
+        self.assertEqual(self._p5_013_warnings(), [])
+        [error] = self._errors(errors.LOCATIONS.DB_COVERAGE_NO_GBIF_RECORD)
+        self.assertIn(
+            f"its closest COL name, '{NEAR_MISS_COL_NAME}', is a different"
+            " taxon", error['message'])
+        self.assertIn(NEAR_MISS_TAXID, error['message'])
+
+    def test_near_miss_without_ncbi_name_uses_col_name(
+        self, mock_cls, mock_taxids, *mocks,
+    ):
+        self._set_col(mock_cls)
+        mock_taxids.side_effect = lambda names, **kw: {
+            name: None for name in names}
+        records = fetch_target_taxa([NEAR_MISS_TARGET], self.query_dir)
+        self.assertEqual(records.col_missing_taxa, {})
+        self.assertEqual(list(records.lower_taxa), [NEAR_MISS_COL_NAME])
+        self.assertEqual(len(self._p5_013_warnings()), 1)
+
+    def test_genus_from_closest_col_match(self, mock_cls, mock_taxids,
+                                          mock_lineages, mock_gb):
+        self._set_col(mock_cls, _fake_col_genus(NCBI_GENUS))
+        results = self._assess()
+        self.assertEqual(
+            [c.args[1] for c in mock_gb.call_args_list
+             if c.args[1] == NEAR_MISS_TAXID],
+            [NEAR_MISS_TAXID],
+        )
+        coverage = results['coverage']['pmi'][NEAR_MISS_TARGET]
+        self.assertEqual(coverage['target'], NEAR_MISS_COUNT)
+        self.assertEqual(coverage['genus'], NCBI_GENUS)
+        self.assertEqual(
+            coverage['related'],
+            {name: n for name, (_, n) in RELATED_SPECIES.items()},
+        )
+        [info] = self._errors(errors.LOCATIONS.DB_COVERAGE)
+        self.assertEqual(
+            info['message'],
+            f"'{NEAR_MISS_TARGET}' is not in COL and NCBI gives it no genus;"
+            f" related-species checks use the genus '{NCBI_GENUS}' (COL key"
+            f" {GENUS_COL_KEY}) of its closest COL match,"
+            f" '{NEAR_MISS_COL_NAME}'.",
+        )
+
+    # Inherited cases that assume the target is entirely absent from COL
+    # or has an NCBI genus do not apply here.
+    test_target_resolved_by_ncbi_taxid = None
+    test_not_found_error_is_reworded = None
+    test_phase_a_grades_target_count_only = None
+    test_no_taxid_makes_no_entrez_query = None
+    test_phase_b_uses_ncbi_genus_in_col = None
+    test_phase_b_rejects_non_genus_col_record = None
+    test_bold_skips_count_at_unsupported_rank = None
 
 
 if __name__ == '__main__':

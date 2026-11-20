@@ -1,5 +1,5 @@
 sample_id: barcode84_contig1_PE250203-B_REP1_KAPA
-date: '2026-11-17T01:27:54'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -175,7 +175,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2A
     - id: species_count
       type: list
       flex: 0.1
@@ -255,7 +255,7 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1C
     - id: record_count
       type: list
       flex: 0.1
@@ -264,7 +264,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2ERR
     - id: species_count
       type: list
       flex: 0.1

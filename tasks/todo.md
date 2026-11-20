@@ -33,3 +33,9 @@ One bullet per item: what needs doing and why, its origin
   none of these has a schema pattern. Either quote the binds or add
   patterns so they fail at parameter validation. Origin: task
   10_input_filenames_with_spaces, #358, 2026-11-19.
+- Resolve the genus of COL species targets by name too, using the same-name
+  genus with the most descendants (P5-011), instead of the record's own
+  genusKey. COL has stray duplicate genera (e.g. *Vitivirus* 338017727 holds
+  only "Grapevine virus A"), so a target in one gets 1 related species.
+  Left out of scope by user decision. Origin: task
+  11_inexact_col_match_genus, 2026-11-19.

@@ -11,6 +11,7 @@ from src.gbif.relatives import (
     RelatedTaxaGBIF,
     _break_tie,
     is_root_taxon,
+    tie_break_message,
 )
 
 TEST_DATA_DIR = Path(__file__).parent / 'test-data'
@@ -352,11 +353,13 @@ DROSOPHILA_USAGE = {
         'authorship': 'Fallén, 1823',
         'publishedIn': 'Fallén, C.F. (1823) Geomyzides Sveciae.',
         'taxonID': 'BXWZ6',
+        'numDescendants': 2427,
     },
     DROSOPHILA_EMPTY_KEY: {
         'authorship': 'Fallen-Nominotypical',
         'publishedIn': None,
         'taxonID': '87FQG',
+        'numDescendants': 0,
     },
 }
 
@@ -401,6 +404,16 @@ class TestDuplicateNameTieBreak(unittest.TestCase):
             [(DROSOPHILA_EMPTY_KEY, 'Drosophila Fallen-Nominotypical')])
         # One enrichment lookup per tied record; none for the taxonID.
         self.assertEqual(mock_name_usage.call_count, 2)
+        self.assertEqual(
+            taxon.tie_break['descendants'],
+            {DROSOPHILA_KEY: 2427, DROSOPHILA_EMPTY_KEY: 0})
+        self.assertEqual(
+            tie_break_message(taxon.tie_break),
+            "GBIF returned 2 accepted records named 'Drosophila' (genus)."
+            f" Using key {DROSOPHILA_KEY} 'Drosophila Fallén, 1823'"
+            " (2427 descendants); ignoring"
+            f" {DROSOPHILA_EMPTY_KEY} 'Drosophila Fallen-Nominotypical'"
+            " (0 descendants).")
 
     def test_opposite_order_gives_same_record(
         self, mock_suggest, mock_name_usage, mock_cache_get,
@@ -449,6 +462,40 @@ class TestDuplicateNameTieBreak(unittest.TestCase):
 
 class TestBreakTie(unittest.TestCase):
     """Each tie-break signal works on its own, in priority order."""
+
+    def test_most_descendants_preferred(self):
+        """A stray duplicate genus loses to the one holding the species.
+
+        COL has two accepted 'Vitivirus' genera without authorship or
+        publishedIn: 338017727 (1 descendant) and 338017750 (22).
+        """
+        stray = _record(key=338017727, canonicalName='Vitivirus',
+                        numDescendants=1)
+        real = _record(key=338017750, canonicalName='Vitivirus',
+                       numDescendants=22)
+        self.assertIs(_break_tie([stray, real]), real)
+        self.assertIs(_break_tie([real, stray]), real)
+
+    def test_descendants_outrank_other_signals(self):
+        well_formed = _record(key=1, authorship='Smith, 1900',
+                              publishedIn='X', numDescendants=0)
+        populous = _record(key=2, authorship='Smith-Nominotypical',
+                           numDescendants=5)
+        missing = _record(key=3, authorship='Smith, 1900', publishedIn='X')
+        self.assertIs(_break_tie([well_formed, populous]), populous)
+        # Missing counts as 0, so the other signals decide
+        self.assertIs(_break_tie([missing, well_formed]), missing)
+
+    def test_message_singular_descendant(self):
+        message = tie_break_message({
+            'chosen': (2, 'Vitivirus'),
+            'rejected': [(1, 'Vitivirus')],
+            'name': 'Vitivirus',
+            'rank': 'GENUS',
+            'descendants': {2: 22, 1: 1},
+        })
+        self.assertIn("Using key 2 'Vitivirus' (22 descendants)", message)
+        self.assertIn("ignoring 1 'Vitivirus' (1 descendant).", message)
 
     def test_nominotypical_marker_rejected(self):
         a = _record(key=1, scientificName='Taxon Nominotypical, 1900')

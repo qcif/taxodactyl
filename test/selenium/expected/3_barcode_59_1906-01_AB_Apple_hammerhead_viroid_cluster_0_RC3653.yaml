@@ -1,5 +1,5 @@
 sample_id: barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653
-date: '2026-08-04T00:37:50'
+date: '2026-11-19T21:40:34'
 components:
 - id: input_sequence_modal
   assertions:
@@ -121,7 +121,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2A
     - id: species_count
       type: list
       flex: 0.1
@@ -138,12 +138,12 @@ components:
     - id: first_bar_species
       type: list
       value:
-      - Peach latent mosaic viroid
+      - Pelamoviroid latenspruni
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '7270'
+      - '7272'
     - id: country_message
       type: list
       value:
@@ -166,7 +166,7 @@ components:
     - id: flag_text2
       type: list
       value:
-      - ''
+      - 5.2A
     - id: species_count
       type: list
       flex: 0.1
@@ -183,12 +183,12 @@ components:
     - id: first_bar_species
       type: list
       value:
-      - Peach latent mosaic viroid
+      - Pelamoviroid latenspruni
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '7270'
+      - '7272'
     - id: country_message
       type: list
       value:
@@ -202,42 +202,42 @@ components:
     - id: flag_text1
       type: list
       value:
-      - ''
+      - 5.1A
     - id: record_count
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '230'
     - id: flag_text2
       type: list
       value:
-      - Warning no locus provided
+      - 5.2A
     - id: species_count
       type: list
       flex: 0.1
       value:
-      - ''
+      - '3'
     - id: species_total
       type: list
       flex: 0.1
       value:
-      - ''
+      - '3'
     - id: min_bar_count
       type: min
       value: '0'
     - id: first_bar_species
       type: list
       value:
-      - ''
+      - Pelamoviroid latenspruni
     - id: first_bar_count
       type: list
       flex: 0.1
       value:
-      - '0'
+      - '7272'
     - id: country_message
       type: list
       value:
-      - ''
+      - A country of origin was not provided in the sample metadata, so this analysis could not be performed.
 - id: publication_modal
   candidates:
   - name: Pelamoviroid malleusmali
