@@ -1,0 +1,1528 @@
+sample_id: MG220521_3
+date: '2026-11-23T06:31:55.109129714Z'
+provenance:
+  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
+  source_test: test/core/taxodactyl.workflow.nf.test
+  evaluated_at: '2026-11-23T06:31:55.109129714Z'
+  accepted_at: '2026-11-23'
+  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+components:
+- id: blast_hits
+  assertions:
+  - id: accessions
+    type: membership
+    value:
+    - GU936932
+    - GU936938
+    - HM474187
+    - HM474188
+    - HM474278
+    - HM474280
+    - HM474283
+    - HM474284
+    - HM474285
+    - HM474286
+    - HM474292
+    - HM474308
+    - HM474309
+    - HM474311
+    - HM474312
+    - HM474314
+    - HM474320
+    - HM474352
+    - HM474358
+    - HM474362
+    - HM474368
+    - HM474374
+    - HM474379
+    - HM474380
+    - HM474381
+    - HM474382
+    - HM474384
+    - HM474385
+    - HM474389
+    - HM474390
+    - HM474391
+    - HQ179883
+    - JF965419
+    - JQ085552
+    - KP031703
+    - KP692484
+    - KP692504
+    - KP692519
+    - KP692520
+    - KP692521
+    - KP692537
+    - KP692538
+    - KP692579
+    - KP692637
+    - KP692638
+    - KP692645
+    - KP692657
+    - KP692658
+    - KP692661
+    - KP692665
+    - KP692666
+    - KP692667
+    - KP692668
+    - KP692670
+    - KP692680
+    - KP692683
+    - KP692685
+    - KP692688
+    - KP692715
+    - KP771950
+    - KP771952
+    - KP771953
+    - KP771954
+    - KP771955
+    - KP771956
+    - KP771957
+    - KP771958
+    - KP981087
+    - KP981091
+    - KP981102
+    - KU296036
+    - KX015088
+    - KX015091
+    - KX015100
+    - KX015106
+    - KX966396
+    - KY211605
+    - KY211606
+    - KY211608
+    - KY211612
+    - KY211615
+    - KY211618
+    - KY372419
+    - KY372431
+    - KY372433
+    - KY372445
+    - KY372447
+    - KY372448
+    - KY372449
+    - KY372460
+    - KY372462
+    - KY372464
+    - KY372470
+    - KY372472
+    - KY372479
+    - KY372481
+    - KY372488
+    - KY372495
+    - KY372496
+    - KY372501
+    - KY372502
+    - KY372505
+    - KY372509
+    - KY372510
+    - KY372512
+    - KY372514
+    - KY372516
+    - KY372519
+    - KY372523
+    - KY372528
+    - KY372530
+    - KY372531
+    - KY372534
+    - KY372537
+    - KY372545
+    - KY372546
+    - KY372548
+    - KY372553
+    - KY372555
+    - KY372556
+    - KY372558
+    - KY372561
+    - KY372564
+    - KY372567
+    - KY372568
+    - KY372574
+    - KY372579
+    - KY372583
+    - KY372586
+    - KY372590
+    - KY372594
+    - KY372596
+    - KY372598
+    - KY372602
+    - KY372605
+    - KY372611
+    - KY372612
+    - KY372622
+    - KY372626
+    - KY372629
+    - KY372630
+    - KY372633
+    - KY372636
+    - KY372642
+    - KY372651
+    - KY372655
+    - KY372659
+    - KY372663
+    - KY372669
+    - KY372671
+    - KY372673
+    - KY372674
+    - KY372678
+    - KY372679
+    - KY372694
+    - KY372701
+    - KY372706
+    - KY372716
+    - KY372721
+    - KY372723
+    - KY372732
+    - KY372736
+    - KY372739
+    - KY372744
+    - KY372745
+    - KY372749
+    - KY372753
+    - KY372759
+    - KY372764
+    - KY372774
+    - KY372782
+    - KY372784
+    - KY372790
+    - KY372791
+    - KY372795
+    - KY372796
+    - KY372800
+    - KY372810
+    - KY372811
+    - KY372812
+    - KY372814
+    - KY372820
+    - KY372821
+    - KY372824
+    - KY372830
+    - KY372831
+    - KY372833
+    - KY372844
+    - KY372846
+    - KY372854
+    - KY372859
+    - KY372860
+    - KY372861
+    - KY372865
+    - KY372866
+    - KY372871
+    - KY372874
+    - KY372883
+    - KY372884
+    - KY372885
+    - KY372893
+    - KY372894
+    - KY372896
+    - KY372899
+    - KY372905
+    - KY372906
+    - KY372910
+    - KY372915
+    - KY372920
+    - KY372921
+    - KY372925
+    - KY372926
+    - KY372930
+    - KY372931
+    - KY372939
+    - KY372942
+    - KY372946
+    - KY372948
+    - KY372949
+    - KY372958
+    - KY372973
+    - KY372977
+    - KY372979
+    - KY372987
+    - KY372990
+    - KY372992
+    - KY372993
+    - KY372994
+    - KY372995
+    - KY372998
+    - KY373004
+    - KY373012
+    - KY373015
+    - KY373030
+    - KY373034
+    - KY373039
+    - KY373043
+    - KY373045
+    - KY373051
+    - KY373062
+    - KY373063
+    - KY373069
+    - KY373073
+    - KY373075
+    - KY373077
+    - KY373078
+    - KY373079
+    - KY373081
+    - KY373090
+    - KY373093
+    - KY373094
+    - KY373101
+    - KY373103
+    - KY373105
+    - KY373106
+    - KY373107
+    - KY373108
+    - KY373111
+    - KY373114
+    - KY373146
+    - KY373167
+    - KY373180
+    - KY373182
+    - LC121493
+    - LC121494
+    - LC121496
+    - LC278435
+    - LC713217
+    - LC785410
+    - LC785411
+    - LC785412
+    - LC785413
+    - LC849218
+    - LC878014
+    - LC878015
+    - LC878016
+    - MG437482
+    - MG437484
+    - MG437485
+    - MG437487
+    - MG437488
+    - MG437490
+    - MG437491
+    - MG437495
+    - MG813757
+    - MG813759
+    - MG813760
+    - MG813761
+    - MG813762
+    - MG813763
+    - MG813766
+    - MG813767
+    - MG813768
+    - MG866187
+    - MG866188
+    - MG866189
+    - MG866190
+    - MH253682
+    - MH253683
+    - MH253684
+    - MH253685
+    - MH290544
+    - MH290556
+    - MH290557
+    - MK086943
+    - MK086945
+    - MK086947
+    - MK086948
+    - MK086951
+    - MK213581
+    - MK213582
+    - MK213583
+    - MN306287
+    - MN901456
+    - MN901459
+    - MN901462
+    - MN901465
+    - MN901467
+    - MT707297
+    - MT707298
+    - MT707299
+    - MT707300
+    - MT707315
+    - MT707316
+    - MT707317
+    - MT707318
+    - MT707319
+    - MT707320
+    - MT707321
+    - MT707324
+    - MT707325
+    - MT707326
+    - MW929771
+    - MW929772
+    - MW929773
+    - ON469576
+    - ON811688
+    - OP381504
+    - OP381505
+    - OP381506
+    - OP381507
+    - OP381508
+    - OP381509
+    - OP381510
+    - OP381512
+    - OP381513
+    - OP381514
+    - OP381515
+    - OP381516
+    - OP381517
+    - OP381518
+    - OP381519
+    - OP381520
+    - OP381521
+    - OP381522
+    - OP381523
+    - OP381524
+    - OP381525
+    - OP381526
+    - OP381527
+    - OP381529
+    - OP381530
+    - OP381531
+    - OP381532
+    - OP381533
+    - OP381534
+    - OP381535
+    - OP381536
+    - OP381537
+    - OP381538
+    - OP381539
+    - OP381540
+    - OP381541
+    - OP381542
+    - OP381543
+    - OP381544
+    - OP381545
+    - OP381546
+    - OP381547
+    - OP381548
+    - OP381549
+    - OP381550
+    - OP381551
+    - OP381552
+    - OP381553
+    - OP381554
+    - OP381555
+    - OP381556
+    - OP381557
+    - OP381558
+    - OP381559
+    - OP381560
+    - OP381562
+    - OP381563
+    - OP381564
+    - OP381565
+    - OP381566
+    - OP381567
+    - OP381568
+    - OP381569
+    - OP381570
+    - OP381571
+    - OP381572
+    - OP381573
+    - OP381575
+    - OP381576
+    - OP381577
+    - OP381578
+    - OP381579
+    - OP381580
+    - OP381581
+    - OP381582
+    - OP381583
+    - OP381584
+    - OP381585
+    - OP381586
+    - OP381587
+    - OP381588
+    - OP381590
+    - OP381593
+    - OP381594
+    - OP381595
+    - OP381596
+    - OP381597
+    - OP381598
+    - OP391569
+    - OP391570
+    - OP391571
+    - OP391572
+    - OP391573
+    - OP391574
+    - OP391575
+    - OP391576
+    - OP391578
+    - OP391579
+    - OP391580
+    - OP391582
+    - OP391583
+    - OP391585
+    - OP391586
+    - OP391587
+    - OP391588
+    - OP391589
+    - OP391590
+    - OP391591
+    - OP391592
+    - OP391593
+    - OP425677
+    - OP425678
+    - OP425679
+    - OP425680
+    - OP425681
+    - OP425682
+    - OP425683
+    - OP425685
+    - OP425686
+    - OP425687
+    - OP425688
+    - OP425689
+    - OP425690
+    - OP425691
+    - OP654154
+    - OR825532
+    - OX465514
+    - PP442574
+    - PQ567076
+    - PQ567077
+    - PQ567078
+    - PQ567079
+    - PQ567080
+    - PQ567098
+    - PQ568023
+    - PQ568024
+    - PQ568025
+    - PQ568064
+    - PQ569629
+    - PQ569630
+    - PQ569631
+    - PQ569954
+    - PQ569955
+    - PQ569956
+    - PQ583146
+    - PV056693
+    - PV056695
+    - PV056704
+    - PV056706
+    - PV056712
+    - PV056714
+    - PV056732
+    - PV779670
+    - PV779671
+    - PX244169
+    - PX244172
+    - PX244173
+    - PX244180
+    - PX244181
+    - PX244183
+    - PX244184
+    - PX244188
+    - PX244196
+  - id: sequence_fingerprints
+    type: fingerprints
+    value:
+      GU936932: '2a0ef80e8cb73a63'
+      GU936938: 'b3d198a8880171c2'
+      HM474187: '530146b25dd0ac49'
+      HM474188: 'a7a7c0d4ae0ec9a1'
+      HM474278: '1992047bf264e4cd'
+      HM474280: 'b3d198a8880171c2'
+      HM474283: '3ce7e07755a10052'
+      HM474284: '5808ea578d5ac1e3'
+      HM474285: 'c92666e240fdf5d7'
+      HM474286: 'c51ecbaf088fe923'
+      HM474292: '793fa0d8ce09618f'
+      HM474308: 'dc120bac1c24c38d'
+      HM474309: '2e95370e1879afed'
+      HM474311: '1b55ccc9158a6cd5'
+      HM474312: '4439448f826a69f2'
+      HM474314: 'b16ee1974812deee'
+      HM474320: 'f42ee004863bf127'
+      HM474352: 'a55a6feb2b4f380b'
+      HM474358: '05de2a6b1d287207'
+      HM474362: 'd14cb9fc963b87c1'
+      HM474368: '2a0ef80e8cb73a63'
+      HM474374: 'abe7e7d914b58402'
+      HM474379: '208dc7992a36ee8a'
+      HM474380: 'd761db5851b4e035'
+      HM474381: '335ebc8ac559566a'
+      HM474382: '0950685df635d91f'
+      HM474384: '7dc1556d4e8236eb'
+      HM474385: '531f6b921052c677'
+      HM474389: '767170a57b2cb7a6'
+      HM474390: '9f082be83a107325'
+      HM474391: '950f8dcfc35b437c'
+      HQ179883: '1847ac783bc7efa2'
+      JF965419: '47fed27cc06e7f62'
+      JQ085552: '6a4c66fb2f5c992b'
+      KP031703: '8dcf644d6ea891dc'
+      KP692484: '03253e415c1b85f6'
+      KP692504: 'c5bfc89b0894ce32'
+      KP692519: '47accedb0400e612'
+      KP692520: '48ddaec925acbde0'
+      KP692521: '991bd273b3847223'
+      KP692537: 'b5dd36cd06b1756f'
+      KP692538: '67136ef61377a9fb'
+      KP692579: '747b31e8fb105b50'
+      KP692637: 'edc1994aa43ebf2b'
+      KP692638: '4bbdc535634c0c40'
+      KP692645: '4871a4fe54413e4a'
+      KP692657: '8a9d9b789aa8acad'
+      KP692658: '8a27e820a853da81'
+      KP692661: 'b08a329634d29521'
+      KP692665: '93d971ceb3bcc818'
+      KP692666: 'cb2d278cb3e0390b'
+      KP692667: '9bf198b689628b5c'
+      KP692668: '6adce35ca50ef0ff'
+      KP692670: '386f177bca0fba8a'
+      KP692680: 'e5ab1d32d4ed20b7'
+      KP692683: 'fd9114a3a5f2b53d'
+      KP692685: 'b6fe9c1221e429a3'
+      KP692688: '9826c9412ebd9a5f'
+      KP692715: '69de324f4dbbf02c'
+      KP771950: '55bc5a468954a473'
+      KP771952: 'f98192357f6e2de9'
+      KP771953: '5a81173313f2301e'
+      KP771954: '5898a1cb67731ac1'
+      KP771955: '8e1ee694e15c3eed'
+      KP771956: '4e4d904aa6529bff'
+      KP771957: '7317ec06d280ec4c'
+      KP771958: '8616630f729af243'
+      KP981087: 'cfee676ae39161e5'
+      KP981091: 'c75c2decce0de29f'
+      KP981102: '7157859bbe1fdc53'
+      KU296036: '3dcc00cb39fe291c'
+      KX015088: '5bbd610220367f1b'
+      KX015091: '62413f45a1c2cce3'
+      KX015100: '646f23af0887f0fe'
+      KX015106: '45ede74165f89ee3'
+      KX966396: '10f2f350d1d6749b'
+      KY211605: '5676d3718f1ed634'
+      KY211606: '9062058b037b973f'
+      KY211608: 'bb441a7b9b8d7a3b'
+      KY211612: '30d31a193c860c8c'
+      KY211615: '37affe6a710caa00'
+      KY211618: '7854c454c877367c'
+      KY372419: '2e95370e1879afed'
+      KY372431: '68828a2a683b104e'
+      KY372433: 'a55a6feb2b4f380b'
+      KY372445: 'a55a6feb2b4f380b'
+      KY372447: 'e4eff8c7ed82e698'
+      KY372448: 'abe7e7d914b58402'
+      KY372449: '9560791a01d06c70'
+      KY372460: '2e95370e1879afed'
+      KY372462: '47fed27cc06e7f62'
+      KY372464: '531f6b921052c677'
+      KY372470: '0950685df635d91f'
+      KY372472: 'f3dada32704d8a1d'
+      KY372479: '32f6451a60dea01d'
+      KY372481: '793fa0d8ce09618f'
+      KY372488: '6c419a2f286c7fa7'
+      KY372495: '47fed27cc06e7f62'
+      KY372496: '30d2335b43894b06'
+      KY372501: '1b55ccc9158a6cd5'
+      KY372502: '4439448f826a69f2'
+      KY372505: 'f6430686febbf8d7'
+      KY372509: '2b03780421e9d290'
+      KY372510: 'b33ffecd74ba8f0c'
+      KY372512: '208dc7992a36ee8a'
+      KY372514: '4439448f826a69f2'
+      KY372516: '30d2335b43894b06'
+      KY372519: '1992047bf264e4cd'
+      KY372523: 'be657d54eafa3158'
+      KY372528: '3b97b0146bd2d5cc'
+      KY372530: 'b16ee1974812deee'
+      KY372531: '4439448f826a69f2'
+      KY372534: '3ce7e07755a10052'
+      KY372537: 'f8b6fb9cdb0e7755'
+      KY372545: '297e9034db0c45f0'
+      KY372546: '335ebc8ac559566a'
+      KY372548: 'a55a6feb2b4f380b'
+      KY372553: '1b55ccc9158a6cd5'
+      KY372555: '297e9034db0c45f0'
+      KY372556: '47fed27cc06e7f62'
+      KY372558: '0950685df635d91f'
+      KY372561: '8d9d42932d70d5a1'
+      KY372564: '47fed27cc06e7f62'
+      KY372567: '49e9efaad1bd2f8d'
+      KY372568: '49e9efaad1bd2f8d'
+      KY372574: '49e9efaad1bd2f8d'
+      KY372579: '47fed27cc06e7f62'
+      KY372583: 'c51ecbaf088fe923'
+      KY372586: '1e8febf07f7c2126'
+      KY372590: 'c51ecbaf088fe923'
+      KY372594: '4439448f826a69f2'
+      KY372596: '4439448f826a69f2'
+      KY372598: 'ef62193753503f89'
+      KY372602: '34beaa171a1dd1e8'
+      KY372605: '4439448f826a69f2'
+      KY372611: 'e797fd3234b5b25f'
+      KY372612: '793fa0d8ce09618f'
+      KY372622: '4439448f826a69f2'
+      KY372626: '793fa0d8ce09618f'
+      KY372629: '49e9efaad1bd2f8d'
+      KY372630: 'a55a6feb2b4f380b'
+      KY372633: 'c62575a902e84b37'
+      KY372636: 'e4eff8c7ed82e698'
+      KY372642: '68ec8605488bb0c6'
+      KY372651: 'c51ecbaf088fe923'
+      KY372655: 'abe7e7d914b58402'
+      KY372659: '0976e1b6afc40125'
+      KY372663: '136dc1ef5a7aadcb'
+      KY372669: '47fed27cc06e7f62'
+      KY372671: 'c51ecbaf088fe923'
+      KY372673: 'a55a6feb2b4f380b'
+      KY372674: '49e9efaad1bd2f8d'
+      KY372678: 'e4eff8c7ed82e698'
+      KY372679: 'dd2ed6d745031b3b'
+      KY372694: 'bab1dd6820d080cb'
+      KY372701: '47fed27cc06e7f62'
+      KY372706: 'cca6c07d22fce690'
+      KY372716: '762fee490f3736ed'
+      KY372721: 'e4eff8c7ed82e698'
+      KY372723: '4439448f826a69f2'
+      KY372732: '6bdf787998b0aacd'
+      KY372736: '8393f4b93b7ee365'
+      KY372739: 'e4eff8c7ed82e698'
+      KY372744: '4439448f826a69f2'
+      KY372745: 'a55a6feb2b4f380b'
+      KY372749: '05de2a6b1d287207'
+      KY372753: '49e9efaad1bd2f8d'
+      KY372759: '44ec8efdbe002abd'
+      KY372764: 'b85c053c9784c1f9'
+      KY372774: 'abe7e7d914b58402'
+      KY372782: '7dc1556d4e8236eb'
+      KY372784: '4439448f826a69f2'
+      KY372790: 'f42ee004863bf127'
+      KY372791: '47fed27cc06e7f62'
+      KY372795: 'e4eff8c7ed82e698'
+      KY372796: '3b8b21c45f041dd5'
+      KY372800: '2ba24e2daee79557'
+      KY372810: '49e9efaad1bd2f8d'
+      KY372811: 'c62575a902e84b37'
+      KY372812: '61d3438d8ae3c02f'
+      KY372814: '4439448f826a69f2'
+      KY372820: '47fed27cc06e7f62'
+      KY372821: 'd6258db9deddfecd'
+      KY372824: 'a55a6feb2b4f380b'
+      KY372830: 'a55a6feb2b4f380b'
+      KY372831: 'cc11ebc227943c32'
+      KY372833: '43ca8219d36ace6a'
+      KY372844: '5808ea578d5ac1e3'
+      KY372846: '3a66a5f4db804b69'
+      KY372854: 'd761db5851b4e035'
+      KY372859: 'a55a6feb2b4f380b'
+      KY372860: '3b97b0146bd2d5cc'
+      KY372861: 'ddd7aeb116e9fe4b'
+      KY372865: '4439448f826a69f2'
+      KY372866: '217e129e4b8bff80'
+      KY372871: 'c51ecbaf088fe923'
+      KY372874: 'b3d198a8880171c2'
+      KY372883: 'd14cb9fc963b87c1'
+      KY372884: '47fed27cc06e7f62'
+      KY372885: 'b68cef83a4df1ffe'
+      KY372893: '49e9efaad1bd2f8d'
+      KY372894: '342b0adecfe964a9'
+      KY372896: '2b67c244239279df'
+      KY372899: '1653decac066c639'
+      KY372905: 'b3d198a8880171c2'
+      KY372906: '7fb6b465f2fa1e13'
+      KY372910: '011e29c25c0726fb'
+      KY372915: 'a55a6feb2b4f380b'
+      KY372920: '49e9efaad1bd2f8d'
+      KY372921: '49e9efaad1bd2f8d'
+      KY372925: 'fbe05c0d5c5c4a66'
+      KY372926: '4439448f826a69f2'
+      KY372930: 'bbe71017469f79cf'
+      KY372931: 'dc120bac1c24c38d'
+      KY372939: 'c51ecbaf088fe923'
+      KY372942: '762fee490f3736ed'
+      KY372946: '2ba24e2daee79557'
+      KY372948: '1992047bf264e4cd'
+      KY372949: '4439448f826a69f2'
+      KY372958: '09ba84801265bf89'
+      KY372973: 'abe7e7d914b58402'
+      KY372977: 'fa4a8cb889000291'
+      KY372979: 'c51ecbaf088fe923'
+      KY372987: '49e9efaad1bd2f8d'
+      KY372990: '49e9efaad1bd2f8d'
+      KY372992: '2b03780421e9d290'
+      KY372993: '49e9efaad1bd2f8d'
+      KY372994: '762fee490f3736ed'
+      KY372995: 'cdccd0ad23bb605a'
+      KY372998: '1264a819a232561b'
+      KY373004: '47fed27cc06e7f62'
+      KY373012: 'c51ecbaf088fe923'
+      KY373015: '325edef87f0e4421'
+      KY373030: '90b04b5dfeb9e34c'
+      KY373034: 'a55a6feb2b4f380b'
+      KY373039: '49e9efaad1bd2f8d'
+      KY373043: '49e9efaad1bd2f8d'
+      KY373045: '1fc3b5c1b3b74a14'
+      KY373051: 'c51ecbaf088fe923'
+      KY373062: '12feb1c484ffdbb1'
+      KY373063: '49e9efaad1bd2f8d'
+      KY373069: '1264a819a232561b'
+      KY373073: 'c92666e240fdf5d7'
+      KY373075: '2a0ef80e8cb73a63'
+      KY373077: '4a59ee68f5256283'
+      KY373078: 'abe7e7d914b58402'
+      KY373079: '3ce7e07755a10052'
+      KY373081: 'c51ecbaf088fe923'
+      KY373090: '1b55ccc9158a6cd5'
+      KY373093: '8393f4b93b7ee365'
+      KY373094: '47fed27cc06e7f62'
+      KY373101: '3dd612c7d60b4079'
+      KY373103: '1fc3b5c1b3b74a14'
+      KY373105: '15759248b864fc69'
+      KY373106: 'abe7e7d914b58402'
+      KY373107: 'c51ecbaf088fe923'
+      KY373108: 'c51ecbaf088fe923'
+      KY373111: '13ae76af783dcd56'
+      KY373114: 'c580e4c618b7e00c'
+      KY373146: '762fee490f3736ed'
+      KY373167: 'de434c16df6e37f0'
+      KY373180: '4439448f826a69f2'
+      KY373182: '286e9a8a5bdc240e'
+      LC121493: 'dada8eeedc55bfc6'
+      LC121494: '14532c331d1c0789'
+      LC121496: 'f08227ad92354674'
+      LC278435: 'ab5f59e5327eb255'
+      LC713217: '6de955c6e15c965e'
+      LC785410: '7c19933841da3627'
+      LC785411: '4c76d538eb7e074c'
+      LC785412: 'da9286ad6b1b3974'
+      LC785413: 'e8add286b044f385'
+      LC849218: '46760cfb2ae98b79'
+      LC878014: '49e9efaad1bd2f8d'
+      LC878015: '805c1654752099be'
+      LC878016: '9bb6cd48604a4fbf'
+      MG437482: '49e9efaad1bd2f8d'
+      MG437484: '49e9efaad1bd2f8d'
+      MG437485: 'c51ecbaf088fe923'
+      MG437487: '49e9efaad1bd2f8d'
+      MG437488: '49e9efaad1bd2f8d'
+      MG437490: '49e9efaad1bd2f8d'
+      MG437491: '49e9efaad1bd2f8d'
+      MG437495: '49e9efaad1bd2f8d'
+      MG813757: '6ac0bc0b18a54c8c'
+      MG813759: '6ac0bc0b18a54c8c'
+      MG813760: '36b3c69b020ece90'
+      MG813761: '6ac0bc0b18a54c8c'
+      MG813762: '6ac0bc0b18a54c8c'
+      MG813763: '48b9dc5521a530a2'
+      MG813766: 'b72929818fd337ba'
+      MG813767: 'b72929818fd337ba'
+      MG813768: '557e21b0257785b2'
+      MG866187: '498fc17592195095'
+      MG866188: 'db84ff42dbc236a7'
+      MG866189: '96dbaae2b8c23c40'
+      MG866190: '8990229278cf8098'
+      MH253682: 'a742223648014ccd'
+      MH253683: '23addd07944edbd3'
+      MH253684: '23addd07944edbd3'
+      MH253685: 'a742223648014ccd'
+      MH290544: '944e43ea2fada77f'
+      MH290556: 'a90aa6207f682e2c'
+      MH290557: '5d4b17326a36e486'
+      MK086943: '2fee785833096961'
+      MK086945: 'ced4921347f46f4e'
+      MK086947: 'b616b4feea02a843'
+      MK086948: 'd513723b18b52b18'
+      MK086951: '5b4f8926237fc0c5'
+      MK213581: '112d00546b20c8a8'
+      MK213582: '50daca4b64709309'
+      MK213583: '62a574ae23814709'
+      MN306287: '279d3b10a7237f36'
+      MN901456: 'b3d198a8880171c2'
+      MN901459: '059f04d2d0bab575'
+      MN901462: 'f1420c1d71a9e65a'
+      MN901465: '47fed27cc06e7f62'
+      MN901467: '49e9efaad1bd2f8d'
+      MT707297: '8a454a946ee9eb4f'
+      MT707298: '8a454a946ee9eb4f'
+      MT707299: '8a454a946ee9eb4f'
+      MT707300: '8a454a946ee9eb4f'
+      MT707315: '175ab7506d9002de'
+      MT707316: '4b6e8d81c132c02e'
+      MT707317: '4b6e8d81c132c02e'
+      MT707318: '4b6e8d81c132c02e'
+      MT707319: '4b6e8d81c132c02e'
+      MT707320: '4ecebf1a43796c5d'
+      MT707321: '4b6e8d81c132c02e'
+      MT707324: '7eba90098d196ee9'
+      MT707325: 'c120945fc8a26a5d'
+      MT707326: 'aa7fda7c7a79b831'
+      MW929771: '3d3f13bff3f387f9'
+      MW929772: '3d3f13bff3f387f9'
+      MW929773: '3d3f13bff3f387f9'
+      ON469576: 'bcbbe56802dc0426'
+      ON811688: '9c5c769e5dc7b9d2'
+      OP381504: '41671fa47faa675e'
+      OP381505: '41671fa47faa675e'
+      OP381506: 'abf46620c0771153'
+      OP381507: 'abf46620c0771153'
+      OP381508: '41671fa47faa675e'
+      OP381509: '41671fa47faa675e'
+      OP381510: '41671fa47faa675e'
+      OP381512: '41671fa47faa675e'
+      OP381513: '41671fa47faa675e'
+      OP381514: 'abf46620c0771153'
+      OP381515: 'abf46620c0771153'
+      OP381516: 'abf46620c0771153'
+      OP381517: '41671fa47faa675e'
+      OP381518: '43b495636229d1c4'
+      OP381519: '41671fa47faa675e'
+      OP381520: '41671fa47faa675e'
+      OP381521: 'b95079ebf33c51b3'
+      OP381522: 'abf46620c0771153'
+      OP381523: '41671fa47faa675e'
+      OP381524: 'abf46620c0771153'
+      OP381525: 'abf46620c0771153'
+      OP381526: 'abf46620c0771153'
+      OP381527: 'abf46620c0771153'
+      OP381529: 'abf46620c0771153'
+      OP381530: 'abf46620c0771153'
+      OP381531: '17d4f1ec80e825e4'
+      OP381532: '17d4f1ec80e825e4'
+      OP381533: '41671fa47faa675e'
+      OP381534: '41671fa47faa675e'
+      OP381535: '41671fa47faa675e'
+      OP381536: 'abf46620c0771153'
+      OP381537: 'abf46620c0771153'
+      OP381538: 'abf46620c0771153'
+      OP381539: '41671fa47faa675e'
+      OP381540: '7ac9304d16c94523'
+      OP381541: '17d4f1ec80e825e4'
+      OP381542: 'abf46620c0771153'
+      OP381543: 'abf46620c0771153'
+      OP381544: '41671fa47faa675e'
+      OP381545: '41671fa47faa675e'
+      OP381546: '41671fa47faa675e'
+      OP381547: '41671fa47faa675e'
+      OP381548: 'abf46620c0771153'
+      OP381549: 'abf46620c0771153'
+      OP381550: '43b495636229d1c4'
+      OP381551: 'abf46620c0771153'
+      OP381552: 'abf46620c0771153'
+      OP381553: 'e7a3d2779b89dda5'
+      OP381554: '41671fa47faa675e'
+      OP381555: 'abf46620c0771153'
+      OP381556: '43b495636229d1c4'
+      OP381557: '41671fa47faa675e'
+      OP381558: 'abf46620c0771153'
+      OP381559: 'abf46620c0771153'
+      OP381560: '41671fa47faa675e'
+      OP381562: '41671fa47faa675e'
+      OP381563: 'abf46620c0771153'
+      OP381564: 'abf46620c0771153'
+      OP381565: 'abf46620c0771153'
+      OP381566: 'abf46620c0771153'
+      OP381567: 'abf46620c0771153'
+      OP381568: 'abf46620c0771153'
+      OP381569: 'abf46620c0771153'
+      OP381570: 'abf46620c0771153'
+      OP381571: 'abf46620c0771153'
+      OP381572: 'abf46620c0771153'
+      OP381573: 'abf46620c0771153'
+      OP381575: '5defc7f5db7f426c'
+      OP381576: '5defc7f5db7f426c'
+      OP381577: '41671fa47faa675e'
+      OP381578: '41671fa47faa675e'
+      OP381579: 'abf46620c0771153'
+      OP381580: '41671fa47faa675e'
+      OP381581: '41671fa47faa675e'
+      OP381582: 'abf46620c0771153'
+      OP381583: 'abf46620c0771153'
+      OP381584: 'abf46620c0771153'
+      OP381585: '41671fa47faa675e'
+      OP381586: '41671fa47faa675e'
+      OP381587: '41671fa47faa675e'
+      OP381588: '41671fa47faa675e'
+      OP381590: '41671fa47faa675e'
+      OP381593: 'd406340474b43f87'
+      OP381594: '41671fa47faa675e'
+      OP381595: '41671fa47faa675e'
+      OP381596: '41671fa47faa675e'
+      OP381597: '41671fa47faa675e'
+      OP381598: '41671fa47faa675e'
+      OP391569: 'c545c179e5d370ea'
+      OP391570: 'c545c179e5d370ea'
+      OP391571: 'c545c179e5d370ea'
+      OP391572: 'c545c179e5d370ea'
+      OP391573: 'c545c179e5d370ea'
+      OP391574: 'c545c179e5d370ea'
+      OP391575: 'c545c179e5d370ea'
+      OP391576: 'c545c179e5d370ea'
+      OP391578: 'c545c179e5d370ea'
+      OP391579: 'c545c179e5d370ea'
+      OP391580: 'c545c179e5d370ea'
+      OP391582: 'c545c179e5d370ea'
+      OP391583: 'c545c179e5d370ea'
+      OP391585: 'c545c179e5d370ea'
+      OP391586: 'c545c179e5d370ea'
+      OP391587: 'c545c179e5d370ea'
+      OP391588: 'c545c179e5d370ea'
+      OP391589: 'c545c179e5d370ea'
+      OP391590: 'c545c179e5d370ea'
+      OP391591: 'c545c179e5d370ea'
+      OP391592: 'c545c179e5d370ea'
+      OP391593: 'c545c179e5d370ea'
+      OP425677: '1e39275b55423e9f'
+      OP425678: '1e39275b55423e9f'
+      OP425679: '1e39275b55423e9f'
+      OP425680: '1e39275b55423e9f'
+      OP425681: '1e39275b55423e9f'
+      OP425682: '1e39275b55423e9f'
+      OP425683: '1e39275b55423e9f'
+      OP425685: '1e39275b55423e9f'
+      OP425686: '1e39275b55423e9f'
+      OP425687: '1e39275b55423e9f'
+      OP425688: '1e39275b55423e9f'
+      OP425689: '1e39275b55423e9f'
+      OP425690: '1e39275b55423e9f'
+      OP425691: '1e39275b55423e9f'
+      OP654154: 'f6785232a5417c72'
+      OR825532: 'ab5f59e5327eb255'
+      OX465514: '514c430ec3427f51'
+      PP442574: '341be5d6974d7d6f'
+      PQ567076: '671e2ea818158051'
+      PQ567077: '747b31e8fb105b50'
+      PQ567078: '358994130a57b836'
+      PQ567079: '072392d2e3c4de79'
+      PQ567080: 'c1999d11afcaea84'
+      PQ567098: 'e1c6a39da27f5581'
+      PQ568023: '490de7d44d66e912'
+      PQ568024: '8fbf717bd260bf6e'
+      PQ568025: 'f1561289a2e14a64'
+      PQ568064: '12a846d6dac121ff'
+      PQ569629: 'b24a90fe91917b4d'
+      PQ569630: 'f19e2ef68e50d954'
+      PQ569631: '1e6a5f51f75a3b20'
+      PQ569954: '5b87fc147c0fed31'
+      PQ569955: 'febbfb00d945826f'
+      PQ569956: 'caa1f0d79b0936b3'
+      PQ583146: 'ab5f59e5327eb255'
+      PV056693: '9842a1da5419dc7d'
+      PV056695: '91a0866e6697932c'
+      PV056704: '1196d365252ebe7f'
+      PV056706: 'f8e790c009cb2617'
+      PV056712: '0eb2726fead8999e'
+      PV056714: 'bcf3428f8c1236a3'
+      PV056732: '248daf3f86256f5e'
+      PV779670: '691d81a139babf4b'
+      PV779671: '691d81a139babf4b'
+      PX244169: '0e9d958e6decb442'
+      PX244172: '4e1430c0be54f805'
+      PX244173: '0ee3314e3048e448'
+      PX244180: '843701778d72d058'
+      PX244181: 'ae698be606a010ed'
+      PX244183: 'b45367ce49019e07'
+      PX244184: '86c74b548c3730ef'
+      PX244188: 'dabb3d157e5fe3c0'
+      PX244196: '967ce2eee32cabd7'
+- id: phylogeny
+  assertions:
+  - id: selected_sequences
+    type: membership
+    value:
+    - HM474358
+    - HM474384
+    - HM474389
+    - HM474390
+    - HM474391
+    - KP692537
+    - KP692538
+    - KP692680
+    - KP771950
+    - KP771956
+    - KP771957
+    - KP771958
+    - KY372505
+    - KY372655
+    - KY372759
+    - KY372859
+    - KY372994
+    - KY373114
+    - KY373167
+    - MG866190
+    - PQ567080
+    - PV056732
+- id: database_coverage
+  assertions:
+  - id: candidate_taxa
+    type: membership
+    value: []
+  - id: toi_taxa
+    type: membership
+    value:
+    - Pseudococcus
+  - id: pmi_taxa
+    type: membership
+    value:
+    - Pseudococcus
+  toi:
+  - name: Pseudococcus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Pseudococcus aberrans
+      - Pseudococcus acaena
+      - Pseudococcus acirculus
+      - Pseudococcus africanus
+      - Pseudococcus agavis
+      - Pseudococcus agropyri
+      - Pseudococcus anestios
+      - Pseudococcus aneurae
+      - Pseudococcus angkorensis
+      - Pseudococcus annonae
+      - Pseudococcus antricolens
+      - Pseudococcus apomicrocirculus
+      - Pseudococcus araucariarum
+      - Pseudococcus aridorum
+      - Pseudococcus atalestus
+      - Pseudococcus bahiensis
+      - Pseudococcus baliteus
+      - Pseudococcus bambusicola
+      - Pseudococcus bambusifolii
+      - Pseudococcus barleriae
+      - Pseudococcus beardsleyi
+      - Pseudococcus bermudensis
+      - Pseudococcus bingervillensis
+      - Pseudococcus brevicornis
+      - Pseudococcus bryberia
+      - Pseudococcus calceolariae
+      - Pseudococcus calchaquii
+      - Pseudococcus callitris
+      - Pseudococcus caricus
+      - Pseudococcus carrietoniensis
+      - Pseudococcus carthami
+      - Pseudococcus casuarinae
+      - Pseudococcus chaquensis
+      - Pseudococcus chenopodii
+      - Pseudococcus cimensis
+      - Pseudococcus colliculosus
+      - Pseudococcus colombiensis
+      - Pseudococcus comstocki
+      - Pseudococcus concavocerarii
+      - Pseudococcus cribata
+      - Pseudococcus cryptus
+      - Pseudococcus cubaensis
+      - Pseudococcus cunninghamii
+      - Pseudococcus cuyoensis
+      - Pseudococcus darwiniensis
+      - Pseudococcus dasyliriae
+      - Pseudococcus daymananus
+      - Pseudococcus debilis
+      - Pseudococcus debregeasiae
+      - Pseudococcus defluiteri
+      - Pseudococcus dendrobiorum
+      - Pseudococcus dispar
+      - Pseudococcus diversus
+      - Pseudococcus dolichomelos
+      - Pseudococcus donrileyi
+      - Pseudococcus dorsospinosus
+      - Pseudococcus dumetum
+      - Pseudococcus dybasi
+      - Pseudococcus dysmicus
+      - Pseudococcus edgeworthiae
+      - Pseudococcus elisae
+      - Pseudococcus elscholtriae
+      - Pseudococcus epidendrus
+      - Pseudococcus eremophilae
+      - Pseudococcus eremosus
+      - Pseudococcus eriocerei
+      - Pseudococcus espeletiae
+      - Pseudococcus eucalypticus
+      - Pseudococcus farnesianae
+      - Pseudococcus floriger
+      - Pseudococcus formicarius
+      - Pseudococcus galapagoensis
+      - Pseudococcus gallicola
+      - Pseudococcus gilbertensis
+      - Pseudococcus goodeniae
+      - Pseudococcus gouxi
+      - Pseudococcus graminivorus
+      - Pseudococcus grayi
+      - Pseudococcus hirsutus
+      - Pseudococcus hypergaeus
+      - Pseudococcus importatus
+      - Pseudococcus insuetus
+      - Pseudococcus insularis
+      - Pseudococcus jackbeardsleyi
+      - Pseudococcus kawecki
+      - Pseudococcus kikuyuensis
+      - Pseudococcus kingii
+      - Pseudococcus kosztarabi
+      - Pseudococcus kozari
+      - Pseudococcus kraussi
+      - Pseudococcus kusaiensis
+      - Pseudococcus lanatii
+      - Pseudococcus landoi
+      - Pseudococcus lepelleyi
+      - Pseudococcus linearis
+      - Pseudococcus longipes
+      - Pseudococcus longisetosus
+      - Pseudococcus longispimus
+      - Pseudococcus longispinus
+      - Pseudococcus luciae
+      - Pseudococcus lycopodii
+      - Pseudococcus macrocirculus
+      - Pseudococcus macswaini
+      - Pseudococcus mandio
+      - Pseudococcus maritimus
+      - Pseudococcus markharveyi
+      - Pseudococcus marshallensis
+      - Pseudococcus masakensis
+      - Pseudococcus mascarensis
+      - Pseudococcus megasetosus
+      - Pseudococcus mendiculus
+      - Pseudococcus meridionalis
+      - Pseudococcus microadonidum
+      - Pseudococcus microcirculus
+      - Pseudococcus microosteoli
+      - Pseudococcus mintaroicus
+      - Pseudococcus moldavicus
+      - Pseudococcus montanus
+      - Pseudococcus monticola
+      - Pseudococcus moribensis
+      - Pseudococcus multiductus
+      - Pseudococcus multiporus
+      - Pseudococcus nakaharai
+      - Pseudococcus neomaritimus
+      - Pseudococcus neomicrocirculus
+      - Pseudococcus neuquenensis
+      - Pseudococcus nitidus
+      - Pseudococcus notabilis
+      - Pseudococcus nudus
+      - Pseudococcus occiduus
+      - Pseudococcus occultus
+      - Pseudococcus odermatti
+      - Pseudococcus ogasawarensis
+      - Pseudococcus onustus
+      - Pseudococcus orchidicola
+      - Pseudococcus pabulum
+      - Pseudococcus pahanensis
+      - Pseudococcus panamaensis
+      - Pseudococcus peregrinabundus
+      - Pseudococcus perforatus
+      - Pseudococcus pertusus
+      - Pseudococcus pipturicolus
+      - Pseudococcus pithecellobii
+      - Pseudococcus pittospori
+      - Pseudococcus portiludovici
+      - Pseudococcus prunicolus
+      - Pseudococcus pseudobscurus
+      - Pseudococcus pseudocitriculus
+      - Pseudococcus pseudofilamentosus
+      - Pseudococcus pseudoperrisii
+      - Pseudococcus puertoricensis
+      - Pseudococcus queenslandicus
+      - Pseudococcus quinyambiensis
+      - Pseudococcus rosangelae
+      - Pseudococcus saccharicola
+      - Pseudococcus salazari
+      - Pseudococcus savescui
+      - Pseudococcus scatoterrae
+      - Pseudococcus schusteri
+      - Pseudococcus scrobicularum
+      - Pseudococcus similans
+      - Pseudococcus simplex
+      - Pseudococcus sociabilis
+      - Pseudococcus solani
+      - Pseudococcus solenedyos
+      - Pseudococcus solomonensis
+      - Pseudococcus sorghiellus
+      - Pseudococcus spanocera
+      - Pseudococcus sparsus
+      - Pseudococcus spathoglottidis
+      - Pseudococcus swezeyi
+      - Pseudococcus symoni
+      - Pseudococcus syringae
+      - Pseudococcus syzygii
+      - Pseudococcus theobromae
+      - Pseudococcus tirolensis
+      - Pseudococcus transylvanicus
+      - Pseudococcus trukensis
+      - Pseudococcus tympanistus
+      - Pseudococcus variabilis
+      - Pseudococcus viburni
+      - Pseudococcus wachendorfiae
+      - Pseudococcus xanthorrhoeae
+      - Pseudococcus yapensis
+      - Pseudococcus zahradniki
+      - Pseudococcus zamiae
+      - Pseudococcus zelandicus
+    - id: country_species
+      type: membership
+      value:
+      - Pseudococcus anestios
+      - Pseudococcus aneurae
+      - Pseudococcus araucariarum
+      - Pseudococcus atalestus
+      - Pseudococcus calceolariae
+      - Pseudococcus callitris
+      - Pseudococcus carrietoniensis
+      - Pseudococcus casuarinae
+      - Pseudococcus chenopodii
+      - Pseudococcus cunninghamii
+      - Pseudococcus darwiniensis
+      - Pseudococcus dendrobiorum
+      - Pseudococcus epidendrus
+      - Pseudococcus eremophilae
+      - Pseudococcus eucalypticus
+      - Pseudococcus goodeniae
+      - Pseudococcus hypergaeus
+      - Pseudococcus longispinus
+      - Pseudococcus markharveyi
+      - Pseudococcus mintaroicus
+      - Pseudococcus onustus
+      - Pseudococcus queenslandicus
+      - Pseudococcus quinyambiensis
+      - Pseudococcus symoni
+      - Pseudococcus viburni
+      - Pseudococcus xanthorrhoeae
+      - Pseudococcus zamiae
+  pmi:
+  - name: Pseudococcus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Pseudococcus aberrans
+      - Pseudococcus acaena
+      - Pseudococcus acirculus
+      - Pseudococcus africanus
+      - Pseudococcus agavis
+      - Pseudococcus agropyri
+      - Pseudococcus anestios
+      - Pseudococcus aneurae
+      - Pseudococcus angkorensis
+      - Pseudococcus annonae
+      - Pseudococcus antricolens
+      - Pseudococcus apomicrocirculus
+      - Pseudococcus araucariarum
+      - Pseudococcus aridorum
+      - Pseudococcus atalestus
+      - Pseudococcus bahiensis
+      - Pseudococcus baliteus
+      - Pseudococcus bambusicola
+      - Pseudococcus bambusifolii
+      - Pseudococcus barleriae
+      - Pseudococcus beardsleyi
+      - Pseudococcus bermudensis
+      - Pseudococcus bingervillensis
+      - Pseudococcus brevicornis
+      - Pseudococcus bryberia
+      - Pseudococcus calceolariae
+      - Pseudococcus calchaquii
+      - Pseudococcus callitris
+      - Pseudococcus caricus
+      - Pseudococcus carrietoniensis
+      - Pseudococcus carthami
+      - Pseudococcus casuarinae
+      - Pseudococcus chaquensis
+      - Pseudococcus chenopodii
+      - Pseudococcus cimensis
+      - Pseudococcus colliculosus
+      - Pseudococcus colombiensis
+      - Pseudococcus comstocki
+      - Pseudococcus concavocerarii
+      - Pseudococcus cribata
+      - Pseudococcus cryptus
+      - Pseudococcus cubaensis
+      - Pseudococcus cunninghamii
+      - Pseudococcus cuyoensis
+      - Pseudococcus darwiniensis
+      - Pseudococcus dasyliriae
+      - Pseudococcus daymananus
+      - Pseudococcus debilis
+      - Pseudococcus debregeasiae
+      - Pseudococcus defluiteri
+      - Pseudococcus dendrobiorum
+      - Pseudococcus dispar
+      - Pseudococcus diversus
+      - Pseudococcus dolichomelos
+      - Pseudococcus donrileyi
+      - Pseudococcus dorsospinosus
+      - Pseudococcus dumetum
+      - Pseudococcus dybasi
+      - Pseudococcus dysmicus
+      - Pseudococcus edgeworthiae
+      - Pseudococcus elisae
+      - Pseudococcus elscholtriae
+      - Pseudococcus epidendrus
+      - Pseudococcus eremophilae
+      - Pseudococcus eremosus
+      - Pseudococcus eriocerei
+      - Pseudococcus espeletiae
+      - Pseudococcus eucalypticus
+      - Pseudococcus farnesianae
+      - Pseudococcus floriger
+      - Pseudococcus formicarius
+      - Pseudococcus galapagoensis
+      - Pseudococcus gallicola
+      - Pseudococcus gilbertensis
+      - Pseudococcus goodeniae
+      - Pseudococcus gouxi
+      - Pseudococcus graminivorus
+      - Pseudococcus grayi
+      - Pseudococcus hirsutus
+      - Pseudococcus hypergaeus
+      - Pseudococcus importatus
+      - Pseudococcus insuetus
+      - Pseudococcus insularis
+      - Pseudococcus jackbeardsleyi
+      - Pseudococcus kawecki
+      - Pseudococcus kikuyuensis
+      - Pseudococcus kingii
+      - Pseudococcus kosztarabi
+      - Pseudococcus kozari
+      - Pseudococcus kraussi
+      - Pseudococcus kusaiensis
+      - Pseudococcus lanatii
+      - Pseudococcus landoi
+      - Pseudococcus lepelleyi
+      - Pseudococcus linearis
+      - Pseudococcus longipes
+      - Pseudococcus longisetosus
+      - Pseudococcus longispimus
+      - Pseudococcus longispinus
+      - Pseudococcus luciae
+      - Pseudococcus lycopodii
+      - Pseudococcus macrocirculus
+      - Pseudococcus macswaini
+      - Pseudococcus mandio
+      - Pseudococcus maritimus
+      - Pseudococcus markharveyi
+      - Pseudococcus marshallensis
+      - Pseudococcus masakensis
+      - Pseudococcus mascarensis
+      - Pseudococcus megasetosus
+      - Pseudococcus mendiculus
+      - Pseudococcus meridionalis
+      - Pseudococcus microadonidum
+      - Pseudococcus microcirculus
+      - Pseudococcus microosteoli
+      - Pseudococcus mintaroicus
+      - Pseudococcus moldavicus
+      - Pseudococcus montanus
+      - Pseudococcus monticola
+      - Pseudococcus moribensis
+      - Pseudococcus multiductus
+      - Pseudococcus multiporus
+      - Pseudococcus nakaharai
+      - Pseudococcus neomaritimus
+      - Pseudococcus neomicrocirculus
+      - Pseudococcus neuquenensis
+      - Pseudococcus nitidus
+      - Pseudococcus notabilis
+      - Pseudococcus nudus
+      - Pseudococcus occiduus
+      - Pseudococcus occultus
+      - Pseudococcus odermatti
+      - Pseudococcus ogasawarensis
+      - Pseudococcus onustus
+      - Pseudococcus orchidicola
+      - Pseudococcus pabulum
+      - Pseudococcus pahanensis
+      - Pseudococcus panamaensis
+      - Pseudococcus peregrinabundus
+      - Pseudococcus perforatus
+      - Pseudococcus pertusus
+      - Pseudococcus pipturicolus
+      - Pseudococcus pithecellobii
+      - Pseudococcus pittospori
+      - Pseudococcus portiludovici
+      - Pseudococcus prunicolus
+      - Pseudococcus pseudobscurus
+      - Pseudococcus pseudocitriculus
+      - Pseudococcus pseudofilamentosus
+      - Pseudococcus pseudoperrisii
+      - Pseudococcus puertoricensis
+      - Pseudococcus queenslandicus
+      - Pseudococcus quinyambiensis
+      - Pseudococcus rosangelae
+      - Pseudococcus saccharicola
+      - Pseudococcus salazari
+      - Pseudococcus savescui
+      - Pseudococcus scatoterrae
+      - Pseudococcus schusteri
+      - Pseudococcus scrobicularum
+      - Pseudococcus similans
+      - Pseudococcus simplex
+      - Pseudococcus sociabilis
+      - Pseudococcus solani
+      - Pseudococcus solenedyos
+      - Pseudococcus solomonensis
+      - Pseudococcus sorghiellus
+      - Pseudococcus spanocera
+      - Pseudococcus sparsus
+      - Pseudococcus spathoglottidis
+      - Pseudococcus swezeyi
+      - Pseudococcus symoni
+      - Pseudococcus syringae
+      - Pseudococcus syzygii
+      - Pseudococcus theobromae
+      - Pseudococcus tirolensis
+      - Pseudococcus transylvanicus
+      - Pseudococcus trukensis
+      - Pseudococcus tympanistus
+      - Pseudococcus variabilis
+      - Pseudococcus viburni
+      - Pseudococcus wachendorfiae
+      - Pseudococcus xanthorrhoeae
+      - Pseudococcus yapensis
+      - Pseudococcus zahradniki
+      - Pseudococcus zamiae
+      - Pseudococcus zelandicus
+    - id: country_species
+      type: membership
+      value:
+      - Pseudococcus anestios
+      - Pseudococcus aneurae
+      - Pseudococcus araucariarum
+      - Pseudococcus atalestus
+      - Pseudococcus calceolariae
+      - Pseudococcus callitris
+      - Pseudococcus carrietoniensis
+      - Pseudococcus casuarinae
+      - Pseudococcus chenopodii
+      - Pseudococcus cunninghamii
+      - Pseudococcus darwiniensis
+      - Pseudococcus dendrobiorum
+      - Pseudococcus epidendrus
+      - Pseudococcus eremophilae
+      - Pseudococcus eucalypticus
+      - Pseudococcus goodeniae
+      - Pseudococcus hypergaeus
+      - Pseudococcus longispinus
+      - Pseudococcus markharveyi
+      - Pseudococcus mintaroicus
+      - Pseudococcus onustus
+      - Pseudococcus queenslandicus
+      - Pseudococcus quinyambiensis
+      - Pseudococcus symoni
+      - Pseudococcus viburni
+      - Pseudococcus xanthorrhoeae
+      - Pseudococcus zamiae
+- id: coverage_flags
+  toi:
+  - name: Pseudococcus
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+  pmi:
+  - name: Pseudococcus
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+- id: maps
+  assertions:
+  - id: filenames
+    type: membership
+    value:
+    - map_Pseudococcus.png

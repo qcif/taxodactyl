@@ -131,7 +131,7 @@ def get_assertion_errors(assertions: Path, trace_file: Path) -> list:
     """Route core sidecar failures by sample and producer; retain legacy readers."""
     with open(assertions, encoding="utf-8") as stream:
         evidence = json.load(stream)
-    if evidence.get("schema_version") != 1 or not isinstance(evidence.get("rows"), list):
+    if evidence.get("schema_version") != 2 or not isinstance(evidence.get("rows"), list):
         raise ValueError("Invalid core assertion evidence")
     producers = {
         "H": "EXTRACT_HITS", "C": "EXTRACT_CANDIDATES",

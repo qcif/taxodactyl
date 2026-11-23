@@ -13,4 +13,4 @@ ro-crate-metadata.json
 # Local task worktrees and generated assertion review artifacts
 .worktrees/
 .nf-test*/
-test/core/.backups/
+test/core/expected/.backups/

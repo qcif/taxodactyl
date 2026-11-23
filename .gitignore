@@ -20,6 +20,6 @@ __pycache__/
 *.ignore
 
 # Local core review backups and isolated task worktrees
-test/core/.backups/
+test/core/expected/.backups/
 .worktrees/
 .nf-test*

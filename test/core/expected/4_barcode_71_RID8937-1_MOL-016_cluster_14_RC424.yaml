@@ -1,0 +1,82 @@
+sample_id: barcode_71_RID8937-1_MOL-016_cluster_14_RC424
+date: '2026-11-23T06:31:55.109129714Z'
+provenance:
+  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
+  source_test: test/core/taxodactyl.workflow.nf.test
+  evaluated_at: '2026-11-23T06:31:55.109129714Z'
+  accepted_at: '2026-11-23'
+  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+components:
+- id: blast_hits
+  assertions:
+  - id: accessions
+    type: membership
+    value:
+    - XM_070154973
+    - XM_070160998
+  - id: sequence_fingerprints
+    type: fingerprints
+    value:
+      XM_070154973: '08769af36a0c2082'
+      XM_070160998: 'c723c383f68a22b2'
+- id: phylogeny
+  assertions:
+  - id: selected_sequences
+    type: membership
+    value: []
+- id: database_coverage
+  assertions:
+  - id: candidate_taxa
+    type: membership
+    value: []
+  - id: toi_taxa
+    type: membership
+    value:
+    - Tospovirus
+  - id: pmi_taxa
+    type: membership
+    value:
+    - Tospovirus
+  toi:
+  - name: Tospovirus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value: []
+    - id: country_state
+      type: state
+      value: NA
+  pmi:
+  - name: Tospovirus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value: []
+    - id: country_state
+      type: state
+      value: NA
+- id: coverage_flags
+  toi:
+  - name: Tospovirus
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: NA
+  pmi:
+  - name: Tospovirus
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: NA
+- id: maps
+  assertions:
+  - id: filenames
+    type: membership
+    value:
+    - map_Tospovirus.png

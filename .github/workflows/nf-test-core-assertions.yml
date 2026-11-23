@@ -1,0 +1,350 @@
+# Core assertion test (task 12): runs test/core/taxodactyl.assertions.nf.test
+# with structured evidence, per-sample expectations and a review page.
+# Runs alongside the original snapshot workflow (nf-test.yml) while both are
+# compared; see test/core/README.md.
+name: nf-test-core-assertions
+
+on:
+    # Weekly, offset from nf-test.yml (Sunday 00:00) so the two full core runs
+    # do not compete for the single self-hosted runner.
+    schedule:
+      - cron: '0 12 * * 0'
+    # To also run on pull requests to main, add:
+    # pull_request:
+    #   branches:
+    #     - main
+    # Manual: Actions > nf-test-core-assertions > Run workflow, then pick the
+    # branch to test (e.g. a task branch once pushed).
+    workflow_dispatch:
+    # Update here to enable trigger on push of selected branch
+    # push:
+    #   branches:
+    #     - nf-test-sh-runner
+
+# Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NXF_ANSI_LOG: false
+  NFT_VER: "0.9.5"
+  MOCK_BLAST: false
+
+jobs:
+  nf-test:
+    name: core_assertions_test
+    runs-on: ${{ matrix.runner }}
+    environment: testing
+    # Can extend strategy in the future for different versions + nf-test ver
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.12]
+        nextflow-version: [25.04.6]
+        # Currently only running on self-hosted (sh) runner. 
+        # Add "ubuntu-24.04" here to run on github-hosted runner.
+        runner: [self-hosted]
+
+    steps:
+      # Enable creation of containers as an unprivileged user
+      - name: Enable unprivileged user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
+      - uses: actions/checkout@v7
+
+      # Ensure container with latest commit to main is pulled
+      - name: Force pull latest Docker image
+        run: docker pull neoformit/taxodactyl:main
+        continue-on-error: true
+
+      # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
+      # Version installed on testing VM, 25.04.6, rather than latest-everything
+      # (later versions use stricter syntax parsing)
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: ${{ matrix.nextflow-version }}
+
+      # test/core/nextflow.config runs with profile "singularity", which
+      # isn't preinstalled on ubuntu-latest runners
+      - name: Set up Singularity
+        uses: eWaterCycle/setup-singularity@v7
+        with:
+          singularity-version: 3.8.7
+
+      # nf-test is the test runner itself; pin NFT_VER above if reproducibility
+      # across CI runs matters more than always testing the latest release
+      - name: Install nf-test
+        run: |
+          wget -qO- https://get.nf-test.com | bash -s "$NFT_VER"
+          sudo mv nf-test /usr/local/bin/
+
+      # core test scenario runs with real blast against frozen versions of
+      # taxonkit and a small subset blast database  
+      - name: Download taxonkit
+        run: |
+          wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/taxdump/2026-05-08.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/taxdump
+          unzip -q 2026-05-08.zip -d $GITHUB_WORKSPACE/test/core/refdata/taxdump
+          tree $GITHUB_WORKSPACE/test/core/refdata
+
+      - name: Download subset blastdb
+        run: |
+          wget -q https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/blastdb/2026-07-29.zip
+          mkdir -p $GITHUB_WORKSPACE/test/core/refdata/blastdb
+          unzip -q 2026-07-29.zip -d $GITHUB_WORKSPACE/test/core/refdata/blastdb
+          tree $GITHUB_WORKSPACE/test/core/refdata/
+
+      # The checked-in root nf-test.config points at placeholder/other scenario
+      # and has a placeholder workDir - overwrite it so nf-test resolves to core 
+      # and writes its working files under a real, runner-local path
+      - name: Point nf-test.config at core test scenario
+        run: |
+          cat > nf-test.config <<CONFIG
+          config {
+              workDir "$RUNNER_TEMP/nf-test"
+              testsDir "test/core"
+              configFile "test/core/nextflow.config"
+              profile "singularity"
+          }
+          CONFIG
+
+      # test/core/nextflow.config ships with CUSTOMISE placeholders for
+      # values that depend on the runner (paths) or org-level infra (databases).
+      # BLASTDB_PATH/TAXDB_PATH must be set as repository/environment variables
+      # pointing at reference data reachable from this runner - mock_blast still
+      # calls BLAST_BLASTDBCMD/EXTRACT_TAXONOMY against a real blastdb + taxdb.
+      # Turns on mock blast if set in env variable
+      - name: Resolve core scenario CUSTOMISE placeholders
+        run: |
+          # Runner-local scratch dirs for temp files, Singularity image cache
+          # and nf-test workDir where log files will be saved
+          mkdir -p \
+            "$RUNNER_TEMP/taxodactyl" \
+            "$RUNNER_TEMP/singularity" \
+            "$RUNNER_TEMP/nf-test"
+          # Fill in each CUSTOMISE placeholder with a real value/path
+          # and toggle mock_blast per env variable
+          sed -i \
+            -e "s|params.mock_blast = false|params.mock_blast = $MOCK_BLAST|" \
+            -e "s|params.blastdb = CUSTOMISE|params.blastdb = \"$GITHUB_WORKSPACE/test/core/refdata/blastdb/2026-07-29/subset_core_nt\"|" \
+            -e "s|params.taxdb = CUSTOMISE|params.taxdb = \"$GITHUB_WORKSPACE/test/core/refdata/taxdump/2026-05-08\"|" \
+            -e "s|params.temp_root_dir = CUSTOMISE|params.temp_root_dir = \"$RUNNER_TEMP/taxodactyl\"|" \
+            -e "s|cacheDir = CUSTOMISE|cacheDir = \"$RUNNER_TEMP/singularity\"|" \
+            -e "s|env.NCBI_API_KEY = CUSTOMISE.*|env.NCBI_API_KEY = \"${{ secrets.NCBI_API_KEY }}\"|" \
+            -e "s|env.USER_EMAIL = CUSTOMISE.*|env.USER_EMAIL = \"${{ secrets.NCBI_USER_EMAIL }}\"|" \
+            test/core/nextflow.config
+          # Print the resolved config so the run log shows exactly what executed
+          cat test/core/nextflow.config
+
+      # Run the core test file explicitly rather than a bare `nf-test test`
+      # so this job doesn't silently pick up whatever nf-test.config last pointed to
+      # print both standard output and errors to file and console 
+      - name: Run core nf-test
+        id: nf-test
+        run: |
+          # Core assertions read test/core/{schema.yaml,expected/} and the Selenium
+          # fixtures from the checkout, and write structured evidence for review.
+          export CORE_REPO_ROOT="$GITHUB_WORKSPACE"
+          export CORE_ASSERTIONS_OUTPUT="$RUNNER_TEMP/nf-test/nf-test-assertions.json"
+          rm -f "$CORE_ASSERTIONS_OUTPUT" "$RUNNER_TEMP/nf-test/nf-test.xml"
+          set +e
+          nf-test test test/core/taxodactyl.assertions.nf.test --ci \
+            --junitxml "$RUNNER_TEMP/nf-test/nf-test.xml" \
+            > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
+            2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
+          status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          # A failed core test fails this step; later review steps still run.
+          exit "$status"
+
+      # Test dir ends in unknown hash; set as env var here for later steps
+      - name: Set test dir as env var
+        if: always ()
+        run: |
+          dirs=($RUNNER_TEMP/nf-test/tests/*)
+          test_dir="${dirs[0]}"
+          echo "TEST_DIR=$test_dir" >> $GITHUB_ENV
+          echo "Saved test dir ending in hash as env var for future steps."
+          echo "TEST_DIR=$test_dir"
+
+      # Print trace.csv, temp file structure and command.err files
+      - name: Debug failed nf-test
+        # Only runs if nf-test step fails or if in debug mode
+        if: always() && (steps.nf-test.outcome == 'failure' || runner.debug == '1')
+        run: |
+          echo "##### trace.csv:"
+          cat $TEST_DIR/meta/trace.csv
+          echo "##### tree -a $RUNNER_TEMP/nf-test/tests/:"
+          tree -a $RUNNER_TEMP/nf-test/tests/
+          find $RUNNER_TEMP/nf-test/tests/ \
+            -type f -name ".command.err" \
+            -exec sh -c 'echo "##### $1"; cat "$1"' _ {} \;
+
+      - name: Set up Python
+        if: always()
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      # Review page (full HTML), a self-contained bundle to download, and a short
+      # summary on the Actions run page. Render errors fail this step; a failed
+      # core test stays failed in the step above.
+      - name: Render core assertion review
+        if: always()
+        run: |
+          python -m pip install --quiet pyyaml
+          set +e
+          python test/core/testkit.py render \
+            --junit "$RUNNER_TEMP/nf-test/nf-test.xml" \
+            --assertions "$RUNNER_TEMP/nf-test/nf-test-assertions.json" \
+            --output "$RUNNER_TEMP/nf-test/nf-test-review.html" \
+            --summary "$RUNNER_TEMP/nf-test/nf-test-summary.md" \
+            --bundle-dir "$RUNNER_TEMP/nf-test/nf-test-review" \
+            --include "$RUNNER_TEMP/nf-test/nf-test_results.txt" "$RUNNER_TEMP/nf-test/nf-test_errors.txt"
+          status=$?
+          if [[ -f "$RUNNER_TEMP/nf-test/nf-test-summary.md" ]]; then
+            cat "$RUNNER_TEMP/nf-test/nf-test-summary.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Core nf-test: review could not be rendered (exit $status)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
+
+      # Download this artifact and open nf-test-review.html; links point to
+      # copies of the files behind each failure (ordinary files, no symlinks).
+      - name: Upload core assertion review
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nf-test-review-${{ matrix.runner }}
+          path: ${{ runner.temp }}/nf-test/nf-test-review/
+
+      # Copies work directories for process/samples with failed/aborted nf-test, 
+      # diff flags or diff snapshots (may be large number!) to single dir with
+      # human readable PROCESS/SAMPLE file structure.
+      - name: Copy error workdirs
+        id: copy-workdirs
+        # Always run, nothing will happen if 
+        if: always()
+        run: |
+          # On the self-hosted runner, the whole work dir is copied and saved, 
+          # so only links are required in the collected errors
+          if [[ "$RUNNER_ENVIRONMENT" == "self-hosted" ]]; then
+            MODE="link"
+          else
+            MODE="copy"
+          fi
+          mkdir -p $RUNNER_TEMP/nf-test/collected_errors
+
+          python $GITHUB_WORKSPACE/bin/collect_artifacts.py \
+              $TEST_DIR/meta/trace.csv \
+              --outdir=$RUNNER_TEMP/nf-test/collected_errors \
+              --assertions=$RUNNER_TEMP/nf-test/nf-test-assertions.json \
+              --mode=$MODE
+
+      - name: Debug copy error workdirs
+        # Only runs if copy-workdirs step fails or runner is in debug mode
+        if: always() && (steps.copy-workdirs.outcome == 'failure' || runner.debug == '1')
+        run: |
+          echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
+          tree -a $RUNNER_TEMP/nf-test/collected_errors/
+
+      # Selenium pytest test_reports.py requires all reports in a dir
+      - name: Soft link reports for pytest
+        # Always run, nothing will happen if there are no reports in output
+        if: always()
+        run: |
+          src_dir=$TEST_DIR/output
+          echo "Dir to be searched $src_dir"
+
+          dest_dir=$TEST_DIR/output/reports
+          echo "Reports will be soft linked to dir $dest_dir"
+
+          mkdir -p $dest_dir
+
+          # Find all "report*.html" files and link them into dest_dir
+          find "$src_dir" -type f -name "report*.html" | while IFS= read -r file; do
+              base_name=$(basename "$file")
+              dest_path="$dest_dir/$base_name"
+
+              # Skip if link or file already exists
+              if [[ -e "$dest_path" ]]; then
+                  echo "Skipping: $dest_path already exists."
+                  continue
+              fi
+
+              ln -sr "$file" "$dest_path"
+              echo "Linked: $file -> $dest_path"
+          done
+
+          echo "#### tree $TEST_DIR/output/reports"
+          tree $TEST_DIR/output/reports
+
+      # Install pytest and dependencies for running selenium
+      - name: Install and run pytest
+        if: always()
+        run: |
+          set +e
+          
+          cd test/selenium
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+          reports_dir=$TEST_DIR/output/reports
+
+          # Check if the folder contains at least one report
+          if [ -n "$(find "$reports_dir" -mindepth 1 -print -quit)" ]; then
+            echo "Running pytest"
+            pytest test_reports.py -v --dir "$reports_dir"
+            pytest_status=$?
+            echo "Running ./testkit.py render"
+            ./testkit.py render
+
+            # Copy the review.html to the test dir for sh runner inspection
+            cp review.html $RUNNER_TEMP/nf-test/
+
+            # Always return pytest exit status as the step status
+            exit "$pytest_status"
+          else
+              echo "Reports folder is empty."
+              exit 1
+          fi
+
+      - name: Upload review.html
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: review-${{ matrix.runner }}.html
+          path: ${{ github.workspace }}/test/selenium/review.html
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v7
+        if: always() && runner.environment == 'github-hosted'
+        with:
+          name: reports
+          path: ${{ env.TEST_DIR }}/output/reports
+
+      # Copies entire work directory including test outputs to a dedicated
+      # location (/var/runner/) on the self-hosted runner VM
+      - name: Save run files on self-hosted runner
+      # Only runs on self-hosted runner
+        if: always() && runner.environment == 'self-hosted'
+        run: |
+          # Run files will be saved in file with timestamp
+          timestamp=$(date "+%F_%H%M%S")
+
+          mkdir -p "/var/runner/$timestamp"
+
+          cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
+
+          # Lossless archive for copying the run elsewhere: tar keeps symlinks
+          # and file names that differ only in case (zip/artifact copies may not).
+          tar -czf "/var/runner/$timestamp/nf-test-run.tar.gz" -C "$RUNNER_TEMP" nf-test
+
+          echo "Location of files on self-hosted runner:"
+          echo "/var/runner/$timestamp/"

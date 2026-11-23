@@ -1,0 +1,1913 @@
+sample_id: Scenario_04
+date: '2026-11-23T06:31:55.109129714Z'
+provenance:
+  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
+  source_test: test/core/taxodactyl.workflow.nf.test
+  evaluated_at: '2026-11-23T06:31:55.109129714Z'
+  accepted_at: '2026-11-23'
+  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+components:
+- id: blast_hits
+  assertions:
+  - id: accessions
+    type: membership
+    value:
+    - AB600898
+    - AB600902
+    - FJ026623
+    - FJ026624
+    - FJ026625
+    - FJ026627
+    - FJ026628
+    - FJ026629
+    - FJ026630
+    - FJ026632
+    - FJ026633
+    - FJ026638
+    - FJ026639
+    - FJ026641
+    - FJ026655
+    - FJ026659
+    - FJ026660
+    - FJ026671
+    - FJ499766
+    - GQ374677
+    - GU675352
+    - GU675359
+    - GU975842
+    - HM365032
+    - HM573973
+    - HM573974
+    - HM573976
+    - HM573979
+    - HM882386
+    - HQ926740
+    - HQ926809
+    - HQ930271
+    - HQ930307
+    - JN292346
+    - JQ574565
+    - JQ756569
+    - KF724500
+    - KF724501
+    - KF778392
+    - KF778394
+    - KF850113
+    - KF850126
+    - KF850129
+    - KJ088514
+    - KJ208837
+    - KJ444660
+    - KM555544
+    - KM556147
+    - KM557211
+    - KM557775
+    - KM558635
+    - KM559580
+    - KM560391
+    - KM560407
+    - KM560460
+    - KM560466
+    - KM560558
+    - KM561068
+    - KM561410
+    - KM561759
+    - KM562102
+    - KM562491
+    - KM563206
+    - KM563236
+    - KM563523
+    - KM565164
+    - KM565464
+    - KM565788
+    - KM565922
+    - KM566850
+    - KM567127
+    - KM567248
+    - KM569385
+    - KM825924
+    - KM834912
+    - KM997383
+    - KM997585
+    - KR365970
+    - KR366010
+    - KR366894
+    - KR368755
+    - KR368828
+    - KR369184
+    - KR370726
+    - KR370861
+    - KR371544
+    - KR371879
+    - KR371977
+    - KR373422
+    - KR374087
+    - KR404347
+    - KR404599
+    - KR407823
+    - KR413283
+    - KR414911
+    - KR415788
+    - KR419026
+    - KR421013
+    - KR782918
+    - KR782998
+    - KR783191
+    - KR783301
+    - KR783774
+    - KR784194
+    - KR784912
+    - KR784995
+    - KR785441
+    - KR785606
+    - KR785763
+    - KR786079
+    - KR786918
+    - KR786933
+    - KR787047
+    - KR787489
+    - KR787801
+    - KR790997
+    - KR792237
+    - KR792534
+    - KR792764
+    - KR792877
+    - KR792940
+    - KR793581
+    - KR794229
+    - KR795636
+    - KR795727
+    - KR795884
+    - KR796302
+    - KR796618
+    - KR798017
+    - KR799178
+    - KR802671
+    - KR804618
+    - KR805553
+    - KR805667
+    - KR806086
+    - KR808465
+    - KR876758
+    - KR879168
+    - KR879605
+    - KR884993
+    - KR886957
+    - KR888663
+    - KR889253
+    - KR891446
+    - KR891946
+    - KR894395
+    - KR898701
+    - KR898894
+    - KR899338
+    - KR902174
+    - KR926065
+    - KR931137
+    - KT599308
+    - KT604127
+    - KT604446
+    - KT617917
+    - KT618687
+    - KT621096
+    - KU496853
+    - KX053200
+    - KX053202
+    - KX053444
+    - KX053458
+    - KX535016
+    - KX535120
+    - KX535145
+    - KY834054
+    - KY834357
+    - KY837217
+    - KY838191
+    - KY838269
+    - KY841370
+    - KY841382
+    - KY844518
+    - KY844651
+    - KY846197
+    - KY847127
+    - KY847187
+    - MF776883
+    - MF900097
+    - MF900355
+    - MF900527
+    - MF905679
+    - MF906783
+    - MF929198
+    - MF929666
+    - MF930056
+    - MF931414
+    - MF935089
+    - MF937214
+    - MF938035
+    - MF938672
+    - MF938911
+    - MF956216
+    - MF956219
+    - MF956234
+    - MF956236
+    - MF956238
+    - MF956249
+    - MF956304
+    - MF956313
+    - MF956353
+    - MF956354
+    - MF956372
+    - MF956397
+    - MG335381
+    - MG335609
+    - MG335742
+    - MG336960
+    - MG337459
+    - MG337772
+    - MG338934
+    - MG340408
+    - MG340925
+    - MG341736
+    - MG342026
+    - MG342774
+    - MG342809
+    - MG343641
+    - MG344385
+    - MG373925
+    - MG374840
+    - MG376148
+    - MG376356
+    - MG377356
+    - MG379140
+    - MG381004
+    - MG381541
+    - MG383140
+    - MG441703
+    - MG444508
+    - MG448510
+    - MG479790
+    - MG480514
+    - MG482431
+    - MG483470
+    - MG483756
+    - MG484443
+    - MG485494
+    - MG487734
+    - MG497346
+    - MG498222
+    - MG500276
+    - MG501935
+    - MG502477
+    - MG502709
+    - MG503774
+    - MG504688
+    - MG506836
+    - MG508306
+    - MG508953
+    - MG510571
+    - MG514466
+    - MG783996
+    - MG836447
+    - MG836470
+    - MG932197
+    - MH004457
+    - MH878885
+    - MH926392
+    - MH926646
+    - MH926923
+    - MH926938
+    - MH928159
+    - MH928214
+    - MH928724
+    - MH928746
+    - MH928989
+    - MH929027
+    - MH929038
+    - MK024808
+    - MK202044
+    - MK530754
+    - MN935907
+    - MT396446
+    - MT396447
+    - MT396448
+    - MT946106
+    - MT984200
+    - MT984201
+    - MT984203
+    - MT984206
+    - MW900451
+    - MW900453
+    - MW900465
+    - MW900467
+    - MW900474
+    - MW900478
+    - MW900479
+    - MW900486
+    - MW900488
+    - MW900489
+    - MW900490
+    - MW900497
+    - MW900504
+    - MW900510
+    - MW900517
+    - MW900518
+    - MW900521
+    - MW900522
+    - MW900542
+    - MW900545
+    - MW900550
+    - MW900551
+    - MW900552
+    - MW900564
+    - MW900578
+    - MW900589
+    - MW900598
+    - MW900633
+    - MW900634
+    - MW900656
+    - MW900716
+    - MW900735
+    - MW900764
+    - MW900814
+    - MW900818
+    - MW900819
+    - MW900853
+    - MW900896
+    - MW900935
+    - MW900937
+    - MW900938
+    - MW900939
+    - MW900940
+    - MW900943
+    - MW900955
+    - MW900957
+    - MW900998
+    - MW901095
+    - MW901143
+    - MW901162
+    - MW901163
+    - MW901164
+    - MW901168
+    - MW901208
+    - MW901240
+    - MZ384401
+    - MZ384411
+    - MZ384499
+    - MZ384517
+    - MZ384520
+    - MZ384697
+    - MZ385012
+    - MZ385129
+    - MZ385417
+    - MZ629775
+    - MZ630280
+    - MZ630992
+    - MZ905609
+    - NC_082111
+    - OK562064
+    - OK562066
+    - OK562068
+    - OK624687
+    - OK624688
+    - OL538058
+    - OL538068
+    - OL538079
+    - OL538085
+    - OL538095
+    - OL538109
+    - OL538148
+    - OL655410
+    - OL694542
+    - OM583451
+    - ON557407
+    - ON557408
+    - ON557409
+    - ON557412
+    - ON557413
+    - ON557414
+    - ON557415
+    - ON557416
+    - ON557418
+    - ON557419
+    - ON557420
+    - ON557421
+    - ON557425
+    - ON557426
+    - ON557430
+    - ON557431
+    - OP292632
+    - OP498132
+    - OP498136
+    - OP498137
+    - OP498174
+    - OP933748
+    - OP933753
+    - OQ134182
+    - OQ134183
+    - OQ134186
+    - OQ134187
+    - OQ302715
+    - OQ318604
+    - OQ318606
+    - OQ318608
+    - OQ318609
+    - OQ352588
+    - OQ352591
+    - PP396819
+    - PP396820
+    - PP496831
+    - PP504281
+    - PQ313155
+    - PQ313161
+    - PQ313166
+    - PQ313171
+    - PQ313192
+    - PQ313193
+    - PQ313198
+    - PQ313235
+    - PQ313236
+    - PQ313237
+    - PQ313238
+    - PQ313239
+    - PQ313240
+    - PQ313241
+    - PQ313242
+    - PQ313245
+    - PQ313246
+    - PQ313247
+    - PQ313249
+    - PQ313250
+    - PQ313251
+    - PQ313252
+    - PQ313253
+    - PQ313254
+    - PQ313257
+    - PQ313258
+    - PQ313259
+    - PQ313269
+    - PQ313275
+    - PQ313276
+    - PQ313278
+    - PQ313279
+    - PQ313280
+    - PQ313282
+    - PQ313283
+    - PQ313285
+    - PQ313286
+    - PQ313294
+    - PQ313298
+    - PQ313299
+    - PQ313300
+    - PQ313301
+    - PQ313302
+    - PQ313384
+    - PQ313394
+    - PQ313481
+    - PQ313484
+    - PQ313527
+    - PQ313528
+    - PQ313529
+    - PQ313531
+    - PQ313532
+    - PQ313535
+    - PQ313554
+    - PQ313556
+    - PQ313562
+    - PQ313567
+    - PQ313568
+    - PQ313574
+    - PQ313591
+    - PQ313592
+    - PQ313602
+    - PQ313649
+    - PQ313653
+    - PQ313655
+    - PQ313686
+    - PQ313690
+    - PQ313693
+    - PQ375440
+    - PQ375442
+    - PQ667799
+    - PV031742
+    - PV031744
+    - PV031746
+    - PV031749
+    - PV031759
+    - PV031760
+    - PV031763
+    - PV031764
+    - PV031786
+    - PV031787
+    - PV031797
+    - PV031798
+    - PV031799
+    - PV031801
+    - PV031812
+    - PV031813
+    - PV031817
+    - PV031823
+    - PV088891
+    - PV500983
+    - PV500984
+    - PV668810
+    - PV844032
+    - PV944215
+    - PX245792
+  - id: sequence_fingerprints
+    type: fingerprints
+    value:
+      AB600898: '2b266bcdfc218337'
+      AB600902: '0c5dff3811c24f45'
+      FJ026623: '97f75b3a5daa2986'
+      FJ026624: 'b15ce435b932995c'
+      FJ026625: '02ac6168de05917d'
+      FJ026627: 'e4fe1d9419240962'
+      FJ026628: '0da8925bf30acb69'
+      FJ026629: 'e89e3f9c1b956a07'
+      FJ026630: '87fca281285a733f'
+      FJ026632: 'a0b9bfba0341136a'
+      FJ026633: 'feb87d2dffc6f899'
+      FJ026638: '03f6a33c0aa358a4'
+      FJ026639: '77caaab27c9d4037'
+      FJ026641: '6da3116f4c99e2a9'
+      FJ026655: '1efa4b5ccdf2f357'
+      FJ026659: '05834f336230dbba'
+      FJ026660: 'fd2a72a9cee58c92'
+      FJ026671: '3079b976cd272db6'
+      FJ499766: '424e600887866b9e'
+      GQ374677: '2e1bd276464c5ac2'
+      GU675352: '14e84bbbb2a44c05'
+      GU675359: '3f51a21ca706d68a'
+      GU975842: '73a4ac1df51db105'
+      HM365032: '992299eac6b3647a'
+      HM573973: '5822c4fece338771'
+      HM573974: '35544952c68f178f'
+      HM573976: 'c58480f5d215df2a'
+      HM573979: 'ad4cef28d830b411'
+      HM882386: 'fe00f3b2cdb2ed00'
+      HQ926740: '2daef975319baf83'
+      HQ926809: '82509be3efc83b81'
+      HQ930271: '6ec788ff19578b15'
+      HQ930307: '66f94f228009ae23'
+      JN292346: 'e514a81206433090'
+      JQ574565: '6642ace6b2c867a7'
+      JQ756569: 'b14fe4cc9759137a'
+      KF724500: 'b729d8af0017abaf'
+      KF724501: '02b79bf9bcec4310'
+      KF778392: '7ea9c15c125ae998'
+      KF778394: 'c9aaac7e45fb673d'
+      KF850113: '8f1cb92c872273a0'
+      KF850126: '58aa3a6c577d3b3d'
+      KF850129: '521c9f133495317f'
+      KJ088514: '0662b54e3fc47bfc'
+      KJ208837: 'd1f35f4880934244'
+      KJ444660: '461e946306f3e61c'
+      KM555544: '25a93743fb9b9590'
+      KM556147: 'cfef06385f6cc9fd'
+      KM557211: '77ca9e98b7c31767'
+      KM557775: '28d3e968202d0b27'
+      KM558635: '9c0da1e563b794e3'
+      KM559580: '47261d8e6bb9d12a'
+      KM560391: '73bfee65ecddb1cf'
+      KM560407: '9b5f8ae5f54ca082'
+      KM560460: 'e38827ac2d7ef94c'
+      KM560466: 'a86480d02ce76a8d'
+      KM560558: '6fb6cde53a0cc5f6'
+      KM561068: 'e3a046ef7f7428cf'
+      KM561410: '90ba272d60bcd2c3'
+      KM561759: '144edce4222d2ff1'
+      KM562102: 'fcc8e98b71b81aa9'
+      KM562491: 'e11a02bccd6ed00e'
+      KM563206: '58be112508d4d29f'
+      KM563236: 'f9499244d4aaa90a'
+      KM563523: '16c3a6d54dd52d25'
+      KM565164: 'c56fcf5a03d80244'
+      KM565464: 'efd56c5ab6fb27e2'
+      KM565788: 'c0ef94ba86f48784'
+      KM565922: '96fdb143abf53a49'
+      KM566850: 'bb6e0bbee187bc6a'
+      KM567127: '28374a9c22e1b663'
+      KM567248: 'b84fb49bb7849d5c'
+      KM569385: 'e11a02bccd6ed00e'
+      KM825924: 'f63b1f734862b5dc'
+      KM834912: 'f63b1f734862b5dc'
+      KM997383: 'd65f470e365e8dd4'
+      KM997585: '227e8f123d6b8c3b'
+      KR365970: '6208a3b052b07602'
+      KR366010: 'e3b45bf7d5478fa1'
+      KR366894: '3beb4a7fe560b963'
+      KR368755: '595ea7637ada6cce'
+      KR368828: '138844667cd398ee'
+      KR369184: '8caba5c10c02a0fb'
+      KR370726: '26bfc8bed9ad6efd'
+      KR370861: '8ab781ef06a83578'
+      KR371544: '8e742222d4c22f59'
+      KR371879: '78192f21c92a2e50'
+      KR371977: '65d1d1de4d25552f'
+      KR373422: '944d6f49c100ff4d'
+      KR374087: 'e6eb96fa5adfba14'
+      KR404347: 'a2cab81b0844b85b'
+      KR404599: 'c3ba9abf1c65558e'
+      KR407823: '1f6163353b02007b'
+      KR413283: '6d45e761deea96eb'
+      KR414911: 'adab9825527938d2'
+      KR415788: 'e041d63a3d1bdd6c'
+      KR419026: '574b17db57f8d80e'
+      KR421013: '574b17db57f8d80e'
+      KR782918: '98141deee8f37a31'
+      KR782998: '17ee283b0d84b1d0'
+      KR783191: '8a4dd25d1e34c372'
+      KR783301: '61d8086261bdd846'
+      KR783774: '1fe39e8a9365bec0'
+      KR784194: 'd81d2bfd82c6170a'
+      KR784912: '62048e4e69d133b0'
+      KR784995: '2decc10b1e391018'
+      KR785441: 'b7a2a00c09b7c2d8'
+      KR785606: 'b4f939136d451495'
+      KR785763: 'd5fecb80f448998a'
+      KR786079: '5dd87b64c571ec6f'
+      KR786918: '3b2e80cca9b70f32'
+      KR786933: '9d3d2e7af087ba84'
+      KR787047: '691c37eb7ba19158'
+      KR787489: '1f884040ba8622d2'
+      KR787801: '1482137131c9acb0'
+      KR790997: '3b2e80cca9b70f32'
+      KR792237: '3cf03262051ae5b2'
+      KR792534: 'a4eb5750550014cb'
+      KR792764: 'c18b8d1c7fd1b36e'
+      KR792877: 'bbb3d3d1461687e2'
+      KR792940: 'b8cef5190caefb87'
+      KR793581: '48d19ec66e986733'
+      KR794229: '50cf1a1736917a13'
+      KR795636: '6926404740db160b'
+      KR795727: 'fe785651afe9142a'
+      KR795884: '7523b52857039302'
+      KR796302: '7cca46cb581ff076'
+      KR796618: '8a4dd25d1e34c372'
+      KR798017: '8cf3d37f21ae443c'
+      KR799178: '8a4dd25d1e34c372'
+      KR802671: '49ec105d90fa50bc'
+      KR804618: '6b1d7f09d5451420'
+      KR805553: '1ab3d1ac3a489ec0'
+      KR805667: '17872d00cb8e5294'
+      KR806086: '691c37eb7ba19158'
+      KR808465: '14263b545cda2fae'
+      KR876758: '3a496a68313e28ed'
+      KR879168: '6fde4755decca4a7'
+      KR879605: '42fe64b6534ec20c'
+      KR884993: 'e098b4f30690c838'
+      KR886957: 'b48a2a36a67f2688'
+      KR888663: 'e25d7a06460c13a9'
+      KR889253: 'def1a370e9ceacac'
+      KR891446: '06dffdec08454223'
+      KR891946: '6fde4755decca4a7'
+      KR894395: '6b1d7f09d5451420'
+      KR898701: 'd96ca9d04202ecf8'
+      KR898894: '889784456244b0f7'
+      KR899338: 'd1383eacaf5f278b'
+      KR902174: '0eeb3205716dff94'
+      KR926065: '1abe187108013fd1'
+      KR931137: '70499e40d0595bde'
+      KT599308: 'd53fd65801747a28'
+      KT604127: '3e7a5745e1ac6367'
+      KT604446: '2606fe4577d0d1bf'
+      KT617917: 'd7a18eea808db811'
+      KT618687: 'd597545290b52365'
+      KT621096: '4b172245859d7f78'
+      KU496853: '64bd817c980cc66d'
+      KX053200: '008e55dc04a78fa2'
+      KX053202: 'b3ad915bdecc51f4'
+      KX053444: 'a8a93f73dc5896af'
+      KX053458: '770025e3cbe18533'
+      KX535016: '167f9bead168fb11'
+      KX535120: '6bfd9cff569ebe42'
+      KX535145: 'c3819e5aae0ba9cb'
+      KY834054: 'f753e7b0dd6073ff'
+      KY834357: '53e771b59c575194'
+      KY837217: 'c61949f2416e13b6'
+      KY838191: '4bc5186df7a41fec'
+      KY838269: 'b382898fed477a50'
+      KY841370: '32f5a294f7134eb4'
+      KY841382: 'fffaf646efaaa45f'
+      KY844518: 'e6f57b95821b5581'
+      KY844651: '4bc5186df7a41fec'
+      KY846197: '08ef7c747c9ebb3d'
+      KY847127: 'ab574d2f5e94d276'
+      KY847187: '2cbc285ace1773e9'
+      MF776883: '0ac682363e5b0999'
+      MF900097: '492b51cadf27f715'
+      MF900355: 'ae2d2655cf77c1ff'
+      MF900527: '2e891dfe0da9db9f'
+      MF905679: 'd7d1a17fd4d3826c'
+      MF906783: 'e59b6971af63f649'
+      MF929198: '146ec140f08a9470'
+      MF929666: 'af097668b4fe5e64'
+      MF930056: 'a2c490e20e385413'
+      MF931414: 'ea177101a5607379'
+      MF935089: 'e12a0f1a299edc7d'
+      MF937214: '2b788256b9778e7e'
+      MF938035: '83c3a93b5cb3772c'
+      MF938672: '92303a3fb164af56'
+      MF938911: 'f859c3d0d9db2522'
+      MF956216: 'c4515a6930a4f2d0'
+      MF956219: 'f0ff9586be50d1d5'
+      MF956234: 'a69d9649dcf61d66'
+      MF956236: '40736c699485a7eb'
+      MF956238: 'd5f8acd39cc3485d'
+      MF956249: 'ded66c11a3062301'
+      MF956304: '460de78583e8da3f'
+      MF956313: '404ba93509f6c5cc'
+      MF956353: '29dcd8151eb4f4a4'
+      MF956354: 'c8d13764c23dfbbb'
+      MF956372: '854a220addb1282f'
+      MF956397: '53ba881e6d943068'
+      MG335381: 'ecae0c52f5f0a6d9'
+      MG335609: '3ab3284dae902aa3'
+      MG335742: '7ade3d29c0aed65a'
+      MG336960: '4906049f37294713'
+      MG337459: '6615f2a3fc7fa446'
+      MG337772: 'be60dafd1996952f'
+      MG338934: '4906049f37294713'
+      MG340408: 'bf07be1326ba1341'
+      MG340925: 'e338860737f074b1'
+      MG341736: '6307453901207243'
+      MG342026: '31287ebd24d7a9cb'
+      MG342774: '327628cca3c05c80'
+      MG342809: '3c69e2de169bd1f9'
+      MG343641: 'd915d971f7daf5b6'
+      MG344385: 'f5a0c00adb1b0b07'
+      MG373925: 'cc2006563a486d15'
+      MG374840: '5138f637653c8e8a'
+      MG376148: '6b545f7f3678af33'
+      MG376356: '60315c46df066993'
+      MG377356: '65693b012682ac40'
+      MG379140: '4fdfa84746109964'
+      MG381004: 'd08c65dd0c320636'
+      MG381541: 'f08199f1d5ae174c'
+      MG383140: 'db7ff5b2b633b972'
+      MG441703: '79c07cd39424a590'
+      MG444508: 'fdea4c34f67225a6'
+      MG448510: '277037c76dd07052'
+      MG479790: '14ef13d7e58930ae'
+      MG480514: 'acc8a33a8a4954f8'
+      MG482431: 'acc8a33a8a4954f8'
+      MG483470: '4f07d61fb91916d5'
+      MG483756: 'acc8a33a8a4954f8'
+      MG484443: '14ef13d7e58930ae'
+      MG485494: '0b3c2dbf12399981'
+      MG487734: 'acc8a33a8a4954f8'
+      MG497346: '3f169d32e64e5fbb'
+      MG498222: '8b02237fc64e2fad'
+      MG500276: 'e8f3a659e704b87c'
+      MG501935: '04ed5f48f29d8b47'
+      MG502477: 'b428958ead45a423'
+      MG502709: '63d6aa904ef68182'
+      MG503774: '21e536a3ac07758e'
+      MG504688: 'ac106937bdaf8226'
+      MG506836: 'f8b218b35a5f14ee'
+      MG508306: 'f6c7350d3184451f'
+      MG508953: '7140140f952270ff'
+      MG510571: 'c8aeabae690959c9'
+      MG514466: '8bca599d9818aba4'
+      MG783996: 'e1ae1d94a7337521'
+      MG836447: 'f8fccfc0285afd2a'
+      MG836470: '23e26210f7433967'
+      MG932197: '1e3e5447e15c30d9'
+      MH004457: '1871cd927913667a'
+      MH878885: '2b4a7bc6470b2cfb'
+      MH926392: 'b2c2646cc67eb2b9'
+      MH926646: 'c858a001ec56445c'
+      MH926923: '2379c6bee6cda998'
+      MH926938: '4226d4be42d9fe66'
+      MH928159: '8a856bbabf36f0c8'
+      MH928214: 'a30706ac76ad0bf2'
+      MH928724: '8564183d783c0266'
+      MH928746: '07bdd9f3fbae4304'
+      MH928989: 'b69ec5d3b4575263'
+      MH929027: '9c3d06b8bb1d544b'
+      MH929038: 'b77bd64d338902b0'
+      MK024808: 'bde465ebe0d5f391'
+      MK202044: 'c742d0221f8bdb54'
+      MK530754: 'fcf227cdad42c6a2'
+      MN935907: 'c5d645828fc64542'
+      MT396446: '5a0c195ae67e443d'
+      MT396447: 'd0d8d2314d311014'
+      MT396448: '077c1b30eb8c0e9a'
+      MT946106: '587888b2b66b3890'
+      MT984200: '543bd6cb1acf26a3'
+      MT984201: '832fdecb95b7fdae'
+      MT984203: 'be4276733d6e9577'
+      MT984206: '37dfab10c48d52e7'
+      MW900451: '0394aeff3184ec78'
+      MW900453: 'b9d55869401672e0'
+      MW900465: 'f43cc9a2f734d33d'
+      MW900467: '663d6d235c365fe0'
+      MW900474: 'af54e91e5cf55e37'
+      MW900478: '0e48e537c0da66a7'
+      MW900479: 'cd9d212a3d36832e'
+      MW900486: 'addc48284d74ce8e'
+      MW900488: '25a2ac5a19c776ba'
+      MW900489: 'b10c9a678c9f1e5c'
+      MW900490: 'bc7d596c9307ca76'
+      MW900497: 'c7f3edd13af40e31'
+      MW900504: 'e83e57e6143128b7'
+      MW900510: 'bf9c98680357c52d'
+      MW900517: '7b3a7b0c7532a77b'
+      MW900518: '504491416e5580b8'
+      MW900521: '753bec45bbf72d47'
+      MW900522: 'b6651820e5537403'
+      MW900542: 'e0354fd2c472bca7'
+      MW900545: '08643796dfdc59d5'
+      MW900550: 'e9a70eacfaf23a1c'
+      MW900551: '1785d0d4f3d0c3cf'
+      MW900552: '49ce917c7c79d603'
+      MW900564: 'b3180013a2cb9927'
+      MW900578: '1f6b494496f005ee'
+      MW900589: 'be2ae8d9b19bcd25'
+      MW900598: '5f0497e0b3ee1d25'
+      MW900633: '0fafaca192ee6bfd'
+      MW900634: 'e205e12bcea5da3a'
+      MW900656: 'ff9e46540b24ef29'
+      MW900716: 'd4c6fb3f67899b99'
+      MW900735: '54768cee1575eb7b'
+      MW900764: '906b3c9e230235ba'
+      MW900814: '64a18f3a6862ebc0'
+      MW900818: 'c7f6904835b9b2d0'
+      MW900819: '5feb1f2c0e232eba'
+      MW900853: '0aefdc457aaaace9'
+      MW900896: '67a8e92a56fd3776'
+      MW900935: '90bde74f571adb51'
+      MW900937: '0592af30b15dd0d2'
+      MW900938: '8a9cebbad8f91b4c'
+      MW900939: '8618b2ed6bd96e96'
+      MW900940: '740e74750afdd7d5'
+      MW900943: 'dddee275323b2d26'
+      MW900955: '44c13e4048ff411b'
+      MW900957: '2e43ec19c49df3c4'
+      MW900998: '9608ec873c66aa9e'
+      MW901095: '47436c9935545d4d'
+      MW901143: 'a5b6a6080f56139b'
+      MW901162: '0455d2d282f844fd'
+      MW901163: '148c3a6e5d81ede1'
+      MW901164: '110c73e5d6bec793'
+      MW901168: 'add91ea020a0b213'
+      MW901208: '5ff2102638a5c8ec'
+      MW901240: '55c4f235d9782e3a'
+      MZ384401: 'c82893727870331b'
+      MZ384411: 'cd4840d37753678e'
+      MZ384499: 'b65e26f0be9b6055'
+      MZ384517: '8c83f153338dac8b'
+      MZ384520: 'cce3dc4897388e50'
+      MZ384697: '0aa34be67d370f53'
+      MZ385012: '7b4a35d944957003'
+      MZ385129: 'b65e26f0be9b6055'
+      MZ385417: 'a136a9b152db2f4a'
+      MZ629775: '79e1f20dc35c8603'
+      MZ630280: 'e4a7cfc2171ae9ce'
+      MZ630992: '7f4ae49427187633'
+      MZ905609: '958b705b85996b30'
+      NC_082111: '962e4d4815f1802c'
+      OK562064: 'ae2e067489e0dccb'
+      OK562066: '7db85b1fae63b4fb'
+      OK562068: 'f3ba649da94b2be0'
+      OK624687: '6f1c618751b8207c'
+      OK624688: '3050160565d194bd'
+      OL538058: 'e7df26d09fb17ce6'
+      OL538068: '10a61018732dbc64'
+      OL538079: 'f4591e5e21edbee0'
+      OL538085: 'a427fd08b72f91ba'
+      OL538095: '18063a4391311675'
+      OL538109: 'a080579c98266d2f'
+      OL538148: 'd26f2f03d3150fbc'
+      OL655410: 'a9f2d3b84b05315d'
+      OL694542: '4dd6bb9562232a27'
+      OM583451: '56209baf7ba65508'
+      ON557407: '060ad1b99f972eec'
+      ON557408: 'b22ed9bf096ce85e'
+      ON557409: '936cd39b54eba9f3'
+      ON557412: '978eb3d668d09c2e'
+      ON557413: 'b6b92ab067b76875'
+      ON557414: '963be17080ff79c6'
+      ON557415: '6673ccf66c765ea6'
+      ON557416: 'c26088088cc32f4c'
+      ON557418: '56ae7c245852240e'
+      ON557419: '99a1da0b44e431ea'
+      ON557420: 'bfa7556ef866c595'
+      ON557421: '47d3f3db899967a9'
+      ON557425: '60ad7a0bb6d88386'
+      ON557426: '0d841657e1dc5728'
+      ON557430: '4782fe254a5ab1e2'
+      ON557431: '77b82f11ddd3a819'
+      OP292632: 'b91bdc9b25a92f32'
+      OP498132: 'dcf3b522ce7ac270'
+      OP498136: '44516b580ca557f2'
+      OP498137: '838c36c831472475'
+      OP498174: '17fc82ea77d5f57c'
+      OP933748: '4053467cae1f0271'
+      OP933753: '64840d8ab128d72e'
+      OQ134182: 'e862a7cdfeebe653'
+      OQ134183: 'd1785cfc2e224e5b'
+      OQ134186: 'd1785cfc2e224e5b'
+      OQ134187: '3162bd2ac7687abb'
+      OQ302715: 'd39f939b904eeadc'
+      OQ318604: 'c85c4a773b4b13e6'
+      OQ318606: 'ae2e067489e0dccb'
+      OQ318608: 'c2a732b593fb6bd8'
+      OQ318609: '7db85b1fae63b4fb'
+      OQ352588: '1b3034f124e37e8e'
+      OQ352591: '4e96c489c27713e4'
+      PP396819: '8f2714043e2dc506'
+      PP396820: 'b5df202aa42ececc'
+      PP496831: '18063a4391311675'
+      PP504281: '3025b62051497621'
+      PQ313155: '85d3576414dc1cbd'
+      PQ313161: 'b8ee98ee2566b7ce'
+      PQ313166: '8ca001eaddc97710'
+      PQ313171: 'a849a366756d8235'
+      PQ313192: 'a55f6ef51faed645'
+      PQ313193: 'fe1e61813f70742a'
+      PQ313198: '0bee7edcab826039'
+      PQ313235: '58f9a40cb17476d0'
+      PQ313236: 'b44cee6f8ec9ae28'
+      PQ313237: '08d16cc0f3577127'
+      PQ313238: '72c2ee2b580c373c'
+      PQ313239: '2b5a4806412698be'
+      PQ313240: '566832e51caafd43'
+      PQ313241: '313b28279244cb28'
+      PQ313242: 'e8fb505b53a6f69a'
+      PQ313245: 'dfd429f205b68a1e'
+      PQ313246: '19c7f60026103d51'
+      PQ313247: '67c2dc91edde6e1e'
+      PQ313249: '67faac43e473e79f'
+      PQ313250: '15c83a513e4adc7f'
+      PQ313251: '6df0c7913d369cee'
+      PQ313252: 'e32a80c008c2cbfa'
+      PQ313253: '31180eaad9f5b318'
+      PQ313254: '4bbfe217cfbf6e85'
+      PQ313257: 'ac9ecda83c113f18'
+      PQ313258: '8058a8d63a289d0c'
+      PQ313259: 'e900309ce72d13c0'
+      PQ313269: '01f7d3c1ec7e837f'
+      PQ313275: 'a525e7b25f506023'
+      PQ313276: '51dfcd7cddfbc9b4'
+      PQ313278: 'd9d697bd3154d60c'
+      PQ313279: 'fdd724182ea6e534'
+      PQ313280: 'ddb522a245cd13cf'
+      PQ313282: 'b7acf7e0d95bf616'
+      PQ313283: 'b909be9c7948bb3d'
+      PQ313285: 'e74a30b016719de7'
+      PQ313286: '24e2851df127d058'
+      PQ313294: 'ed17482b8aa21774'
+      PQ313298: 'f44129d8ec1176ca'
+      PQ313299: 'd056a7d11a4c1528'
+      PQ313300: 'e9acdacde2018f39'
+      PQ313301: '5210a9dd8a449d16'
+      PQ313302: '65f78ffb7ca15467'
+      PQ313384: '28498b47cd75ae88'
+      PQ313394: '1036af1a4f647659'
+      PQ313481: '96ec414054fcd92d'
+      PQ313484: '48ad93bd6e83919e'
+      PQ313527: '64ebd36840b59c04'
+      PQ313528: 'b1dce79c331f3a2b'
+      PQ313529: 'c2bff5709a37f05b'
+      PQ313531: '6505e83cf4253a0e'
+      PQ313532: '88c63658f71d5108'
+      PQ313535: '49ba69e7c2aeb49c'
+      PQ313554: '651d9c1f5f822d46'
+      PQ313556: '92de6c0c4d08fcd4'
+      PQ313562: '6299463b6722c950'
+      PQ313567: '6b5d7c1ed4491fa9'
+      PQ313568: 'e486deca12dfd647'
+      PQ313574: '20638501a683a3f5'
+      PQ313591: '0bf8eccac191013a'
+      PQ313592: '731f52155abd077d'
+      PQ313602: 'ff6a5e0762ad942d'
+      PQ313649: '3aecce8d0e307058'
+      PQ313653: 'db112f2e60aff9f7'
+      PQ313655: '10b200572316f1c5'
+      PQ313686: 'c28d9be9b58b23d5'
+      PQ313690: 'd7a1da13fb8b964d'
+      PQ313693: '4d9889eb56da96c1'
+      PQ375440: '47f0b5b06a4d2d6b'
+      PQ375442: '7e03c65c5a55ace9'
+      PQ667799: '77c3f3d048c33522'
+      PV031742: '3d86b1a2a143905d'
+      PV031744: 'f9b422961430a1e2'
+      PV031746: '2fde4e95a1fc6064'
+      PV031749: '2c0806cfb1f262c4'
+      PV031759: '43225920712ea6de'
+      PV031760: '9b66506df4138fe4'
+      PV031763: '158c83a073932113'
+      PV031764: '2317494b2af39b3e'
+      PV031786: 'e9336254b5b41b9c'
+      PV031787: 'ce1c4015fca1d974'
+      PV031797: '1dab25d4c3386df4'
+      PV031798: '7c2c578eca13f1df'
+      PV031799: 'd3404fe61bbab5ec'
+      PV031801: '2f2c8e3bfc6e1c66'
+      PV031812: 'c588e55ffacd1e68'
+      PV031813: 'af25f83dc1014493'
+      PV031817: '22750ecefc2c2cb2'
+      PV031823: '62ba6c92a3d25046'
+      PV088891: '9d8af677ab914a8b'
+      PV500983: 'a2c4cbcdce6c03f9'
+      PV500984: 'e6dbe0febe35af71'
+      PV668810: 'd51ade04e92abe92'
+      PV844032: 'd65b1cc069fbce00'
+      PV944215: 'b248cc89fc5210c8'
+      PX245792: 'd2f374c5b9681ef6'
+- id: phylogeny
+  assertions:
+  - id: selected_sequences
+    type: membership
+    value:
+    - HM573973
+    - HM573976
+    - HM573979
+    - KR783774
+    - KR786918
+    - KR786933
+    - KR792877
+    - KR802671
+    - KR889253
+    - KR898894
+    - KX535120
+    - MF905679
+    - MG340408
+    - MG483470
+    - MG485494
+    - PQ313193
+    - PQ313257
+    - PQ313275
+    - PV031744
+    - PV031759
+    - PV031797
+- id: source_diversity
+  candidates:
+  - name: Bruchophagus muli
+    assertions:
+    - id: source_accessions
+      type: membership
+      value:
+      - PV031759
+    - id: flag_4
+      type: flag
+      value: B
+- id: database_coverage
+  assertions:
+  - id: candidate_taxa
+    type: membership
+    value:
+    - Bruchophagus muli
+  - id: toi_taxa
+    type: membership
+    value:
+    - Bruchophagus abnormis
+    - Bruchophagus abscedus
+    - Bruchophagus muli
+  - id: pmi_taxa
+    type: membership
+    value:
+    - Bruchophagus
+  candidate:
+  - name: Bruchophagus muli
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bruchophagus abnormis
+      - Bruchophagus abscedus
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus annamalaicus
+      - Bruchophagus apoorvus
+      - Bruchophagus asphodelinae
+      - Bruchophagus astragali
+      - Bruchophagus ater
+      - Bruchophagus bajarii
+      - Bruchophagus beijingensis
+      - Bruchophagus binotatus
+      - Bruchophagus borealis
+      - Bruchophagus brachyscelidis
+      - Bruchophagus brasiliensis
+      - Bruchophagus brevipetiolatus
+      - Bruchophagus bruchophagoides
+      - Bruchophagus capitaticornis
+      - Bruchophagus caucasicus
+      - Bruchophagus cecili
+      - Bruchophagus chauceri
+      - Bruchophagus ciriventris
+      - Bruchophagus clelandi
+      - Bruchophagus coluteae
+      - Bruchophagus coronillae
+      - Bruchophagus davidi
+      - Bruchophagus dorycnii
+      - Bruchophagus eleuther
+      - Bruchophagus evolans
+      - Bruchophagus fellis
+      - Bruchophagus filisilvae
+      - Bruchophagus gibbus
+      - Bruchophagus gijswijti
+      - Bruchophagus glycyrrhizae
+      - Bruchophagus grassius
+      - Bruchophagus grewiae
+      - Bruchophagus grisselli
+      - Bruchophagus haydni
+      - Bruchophagus hedysari
+      - Bruchophagus hippocrepidis
+      - Bruchophagus houardi
+      - Bruchophagus houstoniai
+      - Bruchophagus huangchei
+      - Bruchophagus incrassatus
+      - Bruchophagus indigoferae
+      - Bruchophagus insulare
+      - Bruchophagus interior
+      - Bruchophagus intermedius
+      - Bruchophagus justitia
+      - Bruchophagus kononovae
+      - Bruchophagus lecomtei
+      - Bruchophagus luteobasis
+      - Bruchophagus lyubai
+      - Bruchophagus macronycis
+      - Bruchophagus macronyis
+      - Bruchophagus maeterlincki
+      - Bruchophagus mandelai
+      - Bruchophagus manii
+      - Bruchophagus maurus
+      - Bruchophagus medicaginis
+      - Bruchophagus mellipes
+      - Bruchophagus mexicanus
+      - Bruchophagus microphtholmus
+      - Bruchophagus mongolicus
+      - Bruchophagus muli
+      - Bruchophagus murrayi
+      - Bruchophagus mutabilis
+      - Bruchophagus natheni
+      - Bruchophagus neepalensis
+      - Bruchophagus negriensis
+      - Bruchophagus niger
+      - Bruchophagus nigrinotatus
+      - Bruchophagus noctua
+      - Bruchophagus noyesi
+      - Bruchophagus ollenbachi
+      - Bruchophagus ononis
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus oxytropidis
+      - Bruchophagus peethavarnus
+      - Bruchophagus phlei
+      - Bruchophagus pidytes
+      - Bruchophagus platypterus
+      - Bruchophagus ponticus
+      - Bruchophagus prathiaegus
+      - Bruchophagus pseudobeijingensis
+      - Bruchophagus quadriguttatus
+      - Bruchophagus queenslandensis
+      - Bruchophagus quinlani
+      - Bruchophagus ravola
+      - Bruchophagus rexus
+      - Bruchophagus ribesi
+      - Bruchophagus robiniae
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus saxatilis
+      - Bruchophagus scaposus
+      - Bruchophagus sculptus
+      - Bruchophagus secundus
+      - Bruchophagus sensoriae
+      - Bruchophagus seravschanicus
+      - Bruchophagus seyali
+      - Bruchophagus shonagatrus
+      - Bruchophagus shonanethrus
+      - Bruchophagus silvensis
+      - Bruchophagus smirnoviae
+      - Bruchophagus sophorae
+      - Bruchophagus soror
+      - Bruchophagus spotus
+      - Bruchophagus striatifemur
+      - Bruchophagus subsulcatus
+      - Bruchophagus tagorei
+      - Bruchophagus tasmanicus
+      - Bruchophagus tasmaniensis
+      - Bruchophagus tauricus
+      - Bruchophagus terrae
+      - Bruchophagus timaspidis
+      - Bruchophagus trigonellae
+      - Bruchophagus verbasci
+      - Bruchophagus vignae
+      - Bruchophagus virginicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+      - Bruchophagus yasumatsui
+    - id: country_species
+      type: membership
+      value:
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus binotatus
+      - Bruchophagus brachyscelidis
+      - Bruchophagus chauceri
+      - Bruchophagus clelandi
+      - Bruchophagus davidi
+      - Bruchophagus eleuther
+      - Bruchophagus fellis
+      - Bruchophagus interior
+      - Bruchophagus niger
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus pidytes
+      - Bruchophagus ravola
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus secundus
+      - Bruchophagus silvensis
+      - Bruchophagus soror
+      - Bruchophagus tasmanicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+  toi:
+  - name: Bruchophagus abnormis
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bruchophagus abnormis
+      - Bruchophagus abscedus
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus annamalaicus
+      - Bruchophagus apoorvus
+      - Bruchophagus asphodelinae
+      - Bruchophagus astragali
+      - Bruchophagus ater
+      - Bruchophagus bajarii
+      - Bruchophagus beijingensis
+      - Bruchophagus binotatus
+      - Bruchophagus borealis
+      - Bruchophagus brachyscelidis
+      - Bruchophagus brasiliensis
+      - Bruchophagus brevipetiolatus
+      - Bruchophagus bruchophagoides
+      - Bruchophagus capitaticornis
+      - Bruchophagus caucasicus
+      - Bruchophagus cecili
+      - Bruchophagus chauceri
+      - Bruchophagus ciriventris
+      - Bruchophagus clelandi
+      - Bruchophagus coluteae
+      - Bruchophagus coronillae
+      - Bruchophagus davidi
+      - Bruchophagus dorycnii
+      - Bruchophagus eleuther
+      - Bruchophagus evolans
+      - Bruchophagus fellis
+      - Bruchophagus filisilvae
+      - Bruchophagus gibbus
+      - Bruchophagus gijswijti
+      - Bruchophagus glycyrrhizae
+      - Bruchophagus grassius
+      - Bruchophagus grewiae
+      - Bruchophagus grisselli
+      - Bruchophagus haydni
+      - Bruchophagus hedysari
+      - Bruchophagus hippocrepidis
+      - Bruchophagus houardi
+      - Bruchophagus houstoniai
+      - Bruchophagus huangchei
+      - Bruchophagus incrassatus
+      - Bruchophagus indigoferae
+      - Bruchophagus insulare
+      - Bruchophagus interior
+      - Bruchophagus intermedius
+      - Bruchophagus justitia
+      - Bruchophagus kononovae
+      - Bruchophagus lecomtei
+      - Bruchophagus luteobasis
+      - Bruchophagus lyubai
+      - Bruchophagus macronycis
+      - Bruchophagus macronyis
+      - Bruchophagus maeterlincki
+      - Bruchophagus mandelai
+      - Bruchophagus manii
+      - Bruchophagus maurus
+      - Bruchophagus medicaginis
+      - Bruchophagus mellipes
+      - Bruchophagus mexicanus
+      - Bruchophagus microphtholmus
+      - Bruchophagus mongolicus
+      - Bruchophagus muli
+      - Bruchophagus murrayi
+      - Bruchophagus mutabilis
+      - Bruchophagus natheni
+      - Bruchophagus neepalensis
+      - Bruchophagus negriensis
+      - Bruchophagus niger
+      - Bruchophagus nigrinotatus
+      - Bruchophagus noctua
+      - Bruchophagus noyesi
+      - Bruchophagus ollenbachi
+      - Bruchophagus ononis
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus oxytropidis
+      - Bruchophagus peethavarnus
+      - Bruchophagus phlei
+      - Bruchophagus pidytes
+      - Bruchophagus platypterus
+      - Bruchophagus ponticus
+      - Bruchophagus prathiaegus
+      - Bruchophagus pseudobeijingensis
+      - Bruchophagus quadriguttatus
+      - Bruchophagus queenslandensis
+      - Bruchophagus quinlani
+      - Bruchophagus ravola
+      - Bruchophagus rexus
+      - Bruchophagus ribesi
+      - Bruchophagus robiniae
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus saxatilis
+      - Bruchophagus scaposus
+      - Bruchophagus sculptus
+      - Bruchophagus secundus
+      - Bruchophagus sensoriae
+      - Bruchophagus seravschanicus
+      - Bruchophagus seyali
+      - Bruchophagus shonagatrus
+      - Bruchophagus shonanethrus
+      - Bruchophagus silvensis
+      - Bruchophagus smirnoviae
+      - Bruchophagus sophorae
+      - Bruchophagus soror
+      - Bruchophagus spotus
+      - Bruchophagus striatifemur
+      - Bruchophagus subsulcatus
+      - Bruchophagus tagorei
+      - Bruchophagus tasmanicus
+      - Bruchophagus tasmaniensis
+      - Bruchophagus tauricus
+      - Bruchophagus terrae
+      - Bruchophagus timaspidis
+      - Bruchophagus trigonellae
+      - Bruchophagus verbasci
+      - Bruchophagus vignae
+      - Bruchophagus virginicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+      - Bruchophagus yasumatsui
+    - id: country_species
+      type: membership
+      value:
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus binotatus
+      - Bruchophagus brachyscelidis
+      - Bruchophagus chauceri
+      - Bruchophagus clelandi
+      - Bruchophagus davidi
+      - Bruchophagus eleuther
+      - Bruchophagus fellis
+      - Bruchophagus interior
+      - Bruchophagus niger
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus pidytes
+      - Bruchophagus ravola
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus secundus
+      - Bruchophagus silvensis
+      - Bruchophagus soror
+      - Bruchophagus tasmanicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+  - name: Bruchophagus abscedus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bruchophagus abnormis
+      - Bruchophagus abscedus
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus annamalaicus
+      - Bruchophagus apoorvus
+      - Bruchophagus asphodelinae
+      - Bruchophagus astragali
+      - Bruchophagus ater
+      - Bruchophagus bajarii
+      - Bruchophagus beijingensis
+      - Bruchophagus binotatus
+      - Bruchophagus borealis
+      - Bruchophagus brachyscelidis
+      - Bruchophagus brasiliensis
+      - Bruchophagus brevipetiolatus
+      - Bruchophagus bruchophagoides
+      - Bruchophagus capitaticornis
+      - Bruchophagus caucasicus
+      - Bruchophagus cecili
+      - Bruchophagus chauceri
+      - Bruchophagus ciriventris
+      - Bruchophagus clelandi
+      - Bruchophagus coluteae
+      - Bruchophagus coronillae
+      - Bruchophagus davidi
+      - Bruchophagus dorycnii
+      - Bruchophagus eleuther
+      - Bruchophagus evolans
+      - Bruchophagus fellis
+      - Bruchophagus filisilvae
+      - Bruchophagus gibbus
+      - Bruchophagus gijswijti
+      - Bruchophagus glycyrrhizae
+      - Bruchophagus grassius
+      - Bruchophagus grewiae
+      - Bruchophagus grisselli
+      - Bruchophagus haydni
+      - Bruchophagus hedysari
+      - Bruchophagus hippocrepidis
+      - Bruchophagus houardi
+      - Bruchophagus houstoniai
+      - Bruchophagus huangchei
+      - Bruchophagus incrassatus
+      - Bruchophagus indigoferae
+      - Bruchophagus insulare
+      - Bruchophagus interior
+      - Bruchophagus intermedius
+      - Bruchophagus justitia
+      - Bruchophagus kononovae
+      - Bruchophagus lecomtei
+      - Bruchophagus luteobasis
+      - Bruchophagus lyubai
+      - Bruchophagus macronycis
+      - Bruchophagus macronyis
+      - Bruchophagus maeterlincki
+      - Bruchophagus mandelai
+      - Bruchophagus manii
+      - Bruchophagus maurus
+      - Bruchophagus medicaginis
+      - Bruchophagus mellipes
+      - Bruchophagus mexicanus
+      - Bruchophagus microphtholmus
+      - Bruchophagus mongolicus
+      - Bruchophagus muli
+      - Bruchophagus murrayi
+      - Bruchophagus mutabilis
+      - Bruchophagus natheni
+      - Bruchophagus neepalensis
+      - Bruchophagus negriensis
+      - Bruchophagus niger
+      - Bruchophagus nigrinotatus
+      - Bruchophagus noctua
+      - Bruchophagus noyesi
+      - Bruchophagus ollenbachi
+      - Bruchophagus ononis
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus oxytropidis
+      - Bruchophagus peethavarnus
+      - Bruchophagus phlei
+      - Bruchophagus pidytes
+      - Bruchophagus platypterus
+      - Bruchophagus ponticus
+      - Bruchophagus prathiaegus
+      - Bruchophagus pseudobeijingensis
+      - Bruchophagus quadriguttatus
+      - Bruchophagus queenslandensis
+      - Bruchophagus quinlani
+      - Bruchophagus ravola
+      - Bruchophagus rexus
+      - Bruchophagus ribesi
+      - Bruchophagus robiniae
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus saxatilis
+      - Bruchophagus scaposus
+      - Bruchophagus sculptus
+      - Bruchophagus secundus
+      - Bruchophagus sensoriae
+      - Bruchophagus seravschanicus
+      - Bruchophagus seyali
+      - Bruchophagus shonagatrus
+      - Bruchophagus shonanethrus
+      - Bruchophagus silvensis
+      - Bruchophagus smirnoviae
+      - Bruchophagus sophorae
+      - Bruchophagus soror
+      - Bruchophagus spotus
+      - Bruchophagus striatifemur
+      - Bruchophagus subsulcatus
+      - Bruchophagus tagorei
+      - Bruchophagus tasmanicus
+      - Bruchophagus tasmaniensis
+      - Bruchophagus tauricus
+      - Bruchophagus terrae
+      - Bruchophagus timaspidis
+      - Bruchophagus trigonellae
+      - Bruchophagus verbasci
+      - Bruchophagus vignae
+      - Bruchophagus virginicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+      - Bruchophagus yasumatsui
+    - id: country_species
+      type: membership
+      value:
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus binotatus
+      - Bruchophagus brachyscelidis
+      - Bruchophagus chauceri
+      - Bruchophagus clelandi
+      - Bruchophagus davidi
+      - Bruchophagus eleuther
+      - Bruchophagus fellis
+      - Bruchophagus interior
+      - Bruchophagus niger
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus pidytes
+      - Bruchophagus ravola
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus secundus
+      - Bruchophagus silvensis
+      - Bruchophagus soror
+      - Bruchophagus tasmanicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+  - name: Bruchophagus muli
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bruchophagus abnormis
+      - Bruchophagus abscedus
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus annamalaicus
+      - Bruchophagus apoorvus
+      - Bruchophagus asphodelinae
+      - Bruchophagus astragali
+      - Bruchophagus ater
+      - Bruchophagus bajarii
+      - Bruchophagus beijingensis
+      - Bruchophagus binotatus
+      - Bruchophagus borealis
+      - Bruchophagus brachyscelidis
+      - Bruchophagus brasiliensis
+      - Bruchophagus brevipetiolatus
+      - Bruchophagus bruchophagoides
+      - Bruchophagus capitaticornis
+      - Bruchophagus caucasicus
+      - Bruchophagus cecili
+      - Bruchophagus chauceri
+      - Bruchophagus ciriventris
+      - Bruchophagus clelandi
+      - Bruchophagus coluteae
+      - Bruchophagus coronillae
+      - Bruchophagus davidi
+      - Bruchophagus dorycnii
+      - Bruchophagus eleuther
+      - Bruchophagus evolans
+      - Bruchophagus fellis
+      - Bruchophagus filisilvae
+      - Bruchophagus gibbus
+      - Bruchophagus gijswijti
+      - Bruchophagus glycyrrhizae
+      - Bruchophagus grassius
+      - Bruchophagus grewiae
+      - Bruchophagus grisselli
+      - Bruchophagus haydni
+      - Bruchophagus hedysari
+      - Bruchophagus hippocrepidis
+      - Bruchophagus houardi
+      - Bruchophagus houstoniai
+      - Bruchophagus huangchei
+      - Bruchophagus incrassatus
+      - Bruchophagus indigoferae
+      - Bruchophagus insulare
+      - Bruchophagus interior
+      - Bruchophagus intermedius
+      - Bruchophagus justitia
+      - Bruchophagus kononovae
+      - Bruchophagus lecomtei
+      - Bruchophagus luteobasis
+      - Bruchophagus lyubai
+      - Bruchophagus macronycis
+      - Bruchophagus macronyis
+      - Bruchophagus maeterlincki
+      - Bruchophagus mandelai
+      - Bruchophagus manii
+      - Bruchophagus maurus
+      - Bruchophagus medicaginis
+      - Bruchophagus mellipes
+      - Bruchophagus mexicanus
+      - Bruchophagus microphtholmus
+      - Bruchophagus mongolicus
+      - Bruchophagus muli
+      - Bruchophagus murrayi
+      - Bruchophagus mutabilis
+      - Bruchophagus natheni
+      - Bruchophagus neepalensis
+      - Bruchophagus negriensis
+      - Bruchophagus niger
+      - Bruchophagus nigrinotatus
+      - Bruchophagus noctua
+      - Bruchophagus noyesi
+      - Bruchophagus ollenbachi
+      - Bruchophagus ononis
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus oxytropidis
+      - Bruchophagus peethavarnus
+      - Bruchophagus phlei
+      - Bruchophagus pidytes
+      - Bruchophagus platypterus
+      - Bruchophagus ponticus
+      - Bruchophagus prathiaegus
+      - Bruchophagus pseudobeijingensis
+      - Bruchophagus quadriguttatus
+      - Bruchophagus queenslandensis
+      - Bruchophagus quinlani
+      - Bruchophagus ravola
+      - Bruchophagus rexus
+      - Bruchophagus ribesi
+      - Bruchophagus robiniae
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus saxatilis
+      - Bruchophagus scaposus
+      - Bruchophagus sculptus
+      - Bruchophagus secundus
+      - Bruchophagus sensoriae
+      - Bruchophagus seravschanicus
+      - Bruchophagus seyali
+      - Bruchophagus shonagatrus
+      - Bruchophagus shonanethrus
+      - Bruchophagus silvensis
+      - Bruchophagus smirnoviae
+      - Bruchophagus sophorae
+      - Bruchophagus soror
+      - Bruchophagus spotus
+      - Bruchophagus striatifemur
+      - Bruchophagus subsulcatus
+      - Bruchophagus tagorei
+      - Bruchophagus tasmanicus
+      - Bruchophagus tasmaniensis
+      - Bruchophagus tauricus
+      - Bruchophagus terrae
+      - Bruchophagus timaspidis
+      - Bruchophagus trigonellae
+      - Bruchophagus verbasci
+      - Bruchophagus vignae
+      - Bruchophagus virginicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+      - Bruchophagus yasumatsui
+    - id: country_species
+      type: membership
+      value:
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus binotatus
+      - Bruchophagus brachyscelidis
+      - Bruchophagus chauceri
+      - Bruchophagus clelandi
+      - Bruchophagus davidi
+      - Bruchophagus eleuther
+      - Bruchophagus fellis
+      - Bruchophagus interior
+      - Bruchophagus niger
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus pidytes
+      - Bruchophagus ravola
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus secundus
+      - Bruchophagus silvensis
+      - Bruchophagus soror
+      - Bruchophagus tasmanicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+  pmi:
+  - name: Bruchophagus
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bruchophagus abnormis
+      - Bruchophagus abscedus
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus annamalaicus
+      - Bruchophagus apoorvus
+      - Bruchophagus asphodelinae
+      - Bruchophagus astragali
+      - Bruchophagus ater
+      - Bruchophagus bajarii
+      - Bruchophagus beijingensis
+      - Bruchophagus binotatus
+      - Bruchophagus borealis
+      - Bruchophagus brachyscelidis
+      - Bruchophagus brasiliensis
+      - Bruchophagus brevipetiolatus
+      - Bruchophagus bruchophagoides
+      - Bruchophagus capitaticornis
+      - Bruchophagus caucasicus
+      - Bruchophagus cecili
+      - Bruchophagus chauceri
+      - Bruchophagus ciriventris
+      - Bruchophagus clelandi
+      - Bruchophagus coluteae
+      - Bruchophagus coronillae
+      - Bruchophagus davidi
+      - Bruchophagus dorycnii
+      - Bruchophagus eleuther
+      - Bruchophagus evolans
+      - Bruchophagus fellis
+      - Bruchophagus filisilvae
+      - Bruchophagus gibbus
+      - Bruchophagus gijswijti
+      - Bruchophagus glycyrrhizae
+      - Bruchophagus grassius
+      - Bruchophagus grewiae
+      - Bruchophagus grisselli
+      - Bruchophagus haydni
+      - Bruchophagus hedysari
+      - Bruchophagus hippocrepidis
+      - Bruchophagus houardi
+      - Bruchophagus houstoniai
+      - Bruchophagus huangchei
+      - Bruchophagus incrassatus
+      - Bruchophagus indigoferae
+      - Bruchophagus insulare
+      - Bruchophagus interior
+      - Bruchophagus intermedius
+      - Bruchophagus justitia
+      - Bruchophagus kononovae
+      - Bruchophagus lecomtei
+      - Bruchophagus luteobasis
+      - Bruchophagus lyubai
+      - Bruchophagus macronycis
+      - Bruchophagus macronyis
+      - Bruchophagus maeterlincki
+      - Bruchophagus mandelai
+      - Bruchophagus manii
+      - Bruchophagus maurus
+      - Bruchophagus medicaginis
+      - Bruchophagus mellipes
+      - Bruchophagus mexicanus
+      - Bruchophagus microphtholmus
+      - Bruchophagus mongolicus
+      - Bruchophagus muli
+      - Bruchophagus murrayi
+      - Bruchophagus mutabilis
+      - Bruchophagus natheni
+      - Bruchophagus neepalensis
+      - Bruchophagus negriensis
+      - Bruchophagus niger
+      - Bruchophagus nigrinotatus
+      - Bruchophagus noctua
+      - Bruchophagus noyesi
+      - Bruchophagus ollenbachi
+      - Bruchophagus ononis
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus oxytropidis
+      - Bruchophagus peethavarnus
+      - Bruchophagus phlei
+      - Bruchophagus pidytes
+      - Bruchophagus platypterus
+      - Bruchophagus ponticus
+      - Bruchophagus prathiaegus
+      - Bruchophagus pseudobeijingensis
+      - Bruchophagus quadriguttatus
+      - Bruchophagus queenslandensis
+      - Bruchophagus quinlani
+      - Bruchophagus ravola
+      - Bruchophagus rexus
+      - Bruchophagus ribesi
+      - Bruchophagus robiniae
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus saxatilis
+      - Bruchophagus scaposus
+      - Bruchophagus sculptus
+      - Bruchophagus secundus
+      - Bruchophagus sensoriae
+      - Bruchophagus seravschanicus
+      - Bruchophagus seyali
+      - Bruchophagus shonagatrus
+      - Bruchophagus shonanethrus
+      - Bruchophagus silvensis
+      - Bruchophagus smirnoviae
+      - Bruchophagus sophorae
+      - Bruchophagus soror
+      - Bruchophagus spotus
+      - Bruchophagus striatifemur
+      - Bruchophagus subsulcatus
+      - Bruchophagus tagorei
+      - Bruchophagus tasmanicus
+      - Bruchophagus tasmaniensis
+      - Bruchophagus tauricus
+      - Bruchophagus terrae
+      - Bruchophagus timaspidis
+      - Bruchophagus trigonellae
+      - Bruchophagus verbasci
+      - Bruchophagus vignae
+      - Bruchophagus virginicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+      - Bruchophagus yasumatsui
+    - id: country_species
+      type: membership
+      value:
+      - Bruchophagus acaciae
+      - Bruchophagus albivena
+      - Bruchophagus binotatus
+      - Bruchophagus brachyscelidis
+      - Bruchophagus chauceri
+      - Bruchophagus clelandi
+      - Bruchophagus davidi
+      - Bruchophagus eleuther
+      - Bruchophagus fellis
+      - Bruchophagus interior
+      - Bruchophagus niger
+      - Bruchophagus opus
+      - Bruchophagus orarius
+      - Bruchophagus pidytes
+      - Bruchophagus ravola
+      - Bruchophagus roddi
+      - Bruchophagus rostandi
+      - Bruchophagus secundus
+      - Bruchophagus silvensis
+      - Bruchophagus soror
+      - Bruchophagus tasmanicus
+      - Bruchophagus volux
+      - Bruchophagus vulgaris
+- id: coverage_flags
+  candidate:
+  - name: Bruchophagus muli
+    assertions:
+    - id: flag_5_1
+      type: flag
+      value: C
+    - id: flag_5_3
+      type: flag
+      value: B
+  toi:
+  - name: Bruchophagus abnormis
+    assertions:
+    - id: flag_5_1
+      type: flag
+      value: C
+    - id: flag_5_3
+      type: flag
+      value: B
+  - name: Bruchophagus abscedus
+    assertions:
+    - id: flag_5_1
+      type: flag
+      value: C
+    - id: flag_5_3
+      type: flag
+      value: B
+  - name: Bruchophagus muli
+    assertions:
+    - id: flag_5_1
+      type: flag
+      value: C
+    - id: flag_5_3
+      type: flag
+      value: B
+  pmi:
+  - name: Bruchophagus
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+- id: maps
+  assertions:
+  - id: filenames
+    type: membership
+    value:
+    - map_Bruchophagus.png
+    - map_Bruchophagus_abnormis.png
+    - map_Bruchophagus_abscedus.png
+    - map_Bruchophagus_muli.png

@@ -367,8 +367,27 @@ checks to their producing tasks; `--nft_errors` remains for legacy scenarios.
 The frozen mock workflow predates this evidence and only validates legacy
 post-processing when it is missing.
 
-Initial expectations are added manually with `testkit.py ingest`; later selected
-changes use `testkit.py promote`. Both support `--dry-run`, sample/assertion
-selection and explicit review reasons. Ordinary tests, rendering and CI never
-accept data. Read the core README for exact commands, ownership and unresolved
-migration review; do not regenerate the core snapshot to accept drift.
+Expected values are stored per sample in `test/core/expected/<N>_<sample_id>.yaml`
+(matched by `sample_id`; `<N>` reuses the Selenium fixture number), like
+`test/selenium/expected/`. Check titles, rules and value types are declared in
+`test/core/schema.yaml`. The review page opens with a verdict and a "Needs
+attention" table, then a sample × check matrix and cards only for samples with
+problems.
+
+To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
+`python test/core/testkit.py ingest --sample <sample_id> --assertions <run>/nf-test-assertions.json`
+and rerun. Accept reviewed changes later with
+`python test/core/testkit.py promote <N|sample_id> --assertions <run>/nf-test-assertions.json`.
+Both support `--dry-run`, `--component`/`--assertion` selection and explicit
+review reasons.
+
+Two core pipelines run side by side for now. The original snapshot test,
+`test/core/taxodactyl.workflow.nf.test`, runs in `.github/workflows/nf-test.yml`
+with its flag check. The assertion test, `test/core/taxodactyl.assertions.nf.test`,
+runs in `.github/workflows/nf-test-core-assertions.yml`: run it from Actions →
+nf-test-core-assertions → Run workflow, choosing the branch. Its run page shows
+a short summary; the `nf-test-review-<runner>` artifact holds the full page with
+copies of the files behind each failure. The page explains each check in plain
+words and omits values Selenium owns. Ordinary tests, rendering and CI never accept data. Read the core
+README for exact commands, ownership and unresolved migration review; do not
+regenerate the core snapshot to accept drift.

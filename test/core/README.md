@@ -233,21 +233,42 @@ expected/observed values, diagnostic and artifact paths. No Python code evaluate
 workflow contracts.
 
 **Baseline status:** the user explicitly validated and approved the supplied run
-on 2026-11-23. `expectations.json` now contains its 21,019 core-owned data values
-for all 20 samples, with a shared provenance record quoting that authorization.
-The 245 Selenium-owned fields remain excluded. This approval accepts the data,
-not failed integrity checks or changed Selenium fixtures. The historical
-`.snap` file is retained for coverage review, but is no longer called by core.
-The separate CI flag gate remains migration evidence pending that review. Do not
-remove these historical protections or mark task 12 done until the ownership
-matrix and required live validation are accepted. Other scenarios and Selenium
-code/fixtures/tolerances are unchanged.
+on 2026-11-23. Its core-owned values are stored per sample in
+`expected/<N>_<sample_id>.yaml` (20 files), each with provenance quoting that
+authorization. On the same day they were moved there from the former single
+`expectations.json` (task 12 Phase 5). Following the user's decisions, the
+12,390 per-species related/in-country record counts were dropped, and the 8,190
+full hit sequences became one fingerprint map per sample. The 208 Selenium-owned
+fields are excluded. This approval accepts the data,
+not failed integrity checks or changed Selenium fixtures.
+
+**Two core pipelines run side by side for now (user decision 2026-11-23):**
+
+| | Original | Assertions (task 12) |
+|---|---|---|
+| Test file | `taxodactyl.workflow.nf.test` + `.snap` | `taxodactyl.assertions.nf.test` + `expected/`, `schema.yaml` |
+| CI workflow | `.github/workflows/nf-test.yml` | `.github/workflows/nf-test-core-assertions.yml` |
+| Triggers | PRs to main, Sunday 00:00 UTC, manual | Sunday 12:00 UTC, manual |
+| Flag check | "Test flags" against `flags/` | none (core/Selenium own 5.x values) |
+| Review | snapshot error CSV, Selenium `review.html` | `nf-test-review` artifact, run-page summary, Selenium `review.html` |
+
+The original files are byte-identical to commit `0f715e7`. Retiring them is a
+later decision, after comparing the two. Always name the test file explicitly:
+`nf-test test test/core/` would run both full workflows. Other scenarios and
+Selenium code/fixtures/tolerances are unchanged.
+
+**Known defect:** the `C.pmi` check fails for Scenario_04 and
+barcode_83_P59_Potyviridae_cluster_0_RC205. `scripts/p3_assign_taxonomy.py`
+writes `preliminary_id_match.csv` without a line break between header and row
+(P3-D-008; nothing reads the file). By user decision it stays failing, labelled
+as a known defect, until a separate task fixes the writer; core CI is red for
+that reason alone.
 
 ### Coverage ownership
 
 | Artifact | Core checks | Existing Selenium owner / limits |
 |---|---|---|
-| H `all_hits.fasta`, `all_hits.json` | Unique accession membership, essential hit/HSP schema, input sample identity, FASTA validity, last subject-HSP sequence agreement, reviewed exact sequences and accession membership | Selected BLAST modal values; no duplicate core statistics expectations |
+| H `all_hits.fasta`, `all_hits.json` | Unique accession membership, essential hit/HSP schema, input sample identity, FASTA validity, last subject-HSP sequence agreement; reviewed accession list and per-accession sequence fingerprints (first 16 hex characters of SHA-256) | Selected BLAST modal values; no duplicate core statistics expectations |
 | H/C `query_title.txt`, copied hit files | Input identity and byte-preserving copy through emitted C paths | Input popup identity is a presentation check |
 | C `candidates.json`, `.csv`, `.fasta`, `_count.txt` | Schema, species/accession uniqueness, CSV/JSON/FASTA membership agreement, sequence agreement with H, integer count agrees with species | Candidate table owns displayed species/statistics; core does not baseline those statistics |
 | C `1.flag`, `2.flag`, `7.flag` | One raw record, required fields, configured value domains; uncovered values only | Populated `overview_tab.conclusion_flag`, `toi_flag`, `preliminary_flag`; blank expectations are not owners |
@@ -258,7 +279,7 @@ code/fixtures/tolerances are unchanged.
 | C `candidates_identity_boxplot.png` | Presence iff candidate count exceeds run limit; decoded PNG, positive dimensions | No pixel baseline |
 | S `4.flag`, `aggregated_sources.json` | Exact assessed/skipped channel shape from 1..max candidate rule; candidate/flag/source relationships, publication record structure, reviewed raw source accessions and flag values | Publication modal owns displayed titles/source/count fields; core does not baseline publication text |
 | T `candidates_phylogeny.nwk` | Valid Newick grammar, unique leaves equal selected FASTA plus QUERY; empty only for empty selected FASTA | Tree title/minimum nodes; branching/lengths are deliberately not frozen |
-| D `db_coverage.json` | Per-role target membership; exact uncovered target, per-species related/country counts, and null/NA/empty states | Populated database-coverage target `record_count`; related summary counts; first-bar count when its named species is populated. Existing substring/list comparison and ±10% tolerance remain authoritative |
+| D `db_coverage.json` | Per-role taxon membership; related and in-country **species names**; assessed/not-assessed/null/NA states; count structure (whole numbers or null). **No record count is a core expectation** (user decision 2026-11-23): target counts not owned by Selenium appear on the review page as "not checked" | Populated database-coverage `record_count`, species count/total and bars. Existing substring/list comparison and ±10% tolerance remain authoritative |
 | F `5.1.flag`, `5.2.flag`, `5.3.flag` | Three filenames per sample; unique `(flag,role,target)` records agree with D membership; uncovered values only | Populated `flag_text1/2` for the exact role and taxon. Country `final_text` is explanatory text, not an assertion of raw 5.3 value |
 | M `map*.png` | Per-sample reviewed map filenames; unique names; decoded PNG dimensions | Country messages do not cover raw images |
 | HTML | Reject unknown/duplicate/misassociated emitted paths | Per-sample report presence and browser contents remain exclusively Selenium |
@@ -337,7 +358,7 @@ Run from the repository root, after resolving `test/core/nextflow.config` paths:
 mkdir -p /absolute/run/nf-test
 export CORE_ASSERTIONS_OUTPUT=/absolute/run/nf-test/nf-test-assertions.json
 nf-test test -c /absolute/run/core.nf-test.config \
-  test/core/taxodactyl.workflow.nf.test --ci \
+  test/core/taxodactyl.assertions.nf.test --ci \
   --junitxml /absolute/run/nf-test/nf-test.xml
 source scripts/venv/bin/activate
 python test/core/testkit.py render \
@@ -346,33 +367,114 @@ python test/core/testkit.py render \
   --output /absolute/run/nf-test/nf-test-review.html
 ```
 
-A new unbaselined run **fails** while still collecting all observations. Review
-invariants, ownership and values before manually adding selected missing entries:
+A sample without expectations **fails** ("needs baseline") while still collecting
+all observations and running every rule check.
+
+### Expected files
+
+`expected/<N>_<sample_id>.yaml` holds one sample's reviewed values, laid out like
+the Selenium fixtures (`components` → `assertions` with `id`, `type`, `value`;
+grouped components list `{name, assertions}` per role or candidate). The file is
+matched by its `sample_id:` key; `<N>` reuses the number of the Selenium fixture
+for the same sample (`test/selenium/expected/<N>_<sample_id>.yaml`), otherwise
+the next unused number. Components, value types, titles and the rule text shown
+on the review page are declared once in `schema.yaml`. Groovy refuses to emit a
+check or value that is not declared there. `CoreAssertions.groovy` contains no
+sample IDs. Only `ingest`/`promote` write these files; do not hand-edit values.
+
+The `expected.files` check fails, naming the file, for an orphan file (sample not
+in `metadata.csv`), two files with the same `sample_id`, an unknown component or
+assertion, or an invalid value. A stored value that is no longer observed (a
+taxon vanished, or Selenium now owns it) fails as **stale**; `promote` offers to
+remove it. Stale reporting is suppressed for a component whose rule check
+already failed, so one broken file does not cascade into many failures.
+
+### Adding a sample
+
+1. Add a row to `test/core/metadata.csv`. Nothing else changes.
+2. Run core (commands above). The new sample's rule checks run; its values are
+   "needs baseline", so the test fails.
+3. Render the review page and check the sample under **Needs attention**.
+4. Ingest after review:
+
+   ```bash
+   python test/core/testkit.py ingest --sample <sample_id> \
+     --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
+   # Remove --dry-run; answer y / n / a (all in this sample) / q; give a reason.
+   ```
+
+   This writes `test/core/expected/<N>_<sample_id>.yaml`.
+5. Rerun core. To remove a sample, delete its `metadata.csv` row and its file.
+
+### Accepting later changes
 
 ```bash
-python test/core/testkit.py ingest --sample Scenario_04 \
-  --assertion 'D.count/pmi/Bruchophagus/related/Bruchophagus lecomtei' \
+python test/core/testkit.py promote 16 \
   --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
-# Remove --dry-run to review each entry interactively; provide a reason.
+# Target by number (16), file stem (16_Scenario_04) or sample_id; or --all.
+# Narrow with --component database_coverage or --assertion <id or name>.
 ```
 
-For later changes to existing entries:
+Ingest adds missing values and never overwrites an existing one; promote changes
+or removes existing values and never invents one. Both preview each value (lists
+as `+added / −removed`, fingerprints by accession), require acceptance and a
+reason, and refuse: incomplete or errored evaluations; stale assertion code,
+schema or Selenium ownership; a sample file edited since the evaluation; and
+samples with rule failures (with `--all` such samples are skipped and named).
+Writes are atomic and update `date:`/`provenance:`. The previous file is kept
+in ignored `expected/.backups/<stem>.<timestamp>.yaml` (last three per file).
+Selenium fixtures, flag files, assertion code and the schema are never written.
+Rendering and CI are read-only. After any acceptance, rerun the core invocation
+above. nf-test 0.9.5 has no documented assertion-only replay flag in its CLI;
+no replay is promised. Original failure records stay unchanged.
+
+### Reading the review page
+
+- **Verdict:** `PASSED`, `NEEDS BASELINE` (values without expectations), `DRIFT`
+  (stored values changed), `FAILED` (a rule check failed), `INCOMPLETE` (workflow
+  or evaluation error, or missing/invalid JUnit), or `INVALID EVIDENCE`.
+- **Run health:** workflow, evaluation, JUnit and expectation-file status.
+- **Needs attention:** one row per problem, most serious first, linking to the
+  sample card. Changed values are grouped per sample and component.
+- **What this test checks:** for each area, which files are read and which step
+  writes them, every rule check and stored value in plain words, and this run's
+  counts. Text comes from `schema.yaml` (`description`, `files`, `producer`,
+  `explain`, `on_fail`, `known_defect`).
+- **Samples × checks:** ✔ passed, ✖ failed, ? needs baseline.
+- **Sample details:** only samples with problems. Each row shows *what should be
+  true*, *what was found* (the assertion's plain message, e.g. "found 1 line …
+  header and data joined: missing line break") and *likely cause / next step*,
+  with a known-defect note where catalogued. The raw Groovy expression is under
+  "Technical detail". Links go to the files that check read, followed by a
+  copyable `promote`/`ingest` command.
+- **Reference (collapsed):** commands, channel legend, native nf-test diagnostics.
+
+Values owned by Selenium (208 in the baseline) are not shown on this page. They
+stay in the evidence JSON and `coverage-ownership.tsv`; the Selenium review shows
+their results. Every `assert` in `CoreAssertions.groovy` carries a plain message,
+enforced by a test.
+
+### In CI
+
+`.github/workflows/nf-test-core-assertions.yml` (Actions →
+nf-test-core-assertions → Run workflow, choosing the branch) runs
+`taxodactyl.assertions.nf.test` with `CORE_REPO_ROOT` set and then:
+- writes the verdict and needs-attention table to the run's summary page;
+- uploads the `nf-test-review-<runner>` artifact, a self-contained folder.
+  Open `nf-test-review.html` inside it; links point to copies of the files behind
+  each failure, plus the evidence JSON, JUnit XML and nf-test logs;
+- on the self-hosted runner, keeps `/var/runner/<timestamp>/` and
+  `nf-test-run.tar.gz` there. Copy runs elsewhere with the tarball: zip archives
+  and artifact downloads can drop symlinks and files whose names differ only in
+  case. A retained copy lost `map_Bulimulus_sporadicus.png` that way.
+
+Render a local bundle the same way:
 
 ```bash
-python test/core/testkit.py promote Scenario_04 \
-  --assertion 'D.count/pmi/Bruchophagus/related/Bruchophagus lecomtei' \
-  --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
+python test/core/testkit.py render --junit <run>/nf-test.xml \
+  --assertions <run>/nf-test-assertions.json --output <run>/nf-test-review.html \
+  --summary <run>/nf-test-summary.md --bundle-dir <run>/nf-test-review
 ```
-
-Only manual commands write `expectations.json`. Ingest never overwrites an
-existing key; promote never invents a missing one. Both preview changes, require
-per-entry acceptance and a reason, reject stale expectation/code/ownership digests and
-incomplete/invalid/invariant-failing evidence, write atomically, and retain three
-previous files in ignored `.backups/`. Only defined core data fields are eligible.
-Selenium fixtures, flag files and assertion code are never written. Rendering and
-CI are read-only. After any acceptance, rerun the core invocation above. nf-test
-0.9.5 has no documented assertion-only replay flag in its CLI; no replay is
-promised. Original failure records stay unchanged.
 
 HTML and JSON/XML should stay together in the retained bundle. Links point only
 to existing files within that bundle, using relative paths. A standalone uploaded
@@ -388,12 +490,24 @@ PYTHONPATH=scripts python -m unittest discover -s scripts/tests -p 'test_nf_test
 java -cp "$NFT_JAR" groovy.ui.GroovyMain test/core/contracts.test.groovy "$PWD"
 ```
 
-The Groovy scenarios use disposable synthetic files and demonstrate valid empty
-and skipped cases, initial unbaselined evaluation, accepted synthetic data,
-missing/duplicate/wrongly associated samples, malformed outputs, missing/extra or
-duplicated P5 records, value-only and count-only drift, and independent failures.
-Python tests cover render failures/escaping/portable links, explicit scoped
-updates, stale evidence, rejected input, unchanged unrelated fields and backups.
+The Groovy scenarios (22) use disposable synthetic files. They cover:
+- valid empty and skipped cases, and a new sample without a file (needs baseline);
+- accepted synthetic data;
+- missing, duplicate or wrongly associated samples, and malformed outputs;
+- missing, extra or duplicated P5 records, and changed flag values;
+- record-count changes that must not fail core, while changed species names must;
+- a changed hit sequence failing only its fingerprint;
+- Selenium-owned values, including a stored core value that Selenium now owns;
+- stale entries, orphan or duplicate files, unknown assertions, and independent failures.
+
+The Python tests (37) cover:
+- verdicts, the needs-attention order and rule text;
+- list and fingerprint change descriptions, a large passing run staying small,
+  escaping, and portable links;
+- schema labels, and that no sample ID appears in `CoreAssertions.groovy`;
+- per-sample ingest/promote: numbering, target resolution, `a`/`q` answers,
+  per-sample freshness, blocking by rule failures, removal of stale entries,
+  unchanged other files, backups, and quoting of fingerprints for SnakeYAML.
 The real baseline was accepted through explicit user validation, independently
 of these synthetic tests. Baseline data acceptance does not relabel failed
 invariants as passing.
@@ -401,18 +515,13 @@ invariants as passing.
 
 ### Accepted baseline verification — 2026-11-23
 
-The baseline accepts only data values marked core-owned in the retained Groovy
-observations. All entries reference `provenance.validated-2026-11-23`, which records
-the user's explicit validation, source run, code/ownership/evidence digests and
-retained integrity findings. Assertions remain individually addressable for
-selective future promotion. Shared provenance avoids repeating the same run
-metadata in every entry.
-
-All 21,019 accepted data values pass comparison; zero are unbaselined. The
-remaining three failures are integrity checks, not missing baseline values.
-Comparison against the disposable reconstructed staging view is retained in
-`.nf-test/task12-review/accepted-assertions.json` and
-`accepted-evaluation.log`. The original pre-acceptance sidecar remains unchanged.
-The PMI CSV and missing lowercase map findings remain failures; accepting numeric,
-sequence and membership values does not disable those checks. The standalone
-review remains explicit about absent historical native JUnit.
+All values come from the user-validated run (provenance in each file's
+`provenance:` block). After the Phase 5 move into per-sample files, re-evaluating
+the retained run (disposable reconstructed staging view) gives 1,021 rows:
+810 passed, 208 owned by Selenium, 0 needing a baseline, 0 stale, and three rule
+failures. Those are the two malformed PMI CSVs (P3-D-008) and the missing
+lowercase map `map_Bulimulus_sporadicus.png`, now a failure rather than an
+evaluation error. Evidence: `.nf-test/task12-review/phase5-assertions.json`
+and `phase5-review.html` (62 KB; the former page was 17 MB). The PMI CSV and map
+findings remain failures; accepting values does not disable those checks. The
+standalone review remains explicit about absent historical native JUnit.

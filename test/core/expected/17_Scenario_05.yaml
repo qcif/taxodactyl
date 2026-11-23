@@ -1,0 +1,3041 @@
+sample_id: Scenario_05
+date: '2026-11-23T06:31:55.109129714Z'
+provenance:
+  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
+  source_test: test/core/taxodactyl.workflow.nf.test
+  evaluated_at: '2026-11-23T06:31:55.109129714Z'
+  accepted_at: '2026-11-23'
+  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+components:
+- id: blast_hits
+  assertions:
+  - id: accessions
+    type: membership
+    value:
+    - AB738096
+    - AB738098
+    - AB738115
+    - AB738116
+    - AB738123
+    - AB738126
+    - AB738131
+    - AB738144
+    - AB738145
+    - AB738193
+    - AB738213
+    - AB738253
+    - AB738273
+    - AB738274
+    - AB738283
+    - AB738295
+    - AB738307
+    - HQ398902
+    - HQ398909
+    - JQ235743
+    - KC250445
+    - KC690917
+    - KC690937
+    - KC690946
+    - KC690949
+    - KF406580
+    - KF406581
+    - KF406584
+    - KF406585
+    - KF406590
+    - KF406591
+    - KF406595
+    - KF406598
+    - KF406606
+    - KF406613
+    - KF406614
+    - KF406618
+    - KF406619
+    - KF406620
+    - KF406621
+    - KF406622
+    - KJ768136
+    - KJ940561
+    - KJ940562
+    - KJ940564
+    - KJ940568
+    - KJ940569
+    - KJ940570
+    - KJ940572
+    - KJ940574
+    - KJ940576
+    - KJ940577
+    - KJ940579
+    - KJ940581
+    - KJ940582
+    - KJ940586
+    - KJ940588
+    - KJ940591
+    - KJ940597
+    - KJ940598
+    - KJ940604
+    - KJ940605
+    - KJ940609
+    - KJ940612
+    - KJ940618
+    - KJ940619
+    - KJ940624
+    - KJ940626
+    - KJ940628
+    - KJ940629
+    - KJ940630
+    - KJ940637
+    - KJ940683
+    - KJ940684
+    - KJ940686
+    - KJ940687
+    - KJ940689
+    - KJ940690
+    - KJ940692
+    - KM613083
+    - KM613084
+    - KM613085
+    - KM613121
+    - KP843372
+    - KP843373
+    - KT358463
+    - KT358465
+    - KT358466
+    - KT358468
+    - KU380388
+    - KU380451
+    - KU543671
+    - KX052476
+    - KX052479
+    - KX052482
+    - KX052485
+    - KX052486
+    - KX052489
+    - KX052491
+    - KX052496
+    - KX052506
+    - KX886299
+    - KX886300
+    - KX886301
+    - KX886302
+    - KX886303
+    - KX886308
+    - KY420724
+    - KY420725
+    - KY420726
+    - KY420767
+    - KY420768
+    - KY420769
+    - KY420770
+    - KY420772
+    - KY420775
+    - KY420776
+    - KY420813
+    - KY765464
+    - KY765465
+    - KY765466
+    - LC054327
+    - LC054355
+    - LC054356
+    - LC054357
+    - LC054358
+    - LC054359
+    - LC054360
+    - LC054361
+    - LC054390
+    - LC054391
+    - LC054392
+    - LC054393
+    - LC054394
+    - LC507873
+    - LC646424
+    - LC646425
+    - LC646426
+    - LC646427
+    - LC646428
+    - LC646429
+    - LC646430
+    - LC646431
+    - LC646432
+    - LC646433
+    - LC646435
+    - LC646437
+    - LC646438
+    - LC662755
+    - LC669946
+    - LC669947
+    - LC670005
+    - LC705057
+    - LC881946
+    - LC881951
+    - LC881952
+    - LC881954
+    - LC881957
+    - LC881958
+    - LC881961
+    - LC881962
+    - MF429950
+    - MG242527
+    - MG921173
+    - MH330197
+    - MH330198
+    - MH817521
+    - MK491498
+    - MK575481
+    - MN102102
+    - MN552298
+    - MN733754
+    - MN733755
+    - MN733756
+    - MN733757
+    - MN733758
+    - MT519729
+    - MT519730
+    - MT590371
+    - MT741508
+    - MW321934
+    - MW321935
+    - MW321936
+    - MW321937
+    - MW321938
+    - MW321939
+    - MW465951
+    - MW539230
+    - MW539231
+    - MW539232
+    - MW539233
+    - MW539234
+    - MW539235
+    - MW539236
+    - MW539237
+    - MW539238
+    - MW539239
+    - MW539240
+    - MW539241
+    - MW539242
+    - MW539243
+    - MW539244
+    - MW539245
+    - MW539246
+    - MW539247
+    - MW539248
+    - MW539249
+    - MW539250
+    - MW539251
+    - MW539252
+    - MW539253
+    - MW539254
+    - MW539255
+    - MW539256
+    - MW539257
+    - MW539258
+    - MW539259
+    - MW539260
+    - MW539261
+    - MW539262
+    - MW539263
+    - MW539264
+    - MW539265
+    - MW539266
+    - MW539267
+    - MW539268
+    - MW539269
+    - MW539270
+    - MW539271
+    - MW539272
+    - MW539273
+    - MW539274
+    - MW539275
+    - MW539276
+    - MW539277
+    - MW539278
+    - MW539279
+    - MW539280
+    - MW539281
+    - MW539282
+    - MW539283
+    - MW539284
+    - MW539285
+    - MW539286
+    - MW539287
+    - MW539288
+    - MW539289
+    - MW539290
+    - MW539291
+    - MW539292
+    - MW539293
+    - MW539294
+    - MW539295
+    - MW539297
+    - MW539298
+    - MW539299
+    - MW539300
+    - MW539301
+    - MW539302
+    - MW539303
+    - MW539304
+    - MW539305
+    - MW539306
+    - MW539307
+    - MW539308
+    - MW539309
+    - MW539310
+    - MW539311
+    - MW539312
+    - MW539313
+    - MW539314
+    - MW539315
+    - MW539316
+    - MW539317
+    - MW539318
+    - MW539319
+    - MW539321
+    - MW539322
+    - MW539323
+    - MW539324
+    - MW539325
+    - MW539327
+    - MW539328
+    - MW539329
+    - MW539330
+    - MW539331
+    - MW539332
+    - MW539333
+    - MW539334
+    - MW539335
+    - MW539336
+    - MW539337
+    - MW539338
+    - MW539339
+    - MW539340
+    - MW539341
+    - MW539342
+    - MW539343
+    - MW539344
+    - MW539345
+    - MW539346
+    - MW539347
+    - MW539348
+    - MW539349
+    - MW539350
+    - MW539351
+    - MW539352
+    - MW539353
+    - MW539354
+    - MW539355
+    - MW539356
+    - MW539357
+    - MW539358
+    - MW539359
+    - MW539360
+    - MW539361
+    - MW539362
+    - MW539363
+    - MW539364
+    - MW539365
+    - MW539366
+    - MW539367
+    - MW539368
+    - MW539369
+    - MW539370
+    - MW539371
+    - MW539372
+    - MW539373
+    - MW539374
+    - MW539375
+    - MW539376
+    - MW539377
+    - MW539378
+    - MW539379
+    - MW539380
+    - MW539381
+    - MW539382
+    - MW539383
+    - MW539384
+    - MW539385
+    - MW539386
+    - MW539387
+    - MW539388
+    - MW539389
+    - MW539390
+    - MW539391
+    - MW539392
+    - MW539393
+    - MW539394
+    - MW539395
+    - MW664762
+    - MW664763
+    - MW664764
+    - MW664765
+    - MW664766
+    - MW664767
+    - MW664768
+    - MW664769
+    - MW664770
+    - MW664771
+    - MW664772
+    - MW664773
+    - MW664774
+    - MW664775
+    - MW664776
+    - MW664777
+    - MW664778
+    - MW664779
+    - MW664780
+    - MW664781
+    - MW664782
+    - MW664783
+    - MW664784
+    - MW664785
+    - MW664786
+    - MW664787
+    - MW664788
+    - MW664789
+    - MW664790
+    - MW664791
+    - MW664792
+    - MW664793
+    - MW664794
+    - MW664795
+    - MW664796
+    - MW664797
+    - MW664798
+    - MW664799
+    - MW664800
+    - MW664801
+    - MW664802
+    - MW664803
+    - MW664804
+    - MW664805
+    - MW664806
+    - MW664807
+    - MW664808
+    - MW664809
+    - MW664810
+    - MW664811
+    - MW664812
+    - MW664813
+    - MW664814
+    - MW664815
+    - MW664816
+    - MW664817
+    - MW664818
+    - MW664819
+    - MW664820
+    - MW664821
+    - MW664822
+    - MW664823
+    - MW664834
+    - MW664835
+    - MW664836
+    - MW664837
+    - MW664838
+    - MW664839
+    - MW664840
+    - MW664841
+    - MW664842
+    - MW664843
+    - MW664844
+    - MW664845
+    - MW664846
+    - MW664847
+    - MW664848
+    - MW664849
+    - MW664850
+    - MW664851
+    - MW664852
+    - MW664853
+    - MW664854
+    - MW664855
+    - MW664856
+    - MW664857
+    - MW664858
+    - MW961311
+    - MZ206333
+    - MZ230341
+    - MZ230342
+    - MZ230344
+    - MZ230345
+    - MZ230346
+    - MZ230347
+    - MZ230348
+    - MZ230349
+    - MZ230350
+    - MZ230351
+    - MZ230352
+    - MZ230353
+    - MZ230354
+    - MZ230355
+    - MZ230356
+    - MZ230357
+    - MZ230358
+    - MZ230359
+    - NC_028025
+    - NC_050044
+    - OK413074
+    - OK413075
+    - OK413076
+    - OK413077
+    - OL331077
+    - OL331079
+    - OL331087
+    - OL348174
+    - OL348175
+    - OL348176
+    - OL851671
+    - OP317577
+    - OQ145431
+    - OQ145432
+    - OQ908965
+    - PP862745
+    - PQ163793
+    - PQ477920
+    - PQ499047
+    - PQ539599
+    - PQ539600
+    - PQ788195
+    - PV110858
+    - PV110859
+    - PV474099
+    - PV474100
+    - PV474101
+    - PX317518
+    - PX499745
+    - PX499746
+    - PX499748
+    - PX499749
+    - PX499750
+    - PX499751
+    - PX499752
+    - PX499753
+    - PX674721
+    - PX674722
+    - PX852270
+    - XR_009995791
+    - XR_009998906
+  - id: sequence_fingerprints
+    type: fingerprints
+    value:
+      AB738096: '37d6465d98a0f69a'
+      AB738098: '50f79d4abd561d14'
+      AB738115: 'd0c6e69a37b490fe'
+      AB738116: 'c87e0f2f36b6ac9d'
+      AB738123: '6491fdecd37e53a2'
+      AB738126: '45fa038dc2651c4b'
+      AB738131: '4516e86fa7805018'
+      AB738144: '896dc523b89495ec'
+      AB738145: '0213f6c56ddcd63c'
+      AB738193: 'ffdd6dd1058e74b9'
+      AB738213: '75d6896c7329e7ed'
+      AB738253: '3c49bd97fc62406d'
+      AB738273: 'afcf1c0d52891772'
+      AB738274: 'b0ddd7514360a824'
+      AB738283: '171afe4914fb852f'
+      AB738295: '82fca352941fdacf'
+      AB738307: '2015cac5926dc8bc'
+      HQ398902: '9eaf0340c222a52c'
+      HQ398909: '694842628bd8bf27'
+      JQ235743: '3059eb3fa828eac5'
+      KC250445: '164a0ca293ae16b3'
+      KC690917: '8e7e3e68ccff789a'
+      KC690937: 'de01616ccdee3500'
+      KC690946: 'de01616ccdee3500'
+      KC690949: 'de01616ccdee3500'
+      KF406580: '0716b00ff594466d'
+      KF406581: 'c7f24faec2a61acf'
+      KF406584: '495d889c399ecdea'
+      KF406585: '771486c26b4c1185'
+      KF406590: 'e2d1162b64496eaa'
+      KF406591: '98f9f841b59cb42e'
+      KF406595: '344b5ba41209cbbb'
+      KF406598: 'a3f7d56b71e21d02'
+      KF406606: '226b94aeef974dbc'
+      KF406613: '909d3014217a0750'
+      KF406614: '93e645438b80a820'
+      KF406618: '8ef1bdb32fc75261'
+      KF406619: '62ce48fb8b052346'
+      KF406620: '2b5d6893dc653640'
+      KF406621: '2c55f88e8baefe0c'
+      KF406622: '74652de5b85928c1'
+      KJ768136: '78f6e64554a18b4e'
+      KJ940561: 'cb91f462a7cb0ea5'
+      KJ940562: '4f8d974eb434508b'
+      KJ940564: '436940f670b03c61'
+      KJ940568: '545193dc146fbcbd'
+      KJ940569: '2a3c1f9062f91b37'
+      KJ940570: 'c40aaf8f16ed37c3'
+      KJ940572: 'fa3262236429efc4'
+      KJ940574: 'ac488023b8f54d3d'
+      KJ940576: '1daac57fc057ab99'
+      KJ940577: 'c4e14ebc1498f75c'
+      KJ940579: 'fa3262236429efc4'
+      KJ940581: 'b433ff9397460e88'
+      KJ940582: '59355a94a274c44c'
+      KJ940586: '621f6bff307e1536'
+      KJ940588: 'c7474e6f2e4bac5c'
+      KJ940591: '1e57ff2db914699f'
+      KJ940597: 'd313c62af10c95cd'
+      KJ940598: 'd313c62af10c95cd'
+      KJ940604: '36fd919433707bad'
+      KJ940605: '30351a5a4f34fe8a'
+      KJ940609: '2634c0a5ec3b45a5'
+      KJ940612: 'dbe6b6804a6de944'
+      KJ940618: '63404a53cde26c02'
+      KJ940619: '0f60011661188fcd'
+      KJ940624: '9cdae835643230c5'
+      KJ940626: 'd313c62af10c95cd'
+      KJ940628: '5b0eab41661ee642'
+      KJ940629: 'fa3262236429efc4'
+      KJ940630: '03b8411adb25341e'
+      KJ940637: 'd313c62af10c95cd'
+      KJ940683: '99a84803d4c1e03d'
+      KJ940684: 'aa319a8e8c67ed9d'
+      KJ940686: '99a84803d4c1e03d'
+      KJ940687: '99a84803d4c1e03d'
+      KJ940689: '9704dda460f49d5d'
+      KJ940690: 'dce7733a36454164'
+      KJ940692: 'd313c62af10c95cd'
+      KM613083: '31d6065edf508e1d'
+      KM613084: 'adf37d4b43b85af9'
+      KM613085: 'a7d05aa535bb5a1b'
+      KM613121: 'b3cb99abe07edf06'
+      KP843372: '0e23c4b5d94bdfd6'
+      KP843373: 'd5488bdba7fc3199'
+      KT358463: 'f4730c567c1d1822'
+      KT358465: 'f4e89f44e2977c22'
+      KT358466: 'f66dc3056784df92'
+      KT358468: '2e79c2c3ee5355f7'
+      KU380388: 'e80e56e6849fb641'
+      KU380451: '53c9311d70f366b7'
+      KU543671: '076da501f37665b4'
+      KX052476: '659da08e9f7c28e7'
+      KX052479: '4910c876f0a354ce'
+      KX052482: 'ae6347020e310914'
+      KX052485: '9073abceccf07d85'
+      KX052486: 'ae6347020e310914'
+      KX052489: '0347ea71afd4839d'
+      KX052491: 'ae6347020e310914'
+      KX052496: '7c791b6872ff0f9e'
+      KX052506: '739ed1522ed60bca'
+      KX886299: 'b412c292c4dcb725'
+      KX886300: '91dbb455e68017df'
+      KX886301: '3b834c289c147a50'
+      KX886302: '55d6c86b3d1c3d2a'
+      KX886303: '8967025174da08be'
+      KX886308: '572c40fcb90163fb'
+      KY420724: '6672a44cae571333'
+      KY420725: '999258c7e9705e2e'
+      KY420726: 'cff3fffe77d4870c'
+      KY420767: '8de8a0d46987017f'
+      KY420768: '999258c7e9705e2e'
+      KY420769: 'bcf5e740aa8f1cff'
+      KY420770: '04c495933eb3437b'
+      KY420772: 'fea440d05001fe44'
+      KY420775: '627834b3edfe6877'
+      KY420776: '9004578b7596c20c'
+      KY420813: 'fc300750412a1cc5'
+      KY765464: '4b7839479ff7032a'
+      KY765465: '1039929a67f2d43e'
+      KY765466: '78f08aaba61114d1'
+      LC054327: 'e0ed0ddb20e92c7d'
+      LC054355: '2995a4ae00bed132'
+      LC054356: '2b2a242f1e6c38f5'
+      LC054357: '6aa031ad3d7b742f'
+      LC054358: '38555f9be219af27'
+      LC054359: '95ac51618f613e8a'
+      LC054360: '167be46d2a2a55ef'
+      LC054361: '989432cb87a22c4b'
+      LC054390: '797bfe2a04d93cf5'
+      LC054391: 'b33b86082a46b10b'
+      LC054392: 'd018248358c7fcfd'
+      LC054393: 'c99c2efc2b4e4d89'
+      LC054394: 'c6342c7db5726a83'
+      LC507873: 'd6058b4e99ae45c9'
+      LC646424: '95f6dca185a4768a'
+      LC646425: 'c58279b6804f18dd'
+      LC646426: 'd212c979835b6424'
+      LC646427: '298836afe9d11d09'
+      LC646428: '7127691b4c8dfb1b'
+      LC646429: '2381a9673ab7535d'
+      LC646430: '29deeca105b3ff9b'
+      LC646431: '63e4d80e6d5100d0'
+      LC646432: '29deeca105b3ff9b'
+      LC646433: '29deeca105b3ff9b'
+      LC646435: '2381a9673ab7535d'
+      LC646437: 'ac4273e6ed5a8841'
+      LC646438: '29deeca105b3ff9b'
+      LC662755: '0d9cf1b19363e0cd'
+      LC669946: '250b7c46520eeecb'
+      LC669947: '73a7c555fd9fd2ce'
+      LC670005: '1ac8f7bfcf2477ea'
+      LC705057: '8541cfae5349bde0'
+      LC881946: 'debdb75d6c9e58a1'
+      LC881951: '4a66a2cc1f8cf922'
+      LC881952: 'c9e8f3f89b5f9aa2'
+      LC881954: '99d147e06f8da3df'
+      LC881957: 'a593581a6cf458e7'
+      LC881958: 'df5542041a1403e4'
+      LC881961: '1d7267185d4a6404'
+      LC881962: 'b735a1364204ae36'
+      MF429950: 'ca2317804c6084ff'
+      MG242527: '40409d2e9cee2b0f'
+      MG921173: '5a2d0ed65c05d7ff'
+      MH330197: '5d039d3b825b92aa'
+      MH330198: '7a6466856173ef14'
+      MH817521: 'de01616ccdee3500'
+      MK491498: 'cd63d5e8e6a27099'
+      MK575481: 'ee93d06a40b11a4f'
+      MN102102: 'ac2cef38bb8dd77e'
+      MN552298: '91773a1405c5b2fd'
+      MN733754: 'ba257d3adaf47adc'
+      MN733755: 'ba257d3adaf47adc'
+      MN733756: '89b7ef5b559bf838'
+      MN733757: '2a9c66fd854e9928'
+      MN733758: '0945976992233e1a'
+      MT519729: '68e1d9c982f76ad4'
+      MT519730: '68e1d9c982f76ad4'
+      MT590371: '66e5db4f43166493'
+      MT741508: 'b603633c4778cc61'
+      MW321934: '25c9896245e16af2'
+      MW321935: '6395d1aa0b48eaa6'
+      MW321936: 'd5607bbafb1995eb'
+      MW321937: 'b0b0ccecc6620c4b'
+      MW321938: 'b41760c684e8630d'
+      MW321939: 'b41760c684e8630d'
+      MW465951: '0bd56bd2f13fe62d'
+      MW539230: '545fdbfb170d1e5f'
+      MW539231: 'ef155edd72d050f8'
+      MW539232: 'acbc6aa43d00c569'
+      MW539233: '07f5bd02baa39da4'
+      MW539234: 'eadff6a9e701c9a6'
+      MW539235: 'ecb58450b9d24142'
+      MW539236: 'd6bc155edfcbfac1'
+      MW539237: 'a98be89bf608cb6b'
+      MW539238: '07f5bd02baa39da4'
+      MW539239: 'f588ebef3ff60d39'
+      MW539240: 'f382d530cede4243'
+      MW539241: '6f894e87b25b67ba'
+      MW539242: '71a7cfad6f97bd74'
+      MW539243: '97fc47e84129a244'
+      MW539244: 'f588ebef3ff60d39'
+      MW539245: '97fc47e84129a244'
+      MW539246: 'ef155edd72d050f8'
+      MW539247: '125e643eca0fcc5d'
+      MW539248: 'a7234269ba0b819f'
+      MW539249: '97fc47e84129a244'
+      MW539250: '5c8e80dfad4a8db0'
+      MW539251: '52a9c3f17bf2e7b3'
+      MW539252: '54e515c34f31120b'
+      MW539253: 'd44315e6773d0807'
+      MW539254: '6c3775594518718b'
+      MW539255: '4a66a2cc1f8cf922'
+      MW539256: '1c254ae04723474d'
+      MW539257: '7049288276a50d58'
+      MW539258: '9f4d21e3fa2f5ec3'
+      MW539259: 'acbc6aa43d00c569'
+      MW539260: '5af352d86f9af61b'
+      MW539261: '5c8e80dfad4a8db0'
+      MW539262: '66c6a6d3f457b1a6'
+      MW539263: '07f5bd02baa39da4'
+      MW539264: '5af352d86f9af61b'
+      MW539265: 'ecb58450b9d24142'
+      MW539266: '6267898a0fa4a4f9'
+      MW539267: 'f325e130b8b3cb5f'
+      MW539268: '50f824e3e64727c3'
+      MW539269: '83a3f1e61194bc10'
+      MW539270: '8ddc1106e59cf549'
+      MW539271: 'ccf40a63999e53c2'
+      MW539272: 'ccf40a63999e53c2'
+      MW539273: 'd1a73fcce137b18f'
+      MW539274: '50f824e3e64727c3'
+      MW539275: 'fa318b523f8fc29c'
+      MW539276: '50f824e3e64727c3'
+      MW539277: '50f824e3e64727c3'
+      MW539278: 'd8d51a76199b4a56'
+      MW539279: '4a66a2cc1f8cf922'
+      MW539280: '97fc47e84129a244'
+      MW539281: '2de6f43096578a43'
+      MW539282: '68637859e12b3559'
+      MW539283: '7ea50bdafe7eff97'
+      MW539284: '9b50df90e44f3450'
+      MW539285: '8da09f234836c601'
+      MW539286: 'bd3603194a967397'
+      MW539287: '50f824e3e64727c3'
+      MW539288: 'd8d51a76199b4a56'
+      MW539289: '0550809b84bbb7f8'
+      MW539290: 'd2bcfbe3cb189d19'
+      MW539291: '69ffb908ecf2f324'
+      MW539292: 'd8d51a76199b4a56'
+      MW539293: '4256add297f5508c'
+      MW539294: 'd8d51a76199b4a56'
+      MW539295: '1bf6df26f3b712b0'
+      MW539297: 'a0f195aca8d5c31e'
+      MW539298: 'a0f195aca8d5c31e'
+      MW539299: 'd2bcfbe3cb189d19'
+      MW539300: '4256add297f5508c'
+      MW539301: '4256add297f5508c'
+      MW539302: 'd8d51a76199b4a56'
+      MW539303: '2be7549c33664873'
+      MW539304: 'a0f195aca8d5c31e'
+      MW539305: 'd8d51a76199b4a56'
+      MW539306: 'afa077b9d3cd6100'
+      MW539307: 'bcc3fdaab18ef8bd'
+      MW539308: 'ff48334372f6d716'
+      MW539309: 'bc8998621932d23f'
+      MW539310: '97fc47e84129a244'
+      MW539311: '97fc47e84129a244'
+      MW539312: '4ade814bdf728155'
+      MW539313: '9ff88935ad87956d'
+      MW539314: 'acbc6aa43d00c569'
+      MW539315: '6a53bd3d49573ae7'
+      MW539316: '4ade814bdf728155'
+      MW539317: 'b1034ff8428a67be'
+      MW539318: 'fb6d279c1a31f75d'
+      MW539319: '03b9f4a21131268b'
+      MW539321: '6fc708e846539bba'
+      MW539322: '4ade814bdf728155'
+      MW539323: 'e58658f42aca9ddb'
+      MW539324: '4ade814bdf728155'
+      MW539325: '4ade814bdf728155'
+      MW539327: 'faadf895654c1c96'
+      MW539328: '50f824e3e64727c3'
+      MW539329: 'a17829ad4a543fa3'
+      MW539330: '4a66a2cc1f8cf922'
+      MW539331: 'c9e8f3f89b5f9aa2'
+      MW539332: '99b828204f29b372'
+      MW539333: '91510ee3c435c755'
+      MW539334: '4a66a2cc1f8cf922'
+      MW539335: 'd2bcfbe3cb189d19'
+      MW539336: '4ade814bdf728155'
+      MW539337: '19c316a4278b519d'
+      MW539338: '2f5a9486751b9c8c'
+      MW539339: '2e51b3b0280557a5'
+      MW539340: 'a4acae935c2c61cf'
+      MW539341: 'ca55679ebe762d74'
+      MW539342: '2a34f7cc000a1ea3'
+      MW539343: 'ccf0abba0ac301f4'
+      MW539344: 'a909d25b469c46ae'
+      MW539345: '9b14d09689daf3fc'
+      MW539346: '2a34f7cc000a1ea3'
+      MW539347: '9f47f5286d54bd42'
+      MW539348: 'a74bdec5eaf5ef2d'
+      MW539349: '2ce481a717416b2b'
+      MW539350: '57f4026767b1c2cb'
+      MW539351: 'a74bdec5eaf5ef2d'
+      MW539352: '9f47f5286d54bd42'
+      MW539353: 'd212c979835b6424'
+      MW539354: 'd212c979835b6424'
+      MW539355: 'a74bdec5eaf5ef2d'
+      MW539356: 'd212c979835b6424'
+      MW539357: 'd212c979835b6424'
+      MW539358: '1c94fb8bf8cd116f'
+      MW539359: 'd212c979835b6424'
+      MW539360: 'd212c979835b6424'
+      MW539361: 'd212c979835b6424'
+      MW539362: 'd212c979835b6424'
+      MW539363: 'd212c979835b6424'
+      MW539364: '50f824e3e64727c3'
+      MW539365: '322141d36360658e'
+      MW539366: '060df7ff0920a943'
+      MW539367: '261f2eea3d7b1e6e'
+      MW539368: '069251f8eaad82d3'
+      MW539369: 'bc4cfdc73a9feef1'
+      MW539370: '069251f8eaad82d3'
+      MW539371: '069251f8eaad82d3'
+      MW539372: '0133e8ded0d9af7d'
+      MW539373: 'd212c979835b6424'
+      MW539374: '353380ac84f5fd0b'
+      MW539375: '4ade814bdf728155'
+      MW539376: '4ade814bdf728155'
+      MW539377: 'd9ed03b4507447c8'
+      MW539378: '3845eb35090af337'
+      MW539379: '5f43043e25de63b4'
+      MW539380: '2129a14f9696465b'
+      MW539381: '2129a14f9696465b'
+      MW539382: 'b2d57076f5051d48'
+      MW539383: '2129a14f9696465b'
+      MW539384: 'b2d57076f5051d48'
+      MW539385: 'b2d57076f5051d48'
+      MW539386: 'b2d57076f5051d48'
+      MW539387: 'b2d57076f5051d48'
+      MW539388: 'b2d57076f5051d48'
+      MW539389: 'd1a73fcce137b18f'
+      MW539390: 'b2d57076f5051d48'
+      MW539391: 'b2d57076f5051d48'
+      MW539392: 'b2d57076f5051d48'
+      MW539393: '83a3f1e61194bc10'
+      MW539394: '2129a14f9696465b'
+      MW539395: '4a66a2cc1f8cf922'
+      MW664762: 'b3c2066884857036'
+      MW664763: 'b3c2066884857036'
+      MW664764: '209fa3f30f300af6'
+      MW664765: '209fa3f30f300af6'
+      MW664766: '209fa3f30f300af6'
+      MW664767: '209fa3f30f300af6'
+      MW664768: '209fa3f30f300af6'
+      MW664769: '209fa3f30f300af6'
+      MW664770: '209fa3f30f300af6'
+      MW664771: 'a5cb34da943389b3'
+      MW664772: '163d681881b0d250'
+      MW664773: '163d681881b0d250'
+      MW664774: '163d681881b0d250'
+      MW664775: '324cb8d649628ad2'
+      MW664776: 'cd9f726706291850'
+      MW664777: '649dbd8fc02f0c09'
+      MW664778: 'cd9f726706291850'
+      MW664779: '649dbd8fc02f0c09'
+      MW664780: '163d681881b0d250'
+      MW664781: '3b1dda0425bd8447'
+      MW664782: 'eace9bc43098c9a2'
+      MW664783: 'eace9bc43098c9a2'
+      MW664784: 'cd9f726706291850'
+      MW664785: '163d681881b0d250'
+      MW664786: '163d681881b0d250'
+      MW664787: 'eace9bc43098c9a2'
+      MW664788: 'cd9f726706291850'
+      MW664789: '9d91481cd9fd94e4'
+      MW664790: '9d91481cd9fd94e4'
+      MW664791: '9d91481cd9fd94e4'
+      MW664792: '9d91481cd9fd94e4'
+      MW664793: '9d91481cd9fd94e4'
+      MW664794: '9d91481cd9fd94e4'
+      MW664795: '9d91481cd9fd94e4'
+      MW664796: '9d91481cd9fd94e4'
+      MW664797: '9d91481cd9fd94e4'
+      MW664798: '7c010fb623f0df74'
+      MW664799: '9d91481cd9fd94e4'
+      MW664800: '9d91481cd9fd94e4'
+      MW664801: '7c010fb623f0df74'
+      MW664802: '9d91481cd9fd94e4'
+      MW664803: '9d91481cd9fd94e4'
+      MW664804: '9d91481cd9fd94e4'
+      MW664805: '9d91481cd9fd94e4'
+      MW664806: '9d91481cd9fd94e4'
+      MW664807: '9d91481cd9fd94e4'
+      MW664808: '9d91481cd9fd94e4'
+      MW664809: '9d91481cd9fd94e4'
+      MW664810: '9d91481cd9fd94e4'
+      MW664811: '9d91481cd9fd94e4'
+      MW664812: '9d91481cd9fd94e4'
+      MW664813: '8ebe5d02effd6f83'
+      MW664814: '948a40075fa18acd'
+      MW664815: '948a40075fa18acd'
+      MW664816: '948a40075fa18acd'
+      MW664817: '948a40075fa18acd'
+      MW664818: '948a40075fa18acd'
+      MW664819: '948a40075fa18acd'
+      MW664820: '948a40075fa18acd'
+      MW664821: '948a40075fa18acd'
+      MW664822: '948a40075fa18acd'
+      MW664823: '948a40075fa18acd'
+      MW664834: '3f5c51bdd2b9f08d'
+      MW664835: 'd8bb5cc8e664e932'
+      MW664836: '1a257165262eda60'
+      MW664837: '1a257165262eda60'
+      MW664838: '3f5c51bdd2b9f08d'
+      MW664839: '1a257165262eda60'
+      MW664840: '3f5c51bdd2b9f08d'
+      MW664841: '3f5c51bdd2b9f08d'
+      MW664842: '3f5c51bdd2b9f08d'
+      MW664843: '3f5c51bdd2b9f08d'
+      MW664844: '3f5c51bdd2b9f08d'
+      MW664845: '3f5c51bdd2b9f08d'
+      MW664846: '3f5c51bdd2b9f08d'
+      MW664847: 'd8bb5cc8e664e932'
+      MW664848: '3f5c51bdd2b9f08d'
+      MW664849: '3f5c51bdd2b9f08d'
+      MW664850: '3f5c51bdd2b9f08d'
+      MW664851: 'd8bb5cc8e664e932'
+      MW664852: '3f5c51bdd2b9f08d'
+      MW664853: '3f5c51bdd2b9f08d'
+      MW664854: '3f5c51bdd2b9f08d'
+      MW664855: '3f5c51bdd2b9f08d'
+      MW664856: '3f5c51bdd2b9f08d'
+      MW664857: '3f5c51bdd2b9f08d'
+      MW664858: '3f5c51bdd2b9f08d'
+      MW961311: 'ca2317804c6084ff'
+      MZ206333: '12ba30783e8a7211'
+      MZ230341: 'bb02956a268758fb'
+      MZ230342: 'c6946176f44c7ab4'
+      MZ230344: '7be112156562632b'
+      MZ230345: 'ccf40a63999e53c2'
+      MZ230346: '589311064e20b7b7'
+      MZ230347: '03b9f4a21131268b'
+      MZ230348: '4ade814bdf728155'
+      MZ230349: '1d324fbd95fba9e8'
+      MZ230350: 'd212c979835b6424'
+      MZ230351: 'a2335293278ddc30'
+      MZ230352: '49060d2548119746'
+      MZ230353: 'e034e39c5f3a7004'
+      MZ230354: '78127dd164460ca6'
+      MZ230355: '7373c2851aa8ea40'
+      MZ230356: '7e2217d6a403a1a7'
+      MZ230357: '79d0deff9b415811'
+      MZ230358: '053fc7d2245b7c79'
+      MZ230359: '0f84e9c6fd653fad'
+      NC_028025: 'ee93d06a40b11a4f'
+      NC_050044: '02332cd739d9d275'
+      OK413074: 'ab7974b3d0b810d8'
+      OK413075: 'ab7974b3d0b810d8'
+      OK413076: '5bbe0629b01f16b8'
+      OK413077: '8f7ece0cdbb45bd8'
+      OL331077: 'e0491a1408778da3'
+      OL331079: '6d4c69b55a7ef25e'
+      OL331087: '6d4c69b55a7ef25e'
+      OL348174: 'cc3a96c5ea110cbe'
+      OL348175: '4ef7649285221e40'
+      OL348176: '016e6986015679fa'
+      OL851671: '115ad783da5e72de'
+      OP317577: '115ad783da5e72de'
+      OQ145431: '7d0c844b60b9ebc8'
+      OQ145432: 'c627d9dced5e7bd2'
+      OQ908965: '03e0972c4be33d48'
+      PP862745: '061cb3f03379b067'
+      PQ163793: 'bc2a0ba6863e2878'
+      PQ477920: 'c1d3169c5f345a0a'
+      PQ499047: 'c056ec3ebc8b6f60'
+      PQ539599: '8cb607c620cdda7a'
+      PQ539600: 'f3dbf1eeb94a7ac3'
+      PQ788195: '5ebbdac64a950195'
+      PV110858: '6e54375ebc006a9e'
+      PV110859: '2ca010db6e4f1e85'
+      PV474099: '68351617f6f3f50c'
+      PV474100: '94b4c495318e8f60'
+      PV474101: '8fd3d1621b474225'
+      PX317518: 'fc68e00dcd3e454c'
+      PX499745: 'e9ba9477f6e21e53'
+      PX499746: '66cedaa6029e5731'
+      PX499748: 'ba2d1516e5ba07a0'
+      PX499749: 'dfea0384ff566236'
+      PX499750: '8a5ffb81a51abd3b'
+      PX499751: '2a9238a86358d83e'
+      PX499752: '9ab44cd6a6d49cd8'
+      PX499753: '62a9fd636dad87e6'
+      PX674721: 'd8baadd4ee5e58c9'
+      PX674722: '2f1c36c740913d32'
+      PX852270: '8cbdfaecde5087ae'
+      XR_009995791: '43379914eb79260c'
+      XR_009998906: '6edd30a1545a5c72'
+- id: phylogeny
+  assertions:
+  - id: selected_sequences
+    type: membership
+    value:
+    - AB738096
+    - AB738123
+    - AB738126
+    - AB738131
+    - AB738295
+    - HQ398902
+    - JQ235743
+    - KC690946
+    - KM613121
+    - KP843373
+    - KX052476
+    - KX052479
+    - KX052482
+    - KX052485
+    - KX052486
+    - KX052489
+    - KX052491
+    - KX052496
+    - KX052506
+    - KX886302
+    - KY420724
+    - KY420770
+    - KY420775
+    - LC054390
+    - MN733754
+    - MN733758
+    - MW321934
+    - MW664762
+    - MW664775
+    - MW664782
+    - MW664784
+    - MW664786
+    - MW664788
+    - MW664801
+    - MW664802
+    - MW664805
+    - MW664812
+    - MW664813
+    - MW664818
+    - MW664820
+    - MW664835
+    - MW664838
+    - MW664839
+    - MW664840
+    - MW664858
+    - PQ499047
+    - PV474099
+    - PV474100
+    - PV474101
+- id: database_coverage
+  assertions:
+  - id: candidate_taxa
+    type: membership
+    value: []
+  - id: toi_taxa
+    type: membership
+    value:
+    - Aedes scutellaris
+  - id: pmi_taxa
+    type: membership
+    value:
+    - Aedes scutellaris
+  toi:
+  - name: Aedes scutellaris
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Aedes abnormalis
+      - Aedes aboriginis
+      - Aedes abserratus
+      - Aedes aculeatus
+      - Aedes adami
+      - Aedes adersi
+      - Aedes aegypti
+      - Aedes aenigmaticus
+      - Aedes aerarius
+      - Aedes africanus
+      - Aedes agastyai
+      - Aedes agrihanensis
+      - Aedes aitkeni
+      - Aedes akkeshiensis
+      - Aedes albescens
+      - Aedes albicosta
+      - Aedes albifasciatus
+      - Aedes albilabris
+      - Aedes albineus
+      - Aedes albiradius
+      - Aedes alboannulatus
+      - Aedes alboapicus
+      - Aedes albocephalus
+      - Aedes albocinctus
+      - Aedes albodorsalis
+      - Aedes albolateralis
+      - Aedes albolineatus
+      - Aedes albomarginatus
+      - Aedes alboniveus
+      - Aedes albonotatus
+      - Aedes albopictus
+      - Aedes alboscutellatus
+      - Aedes albotaeniatus
+      - Aedes albothorax
+      - Aedes alboventralis
+      - Aedes alcasidi
+      - Aedes alektorovi
+      - Aedes alexandrei
+      - Aedes alius
+      - Aedes allotecnon
+      - Aedes alocasicola
+      - Aedes alongi
+      - Aedes aloponotum
+      - Aedes alorensis
+      - Aedes alternans
+      - Aedes alticola
+      - Aedes amabilis
+      - Aedes amaltheus
+      - Aedes amamiensis
+      - Aedes amateuri
+      - Aedes ambreensis
+      - Aedes ambremontis
+      - Aedes amesii
+      - Aedes ananae
+      - Aedes andersoni
+      - Aedes andrewsi
+      - Aedes anggiensis
+      - Aedes angustivittatus
+      - Aedes angustus
+      - Aedes annandalei
+      - Aedes annulipes
+      - Aedes annulirostris
+      - Aedes antipodeus
+      - Aedes aobae
+      - Aedes apicoannulatus
+      - Aedes apicoargenteus
+      - Aedes arborealis
+      - Aedes arboricolus
+      - Aedes argenteitarsis
+      - Aedes argenteopunctatus
+      - Aedes argenteoscutellatus
+      - Aedes argenteoventralis
+      - Aedes argenteus
+      - Aedes argyrites
+      - Aedes argyronotum
+      - Aedes argyrothorax
+      - Aedes arundinariae
+      - Aedes ashworthi
+      - Aedes assamensis
+      - Aedes atactavittatus
+      - Aedes atlanticus
+      - Aedes atropalpus
+      - Aedes aurantius
+      - Aedes auratus
+      - Aedes aureolineatus
+      - Aedes aureostriatus
+      - Aedes auridorsum
+      - Aedes aurifer
+      - Aedes aurimargo
+      - Aedes aurites
+      - Aedes aurivittatus
+      - Aedes auronitens
+      - Aedes aurotaeniatus
+      - Aedes aurovenatus
+      - Aedes australiensis
+      - Aedes australis
+      - Aedes avistylus
+      - Aedes axitiosus
+      - Aedes bahamensis
+      - Aedes baisasi
+      - Aedes bambiotai
+      - Aedes bambusae
+      - Aedes bambusicolus
+      - Aedes bananea
+      - Aedes bancoi
+      - Aedes bancroftianus
+      - Aedes banksi
+      - Aedes barnardi
+      - Aedes barraudi
+      - Aedes becki
+      - Aedes bedfordi
+      - Aedes behningi
+      - Aedes bejaranoi
+      - Aedes bekkui
+      - Aedes belleci
+      - Aedes bequaerti
+      - Aedes bergerardi
+      - Aedes berlandi
+      - Aedes berlini
+      - Aedes bertrami
+      - Aedes bevisi
+      - Aedes bhutanensis
+      - Aedes bicristatus
+      - Aedes bimaculatus
+      - Aedes biocellatus
+      - Aedes biskraensis
+      - Aedes biunguiculatus
+      - Aedes blacklocki
+      - Aedes bogotanus
+      - Aedes boharti
+      - Aedes bolense
+      - Aedes bolensis
+      - Aedes boneti
+      - Aedes bonneae
+      - Aedes bougainvillensis
+      - Aedes braziliensis
+      - Aedes breedensis
+      - Aedes brelandi
+      - Aedes brevis
+      - Aedes brevitibia
+      - Aedes brevivittatus
+      - Aedes britteni
+      - Aedes bromeliae
+      - Aedes brownscutumus
+      - Aedes brucei
+      - Aedes brunhesi
+      - Aedes brygooi
+      - Aedes buenaventura
+      - Aedes burgeri
+      - Aedes burjaticus
+      - Aedes burnetti
+      - Aedes burnsi
+      - Aedes burpengaryensis
+      - Aedes busckii
+      - Aedes buxtoni
+      - Aedes caballus
+      - Aedes cacharanus
+      - Aedes cacozelus
+      - Aedes caecus
+      - Aedes calabyi
+      - Aedes calcariae
+      - Aedes calceatus
+      - Aedes caliginosus
+      - Aedes calumnior
+      - Aedes campana
+      - Aedes campestris
+      - Aedes camptorhynchus
+      - Aedes canadensis
+      - Aedes cancricomes
+      - Aedes candidoscutellum
+      - Aedes cantans
+      - Aedes cantator
+      - Aedes capensis
+      - Aedes carteri
+      - Aedes cartroni
+      - Aedes casali
+      - Aedes caspius
+      - Aedes cataphylla
+      - Aedes cavaticus
+      - Aedes cavernicola
+      - Aedes celebicus
+      - Aedes centropunctatus
+      - Aedes chamboni
+      - Aedes chaussieri
+      - Aedes chelli
+      - Aedes chemulpoensis
+      - Aedes cherrapunjiensis
+      - Aedes chionodes
+      - Aedes chionotum
+      - Aedes christophersi
+      - Aedes chrysolineatus
+      - Aedes chrysoscutus
+      - Aedes chungi
+      - Aedes churchillensis
+      - Aedes ciliaris
+      - Aedes cinereus
+      - Aedes circumluteolus
+      - Aedes clelandi
+      - Aedes clintoni
+      - Aedes clivis
+      - Aedes cogilli
+      - Aedes collessi
+      - Aedes coluzzii
+      - Aedes comitatus
+      - Aedes communis
+      - Aedes condolescens
+      - Aedes contiguus
+      - Aedes continentalis
+      - Aedes cooki
+      - Aedes cordellieri
+      - Aedes corneti
+      - Aedes coulangesi
+      - Aedes cozi
+      - Aedes cozumelensis
+      - Aedes craggi
+      - Aedes crassiforceps
+      - Aedes cretinus
+      - Aedes crinifer
+      - Aedes croceus
+      - Aedes crossi
+      - Aedes culiciformis
+      - Aedes culicinus
+      - Aedes cumminsii
+      - Aedes cunabulanus
+      - Aedes curtipes
+      - Aedes cyprioides
+      - Aedes cyprius
+      - Aedes daggyi
+      - Aedes dahlae
+      - Aedes dahuricus
+      - Aedes daitensis
+      - Aedes daliensis
+      - Aedes dalzieli
+      - Aedes daryi
+      - Aedes dasyorrhus
+      - Aedes davidi
+      - Aedes deboeri
+      - Aedes deccanus
+      - Aedes decticus
+      - Aedes deficiens
+      - Aedes demeilloni
+      - Aedes denderensis
+      - Aedes dendrophilus
+      - Aedes dentatus
+      - Aedes derooki
+      - Aedes deserticola
+      - Aedes desmotes
+      - Aedes detritus
+      - Aedes dialloi
+      - Aedes diantaeus
+      - Aedes diazi
+      - Aedes dissimilierodes
+      - Aedes dissimilis
+      - Aedes dmitryi
+      - Aedes dobodurus
+      - Aedes dobrotworskyi
+      - Aedes domesticus
+      - Aedes doonii
+      - Aedes dorsalis
+      - Aedes dorseyi
+      - Aedes dufouri
+      - Aedes duplex
+      - Aedes dupreei
+      - Aedes durbanensis
+      - Aedes dux
+      - Aedes dybasi
+      - Aedes dzeta
+      - Aedes ealaensis
+      - Aedes eatoni
+      - Aedes ebogoensis
+      - Aedes echinus
+      - Aedes ecuadoriensis
+      - Aedes edgari
+      - Aedes edwardsi
+      - Aedes eidsvoldensis
+      - Aedes elchoensis
+      - Aedes eldridgei
+      - Aedes eleanorae
+      - Aedes ellinorae
+      - Aedes elsiae
+      - Aedes embuensis
+      - Aedes epactius
+      - Aedes eritreae
+      - Aedes esoensis
+      - Aedes ethiopiensis
+      - Aedes eucephalaeus
+      - Aedes euedes
+      - Aedes euiris
+      - Aedes euplocamus
+      - Aedes excrucians
+      - Aedes explorator
+      - Aedes falabreguesi
+      - Aedes fascipalpis
+      - Aedes feegradei
+      - Aedes fengi
+      - Aedes ferinus
+      - Aedes fijiensis
+      - Aedes filicis
+      - Aedes fimbripes
+      - Aedes fitchii
+      - Aedes flavescens
+      - Aedes flavicollis
+      - Aedes flavifrons
+      - Aedes flavimargo
+      - Aedes flavipennis
+      - Aedes flavopictus
+      - Aedes fluviatilis
+      - Aedes fontenillei
+      - Aedes formosensis
+      - Aedes fowleri
+      - Aedes franciscoi
+      - Aedes franclemonti
+      - Aedes fraseri
+      - Aedes freycinetiae
+      - Aedes fryeri
+      - Aedes fulgens
+      - Aedes fulvithorax
+      - Aedes fulvus
+      - Aedes fumidus
+      - Aedes furcifer
+      - Aedes fuscinervis
+      - Aedes fuscipalpis
+      - Aedes fuscitarsis
+      - Aedes futunae
+      - Aedes gabriel
+      - Aedes gaffigani
+      - Aedes gahnicola
+      - Aedes galindoi
+      - Aedes galloisi
+      - Aedes galloisiodes
+      - Aedes galloisioides
+      - Aedes ganapathi
+      - Aedes gandaensis
+      - Aedes gandarai
+      - Aedes gani
+      - Aedes gardnerii
+      - Aedes geminus
+      - Aedes geniculatus
+      - Aedes geoffroyi
+      - Aedes geoskusea
+      - Aedes gibbinsi
+      - Aedes gilcolladoi
+      - Aedes gilli
+      - Aedes gilliesi
+      - Aedes gombakensis
+      - Aedes gonguoensis
+      - Aedes gouldi
+      - Aedes grabhami
+      - Aedes gracilelineatus
+      - Aedes grahamii
+      - Aedes grantii
+      - Aedes grassei
+      - Aedes greenii
+      - Aedes grenieri
+      - Aedes gressitti
+      - Aedes grjebinei
+      - Aedes grossbecki
+      - Aedes guamensis
+      - Aedes guatemala
+      - Aedes gubernatoris
+      - Aedes guerrero
+      - Aedes gurneri
+      - Aedes gurneyi
+      - Aedes gutzevichi
+      - Aedes hakanssoni
+      - Aedes hakusanensis
+      - Aedes hancocki
+      - Aedes hansfordi
+      - Aedes harbachi
+      - Aedes harinasutai
+      - Aedes harperi
+      - Aedes harrisoni
+      - Aedes harveyi
+      - Aedes hastatus
+      - Aedes hatorii
+      - Aedes haworthi
+      - Aedes hebrideus
+      - Aedes heischi
+      - Aedes helenae
+      - Aedes hendersoni
+      - Aedes hensilli
+      - Aedes hesperonotius
+      - Aedes heteropus
+      - Aedes hexodontus
+      - Aedes hirsuta
+      - Aedes hirsutus
+      - Aedes hodgkini
+      - Aedes hogsbackensis
+      - Aedes hoguei
+      - Aedes hokkaidensis
+      - Aedes hollandius
+      - Aedes hollingsheadi
+      - Aedes holocinctus
+      - Aedes homoeopus
+      - Aedes hoogstraali
+      - Aedes hopkinsi
+      - Aedes horotoi
+      - Aedes horrescens
+      - Aedes hortator
+      - Aedes huangae
+      - Aedes hui
+      - Aedes humeralis
+      - Aedes hungaricus
+      - Aedes hurlbuti
+      - Aedes hylaius
+      - Aedes ibis
+      - Aedes idanus
+      - Aedes idjenensis
+      - Aedes impatibilis
+      - Aedes imperfectus
+      - Aedes impiger
+      - Aedes implicatus
+      - Aedes impostor
+      - Aedes imprimens
+      - Aedes inaequalis
+      - Aedes incomptus
+      - Aedes increpitus
+      - Aedes indonesiae
+      - Aedes inermis
+      - Aedes inexpectatus
+      - Aedes infirmatus
+      - Aedes ingrami
+      - Aedes inquinatus
+      - Aedes insolens
+      - Aedes insolitus
+      - Aedes intermedius
+      - Aedes interruptus
+      - Aedes intrudens
+      - Aedes ioliota
+      - Aedes irritans
+      - Aedes iwi
+      - Aedes iyengari
+      - Aedes jacobinae
+      - Aedes jamesi
+      - Aedes jamoti
+      - Aedes japonicus
+      - Aedes jorgi
+      - Aedes josephinae
+      - Aedes josiahae
+      - Aedes jugraensis
+      - Aedes juppi
+      - Aedes kabaenensis
+      - Aedes kanarensis
+      - Aedes kapretwae
+      - Aedes karooensis
+      - Aedes karwari
+      - Aedes kasachstanicus
+      - Aedes katherinensis
+      - Aedes keefei
+      - Aedes keniensis
+      - Aedes kennethi
+      - Aedes kenyae
+      - Aedes kesseli
+      - Aedes khazani
+      - Aedes kiangsiensis
+      - Aedes kivuensis
+      - Aedes kleini
+      - Aedes knabi
+      - Aedes knighti
+      - Aedes kochi
+      - Aedes kohkutensis
+      - Aedes kompi
+      - Aedes koreicoides
+      - Aedes koreicus
+      - Aedes krombeini
+      - Aedes krymmontanus
+      - Aedes kummi
+      - Aedes lacteus
+      - Aedes laffooni
+      - Aedes laguna
+      - Aedes lamborni
+      - Aedes lambrechti
+      - Aedes lamelliferus
+      - Aedes langata
+      - Aedes laniger
+      - Aedes laoagensis
+      - Aedes lasaensis
+      - Aedes lauriei
+      - Aedes ledgeri
+      - Aedes leei
+      - Aedes leesoni
+      - Aedes leonis
+      - Aedes lepchanus
+      - Aedes lepidonotus
+      - Aedes lepidus
+      - Aedes leptolabis
+      - Aedes lerozeboomi
+      - Aedes leucarthrius
+      - Aedes leucomelas
+      - Aedes leucomeres
+      - Aedes lewelleni
+      - Aedes lewnielseni
+      - Aedes lilii
+      - Aedes lineatopennis
+      - Aedes linesi
+      - Aedes litoreus
+      - Aedes littlechildi
+      - Aedes litwakae
+      - Aedes lokojensis
+      - Aedes lokojoensis
+      - Aedes longifilamentus
+      - Aedes longiforceps
+      - Aedes longipalpis
+      - Aedes longirostris
+      - Aedes longiseta
+      - Aedes lophoventralis
+      - Aedes lorraineae
+      - Aedes lottei
+      - Aedes lowisii
+      - Aedes lucianus
+      - Aedes lunulatus
+      - Aedes luridus
+      - Aedes luteifemur
+      - Aedes luteocephalus
+      - Aedes luteolateralis
+      - Aedes luteostriatus
+      - Aedes luteus
+      - Aedes luzonensis
+      - Aedes macdougalli
+      - Aedes macfarlanei
+      - Aedes macintoshi
+      - Aedes mackerrasi
+      - Aedes macmillani
+      - Aedes madagascarensis
+      - Aedes maehleri
+      - Aedes maffii
+      - Aedes malayensis
+      - Aedes malikuli
+      - Aedes mallochi
+      - Aedes mamoedjoensis
+      - Aedes manhi
+      - Aedes mansouri
+      - Aedes mariae
+      - Aedes marinkellei
+      - Aedes marshallensis
+      - Aedes marshallii
+      - Aedes martineti
+      - Aedes martinezi
+      - Aedes mascarensis
+      - Aedes masculinus
+      - Aedes masoalensis
+      - Aedes masseyi
+      - Aedes mathioti
+      - Aedes mattinglyi
+      - Aedes mattinglyorum
+      - Aedes maxgermaini
+      - Aedes mcdonaldi
+      - Aedes mcintoshi
+      - Aedes medialis
+      - Aedes mediolineatus
+      - Aedes mediopunctatus
+      - Aedes mediovittatus
+      - Aedes medleri
+      - Aedes mefouensis
+      - Aedes melanimon
+      - Aedes melanopterus
+      - Aedes menoni
+      - Aedes meprai
+      - Aedes mercurator
+      - Aedes meronephada
+      - Aedes metallicus
+      - Aedes metoecapus
+      - Aedes metoecopus
+      - Aedes michaelikati
+      - Aedes mickevichae
+      - Aedes micropterus
+      - Aedes microstictus
+      - Aedes mikrokopion
+      - Aedes milleri
+      - Aedes milsoni
+      - Aedes minutus
+      - Aedes mitchellae
+      - Aedes mixtus
+      - Aedes mjobergi
+      - Aedes mohani
+      - Aedes moloiensis
+      - Aedes monetus
+      - Aedes monocellatus
+      - Aedes monotrichus
+      - Aedes montanus
+      - Aedes montchadskyi
+      - Aedes monticola
+      - Aedes moucheti
+      - Aedes mpusiensis
+      - Aedes mubiensis
+      - Aedes mucidus
+      - Aedes muelleri
+      - Aedes multiplex
+      - Aedes muroafcete
+      - Aedes mutilus
+      - Aedes mzooi
+      - Aedes natalensis
+      - Aedes nataliae
+      - Aedes natronius
+      - Aedes neoafricanus
+      - Aedes neogalloisi
+      - Aedes neogeorgianus
+      - Aedes neopandani
+      - Aedes nevadensis
+      - Aedes ngong
+      - Aedes nigeriensis
+      - Aedes nigerrimus
+      - Aedes nigricephalus
+      - Aedes nigrinus
+      - Aedes nigripes
+      - Aedes nigrithorax
+      - Aedes nigrocanus
+      - Aedes nigromaculis
+      - Aedes nigropterus
+      - Aedes nigrorhynchus
+      - Aedes nigrostriatus
+      - Aedes ningheensis
+      - Aedes niphadopsis
+      - Aedes nipponicus
+      - Aedes nippononiveus
+      - Aedes nishikawai
+      - Aedes nivalis
+      - Aedes niveoides
+      - Aedes niveoscutum
+      - Aedes niveus
+      - Aedes njombiensis
+      - Aedes normanensis
+      - Aedes notoscriptus
+      - Aedes novalbitarsis
+      - Aedes novalbopictus
+      - Aedes novoniveus
+      - Aedes nubilus
+      - Aedes nummatus
+      - Aedes nyasae
+      - Aedes nyounae
+      - Aedes oakleyi
+      - Aedes obturbator
+      - Aedes occidentalis
+      - Aedes oceanicus
+      - Aedes ochraceus
+      - Aedes okinawanus
+      - Aedes oligopistus
+      - Aedes omorii
+      - Aedes opok
+      - Aedes orbitae
+      - Aedes oreophilus
+      - Aedes osornoi
+      - Aedes ostentatio
+      - Aedes ovazzai
+      - Aedes pachyurus
+      - Aedes pagei
+      - Aedes palauensis
+      - Aedes palawanicus
+      - Aedes pallidostriatus
+      - Aedes palmarum
+      - Aedes palpalis
+      - Aedes pampangensis
+      - Aedes pandani
+      - Aedes papago
+      - Aedes papuensis
+      - Aedes paradissimilis
+      - Aedes patersoni
+      - Aedes patriciae
+      - Aedes paullusi
+      - Aedes pecori
+      - Aedes pectinatus
+      - Aedes pecuniosus
+      - Aedes peipingensis
+      - Aedes pembaensis
+      - Aedes penghuensis
+      - Aedes pennai
+      - Aedes perdita
+      - Aedes periskelatus
+      - Aedes perkinsi
+      - Aedes pernotatus
+      - Aedes perplexus
+      - Aedes perryi
+      - Aedes pertinax
+      - Aedes perventor
+      - Aedes pexus
+      - Aedes phaecasiatus
+      - Aedes phaeonotus
+      - Aedes phillipi
+      - Aedes phoeniciae
+      - Aedes phyllolabis
+      - Aedes pia
+      - Aedes pillaii
+      - Aedes pingpaensis
+      - Aedes pionips
+      - Aedes pipersalatus
+      - Aedes plagosus
+      - Aedes platylepidus
+      - Aedes plumiferus
+      - Aedes podographicus
+      - Aedes pogonurus
+      - Aedes poicilius
+      - Aedes pollinctor
+      - Aedes polynesiensis
+      - Aedes portonovoensis
+      - Aedes postpiraculosus
+      - Aedes postspiraculosus
+      - Aedes poweri
+      - Aedes procax
+      - Aedes prominens
+      - Aedes provocans
+      - Aedes pseudalbolineatus
+      - Aedes pseudalbopictus
+      - Aedes pseudoafricanus
+      - Aedes pseudoalbolineatus
+      - Aedes pseudoalbopictus
+      - Aedes pseudodominicii
+      - Aedes pseudonigeria
+      - Aedes pseudoniveus
+      - Aedes pseudonormanensis
+      - Aedes pseudonummatus
+      - Aedes pseudoscutellaris
+      - Aedes pseudotaeniatus
+      - Aedes pseudotarsalis
+      - Aedes pubescens
+      - Aedes pulchrithorax
+      - Aedes pulchriventer
+      - Aedes pulcritarsis
+      - Aedes pullatus
+      - Aedes pulverulentus
+      - Aedes punctifemoris
+      - Aedes punctipes
+      - Aedes punctocostalis
+      - Aedes punctodes
+      - Aedes punctor
+      - Aedes punctothoracis
+      - Aedes puntothoracis
+      - Aedes purpuraceus
+      - Aedes purpureifemur
+      - Aedes purpureipes
+      - Aedes purpureus
+      - Aedes purpuriventris
+      - Aedes quadripunctis
+      - Aedes quadrivittatus
+      - Aedes quasiferinus
+      - Aedes quasirubithorax
+      - Aedes quasirusticus
+      - Aedes quasiscutellaris
+      - Aedes quasiunivittatus
+      - Aedes quinquelineatus
+      - Aedes ramachandrai
+      - Aedes ramirezi
+      - Aedes ratcliffei
+      - Aedes raymondi
+      - Aedes reali
+      - Aedes refiki
+      - Aedes reginae
+      - Aedes reinerti
+      - Aedes rempeli
+      - Aedes reubenae
+      - Aedes rhodaini
+      - Aedes rhungkiangensis
+      - Aedes rhyacophilus
+      - Aedes rickenbachi
+      - Aedes riparioides
+      - Aedes riparius
+      - Aedes riversi
+      - Aedes rizali
+      - Aedes roai
+      - Aedes robinsoni
+      - Aedes rodhaini
+      - Aedes rossicus
+      - Aedes rotanus
+      - Aedes rotumae
+      - Aedes rubiginosus
+      - Aedes rubrithorax
+      - Aedes rupestris
+      - Aedes rusticus
+      - Aedes ruwenzori
+      - Aedes sagax
+      - Aedes saimedres
+      - Aedes saipanensis
+      - Aedes sallumae
+      - Aedes samoanus
+      - Aedes sampi
+      - Aedes sandrae
+      - Aedes saperoi
+      - Aedes sapiens
+      - Aedes sasai
+      - Aedes savoryi
+      - Aedes saxicola
+      - Aedes scanloni
+      - Aedes scapularis
+      - Aedes scatophagoides
+      - Aedes schicki
+      - Aedes schizopinax
+      - Aedes schlosseri
+      - Aedes schroederi
+      - Aedes schtakelbergi
+      - Aedes schwetzi
+      - Aedes scutellalbum
+      - Aedes scutellaris
+      - Aedes scutellatum
+      - Aedes scutoscriptus
+      - Aedes seampi
+      - Aedes seatoi
+      - Aedes sedaensis
+      - Aedes segermanae
+      - Aedes semlikiensis
+      - Aedes senyavinensis
+      - Aedes seoulensis
+      - Aedes septemstriatus
+      - Aedes serafini
+      - Aedes sergievi
+      - Aedes serratus
+      - Aedes sexlineatus
+      - Aedes seychellensis
+      - Aedes shannoni
+      - Aedes shehzadae
+      - Aedes sherki
+      - Aedes shintienensis
+      - Aedes shortti
+      - Aedes sibiricus
+      - Aedes sierrensis
+      - Aedes silvestris
+      - Aedes simanini
+      - Aedes simlensis
+      - Aedes simplex
+      - Aedes simpsoni
+      - Aedes simulans
+      - Aedes sinensis
+      - Aedes sinkiangensis
+      - Aedes sintoni
+      - Aedes smithburni
+      - Aedes soleatus
+      - Aedes sollicitans
+      - Aedes solomonis
+      - Aedes sorsogonensis
+      - Aedes spencerii
+      - Aedes spilotus
+      - Aedes spinosipes
+      - Aedes spinosus
+      - Aedes squamiger
+      - Aedes stanleyi
+      - Aedes stenei
+      - Aedes stenoetrus
+      - Aedes stenoscutus
+      - Aedes stevensoni
+      - Aedes sticticus
+      - Aedes stigmaticus
+      - Aedes stimulans
+      - Aedes stokesi
+      - Aedes stonei
+      - Aedes stoneorum
+      - Aedes stramineus
+      - Aedes strelitziae
+      - Aedes stricklandi
+      - Aedes subalbirostris
+      - Aedes subalbitarsis
+      - Aedes subalbopictus
+      - Aedes subargenteus
+      - Aedes subauridorsum
+      - Aedes subbasalis
+      - Aedes subdentatus
+      - Aedes subdiversus
+      - Aedes subniveus
+      - Aedes subtrichurus
+      - Aedes sudanensis
+      - Aedes suffusus
+      - Aedes sumidero
+      - Aedes surcoufi
+      - Aedes suzannae
+      - Aedes synchytus
+      - Aedes syntheticus
+      - Aedes tabu
+      - Aedes taeniarostris
+      - Aedes taeniorhynchoides
+      - Aedes taeniorhynchus
+      - Aedes tahoensis
+      - Aedes taiwanus
+      - Aedes tarsalis
+      - Aedes tauffliebi
+      - Aedes taylori
+      - Aedes teesdalei
+      - Aedes tehuantepec
+      - Aedes terrens
+      - Aedes thailandensis
+      - Aedes thelcter
+      - Aedes theobaldi
+      - Aedes thibaulti
+      - Aedes thomsoni
+      - Aedes thorntoni
+      - Aedes thurmanae
+      - Aedes timorensis
+      - Aedes tiptoni
+      - Aedes togoi
+      - Aedes tongae
+      - Aedes tonkinensis
+      - Aedes tonkingi
+      - Aedes tonsus
+      - Aedes tormentor
+      - Aedes tortilis
+      - Aedes toxopeusi
+      - Aedes tremulus
+      - Aedes treubi
+      - Aedes triceriatus
+      - Aedes tricholabis
+      - Aedes trichurus
+      - Aedes trimaculatus
+      - Aedes triseriatus
+      - Aedes trivittatus
+      - Aedes trukensis
+      - Aedes tsiliensis
+      - Aedes tubbutiensis
+      - Aedes tulagiensis
+      - Aedes tulliae
+      - Aedes turneri
+      - Aedes tutuilae
+      - Aedes unicinctus
+      - Aedes unidentatus
+      - Aedes unilineatus
+      - Aedes upatensis
+      - Aedes upolensis
+      - Aedes usambara
+      - Aedes valeryi
+      - Aedes vanemdeni
+      - Aedes vanus
+      - Aedes vargasi
+      - Aedes variepictus
+      - Aedes varipalpus
+      - Aedes varuae
+      - Aedes veeniae
+      - Aedes ventrovittis
+      - Aedes versicolor
+      - Aedes vexans
+      - Aedes vigilax
+      - Aedes vinsoni
+      - Aedes vittatus
+      - Aedes vittiger
+      - Aedes w-album
+      - Aedes wadai
+      - Aedes walkeri
+      - Aedes wallacei
+      - Aedes wardangensis
+      - Aedes wardi
+      - Aedes washinoi
+      - Aedes wasselli
+      - Aedes watasei
+      - Aedes watteni
+      - Aedes wattensis
+      - Aedes wauensis
+      - Aedes wellmanii
+      - Aedes wendyae
+      - Aedes whartoni
+      - Aedes whitmorei
+      - Aedes wigglesworthi
+      - Aedes wilkersoni
+      - Aedes woodi
+      - Aedes yaeyamensis
+      - Aedes yamadai
+      - Aedes yangambiensis
+      - Aedes yunnanensis
+      - Aedes yvonneae
+      - Aedes zammitii
+      - Aedes zavortinki
+      - Aedes zethus
+      - Aedes zoosophus
+    - id: country_species
+      type: membership
+      value:
+      - Aedes albopictus
+  pmi:
+  - name: Aedes scutellaris
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Aedes abnormalis
+      - Aedes aboriginis
+      - Aedes abserratus
+      - Aedes aculeatus
+      - Aedes adami
+      - Aedes adersi
+      - Aedes aegypti
+      - Aedes aenigmaticus
+      - Aedes aerarius
+      - Aedes africanus
+      - Aedes agastyai
+      - Aedes agrihanensis
+      - Aedes aitkeni
+      - Aedes akkeshiensis
+      - Aedes albescens
+      - Aedes albicosta
+      - Aedes albifasciatus
+      - Aedes albilabris
+      - Aedes albineus
+      - Aedes albiradius
+      - Aedes alboannulatus
+      - Aedes alboapicus
+      - Aedes albocephalus
+      - Aedes albocinctus
+      - Aedes albodorsalis
+      - Aedes albolateralis
+      - Aedes albolineatus
+      - Aedes albomarginatus
+      - Aedes alboniveus
+      - Aedes albonotatus
+      - Aedes albopictus
+      - Aedes alboscutellatus
+      - Aedes albotaeniatus
+      - Aedes albothorax
+      - Aedes alboventralis
+      - Aedes alcasidi
+      - Aedes alektorovi
+      - Aedes alexandrei
+      - Aedes alius
+      - Aedes allotecnon
+      - Aedes alocasicola
+      - Aedes alongi
+      - Aedes aloponotum
+      - Aedes alorensis
+      - Aedes alternans
+      - Aedes alticola
+      - Aedes amabilis
+      - Aedes amaltheus
+      - Aedes amamiensis
+      - Aedes amateuri
+      - Aedes ambreensis
+      - Aedes ambremontis
+      - Aedes amesii
+      - Aedes ananae
+      - Aedes andersoni
+      - Aedes andrewsi
+      - Aedes anggiensis
+      - Aedes angustivittatus
+      - Aedes angustus
+      - Aedes annandalei
+      - Aedes annulipes
+      - Aedes annulirostris
+      - Aedes antipodeus
+      - Aedes aobae
+      - Aedes apicoannulatus
+      - Aedes apicoargenteus
+      - Aedes arborealis
+      - Aedes arboricolus
+      - Aedes argenteitarsis
+      - Aedes argenteopunctatus
+      - Aedes argenteoscutellatus
+      - Aedes argenteoventralis
+      - Aedes argenteus
+      - Aedes argyrites
+      - Aedes argyronotum
+      - Aedes argyrothorax
+      - Aedes arundinariae
+      - Aedes ashworthi
+      - Aedes assamensis
+      - Aedes atactavittatus
+      - Aedes atlanticus
+      - Aedes atropalpus
+      - Aedes aurantius
+      - Aedes auratus
+      - Aedes aureolineatus
+      - Aedes aureostriatus
+      - Aedes auridorsum
+      - Aedes aurifer
+      - Aedes aurimargo
+      - Aedes aurites
+      - Aedes aurivittatus
+      - Aedes auronitens
+      - Aedes aurotaeniatus
+      - Aedes aurovenatus
+      - Aedes australiensis
+      - Aedes australis
+      - Aedes avistylus
+      - Aedes axitiosus
+      - Aedes bahamensis
+      - Aedes baisasi
+      - Aedes bambiotai
+      - Aedes bambusae
+      - Aedes bambusicolus
+      - Aedes bananea
+      - Aedes bancoi
+      - Aedes bancroftianus
+      - Aedes banksi
+      - Aedes barnardi
+      - Aedes barraudi
+      - Aedes becki
+      - Aedes bedfordi
+      - Aedes behningi
+      - Aedes bejaranoi
+      - Aedes bekkui
+      - Aedes belleci
+      - Aedes bequaerti
+      - Aedes bergerardi
+      - Aedes berlandi
+      - Aedes berlini
+      - Aedes bertrami
+      - Aedes bevisi
+      - Aedes bhutanensis
+      - Aedes bicristatus
+      - Aedes bimaculatus
+      - Aedes biocellatus
+      - Aedes biskraensis
+      - Aedes biunguiculatus
+      - Aedes blacklocki
+      - Aedes bogotanus
+      - Aedes boharti
+      - Aedes bolense
+      - Aedes bolensis
+      - Aedes boneti
+      - Aedes bonneae
+      - Aedes bougainvillensis
+      - Aedes braziliensis
+      - Aedes breedensis
+      - Aedes brelandi
+      - Aedes brevis
+      - Aedes brevitibia
+      - Aedes brevivittatus
+      - Aedes britteni
+      - Aedes bromeliae
+      - Aedes brownscutumus
+      - Aedes brucei
+      - Aedes brunhesi
+      - Aedes brygooi
+      - Aedes buenaventura
+      - Aedes burgeri
+      - Aedes burjaticus
+      - Aedes burnetti
+      - Aedes burnsi
+      - Aedes burpengaryensis
+      - Aedes busckii
+      - Aedes buxtoni
+      - Aedes caballus
+      - Aedes cacharanus
+      - Aedes cacozelus
+      - Aedes caecus
+      - Aedes calabyi
+      - Aedes calcariae
+      - Aedes calceatus
+      - Aedes caliginosus
+      - Aedes calumnior
+      - Aedes campana
+      - Aedes campestris
+      - Aedes camptorhynchus
+      - Aedes canadensis
+      - Aedes cancricomes
+      - Aedes candidoscutellum
+      - Aedes cantans
+      - Aedes cantator
+      - Aedes capensis
+      - Aedes carteri
+      - Aedes cartroni
+      - Aedes casali
+      - Aedes caspius
+      - Aedes cataphylla
+      - Aedes cavaticus
+      - Aedes cavernicola
+      - Aedes celebicus
+      - Aedes centropunctatus
+      - Aedes chamboni
+      - Aedes chaussieri
+      - Aedes chelli
+      - Aedes chemulpoensis
+      - Aedes cherrapunjiensis
+      - Aedes chionodes
+      - Aedes chionotum
+      - Aedes christophersi
+      - Aedes chrysolineatus
+      - Aedes chrysoscutus
+      - Aedes chungi
+      - Aedes churchillensis
+      - Aedes ciliaris
+      - Aedes cinereus
+      - Aedes circumluteolus
+      - Aedes clelandi
+      - Aedes clintoni
+      - Aedes clivis
+      - Aedes cogilli
+      - Aedes collessi
+      - Aedes coluzzii
+      - Aedes comitatus
+      - Aedes communis
+      - Aedes condolescens
+      - Aedes contiguus
+      - Aedes continentalis
+      - Aedes cooki
+      - Aedes cordellieri
+      - Aedes corneti
+      - Aedes coulangesi
+      - Aedes cozi
+      - Aedes cozumelensis
+      - Aedes craggi
+      - Aedes crassiforceps
+      - Aedes cretinus
+      - Aedes crinifer
+      - Aedes croceus
+      - Aedes crossi
+      - Aedes culiciformis
+      - Aedes culicinus
+      - Aedes cumminsii
+      - Aedes cunabulanus
+      - Aedes curtipes
+      - Aedes cyprioides
+      - Aedes cyprius
+      - Aedes daggyi
+      - Aedes dahlae
+      - Aedes dahuricus
+      - Aedes daitensis
+      - Aedes daliensis
+      - Aedes dalzieli
+      - Aedes daryi
+      - Aedes dasyorrhus
+      - Aedes davidi
+      - Aedes deboeri
+      - Aedes deccanus
+      - Aedes decticus
+      - Aedes deficiens
+      - Aedes demeilloni
+      - Aedes denderensis
+      - Aedes dendrophilus
+      - Aedes dentatus
+      - Aedes derooki
+      - Aedes deserticola
+      - Aedes desmotes
+      - Aedes detritus
+      - Aedes dialloi
+      - Aedes diantaeus
+      - Aedes diazi
+      - Aedes dissimilierodes
+      - Aedes dissimilis
+      - Aedes dmitryi
+      - Aedes dobodurus
+      - Aedes dobrotworskyi
+      - Aedes domesticus
+      - Aedes doonii
+      - Aedes dorsalis
+      - Aedes dorseyi
+      - Aedes dufouri
+      - Aedes duplex
+      - Aedes dupreei
+      - Aedes durbanensis
+      - Aedes dux
+      - Aedes dybasi
+      - Aedes dzeta
+      - Aedes ealaensis
+      - Aedes eatoni
+      - Aedes ebogoensis
+      - Aedes echinus
+      - Aedes ecuadoriensis
+      - Aedes edgari
+      - Aedes edwardsi
+      - Aedes eidsvoldensis
+      - Aedes elchoensis
+      - Aedes eldridgei
+      - Aedes eleanorae
+      - Aedes ellinorae
+      - Aedes elsiae
+      - Aedes embuensis
+      - Aedes epactius
+      - Aedes eritreae
+      - Aedes esoensis
+      - Aedes ethiopiensis
+      - Aedes eucephalaeus
+      - Aedes euedes
+      - Aedes euiris
+      - Aedes euplocamus
+      - Aedes excrucians
+      - Aedes explorator
+      - Aedes falabreguesi
+      - Aedes fascipalpis
+      - Aedes feegradei
+      - Aedes fengi
+      - Aedes ferinus
+      - Aedes fijiensis
+      - Aedes filicis
+      - Aedes fimbripes
+      - Aedes fitchii
+      - Aedes flavescens
+      - Aedes flavicollis
+      - Aedes flavifrons
+      - Aedes flavimargo
+      - Aedes flavipennis
+      - Aedes flavopictus
+      - Aedes fluviatilis
+      - Aedes fontenillei
+      - Aedes formosensis
+      - Aedes fowleri
+      - Aedes franciscoi
+      - Aedes franclemonti
+      - Aedes fraseri
+      - Aedes freycinetiae
+      - Aedes fryeri
+      - Aedes fulgens
+      - Aedes fulvithorax
+      - Aedes fulvus
+      - Aedes fumidus
+      - Aedes furcifer
+      - Aedes fuscinervis
+      - Aedes fuscipalpis
+      - Aedes fuscitarsis
+      - Aedes futunae
+      - Aedes gabriel
+      - Aedes gaffigani
+      - Aedes gahnicola
+      - Aedes galindoi
+      - Aedes galloisi
+      - Aedes galloisiodes
+      - Aedes galloisioides
+      - Aedes ganapathi
+      - Aedes gandaensis
+      - Aedes gandarai
+      - Aedes gani
+      - Aedes gardnerii
+      - Aedes geminus
+      - Aedes geniculatus
+      - Aedes geoffroyi
+      - Aedes geoskusea
+      - Aedes gibbinsi
+      - Aedes gilcolladoi
+      - Aedes gilli
+      - Aedes gilliesi
+      - Aedes gombakensis
+      - Aedes gonguoensis
+      - Aedes gouldi
+      - Aedes grabhami
+      - Aedes gracilelineatus
+      - Aedes grahamii
+      - Aedes grantii
+      - Aedes grassei
+      - Aedes greenii
+      - Aedes grenieri
+      - Aedes gressitti
+      - Aedes grjebinei
+      - Aedes grossbecki
+      - Aedes guamensis
+      - Aedes guatemala
+      - Aedes gubernatoris
+      - Aedes guerrero
+      - Aedes gurneri
+      - Aedes gurneyi
+      - Aedes gutzevichi
+      - Aedes hakanssoni
+      - Aedes hakusanensis
+      - Aedes hancocki
+      - Aedes hansfordi
+      - Aedes harbachi
+      - Aedes harinasutai
+      - Aedes harperi
+      - Aedes harrisoni
+      - Aedes harveyi
+      - Aedes hastatus
+      - Aedes hatorii
+      - Aedes haworthi
+      - Aedes hebrideus
+      - Aedes heischi
+      - Aedes helenae
+      - Aedes hendersoni
+      - Aedes hensilli
+      - Aedes hesperonotius
+      - Aedes heteropus
+      - Aedes hexodontus
+      - Aedes hirsuta
+      - Aedes hirsutus
+      - Aedes hodgkini
+      - Aedes hogsbackensis
+      - Aedes hoguei
+      - Aedes hokkaidensis
+      - Aedes hollandius
+      - Aedes hollingsheadi
+      - Aedes holocinctus
+      - Aedes homoeopus
+      - Aedes hoogstraali
+      - Aedes hopkinsi
+      - Aedes horotoi
+      - Aedes horrescens
+      - Aedes hortator
+      - Aedes huangae
+      - Aedes hui
+      - Aedes humeralis
+      - Aedes hungaricus
+      - Aedes hurlbuti
+      - Aedes hylaius
+      - Aedes ibis
+      - Aedes idanus
+      - Aedes idjenensis
+      - Aedes impatibilis
+      - Aedes imperfectus
+      - Aedes impiger
+      - Aedes implicatus
+      - Aedes impostor
+      - Aedes imprimens
+      - Aedes inaequalis
+      - Aedes incomptus
+      - Aedes increpitus
+      - Aedes indonesiae
+      - Aedes inermis
+      - Aedes inexpectatus
+      - Aedes infirmatus
+      - Aedes ingrami
+      - Aedes inquinatus
+      - Aedes insolens
+      - Aedes insolitus
+      - Aedes intermedius
+      - Aedes interruptus
+      - Aedes intrudens
+      - Aedes ioliota
+      - Aedes irritans
+      - Aedes iwi
+      - Aedes iyengari
+      - Aedes jacobinae
+      - Aedes jamesi
+      - Aedes jamoti
+      - Aedes japonicus
+      - Aedes jorgi
+      - Aedes josephinae
+      - Aedes josiahae
+      - Aedes jugraensis
+      - Aedes juppi
+      - Aedes kabaenensis
+      - Aedes kanarensis
+      - Aedes kapretwae
+      - Aedes karooensis
+      - Aedes karwari
+      - Aedes kasachstanicus
+      - Aedes katherinensis
+      - Aedes keefei
+      - Aedes keniensis
+      - Aedes kennethi
+      - Aedes kenyae
+      - Aedes kesseli
+      - Aedes khazani
+      - Aedes kiangsiensis
+      - Aedes kivuensis
+      - Aedes kleini
+      - Aedes knabi
+      - Aedes knighti
+      - Aedes kochi
+      - Aedes kohkutensis
+      - Aedes kompi
+      - Aedes koreicoides
+      - Aedes koreicus
+      - Aedes krombeini
+      - Aedes krymmontanus
+      - Aedes kummi
+      - Aedes lacteus
+      - Aedes laffooni
+      - Aedes laguna
+      - Aedes lamborni
+      - Aedes lambrechti
+      - Aedes lamelliferus
+      - Aedes langata
+      - Aedes laniger
+      - Aedes laoagensis
+      - Aedes lasaensis
+      - Aedes lauriei
+      - Aedes ledgeri
+      - Aedes leei
+      - Aedes leesoni
+      - Aedes leonis
+      - Aedes lepchanus
+      - Aedes lepidonotus
+      - Aedes lepidus
+      - Aedes leptolabis
+      - Aedes lerozeboomi
+      - Aedes leucarthrius
+      - Aedes leucomelas
+      - Aedes leucomeres
+      - Aedes lewelleni
+      - Aedes lewnielseni
+      - Aedes lilii
+      - Aedes lineatopennis
+      - Aedes linesi
+      - Aedes litoreus
+      - Aedes littlechildi
+      - Aedes litwakae
+      - Aedes lokojensis
+      - Aedes lokojoensis
+      - Aedes longifilamentus
+      - Aedes longiforceps
+      - Aedes longipalpis
+      - Aedes longirostris
+      - Aedes longiseta
+      - Aedes lophoventralis
+      - Aedes lorraineae
+      - Aedes lottei
+      - Aedes lowisii
+      - Aedes lucianus
+      - Aedes lunulatus
+      - Aedes luridus
+      - Aedes luteifemur
+      - Aedes luteocephalus
+      - Aedes luteolateralis
+      - Aedes luteostriatus
+      - Aedes luteus
+      - Aedes luzonensis
+      - Aedes macdougalli
+      - Aedes macfarlanei
+      - Aedes macintoshi
+      - Aedes mackerrasi
+      - Aedes macmillani
+      - Aedes madagascarensis
+      - Aedes maehleri
+      - Aedes maffii
+      - Aedes malayensis
+      - Aedes malikuli
+      - Aedes mallochi
+      - Aedes mamoedjoensis
+      - Aedes manhi
+      - Aedes mansouri
+      - Aedes mariae
+      - Aedes marinkellei
+      - Aedes marshallensis
+      - Aedes marshallii
+      - Aedes martineti
+      - Aedes martinezi
+      - Aedes mascarensis
+      - Aedes masculinus
+      - Aedes masoalensis
+      - Aedes masseyi
+      - Aedes mathioti
+      - Aedes mattinglyi
+      - Aedes mattinglyorum
+      - Aedes maxgermaini
+      - Aedes mcdonaldi
+      - Aedes mcintoshi
+      - Aedes medialis
+      - Aedes mediolineatus
+      - Aedes mediopunctatus
+      - Aedes mediovittatus
+      - Aedes medleri
+      - Aedes mefouensis
+      - Aedes melanimon
+      - Aedes melanopterus
+      - Aedes menoni
+      - Aedes meprai
+      - Aedes mercurator
+      - Aedes meronephada
+      - Aedes metallicus
+      - Aedes metoecapus
+      - Aedes metoecopus
+      - Aedes michaelikati
+      - Aedes mickevichae
+      - Aedes micropterus
+      - Aedes microstictus
+      - Aedes mikrokopion
+      - Aedes milleri
+      - Aedes milsoni
+      - Aedes minutus
+      - Aedes mitchellae
+      - Aedes mixtus
+      - Aedes mjobergi
+      - Aedes mohani
+      - Aedes moloiensis
+      - Aedes monetus
+      - Aedes monocellatus
+      - Aedes monotrichus
+      - Aedes montanus
+      - Aedes montchadskyi
+      - Aedes monticola
+      - Aedes moucheti
+      - Aedes mpusiensis
+      - Aedes mubiensis
+      - Aedes mucidus
+      - Aedes muelleri
+      - Aedes multiplex
+      - Aedes muroafcete
+      - Aedes mutilus
+      - Aedes mzooi
+      - Aedes natalensis
+      - Aedes nataliae
+      - Aedes natronius
+      - Aedes neoafricanus
+      - Aedes neogalloisi
+      - Aedes neogeorgianus
+      - Aedes neopandani
+      - Aedes nevadensis
+      - Aedes ngong
+      - Aedes nigeriensis
+      - Aedes nigerrimus
+      - Aedes nigricephalus
+      - Aedes nigrinus
+      - Aedes nigripes
+      - Aedes nigrithorax
+      - Aedes nigrocanus
+      - Aedes nigromaculis
+      - Aedes nigropterus
+      - Aedes nigrorhynchus
+      - Aedes nigrostriatus
+      - Aedes ningheensis
+      - Aedes niphadopsis
+      - Aedes nipponicus
+      - Aedes nippononiveus
+      - Aedes nishikawai
+      - Aedes nivalis
+      - Aedes niveoides
+      - Aedes niveoscutum
+      - Aedes niveus
+      - Aedes njombiensis
+      - Aedes normanensis
+      - Aedes notoscriptus
+      - Aedes novalbitarsis
+      - Aedes novalbopictus
+      - Aedes novoniveus
+      - Aedes nubilus
+      - Aedes nummatus
+      - Aedes nyasae
+      - Aedes nyounae
+      - Aedes oakleyi
+      - Aedes obturbator
+      - Aedes occidentalis
+      - Aedes oceanicus
+      - Aedes ochraceus
+      - Aedes okinawanus
+      - Aedes oligopistus
+      - Aedes omorii
+      - Aedes opok
+      - Aedes orbitae
+      - Aedes oreophilus
+      - Aedes osornoi
+      - Aedes ostentatio
+      - Aedes ovazzai
+      - Aedes pachyurus
+      - Aedes pagei
+      - Aedes palauensis
+      - Aedes palawanicus
+      - Aedes pallidostriatus
+      - Aedes palmarum
+      - Aedes palpalis
+      - Aedes pampangensis
+      - Aedes pandani
+      - Aedes papago
+      - Aedes papuensis
+      - Aedes paradissimilis
+      - Aedes patersoni
+      - Aedes patriciae
+      - Aedes paullusi
+      - Aedes pecori
+      - Aedes pectinatus
+      - Aedes pecuniosus
+      - Aedes peipingensis
+      - Aedes pembaensis
+      - Aedes penghuensis
+      - Aedes pennai
+      - Aedes perdita
+      - Aedes periskelatus
+      - Aedes perkinsi
+      - Aedes pernotatus
+      - Aedes perplexus
+      - Aedes perryi
+      - Aedes pertinax
+      - Aedes perventor
+      - Aedes pexus
+      - Aedes phaecasiatus
+      - Aedes phaeonotus
+      - Aedes phillipi
+      - Aedes phoeniciae
+      - Aedes phyllolabis
+      - Aedes pia
+      - Aedes pillaii
+      - Aedes pingpaensis
+      - Aedes pionips
+      - Aedes pipersalatus
+      - Aedes plagosus
+      - Aedes platylepidus
+      - Aedes plumiferus
+      - Aedes podographicus
+      - Aedes pogonurus
+      - Aedes poicilius
+      - Aedes pollinctor
+      - Aedes polynesiensis
+      - Aedes portonovoensis
+      - Aedes postpiraculosus
+      - Aedes postspiraculosus
+      - Aedes poweri
+      - Aedes procax
+      - Aedes prominens
+      - Aedes provocans
+      - Aedes pseudalbolineatus
+      - Aedes pseudalbopictus
+      - Aedes pseudoafricanus
+      - Aedes pseudoalbolineatus
+      - Aedes pseudoalbopictus
+      - Aedes pseudodominicii
+      - Aedes pseudonigeria
+      - Aedes pseudoniveus
+      - Aedes pseudonormanensis
+      - Aedes pseudonummatus
+      - Aedes pseudoscutellaris
+      - Aedes pseudotaeniatus
+      - Aedes pseudotarsalis
+      - Aedes pubescens
+      - Aedes pulchrithorax
+      - Aedes pulchriventer
+      - Aedes pulcritarsis
+      - Aedes pullatus
+      - Aedes pulverulentus
+      - Aedes punctifemoris
+      - Aedes punctipes
+      - Aedes punctocostalis
+      - Aedes punctodes
+      - Aedes punctor
+      - Aedes punctothoracis
+      - Aedes puntothoracis
+      - Aedes purpuraceus
+      - Aedes purpureifemur
+      - Aedes purpureipes
+      - Aedes purpureus
+      - Aedes purpuriventris
+      - Aedes quadripunctis
+      - Aedes quadrivittatus
+      - Aedes quasiferinus
+      - Aedes quasirubithorax
+      - Aedes quasirusticus
+      - Aedes quasiscutellaris
+      - Aedes quasiunivittatus
+      - Aedes quinquelineatus
+      - Aedes ramachandrai
+      - Aedes ramirezi
+      - Aedes ratcliffei
+      - Aedes raymondi
+      - Aedes reali
+      - Aedes refiki
+      - Aedes reginae
+      - Aedes reinerti
+      - Aedes rempeli
+      - Aedes reubenae
+      - Aedes rhodaini
+      - Aedes rhungkiangensis
+      - Aedes rhyacophilus
+      - Aedes rickenbachi
+      - Aedes riparioides
+      - Aedes riparius
+      - Aedes riversi
+      - Aedes rizali
+      - Aedes roai
+      - Aedes robinsoni
+      - Aedes rodhaini
+      - Aedes rossicus
+      - Aedes rotanus
+      - Aedes rotumae
+      - Aedes rubiginosus
+      - Aedes rubrithorax
+      - Aedes rupestris
+      - Aedes rusticus
+      - Aedes ruwenzori
+      - Aedes sagax
+      - Aedes saimedres
+      - Aedes saipanensis
+      - Aedes sallumae
+      - Aedes samoanus
+      - Aedes sampi
+      - Aedes sandrae
+      - Aedes saperoi
+      - Aedes sapiens
+      - Aedes sasai
+      - Aedes savoryi
+      - Aedes saxicola
+      - Aedes scanloni
+      - Aedes scapularis
+      - Aedes scatophagoides
+      - Aedes schicki
+      - Aedes schizopinax
+      - Aedes schlosseri
+      - Aedes schroederi
+      - Aedes schtakelbergi
+      - Aedes schwetzi
+      - Aedes scutellalbum
+      - Aedes scutellaris
+      - Aedes scutellatum
+      - Aedes scutoscriptus
+      - Aedes seampi
+      - Aedes seatoi
+      - Aedes sedaensis
+      - Aedes segermanae
+      - Aedes semlikiensis
+      - Aedes senyavinensis
+      - Aedes seoulensis
+      - Aedes septemstriatus
+      - Aedes serafini
+      - Aedes sergievi
+      - Aedes serratus
+      - Aedes sexlineatus
+      - Aedes seychellensis
+      - Aedes shannoni
+      - Aedes shehzadae
+      - Aedes sherki
+      - Aedes shintienensis
+      - Aedes shortti
+      - Aedes sibiricus
+      - Aedes sierrensis
+      - Aedes silvestris
+      - Aedes simanini
+      - Aedes simlensis
+      - Aedes simplex
+      - Aedes simpsoni
+      - Aedes simulans
+      - Aedes sinensis
+      - Aedes sinkiangensis
+      - Aedes sintoni
+      - Aedes smithburni
+      - Aedes soleatus
+      - Aedes sollicitans
+      - Aedes solomonis
+      - Aedes sorsogonensis
+      - Aedes spencerii
+      - Aedes spilotus
+      - Aedes spinosipes
+      - Aedes spinosus
+      - Aedes squamiger
+      - Aedes stanleyi
+      - Aedes stenei
+      - Aedes stenoetrus
+      - Aedes stenoscutus
+      - Aedes stevensoni
+      - Aedes sticticus
+      - Aedes stigmaticus
+      - Aedes stimulans
+      - Aedes stokesi
+      - Aedes stonei
+      - Aedes stoneorum
+      - Aedes stramineus
+      - Aedes strelitziae
+      - Aedes stricklandi
+      - Aedes subalbirostris
+      - Aedes subalbitarsis
+      - Aedes subalbopictus
+      - Aedes subargenteus
+      - Aedes subauridorsum
+      - Aedes subbasalis
+      - Aedes subdentatus
+      - Aedes subdiversus
+      - Aedes subniveus
+      - Aedes subtrichurus
+      - Aedes sudanensis
+      - Aedes suffusus
+      - Aedes sumidero
+      - Aedes surcoufi
+      - Aedes suzannae
+      - Aedes synchytus
+      - Aedes syntheticus
+      - Aedes tabu
+      - Aedes taeniarostris
+      - Aedes taeniorhynchoides
+      - Aedes taeniorhynchus
+      - Aedes tahoensis
+      - Aedes taiwanus
+      - Aedes tarsalis
+      - Aedes tauffliebi
+      - Aedes taylori
+      - Aedes teesdalei
+      - Aedes tehuantepec
+      - Aedes terrens
+      - Aedes thailandensis
+      - Aedes thelcter
+      - Aedes theobaldi
+      - Aedes thibaulti
+      - Aedes thomsoni
+      - Aedes thorntoni
+      - Aedes thurmanae
+      - Aedes timorensis
+      - Aedes tiptoni
+      - Aedes togoi
+      - Aedes tongae
+      - Aedes tonkinensis
+      - Aedes tonkingi
+      - Aedes tonsus
+      - Aedes tormentor
+      - Aedes tortilis
+      - Aedes toxopeusi
+      - Aedes tremulus
+      - Aedes treubi
+      - Aedes triceriatus
+      - Aedes tricholabis
+      - Aedes trichurus
+      - Aedes trimaculatus
+      - Aedes triseriatus
+      - Aedes trivittatus
+      - Aedes trukensis
+      - Aedes tsiliensis
+      - Aedes tubbutiensis
+      - Aedes tulagiensis
+      - Aedes tulliae
+      - Aedes turneri
+      - Aedes tutuilae
+      - Aedes unicinctus
+      - Aedes unidentatus
+      - Aedes unilineatus
+      - Aedes upatensis
+      - Aedes upolensis
+      - Aedes usambara
+      - Aedes valeryi
+      - Aedes vanemdeni
+      - Aedes vanus
+      - Aedes vargasi
+      - Aedes variepictus
+      - Aedes varipalpus
+      - Aedes varuae
+      - Aedes veeniae
+      - Aedes ventrovittis
+      - Aedes versicolor
+      - Aedes vexans
+      - Aedes vigilax
+      - Aedes vinsoni
+      - Aedes vittatus
+      - Aedes vittiger
+      - Aedes w-album
+      - Aedes wadai
+      - Aedes walkeri
+      - Aedes wallacei
+      - Aedes wardangensis
+      - Aedes wardi
+      - Aedes washinoi
+      - Aedes wasselli
+      - Aedes watasei
+      - Aedes watteni
+      - Aedes wattensis
+      - Aedes wauensis
+      - Aedes wellmanii
+      - Aedes wendyae
+      - Aedes whartoni
+      - Aedes whitmorei
+      - Aedes wigglesworthi
+      - Aedes wilkersoni
+      - Aedes woodi
+      - Aedes yaeyamensis
+      - Aedes yamadai
+      - Aedes yangambiensis
+      - Aedes yunnanensis
+      - Aedes yvonneae
+      - Aedes zammitii
+      - Aedes zavortinki
+      - Aedes zethus
+      - Aedes zoosophus
+    - id: country_species
+      type: membership
+      value:
+      - Aedes albopictus
+- id: coverage_flags
+  toi:
+  - name: Aedes scutellaris
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: A
+  pmi:
+  - name: Aedes scutellaris
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: A
+- id: maps
+  assertions:
+  - id: filenames
+    type: membership
+    value:
+    - map_Aedes_scutellaris.png

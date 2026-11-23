@@ -1,0 +1,2254 @@
+sample_id: VE24-1351_COI
+date: '2026-11-23T06:31:55.109129714Z'
+provenance:
+  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
+  source_test: test/core/taxodactyl.workflow.nf.test
+  evaluated_at: '2026-11-23T06:31:55.109129714Z'
+  accepted_at: '2026-11-23'
+  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+components:
+- id: blast_hits
+  assertions:
+  - id: accessions
+    type: membership
+    value:
+    - AF319784
+    - AF319811
+    - FN868635
+    - HM413116
+    - HQ551715
+    - JF868402
+    - JN298477
+    - JN378570
+    - JQ613826
+    - KJ092370
+    - KJ164422
+    - KM624956
+    - KM625326
+    - KM630646
+    - KM632280
+    - KM632640
+    - KM632779
+    - KM635517
+    - KM639572
+    - KM640307
+    - KM640358
+    - KM640416
+    - KM641114
+    - KM641126
+    - KM647103
+    - KM900897
+    - KM904690
+    - KM905414
+    - KM908220
+    - KM910312
+    - KM916678
+    - KM918550
+    - KM919341
+    - KM919560
+    - KM935286
+    - KM939588
+    - KM945465
+    - KM954935
+    - KM957605
+    - KM971546
+    - KM972210
+    - KP037674
+    - KP037941
+    - KP038152
+    - KP038186
+    - KP038318
+    - KP038447
+    - KP038483
+    - KP038775
+    - KP038842
+    - KP039268
+    - KP039691
+    - KP040117
+    - KP041055
+    - KP042102
+    - KP042230
+    - KP042526
+    - KP042963
+    - KP043175
+    - KP043305
+    - KP043437
+    - KP043672
+    - KP043698
+    - KP043759
+    - KP044276
+    - KP044323
+    - KP044926
+    - KP045439
+    - KP045668
+    - KP045782
+    - KP045797
+    - KP045836
+    - KP045941
+    - KP046129
+    - KP046605
+    - KP046613
+    - KP046646
+    - KP046752
+    - KP046975
+    - KP047930
+    - KP048537
+    - KP048719
+    - KP048801
+    - KP049014
+    - KP100538
+    - KR234635
+    - KR234898
+    - KR235516
+    - KR235885
+    - KR236415
+    - KR237033
+    - KR237290
+    - KR237494
+    - KR237522
+    - KR237732
+    - KR237965
+    - KR237987
+    - KR238100
+    - KR238261
+    - KR238313
+    - KR238677
+    - KR239025
+    - KR239333
+    - KR239794
+    - KR239896
+    - KR240776
+    - KR240777
+    - KR240949
+    - KR241766
+    - KR241807
+    - KR241986
+    - KR242092
+    - KR242980
+    - KR243243
+    - KR243491
+    - KR244137
+    - KR244269
+    - KR244578
+    - KR244701
+    - KR245670
+    - KR246076
+    - KR246477
+    - KR246488
+    - KR246685
+    - KR247080
+    - KR247244
+    - KR247411
+    - KR247710
+    - KR248344
+    - KR248550
+    - KR249084
+    - KR249265
+    - KR249423
+    - KR249563
+    - KR249632
+    - KR250103
+    - KR251243
+    - KR251651
+    - KR251803
+    - KR251855
+    - KR252133
+    - KR252153
+    - KR252259
+    - KR252326
+    - KR252425
+    - KR252988
+    - KR253105
+    - KR253424
+    - KR253620
+    - KR253678
+    - KR254096
+    - KR254218
+    - KR254266
+    - KR254269
+    - KR254935
+    - KR255075
+    - KR255546
+    - KR255552
+    - KR255894
+    - KR256031
+    - KR256225
+    - KR256791
+    - KR257032
+    - KR257035
+    - KR257562
+    - KR257815
+    - KR258240
+    - KR258361
+    - KR258366
+    - KR258383
+    - KR258664
+    - KR429081
+    - KR430861
+    - KR430932
+    - KR431290
+    - KR435414
+    - KR435429
+    - KR435696
+    - KR436900
+    - KR437634
+    - KR438251
+    - KR438588
+    - KR438743
+    - KR438889
+    - KR442964
+    - KR444750
+    - KR460136
+    - KR464421
+    - KR464800
+    - KR468971
+    - KR472213
+    - KR476182
+    - KR507680
+    - KR511453
+    - KR517929
+    - KR585456
+    - KR590288
+    - KR600426
+    - KR603457
+    - KR639624
+    - KR655643
+    - KR677649
+    - KR677881
+    - KR678154
+    - KR678165
+    - KR678248
+    - KR679519
+    - KR679626
+    - KR679755
+    - KR680765
+    - KR681930
+    - KR683027
+    - KR686206
+    - KR687028
+    - KR687808
+    - KR688811
+    - KR689146
+    - KR689503
+    - KR691163
+    - KR691830
+    - KR691923
+    - KR693774
+    - KR695016
+    - KR695247
+    - KR695947
+    - KR745156
+    - KR746145
+    - KR750869
+    - KR761063
+    - KR761633
+    - KR765605
+    - KR766490
+    - KR769511
+    - KR770852
+    - KR771821
+    - KR975170
+    - KR976336
+    - KR977147
+    - KR981331
+    - KT110236
+    - KT111215
+    - KT616910
+    - KT619494
+    - KT620675
+    - KT623620
+    - KT623716
+    - KX360291
+    - KX360292
+    - KX360295
+    - KX360299
+    - KX360300
+    - KX360301
+    - KX360302
+    - KX360315
+    - KY079369
+    - KY079371
+    - KY079372
+    - KY079373
+    - KY079374
+    - KY079383
+    - KY754194
+    - KY754197
+    - KY754198
+    - LC278318
+    - MF839006
+    - MF839032
+    - MF840086
+    - MF840438
+    - MF841541
+    - MF842283
+    - MF842368
+    - MF844110
+    - MF845293
+    - MF847087
+    - MF847691
+    - MF848739
+    - MF855655
+    - MG150453
+    - MG150492
+    - MG150710
+    - MG151438
+    - MG151953
+    - MG154145
+    - MG154299
+    - MG154633
+    - MG154982
+    - MG155008
+    - MG155179
+    - MG155639
+    - MG155675
+    - MG155924
+    - MG156140
+    - MG156541
+    - MG156638
+    - MG156729
+    - MG157231
+    - MG157425
+    - MG158587
+    - MG158946
+    - MG159181
+    - MG159412
+    - MG159463
+    - MG159531
+    - MG159757
+    - MG291853
+    - MG291873
+    - MG292424
+    - MG293706
+    - MG296736
+    - MG296988
+    - MG472727
+    - MK861017
+    - MK861018
+    - MK861019
+    - MT252095
+    - MT745825
+    - MW807243
+    - MW807281
+    - MZ021517
+    - MZ303029
+    - MZ608716
+    - OM552531
+    - OM552660
+    - OM552788
+    - OM553175
+    - OM554079
+    - OM555362
+    - OM555391
+    - OM555399
+    - OM555572
+    - OM556356
+    - OM556650
+    - OM556998
+    - OM557015
+    - OM557244
+    - OM557611
+    - OM557720
+    - OM558098
+    - OM558163
+    - OM558794
+    - OM559086
+    - OM559218
+    - OM559549
+    - OM559923
+    - OM560155
+    - OM560545
+    - OM560679
+    - OM560890
+    - OM560898
+    - OM577715
+    - OM580315
+    - OM586714
+    - OM588364
+    - OM588450
+    - OM588937
+    - OM589461
+    - OM590434
+    - OM590788
+    - OM590915
+    - OM591127
+    - OM591845
+    - OM592089
+    - OM592114
+    - OM593205
+    - OM593482
+    - OM593981
+    - OM595633
+    - OM595922
+    - OM596153
+    - OM596175
+    - OM596447
+    - OM596541
+    - OM596733
+    - OM596857
+    - OM596982
+    - OM597052
+    - OM597142
+    - OM597211
+    - OM597230
+    - OM597591
+    - OM597712
+    - OM597809
+    - OM597886
+    - OM597974
+    - OM598008
+    - OM598187
+    - OM598524
+    - OM598622
+    - OM598851
+    - OM598945
+    - OM599021
+    - OM599102
+    - OM599110
+    - OM599428
+    - OM599609
+    - OM599703
+    - OM599835
+    - OM599862
+    - OM600496
+    - OM600984
+    - OM601220
+    - OM601227
+    - OM601241
+    - OM601316
+    - OM601902
+    - OM601925
+    - OM602004
+    - OM602048
+    - OM602280
+    - OM602390
+    - OM603595
+    - OM603745
+    - OM603888
+    - OM604322
+    - OM604474
+    - OM604699
+    - OM604708
+    - OM604791
+    - OM604875
+    - OM604884
+    - OM604902
+    - OM605055
+    - OM605601
+    - OM605778
+    - OM605905
+    - OM606213
+    - OM606496
+    - OM606624
+    - OM606634
+    - OM606651
+    - OM607087
+    - OM607112
+    - OM607156
+    - OM607392
+    - OM607562
+    - OM608067
+    - OM608192
+    - OM608290
+    - OM608478
+    - OM608659
+    - OM608901
+    - OM608968
+    - OM609122
+    - OM609213
+    - OM610056
+    - OM610066
+    - OM610169
+    - OM610261
+    - OM610582
+    - OM611576
+    - OM612001
+    - OM612429
+    - OM612637
+    - OM613180
+    - OM613498
+    - OM613651
+    - OM613985
+    - OM614001
+    - OM705469
+    - OM705726
+    - OM705867
+    - OM706246
+    - OM707065
+    - OM707499
+    - OM708702
+    - OM708746
+    - OM708841
+    - OM709721
+    - OM709836
+    - OM709926
+    - OM710427
+    - OM710983
+    - OM711399
+    - OM711726
+    - OM711746
+    - OM712036
+    - OM712094
+    - OM712315
+    - OM712349
+    - OM712485
+    - OM712570
+    - OM712600
+    - OM712843
+    - OM713082
+    - OM713277
+    - OM713303
+    - OM713468
+    - OM713602
+    - OM713621
+    - OM713821
+    - OR251912
+    - OR253027
+    - OR352396
+    - OR690424
+    - OZ247520
+    - PQ008449
+    - PQ066142
+    - PQ069628
+    - PQ069630
+    - PQ069699
+  - id: sequence_fingerprints
+    type: fingerprints
+    value:
+      AF319784: '3fe1ab701011e8d2'
+      AF319811: 'f17edd226caa2949'
+      FN868635: 'b91fcb7ac260b494'
+      HM413116: '239b8713eb565d66'
+      HQ551715: '4d3a4352d6493563'
+      JF868402: '0abf2b6c1230c3fa'
+      JN298477: '298e878ddfb8d876'
+      JN378570: '9b4cec329fb4eeb0'
+      JQ613826: 'd5cd2e45671867b3'
+      KJ092370: '4132e9dea0e31c9b'
+      KJ164422: '9a05e2e6d252af2c'
+      KM624956: '2fb1a66a487b0e3d'
+      KM625326: '8e8af057d20628d1'
+      KM630646: '9bc1342bfd0eda13'
+      KM632280: '700ae2144283fec3'
+      KM632640: '41077098a395e012'
+      KM632779: '79a898229c847ddf'
+      KM635517: 'df662e9bb501fd35'
+      KM639572: '132cd8ee2108f9e7'
+      KM640307: '2752dcce01a87f90'
+      KM640358: '057d72a71d36cfdd'
+      KM640416: '42d1b683affff530'
+      KM641114: '68b22f3d7685cf02'
+      KM641126: 'a27e7107e2e6a9e1'
+      KM647103: 'ea13748b2d25fbf4'
+      KM900897: '5d00ef14d703230b'
+      KM904690: '4891bdb8d7ed1e7d'
+      KM905414: 'ff1f954f5f53264b'
+      KM908220: '2b6eb07c8c0570a8'
+      KM910312: '71a61823a162822b'
+      KM916678: 'a520d0cd0bf77b84'
+      KM918550: 'c0cca8f4e99df45d'
+      KM919341: 'ff1f954f5f53264b'
+      KM919560: '3dd6b92b8deab896'
+      KM935286: '2bd22ed6644746fe'
+      KM939588: '32f8ccf6c265799e'
+      KM945465: '1dd53fdb671f5172'
+      KM954935: '4e76c5c25af90bcb'
+      KM957605: 'dbd2ae7c929ec680'
+      KM971546: '32a64f0689f3c992'
+      KM972210: 'cb84a4e7c2eac03f'
+      KP037674: '2ade560cf24c1a2c'
+      KP037941: '8e82a6e857ea7f93'
+      KP038152: '6a4bc246b53730a2'
+      KP038186: '35e298dfd4c43634'
+      KP038318: 'e0a4c487a9b2bc08'
+      KP038447: 'e6999813180f9707'
+      KP038483: '2a4cbb0bd7e5c018'
+      KP038775: 'b512f8757a06ae03'
+      KP038842: '6c7d8a8f93fb3a81'
+      KP039268: '87e783dba041023a'
+      KP039691: '991d0f5d4f053bc0'
+      KP040117: 'e7cf4f778c53b4bb'
+      KP041055: '1465a76e9d17911d'
+      KP042102: 'f42e06aa7cf80cdc'
+      KP042230: '1040b981fcc81fb0'
+      KP042526: 'b87bd2acbc60945f'
+      KP042963: 'feb39db8f33baef6'
+      KP043175: '470697537e2c86fd'
+      KP043305: '684dddd272b66179'
+      KP043437: '8aca7d6e9ea11508'
+      KP043672: '9b360c19aafa5997'
+      KP043698: '4c51a4ce470563c4'
+      KP043759: '5aa5b25111eea4a1'
+      KP044276: '5b8e4557c1f43471'
+      KP044323: 'c048e09e22da7173'
+      KP044926: '024bdcb30b54b849'
+      KP045439: '8fc3d14357f2f5c2'
+      KP045668: 'ac1d70405eec4194'
+      KP045782: '99ee00c7bb26d560'
+      KP045797: 'f68a39189fdc2581'
+      KP045836: '90b44a619c2ef85a'
+      KP045941: '4a3d00c9012af0b2'
+      KP046129: '4cec9fa5474f5f4a'
+      KP046605: '0827ace438d1ba3f'
+      KP046613: '41f2ff52d1c2a3a8'
+      KP046646: '18081b186e5fed84'
+      KP046752: '420fa95434bede41'
+      KP046975: 'fd5a07b7c901c278'
+      KP047930: 'c9fde12a2767f21c'
+      KP048537: '0c04655450739757'
+      KP048719: '451e0b6c04e54e78'
+      KP048801: '391933e65e3f2c9f'
+      KP049014: '1e58a6fea6fea12d'
+      KP100538: '26a63032010ed582'
+      KR234635: 'c402f0c33a88c007'
+      KR234898: 'ae40a02eda18b97c'
+      KR235516: '0756ada023f2379e'
+      KR235885: 'fb35262e1f7ab0a0'
+      KR236415: '3dad496f7a416dee'
+      KR237033: '9195d8b19694c327'
+      KR237290: 'e450d9db078b6a24'
+      KR237494: '9529a6e413f6e457'
+      KR237522: 'fb35262e1f7ab0a0'
+      KR237732: '63730d197e025826'
+      KR237965: '3faca1bbba91bd9c'
+      KR237987: '0756ada023f2379e'
+      KR238100: 'd3c26dd248300c03'
+      KR238261: '0c23432e9a84a57b'
+      KR238313: 'eac34927003b9b8d'
+      KR238677: 'ed4aaffb903f0d9e'
+      KR239025: '7fa13b5400b14175'
+      KR239333: 'd44b49ed26b4f610'
+      KR239794: '13347e0b91da89f3'
+      KR239896: 'c2d11461694e8c62'
+      KR240776: '43c97ae73d03482c'
+      KR240777: 'fb35262e1f7ab0a0'
+      KR240949: '87e85e6f2cc35abc'
+      KR241766: '9b585b32a22c010d'
+      KR241807: '91164ff5620609f5'
+      KR241986: '5978b9a948989575'
+      KR242092: '25f28825e78be81f'
+      KR242980: '83d8fe4dad4f6400'
+      KR243243: 'a6c025272b2a19fc'
+      KR243491: '0b9e328d86a03f8d'
+      KR244137: 'dad4b612ac8c7bc2'
+      KR244269: '05ede76f98d63a4b'
+      KR244578: 'ee2df30195edbbbe'
+      KR244701: 'b0ad8a8ed8325800'
+      KR245670: '1acd5ca85400fa81'
+      KR246076: 'd3c26dd248300c03'
+      KR246477: 'ab6d60b60da9eac8'
+      KR246488: '179b29f7719de08c'
+      KR246685: '5978b9a948989575'
+      KR247080: '44e5bb6a32fb9805'
+      KR247244: '43c97ae73d03482c'
+      KR247411: 'b1d0827675682e4e'
+      KR247710: 'a805551664b9932a'
+      KR248344: '9c68e3f98a8b8a6c'
+      KR248550: '9127b619fd0477ba'
+      KR249084: 'dad4b612ac8c7bc2'
+      KR249265: '49fd38f752e43455'
+      KR249423: 'dad4b612ac8c7bc2'
+      KR249563: '2866e100e9dc24a1'
+      KR249632: '822d676973fac47d'
+      KR250103: 'a603539f58536d9b'
+      KR251243: '0449a96659977528'
+      KR251651: '143dc1301e43b029'
+      KR251803: 'fb35262e1f7ab0a0'
+      KR251855: 'cb1a3fa609188f4e'
+      KR252133: '23ebb582441e1545'
+      KR252153: '25f28825e78be81f'
+      KR252259: 'f5b2e310c19ff2fe'
+      KR252326: 'dc7bb525a44155ac'
+      KR252425: 'bf9794daefa80220'
+      KR252988: '0a4231ecf0a27ba8'
+      KR253105: '179b29f7719de08c'
+      KR253424: '3de7a649e24a797c'
+      KR253620: '88ccea96374ba203'
+      KR253678: '63730d197e025826'
+      KR254096: '9d5b0b8427904759'
+      KR254218: '45ebb8dbd96ef5be'
+      KR254266: '1d97d6fe9c65e8b0'
+      KR254269: 'ad1cf7ed8b326bfe'
+      KR254935: '63730d197e025826'
+      KR255075: 'edf3dc731818f248'
+      KR255546: '0756ada023f2379e'
+      KR255552: '44caa3ea5ffc9758'
+      KR255894: '6eb641e54844f8f8'
+      KR256031: '6703eed9bd31b39e'
+      KR256225: 'e1d3f607c1e1a0e0'
+      KR256791: '7f36e19f33fc07c3'
+      KR257032: 'e0f56423c0b83460'
+      KR257035: '10e114aa614b7a9d'
+      KR257562: '2866e100e9dc24a1'
+      KR257815: '72a8d0a9ed048709'
+      KR258240: '52ee9fdc2e27e27b'
+      KR258361: '52ee9fdc2e27e27b'
+      KR258366: '0f96e77957bdd8dd'
+      KR258383: '3b38d32b04fceea2'
+      KR258664: '4f0dca8d0d3175a0'
+      KR429081: 'c09844107e41474b'
+      KR430861: '418f8eebbe6e8d59'
+      KR430932: '66042d2e622bb5eb'
+      KR431290: '6e7d2dc25e6a43b3'
+      KR435414: 'f7bae21c66780b39'
+      KR435429: 'f714203edf30b838'
+      KR435696: 'aa4b5fb745e40b47'
+      KR436900: '1253c1f8dcc8ca18'
+      KR437634: '6cf52de4373334fd'
+      KR438251: 'aac1cd5c001988a8'
+      KR438588: '5f65a08210a909e6'
+      KR438743: 'cf17a11bad1b78d0'
+      KR438889: '4d3a4352d6493563'
+      KR442964: '47fc6f9b1fe87416'
+      KR444750: 'ea404ae3a830e35d'
+      KR460136: '03a7eaaa4414911a'
+      KR464421: '034a64c3c30527b9'
+      KR464800: '7e28977395f29e84'
+      KR468971: 'd3a6de7ac8bbee75'
+      KR472213: 'be13f116b7693c41'
+      KR476182: '1f319508b1b35004'
+      KR507680: 'cccfd1ceb52faac6'
+      KR511453: '1df76d8792b9356c'
+      KR517929: '5589a79a52f81396'
+      KR585456: '6beacbb5d040644f'
+      KR590288: '819ed556f4692b1a'
+      KR600426: '59a696af41f9056f'
+      KR603457: 'a3cae7153fc39733'
+      KR639624: 'd5af9c03e41620a8'
+      KR655643: 'a0813c8785ad2a69'
+      KR677649: '9a3b933c1b0fb380'
+      KR677881: 'e9bd9c2c9413326e'
+      KR678154: 'afde253f417e8384'
+      KR678165: '33e3743e6965bc12'
+      KR678248: '203c762921b39c24'
+      KR679519: '59ae4a65aa1e8a3e'
+      KR679626: 'e602ce0ab79c29c9'
+      KR679755: 'd70d280d85f22021'
+      KR680765: '0f92e10a68b91b70'
+      KR681930: '04361921c93b9684'
+      KR683027: '405ca953ea851b84'
+      KR686206: 'f6b43b0d401fbae0'
+      KR687028: '47729dd8d2aed8c3'
+      KR687808: '8563ca37610a113e'
+      KR688811: 'c0be63b01c45d897'
+      KR689146: '1280245cac8264cf'
+      KR689503: '4c859e4f662c624e'
+      KR691163: '79e5fc5931eae59b'
+      KR691830: '31bfab9ff0c62c08'
+      KR691923: 'c9f73739c4b23761'
+      KR693774: 'f5d06f3471f7adb1'
+      KR695016: 'c946ff08fb4bc6b2'
+      KR695247: '0123cca5b20c9e1f'
+      KR695947: '7e3a8eefbf21c968'
+      KR745156: '352b62f13d1a4016'
+      KR746145: '87b11be9aa5e7287'
+      KR750869: 'aaee33cf9f4e4170'
+      KR761063: '99c00c786c4fbef2'
+      KR761633: '9a55e4a741495b7a'
+      KR765605: '8d0889559761fee9'
+      KR766490: '63c39afb11a7f0d1'
+      KR769511: '585f38719d41867e'
+      KR770852: 'e1a6e7698c4f8435'
+      KR771821: '35152a2e90258e5c'
+      KR975170: '35152a2e90258e5c'
+      KR976336: '63c39afb11a7f0d1'
+      KR977147: 'bf2c8eeeae3b2d50'
+      KR981331: 'bf52c01318163a3f'
+      KT110236: '389a989c6ca28e29'
+      KT111215: '5525938fb7c7b842'
+      KT616910: 'e069c9365672bb89'
+      KT619494: '912bf871d9fd6503'
+      KT620675: '844b08c1018b04e7'
+      KT623620: '4ae751f14b455fd0'
+      KT623716: 'd8c0dd902d91ed05'
+      KX360291: 'c8c781417e9add89'
+      KX360292: 'b1bbf50ffe16a1a3'
+      KX360295: '5c96d77aee9154f6'
+      KX360299: 'ada3d8998b981d98'
+      KX360300: '1718f293a6d6392c'
+      KX360301: 'b63c0143b555f645'
+      KX360302: 'b567a9e3c3c741a7'
+      KX360315: '5a76c635887a3158'
+      KY079369: '00240b876136bbc2'
+      KY079371: 'b71f50d12d7ecfe6'
+      KY079372: '40a8e4a57d1bdb15'
+      KY079373: '29b919e17458d493'
+      KY079374: 'cd1105b07e35d34c'
+      KY079383: '0d87a4b90cffc9e5'
+      KY754194: 'e25dc76cfb6b1ec7'
+      KY754197: 'bc187abfccacf15b'
+      KY754198: '9e821b8b6d642c86'
+      LC278318: '17f621964c13771d'
+      MF839006: '2a28f3bdccf649a2'
+      MF839032: '749064dc7b7fe48e'
+      MF840086: '82373f0a4f448c8c'
+      MF840438: '4abf840cef62b94b'
+      MF841541: 'c8d96039ff2e62b2'
+      MF842283: 'cb9b02ddaceb9fdb'
+      MF842368: '0bef1e917424f912'
+      MF844110: '9dff7e5f3f4fbc11'
+      MF845293: '33a53897ac9dff25'
+      MF847087: '7d7c48378ea2a7df'
+      MF847691: '389a989c6ca28e29'
+      MF848739: '48818f49f233fd87'
+      MF855655: '734050c97be7b9d3'
+      MG150453: '0565e243d2ec49df'
+      MG150492: 'fe4eba0bf92563a6'
+      MG150710: '1f76fd17f9d15811'
+      MG151438: '3068ce03ea96b533'
+      MG151953: 'c011e3f3ba0ee2f5'
+      MG154145: '3db6f73956a4beed'
+      MG154299: 'c474a96f510e2a5a'
+      MG154633: '7e5de9ce89becdea'
+      MG154982: '35d0483e7b968df3'
+      MG155008: 'eaef2b97bb7b4e66'
+      MG155179: '01d806246056e8c1'
+      MG155639: '1ff9c5db22bf3d1b'
+      MG155675: 'fed2d0f886f65cbc'
+      MG155924: '03aaeda90c601d4d'
+      MG156140: '06ca9ce2f17b0e4d'
+      MG156541: '210c25f51b080200'
+      MG156638: 'af604144101b5072'
+      MG156729: 'b58764b350d99591'
+      MG157231: '95995897fa3b4c1e'
+      MG157425: '4f0d3df97726d320'
+      MG158587: 'f3334cc61fe430cf'
+      MG158946: '48818f49f233fd87'
+      MG159181: '3d476c013a88ac20'
+      MG159412: '835f07b343e4548a'
+      MG159463: '20ee41adf994bacd'
+      MG159531: '31a3fac07d78df35'
+      MG159757: '43a5262b1649ff17'
+      MG291853: 'ca677b742bd005f4'
+      MG291873: '197b10792633d7c9'
+      MG292424: '0a938236c95364e3'
+      MG293706: '71f923693d2af2d8'
+      MG296736: '63c39afb11a7f0d1'
+      MG296988: '01a37c54a1259618'
+      MG472727: '04db5affebc5fc10'
+      MK861017: 'ef74aada69cb67bd'
+      MK861018: '4f4c82e19aea417e'
+      MK861019: 'c73a4c858310fd4a'
+      MT252095: '25f10e885a07357a'
+      MT745825: 'b098d99da084b174'
+      MW807243: '97410ba24f5e86aa'
+      MW807281: 'd6d6ed1da8c70d8f'
+      MZ021517: 'c4ef6431a7a1bb33'
+      MZ303029: 'ef74aada69cb67bd'
+      MZ608716: '8d2e6c9924a7da9d'
+      OM552531: '54c32436bb1502c9'
+      OM552660: '68826cde15be8b86'
+      OM552788: 'ea27d1969c0bc9f5'
+      OM553175: 'f05d86265a5bbab5'
+      OM554079: '906ee58f95a9b765'
+      OM555362: '906ee58f95a9b765'
+      OM555391: '9317ac27fce54fd8'
+      OM555399: '662f02219461e5ea'
+      OM555572: 'b50934c1e131d7db'
+      OM556356: '906ee58f95a9b765'
+      OM556650: '2efffaa32bae6f89'
+      OM556998: 'f3d183d81049673a'
+      OM557015: '923f230489d16f70'
+      OM557244: '906ee58f95a9b765'
+      OM557611: '8fd80209ae03ddce'
+      OM557720: '906ee58f95a9b765'
+      OM558098: 'e99e0209a5d483ac'
+      OM558163: '906ee58f95a9b765'
+      OM558794: 'f032d657f5ab5d50'
+      OM559086: '15c7168037a102f8'
+      OM559218: 'feb70418201b9d66'
+      OM559549: 'dd4a7c4a2090b89c'
+      OM559923: '379024a3ef1bc792'
+      OM560155: '647a048a09e6709c'
+      OM560545: 'bbfe562ffdd8db28'
+      OM560679: '647a048a09e6709c'
+      OM560890: '906ee58f95a9b765'
+      OM560898: '906ee58f95a9b765'
+      OM577715: 'b845231b94f630a6'
+      OM580315: 'a6e1bc6b6485ef2f'
+      OM586714: '68826cde15be8b86'
+      OM588364: '906ee58f95a9b765'
+      OM588450: '11654ad3efb62d2f'
+      OM588937: 'bbfe562ffdd8db28'
+      OM589461: '906ee58f95a9b765'
+      OM590434: '906ee58f95a9b765'
+      OM590788: '906ee58f95a9b765'
+      OM590915: '54c32436bb1502c9'
+      OM591127: '906ee58f95a9b765'
+      OM591845: '54c32436bb1502c9'
+      OM592089: '906ee58f95a9b765'
+      OM592114: '906ee58f95a9b765'
+      OM593205: '8e11e6f64586662b'
+      OM593482: 'e77d8aafae0d4a00'
+      OM593981: '94ff645a1390f98e'
+      OM595633: '11654ad3efb62d2f'
+      OM595922: '906ee58f95a9b765'
+      OM596153: '906ee58f95a9b765'
+      OM596175: '1e438338117ddd95'
+      OM596447: '54c32436bb1502c9'
+      OM596541: '43b99411a67b70ca'
+      OM596733: 'a7ae909e5c44d78c'
+      OM596857: '863a3311c97151dd'
+      OM596982: '906ee58f95a9b765'
+      OM597052: 'ec33511a2d89d8ec'
+      OM597142: '14f9d6735351ff16'
+      OM597211: '662f02219461e5ea'
+      OM597230: '906ee58f95a9b765'
+      OM597591: '54c32436bb1502c9'
+      OM597712: '906ee58f95a9b765'
+      OM597809: '647a048a09e6709c'
+      OM597886: '662f02219461e5ea'
+      OM597974: '1e438338117ddd95'
+      OM598008: '662f02219461e5ea'
+      OM598187: 'bbfe562ffdd8db28'
+      OM598524: 'a63e2f1c5aee943f'
+      OM598622: '906ee58f95a9b765'
+      OM598851: '54c32436bb1502c9'
+      OM598945: '872aacb6575691bb'
+      OM599021: '906ee58f95a9b765'
+      OM599102: '89b6db3b2f7c03c2'
+      OM599110: '906ee58f95a9b765'
+      OM599428: '906ee58f95a9b765'
+      OM599609: 'a5ec6e45cbb9c221'
+      OM599703: '58d4c12614ca4ada'
+      OM599835: '906ee58f95a9b765'
+      OM599862: '11044f68186d9f8b'
+      OM600496: 'dc1b6165080f8611'
+      OM600984: 'bbfe562ffdd8db28'
+      OM601220: '8fd80209ae03ddce'
+      OM601227: 'd6ee6fbe93f1a488'
+      OM601241: 'e0f5c47c5e48c58a'
+      OM601316: '88f770809dc38f54'
+      OM601902: '54c32436bb1502c9'
+      OM601925: '54c32436bb1502c9'
+      OM602004: '68826cde15be8b86'
+      OM602048: '54c32436bb1502c9'
+      OM602280: '54c32436bb1502c9'
+      OM602390: 'f5ed814ef2fb32fc'
+      OM603595: '54c32436bb1502c9'
+      OM603745: '906ee58f95a9b765'
+      OM603888: '7b74688ec6ec6883'
+      OM604322: '9ea480e7a849c142'
+      OM604474: 'cfda9933218ac733'
+      OM604699: 'c2a5fbbb8c977b20'
+      OM604708: 'fe50a4c8b55122e1'
+      OM604791: '54c32436bb1502c9'
+      OM604875: '54c32436bb1502c9'
+      OM604884: 'bbfe562ffdd8db28'
+      OM604902: '2e25fdc771117116'
+      OM605055: '54c32436bb1502c9'
+      OM605601: 'c5fb9717489afc63'
+      OM605778: 'b0e767157d330198'
+      OM605905: 'bbfe562ffdd8db28'
+      OM606213: '906ee58f95a9b765'
+      OM606496: '906ee58f95a9b765'
+      OM606624: '8c0ed36747fa3b41'
+      OM606634: '595c52fbb82cbf7e'
+      OM606651: '1efde00d348a479d'
+      OM607087: '54c32436bb1502c9'
+      OM607112: '379024a3ef1bc792'
+      OM607156: '2dd8251379cb4b5b'
+      OM607392: 'bbfe562ffdd8db28'
+      OM607562: '9eb439521dccc1cd'
+      OM608067: '681a4339823204e4'
+      OM608192: '68826cde15be8b86'
+      OM608290: '906ee58f95a9b765'
+      OM608478: 'b50934c1e131d7db'
+      OM608659: '379024a3ef1bc792'
+      OM608901: '6d3132d71b0343cf'
+      OM608968: '906ee58f95a9b765'
+      OM609122: 'bbfe562ffdd8db28'
+      OM609213: '906ee58f95a9b765'
+      OM610056: '166efe65622cec1b'
+      OM610066: '0da0748e8dcfda69'
+      OM610169: '906ee58f95a9b765'
+      OM610261: '2f6baa487cc8eea4'
+      OM610582: 'bbfe562ffdd8db28'
+      OM611576: '4dad92f7b49cdb16'
+      OM612001: '6e19f1eef16a7466'
+      OM612429: '906ee58f95a9b765'
+      OM612637: 'bbfe562ffdd8db28'
+      OM613180: 'd07fa333b055c7ad'
+      OM613498: '906ee58f95a9b765'
+      OM613651: '906ee58f95a9b765'
+      OM613985: '906ee58f95a9b765'
+      OM614001: 'dc1b6165080f8611'
+      OM705469: 'bb20317464ff0c78'
+      OM705726: '51922619072d41ed'
+      OM705867: 'd08ce0de5a1b7694'
+      OM706246: '184c6bb605e19da9'
+      OM707065: 'e8068ea5efa433a1'
+      OM707499: '54c32436bb1502c9'
+      OM708702: '55d9ccfea634a3f9'
+      OM708746: '906ee58f95a9b765'
+      OM708841: '662f02219461e5ea'
+      OM709721: '94c65ec92994337c'
+      OM709836: '906ee58f95a9b765'
+      OM709926: '906ee58f95a9b765'
+      OM710427: '906ee58f95a9b765'
+      OM710983: '94ddf657da939954'
+      OM711399: '54c32436bb1502c9'
+      OM711726: '906ee58f95a9b765'
+      OM711746: '54c32436bb1502c9'
+      OM712036: 'eead09d8f50d4166'
+      OM712094: '1e438338117ddd95'
+      OM712315: '662f02219461e5ea'
+      OM712349: '43b99411a67b70ca'
+      OM712485: '45fb9c25f7a64465'
+      OM712570: '906ee58f95a9b765'
+      OM712600: 'ba3ce61053c39fe6'
+      OM712843: '662f02219461e5ea'
+      OM713082: '51922619072d41ed'
+      OM713277: '906ee58f95a9b765'
+      OM713303: 'bbfe562ffdd8db28'
+      OM713468: '5bdfca03660733d7'
+      OM713602: '51922619072d41ed'
+      OM713621: '906ee58f95a9b765'
+      OM713821: '90b8f48f6e4d5dbf'
+      OR251912: '0dc0cfa4bd8ec6e2'
+      OR253027: '3ebc9f24afacc431'
+      OR352396: 'a07884f63f585186'
+      OR690424: '810a3126b39755b6'
+      OZ247520: 'c73a4c858310fd4a'
+      PQ008449: 'c73a4c858310fd4a'
+      PQ066142: 'a07884f63f585186'
+      PQ069628: 'a07884f63f585186'
+      PQ069630: 'a07884f63f585186'
+      PQ069699: 'a07884f63f585186'
+- id: phylogeny
+  assertions:
+  - id: selected_sequences
+    type: membership
+    value:
+    - AF319784
+    - AF319811
+    - KM641114
+    - KM954935
+    - KM972210
+    - KP100538
+    - KX360300
+    - KX360315
+    - MG150710
+    - MG155179
+    - MG155924
+    - MG156638
+    - MG156729
+    - MG157231
+    - MG291853
+    - MG296988
+    - MK861017
+    - MK861018
+    - MK861019
+    - MT745825
+    - OR690424
+    - PQ008449
+- id: source_diversity
+  candidates:
+  - name: Bradysia impatiens
+    assertions:
+    - id: source_accessions
+      type: membership
+      value:
+      - MK861018
+      - MK861019
+    - id: flag_4
+      type: flag
+      value: B
+  - name: Lycoriella ingenua
+    assertions:
+    - id: source_accessions
+      type: membership
+      value:
+      - FN868635
+      - JN378570
+      - KP100538
+      - KR746145
+      - KR761633
+      - KX360291
+      - KX360292
+      - KX360295
+      - KX360299
+      - KX360300
+      - KX360301
+      - KX360302
+      - KX360315
+      - LC278318
+      - MG159463
+      - MG291873
+      - MG292424
+      - MT252095
+      - MZ021517
+      - OR251912
+      - OR253027
+      - OR352396
+      - OR690424
+      - OZ247520
+      - PQ008449
+      - PQ066142
+      - PQ069628
+      - PQ069630
+      - PQ069699
+    - id: flag_4
+      type: flag
+      value: A
+  - name: Lycoriella mali
+    assertions:
+    - id: source_accessions
+      type: membership
+      value:
+      - AF319784
+      - AF319811
+    - id: flag_4
+      type: flag
+      value: B
+- id: database_coverage
+  assertions:
+  - id: candidate_taxa
+    type: membership
+    value:
+    - Bradysia impatiens
+    - Lycoriella ingenua
+    - Lycoriella mali
+  - id: toi_taxa
+    type: membership
+    value:
+    - Lycoriella ingenua
+  - id: pmi_taxa
+    type: membership
+    value:
+    - Sciaridae
+  candidate:
+  - name: Bradysia impatiens
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Bradysia abnormalis
+      - Bradysia abrupta
+      - Bradysia acerba
+      - Bradysia acerpontia
+      - Bradysia acinacauda
+      - Bradysia acutimedialis
+      - Bradysia acutiungula
+      - Bradysia aequalis
+      - Bradysia aequans
+      - Bradysia aequispina
+      - Bradysia affinis
+      - Bradysia afghanica
+      - Bradysia aitkeni
+      - Bradysia aktru
+      - Bradysia albanensis
+      - Bradysia albochaeta
+      - Bradysia aleica
+      - Bradysia aliciae
+      - Bradysia alpicola
+      - Bradysia altaica
+      - Bradysia alutacea
+      - Bradysia amabilis
+      - Bradysia amurensis
+      - Bradysia angustata
+      - Bradysia angustipennis
+      - Bradysia angustoocularis
+      - Bradysia angustopalpa
+      - Bradysia angustostylata
+      - Bradysia angustostylus
+      - Bradysia antehilaris
+      - Bradysia antemorio
+      - Bradysia antica
+      - Bradysia antiqua
+      - Bradysia apicalba
+      - Bradysia aprica
+      - Bradysia arcana
+      - Bradysia arcuans
+      - Bradysia arcula
+      - Bradysia ascenda
+      - Bradysia aspera
+      - Bradysia aspercera
+      - Bradysia atracornea
+      - Bradysia atrorubens
+      - Bradysia atrospina
+      - Bradysia aubertii
+      - Bradysia auriculariae
+      - Bradysia auriculata
+      - Bradysia austera
+      - Bradysia baishanzuna
+      - Bradysia barbarossae
+      - Bradysia basalimedia
+      - Bradysia basiangustata
+      - Bradysia basilatissima
+      - Bradysia beata
+      - Bradysia bellingeri
+      - Bradysia bellstedti
+      - Bradysia bicolor
+      - Bradysia bicuspidata
+      - Bradysia bidentata
+      - Bradysia bigeminata
+      - Bradysia bijca
+      - Bradysia bilobata
+      - Bradysia bishopi
+      - Bradysia bispina
+      - Bradysia bispinifera
+      - Bradysia bituberculata
+      - Bradysia blandaformis
+      - Bradysia boliviensis
+      - Bradysia boninensis
+      - Bradysia bororoi
+      - Bradysia brachyflagellata
+      - Bradysia brachystyla
+      - Bradysia brachytoma
+      - Bradysia breviallata
+      - Bradysia brevifurcata
+      - Bradysia brevipalpis
+      - Bradysia brevispinula
+      - Bradysia browni
+      - Bradysia bulbiformis
+      - Bradysia bulbigera
+      - Bradysia bullata
+      - Bradysia caldaria
+      - Bradysia calicula
+      - Bradysia campbellensis
+      - Bradysia campylura
+      - Bradysia cardiocrivora
+      - Bradysia cauta
+      - Bradysia cavernicola
+      - Bradysia cellarum
+      - Bradysia centidens
+      - Bradysia chamei
+      - Bradysia chenjinae
+      - Bradysia chikuni
+      - Bradysia chilensis
+      - Bradysia chloroantennata
+      - Bradysia chlorocornea
+      - Bradysia choui
+      - Bradysia chunguii
+      - Bradysia chunmeiae
+      - Bradysia ciliocera
+      - Bradysia cinerascens
+      - Bradysia circumfilata
+      - Bradysia clara
+      - Bradysia clavistylis
+      - Bradysia clavulata
+      - Bradysia cohilaris
+      - Bradysia columbia
+      - Bradysia commixta
+      - Bradysia compacta
+      - Bradysia condensa
+      - Bradysia confinis
+      - Bradysia conflexa
+      - Bradysia congata
+      - Bradysia conicopalpi
+      - Bradysia conjuncta
+      - Bradysia conspersa
+      - Bradysia consumpta
+      - Bradysia cornispina
+      - Bradysia crassicera
+      - Bradysia crassicornis
+      - Bradysia credula
+      - Bradysia crinita
+      - Bradysia cristata
+      - Bradysia cryptacantha
+      - Bradysia cryptocteniuni
+      - Bradysia ctenoura
+      - Bradysia cubiticaudata
+      - Bradysia cuneiforma
+      - Bradysia curvipedicula
+      - Bradysia cuspidalis
+      - Bradysia dactylina
+      - Bradysia dalmatina
+      - Bradysia dazhulana
+      - Bradysia defossa
+      - Bradysia delectabilis
+      - Bradysia desolata
+      - Bradysia diabolica
+      - Bradysia dichaeta
+      - Bradysia dictyophorae
+      - Bradysia dilucida
+      - Bradysia diluta
+      - Bradysia dimelanata
+      - Bradysia dimidiata
+      - Bradysia diplostida
+      - Bradysia dissinilis
+      - Bradysia distincta
+      - Bradysia diversispina
+      - Bradysia dolichoflagella
+      - Bradysia dolosa
+      - Bradysia drakenbergensis
+      - Bradysia dubia
+      - Bradysia dureti
+      - Bradysia elegans
+      - Bradysia elobata
+      - Bradysia entraqueensis
+      - Bradysia evanescens
+      - Bradysia excelsa
+      - Bradysia excelsior
+      - Bradysia exigua
+      - Bradysia exoleta
+      - Bradysia exsequialis
+      - Bradysia falcata
+      - Bradysia falciceps
+      - Bradysia fallaciosa
+      - Bradysia familiaris
+      - Bradysia fantula
+      - Bradysia felti
+      - Bradysia fenestralis
+      - Bradysia filigera
+      - Bradysia fimbriata
+      - Bradysia flaveola
+      - Bradysia flavida
+      - Bradysia flavipila
+      - Bradysia flavocristata
+      - Bradysia floribunda
+      - Bradysia florida
+      - Bradysia fluminensis
+      - Bradysia fontinalis
+      - Bradysia forattinii
+      - Bradysia forcipulata
+      - Bradysia forficulata
+      - Bradysia fornicata
+      - Bradysia frequens
+      - Bradysia froggatti
+      - Bradysia fugaca
+      - Bradysia fuliginosa
+      - Bradysia fulvescens
+      - Bradysia fulvicauda
+      - Bradysia fumigans
+      - Bradysia funga
+      - Bradysia fungicola
+      - Bradysia furcatina
+      - Bradysia fusca
+      - Bradysia fuscescens
+      - Bradysia fuscothorax
+      - Bradysia fuscovirgata
+      - Bradysia gabyae
+      - Bradysia gemellata
+      - Bradysia geninispina
+      - Bradysia gibbosa
+      - Bradysia globulifera
+      - Bradysia gonata
+      - Bradysia grandicellaris
+      - Bradysia gratiosa
+      - Bradysia guadunana
+      - Bradysia guayanensis
+      - Bradysia guizhouana
+      - Bradysia gutianshana
+      - Bradysia helleri
+      - Bradysia helveolus
+      - Bradysia henana
+      - Bradysia hexacantha
+      - Bradysia hexamelanata
+      - Bradysia hexamera
+      - Bradysia heydemanni
+      - Bradysia hilariformis
+      - Bradysia hilaris
+      - Bradysia hildae
+      - Bradysia hirsutiseta
+      - Bradysia holsatica
+      - Bradysia hortensis
+      - Bradysia hortulana
+      - Bradysia humiliflagella
+      - Bradysia huoditangana
+      - Bradysia hupleuroti
+      - Bradysia hyalescens
+      - Bradysia hyalichaeta
+      - Bradysia hygida
+      - Bradysia iberiana
+      - Bradysia iberica
+      - Bradysia impatiens
+      - Bradysia inaequispina
+      - Bradysia incidera
+      - Bradysia incohata
+      - Bradysia individua
+      - Bradysia infuscatipennis
+      - Bradysia insolita
+      - Bradysia insularis
+      - Bradysia introflexa
+      - Bradysia inundata
+      - Bradysia inusitata
+      - Bradysia inversa
+      - Bradysia iridipennis
+      - Bradysia irmleri
+      - Bradysia irwini
+      - Bradysia ismayi
+      - Bradysia janduisi
+      - Bradysia jianglensis
+      - Bradysia kaihuana
+      - Bradysia kaingangi
+      - Bradysia kairensis
+      - Bradysia kaiseri
+      - Bradysia kassebeeri
+      - Bradysia kopetdagica
+      - Bradysia kraussi
+      - Bradysia laboriosa
+      - Bradysia lapponica
+      - Bradysia lasiphlepia
+      - Bradysia latiala
+      - Bradysia latiflagellomera
+      - Bradysia latigera
+      - Bradysia latimedialis
+      - Bradysia latipennis
+      - Bradysia latiponsa
+      - Bradysia latispinosa
+      - Bradysia latiterga
+      - Bradysia lembkei
+      - Bradysia leptocera
+      - Bradysia leptoptera
+      - Bradysia leucopeza
+      - Bradysia lii
+      - Bradysia lilienthalae
+      - Bradysia liubana
+      - Bradysia lobata
+      - Bradysia lobatula
+      - Bradysia lobulifera
+      - Bradysia longiaciculata
+      - Bradysia longicauda
+      - Bradysia longicolla
+      - Bradysia longicubitalis
+      - Bradysia longimedia
+      - Bradysia longimentula
+      - Bradysia longinquans
+      - Bradysia longioculosa
+      - Bradysia longiradiomedialis
+      - Bradysia longiseta
+      - Bradysia longispina
+      - Bradysia longistylia
+      - Bradysia longitibalis
+      - Bradysia longitoma
+      - Bradysia longqishana
+      - Bradysia longyuwana
+      - Bradysia loricata
+      - Bradysia loriculata
+      - Bradysia loudoni
+      - Bradysia lucichaeta
+      - Bradysia lucida
+      - Bradysia luctifica
+      - Bradysia luhi
+      - Bradysia luodiana
+      - Bradysia lurida
+      - Bradysia lutaria
+      - Bradysia luteicauda
+      - Bradysia luteolineata
+      - Bradysia mabiusi
+      - Bradysia macfarlanei
+      - Bradysia macroptera
+      - Bradysia macrotrichata
+      - Bradysia macrura
+      - Bradysia maesta
+      - Bradysia maestula
+      - Bradysia maggiaensis
+      - Bradysia magnifica
+      - Bradysia malitiosa
+      - Bradysia mastersi
+      - Bradysia matogrossensis
+      - Bradysia mecocteniuni
+      - Bradysia media
+      - Bradysia mediterranea
+      - Bradysia megahypopygialis
+      - Bradysia megamelanata
+      - Bradysia meigeni
+      - Bradysia meinacusi
+      - Bradysia melaina
+      - Bradysia melanota
+      - Bradysia melanura
+      - Bradysia melina
+      - Bradysia mellea
+      - Bradysia mexicana
+      - Bradysia microdentata
+      - Bradysia microspina
+      - Bradysia minima
+      - Bradysia minitriacantha
+      - Bradysia minorlobus
+      - Bradysia minpleuroti
+      - Bradysia minuens
+      - Bradysia minuscula
+      - Bradysia minutissima
+      - Bradysia moerens
+      - Bradysia moesta
+      - Bradysia moganica
+      - Bradysia molokaiensis
+      - Bradysia monacantha
+      - Bradysia monospina
+      - Bradysia mutuata
+      - Bradysia mystica
+      - Bradysia nedongana
+      - Bradysia neocampestris
+      - Bradysia neoreflexa
+      - Bradysia neotropica
+      - Bradysia nervosa
+      - Bradysia nicolae
+      - Bradysia nigricans
+      - Bradysia nigripes
+      - Bradysia nigrisensilla
+      - Bradysia nigroantennata
+      - Bradysia nigrochaeta
+      - Bradysia ningshana
+      - Bradysia nitida
+      - Bradysia nitidicollis
+      - Bradysia noduspina
+      - Bradysia nomica
+      - Bradysia normalis
+      - Bradysia novaeseelandiae
+      - Bradysia novalobata
+      - Bradysia nubilans
+      - Bradysia nudilobata
+      - Bradysia obesa
+      - Bradysia obnoxia
+      - Bradysia obscuricostalis
+      - Bradysia obsolescens
+      - Bradysia obtusa
+      - Bradysia ocellaris
+      - Bradysia oculosa
+      - Bradysia odoriphaga
+      - Bradysia oelandica
+      - Bradysia oligocenica
+      - Bradysia opaca
+      - Bradysia optata
+      - Bradysia ornatula
+      - Bradysia pallidipes
+      - Bradysia pallidiventris
+      - Bradysia pallipes
+      - Bradysia palpiclavata
+      - Bradysia paracantha
+      - Bradysia paradichaeta
+      - Bradysia paraflexa
+      - Bradysia paralobata
+      - Bradysia paranocturna
+      - Bradysia parareflexa
+      - Bradysia pararufescens
+      - Bradysia parasita
+      - Bradysia parvispina
+      - Bradysia paucidens
+      - Bradysia paulistana
+      - Bradysia pauperata
+      - Bradysia pectibia
+      - Bradysia pectinata
+      - Bradysia pectoralis
+      - Bradysia pellistylata
+      - Bradysia pentadactyla
+      - Bradysia peraffinis
+      - Bradysia perfecta
+      - Bradysia perfrigida
+      - Bradysia pernitida
+      - Bradysia petaini
+      - Bradysia phalerata
+      - Bradysia picea
+      - Bradysia pictipes
+      - Bradysia pilistriata
+      - Bradysia pilularia
+      - Bradysia placida
+      - Bradysia plusiospina
+      - Bradysia polonica
+      - Bradysia polychaeta
+      - Bradysia ponticula
+      - Bradysia portoricensis
+      - Bradysia posthilaris
+      - Bradysia postlobata
+      - Bradysia postrufescens
+      - Bradysia praebullata
+      - Bradysia praecox
+      - Bradysia praehilaris
+      - Bradysia praemonticola
+      - Bradysia praemorio
+      - Bradysia praepaupera
+      - Bradysia pratincola
+      - Bradysia procera
+      - Bradysia profunda
+      - Bradysia promissa
+      - Bradysia propinquans
+      - Bradysia protohilaris
+      - Bradysia pruinosula
+      - Bradysia pseudocampestris
+      - Bradysia pseudohilaris
+      - Bradysia pseudopolonica
+      - Bradysia pteropleurostigma
+      - Bradysia pugiata
+      - Bradysia pumila
+      - Bradysia pustulispina
+      - Bradysia qinlingana
+      - Bradysia quadrata
+      - Bradysia quadridentata
+      - Bradysia quadrisetosa
+      - Bradysia quadrispinistylata
+      - Bradysia quasiradicum
+      - Bradysia quercina
+      - Bradysia quinquespina
+      - Bradysia rabelloi
+      - Bradysia radicicola
+      - Bradysia radicum
+      - Bradysia rectinervis
+      - Bradysia reflexa
+      - Bradysia regens
+      - Bradysia regulariformis
+      - Bradysia regularis
+      - Bradysia reticulata
+      - Bradysia robusta
+      - Bradysia rostrata
+      - Bradysia rubra
+      - Bradysia rubrascuta
+      - Bradysia rufescens
+      - Bradysia ruginosa
+      - Bradysia sachalinensis
+      - Bradysia saetibullata
+      - Bradysia salina
+      - Bradysia sandalimorpha
+      - Bradysia santorina
+      - Bradysia sarcinispina
+      - Bradysia sauteri
+      - Bradysia scabricornis
+      - Bradysia scrabricornis
+      - Bradysia semicristata
+      - Bradysia semihilaris
+      - Bradysia semirufescens
+      - Bradysia senilis
+      - Bradysia serrata
+      - Bradysia siberica
+      - Bradysia sicelidis
+      - Bradysia siciliensis
+      - Bradysia siegeli
+      - Bradysia signata
+      - Bradysia siliquaris
+      - Bradysia silvestrii
+      - Bradysia silvosa
+      - Bradysia similigibbosa
+      - Bradysia simulans
+      - Bradysia simulatrix
+      - Bradysia smithae
+      - Bradysia songxiana
+      - Bradysia sordida
+      - Bradysia spatitergum
+      - Bradysia spec
+      - Bradysia spherostyla
+      - Bradysia spicotegmata
+      - Bradysia spinea
+      - Bradysia spinellosa
+      - Bradysia spinostyla
+      - Bradysia spissa
+      - Bradysia splendida
+      - Bradysia strenua
+      - Bradysia stricta
+      - Bradysia strigata
+      - Bradysia stupenda
+      - Bradysia subaffinis
+      - Bradysia subalpina
+      - Bradysia subamoena
+      - Bradysia subangustata
+      - Bradysia subaprica
+      - Bradysia subbetuleti
+      - Bradysia subbispinifera
+      - Bradysia subbullata
+      - Bradysia subconfinis
+      - Bradysia subconiferoterga
+      - Bradysia subcristata
+      - Bradysia subcuneostylata
+      - Bradysia subfungicola
+      - Bradysia subgiraudi
+      - Bradysia subhilaris
+      - Bradysia subiridipennis
+      - Bradysia submarginata
+      - Bradysia submoesta
+      - Bradysia submonticola
+      - Bradysia submorio
+      - Bradysia subpallidipes
+      - Bradysia subrufescens
+      - Bradysia subsantorina
+      - Bradysia subscabricornis
+      - Bradysia subspinea
+      - Bradysia subvernalis
+      - Bradysia surinamensis
+      - Bradysia suspecta
+      - Bradysia tenebricosa
+      - Bradysia tenuicalcar
+      - Bradysia tenuicauda
+      - Bradysia tenuitegmata
+      - Bradysia tertiaria
+      - Bradysia thailandina
+      - Bradysia tianzei
+      - Bradysia tibiaspinosa
+      - Bradysia tilicola
+      - Bradysia tobiasi
+      - Bradysia tomentosa
+      - Bradysia tongmaiana
+      - Bradysia torosa
+      - Bradysia transitata
+      - Bradysia triacanthifera
+      - Bradysia triaristata
+      - Bradysia tridonta
+      - Bradysia trigonospina
+      - Bradysia trinidadensis
+      - Bradysia triseta
+      - Bradysia trisetosa
+      - Bradysia trispinea
+      - Bradysia trispinosa
+      - Bradysia tristans
+      - Bradysia trivittata
+      - Bradysia truncorum
+      - Bradysia tuberculata
+      - Bradysia tuberosa
+      - Bradysia tumidicauda
+      - Bradysia tumulta
+      - Bradysia tungmuguana
+      - Bradysia tupinamba
+      - Bradysia turgida
+      - Bradysia umesaoi
+      - Bradysia una
+      - Bradysia uncipleuroti
+      - Bradysia unguispinata
+      - Bradysia unica
+      - Bradysia urticae
+      - Bradysia vagans
+      - Bradysia validolobata
+      - Bradysia validospina
+      - Bradysia vaneyi
+      - Bradysia varians
+      - Bradysia varianta
+      - Bradysia variopalpa
+      - Bradysia venezuelensis
+      - Bradysia ventricosa
+      - Bradysia venusta
+      - Bradysia vergens
+      - Bradysia vernalis
+      - Bradysia verruca
+      - Bradysia violenta
+      - Bradysia virgulata
+      - Bradysia wangi
+      - Bradysia wanzhii
+      - Bradysia weiningana
+      - Bradysia willinki
+      - Bradysia wui
+      - Bradysia xenoreflexa
+      - Bradysia xianyingi
+      - Bradysia xiaochengi
+      - Bradysia xizangana
+      - Bradysia yangi
+      - Bradysia yucollectia
+      - Bradysia yuhuacavernaria
+      - Bradysia yungata
+      - Bradysia zetterstedti
+      - Bradysia zheana
+      - Bradysia zhenzhongi
+      - Bradysia zingiberis
+      - Bradysia zizhongi
+      - Bradysia zonata
+      - Neosciara trifolii
+    - id: country_species
+      type: membership
+      value:
+      - Bradysia bicolor
+      - Bradysia chilensis
+      - Bradysia fenestralis
+      - Bradysia flavipila
+      - Bradysia forficulata
+      - Bradysia hilaris
+      - Bradysia holsatica
+      - Bradysia inusitata
+      - Bradysia lapponica
+      - Bradysia nervosa
+      - Bradysia nitidicollis
+      - Bradysia pallipes
+      - Bradysia pauperata
+      - Bradysia pectoralis
+      - Bradysia placida
+      - Bradysia polonica
+      - Bradysia praecox
+      - Bradysia scabricornis
+      - Bradysia strenua
+      - Bradysia tilicola
+      - Bradysia trivittata
+      - Bradysia urticae
+  - name: Lycoriella ingenua
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Lycoriella abbreviata
+      - Lycoriella abbrevinervis
+      - Lycoriella aberrans
+      - Lycoriella abrevicaudata
+      - Lycoriella acerstyla
+      - Lycoriella acutostylia
+      - Lycoriella agraria
+      - Lycoriella aliena
+      - Lycoriella altaica
+      - Lycoriella ampla
+      - Lycoriella anjiana
+      - Lycoriella antrocola
+      - Lycoriella approximatonervis
+      - Lycoriella attenuata
+      - Lycoriella auberti
+      - Lycoriella auripila
+      - Lycoriella baishanzuna
+      - Lycoriella barkalovi
+      - Lycoriella basalihamata
+      - Lycoriella bifasciculata
+      - Lycoriella bispinalis
+      - Lycoriella brevicaudata
+      - Lycoriella brevicubitalis
+      - Lycoriella caesar
+      - Lycoriella canningsi
+      - Lycoriella castanescens
+      - Lycoriella caudulla
+      - Lycoriella cellaris
+      - Lycoriella chentejensis
+      - Lycoriella cochleata
+      - Lycoriella conspicua
+      - Lycoriella crassisetosa
+      - Lycoriella curvispinosa
+      - Lycoriella dearmata
+      - Lycoriella dipetala
+      - Lycoriella epleuroti
+      - Lycoriella eurystylata
+      - Lycoriella excavata
+      - Lycoriella fanjingana
+      - Lycoriella farri
+      - Lycoriella felix
+      - Lycoriella flavicornis
+      - Lycoriella flavipeda
+      - Lycoriella fuscorubroides
+      - Lycoriella gigaspina
+      - Lycoriella gigastyla
+      - Lycoriella glacialis
+      - Lycoriella globiceps
+      - Lycoriella grandis
+      - Lycoriella haipleuroti
+      - Lycoriella hardyi
+      - Lycoriella heydeni
+      - Lycoriella hiemalis
+      - Lycoriella honesta
+      - Lycoriella hoyti
+      - Lycoriella huanggangshana
+      - Lycoriella hypacantha
+      - Lycoriella inconspicua
+      - Lycoriella inflata
+      - Lycoriella ingenua
+      - Lycoriella isoacantha
+      - Lycoriella jakovlevi
+      - Lycoriella janetscheki
+      - Lycoriella jauva
+      - Lycoriella jingpleuroti
+      - Lycoriella jipleuroti
+      - Lycoriella johannseni
+      - Lycoriella kinbasketi
+      - Lycoriella kumasiensis
+      - Lycoriella laevigata
+      - Lycoriella lagenaria
+      - Lycoriella latilobata
+      - Lycoriella latistyla
+      - Lycoriella latistylata
+      - Lycoriella longa
+      - Lycoriella longihamata
+      - Lycoriella longirostris
+      - Lycoriella longisetae
+      - Lycoriella longispina
+      - Lycoriella longwangshana
+      - Lycoriella lundstromi
+      - Lycoriella maxima
+      - Lycoriella micria
+      - Lycoriella minutula
+      - Lycoriella modesta
+      - Lycoriella molokaiensis
+      - Lycoriella neogenica
+      - Lycoriella nivicola
+      - Lycoriella nudata
+      - Lycoriella olschwangi
+      - Lycoriella orthacantha
+      - Lycoriella parva
+      - Lycoriella pearyi
+      - Lycoriella pentamera
+      - Lycoriella piristylata
+      - Lycoriella pleuroti
+      - Lycoriella polaris
+      - Lycoriella polychaeta
+      - Lycoriella proconspicua
+      - Lycoriella prominens
+      - Lycoriella pseudolongihamata
+      - Lycoriella quadriseta
+      - Lycoriella radicum
+      - Lycoriella reducta
+      - Lycoriella riparia
+      - Lycoriella rubustispina
+      - Lycoriella sativae
+      - Lycoriella secundaria
+      - Lycoriella similis
+      - Lycoriella solispina
+      - Lycoriella spatitergum
+      - Lycoriella speciosissima
+      - Lycoriella strangulata
+      - Lycoriella stylata
+      - Lycoriella suboptica
+      - Lycoriella subpermutata
+      - Lycoriella subterranea
+      - Lycoriella taimyrensis
+      - Lycoriella tenera
+      - Lycoriella tetramera
+      - Lycoriella thuringiensis
+      - Lycoriella tibetana
+      - Lycoriella trifolii
+      - Lycoriella truncata
+      - Lycoriella tundrae
+      - Lycoriella tuomikoskii
+      - Lycoriella unispina
+      - Lycoriella venosa
+      - Lycoriella ventrosa
+      - Lycoriella vitticollis
+      - Lycoriella wuhongi
+      - Lycoriella yunpleuroti
+    - id: country_species
+      type: membership
+      value:
+      - Lycoriella auripila
+      - Lycoriella castanescens
+      - Lycoriella conspicua
+      - Lycoriella modesta
+      - Lycoriella subterranea
+  - name: Lycoriella mali
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Lycoriella abbreviata
+      - Lycoriella abbrevinervis
+      - Lycoriella aberrans
+      - Lycoriella abrevicaudata
+      - Lycoriella acerstyla
+      - Lycoriella acutostylia
+      - Lycoriella agraria
+      - Lycoriella aliena
+      - Lycoriella altaica
+      - Lycoriella ampla
+      - Lycoriella anjiana
+      - Lycoriella antrocola
+      - Lycoriella approximatonervis
+      - Lycoriella attenuata
+      - Lycoriella auberti
+      - Lycoriella auripila
+      - Lycoriella baishanzuna
+      - Lycoriella barkalovi
+      - Lycoriella basalihamata
+      - Lycoriella bifasciculata
+      - Lycoriella bispinalis
+      - Lycoriella brevicaudata
+      - Lycoriella brevicubitalis
+      - Lycoriella caesar
+      - Lycoriella canningsi
+      - Lycoriella castanescens
+      - Lycoriella caudulla
+      - Lycoriella cellaris
+      - Lycoriella chentejensis
+      - Lycoriella cochleata
+      - Lycoriella conspicua
+      - Lycoriella crassisetosa
+      - Lycoriella curvispinosa
+      - Lycoriella dearmata
+      - Lycoriella dipetala
+      - Lycoriella epleuroti
+      - Lycoriella eurystylata
+      - Lycoriella excavata
+      - Lycoriella fanjingana
+      - Lycoriella farri
+      - Lycoriella felix
+      - Lycoriella flavicornis
+      - Lycoriella flavipeda
+      - Lycoriella fuscorubroides
+      - Lycoriella gigaspina
+      - Lycoriella gigastyla
+      - Lycoriella glacialis
+      - Lycoriella globiceps
+      - Lycoriella grandis
+      - Lycoriella haipleuroti
+      - Lycoriella hardyi
+      - Lycoriella heydeni
+      - Lycoriella hiemalis
+      - Lycoriella honesta
+      - Lycoriella hoyti
+      - Lycoriella huanggangshana
+      - Lycoriella hypacantha
+      - Lycoriella inconspicua
+      - Lycoriella inflata
+      - Lycoriella ingenua
+      - Lycoriella isoacantha
+      - Lycoriella jakovlevi
+      - Lycoriella janetscheki
+      - Lycoriella jauva
+      - Lycoriella jingpleuroti
+      - Lycoriella jipleuroti
+      - Lycoriella johannseni
+      - Lycoriella kinbasketi
+      - Lycoriella kumasiensis
+      - Lycoriella laevigata
+      - Lycoriella lagenaria
+      - Lycoriella latilobata
+      - Lycoriella latistyla
+      - Lycoriella latistylata
+      - Lycoriella longa
+      - Lycoriella longihamata
+      - Lycoriella longirostris
+      - Lycoriella longisetae
+      - Lycoriella longispina
+      - Lycoriella longwangshana
+      - Lycoriella lundstromi
+      - Lycoriella maxima
+      - Lycoriella micria
+      - Lycoriella minutula
+      - Lycoriella modesta
+      - Lycoriella molokaiensis
+      - Lycoriella neogenica
+      - Lycoriella nivicola
+      - Lycoriella nudata
+      - Lycoriella olschwangi
+      - Lycoriella orthacantha
+      - Lycoriella parva
+      - Lycoriella pearyi
+      - Lycoriella pentamera
+      - Lycoriella piristylata
+      - Lycoriella pleuroti
+      - Lycoriella polaris
+      - Lycoriella polychaeta
+      - Lycoriella proconspicua
+      - Lycoriella prominens
+      - Lycoriella pseudolongihamata
+      - Lycoriella quadriseta
+      - Lycoriella radicum
+      - Lycoriella reducta
+      - Lycoriella riparia
+      - Lycoriella rubustispina
+      - Lycoriella sativae
+      - Lycoriella secundaria
+      - Lycoriella similis
+      - Lycoriella solispina
+      - Lycoriella spatitergum
+      - Lycoriella speciosissima
+      - Lycoriella strangulata
+      - Lycoriella stylata
+      - Lycoriella suboptica
+      - Lycoriella subpermutata
+      - Lycoriella subterranea
+      - Lycoriella taimyrensis
+      - Lycoriella tenera
+      - Lycoriella tetramera
+      - Lycoriella thuringiensis
+      - Lycoriella tibetana
+      - Lycoriella trifolii
+      - Lycoriella truncata
+      - Lycoriella tundrae
+      - Lycoriella tuomikoskii
+      - Lycoriella unispina
+      - Lycoriella venosa
+      - Lycoriella ventrosa
+      - Lycoriella vitticollis
+      - Lycoriella wuhongi
+      - Lycoriella yunpleuroti
+    - id: country_species
+      type: membership
+      value:
+      - Lycoriella auripila
+      - Lycoriella castanescens
+      - Lycoriella conspicua
+      - Lycoriella modesta
+      - Lycoriella subterranea
+  toi:
+  - name: Lycoriella ingenua
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value:
+      - Lycoriella abbreviata
+      - Lycoriella abbrevinervis
+      - Lycoriella aberrans
+      - Lycoriella abrevicaudata
+      - Lycoriella acerstyla
+      - Lycoriella acutostylia
+      - Lycoriella agraria
+      - Lycoriella aliena
+      - Lycoriella altaica
+      - Lycoriella ampla
+      - Lycoriella anjiana
+      - Lycoriella antrocola
+      - Lycoriella approximatonervis
+      - Lycoriella attenuata
+      - Lycoriella auberti
+      - Lycoriella auripila
+      - Lycoriella baishanzuna
+      - Lycoriella barkalovi
+      - Lycoriella basalihamata
+      - Lycoriella bifasciculata
+      - Lycoriella bispinalis
+      - Lycoriella brevicaudata
+      - Lycoriella brevicubitalis
+      - Lycoriella caesar
+      - Lycoriella canningsi
+      - Lycoriella castanescens
+      - Lycoriella caudulla
+      - Lycoriella cellaris
+      - Lycoriella chentejensis
+      - Lycoriella cochleata
+      - Lycoriella conspicua
+      - Lycoriella crassisetosa
+      - Lycoriella curvispinosa
+      - Lycoriella dearmata
+      - Lycoriella dipetala
+      - Lycoriella epleuroti
+      - Lycoriella eurystylata
+      - Lycoriella excavata
+      - Lycoriella fanjingana
+      - Lycoriella farri
+      - Lycoriella felix
+      - Lycoriella flavicornis
+      - Lycoriella flavipeda
+      - Lycoriella fuscorubroides
+      - Lycoriella gigaspina
+      - Lycoriella gigastyla
+      - Lycoriella glacialis
+      - Lycoriella globiceps
+      - Lycoriella grandis
+      - Lycoriella haipleuroti
+      - Lycoriella hardyi
+      - Lycoriella heydeni
+      - Lycoriella hiemalis
+      - Lycoriella honesta
+      - Lycoriella hoyti
+      - Lycoriella huanggangshana
+      - Lycoriella hypacantha
+      - Lycoriella inconspicua
+      - Lycoriella inflata
+      - Lycoriella ingenua
+      - Lycoriella isoacantha
+      - Lycoriella jakovlevi
+      - Lycoriella janetscheki
+      - Lycoriella jauva
+      - Lycoriella jingpleuroti
+      - Lycoriella jipleuroti
+      - Lycoriella johannseni
+      - Lycoriella kinbasketi
+      - Lycoriella kumasiensis
+      - Lycoriella laevigata
+      - Lycoriella lagenaria
+      - Lycoriella latilobata
+      - Lycoriella latistyla
+      - Lycoriella latistylata
+      - Lycoriella longa
+      - Lycoriella longihamata
+      - Lycoriella longirostris
+      - Lycoriella longisetae
+      - Lycoriella longispina
+      - Lycoriella longwangshana
+      - Lycoriella lundstromi
+      - Lycoriella maxima
+      - Lycoriella micria
+      - Lycoriella minutula
+      - Lycoriella modesta
+      - Lycoriella molokaiensis
+      - Lycoriella neogenica
+      - Lycoriella nivicola
+      - Lycoriella nudata
+      - Lycoriella olschwangi
+      - Lycoriella orthacantha
+      - Lycoriella parva
+      - Lycoriella pearyi
+      - Lycoriella pentamera
+      - Lycoriella piristylata
+      - Lycoriella pleuroti
+      - Lycoriella polaris
+      - Lycoriella polychaeta
+      - Lycoriella proconspicua
+      - Lycoriella prominens
+      - Lycoriella pseudolongihamata
+      - Lycoriella quadriseta
+      - Lycoriella radicum
+      - Lycoriella reducta
+      - Lycoriella riparia
+      - Lycoriella rubustispina
+      - Lycoriella sativae
+      - Lycoriella secundaria
+      - Lycoriella similis
+      - Lycoriella solispina
+      - Lycoriella spatitergum
+      - Lycoriella speciosissima
+      - Lycoriella strangulata
+      - Lycoriella stylata
+      - Lycoriella suboptica
+      - Lycoriella subpermutata
+      - Lycoriella subterranea
+      - Lycoriella taimyrensis
+      - Lycoriella tenera
+      - Lycoriella tetramera
+      - Lycoriella thuringiensis
+      - Lycoriella tibetana
+      - Lycoriella trifolii
+      - Lycoriella truncata
+      - Lycoriella tundrae
+      - Lycoriella tuomikoskii
+      - Lycoriella unispina
+      - Lycoriella venosa
+      - Lycoriella ventrosa
+      - Lycoriella vitticollis
+      - Lycoriella wuhongi
+      - Lycoriella yunpleuroti
+    - id: country_species
+      type: membership
+      value:
+      - Lycoriella auripila
+      - Lycoriella castanescens
+      - Lycoriella conspicua
+      - Lycoriella modesta
+      - Lycoriella subterranea
+  pmi:
+  - name: Sciaridae
+    assertions:
+    - id: target_state
+      type: state
+      value: assessed
+    - id: related_species
+      type: membership
+      value: []
+    - id: country_species
+      type: membership
+      value: []
+- id: coverage_flags
+  candidate:
+  - name: Bradysia impatiens
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+  - name: Lycoriella ingenua
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+  - name: Lycoriella mali
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+  toi:
+  - name: Lycoriella ingenua
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: B
+  pmi:
+  - name: Sciaridae
+    assertions:
+    - id: flag_5_3
+      type: flag
+      value: C
+- id: maps
+  assertions:
+  - id: filenames
+    type: membership
+    value:
+    - map_Bradysia_impatiens.png
+    - map_Lycoriella_ingenua.png
+    - map_Lycoriella_mali.png
+    - map_Sciaridae.png

@@ -30,7 +30,18 @@ unbaselined failures with observed evidence. Only explicit reviewed `ingest` and
 `promote` commands may change expected data. They cannot update Selenium,
 production code or historical flag files, accept invariant failures, or use
 incomplete/stale evidence. Ingest adds selected missing entries; promote updates
-selected existing entries; both preserve unrelated entries and retain backups.
+selected existing entries (or removes entries no longer observed); both preserve
+unrelated entries and retain backups.
+
+Expected data are one YAML file per sample, `test/core/expected/<N>_<sample_id>.yaml`,
+matched by `sample_id`. Assertion code contains no sample IDs; a new sample needs
+only a `test/core/metadata.csv` row and a reviewed ingest. Orphan or duplicate
+files, and undeclared values, fail `expected.files`. Database record counts in
+`db_coverage.json` (target, related and in-country) are not core expectations;
+Selenium owns them with its ±10% tolerance. Core compares the related and
+in-country species names, section states and 5.x flag values Selenium does not
+own. Hit sequences are compared by 16-hex-character SHA-256 fingerprints; the
+accession list stays exact.
 
 Native JUnit is the test-status authority. Because pinned nf-test collapses
 assertAll failures, the Groovy checks also flush structured JSON evidence. Python
@@ -42,8 +53,14 @@ is a separate failing CI step; successful rendering cannot clear nf-test failure
 ## Migration status
 
 Replacement assertions are implemented, and the supplied run’s core-owned data were explicitly validated and accepted
-by the user on 2026-11-23. Snapshot-file retirement and removal of the legacy flag
-gate still require the remaining task 12 review. The retained successful run does not prove new contracts pass:
+by the user on 2026-11-23; they were moved into per-sample files on the same day
+(task 12 Phase 5). For a comparison period (task 12 Phase 7), the original
+snapshot test `test/core/taxodactyl.workflow.nf.test` and its workflow
+`.github/workflows/nf-test.yml`, including the flag-comparison gate, run
+unchanged. The assertion test `test/core/taxodactyl.assertions.nf.test` runs in
+`.github/workflows/nf-test-core-assertions.yml`. The core review page shows
+only core-owned checks, with plain explanations from `test/core/schema.yaml`.
+The `C.pmi` failure for known defect P3-D-008 stays visible until fixed separately. The retained successful run does not prove new contracts pass:
 missing retained symlinks, an absent map and known malformed PMI CSVs are reported
 explicitly. No successful full core rerun is claimed. Data acceptance is recorded separately
 from integrity failures; it does not make those failures pass. Other
