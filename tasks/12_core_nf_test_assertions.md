@@ -1,6 +1,6 @@
 # Task 12 — Core nf-test assertions and HTML failure review
 
-**Status:** planned
+**Status:** active
 
 **Scope:** Replace the core workflow channel snapshot with maintainable assertions
 that complement existing Selenium; replace the separate core 5.x flags check with
