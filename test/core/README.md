@@ -222,6 +222,7 @@ Review the diff before accepting it (`spec/tests.md` §5.3), and update
 **9. Clean up.** Delete your local copies of `cache_db.sqlite`,
 `<version>/` and `<version>.zip`. They aren't git-ignored.
 ## Task 12 assertion migration (awaiting review)
+## Task 12 assertion migration
 
 The core test now runs `CoreAssertions.groovy` once over the emitted channels.
 Each independent invariant records a diagnostic before aggregation with native
@@ -231,7 +232,11 @@ JSON sidecar therefore retains every check's sample, stable ID, field, owner,
 expected/observed values, diagnostic and artifact paths. No Python code evaluates
 workflow contracts.
 
-**Review status:** initial expectations have not been accepted. The historical
+**Baseline status:** the user explicitly validated and approved the supplied run
+on 2026-11-23. `expectations.json` now contains its 21,019 core-owned data values
+for all 20 samples, with a shared provenance record quoting that authorization.
+The 245 Selenium-owned fields remain excluded. This approval accepts the data,
+not failed integrity checks or changed Selenium fixtures. The historical
 `.snap` file is retained for coverage review, but is no longer called by core.
 The separate CI flag gate remains migration evidence pending that review. Do not
 remove these historical protections or mark task 12 done until the ownership
@@ -290,7 +295,10 @@ H originals under `work/54/6614…` are present. Candidate `.command.run` stages
 as symlinks under `hits_files/`; `.command.sh` moves those links into the candidate
 folder. The retained copy has **none of those 60 C symlinks**. Content validation
 of H is possible; preservation at C's emitted paths is not established by this
-copy. Do not silently substitute H for C to obtain a pass.
+copy. For retained-data comparison, `.nf-test/task12-review/retained-view/` reconstructs
+these links from the exact recorded staging commands, with every mapping logged
+in `retained-view-manifest.json`. This disposable view leaves original files
+unchanged and is distinguished from verification of the original retained paths.
 
 Two PMI-match files expose existing P3-D-008 (missing newline between header and
 record), for Scenario_04 and barcode_83_P59_Potyviridae_cluster_0_RC205. The emitted
@@ -301,8 +309,11 @@ have been changed to hide these findings.
 A diagnostic evaluation of retained channels is **not a new workflow execution**
 and does not create native JUnit. Old runs without the sidecar need a new core
 execution/evaluation before manual acceptance. Missing XML is shown as missing,
-never replaced by synthetic passing XML. Initial ingestion is blocked while
-invariant failures or incomplete evaluation remain.
+never replaced by synthetic passing XML. Ordinary toolkit ingestion remains blocked while invariant failures or incomplete
+evaluation remain. The initial baseline was authored explicitly under the user’s
+validated-data authorization, retaining the original failed evidence and recording
+its integrity findings in the baseline provenance. No ingest safety checks were
+relaxed.
 
 ### Run, review, ingest, rerun
 
@@ -383,4 +394,25 @@ missing/duplicate/wrongly associated samples, malformed outputs, missing/extra o
 duplicated P5 records, value-only and count-only drift, and independent failures.
 Python tests cover render failures/escaping/portable links, explicit scoped
 updates, stale evidence, rejected input, unchanged unrelated fields and backups.
-Real expectations remain unaccepted regardless of these tests passing.
+The real baseline was accepted through explicit user validation, independently
+of these synthetic tests. Baseline data acceptance does not relabel failed
+invariants as passing.
+
+
+### Accepted baseline verification — 2026-11-23
+
+The baseline accepts only data values marked core-owned in the retained Groovy
+observations. All entries reference `provenance.validated-2026-11-23`, which records
+the user's explicit validation, source run, code/ownership/evidence digests and
+retained integrity findings. Assertions remain individually addressable for
+selective future promotion. Shared provenance avoids repeating the same run
+metadata in every entry.
+
+All 21,019 accepted data values pass comparison; zero are unbaselined. The
+remaining three failures are integrity checks, not missing baseline values.
+Comparison against the disposable reconstructed staging view is retained in
+`.nf-test/task12-review/accepted-assertions.json` and
+`accepted-evaluation.log`. The original pre-acceptance sidecar remains unchanged.
+The PMI CSV and missing lowercase map findings remain failures; accepting numeric,
+sequence and membership values does not disable those checks. The standalone
+review remains explicit about absent historical native JUnit.

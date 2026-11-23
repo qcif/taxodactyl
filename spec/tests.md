@@ -41,11 +41,12 @@ is a separate failing CI step; successful rendering cannot clear nf-test failure
 
 ## Migration status
 
-Replacement assertions are implemented, but real expectations, snapshot-file
-retirement and removal of the legacy flag gate still require the review mandated
-by task 12. The retained successful run does not prove new contracts pass:
+Replacement assertions are implemented, and the supplied run’s core-owned data were explicitly validated and accepted
+by the user on 2026-11-23. Snapshot-file retirement and removal of the legacy flag
+gate still require the remaining task 12 review. The retained successful run does not prove new contracts pass:
 missing retained symlinks, an absent map and known malformed PMI CSVs are reported
-explicitly. No successful full core rerun or user acceptance is claimed. Other
+explicitly. No successful full core rerun is claimed. Data acceptance is recorded separately
+from integrity failures; it does not make those failures pass. Other
 scenario snapshots and all Selenium assertions/fixtures stay unchanged.
 
 | ID | Requirement |
