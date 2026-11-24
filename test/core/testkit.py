@@ -434,7 +434,7 @@ tr.s-error td:first-child{border-left:3px solid #ea580c}tr.s-failed td:first-chi
 tr.s-drift td:first-child{border-left:3px solid #d97706}tr.s-unbaselined td:first-child{border-left:3px solid #2563eb}
 .badge{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.72rem;font-weight:600;text-transform:uppercase}
 .b-error{background:#ffedd5;color:#9a3412}.b-failed{background:#fee2e2;color:#991b1b}.b-drift{background:#fef3c7;color:#92400e}
-.b-unbaselined{background:#dbeafe;color:#1e40af}.b-passed{background:#dcfce7;color:#166534}.b-known{background:#ede9fe;color:#5b21b6}
+.b-unbaselined{background:#dbeafe;color:#1e40af}.b-passed{background:#dcfce7;color:#166534}
 table.matrix td,table.matrix th{text-align:center;white-space:nowrap}table.matrix td:first-child,table.matrix th:first-child{text-align:left}
 .c-bad{background:#fee2e2}.c-new{background:#dbeafe}.c-ok{color:#166534}.c-none{color:#d1d5db}
 details{background:#fff;margin:.75rem 0;padding:0 1rem;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -444,7 +444,6 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f4f6;padding:.5rem
 .links a{color:#2563eb;margin-right:.8rem;font-size:.82rem}.missing{color:#9ca3af;font-size:.8rem}
 .area{background:#fff;border-radius:6px;padding:.6rem 1rem;margin:.6rem 0;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .area ul{margin:.3rem 0 .3rem 1.1rem;padding:0;font-size:.85rem}.area .files{font-size:.8rem;color:#4b5563}
-.known{background:#f5f3ff;border-left:3px solid #7c3aed;padding:.35rem .6rem;margin-top:.4rem;font-size:.82rem}
 """
 
 VERDICT_TEXT = {
@@ -476,13 +475,31 @@ def _short(value, limit=160):
 
 
 def split_diagnostic(text):
-    """(plain message, technical detail): Groovy power asserts append '. Expression: …'."""
+    """(message, technical detail): Groovy power asserts append '. Expression: …' to the message."""
     text = str(text or '').strip()
-    for marker in ('. Expression:', '\nExpression:', 'Expression:'):
+    for marker in ('. Expression:', '\nExpression:'):
         if marker in text:
             head, tail = text.split(marker, 1)
-            return head.strip().rstrip('.') + '.', 'Expression:' + tail
+            return head.rstrip(), 'Expression:' + tail
     return text, ''
+
+
+def parse_message(text):
+    """Split '<where>: <rule>\nExpected: …\nActual: …[\nDifference: …]' into parts."""
+    message, technical = split_diagnostic(text)
+    if re.fullmatch(r'Expression: ok\. Values: ok = false\.?', technical.strip()):
+        technical = ''                     # holds() boilerplate: Expected/Actual already say everything
+    parts = {'headline': '', 'expected': None, 'actual': None, 'difference': None, 'technical': technical}
+    lines = message.splitlines()
+    for line in lines[1:]:
+        for label in ('Expected', 'Actual', 'Difference'):
+            if line.startswith(label + ': '):
+                parts[label.lower()] = line[len(label) + 2:]
+    if parts['expected'] is None and parts['actual'] is None:
+        parts['actual'] = message          # older or unexpected message: show it whole
+    else:
+        parts['headline'] = lines[0] if lines else ''
+    return parts
 
 
 def check_info(row):
@@ -491,45 +508,57 @@ def check_info(row):
     if row.get('kind') is None:
         check = (component.get('checks') or {}).get(row['id'], {})
         return {'title': check.get('title', row['id']), 'explain': check.get('explain') or check.get('rule', row.get('rule', '')),
-                'on_fail': check.get('on_fail', ''), 'known_defect': check.get('known_defect')}
+                'on_fail': check.get('on_fail', '')}
     definition = (component.get('assertions') or {}).get(row.get('assertion'), {})
     title = definition.get('title', row.get('assertion', row['id']))
     if row.get('group'):
         title = f"{title} — {row['group']} {row['name']}"
-    return {'title': title, 'explain': definition.get('explain', ''), 'known_defect': None,
+    return {'title': title, 'explain': definition.get('explain', ''),
             'on_fail': DATA_NEXT['absent' if row.get('absent') else row['status']] if row['status'] in DATA_NEXT else ''}
 
 
-def _names(items, limit=10):
-    return ', '.join(items[:limit]) + (f' and {len(items) - limit} more' if len(items) > limit else '')
+def _value(value, limit=200):
+    """Print a value as it is: strings quoted, lists/maps as JSON."""
+    if value is None:
+        return 'null'
+    text = json.dumps(value, ensure_ascii=False) if not isinstance(value, (int, float)) else str(value)
+    return text if len(text) <= limit else text[:limit] + '…'
 
 
-def plain_change(row):
-    """One or two plain sentences: what was found compared with the stored value."""
+def difference(row):
+    """'missing …; unexpected …' for lists, changed accessions for fingerprints, else None."""
     old, new, kind = row.get('expected'), row.get('observed'), row.get('kind')
-    if row.get('absent'):
-        return f'Stored value {_short(old, 120)} was not produced in this run. ' + (row.get('diagnostic') or '')
-    if row['status'] == 'unbaselined':
-        if kind == 'membership':
-            return f'Found {len(new)}: {_names(new)}.' if new else 'Found an empty list.'
-        if kind == 'fingerprints':
-            return f'Found {len(new)} hit sequences (fingerprints computed).'
-        return f'Found {new!r}.'
+    if old is None or new is None:
+        return None
     if kind == 'membership':
-        added, removed = sorted(set(new) - set(old)), sorted(set(old) - set(new))
-        parts = []
-        if added:
-            parts.append(f'{len(added)} appeared that were not stored ({_names(added)})')
-        if removed:
-            parts.append(f'{len(removed)} stored disappeared ({_names(removed)})')
-        return ('Compared with the stored list, ' + ' and '.join(parts) + '.') if parts else 'Same names in a different form.'
+        return f'missing {_value(sorted(set(old) - set(new)), 120)}; unexpected {_value(sorted(set(new) - set(old)), 120)}'
     if kind == 'fingerprints':
         changed = sorted(k for k in set(old) & set(new) if old[k] != new[k])
-        added, removed = sorted(set(new) - set(old)), sorted(set(old) - set(new))
-        parts = [f'{len(changed)} hit sequences changed ({_names(changed)})' if changed else '',
-                 f'{len(added)} new ({_names(added)})' if added else '', f'{len(removed)} gone ({_names(removed)})' if removed else '']
-        return 'Compared with the stored fingerprints: ' + '; '.join(p for p in parts if p) + '.'
-    return f'Stored {old!r}, found {new!r}.'
+        return (f'changed {_value(changed, 120)}; missing {_value(sorted(set(old) - set(new)), 80)}; '
+                f'unexpected {_value(sorted(set(new) - set(old)), 80)}')
+    return None
+
+
+def expected_actual(row):
+    """Expected / Actual / Difference / technical detail for any row."""
+    if row.get('kind') is None:
+        return parse_message(row.get('diagnostic') or 'Check failed.')
+    parts = {'headline': f"{row['id']}: stored value", 'technical': ''}
+    parts['expected'] = 'no stored value' if row['status'] == 'unbaselined' else _value(row.get('expected'))
+    parts['actual'] = 'not produced' if row.get('absent') else _value(row.get('observed'))
+    parts['difference'] = difference(row)
+    if row['kind'] == 'fingerprints' and row['status'] == 'failed':
+        parts['technical'] = _sequence_diff(row)
+    return parts
+
+
+def one_line(row):
+    p = expected_actual(row)
+    text = f"expected {p['expected']}, actual {p['actual']}" if p['expected'] is not None else p['actual']
+    if p['difference']:
+        text += f" ({p['difference']})"
+    rule = p['headline'].split(': ', 1)[-1] if p['headline'] else ''
+    return _short(f'{rule} — {text}' if rule else text, 300)
 
 
 def _sequence_diff(fingerprint_row, limit=5):
@@ -618,75 +647,53 @@ def _analyse(junit, assertions):
     samples = (['_run'] + list(run.get('samples') or [])) if rows else []
     samples += sorted({r['sample'] for r in rows} - set(samples))
 
-    attention = []   # (level, sample, title, id, label, message, known_defect)
+    attention = []   # (level, sample, title, id, label, message)
     for r in rows:
         if r['status'] == 'error' or r['status'] == 'failed' and r.get('kind') is None:
-            info = check_info(r)
-            plain, _ = split_diagnostic(r.get('diagnostic'))
-            attention.append((0 if r['status'] == 'error' else 1, r['sample'], info['title'], r['id'],
-                              'error' if r['status'] == 'error' else 'failed', plain or 'Check failed.', info['known_defect']))
+            attention.append((0 if r['status'] == 'error' else 1, r['sample'], check_info(r)['title'], r['id'],
+                              'error' if r['status'] == 'error' else 'failed', one_line(r)))
     by_drift = defaultdict(list)
     for r in rows:
         if r.get('kind') and r['status'] == 'failed':
             by_drift[(r['sample'], r['component'])].append(r)
     for (sid, comp), items in by_drift.items():
-        summary = ' '.join(f"{check_info(r)['title']}: {plain_change(r)}" for r in items[:2])
+        summary = '; '.join(f"{check_info(r)['title']}: {one_line(r)}" for r in items[:2])
         attention.append((2, sid, SCHEMA['by_id'][comp]['title'], comp, 'drift',
-                          f'{len(items)} stored value(s) changed. {_short(summary, 300)}', None))
+                          _short(f'{len(items)} stored value(s) changed. {summary}', 300)))
     baseline = Counter(r['sample'] for r in rows if r['status'] == 'unbaselined')
     for sid, count in baseline.items():
         has_file = bool((data or {}).get('expectations', {}).get(sid))
         attention.append((3, sid, 'Stored expectations', '', 'unbaselined',
                           f'{count} value(s) have no stored expectation yet'
-                          + ('.' if has_file else ' (this sample has no expectation file).'), None))
+                          + ('.' if has_file else ' (this sample has no expectation file).')))
     attention.sort(key=lambda a: (a[0], samples.index(a[1]) if a[1] in samples else 0, a[2]))
     return dict(verdict=verdict, health=health, diagnostics=diagnostics, run=run, rows=rows, samples=samples,
                 statuses=statuses, attention=attention, invalid=junit_invalid or bool(evidence_error))
 
 
-def _what_is_checked(rows):
-    """Plain-language description of each area, with this run's counts."""
-    by_component = defaultdict(Counter)
-    by_check = defaultdict(Counter)
-    for r in rows:
-        by_component[r['component']][r['status']] += 1
-        by_check[(r['component'], r['id'] if r.get('kind') is None else r['assertion'])][r['status']] += 1
-    parts = ['<details open id="what"><summary>What this test checks</summary>',
+def _what_is_checked():
+    """Static reference: what each area checks (from schema.yaml; no per-run results)."""
+    parts = ['<details><summary>What this test checks</summary>',
              '<p class="hint">One core workflow run over the samples in test/core/metadata.csv. <b>Rule checks</b> must always '
              'hold; a failure is a bug and cannot be promoted. <b>Stored values</b> are compared with '
-             'test/core/expected/&lt;N&gt;_&lt;sample&gt;.yaml and can be promoted after review. Values that the Selenium '
-             'report tests own are left to Selenium and not shown here.</p>']
+             'test/core/expected/&lt;N&gt;_&lt;sample&gt;.yaml and can be promoted after review. A value belongs to Selenium for a '
+             'sample when that sample\'s Selenium fixture (test/selenium/expected/) has a non-empty expected value for it; core '
+             'then neither compares it nor re-checks that it exists and is valid.</p>']
     for comp in SCHEMA['components']:
-        counts = by_component.get(comp['id'], Counter())
-        total = sum(counts.values())
-        tally = (f"{total} checks this run: {counts['passed']} passed"
-                 + (f", {counts['failed'] + counts['error']} failed" if counts['failed'] + counts['error'] else '')
-                 + (f", {counts['unbaselined']} need a baseline" if counts['unbaselined'] else '')) if total else 'No checks ran in this run.'
         parts.append(f'<div class="area"><h3>{_esc(comp["title"])} <small class="id">{_esc(comp["channel"])}</small></h3>'
                      f'<div>{_esc(comp.get("description", ""))}</div>'
-                     f'<div class="files">Files: {_esc(comp.get("files", ""))} — written by {_esc(comp.get("producer", ""))}</div>'
-                     f'<div class="files"><b>{_esc(tally)}</b></div>')
+                     f'<div class="files">Files: {_esc(comp.get("files", ""))} — written by {_esc(comp.get("producer", ""))}</div>')
         checks = comp.get('checks') or {}
         if checks:
             parts.append('<b style="font-size:.85rem">Rule checks</b><ul>' + ''.join(
-                f'<li><b>{_esc(c["title"])}</b>: {_esc(c.get("explain", c.get("rule", "")))}'
-                f'{_tally(by_check.get((comp["id"], cid)))}</li>' for cid, c in checks.items()) + '</ul>')
-        stored = {k: v for k, v in (comp.get('assertions') or {}).items() if v.get('stored') is not False}
+                f'<li><b>{_esc(c["title"])}</b>: {_esc(c.get("explain", c.get("rule", "")))}</li>' for c in checks.values()) + '</ul>')
+        stored = [a for a in (comp.get('assertions') or {}).values() if a.get('stored') is not False]
         if stored:
             parts.append('<b style="font-size:.85rem">Stored values compared</b><ul>' + ''.join(
-                f'<li><b>{_esc(a["title"])}</b>: {_esc(a.get("explain", ""))}{_tally(by_check.get((comp["id"], aid)))}</li>'
-                for aid, a in stored.items()) + '</ul>')
+                f'<li><b>{_esc(a["title"])}</b>: {_esc(a.get("explain", ""))}</li>' for a in stored) + '</ul>')
         parts.append('</div>')
     parts.append('</details>')
     return ''.join(parts)
-
-
-def _tally(counts):
-    if not counts:
-        return ' <small>(not applicable in this run)</small>'
-    bad = counts['failed'] + counts['error']
-    return (f' <small>({counts["passed"]} passed' + (f', {bad} failed' if bad else '')
-            + (f', {counts["unbaselined"]} need a baseline' if counts['unbaselined'] else '') + ')</small>')
 
 
 def _page(a, linker, assertions_arg):
@@ -709,16 +716,13 @@ def _page(a, linker, assertions_arg):
         parts.append('<p class="hint">Most serious first: errors, rule failures (fix the cause), changed values (review, then promote), '
                      'missing expectations (review, then ingest). Click a sample for the full explanation.</p>')
         parts.append('<table><tr><th>Sample</th><th>Check</th><th>What went wrong</th></tr>')
-        for _level, sid, title, ident, label, message, known in attention:
+        for _level, sid, title, _ident, label, message in attention:
             badge = 'needs baseline' if label == 'unbaselined' else label
-            known_html = f' <span class="badge b-known">known defect {_esc(known["id"])}</span>' if known else ''
             parts.append(f'<tr class="s-{label}"><td><a href="#{_slug(sid)}">{_esc(sid)}</a></td>'
-                         f'<td><span class="badge b-{label}">{_esc(badge)}</span> {_esc(title)}{known_html}</td><td>{_esc(message)}</td></tr>')
+                         f'<td><span class="badge b-{label}">{_esc(badge)}</span> {_esc(title)}</td><td>{_esc(message)}</td></tr>')
         parts.append('</table>')
     else:
         parts.append('<p class="hint">Nothing to review.</p>')
-
-    parts.append(_what_is_checked(rows) if rows else '')
 
     if rows:
         parts.append('<h2>Samples × checks</h2><p class="hint">✔ passed · ✖ failed · ? needs a baseline. '
@@ -751,7 +755,7 @@ def _page(a, linker, assertions_arg):
             problems.sort(key=lambda r: ({'error': 0, 'failed': 1, 'unbaselined': 2}[r['status']] + (0 if r.get('kind') is None else 0.5),
                                          components.index(r['component']) if r['component'] in components else 99, r['id']))
             parts.append(f'<details open id="{_slug(sid)}"><summary>{_esc(sid)} — {len(problems)} to review</summary>')
-            parts.append('<table><tr><th>Check</th><th>What should be true</th><th>What was found</th><th>Likely cause / next step</th></tr>')
+            parts.append('<table><tr><th>Check</th><th>Expected</th><th>Actual</th><th>Next step</th></tr>')
             shown = 0
             for r in problems:
                 if r['status'] == 'unbaselined' and shown >= 40:
@@ -760,23 +764,16 @@ def _page(a, linker, assertions_arg):
                 info = check_info(r)
                 status = 'drift' if r.get('kind') and r['status'] == 'failed' else r['status']
                 badge = 'needs baseline' if status == 'unbaselined' else status
-                if r.get('kind') is None:
-                    found, technical = split_diagnostic(r.get('diagnostic') or 'Check failed.')
-                    should = info['explain']
-                else:
-                    found, technical = plain_change(r), ''
-                    should = info['explain'] + ('' if r['status'] == 'unbaselined' or r.get('absent')
-                                                else f' Stored value: {_short(r.get("expected"), 200)}')
-                    if r['kind'] == 'fingerprints' and r['status'] == 'failed':
-                        technical = _sequence_diff(r)
-                next_step = _esc(info['on_fail'])
-                if info['known_defect']:
-                    next_step += (f'<div class="known"><b>Known defect {_esc(info["known_defect"]["id"])}.</b> '
-                                  f'{_esc(info["known_defect"]["summary"])}</div>')
-                tech = f'<details class="tech"><summary>Technical detail</summary><pre>{_esc(technical)}</pre></details>' if technical else ''
-                parts.append(f'<tr class="s-{status}"><td><span class="badge b-{status}">{_esc(badge)}</span><br>{_esc(info["title"])}'
-                             f'<br><span class="id">{_esc(r["id"])}</span></td><td>{_esc(should)}</td>'
-                             f'<td>{_esc(found)}{tech}</td><td>{next_step}</td></tr>')
+                p = expected_actual(r)
+                actual = _esc(p['actual'])
+                if p['difference']:
+                    actual += f'<div class="id">Difference: {_esc(p["difference"])}</div>'
+                if p['technical']:
+                    actual += f'<details class="tech"><summary>Technical detail</summary><pre>{_esc(p["technical"])}</pre></details>'
+                parts.append(f'<tr class="s-{status}"><td><span class="badge b-{status}">{_esc(badge)}</span> {_esc(info["title"])}'
+                             f'<br><span class="id">{_esc(p["headline"] or r["id"])}</span></td>'
+                             f'<td><code>{_esc(p["expected"] if p["expected"] is not None else info["explain"])}</code></td>'
+                             f'<td><code>{actual}</code></td><td>{_esc(info["on_fail"])}</td></tr>')
             hidden = sum(1 for r in problems if r['status'] == 'unbaselined') - shown
             if hidden > 0:
                 parts.append(f'<tr><td colspan="4" class="missing">… and {hidden} more values without expectations (use ingest --dry-run to list them all).</td></tr>')
@@ -804,6 +801,7 @@ def _page(a, linker, assertions_arg):
                         f'python test/core/testkit.py promote --all --assertions {assertions_arg} --dry-run\n'
                         f'python test/core/testkit.py ingest --all --assertions {assertions_arg} --dry-run')
                  + '</pre></details>')
+    parts.append(_what_is_checked())
     parts.append('<details><summary>Channel legend</summary><table>' + ''.join(
         f'<tr><td><b>{_esc(k)}</b></td><td>{_esc(v)}</td></tr>' for k, v in SCHEMA['channels'].items()) + '</table></details>')
     if a['diagnostics']:
@@ -835,10 +833,9 @@ def _summary(a, page_name):
     lines += ['', f"### Needs attention ({len(a['attention'])})", '']
     if a['attention']:
         lines += ['| Sample | Check | What went wrong |', '|---|---|---|']
-        for _level, sid, title, _ident, label, message, known in a['attention'][:50]:
+        for _level, sid, title, _ident, label, message in a['attention'][:50]:
             cell = lambda t: str(t).replace('|', '\\|').replace('\n', ' ')
-            tag = f' (known defect {known["id"]})' if known else ''
-            lines.append(f"| {cell(sid)} | {cell(label)}: {cell(title)}{cell(tag)} | {cell(_short(message, 240))} |")
+            lines.append(f"| {cell(sid)} | {cell(label)}: {cell(title)} | {cell(_short(message, 240))} |")
         if len(a['attention']) > 50:
             lines.append(f"\n… and {len(a['attention']) - 50} more.")
     else:

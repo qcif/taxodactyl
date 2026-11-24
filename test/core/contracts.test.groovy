@@ -175,6 +175,40 @@ components:
     assert stale?.absent && stale.status=='failed' && stale.promotable && rowOf(result,'expected.files').status=='passed' : result[0].rows.findAll { it.status!='passed' }
  }
  expectedFile.text=baseline
+ def overview = new File(root,'test/selenium/expected/synthetic.yaml')
+ overview.text = '''sample_id: Synthetic
+components:
+- id: overview_tab
+  assertions:
+  - id: conclusion_flag
+    value: Flag 1E
+- id: database_coverage
+  pmi:
+  - assertions:
+    - id: title
+      value: ['Database coverage of Preliminary Morphology ID Taxon']
+    - id: flag_text1
+      value: ['5.1B']
+'''
+ def flag1=new File(c.find { it.endsWith('1.flag') }); def flag1Text=flag1.text
+ values=new JsonSlurper().parse(flagFile); values.each { it.value='Z' }; flagFile.text=JsonOutput.toJson(values)
+ expect('Selenium-owned flags get no extra core validity check; unowned ones do') {
+    def result=run()
+    assert !result[0].rows.any { it.id=='C.flag.1' }
+    assert rowOf(result,'C.flag.2').status=='passed'
+    assert rowOf(result,'candidates/flag_1').status in ['delegated','failed']
+    def records=rowOf(result,'F.5.1.records')
+    assert records.status=='failed' && records.diagnostic.startsWith('5.1.flag: flag 5.1 value for toi/Taxon\nExpected: one of A/B/C/NA/ERR\nActual: "Z"')
+    assert !records.diagnostic.contains('pmi/Taxon')
+ }
+ values=new JsonSlurper().parse(flagFile); values.find { it.target_type=='toi' }.value='B'; values.find { it.target_type=='pmi' }.value='Z'; flagFile.text=JsonOutput.toJson(values)
+ expect('an invalid value Selenium checks is left to Selenium; structure still checked') {
+    def result=run()
+    assert rowOf(result,'F.5.1.records').status=='passed'
+    flagFile.text=JsonOutput.toJson(values.take(1))
+    assert rowOf(run(),'F.5.1.records').diagnostic.startsWith('5.1.flag: one record per taxon in db_coverage.json')
+ }
+ flagFile.text=originalFlags; flag1.text=flag1Text; overview.delete()
  def orphan=new File(root,'test/core/expected/2_Other.yaml'); orphan.text='sample_id: Other\ncomponents: []\n'
  expect('orphan file fails with its name') {
     def row=rowOf(run(),'expected.files'); assert row.status=='failed' && row.diagnostic.contains('2_Other.yaml') && row.diagnostic.contains('orphan')
@@ -191,21 +225,20 @@ components:
  expect('PMI CSV with joined lines explains itself in plain words') {
     def row=rowOf(run(),'C.pmi')
     assert row.status=='failed'
-    assert row.diagnostic.startsWith("preliminary_id_match.csv should be a header line 'rank,taxon' and one data line")
-    assert row.diagnostic.contains("found 1 line(s): 'rank,taxongenus,Taxon' (header and data joined: missing line break)")
+    assert row.diagnostic.startsWith('preliminary_id_match.csv: header line and one data row\nExpected: "rank,taxon⏎<rank>,Taxon"\nActual: "rank,taxongenus,Taxon"')
  }
  new File(pmi).text='rank,taxon\ngenus,Taxon\n'
  expect('well-formed PMI CSV passes') { assert rowOf(run(),'C.pmi').status=='passed' }
  c.remove(pmi); new File(pmi).delete(); flag7.text=flag7Text
  channels.ch_hits_for_report=[]
  expect('routing failure names missing samples') {
-    assert rowOf(run(),'H.routing').diagnostic.startsWith('ch_hits_for_report should have one entry for every sample in metadata.csv; missing [query_001_Synthetic]')
+    assert rowOf(run(),'H.routing').diagnostic.startsWith('ch_hits_for_report: one entry for every sample in metadata.csv\nExpected: ["query_001_Synthetic"]\nActual: []\nDifference: missing ["query_001_Synthetic"]; unexpected []')
  }
  channels.ch_hits_for_report=original
  def countFile=new File(c.find { it.endsWith('candidates_count.txt') });countFile.delete()
  expect('missing output differs from legitimate empty output, with a plain message') {
     def row=rowOf(run(),'C.content')
-    assert row.status=='failed' && row.diagnostic.contains('candidates_count.txt is listed in the workflow output but the file does not exist')
+    assert row.status=='failed' && row.diagnostic.startsWith('candidates_count.txt: listed output file exists\nExpected: file present\nActual: missing: ')
  }
  println "${passed} synthetic contract scenarios passed"
 } finally { temp.deleteDir() }

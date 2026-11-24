@@ -8,8 +8,7 @@
 #   groups       optional keys whose entries are lists of {name, assertions}
 #   checks       rule (invariant) check IDs; never stored per sample, never promotable
 #                title / rule (one line) / explain (plain words) / on_fail (cause, next step)
-#                known_defect: {id, summary} labels a failure caused by a catalogued bug
-#   assertions   data values that can be stored per sample (ingest/promote);
+#            #   assertions   data values that can be stored per sample (ingest/promote);
 #                `stored: false` values are owned by Selenium and never shown
 schema_version: 2
 
@@ -162,17 +161,17 @@ components:
     C.flag.1:
       title: Flag 1 file
       rule: One record with a valid value and no target.
-      explain: 1.flag (candidate outcome) holds exactly one valid value.
+      explain: "1.flag (candidate outcome) holds exactly one valid value. Runs only for samples where Selenium does not check flag 1."
       on_fail: *rule_fail
     C.flag.2:
       title: Flag 2 file
       rule: One record with a valid value and no target.
-      explain: 2.flag (taxa of interest) holds exactly one valid value.
+      explain: "2.flag (taxa of interest) holds exactly one valid value. Runs only for samples where Selenium does not check flag 2."
       on_fail: *rule_fail
     C.flag.7:
       title: Flag 7 file
       rule: One record with a valid value and no target.
-      explain: 7.flag (preliminary ID) holds exactly one valid value.
+      explain: "7.flag (preliminary ID) holds exactly one valid value. Runs only for samples where Selenium does not check flag 7."
       on_fail: *rule_fail
     C.toi:
       title: Taxa of interest table
@@ -184,20 +183,19 @@ components:
       rule: 'Present only for flag 7A; header rank,taxon and exactly one row naming the input preliminary ID.'
       explain: 'preliminary_id_match.csv exists only when the preliminary ID matched (flag 7 is A). It should be two lines: the header rank,taxon and one row such as genus,Bruchophagus naming the input preliminary ID.'
       on_fail: *rule_fail
-      known_defect: {id: P3-D-008, summary: 'scripts/p3_assign_taxonomy.py (_write_pmi_match) writes the header and the data row without a line break, so the file is one line such as rank,taxongenus,Bruchophagus. Nothing reads this file, so the report is unaffected. Kept failing on purpose until a separate task fixes the writer (user decision 2026-11-23).'}
   assertions:
     flag_1:
       type: flag
       title: Flag 1 (candidate outcome)
-      explain: Flag 1 value, compared only where Selenium does not check it.
+      explain: "Overall outcome (A–E). Selenium checks it for every sample whose fixture has a conclusion_flag value; core compares it only for the others."
     flag_2:
       type: flag
       title: Flag 2 (taxa of interest)
-      explain: Flag 2 value, compared only where Selenium does not check it.
+      explain: "Taxa-of-interest outcome. Selenium checks it for every sample whose fixture has a toi_flag value; core compares it only for the others."
     flag_7:
       type: flag
       title: Flag 7 (preliminary ID)
-      explain: Flag 7 value, compared only where Selenium does not check it.
+      explain: "Preliminary-ID outcome. Selenium checks it for every sample whose fixture has a preliminary_flag value; core compares it only for the others."
 
 - id: phylogeny
   title: Phylogeny
@@ -238,7 +236,7 @@ components:
     flag_4:
       type: flag
       title: Flag 4 (independent sources)
-      explain: Flag 4 value for this candidate.
+      explain: Independent-sources outcome per candidate. Not checked by Selenium; core compares every value.
 
 - id: database_coverage
   title: Database coverage
@@ -302,32 +300,32 @@ components:
     F.5.1.records:
       title: 5.1.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.1.flag (target coverage) has one valid record for every taxon in db_coverage.json, none missing or repeated.
+      explain: 5.1.flag (target coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
       on_fail: *rule_fail
     F.5.2.records:
       title: 5.2.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.2.flag (related-species coverage) has one valid record for every taxon in db_coverage.json, none missing or repeated.
+      explain: 5.2.flag (related-species coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
       on_fail: *rule_fail
     F.5.3.records:
       title: 5.3.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.3.flag (in-country coverage) has one valid record for every taxon in db_coverage.json, none missing or repeated.
+      explain: 5.3.flag (in-country coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
       on_fail: *rule_fail
   groups: [candidate, toi, pmi]
   assertions:
     flag_5_1:
       type: flag
       title: Flag 5.1 (target coverage)
-      explain: Flag 5.1 value for this taxon, where Selenium does not check it.
+      explain: "Target coverage per taxon. Selenium checks it where the fixture's database_coverage row for that taxon has a flag_text1 value; core compares the rest."
     flag_5_2:
       type: flag
       title: Flag 5.2 (related species coverage)
-      explain: Flag 5.2 value for this taxon, where Selenium does not check it.
+      explain: "Related-species coverage per taxon. Selenium checks it where the fixture's row for that taxon has a flag_text2 value; core compares the rest."
     flag_5_3:
       type: flag
       title: Flag 5.3 (in-country coverage)
-      explain: Flag 5.3 value for this taxon.
+      explain: In-country coverage per taxon. Not checked by Selenium (it reads only the explanatory text); core compares every value.
 
 - id: maps
   title: Coverage maps

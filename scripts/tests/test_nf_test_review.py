@@ -53,14 +53,13 @@ class ReviewTests(ToolkitCase):
         self.assertIn('naming the input preliminary ID', text)          # plain explanation
         self.assertIn('cannot be promoted', text)                       # next step
         self.assertNotIn('contract invariant', text)
-        self.assertIn('1 appeared that were not stored (map_d.png)', text)
-        self.assertIn('1 stored disappeared (map_c.png)', text)
+        self.assertIn(kit._esc('Difference: missing ["map_c.png"]; unexpected ["map_d.png"]'), text)
 
     def test_fingerprint_drift_shows_sequences(self):
         self.data['rows'].append(row(SAMPLE_A, 'blast_hits', 'sequence_fingerprints', {'ACC1': 'bbbbbbbbbbbbbbbb'},
                                      status='failed', expected={'ACC1': 'aaaaaaaaaaaaaaaa'}, detail={'ACC1': 'ACGTN'}))
         _, text = self.render()
-        self.assertIn('1 hit sequences changed (ACC1)', text)
+        self.assertIn(kit._esc('changed ["ACC1"]'), text)
         self.assertIn('ACC1: aaaaaaaaaaaaaaaa → bbbbbbbbbbbbbbbb  (observed length 5: ACGTN)', text)
 
     def test_matrix_and_commands(self):
@@ -93,37 +92,43 @@ class ReviewTests(ToolkitCase):
         self.assertNotIn('→', text)
         self.assertEqual(self.verdict(text), 'PASSED')
 
-    def test_what_this_test_checks(self):
+    def test_what_this_test_checks_is_a_static_reference_at_the_end(self):
+        self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='x: y\nExpected: 1\nActual: 2'))
         _, text = self.render()
-        section = text[text.index('What this test checks'):text.index('Samples × checks')]
+        start = text.index('<summary>What this test checks</summary>')
+        self.assertGreater(start, text.index('<summary>Commands</summary>'))
+        self.assertLess(start, text.index('<summary>Channel legend</summary>'))
+        section = text[start:text.index('<summary>Channel legend</summary>')]
         for component in kit.SCHEMA['components']:
             self.assertIn(component['title'], section)
             self.assertIn(kit._esc(component['producer']), section)
-        self.assertIn('Coverage maps', section)
-        self.assertIn('2 checks this run: 0 passed, 2 need a baseline', section)
-        self.assertIn('No checks ran in this run.', section)
+        self.assertNotRegex(section, r'passed|this run|not applicable|need a baseline')
+        self.assertIn('fixture has a toi_flag value', section)
+        self.assertNotIn('<details open', text[start - 20:start + 40])
 
-    def test_plain_message_with_collapsed_expression_and_known_defect(self):
+    def test_expected_actual_columns_and_collapsed_expression(self):
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed',
-            diagnostic="preliminary_id_match.csv should be a header line 'rank,taxon' and one data line; found 1 line(s): "
-                       "'rank,taxongenus,Bruchophagus' (header and data joined: missing line break). "
-                       "Expression: ((lines.size() == 2)). Values: lines = [rank,taxongenus,Bruchophagus]"))
+            diagnostic='preliminary_id_match.csv: header line and one data row\nExpected: "rank,taxon⏎<rank>,Bruchophagus"\n'
+                       'Actual: "rank,taxongenus,Bruchophagus". Expression: ok. Values: ok = false'))
         _, text = self.render()
-        self.assertIn('missing line break', text)
-        self.assertIn('known defect P3-D-008', text)
-        self.assertIn('Known defect P3-D-008.', text)
+        self.assertIn('<th>Expected</th><th>Actual</th><th>Next step</th>', text)
+        self.assertIn(kit._esc('"rank,taxon⏎<rank>,Bruchophagus"'), text)
+        self.assertIn(kit._esc('"rank,taxongenus,Bruchophagus"'), text)
+        self.assertIn('header line and one data row — expected', text)          # needs-attention one-liner
         visible = re.sub(r'<details class="tech">.*?</details>', '', text, flags=re.S)
         self.assertNotIn('Expression:', visible)
-        self.assertIn('Expression: ((lines.size() == 2))', text)
+        self.assertNotIn('missing line break', text)
+        self.assertNotRegex(text.lower(), r'known defect|p3-d-008')
 
     def test_summary_markdown(self):
-        self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='Joined | lines. Expression: x'))
+        self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='f.csv: rule\nExpected: "a|b"\nActual: "c". Expression: x'))
         self.save()
         summary = self.root/'summary.md'
         kit.render(self.junit, self.html, self.sidecar, summary=summary)
         text = summary.read_text()
         self.assertIn('## Core nf-test: FAILED', text)
-        self.assertIn('| Scenario_04 | failed: Preliminary-ID match table (known defect P3-D-008) | Joined \\| lines. |', text)
+        self.assertIn('| Scenario_04 | failed: Preliminary-ID match table | rule — expected "a\\|b", actual "c" |', text)
+        self.assertNotIn('known defect', text)
         self.assertNotIn('Expression', text)
 
     def test_bundle_is_self_contained(self):
@@ -199,7 +204,7 @@ class SchemaTests(ToolkitCase):
                 self.assertTrue(component.get(field), (component['id'], field))
             for check, definition in (component.get('checks') or {}).items():
                 # Unknown keys usually mean an unquoted comma split a value in a YAML {...} mapping.
-                self.assertLessEqual(set(definition), {'title', 'rule', 'explain', 'on_fail', 'known_defect'}, check)
+                self.assertLessEqual(set(definition), {'title', 'rule', 'explain', 'on_fail'}, check)
                 for field in ('title', 'rule', 'explain', 'on_fail'):
                     self.assertTrue(definition.get(field), (check, field))
                 self.assertTrue(definition['explain'].endswith('.'), check)
@@ -208,19 +213,10 @@ class SchemaTests(ToolkitCase):
                 self.assertTrue(definition.get('title') and definition.get('explain'), name)
                 self.assertIn(definition['type'], types, name)
 
-    def test_every_groovy_assert_has_a_plain_message(self):
+    def test_every_groovy_assertion_uses_the_expected_actual_format(self):
         source = (ROOT/'test/core/CoreAssertions.groovy').read_text()
-        statements = re.findall(r'\bassert\b[^\n]*', source)
-        self.assertTrue(statements)
-        missing = [s for s in statements if ' : ' not in s and not s.startswith('assert true ')]
-        self.assertEqual(missing, [])
-
-    def test_groovy_checks_are_declared_and_contain_no_sample_ids(self):
-        source = (ROOT/'test/core/CoreAssertions.groovy').read_text()
-        literal = set(re.findall(r"check\((?:sid|'_run'),\s*'([^']+)'", source))
-        self.assertTrue(literal)
-        self.assertLessEqual(literal, set(kit.SCHEMA['check_component']))
-        for name in re.findall(r"data\(sid,'([a-z_]+)',(?:null|[a-z_.']+),(?:null|[a-z.]+),'([a-z_0-9]+)',", source):
-            self.assertIn(name[1], kit.SCHEMA['by_id'][name[0]]['assertions'])
-        ids = [line.split(',')[0] for line in (ROOT/'test/core/metadata.csv').read_text().splitlines()[1:]]
-        self.assertFalse([sid for sid in ids if sid in source])
+        statements = [line.strip().rstrip(' }') for line in re.findall(r'\bassert\b[^\n]*', source)]
+        allowed = {'assert ok : msg(where, rule, expected, actual, difference)',   # holds(): every check goes through it
+                   'assert false : row.diagnostic', 'assert false : message'}      # messages already built by msg()
+        self.assertEqual([s for s in statements if s not in allowed and not s.startswith('assert true')], [])
+        self.assertIn('"${where}: ${rule}\\nExpected: ${show(expected)}\\nActual: ${show(actual)}"', source)

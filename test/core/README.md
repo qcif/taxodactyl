@@ -260,9 +260,9 @@ Selenium code/fixtures/tolerances are unchanged.
 **Known defect:** the `C.pmi` check fails for Scenario_04 and
 barcode_83_P59_Potyviridae_cluster_0_RC205. `scripts/p3_assign_taxonomy.py`
 writes `preliminary_id_match.csv` without a line break between header and row
-(P3-D-008; nothing reads the file). By user decision it stays failing, labelled
-as a known defect, until a separate task fixes the writer; core CI is red for
-that reason alone.
+(P3-D-008; nothing reads the file). By user decision it stays failing until a
+separate task fixes the writer; core CI is red for that reason alone. The page
+does not label it; tracking stays in the task brief and `tasks/todo.md`.
 
 ### Coverage ownership
 
@@ -436,23 +436,29 @@ no replay is promised. Original failure records stay unchanged.
 - **Run health:** workflow, evaluation, JUnit and expectation-file status.
 - **Needs attention:** one row per problem, most serious first, linking to the
   sample card. Changed values are grouped per sample and component.
-- **What this test checks:** for each area, which files are read and which step
-  writes them, every rule check and stored value in plain words, and this run's
-  counts. Text comes from `schema.yaml` (`description`, `files`, `producer`,
-  `explain`, `on_fail`, `known_defect`).
 - **Samples × checks:** ✔ passed, ✖ failed, ? needs baseline.
-- **Sample details:** only samples with problems. Each row shows *what should be
-  true*, *what was found* (the assertion's plain message, e.g. "found 1 line …
-  header and data joined: missing line break") and *likely cause / next step*,
-  with a known-defect note where catalogued. The raw Groovy expression is under
-  "Technical detail". Links go to the files that check read, followed by a
-  copyable `promote`/`ingest` command.
-- **Reference (collapsed):** commands, channel legend, native nf-test diagnostics.
+- **Sample details:** only samples with problems. Columns: **Check | Expected |
+  Actual | Next step**. Every message has the same shape, built by helpers in
+  `CoreAssertions.groovy`: `<file>: <rule>`, `Expected: <value>`, `Actual: <value>`,
+  and for lists `Difference: missing …; unexpected …`. Values are printed as they
+  are (strings quoted, line breaks as `⏎`), with no interpretation, e.g.
+  `Expected: "rank,taxon⏎<rank>,Bruchophagus"` / `Actual: "rank,taxongenus,Bruchophagus"`.
+  Links go to the files that check read, followed by a copyable
+  `promote`/`ingest` command.
+- **Reference (collapsed):** commands; **What this test checks**, a static list
+  per area of the files read, the step writing them, each rule check and stored
+  value in one line (from `schema.yaml`, no per-run results); channel legend;
+  native nf-test diagnostics.
 
 Values owned by Selenium (208 in the baseline) are not shown on this page. They
 stay in the evidence JSON and `coverage-ownership.tsv`; the Selenium review shows
-their results. Every `assert` in `CoreAssertions.groovy` carries a plain message,
-enforced by a test.
+their results. A value is Selenium's for a sample when that sample's fixture has a
+non-empty expected value for it. Core then also skips re-checking that the value
+exists and is valid: `C.flag.1/2/7` run only for unowned flags (baseline: flag 2
+of FungusB_Btub), and 5.x record values are validated only where unowned. The
+5.x record structure (one record per taxon in `db_coverage.json`, none missing,
+extra or repeated) is always checked. A test enforces that every assertion goes
+through the Expected/Actual helpers.
 
 ### In CI
 
