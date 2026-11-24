@@ -39,3 +39,15 @@ One bullet per item: what needs doing and why, its origin
   only "Grapevine virus A"), so a target in one gets 1 related species.
   Left out of scope by user decision. Origin: task
   11_inexact_col_match_genus, 2026-11-19.
+- Coverage maps for two targets whose names differ only in case (e.g. PMI
+  `Bulimulus Sporadicus` and TOI `Bulimulus sporadicus` in 512503_1_Andrew) are
+  written as `map_Bulimulus_Sporadicus.png` and `map_Bulimulus_sporadicus.png`.
+  They collide on case-insensitive filesystems and in some copy/archive routes; a
+  retained copy lost one. Consider case-normalising targets or map filenames in
+  `config.get_map_filename_for_target`. Origin: task 12_core_nf_test_assertions,
+  2026-11-23.
+- Fix `_write_pmi_match` in `scripts/p3_assign_taxonomy.py`: it writes
+  `preliminary_id_match.csv` without a line break between header and row
+  (P3-D-008). Task 12's core check `C.pmi` deliberately fails, labelled as a
+  known defect, until this is fixed (user decision). Add a Python unit test.
+  Origin: task 12_core_nf_test_assertions, 2026-11-23.
