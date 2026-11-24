@@ -347,7 +347,11 @@ To run a different test scenario (e.g., scenario_02):
 - Snapshot assertions: https://www.nf-test.com/docs/assertions/snapshots/
 - Taxodactyl documentation: See `docs/` directory in the workflow
 
+## Database coverage mode scenario
 
+`test/coverage` tests database coverage mode (`--coverage_taxa`) with `workflows/coverage.nf`.
+Point `nf-test.config` at it (`testsDir "test/coverage"`, `configFile "test/coverage/nextflow.config"`)
+and see `test/coverage/README.md`. It needs the taxdump but no BLAST database.
 
 ## Core assertion review (task 12)
 
