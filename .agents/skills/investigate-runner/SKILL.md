@@ -12,6 +12,9 @@ We run NF-test as a GitHub action on a self-hosted runner. It can be reached
 with `ssh daff-runner`. Each run writes its output to
 `/var/runner/yyyy-mm-dd_HHMMSS/`.
 
+Before starting, test `ssh daff-runner`. If it doesn't work - let the user know
+they need to create an SSH config for this in order to use this skill.
+
 If the user doesn't give a run path, list `/var/runner/` and confirm with the
 user which run they mean (usually the latest).
 
