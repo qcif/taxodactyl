@@ -16,10 +16,11 @@ on:
     # Manual: Actions > nf-test-core-assertions > Run workflow, then pick the
     # branch to test (e.g. a task branch once pushed).
     workflow_dispatch:
-    # Update here to enable trigger on push of selected branch
-    # push:
-    #   branches:
-    #     - nf-test-sh-runner
+    # TEMPORARY (task 12): run on every push to the task branch, because manual
+    # runs need this file on the default branch. Remove before merging.
+    push:
+      branches:
+        - task-12-core-nf-test-assertions
 
 # Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
 concurrency:
