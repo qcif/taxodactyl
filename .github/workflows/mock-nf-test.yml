@@ -181,13 +181,6 @@ jobs:
               echo "Reports folder is empty."
           fi
 
-      - name: Report availability of core assertion evidence
-        if: always()
-        run: |
-          if [[ ! -f "$RUNNER_TEMP/nf-test/nf-test.xml" || ! -f "$RUNNER_TEMP/nf-test/nf-test-assertions.json" ]]; then
-            echo "::warning::Frozen legacy artifact lacks native JUnit/structured core evidence. This workflow validates legacy post-processing only."
-          fi
-
       - name: Upload review.html
         uses: actions/upload-artifact@v4
         if: always()
