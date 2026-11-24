@@ -573,6 +573,14 @@ inexpensive look of `test/selenium/lib/static/review.css` inline). Page order:
    short expected → observed summary). Drift is collapsed per sample and component
    (e.g. "blast_hits: 37 sequence fingerprints changed"); needs-baseline is
    collapsed per sample.
+3a. **Failure analysis table** (added 2026-11-24, user request): the same
+   problems grouped across samples by kind (error, rule failure, drift, needs
+   baseline) and component, e.g. "drift — Database coverage", "drift — Coverage
+   flags". Ordered by kind, then by number of samples affected. Columns: problem
+   (badge, component, result and sample counts), samples (linked to cards, first
+   20), checks involved (title without per-taxon/file suffix, with counts),
+   one example (`<rule> — expected …, actual …`). The CI summary carries the same
+   grouping without the example column.
 4. **Sample × component matrix** in `metadata.csv` order with cells such as
    `✔ 42`, `✖ 2`, `? 15` (needs baseline), `→ 6` (owned by Selenium); each
    cell links to the sample card.
@@ -722,6 +730,12 @@ contents.
   `nf-test-review-<runner>` artifact, so links work after download. Upload
   ordinary files only; no symlinks or case-colliding names, since artifacts
   lose them (6.1 item 2).
+- **Standalone page (added 2026-11-24):** also upload the bundle's
+  `nf-test-review.html` on its own with `archive: false` (artifact named after the
+  file). Firefox blocked the zipped bundle as "contains a virus or malware"
+  (download reputation check on a new, rarely downloaded zip); a plain `.html` is
+  not checked, as with Selenium's `review.html`. Its evidence links only work
+  inside the bundle.
 - **Lossless retention:** keep `cp -a` to `/var/runner/<timestamp>/` and also
   write `/var/runner/<timestamp>/nf-test-run.tar.gz` with `tar`, which keeps
   symlinks and case. Document using that tarball when copying a run elsewhere.
@@ -1538,3 +1552,29 @@ Implemented in the task worktree under explicit authorization. **Not committed.*
     Selenium-owned (hidden). Page 29 KB.
   - Evidence: `.nf-test/task12-review/phase8-{assertions.json,review.html,summary.md,bundle/}`.
   - **Not run:** GitHub Actions and a new full core run.
+
+**Temporary CI trigger (2026-11-24):** commit `4238a8d` on the task branch adds a
+`push` trigger for `task-12-core-nf-test-assertions` to
+`.github/workflows/nf-test-core-assertions.yml`. Manual dispatch needs the file
+on the default branch. **Remove this trigger before merging.**
+
+### Phase 9 implementation — 2026-11-24
+
+Implemented in the task worktree. **Not committed.**
+
+- **Failure analysis table (5.5 item 3a):** `testkit.py` `_failure_groups()`
+  groups error/failed/drift/needs-baseline results by kind and component across
+  samples; `render` shows it between "Needs attention" and "Samples × checks",
+  and `--summary` adds a compact Markdown version.
+- **Standalone review page (6.5):** `nf-test-core-assertions.yml` gains "Upload
+  nf-test-review.html" (`archive: false`, `if: always()`) after the bundle
+  upload. The summary's download hint names both artifacts.
+- **Docs:** `test/core/README.md` (page guide, CI list, side-by-side table),
+  `docs/nf-tests.md`, `spec/tests.md` (TST-028, TST-029).
+- **Validation:**
+  - 43 Python tests passed (new: grouping order, sample links, per-check
+    grouping without taxon suffix, summary table).
+  - Re-render of `phase8-assertions.json`: 2 groups (failed — Candidates,
+    Preliminary-ID match table ×2 in 2 samples; failed — Coverage maps, Map
+    images ×1). Page 30 KB.
+  - **Not run:** GitHub Actions; the Groovy scenarios (Groovy files unchanged).
