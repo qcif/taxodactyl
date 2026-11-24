@@ -1,7 +1,8 @@
 # Core assertion test (task 12): runs test/core/taxodactyl.assertions.nf.test
 # with structured evidence, per-sample expectations and a review page.
 # Runs alongside the original snapshot workflow (nf-test.yml) while both are
-# compared; see test/core/README.md.
+# compared; kept in step with nf-test.yml apart from the marked differences.
+# See test/core/README.md and spec/tests.md (TST-029).
 name: nf-test-core-assertions
 
 on:
@@ -9,22 +10,33 @@ on:
     # do not compete for the single self-hosted runner.
     schedule:
       - cron: '0 12 * * 0'
-    # To also run on pull requests to main, add:
-    # pull_request:
-    #   branches:
-    #     - main
-    # Manual: Actions > nf-test-core-assertions > Run workflow, then pick the
-    # branch to test (e.g. a task branch once pushed).
+    # To also run on pull requests, call this workflow from build-pr.yml like
+    # nf-test.yml (it accepts the same `image` input).
+    workflow_call:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
+    # Manual: Actions > nf-test-core-assertions > Run workflow (the file must be
+    # on the default branch for the button to appear).
     workflow_dispatch:
+      inputs:
+        image:
+          description: Taxodactyl image to test (default neoformit/taxodactyl:main)
+          type: string
+          required: false
     # TEMPORARY (task 12): run on every push to the task branch, because manual
     # runs need this file on the default branch. Remove before merging.
     push:
       branches:
         - task-12-core-nf-test-assertions
 
-# Cancel a run if a newer one is started for the same branch/PR (see nf-test-rnaseq.yml)
+# Cancel a run if a newer one is started for the same branch/PR.
+# Own literal prefix: must not share nf-test.yml's group, or the two core
+# workflows would cancel each other on the same branch.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: nf-test-core-assertions-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -37,6 +49,9 @@ jobs:
     name: core_assertions_test
     runs-on: ${{ matrix.runner }}
     environment: testing
+    # Read by conf/process.config to select the taxodactyl container
+    env:
+      TAXODACTYL_IMAGE: ${{ inputs.image || 'docker.io/neoformit/taxodactyl:main' }}
     # Can extend strategy in the future for different versions + nf-test ver
     strategy:
       fail-fast: false
@@ -48,6 +63,20 @@ jobs:
         runner: [self-hosted]
 
     steps:
+      # Singularity (rootfs-*) and Chrome/Selenium (com.google.*) leave dirs
+      # behind in /tmp. Remove any older than an hour so concurrent runs
+      # aren't affected. sudo is needed as rootfs contents may be read-only.
+      - name: Clean up stale /tmp dirs
+        if: always()
+        continue-on-error: true
+        run: |
+          # Trailing slash: /tmp may be a symlink (e.g. -> /mnt/data/tmp)
+          sudo find /tmp/ -maxdepth 1 -type d \
+            \( -name 'rootfs*' -o -name 'com.google*' \) \
+            -mmin +60 \
+            -print \
+            -exec rm -rf {} +
+
       # Enable creation of containers as an unprivileged user
       - name: Enable unprivileged user namespaces
         run: |
@@ -57,9 +86,29 @@ jobs:
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v7
 
-      # Ensure container with latest commit to main is pulled
+      # Record which code was tested, saved with the run files on the
+      # self-hosted runner. On pull_request events the checked-out commit is a
+      # temporary merge commit, so the PR head commit is recorded too.
+      # Values are passed via env (not inlined) as branch names are untrusted.
+      - name: Record run info
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/nf-test"
+          {
+            echo "event: $GITHUB_EVENT_NAME"
+            echo "branch: $HEAD_REF"
+            echo "checkout_sha: $(git rev-parse HEAD)"
+            echo "pr_head_sha: ${PR_HEAD_SHA:-n/a}"
+            echo "run_url: $RUN_URL"
+            echo "image: $TAXODACTYL_IMAGE"
+          } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
+
+      # Ensure the latest build of the image under test is pulled
       - name: Force pull latest Docker image
-        run: docker pull neoformit/taxodactyl:main
+        run: docker pull "$TAXODACTYL_IMAGE"
         continue-on-error: true
 
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
@@ -127,7 +176,15 @@ jobs:
           mkdir -p \
             "$RUNNER_TEMP/taxodactyl" \
             "$RUNNER_TEMP/singularity" \
+            "$RUNNER_TEMP/singularity-tmp" \
+            "$RUNNER_TEMP/singularity-layers" \
             "$RUNNER_TEMP/nf-test"
+          # Keep Singularity build scratch (rootfs-*) and layer cache out of
+          # /tmp and $HOME so they are wiped with $RUNNER_TEMP after each job
+          {
+            echo "SINGULARITY_TMPDIR=$RUNNER_TEMP/singularity-tmp"
+            echo "SINGULARITY_CACHEDIR=$RUNNER_TEMP/singularity-layers"
+          } >> "$GITHUB_ENV"
           # Fill in each CUSTOMISE placeholder with a real value/path
           # and toggle mock_blast per env variable
           sed -i \
@@ -194,7 +251,8 @@ jobs:
       
       # Review page (full HTML), a self-contained bundle to download, and a short
       # summary on the Actions run page. Render errors fail this step; a failed
-      # core test stays failed in the step above.
+      # core test stays failed in the step above. (Replaces nf-test.yml's
+      # snapshot-error CSV; there is no flag-baseline step, see TST-026.)
       - name: Render core assertion review
         if: always()
         run: |
@@ -206,7 +264,7 @@ jobs:
             --output "$RUNNER_TEMP/nf-test/nf-test-review.html" \
             --summary "$RUNNER_TEMP/nf-test/nf-test-summary.md" \
             --bundle-dir "$RUNNER_TEMP/nf-test/nf-test-review" \
-            --include "$RUNNER_TEMP/nf-test/nf-test_results.txt" "$RUNNER_TEMP/nf-test/nf-test_errors.txt"
+            --include "$RUNNER_TEMP/nf-test/nf-test_results.txt" "$RUNNER_TEMP/nf-test/nf-test_errors.txt" "$RUNNER_TEMP/nf-test/run_info.txt"
           status=$?
           if [[ -f "$RUNNER_TEMP/nf-test/nf-test-summary.md" ]]; then
             cat "$RUNNER_TEMP/nf-test/nf-test-summary.md" >> "$GITHUB_STEP_SUMMARY"
@@ -285,6 +343,12 @@ jobs:
           echo "#### tree $TEST_DIR/output/reports"
           tree $TEST_DIR/output/reports
 
+      - name: Zip reports
+        if: always()
+        run: |
+          cd $TEST_DIR/output
+          zip -r reports.zip reports/
+
       # Install pytest and dependencies for running selenium
       - name: Install and run pytest
         if: always()
@@ -316,12 +380,21 @@ jobs:
               exit 1
           fi
 
+      # archive: false uploads the file as-is (no zip); the artifact takes
+      # the file's own name and the `name` input is ignored
       - name: Upload review.html
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: review-${{ matrix.runner }}.html
           path: ${{ github.workspace }}/test/selenium/review.html
+          archive: false
+
+      - name: Upload test-report.json
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          path: ${{ github.workspace }}/test/selenium/test-report.json
+          archive: false
 
       - name: Upload reports
         uses: actions/upload-artifact@v7
@@ -342,6 +415,7 @@ jobs:
           mkdir -p "/var/runner/$timestamp"
 
           cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
+          mv $TEST_DIR/output/reports.zip /var/runner/$timestamp/
 
           # Lossless archive for copying the run elsewhere: tar keeps symlinks
           # and file names that differ only in case (zip/artifact copies may not).
@@ -349,3 +423,6 @@ jobs:
 
           echo "Location of files on self-hosted runner:"
           echo "/var/runner/$timestamp/"
+
+          echo "Download reports with:"
+          echo "    scp ubuntu@daff-runner:/var/runner/$timestamp/reports.zip ."

@@ -1,9 +1,10 @@
-# Testing contracts on the nf-test-sh-runner branch
+# Spec: Testing
 
-This branch's task 12 migration uses the repository-level brief in
-`tasks/12_core_nf_test_assertions.md`. The broader specification in the separate
-`/mnt/data/sdd` checkout was consulted for raw file contracts; that checkout's
-older description of manual-only GitHub-hosted nf-test is stale for this branch.
+There are four test surfaces. Surface 1 runs on every push and pull
+request; surfaces 3 and 4 run in GitHub Actions on a self-hosted runner on a
+schedule, on pull requests (via `build-pr.yml`) and by hand. Surface 3 has
+two core tests during a comparison period: the original snapshot test and the
+assertion test that is replacing it (§2.3.1).
 
 | # | Surface | Location | Runs | Automatic | Hermetic |
 |---|---|---|---|---|---|
@@ -12,59 +13,39 @@ older description of manual-only GitHub-hosted nf-test is stale for this branch.
 | 3 | Nextflow end-to-end (`nf-test`) | `test/{scenario_01..04,core}` | `nf-test test <file>` (scenario chosen in `nf-test.config`) | `nf-test.yml` (`core` scenario, self-hosted runner; TST-024): weekly, on pull requests to `main` via `build-pr.yml`, and by hand | no — needs BLAST/taxdump; P4/P5 use live APIs unless an API-cache fixture is pinned (TST-024) |
 | 4 | Report UI (Selenium) | `test/selenium/` | `pytest test_reports.py --dir <reports>` | manual only: run by `nf-test.yml` on the reports it just produced | needs generated reports |
 ## Execution and ownership
+| 3 | Nextflow end-to-end (`nf-test`) | `test/{scenario_01..04,core}` | `nf-test test <file>` (scenario chosen in `nf-test.config`) | `core` only: `nf-test.yml` (snapshot test; weekly, on PRs via `build-pr.yml`, manual; TST-024) and `nf-test-core-assertions.yml` (assertion test; weekly, manual; TST-029) | no — needs BLAST/taxdump; P4/P5 use live APIs |
+| 4 | Report UI (Selenium) | `test/selenium/` | `pytest test_reports.py --dir <reports>` | run by both core workflows on the reports they just produced | needs generated reports |
 
-`.github/workflows/nf-test.yml` runs core on a self-hosted runner, on pull requests
-to main, weekly schedule and manual dispatch. It pins nf-test 0.9.5 and Nextflow
-25.04.6. The core configuration must be selected explicitly. One workflow run
-supplies all contract checks; checks must not launch separate sample workflows.
+## 1. Requirements
 
-Core owns success, routing/multiplicity, raw-file integrity and cross-file
-relationships. Existing populated Selenium scientific/presentation assertions
-retain ownership and their current comparisons/tolerances. A blank YAML value or
-an uncollected field is not an assertion. Concrete delegation is by sample,
-role, taxon and field, never by whole filename alone. See the artifact matrix and
-concrete ownership index in [core README](../test/core/README.md).
+| ID | Requirement |
+|---|---|
+| TST-001 | Every requirement ID in this spec SHOULD be traceable to at least one test. Modules with no unit tests today are listed in §4. |
+| TST-002 | A change to any threshold, filename, flag rule or report rule MUST be accompanied by a change to the test that pins it (or by a new test). |
+| TST-003 | CI MUST run surface 1 on every push and pull request to `main`. It MUST NOT depend on secrets other than `USER_EMAIL`. |
+| TST-004 | Surfaces 2–4 SHOULD be run before every release; the release checklist (`deployment.md` §3) records the versions of the reference data used. |
+| TST-005 | Fixtures that embed reference-data-derived values (snapshots, flags, `db_coverage.json`, HTML, core per-sample expectations) MUST record the reference-data versions they were generated with (as `test/core/README.md` does: BLAST DB, taxdump date; core expectation files also record their source run in `provenance:`). |
 
-Core expected data are distinct from invariant code. Missing expectations produce
-unbaselined failures with observed evidence. Only explicit reviewed `ingest` and
-`promote` commands may change expected data. They cannot update Selenium,
-production code or historical flag files, accept invariant failures, or use
-incomplete/stale evidence. Ingest adds selected missing entries; promote updates
-selected existing entries (or removes entries no longer observed); both preserve
-unrelated entries and retain backups.
+## 2. Surface details
 
-Expected data are one YAML file per sample, `test/core/expected/<N>_<sample_id>.yaml`,
-matched by `sample_id`. Assertion code contains no sample IDs; a new sample needs
-only a `test/core/metadata.csv` row and a reviewed ingest. Orphan or duplicate
-files, and undeclared values, fail `expected.files`. Database record counts in
-`db_coverage.json` (target, related and in-country) are not core expectations;
-Selenium owns them with its ±10% tolerance. Core compares the related and
-in-country species names, section states and 5.x flag values Selenium does not
-own. Hit sequences are compared by 16-hex-character SHA-256 fingerprints; the
-accession list stays exact.
+### 2.1 Unit tests
 
-Native JUnit is the test-status authority. Because pinned nf-test collapses
-assertAll failures, the Groovy checks also flush structured JSON evidence. Python
-renders that evidence; it does not reimplement the workflow assertions. Rendering
-can be repeated offline and cannot change the historical test result. Missing,
-unexecuted and malformed evidence must never look like a pass. Render failure
-is a separate failing CI step; successful rendering cannot clear nf-test failure.
+14 modules: `test_blast_parser`, `test_cache`, `test_cache_azure`,
+`test_coalesce`, `test_config`, `test_coverage_assert`, `test_gbif`,
+`test_genbank`, `test_orient`, `test_phylogeny_sampling`, `test_secrets`,
+`test_taxonkit`, `test_utils`, `test_validation`. Fixtures in
+`scripts/tests/test-data/`. `test_coverage_assert` tests the integration
+comparison logic, not production code. `test_orient` needs `hmmsearch`,
+which CI does not install (§4).
 
-## Migration status
+### 2.2 Integration tests
 
-Replacement assertions are implemented, and the supplied run’s core-owned data were explicitly validated and accepted
-by the user on 2026-11-23; they were moved into per-sample files on the same day
-(task 12 Phase 5). For a comparison period (task 12 Phase 7), the original
-snapshot test `test/core/taxodactyl.workflow.nf.test` and its workflow
-`.github/workflows/nf-test.yml`, including the flag-comparison gate, run
-unchanged. The assertion test `test/core/taxodactyl.assertions.nf.test` runs in
-`.github/workflows/nf-test-core-assertions.yml`. The core review page shows
-only core-owned checks, with plain explanations from `test/core/schema.yaml`.
-The `C.pmi` failure for known defect P3-D-008 stays visible until fixed separately. The retained successful run does not prove new contracts pass:
-missing retained symlinks, an absent map and known malformed PMI CSVs are reported
-explicitly. No successful full core rerun is claimed. Data acceptance is recorded separately
-from integrity failures; it does not make those failures pass. Other
-scenario snapshots and all Selenium assertions/fixtures stay unchanged.
+| ID | Requirement |
+|---|---|
+| TST-010 | Each case directory under `tests/test-data/integration/{blast,bold}/<case>/` MUST contain `blast_result.xml`, `candidates.nwk`, `metadata.csv`, `query.fasta`, `taxids.csv`, `taxonomy.csv` (BLAST cases). The runner executes P0, P1, P2, P3, P4, P5, P6 in-process per case. |
+| TST-011 | Env `USER_EMAIL`, `NCBI_API_KEY`, `TAXONKIT_DATA` MUST be set, else setup fails. |
+| TST-012 | Default assertion: no exception. Optional `expected/db_coverage.json` fixtures are compared by `coverage_assert` with tiered rules: exact key sets at the target layer, type-only leaves, non-null propagation (truthy expected ⇒ truthy actual); sub-keys below the target layer tolerated. |
+| TST-013 | `testkit.py harvest/promote/seed` manage fixtures (scaffold from a Nextflow run, update after semantic-diff review, first-time write). It is deliberately not part of `run_tests.sh`. |
 
 | ID | Requirement |
 |---|---|
@@ -86,6 +67,35 @@ cannot pass (P1B-D-001..003).
 | TST-023 | Placeholders `CUSTOMISE` in each scenario's `nextflow.config` (`blastdb`, `taxdb`, `temp_root_dir`) and in `nf-test.config` (`workDir`) MUST be edited by the tester; the tests do not run out of the box. (The CI workflow fills them in with `sed`.) |
 | TST-024 | `.github/workflows/nf-test.yml` runs the `core` scenario on the self-hosted runner (`daff-runner`; matrix `runner: [self-hosted]`). It runs weekly (`schedule`, Sundays 00:00 UTC), on pull requests to `main`, and by hand (`workflow_dispatch`, inputs `image` and `use_cache`). On pull requests it is called by `build-pr.yml` (`workflow_call`, secrets inherited), which first builds and pushes a `neoformit/taxodactyl:<branch>` image if the PR changes the Python scripts, and otherwise tests `:main`. The image under test is passed to Nextflow as `TAXODACTYL_IMAGE`. A newer run for the same PR or ref cancels the one in progress. Before the run it removes stale Singularity and Chrome dirs from `/tmp`, and clears the persistent Singularity cache (`singularity cache clean`) so the image under test is pulled fresh. The run's own Singularity caches are under `$RUNNER_TEMP`, which is emptied for every job. It pins Nextflow 25.04.6, nf-test 0.9.5 and Singularity 3.8.7. It downloads frozen reference data (taxdump `2026-05-08`, subset BLAST DB `2026-07-29`) from DAFF's public `daffstandard/test-data` blob container, takes `NCBI_API_KEY`/`USER_EMAIL` from repository secrets, and runs real BLAST (`MOCK_BLAST=false`). Then it runs TST-022's flag check, collects the work directories of failed or drifting tasks into `collected_errors/` (`bin/collect_artifacts.py`: symlinks on the self-hosted runner, copies elsewhere), runs Selenium (TST-030) on the produced reports, and uploads `review.html` and `test-report.json` as artifacts. The HTML reports are uploaded as an artifact only on GitHub-hosted runners. On the self-hosted runner it saves the run files (`$RUNNER_TEMP/nf-test`: `run_info.txt`, nf-test and flag results, `collected_errors/`, `api_cache/`, `review.html`, `tests/`) and `reports.zip` to `/var/runner/<run_id>-<attempt>/`. For a PR run, `<run_id>` is the calling `build-pr` run. `run_info.txt` records the event, branch, checked-out and PR head SHAs, run URL and image. `mock-nf-test.yml` (manual only) re-runs only the post-processing steps on a downloaded, frozen work directory. **API-cache fixture (#369):** the workflow pins an API-cache fixture version and the SHA-256 of its database (`API_CACHE_VERSION`/`API_CACHE_SHA256`, recorded as `api-cache:` in `test/core/README.md`). Before nf-test it downloads `api-cache/<version>.zip` from `daffstandard/test-data`, checks the hash and that the database holds only the `cache` table (the job fails otherwise), and copies `cache_db.sqlite`, and nothing else, into the job temp root (`$RUNNER_TEMP/taxodactyl/biosecurity/`). `test/core/nextflow.config` sets `CACHE_TIMEOUT_HOURS=876000` so entries never expire. The run uses the live APIs when no version is pinned (with a warning) or when the `workflow_dispatch` input `use_cache` (default true) is false; `run_info.txt` records `api_cache: cached|live` and the version. After nf-test, a non-failing step warns with the number of rows the run added (cache misses fetched live), and another saves a compacted, WAL-free copy of the final cache, table-checked, to `api_cache/cache_db.sqlite` in the saved run files on the self-hosted runner. That copy is never uploaded as an artifact. |
 | TST-025 | Updating the `core` API-cache fixture (TST-024) is a deliberate, reviewed change, following `test/core/README.md` ("Refreshing the API-cache fixture"). A new fixture MUST be built from the cache saved by a live run (`use_cache=false`) of the current code, MUST be inspected without unpickling (CCH-D-002) and shown to hold only the `cache` table, and MUST contain neither the NCBI API key nor the user email used in CI before upload, because the container is public. Each fixture is a new dated version (`api-cache/<YYYY-MM-DD>.zip` containing `<YYYY-MM-DD>/cache_db.sqlite`). A published version MUST NOT be changed or deleted, because older commits pin it. `API_CACHE_VERSION`, `API_CACHE_SHA256` (of the database, not the zip) and the `api-cache:` line in `test/core/README.md` MUST change together (TST-005). Before the snapshot, flag baselines and Selenium expected reports are regenerated against the new version, in the same PR, two cached runs MUST report 0 cache misses and give identical results (flags, nf-test errors and `review.html`, ignoring timestamps and durations). Baselines MUST NOT be regenerated from a live run. |
+| TST-024 | `.github/workflows/nf-test.yml` runs the `core` snapshot test (`test/core/taxodactyl.workflow.nf.test`) on the self-hosted runner, weekly (Sunday 00:00 UTC), when called by `build-pr.yml` on pull requests to `main` (with that PR's image), and by hand (`workflow_dispatch`, optional `image` input). It pins Nextflow 25.04.6, nf-test 0.9.5 and Singularity 3.8.7. It downloads frozen reference data (taxdump `2026-05-08`, subset BLAST DB `2026-07-29`) from DAFF's public `daffstandard/test-data` blob container, takes `NCBI_API_KEY`/`USER_EMAIL` from repository secrets, and runs real BLAST (`MOCK_BLAST=false`). Then it runs TST-022's flag check, collects the work directories of failed or drifting tasks (`bin/collect_artifacts.py`) and uploads them as an artifact, runs Selenium (TST-030) on the produced reports, and uploads `review.html`. `mock-nf-test.yml` (also manual) re-runs only the post-processing steps on a downloaded, frozen work directory. |
+
+#### 2.3.1 Core assertion test (replacing the core snapshot)
+
+`test/core/taxodactyl.assertions.nf.test` checks the same single core run with
+named contracts instead of channel-snapshot hashes. Task brief:
+`tasks/12_core_nf_test_assertions.md`; details and commands:
+[core README](../test/core/README.md). During a comparison period both core
+tests run, each in its own workflow; retiring the snapshot test (and with it
+TST-021/TST-022 for `core`) is a later decision.
+
+| ID | Requirement |
+|---|---|
+| TST-025 | One workflow run supplies all contract checks; checks MUST NOT launch separate sample workflows. Core owns workflow success, channel routing and multiplicity, raw-file integrity and cross-file relationships. Checks are declared in `test/core/schema.yaml`; `test/core/CoreAssertions.groovy` refuses an undeclared check or value and contains no sample IDs. |
+| TST-026 | Ownership: a value belongs to Selenium for a sample when that sample's fixture in `test/selenium/expected/` has a non-empty expected value for it (blank values and uncollected fields are not assertions); delegation is by sample, role, taxon and field, never by whole file. Core then neither compares the value nor re-checks that it exists and is valid, and keeps Selenium's comparison and tolerance (TST-033). `db_coverage.json` record counts (target, related, in-country) are never core expectations. Core compares related/in-country species names, section states, and the 1/2/7, 4 and 5.x flag values Selenium does not own. The 5.x record structure (one record per taxon in `db_coverage.json`, none missing, extra or repeated) is always checked. Hit sequences are compared by 16-hex-character SHA-256 fingerprints; the accession list stays exact. The ownership index is `test/core/coverage-ownership.tsv`. |
+| TST-027 | Expected values are one YAML file per sample, `test/core/expected/<N>_<sample_id>.yaml` (matched by `sample_id`; `<N>` reuses the Selenium fixture number), kept separate from rule code. A new sample needs only a `test/core/metadata.csv` row and a reviewed ingest. Missing expectations fail as "needs baseline" while observations are still collected; orphan or duplicate files and undeclared values fail `expected.files`; stored values no longer produced fail as stale. Only explicit, reviewed `test/core/testkit.py ingest` (adds missing values) and `promote` (changes or removes existing values) may write these files; both refuse incomplete, errored or stale evidence and samples with rule failures, preserve unrelated files, write atomically and keep the last 3 backups per file in ignored `expected/.backups/`. They never touch Selenium fixtures, flag baselines, production code or rule code. |
+| TST-028 | Native JUnit is the test-status authority. Because the pinned nf-test collapses `assertAll` failures, the checks also flush structured JSON evidence (`nf-test-assertions.json`); Python renders it and does not re-implement any check. Every failure reads `<file>: <rule>` / `Expected:` / `Actual:` (plus `Difference:` for lists), printing values as they are. `testkit.py render` writes the review page (verdict, run health, needs-attention table, sample × check matrix, cards for problem samples only, static reference list); it omits Selenium-owned values. Missing, unexecuted or malformed evidence never renders as a pass; rendering is repeatable offline and cannot change a test result. |
+| TST-029 | `.github/workflows/nf-test-core-assertions.yml` mirrors TST-024's workflow (same runner, setup, reference data, `image` input, run-info record, Selenium and reports steps) apart from the test itself. It runs the assertion test weekly (Sunday 12:00 UTC, offset from TST-024) and by hand, and can be called from `build-pr.yml` like `nf-test.yml` (not wired yet); its concurrency group differs from TST-024's so the two never cancel each other. A temporary `push` trigger for the task branch exists until merge. It then writes a summary to the Actions run page, uploads a self-contained `nf-test-review-<runner>` artifact (page plus copies of the files behind each failure, no symlinks), routes failed checks to their producing tasks (`bin/collect_artifacts.py --assertions`), runs Selenium (TST-030), and on the self-hosted runner also keeps `nf-test-run.tar.gz` (tar keeps symlinks and case-only filename differences). It has no flag-baseline step (TST-022). A render failure fails its own step and cannot clear an nf-test failure. |
+
+**Status (2026-11-24).** The user validated the 2026-11-23 core run; its
+core-owned values are the baseline in `test/core/expected/`. Re-evaluating that
+retained run gives three rule failures. Two are `preliminary_id_match.csv` for
+Scenario_04 and barcode_83_P59_Potyviridae_cluster_0_RC205, from production
+defect P3-D-008 (header and row written without a line break). They stay failing
+until a separate fix. The third is a coverage map lost when the run was copied,
+not by the workflow. No full run of the assertion workflow has been recorded
+yet. Data acceptance is recorded separately from those failures and does not
+make them pass. Other scenario snapshots and all Selenium code and fixtures are
+unchanged.
 
 ### 2.4 Selenium
 
@@ -107,6 +117,13 @@ cannot pass (P1B-D-001..003).
 | P3 flags/candidates | phylogeny sampling only | yes (no asserts) | yes (channel snapshot hashes of `1/2/7.flag` and candidate files) | yes (overview) |
 | P4 | partial (`fetch_sources`) | yes (no asserts) | yes (channel snapshot hash of `4.flag`) | partial |
 | P5 | GBIF only | yes + `db_coverage.json` fixture | yes (flag baseline, TST-022, plus counts) | yes |
+| Nextflow wiring, joins, gating | – | – | yes (snapshot test: channel snapshot + counts; assertion test: per-sample routing and multiplicity) | – |
+| P0 validation | yes | – | – | – |
+| P1 parsing | yes (stats) | yes | yes | – |
+| P2 taxonomy | yes | yes | yes | – |
+| P3 flags/candidates | phylogeny sampling only | yes (no asserts) | yes (snapshot: hashes of `1/2/7.flag` and candidate files; assertion test: candidate file contracts, unowned flag values) | yes (overview) |
+| P4 | partial (`fetch_sources`) | yes (no asserts) | yes (snapshot: hash of `4.flag`; assertion test: source routing, accessions, flag 4 values) | partial |
+| P5 | GBIF only | yes + `db_coverage.json` fixture | yes (snapshot test: flag baseline, TST-022, plus counts; assertion test: structure, species names, states, unowned 5.x values) | yes (record counts) |
 | P6 | – | yes (no asserts) | report count | yes |
 | Shared throttle/cache/secrets/config | yes (cache, coalesce, secrets, config) | – | – | – |
 
@@ -123,11 +140,19 @@ cannot pass (P1B-D-001..003).
 | TST-G-007 | No test that `default.yml` filenames match `conf/filenames.config` usage, or that `default.yml` equals what `dev/generate_default_config.py` would emit (CFG-D-001). |
 | TST-G-008 | No test for the input-validation web service (`services/`). |
 | TST-G-009 | nf-test snapshots contain file hashes of live-API-derived content, so they drift when GBIF/NCBI data change, and nothing distinguishes that drift from a regression. Selenium now tolerates ±10% on GenBank counts (TST-033), and the CI workflow runs the flag comparison automatically, but neither helps the snapshots. When an API-cache fixture is pinned (TST-024), the `core` scenario reads frozen responses. Drift then comes only from cache misses (uncached `None`/error results, or code changes to request parameters that create new cache keys, both reported as a warning), live-mode runs (`use_cache=false` or no fixture pinned), or a fixture version bump, which needs a re-baseline. |
+| TST-G-005 | Nextflow: no `stub:` blocks, so no fast wiring test; `nf-test` needs real reference data and live APIs. The core CI workflows (TST-024, TST-029) work around the data by downloading a frozen subset, but still need live APIs. |
+| TST-G-006 | CI does not install `hmmsearch` or `taxonkit`, so `test_orient` / taxonkit-dependent tests behave differently in CI and locally (*to confirm which are skipped or mocked*). |
+| TST-G-007 | No test that `default.yml` filenames match `conf/filenames.config` usage, or that `default.yml` equals what `dev/generate_default_config.py` would emit (CFG-D-001). |
+| TST-G-008 | No test for the input-validation web service (`services/`). |
+| TST-G-009 | nf-test snapshots contain file hashes of live-API-derived content, so they drift when GBIF/NCBI data change, and nothing distinguishes that drift from a regression. Selenium now tolerates ±10% on GenBank counts (TST-033), and the CI workflow runs the flag comparison automatically, but neither helps the snapshots. The core assertion test (§2.3.1) replaces the hashes for `core` with named contracts and leaves record counts to Selenium; the scenario_01–04 snapshots are unchanged. |
 | TST-G-010 | `bin/test_flags.py` is documented (`docs/nf-tests.md`) as living in `test/`; it is in `bin/`, and is therefore auto-added to every Nextflow task's `PATH`. The same applies to the other CI-only helpers kept there: `collect_artifacts.py` (new with TST-024), `diff_json_snapshot_to_csv.py`, `collect_flags.sh`. |
 
 ## 4a. Defects
 
 None open.
+| ID | Severity | Defect |
+|---|---|---|
+| TST-D-001 | Medium (security, *to confirm*) | `nf-test.yml` (TST-024) injects the repository secret `NCBI_API_KEY` into `test/core/nextflow.config`. It then uploads the work directories of failed or drifting tasks as the `error_workdirs` artifact: `bin/collect_artifacts.py` copies each whole directory with `shutil.copytree`, hidden files included. Several files in those directories hold the key in plain text. Nextflow writes the task environment (from the `env` scope) into each task's wrapper files (`.command.run`/`.command.env`). A `REPORT` task directory also holds the rendered report and `report_context.json` (`P6-D-001`, `P6-D-003`). GitHub masks secrets in **logs**, but not inside artifacts, and the repository is public, so anyone signed in to GitHub can download an artifact while it is retained (no `retention-days` is set, so the repository default applies). The same applies to `USER_EMAIL`. Nothing is uploaded on a fully clean run. *To confirm* by inspecting a downloaded `error_workdirs` artifact for the key. |
 
 ## 5. Test data provenance
 
@@ -140,6 +165,7 @@ None open.
 | `scenario_03` | 14 | FASTA + metadata; mixed animal/insect COI samples (e.g. `SME25-218`, `SME25-221` lineage). |
 | `scenario_04` | 48 | Metadata-only, mixed virus/bacteria/animal; `classification` sometimes blank. |
 | `core` | 20 | Real BLAST (`mock_blast=false`) against a **subset** Core Nt DB; the authoritative, most diverse fixture — spans animal COI, a fungal β-tubulin sample (`FungusB_Btub`), a plant `matK` sample (`MP23-0432_matK`), and the same viral/bacterial barcode family as `scenario_02`/`04`. Reference-data versions are recorded in `test/core/README.md` (BLAST DB build date, taxonkit/taxdump date, API-cache fixture version) per TST-005. In CI, P4/P5 read GBIF/NCBI responses from the pinned API-cache fixture (TST-024, TST-025), not the live APIs. |
+| `core` | 20 | Real BLAST (`mock_blast=false`) against a **subset** Core Nt DB; the authoritative, most diverse fixture — spans animal COI, a fungal β-tubulin sample (`FungusB_Btub`), a plant `matK` sample (`MP23-0432_matK`), and the same viral/bacterial barcode family as `scenario_02`/`04`. Reference-data versions are recorded in `test/core/README.md` (BLAST DB build date, taxonkit/taxdump date) per TST-005. |
 
 ### 5.2 Selenium fixtures
 
@@ -175,6 +201,11 @@ same PR (TST-025). (There is no `promote` command for flag baselines.
 `testkit.py promote` covers only the integration `db_coverage.json`
 fixtures, TST-013; the Selenium `testkit.py promote` covers only report
 YAMLs, TST-031.) Conversely, a change that leaves these
+`collect_flags.sh` does not touch it. (There is no `promote` command for flag baselines.
+`testkit.py promote` covers only the integration `db_coverage.json`
+fixtures, TST-013; the Selenium `testkit.py promote` covers only report
+YAMLs, TST-031; `test/core/testkit.py promote` covers only the core
+assertion test's per-sample values, TST-027.) Conversely, a change that leaves these
 baselines untouched is not proof a threshold fix was unnecessary — the
 20–100-sample fixtures were not constructed to exercise every flag value
 at every boundary.
@@ -191,10 +222,18 @@ warranted, regenerating the baseline is a deliberate step for exactly
 this reason, not a rubber stamp. The same holds for the integration
 fixtures and Selenium YAMLs, whose `promote` commands show the diff
 before accepting it.
+fixtures, Selenium YAMLs and core per-sample expectations, whose `promote`
+commands show the diff before accepting it.
 
 ---
 
 ## Provenance
+
+**Task 12 additions (2026-11-24):** §2.3.1 (TST-025–TST-029) and the related
+rows were brought in from branch `task-12-core-nf-test-assertions`
+(`test/core/{CoreAssertions.groovy,schema.yaml,testkit.py,expected/}`,
+`.github/workflows/nf-test-core-assertions.yml`). TST-024 was corrected to
+describe the current `nf-test.yml` triggers and runner.
 
 **Initially derived from:** `.github/workflows/*.yml`, `scripts/tests/**`, `test/**`, `nf-test.config`, `bin/test_flags.py`, `bin/collect_flags.sh`, `testkit.py` (root — a git symlink to `scripts/tests/integration/testkit.py`). Brought forward to `2e024f6` from `a24581f` (`nf-test.yml`, `mock-nf-test.yml`, `bin/collect_artifacts.py`) and `b0be80b` (`test/selenium/lib/*`, fixtures). See [README.md Version](README.md#version) for the exact commit.
 
@@ -205,3 +244,4 @@ resolution before changing the affected code or spec.
 Focused testkit and Groovy negative tests use disposable synthetic data. Live
 validation and manual acceptance must be recorded separately before task closure.
 Existing unit/integration suites retain their commands in `.vscode/launch.json`.
+resolution before changing the affected code or spec.
