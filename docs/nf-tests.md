@@ -387,9 +387,11 @@ review reasons.
 
 Two core pipelines run side by side for now. The original snapshot test,
 `test/core/taxodactyl.workflow.nf.test`, runs in `.github/workflows/nf-test.yml`
-with its flag check. The assertion test, `test/core/taxodactyl.assertions.nf.test`,
-runs in `.github/workflows/nf-test-core-assertions.yml`: run it from Actions →
-nf-test-core-assertions → Run workflow, choosing the branch. Its run page shows
+with its flag check (weekly and by hand). The assertion test,
+`test/core/taxodactyl.assertions.nf.test`, runs in
+`.github/workflows/nf-test-core-assertions.yml`: on pull requests to main
+(called by `build-pr.yml`, with the PR's image), weekly, and from Actions →
+nf-test-core-assertions → Run workflow. Its run page shows
 a short summary; the `nf-test-review-<runner>` artifact holds the full page with
 copies of the files behind each failure. The page explains each check in plain
 words and omits values Selenium owns. Ordinary tests, rendering and CI never accept data. Read the core

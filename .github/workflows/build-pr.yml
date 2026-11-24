@@ -1,6 +1,8 @@
 name: build-pr
 # Builds a neoformit/taxodactyl:<branch> image when a PR changes the Python
-# scripts, then runs nf-test against that image (or :main if unchanged).
+# scripts, then runs the core assertion nf-test against that image (or :main
+# if unchanged). For now this replaces the snapshot test (nf-test.yml), which
+# still runs on its weekly schedule and by hand.
 # The branch tag is deleted from Docker Hub when the PR is closed.
 
 on:
@@ -84,7 +86,9 @@ jobs:
 
   nf-test:
     needs: build
-    uses: ./.github/workflows/nf-test.yml
+    # Core assertion test (task 12); switch back to nf-test.yml to run the
+    # snapshot test on PRs instead.
+    uses: ./.github/workflows/nf-test-core-assertions.yml
     with:
       # env context isn't available here, so the repo is spelled out
       image: docker.io/neoformit/taxodactyl:${{ needs.build.outputs.tag }}

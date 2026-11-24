@@ -248,7 +248,7 @@ not failed integrity checks or changed Selenium fixtures.
 |---|---|---|
 | Test file | `taxodactyl.workflow.nf.test` + `.snap` | `taxodactyl.assertions.nf.test` + `expected/`, `schema.yaml` |
 | CI workflow | `.github/workflows/nf-test.yml` | `.github/workflows/nf-test-core-assertions.yml` |
-| Triggers | Sunday 00:00 UTC, PRs via `build-pr.yml`, manual | Sunday 12:00 UTC, manual; callable from `build-pr.yml` (not wired); temporary push trigger on the task branch |
+| Triggers | Sunday 00:00 UTC, manual (callable from `build-pr.yml`, currently not used) | PRs to main via `build-pr.yml` (PR's image, else `:main`), Sunday 12:00 UTC, manual |
 | Flag check | "Test flags" against `flags/` | none (core/Selenium own 5.x values) |
 | Review | snapshot error CSV, Selenium `review.html` | `nf-test-review` artifact, run-page summary, Selenium `review.html` |
 

@@ -10,8 +10,8 @@ on:
     # do not compete for the single self-hosted runner.
     schedule:
       - cron: '0 12 * * 0'
-    # To also run on pull requests, call this workflow from build-pr.yml like
-    # nf-test.yml (it accepts the same `image` input).
+    # Called by build-pr.yml on pull request to main (instead of nf-test.yml,
+    # for now), with the PR's taxodactyl image if the PR changes the scripts.
     workflow_call:
       inputs:
         image:
@@ -26,11 +26,10 @@ on:
           description: Taxodactyl image to test (default neoformit/taxodactyl:main)
           type: string
           required: false
-    # TEMPORARY (task 12): run on every push to the task branch, because manual
-    # runs need this file on the default branch. Remove before merging.
-    push:
-      branches:
-        - task-12-core-nf-test-assertions
+    # Update here to enable trigger on push of selected branch
+    # push:
+    #   branches:
+    #     - task-12-core-nf-test-assertions
 
 # Cancel a run if a newer one is started for the same branch/PR.
 # Own literal prefix: must not share nf-test.yml's group, or the two core
