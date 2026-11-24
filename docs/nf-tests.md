@@ -375,8 +375,9 @@ Expected values are stored per sample in `test/core/expected/<N>_<sample_id>.yam
 (matched by `sample_id`; `<N>` reuses the Selenium fixture number), like
 `test/selenium/expected/`. Check titles, rules and value types are declared in
 `test/core/schema.yaml`. The review page opens with a verdict and a "Needs
-attention" table, then a sample × check matrix and cards only for samples with
-problems.
+attention" table, a failure-analysis table grouping the same problems across
+samples by kind and area (e.g. drift in Database coverage), then a sample × check
+matrix and cards only for samples with problems.
 
 To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
 `python test/core/testkit.py ingest --sample <sample_id> --assertions <run>/nf-test-assertions.json`
@@ -393,7 +394,8 @@ with its flag check (weekly and by hand). The assertion test,
 (called by `build-pr.yml`, with the PR's image), weekly, and from Actions →
 nf-test-core-assertions → Run workflow. Its run page shows
 a short summary; the `nf-test-review-<runner>` artifact holds the full page with
-copies of the files behind each failure. The page explains each check in plain
+copies of the files behind each failure, and the `nf-test-review.html` artifact
+holds the page alone, unzipped (browsers may block the zip on reputation alone). The page explains each check in plain
 words and omits values Selenium owns. Ordinary tests, rendering and CI never accept data. Read the core
 README for exact commands, ownership and unresolved migration review; do not
 regenerate the core snapshot to accept drift.

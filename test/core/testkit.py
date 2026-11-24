@@ -668,7 +668,38 @@ def _analyse(junit, assertions):
                           + ('.' if has_file else ' (this sample has no expectation file).')))
     attention.sort(key=lambda a: (a[0], samples.index(a[1]) if a[1] in samples else 0, a[2]))
     return dict(verdict=verdict, health=health, diagnostics=diagnostics, run=run, rows=rows, samples=samples,
-                statuses=statuses, attention=attention, invalid=junit_invalid or bool(evidence_error))
+                statuses=statuses, attention=attention, groups=_failure_groups(rows, samples),
+                invalid=junit_invalid or bool(evidence_error))
+
+
+def _base_title(row):
+    """Check title without the per-taxon/per-file suffix, so the same check groups across samples."""
+    if row.get('kind') is None:
+        return check_info(row)['title']
+    definition = (SCHEMA['by_id'].get(row.get('component'), {}).get('assertions') or {}).get(row.get('assertion'), {})
+    return definition.get('title', row.get('assertion', row['id']))
+
+
+def _failure_groups(rows, samples):
+    """Problems grouped by kind and area across samples (e.g. drift in Database coverage), most serious first."""
+    groups = {}
+    for r in rows:
+        if r['status'] not in ('error', 'failed', 'unbaselined'):
+            continue
+        label = 'drift' if r.get('kind') and r['status'] == 'failed' else r['status']
+        g = groups.setdefault((label, r.get('component')), dict(
+            level={'error': 0, 'failed': 1, 'drift': 2, 'unbaselined': 3}[label], label=label,
+            area=SCHEMA['by_id'].get(r.get('component'), {}).get('title', r.get('component') or 'Run'),
+            samples=[], checks=Counter(), count=0, example=None))
+        g['count'] += 1
+        g['checks'][_base_title(r)] += 1
+        if r['sample'] not in g['samples']:
+            g['samples'].append(r['sample'])
+        if g['example'] is None:
+            g['example'] = (r['sample'], one_line(r))
+    for g in groups.values():
+        g['samples'].sort(key=lambda s: samples.index(s) if s in samples else len(samples))
+    return sorted(groups.values(), key=lambda g: (g['level'], -len(g['samples']), -g['count'], g['area']))
 
 
 def _what_is_checked():
@@ -723,6 +754,25 @@ def _page(a, linker, assertions_arg):
         parts.append('</table>')
     else:
         parts.append('<p class="hint">Nothing to review.</p>')
+
+    groups = a['groups']
+    if groups:
+        parts.append(f'<h2>Failure analysis ({len(groups)})</h2><p class="hint">The same problems grouped by kind and area across '
+                     'samples, most serious first, then by how many samples share them. Use it to spot one cause behind many '
+                     'rows above.</p>')
+        parts.append('<table><tr><th>Problem</th><th>Samples</th><th>Checks involved</th><th>Example</th></tr>')
+        for g in groups:
+            badge = 'needs baseline' if g['label'] == 'unbaselined' else g['label']
+            shown = ', '.join(f'<a href="#{_slug(s)}">{_esc(s)}</a>' for s in g['samples'][:20])
+            more = f' … and {len(g["samples"]) - 20} more' if len(g['samples']) > 20 else ''
+            checks = '<br>'.join(f'{_esc(t)} <small>×{n}</small>' for t, n in g['checks'].most_common(8))
+            if len(g['checks']) > 8:
+                checks += f'<br><small>… and {len(g["checks"]) - 8} more checks</small>'
+            sid, example = g['example']
+            parts.append(f'<tr class="s-{g["label"]}"><td><span class="badge b-{g["label"]}">{_esc(badge)}</span> {_esc(g["area"])}'
+                         f'<br><small>{g["count"]} result(s) in {len(g["samples"])} sample(s)</small></td>'
+                         f'<td>{shown}{more}</td><td>{checks}</td><td><small>{_esc(sid)}:</small> {_esc(_short(example, 200))}</td></tr>')
+        parts.append('</table>')
 
     if rows:
         parts.append('<h2>Samples × checks</h2><p class="hint">✔ passed · ✖ failed · ? needs a baseline. '
@@ -828,19 +878,28 @@ def _local_linker(base, output):
 
 def _summary(a, page_name):
     """Short Markdown for the GitHub Actions job summary."""
+    cell = lambda t: str(t).replace('|', '\\|').replace('\n', ' ')
     lines = [f"## Core nf-test: {a['verdict']}", '', VERDICT_TEXT[a['verdict']], '']
     lines += [f"- **{t}:** {m}" for _s, t, m in a['health']]
     lines += ['', f"### Needs attention ({len(a['attention'])})", '']
     if a['attention']:
         lines += ['| Sample | Check | What went wrong |', '|---|---|---|']
         for _level, sid, title, _ident, label, message in a['attention'][:50]:
-            cell = lambda t: str(t).replace('|', '\\|').replace('\n', ' ')
             lines.append(f"| {cell(sid)} | {cell(label)}: {cell(title)} | {cell(_short(message, 240))} |")
         if len(a['attention']) > 50:
             lines.append(f"\n… and {len(a['attention']) - 50} more.")
     else:
         lines.append('Nothing to review.')
-    lines += ['', f'Full explanations: download the `nf-test-review` artifact and open `{page_name}`.', '']
+    if a['groups']:
+        lines += ['', f"### Failure analysis ({len(a['groups'])})", '',
+                  '| Problem | Samples | Checks involved |', '|---|---|---|']
+        for g in a['groups']:
+            badge = 'needs baseline' if g['label'] == 'unbaselined' else g['label']
+            names = ', '.join(g['samples'][:10]) + (f" … and {len(g['samples']) - 10} more" if len(g['samples']) > 10 else '')
+            checks = '; '.join(f'{t} ×{n}' for t, n in g['checks'].most_common(5))
+            lines.append(f"| {cell(badge)}: {cell(g['area'])} ({g['count']}) | {cell(names)} | {cell(checks)} |")
+    lines += ['', f'Full explanations: download the `{page_name}` artifact (page only), or the `nf-test-review` '
+              f'artifact (zip with copies of the files behind each failure) and open `{page_name}` inside it.', '']
     return '\n'.join(lines)
 
 

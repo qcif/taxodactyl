@@ -120,6 +120,25 @@ class ReviewTests(ToolkitCase):
         self.assertNotIn('missing line break', text)
         self.assertNotRegex(text.lower(), r'known defect|p3-d-008')
 
+    def test_failure_analysis_groups_across_samples(self):
+        self.all_passed()
+        self.find(SAMPLE_A, 'maps/filenames').update(status='failed', observed=['new.png'])
+        self.find(SAMPLE_B, 'maps/filenames').update(status='failed', observed=['new.png'])
+        self.find(SAMPLE_A, 'coverage_flags/pmi/Taxon/flag_5_1').update(status='failed', observed='C')
+        self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='Malformed'))
+        _, text = self.render()
+        section = text[text.index('Failure analysis (3)'):text.index('Samples × checks')]
+        rule, maps, flags = (section.index(s) for s in ('b-failed', 'Coverage maps', 'Coverage flags'))
+        self.assertLess(rule, maps)                                       # rule failures first
+        self.assertLess(maps, flags)                                      # then drift shared by more samples
+        self.assertIn('2 result(s) in 2 sample(s)', section)
+        self.assertIn('href="#sample-Scenario_01"', section)
+        self.assertIn('href="#sample-Scenario_04"', section)
+        self.assertNotIn('Taxon', section)                               # grouped by check, not per taxon
+        summary = kit._summary(kit._analyse(self.junit, self.sidecar), 'nf-test-review.html')
+        self.assertIn('### Failure analysis (3)', summary)
+        self.assertIn('| drift: Coverage maps (2) | Scenario_01, Scenario_04 |', summary)
+
     def test_summary_markdown(self):
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='f.csv: rule\nExpected: "a|b"\nActual: "c". Expression: x'))
         self.save()

@@ -250,7 +250,7 @@ not failed integrity checks or changed Selenium fixtures.
 | CI workflow | `.github/workflows/nf-test.yml` | `.github/workflows/nf-test-core-assertions.yml` |
 | Triggers | Sunday 00:00 UTC, manual (callable from `build-pr.yml`, currently not used) | PRs to main via `build-pr.yml` (PR's image, else `:main`), Sunday 12:00 UTC, manual |
 | Flag check | "Test flags" against `flags/` | none (core/Selenium own 5.x values) |
-| Review | snapshot error CSV, Selenium `review.html` | `nf-test-review` artifact, run-page summary, Selenium `review.html` |
+| Review | snapshot error CSV, Selenium `review.html` | `nf-test-review` artifact and standalone `nf-test-review.html`, run-page summary, Selenium `review.html` |
 
 The original files are byte-identical to commit `0f715e7`. Retiring them is a
 later decision, after comparing the two. Always name the test file explicitly:
@@ -436,6 +436,11 @@ no replay is promised. Original failure records stay unchanged.
 - **Run health:** workflow, evaluation, JUnit and expectation-file status.
 - **Needs attention:** one row per problem, most serious first, linking to the
   sample card. Changed values are grouped per sample and component.
+- **Failure analysis:** the same problems grouped across samples by kind (error,
+  failed, drift, needs baseline) and area (e.g. drift in Database coverage, drift
+  in Coverage flags), most serious first and then by how many samples share them.
+  Each row lists the affected samples (linked), the checks involved with counts,
+  and one example. Use it to spot one cause behind many rows above.
 - **Samples × checks:** ✔ passed, ✖ failed, ? needs baseline.
 - **Sample details:** only samples with problems. Columns: **Check | Expected |
   Actual | Next step**. Every message has the same shape, built by helpers in
@@ -465,10 +470,15 @@ through the Expected/Actual helpers.
 `.github/workflows/nf-test-core-assertions.yml` (Actions →
 nf-test-core-assertions → Run workflow, choosing the branch) runs
 `taxodactyl.assertions.nf.test` with `CORE_REPO_ROOT` set and then:
-- writes the verdict and needs-attention table to the run's summary page;
+- writes the verdict, needs-attention and failure-analysis tables to the run's
+  summary page;
 - uploads the `nf-test-review-<runner>` artifact, a self-contained folder.
   Open `nf-test-review.html` inside it; links point to copies of the files behind
   each failure, plus the evidence JSON, JUnit XML and nf-test logs;
+- uploads the same page on its own, unzipped, as the `nf-test-review.html`
+  artifact. Browsers can block the zipped artifact on reputation alone (Firefox
+  reported it as a virus); a plain `.html` is not checked. Its links to evidence
+  files only work inside the zipped bundle;
 - on the self-hosted runner, keeps `/var/runner/<timestamp>/` and
   `nf-test-run.tar.gz` there. Copy runs elsewhere with the tarball: zip archives
   and artifact downloads can drop symlinks and files whose names differ only in

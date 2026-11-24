@@ -281,6 +281,18 @@ jobs:
           name: nf-test-review-${{ matrix.runner }}
           path: ${{ runner.temp }}/nf-test/nf-test-review/
 
+      # The same page on its own, uploaded unzipped: browsers may block the
+      # zipped bundle above on reputation alone, but not a plain .html. Its
+      # links to evidence files only work inside the bundle.
+      # archive: false uploads the file as-is (no zip); the artifact takes
+      # the file's own name and the `name` input is ignored
+      - name: Upload nf-test-review.html
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ runner.temp }}/nf-test/nf-test-review/nf-test-review.html
+          archive: false
+
       # Copies work directories for process/samples with failed/aborted nf-test, 
       # diff flags or diff snapshots (may be large number!) to single dir with
       # human readable PROCESS/SAMPLE file structure.
