@@ -1,6 +1,6 @@
 # Task 14 — Versioned API-cache fixture for deterministic nf-test runs
 
-**Status:** active
+**Status:** done
 **Priority:** high (nf-test fails on almost every run from live-API drift)
 **Scope:** `.github/workflows/nf-test.yml`, `test/core/nextflow.config`,
 `test/core/README.md`, `docs/nf-tests.md`, `spec/tests.md`,
@@ -17,7 +17,7 @@ workflow-channel changes.
   brief is based on the `spec/` documents and the code directly.
 - No `tasks/todo.md` item covers this work.
 
-**Implementation authorization:** pending explicit user instruction.
+**Implementation authorization:** given by the user (`/speckit-implement 14`, 2026-11-25).
 
 ## Overview
 
@@ -267,8 +267,8 @@ outside the venv rule, which covers local development.
    The source is `cache_db.sqlite` only. Don't glob `biosecurity/*`, and
    don't save any `throttle_*` database or the per-user directory.
    "Save run files on self-hosted runner" already copies `$RUNNER_TEMP/nf-test`
-   to `/var/runner/<run>-<attempt>/`, so the copy ends up in
-   `/var/runner/<run>-<attempt>/api_cache/cache_db.sqlite`. **Don't** upload it
+   to `/var/runner/<run_id>-<attempt>/`, so the copy ends up in
+   `/var/runner/<run_id>-<attempt>/api_cache/cache_db.sqlite`. **Don't** upload it
    as a GitHub artifact: the repository is public, and the file hasn't been
    checked for secrets yet. Check that no `upload-artifact` step's `path`
    includes `$RUNNER_TEMP/nf-test` or `api_cache`.
@@ -399,7 +399,7 @@ below reports it.
    self-hosted runner. Reference data: taxdump `2026-05-08`, subset BLAST DB
    `2026-07-29`. Image: `neoformit/taxodactyl:main` unless a PR image is under
    test. This is run A. Its cache is saved at
-   `/var/runner/<run>-<attempt>/api_cache/cache_db.sqlite`.
+   `/var/runner/<run_id>-<attempt>/api_cache/cache_db.sqlite`.
 2. **Check it for secrets before publishing** (the container is public):
    `grep -c -a -F "<NCBI_API_KEY>" cache_db.sqlite` and the same for the
    NCBI user email should both print `0`. Keys are hashes, and values are
@@ -420,7 +420,7 @@ below reports it.
    - `run_info.txt` shows `api_cache: cached` and the version;
    - the "Report API cache" miss count (ideally 0; whatever remains should be
      requests that returned `None` or an error in run A).
-6. **Compare C with B** on `daff-runner` (`/var/runner/<run>-<attempt>/`):
+6. **Compare C with B** on `daff-runner` (`/var/runner/<run_id>-<attempt>/`):
    `nf-test_errors_summary.csv`, `flags_results.txt`, Selenium
    `test-report.json`/`review.html`. They should show the same differences
    against the old baselines. Use the `investigate-runner` and
@@ -441,14 +441,14 @@ Each manual step above stays **pending** until the user provides evidence.
 
 ## Completion criteria
 
-- [ ] Phases 1–5 done in `.github/workflows/nf-test.yml` and
+- [x] Phases 1–5 done in `.github/workflows/nf-test.yml` and
       `test/core/nextflow.config`, with `API_CACHE_VERSION`/`API_CACHE_SHA256`
       empty unless the user supplied the values, and nothing outside Scope
       changed.
-- [ ] Docs and spec updates listed above are done.
-- [ ] Static validation steps 1–4 run, with results reported, including any
+- [x] Docs and spec updates listed above are done.
+- [x] Static validation steps 1–4 run, with results reported, including any
       that were unavailable.
-- [ ] No snapshot, flag baseline, Selenium fixture or blob-storage object
+- [x] No snapshot, flag baseline, Selenium fixture or blob-storage object
       changed by the implementer.
 - [ ] **Manual (user):** fixture created, checked for secrets, uploaded and
       pinned; runs B, C and D done; B and C agree apart from class (a)
@@ -480,3 +480,99 @@ Each manual step above stays **pending** until the user provides evidence.
 - **Fixture staleness vs code:** a PR that changes request parameters
   produces misses and drift for that PR. That is real, expected and visible
   in the miss warning. The fix is a fixture bump in that PR.
+
+## Outcomes
+
+Implemented 2026-11-25 on branch `task-14-cache-nf-test-api-responses`.
+
+### Completed work
+
+- `.github/workflows/nf-test.yml`:
+  - Top-level `API_CACHE_VERSION: ""` and `API_CACHE_SHA256: ""`, left
+    empty (no user-supplied values yet).
+  - `workflow_dispatch` input `use_cache` (boolean, default true). It isn't
+    added to `workflow_call`.
+  - "Select API cache mode" step before "Record run info". `run_info.txt`
+    now records `api_cache` and `api_cache_version`.
+  - "Install API cache fixture" step after "Resolve core scenario CUSTOMISE
+    placeholders". It downloads, checks the SHA-256 and table list, copies
+    only `cache_db.sqlite`, and records `API_CACHE_ROWS_BEFORE`.
+  - "Report API cache" and "Save API cache" steps after "Run core nf-test"
+    (`if: always()`, `continue-on-error: true`).
+- `test/core/nextflow.config`: `env.CACHE_TIMEOUT_HOURS = '876000'`.
+- `test/core/README.md`: `api-cache:` version line, fixture download under
+  "3. Required databases" (with the overwrite warning), a CI fixture
+  summary, and "Refreshing the API-cache fixture".
+- `docs/nf-tests.md`: "API response cache" subsection under Configuration.
+- `spec/tests.md`: TST-024 (fixture behaviour appended; trigger/runner text
+  left as is), TST-G-005, TST-G-009, and the suite table row 3 note.
+- `spec/python/modules/cache.md`: one sentence added to CCH-D-003.
+
+### Deviations
+
+- "Report API cache" uses the same plain `sqlite3.connect` row-count query
+  as the install step. A read-only (`mode=ro`) connection was considered
+  and dropped: the cache is in WAL mode, and a read-only open can fail when
+  the `-shm` file is missing. A plain `SELECT` doesn't modify the data.
+- "Save API cache" prints `No API cache at <path>; nothing to save` when
+  the source file is missing (the brief's snippet was silent).
+- The install step has a short comment explaining the hash check (CCH-D-002).
+- Rebased onto `origin/main` after #370, which names the saved-run folder
+  `/var/runner/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}` instead of the run
+  number. The README and this brief now say `<run_id>-<attempt>`.
+- `spec/tests.md` row 3 of the suite table now says P4/P5 use live APIs
+  "unless an API-cache fixture is pinned (TST-024)", for consistency.
+
+### Validation (implementer, static/offline)
+
+1. YAML: valid (PyYAML via `scripts/venv`; the claude venv has no PyYAML).
+   Step order confirmed. `actionlint`: **unavailable** (not installed).
+2. `grep -n CACHE_TIMEOUT_HOURS test/core/nextflow.config` →
+   `18:env.CACHE_TIMEOUT_HOURS = '876000'`.
+3. Mode selection (step body extracted from the YAML, run with
+   `GITHUB_ENV` in the scratchpad):
+   - `USE_CACHE=''`, `API_CACHE_VERSION=''` → `live` plus the warning
+   - `USE_CACHE=''`, `2026-01-01` → `cached`
+   - `USE_CACHE=true`, `2026-01-01` → `cached`
+   - `USE_CACHE=false`, `2026-01-01` → `live`
+4. Install/report/save (step bodies extracted from the YAML, run with
+   `bash --noprofile --norc -eo pipefail` as Actions does, `wget` replaced
+   by a local copy, `python3` shimmed to the claude venv):
+   - Hash check: the right hash passes; a wrong hash and an empty hash both
+     exit 1, and nothing is installed.
+   - Row count `2`. One inserted row → warning "1 API responses were not in
+     fixture 2026-01-01…", exit 0. Live mode: no warning. Missing DB: 0
+     rows, exit 0.
+   - With a writer holding uncheckpointed WAL rows (`-wal`/`-shm` present),
+     the report counted them (4 rows, 2 misses). `VACUUM INTO` saved a
+     single file (`journal_mode` `delete`, no `-wal`) holding all 4 rows.
+   - A fixture with an extra `throttle` table: install exits 1 ("Unexpected
+     tables in API cache fixture: ['cache', 'throttle']") and nothing is
+     installed. Save discards the copy with the warning, exit 0.
+   - Throttle files: with `throttle_db.sqlite` and
+     `user@example.org/throttle_db.sqlite` shipped inside the fixture zip,
+     only `cache_db.sqlite` reaches the temp root. With them placed in the
+     temp root (as a run creates them), only `cache_db.sqlite` is saved to
+     `nf-test/api_cache/`.
+   - No `upload-artifact` path includes `$RUNNER_TEMP/nf-test` or
+     `api_cache` (paths: `review.html`, `test-report.json`,
+     `$TEST_DIR/output/reports`).
+- `git diff` touches only the Scope files plus the task lifecycle files.
+  No trailing whitespace on added lines. No snapshot, flag baseline or
+  Selenium fixture changed, and nothing was uploaded.
+
+### Manual validation (user-owned): pending
+
+Hand-off steps 1–8 (fixture run A, secrets check, upload, pin, runs B/C/D,
+re-baseline) are **pending** until the user provides evidence. Until a
+version is pinned, every run is in live mode with a warning, so CI behaves
+as it does today. Tracked in `tasks/todo.md`.
+
+### Spin-offs
+
+- TST-024's trigger and runner text in `spec/tests.md` is out of date
+  (it says manual-only on a GitHub-hosted runner; the workflow runs weekly,
+  on PRs via `build-pr.yml`, and on the self-hosted runner). Added to
+  `tasks/todo.md`.
+- The fixture creation, pinning and re-baseline above. Added to
+  `tasks/todo.md`.

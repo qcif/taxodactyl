@@ -113,6 +113,27 @@ singularity {
 }
 ```
 
+### API response cache
+
+P4 (source diversity) and P5 (database coverage) cache GBIF and NCBI API
+responses in `<params.temp_root_dir>/biosecurity/cache_db.sqlite`. Live API
+data changes from week to week, so the `core` scenario uses a versioned
+**API-cache fixture**: a frozen copy of that database, pinned by version and
+SHA-256. See [test/core/README.md](../test/core/README.md) for how to
+download, install and refresh it.
+
+- `test/core/nextflow.config` sets `env.CACHE_TIMEOUT_HOURS = '876000'`
+  (about 100 years) so the fixture's entries never expire.
+- Empty (`None`) results and errors are never cached, so those requests go
+  to the live API on every run, and may drift.
+- In CI (`.github/workflows/nf-test.yml`), the fixture is installed into
+  the job's temp root before nf-test runs. Untick the dispatch input
+  "Use cached API responses" (`use_cache`) to query the live APIs instead.
+  The run also uses the live APIs while no fixture version is pinned.
+- After the run, CI warns if any responses were added to the cache. These
+  are cache misses: requests that weren't in the fixture and were fetched
+  live, so the results may drift.
+
 ## Test Input Files
 
 The scenario_01 test includes the following input files in `test/scenario_01/`:

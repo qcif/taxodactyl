@@ -20,6 +20,11 @@ on:
           description: Taxodactyl image to test (default neoformit/taxodactyl:main)
           type: string
           required: false
+        use_cache:
+          description: Use cached API responses (untick to query live GBIF/NCBI APIs)
+          type: boolean
+          required: false
+          default: true
     # Update here to enable trigger on push of selected branch
     # push:
     #   branches:
@@ -36,6 +41,11 @@ env:
   NXF_ANSI_LOG: false
   NFT_VER: "0.9.5"
   MOCK_BLAST: false
+  # Frozen GBIF/NCBI API responses (SQLite cache) used as a test fixture so
+  # runs don't drift with live API data (#369). Empty = no fixture yet: run
+  # against live APIs. Bump both together; see test/core/README.md
+  API_CACHE_VERSION: ""
+  API_CACHE_SHA256: ""
 
 jobs:
   nf-test:
@@ -79,6 +89,23 @@ jobs:
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v7
 
+      # cached: install the pinned API-cache fixture before the run.
+      # live: start from an empty cache (use_cache=false, or no fixture pinned)
+      - name: Select API cache mode
+        env:
+          USE_CACHE: ${{ inputs.use_cache }}
+        run: |
+          if [[ "$USE_CACHE" == "false" ]]; then
+            mode=live
+          elif [[ -z "$API_CACHE_VERSION" ]]; then
+            mode=live
+            echo "::warning::No API cache fixture pinned (API_CACHE_VERSION is empty); querying live APIs"
+          else
+            mode=cached
+          fi
+          echo "API_CACHE_MODE=$mode" >> "$GITHUB_ENV"
+          echo "API cache mode: $mode"
+
       # Record which code was tested, saved with the run files on the
       # self-hosted runner. On pull_request events the checked-out commit is a
       # temporary merge commit, so the PR head commit is recorded too.
@@ -97,6 +124,8 @@ jobs:
             echo "pr_head_sha: ${PR_HEAD_SHA:-n/a}"
             echo "run_url: $RUN_URL"
             echo "image: $TAXODACTYL_IMAGE"
+            echo "api_cache: $API_CACHE_MODE"
+            echo "api_cache_version: ${API_CACHE_VERSION:-none}"
           } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
 
       # Ensure the latest build of the image under test is pulled
@@ -192,6 +221,26 @@ jobs:
           # Print the resolved config so the run log shows exactly what executed
           cat test/core/nextflow.config
 
+      # Copy the pinned fixture into this job's temp root. The run may add
+      # entries (cache misses) to this copy; the published fixture is unchanged.
+      # Only cache_db.sqlite is copied: each run starts with fresh throttle state
+      - name: Install API cache fixture
+        if: env.API_CACHE_MODE == 'cached'
+        run: |
+          wget -q "https://daffstandard.blob.core.windows.net/test-data/taxodactyl/core/refdata/api-cache/$API_CACHE_VERSION.zip"
+          mkdir -p "$RUNNER_TEMP/api-cache" "$RUNNER_TEMP/taxodactyl/biosecurity"
+          unzip -q "$API_CACHE_VERSION.zip" -d "$RUNNER_TEMP/api-cache"
+          fixture="$RUNNER_TEMP/api-cache/$API_CACHE_VERSION/cache_db.sqlite"
+          # Values are unpickled on read: only load the reviewed file.
+          # Fails on a mismatch or an empty API_CACHE_SHA256
+          echo "$API_CACHE_SHA256  $fixture" | sha256sum -c -
+          # The fixture must hold the API cache only (no throttle tables)
+          python3 -c "import sqlite3,sys; t=[r[0] for r in sqlite3.connect(sys.argv[1]).execute(\"select name from sqlite_master where type='table'\")]; sys.exit(0 if t==['cache'] else 'Unexpected tables in API cache fixture: %s' % t)" "$fixture"
+          cp "$fixture" "$RUNNER_TEMP/taxodactyl/biosecurity/cache_db.sqlite"
+          rows=$(python3 -c "import sqlite3,sys; print(sqlite3.connect(sys.argv[1]).execute('select count(*) from cache').fetchone()[0])" "$RUNNER_TEMP/taxodactyl/biosecurity/cache_db.sqlite")
+          echo "API_CACHE_ROWS_BEFORE=$rows" >> "$GITHUB_ENV"
+          echo "Fixture $API_CACHE_VERSION: $rows cached responses"
+
       # Run the core test file explicitly rather than a bare `nf-test test`
       # so this job doesn't silently pick up whatever nf-test.config last pointed to
       # print both standard output and errors to file and console 
@@ -201,6 +250,51 @@ jobs:
           nf-test test test/core/taxodactyl.workflow.nf.test \
             > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
             2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
+
+      # Rows added to the cache during the run are requests that weren't in
+      # the fixture and went to the live APIs (cache misses). Read-only
+      - name: Report API cache
+        if: always()
+        continue-on-error: true
+        run: |
+          db="$RUNNER_TEMP/taxodactyl/biosecurity/cache_db.sqlite"
+          if [[ -f "$db" ]]; then
+            rows_after=$(python3 -c "import sqlite3,sys; print(sqlite3.connect(sys.argv[1]).execute('select count(*) from cache').fetchone()[0])" "$db")
+          else
+            rows_after=0
+          fi
+          rows_before="${API_CACHE_ROWS_BEFORE:-0}"
+          echo "API cache mode: ${API_CACHE_MODE:-unknown}"
+          echo "API cache version: ${API_CACHE_VERSION:-none}"
+          echo "Cached responses before run: $rows_before"
+          echo "Cached responses after run: $rows_after"
+          if [[ "$API_CACHE_MODE" == "cached" ]] && (( rows_after > rows_before )); then
+            echo "::warning::$((rows_after - rows_before)) API responses were not in fixture $API_CACHE_VERSION and were fetched live; results may drift. Consider a new fixture version"
+          fi
+
+      # Compacted, WAL-free copy of this run's API cache, saved with the run
+      # files on the self-hosted runner (candidate for a new fixture version).
+      # Never uploaded as a GitHub artifact: it hasn't been checked for secrets
+      - name: Save API cache
+        if: always()
+        continue-on-error: true
+        run: |
+          src="$RUNNER_TEMP/taxodactyl/biosecurity/cache_db.sqlite"
+          dest="$RUNNER_TEMP/nf-test/api_cache/cache_db.sqlite"
+          if [[ -f "$src" ]]; then
+            mkdir -p "$(dirname "$dest")"
+            python3 -c "import sqlite3,sys; sqlite3.connect(sys.argv[1]).execute('VACUUM INTO ?', (sys.argv[2],))" \
+              "$src" "$dest"
+            # Keep the copy only if it holds the API cache table and nothing else
+            if python3 -c "import sqlite3,sys; t=[r[0] for r in sqlite3.connect(sys.argv[1]).execute(\"select name from sqlite_master where type='table'\")]; sys.exit(0 if t==['cache'] else 'Unexpected tables: %s' % t)" "$dest"; then
+              sha256sum "$dest"
+            else
+              rm -f "$dest"
+              echo "::warning::Saved API cache had unexpected tables; copy discarded"
+            fi
+          else
+            echo "No API cache at $src; nothing to save"
+          fi
 
       # Test dir ends in unknown hash; set as env var here for later steps
       - name: Set test dir as env var
