@@ -405,16 +405,16 @@ jobs:
       # Only runs on self-hosted runner
         if: always() && runner.environment == 'self-hosted'
         run: |
-          # Run files will be saved in file with timestamp
-          timestamp=$(date "+%F_%H%M%S")
+          # Run files saved using key of run number and run attempt
+          dir_name="${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
 
-          mkdir -p "/var/runner/$timestamp"
+          mkdir -p "/var/runner/$dir_name"
 
-          cp -a $RUNNER_TEMP/nf-test/. /var/runner/$timestamp/
-          mv $TEST_DIR/output/reports.zip /var/runner/$timestamp/
+          cp -a $RUNNER_TEMP/nf-test/. /var/runner/$dir_name/
+          mv $TEST_DIR/output/reports.zip /var/runner/$dir_name/
 
           echo "Location of files on self-hosted runner:"
-          echo "/var/runner/$timestamp/"
+          echo "/var/runner/$dir_name/"
 
           echo "Download reports with:"
-          echo "    scp ubuntu@daff-runner:/var/runner/$timestamp/reports.zip ."
+          echo "    scp ubuntu@daff-runner:/var/runner/$dir_name/reports.zip ."
