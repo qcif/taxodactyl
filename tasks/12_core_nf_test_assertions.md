@@ -39,6 +39,12 @@ State plainly which flags Selenium checks. Drop core rule checks that only
 confirm a value Selenium already checks exists and is valid. Remove
 known-defect labels from the page.
 
+**Revision 2026-11-25 (Phase 10):** stop comparing related-species names in
+`db_coverage.json` for every role (candidate, toi, pmi). Make it clear on the
+review page and CI summary that "rule failed" vs "possible drift" is only a
+suggestion based on the kind of check. Phase 10 supersedes the related-species
+membership in 5.2 and the badge wording in 5.5.
+
 ## Overview
 
 Core currently compares four whole output channels to a snapshot, including
@@ -505,7 +511,8 @@ interaction pattern: `test/selenium/` in the same checkout. Do not modify it.
 - **Coverage counts:** remove `D.count/<role>/<taxon>/related/<species>` and
   `D.count/<role>/<taxon>/country/<species>` (12,427 rows in the accepted run,
   4,958 distinct values). Keep `D.membership/<role>/<taxon>/related|country`
-  (the species names must match), `D.membership/<role>`, `D.state/...`, the
+  (the species names must match; **superseded 2026-11-25, Phase 10:** related
+  names are no longer compared for any role, only `country`), `D.membership/<role>`, `D.state/...`, the
   integer/null/`NA` structure invariants. Also remove core
   `D.count/<role>/<taxon>/target` (user decision 2026-11-23): the taxon's own
   record count is never a core expectation, even where Selenium leaves
@@ -1198,10 +1205,38 @@ checks honestly. Automated passes do not complete manual acceptance.
   adding a sample needs only a `metadata.csv` row, a run and a reviewed
   `ingest`; orphan/duplicate files fail clearly; no sample ID in Groovy.
 - No `db_coverage.json` record count (target, related or country) is a core
-  expectation; species-name membership and section state are. Hit sequences are checked by accession list and fingerprint.
+  expectation, nor are related-species names (any role); in-country species-name
+  membership and section state are.
+- The review page and CI summary label problems "rule failed" / "possible drift"
+  and say the label is a suggestion, not a diagnosis. Hit sequences are checked by accession list and fingerprint.
 - The review page opens with a verdict and a needs-attention table, shows a
   sample × component matrix, and lists no individual passing checks; the page
   for the accepted run is under 1 MB and the user agrees it is usable.
+
+### Phase 10 — Revision 2026-11-25: drop related-species names; drift is a suggestion
+
+User requests (2026-11-25):
+
+1. **Drop the "Related species listed" check for all roles.** Started as
+   candidate only, then corrected by the user to every role. `CoreAssertions.groovy`
+   no longer records `database_coverage/<role>/<taxon>/related_species`; the
+   assertion is removed from `schema.yaml`, so a leftover stored entry fails as
+   an unknown assertion. The related list is still checked for structure (map of
+   whole-number counts or null) and `related_state` (null/NA) is still compared.
+   Remove the existing `related_species` entries from `test/core/expected/*.yaml`.
+2. **Explain drift vs failure and mark it as a suggestion.** The rule is
+   mechanical: a failed *rule check* (`checks:` in `schema.yaml`, rows without a
+   value type) is a failure; a *stored value* (`assertions:`, rows with a type)
+   that differs from `expected/` is drift. The tool never looks at why a value
+   changed, so a regression in a stored value is labelled drift, and a rule
+   failure caused by an external service is labelled a failure. The page and
+   summary must say so:
+   - badges "rule failed" and "possible drift" (verdict code `DRIFT` unchanged);
+   - verdict text for `DRIFT` and `FAILED` says it is a suggestion;
+   - a "How labels are chosen" note under "Needs attention" and in the CI summary
+     when there are problems;
+   - drift next step: "promote only if expected, otherwise treat it as a
+     regression"; the shared `rule_fail` text in `schema.yaml` says "likely cause".
 
 ## Open decisions and risks
 
@@ -1578,3 +1613,25 @@ Implemented in the task worktree. **Not committed.**
     Preliminary-ID match table ×2 in 2 samples; failed — Coverage maps, Map
     images ×1). Page 30 KB.
   - **Not run:** GitHub Actions; the Groovy scenarios (Groovy files unchanged).
+
+### Phase 10 implementation — 2026-11-25
+
+Implemented in the task worktree. **Not committed.**
+
+- `test/core/CoreAssertions.groovy`: skips the `related_species` value for every
+  role. `test/core/schema.yaml`: `related_species` assertion removed; component
+  description and `rule_fail` text reworded.
+- `test/core/expected/*.yaml`: 28 `related_species` entries removed (candidate
+  12, toi/pmi 16) with `testkit.dump`, so formatting is unchanged elsewhere.
+- `test/core/testkit.py`: `LABEL_NOTE` and `BADGE` ("rule failed", "possible
+  drift", "needs baseline") used on the page, failure-analysis table and CI
+  summary; `DRIFT`/`FAILED` verdict text and drift next step reworded.
+- Tests: `contracts.test.groovy` scenario "related species names are not
+  compared for any role" (replaces "related species names must match");
+  `test_nf_test_review.py` checks the new badges and note.
+- Docs: `test/core/README.md` (D row, "Drift vs failure is a suggestion",
+  scenario count 27), `docs/nf-tests.md`, `spec/tests.md` (TST-026, TST-028,
+  provenance).
+- **Validation:** 27 Groovy contract scenarios passed; 43 Python tests passed;
+  all expected YAML files still load. **Not run:** the full core nf-test or
+  GitHub Actions.
