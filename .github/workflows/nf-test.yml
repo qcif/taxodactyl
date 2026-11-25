@@ -406,7 +406,7 @@ jobs:
         if: always() && runner.environment == 'self-hosted'
         run: |
           # Run files saved using key of run number and run attempt
-          dir_name="${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          dir_name="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
           mkdir -p "/var/runner/$dir_name"
 
