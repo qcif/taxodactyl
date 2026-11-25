@@ -1116,42 +1116,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Euchrysops abyssinica
-      - Euchrysops albistriata
-      - Euchrysops arcana
-      - Euchrysops banyo
-      - Euchrysops barkeri
-      - Euchrysops brunneus
-      - Euchrysops cnejus
-      - Euchrysops crawshayi
-      - Euchrysops cyclopteris
-      - Euchrysops decaryi
-      - Euchrysops dolorosa
-      - Euchrysops ella
-      - Euchrysops enejus
-      - Euchrysops horus
-      - Euchrysops jacksoni
-      - Euchrysops kabrosae
-      - Euchrysops katangae
-      - Euchrysops lois
-      - Euchrysops malathana
-      - Euchrysops mauensis
-      - Euchrysops migiurtiniensis
-      - Euchrysops nandensis
-      - Euchrysops niobe
-      - Euchrysops osiris
-      - Euchrysops osoris
-      - Euchrysops philbyi
-      - Euchrysops reducta
-      - Euchrysops sahelianus
-      - Euchrysops spec
-      - Euchrysops subpallida
-      - Euchrysops suffusus
-      - Euchrysops trifracta
-      - Euchrysops unigemmata
     - id: country_species
       type: membership
       value:
@@ -1173,10 +1137,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Edales pandava
     - id: country_species
       type: membership
       value: []

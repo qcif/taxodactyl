@@ -433,12 +433,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Apple hammerhead viroid
-      - Chrysanthemum chlorotic mottle viroid
-      - Peach latent mosaic viroid
     - id: country_state
       type: state
       value: NA
@@ -448,12 +442,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Apple hammerhead viroid
-      - Chrysanthemum chlorotic mottle viroid
-      - Peach latent mosaic viroid
     - id: country_state
       type: state
       value: NA

@@ -459,26 +459,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Actinidia virus A
-      - Actinidia virus B
-      - Arracacha virus V
-      - Blackberry virus A
-      - Grapevine virus A
-      - Grapevine virus B
-      - Grapevine virus D
-      - Grapevine virus E
-      - Grapevine virus F
-      - Grapevine virus G
-      - Grapevine virus H
-      - Grapevine virus I
-      - Grapevine virus J
-      - Heracleum latent virus
-      - Mint virus 2
-      - Vitivirus BGMaV
-      - Vitivirus GVL
     - id: country_state
       type: state
       value: NA
@@ -499,26 +479,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Actinidia virus A
-      - Actinidia virus B
-      - Arracacha virus V
-      - Blackberry virus A
-      - Grapevine virus A
-      - Grapevine virus B
-      - Grapevine virus D
-      - Grapevine virus E
-      - Grapevine virus F
-      - Grapevine virus G
-      - Grapevine virus H
-      - Grapevine virus I
-      - Grapevine virus J
-      - Heracleum latent virus
-      - Mint virus 2
-      - Vitivirus BGMaV
-      - Vitivirus GVL
     - id: country_state
       type: state
       value: NA
@@ -528,26 +488,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Actinidia virus A
-      - Actinidia virus B
-      - Arracacha virus V
-      - Blackberry virus A
-      - Grapevine virus A
-      - Grapevine virus B
-      - Grapevine virus D
-      - Grapevine virus E
-      - Grapevine virus F
-      - Grapevine virus G
-      - Grapevine virus H
-      - Grapevine virus I
-      - Grapevine virus J
-      - Heracleum latent virus
-      - Mint virus 2
-      - Vitivirus BGMaV
-      - Vitivirus GVL
     - id: country_state
       type: state
       value: NA

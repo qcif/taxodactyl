@@ -28,7 +28,7 @@ types:
   state: Section state (assessed, not_assessed, null or NA)
   count: Whole number (owned by Selenium; never stored or shown by core)
 
-rule_fail: &rule_fail A workflow output broke a rule. This is a bug in the step that wrote the file (or a damaged copy of the run), not data drift; it cannot be promoted. Open the linked file, fix the cause and rerun.
+rule_fail: &rule_fail A workflow output broke a rule. The likely cause is a bug in the step that wrote the file, but this is a suggestion; a damaged copy of the run or an unexpected answer from an external service can look the same. Rule failures are never treated as drift and cannot be promoted. Open the linked file, find the cause and rerun.
 
 components:
 - id: run
@@ -241,7 +241,7 @@ components:
 - id: database_coverage
   title: Database coverage
   channel: D
-  description: 'Reads db_coverage.json. Checks its structure and that counts are whole numbers, and compares which taxa were assessed, whether each section was assessed, and the names of the related and in-country species listed. Record counts themselves are checked by Selenium, not here.'
+  description: 'Reads db_coverage.json. Checks its structure and that counts are whole numbers, and compares which taxa were assessed, whether each section was assessed, and the names of the in-country species listed. Related-species names and record counts are not compared; record counts are checked by Selenium.'
   files: db_coverage.json
   producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
   checks:
@@ -268,10 +268,6 @@ components:
       type: state
       title: Target assessment state
       explain: Whether the taxon itself was assessed, not assessed, or had no result.
-    related_species:
-      type: membership
-      title: Related species listed
-      explain: Names of the related species listed (their counts are not compared).
     related_state:
       type: state
       title: Related species state

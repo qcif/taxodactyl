@@ -376,8 +376,16 @@ Expected values are stored per sample in `test/core/expected/<N>_<sample_id>.yam
 `test/selenium/expected/`. Check titles, rules and value types are declared in
 `test/core/schema.yaml`. The review page opens with a verdict and a "Needs
 attention" table, a failure-analysis table grouping the same problems across
-samples by kind and area (e.g. drift in Database coverage), then a sample × check
+samples by kind and area (e.g. possible drift in Database coverage), then a sample × check
 matrix and cards only for samples with problems.
+
+"Rule failed" and "possible drift" are suggestions, not diagnoses. A failed rule
+check (structure, routing, valid values) is labelled a rule failure and probably
+means a workflow bug; a stored value that differs from `test/core/expected/` is
+labelled possible drift and may be new reference data or a regression. The tool
+only knows which kind of check broke, so review every change before promoting it.
+Related-species names in `db_coverage.json` are not compared for any role
+(candidate, taxon of interest, preliminary ID).
 
 To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
 `python test/core/testkit.py ingest --sample <sample_id> --assertions <run>/nf-test-assertions.json`

@@ -279,7 +279,7 @@ does not label it; tracking stays in the task brief and `tasks/todo.md`.
 | C `candidates_identity_boxplot.png` | Presence iff candidate count exceeds run limit; decoded PNG, positive dimensions | No pixel baseline |
 | S `4.flag`, `aggregated_sources.json` | Exact assessed/skipped channel shape from 1..max candidate rule; candidate/flag/source relationships, publication record structure, reviewed raw source accessions and flag values | Publication modal owns displayed titles/source/count fields; core does not baseline publication text |
 | T `candidates_phylogeny.nwk` | Valid Newick grammar, unique leaves equal selected FASTA plus QUERY; empty only for empty selected FASTA | Tree title/minimum nodes; branching/lengths are deliberately not frozen |
-| D `db_coverage.json` | Per-role taxon membership; related and in-country **species names**; assessed/not-assessed/null/NA states; count structure (whole numbers or null). **No record count is a core expectation** (user decision 2026-11-23): target counts not owned by Selenium appear on the review page as "not checked" | Populated database-coverage `record_count`, species count/total and bars. Existing substring/list comparison and ±10% tolerance remain authoritative |
+| D `db_coverage.json` | Per-role taxon membership; in-country **species names**; assessed/not-assessed/null/NA states; count structure (whole numbers or null). **No record count is a core expectation** (user decision 2026-11-23): target counts not owned by Selenium appear on the review page as "not checked". **Related-species names are not compared for any role** (user decision 2026-11-25); the related list is still checked for structure and its state (NA/null) is still compared | Populated database-coverage `record_count`, species count/total and bars. Existing substring/list comparison and ±10% tolerance remain authoritative |
 | F `5.1.flag`, `5.2.flag`, `5.3.flag` | Three filenames per sample; unique `(flag,role,target)` records agree with D membership; uncovered values only | Populated `flag_text1/2` for the exact role and taxon. Country `final_text` is explanatory text, not an assertion of raw 5.3 value |
 | M `map*.png` | Per-sample reviewed map filenames; unique names; decoded PNG dimensions | Country messages do not cover raw images |
 | HTML | Reject unknown/duplicate/misassociated emitted paths | Per-sample report presence and browser contents remain exclusively Selenium |
@@ -433,11 +433,20 @@ no replay is promised. Original failure records stay unchanged.
 - **Verdict:** `PASSED`, `NEEDS BASELINE` (values without expectations), `DRIFT`
   (stored values changed), `FAILED` (a rule check failed), `INCOMPLETE` (workflow
   or evaluation error, or missing/invalid JUnit), or `INVALID EVIDENCE`.
+- **Drift vs failure is a suggestion.** The label depends only on which kind of
+  check broke, never on why. A *rule check* (structure, routing, valid values;
+  declared under `checks:` in `schema.yaml`) must always hold, so its failure is
+  shown as **rule failed** and a workflow bug is the likely cause. A *stored
+  value* (declared under `assertions:`) that differs from
+  `expected/<N>_<sample_id>.yaml` is shown as **possible drift**: new reference
+  data (GenBank, BOLD, GBIF) is a common cause, but a regression looks exactly
+  the same. Check every change before promoting. The page and CI summary say
+  this next to the tables.
 - **Run health:** workflow, evaluation, JUnit and expectation-file status.
 - **Needs attention:** one row per problem, most serious first, linking to the
   sample card. Changed values are grouped per sample and component.
 - **Failure analysis:** the same problems grouped across samples by kind (error,
-  failed, drift, needs baseline) and area (e.g. drift in Database coverage, drift
+  rule failed, possible drift, needs baseline) and area (e.g. drift in Database coverage, drift
   in Coverage flags), most serious first and then by how many samples share them.
   Each row lists the affected samples (linked), the checks involved with counts,
   and one example. Use it to spot one cause behind many rows above.
@@ -506,12 +515,12 @@ PYTHONPATH=scripts python -m unittest discover -s scripts/tests -p 'test_nf_test
 java -cp "$NFT_JAR" groovy.ui.GroovyMain test/core/contracts.test.groovy "$PWD"
 ```
 
-The Groovy scenarios (22) use disposable synthetic files. They cover:
+The Groovy scenarios (27) use disposable synthetic files. They cover:
 - valid empty and skipped cases, and a new sample without a file (needs baseline);
 - accepted synthetic data;
 - missing, duplicate or wrongly associated samples, and malformed outputs;
 - missing, extra or duplicated P5 records, and changed flag values;
-- record-count changes that must not fail core, while changed species names must;
+- record-count and related-species-name changes that must not fail core;
 - a changed hit sequence failing only its fingerprint;
 - Selenium-owned values, including a stored core value that Selenium now owns;
 - stale entries, orphan or duplicate files, unknown assertions, and independent failures.

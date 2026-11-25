@@ -126,12 +126,14 @@ try {
     assert rowOf(result,'database_coverage/pmi/Taxon/target_record_count').status=='not_checked'
     assert !result[0].rows.any { it.id.contains('Sp1') }
  }
- coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp3:4];new File(d).text=JsonOutput.toJson(coverage)
- expect('related species names must match') {
+ coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp3:4];coverage.coverage.candidate=[Taxon:[target:10,related:[Sp9:4],country:null]]
+ new File(d).text=JsonOutput.toJson(coverage)
+ expect('related species names are not compared for any role') {
     def result=run()
-    assert rowOf(result,'database_coverage/pmi/Taxon/related_species').status=='failed'
-    assert rowOf(result,'database_coverage/toi/Taxon/related_species').status=='passed'
+    assert !result[0].rows.any { it.assertion=='related_species' }
+    assert rowOf(result,'database_coverage/candidate/Taxon/target_state') != null
  }
+ coverage.coverage.candidate=[:]
  coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp2:'x'];new File(d).text=JsonOutput.toJson(coverage)
  expect('count structure is still an invariant') { assert rowOf(run(),'D.content').status=='failed' }
  coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp2:4];coverage.coverage.pmi.Taxon.target=10;new File(d).text=JsonOutput.toJson(coverage)

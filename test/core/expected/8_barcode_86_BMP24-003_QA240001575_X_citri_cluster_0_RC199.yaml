@@ -750,47 +750,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Xanthomonas albilineans
-      - Xanthomonas alfalfae
-      - Xanthomonas arboricola
-      - Xanthomonas axonopodis
-      - Xanthomonas bromi
-      - Xanthomonas campestris
-      - Xanthomonas cannabis
-      - Xanthomonas cassavae
-      - Xanthomonas cissicola
-      - Xanthomonas codiaei
-      - Xanthomonas cucurbitae
-      - Xanthomonas cynarae
-      - Xanthomonas dyei
-      - Xanthomonas euroxanthea
-      - Xanthomonas euvesicatoria
-      - Xanthomonas floridensis
-      - Xanthomonas fragariae
-      - Xanthomonas fuscans
-      - Xanthomonas gardneri
-      - Xanthomonas hortorum
-      - Xanthomonas hyacinthi
-      - Xanthomonas juglandis
-      - Xanthomonas maliensis
-      - Xanthomonas melonis
-      - Xanthomonas nasturtii
-      - Xanthomonas oryzae
-      - Xanthomonas perforans
-      - Xanthomonas phaseoli
-      - Xanthomonas pisi
-      - Xanthomonas populi
-      - Xanthomonas pruni
-      - Xanthomonas prunicola
-      - Xanthomonas sacchari
-      - Xanthomonas spec.
-      - Xanthomonas theicola
-      - Xanthomonas translucens
-      - Xanthomonas vasicola
-      - Xanthomonas vesicatoria
     - id: country_state
       type: state
       value: NA
@@ -799,47 +758,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Xanthomonas albilineans
-      - Xanthomonas alfalfae
-      - Xanthomonas arboricola
-      - Xanthomonas axonopodis
-      - Xanthomonas bromi
-      - Xanthomonas campestris
-      - Xanthomonas cannabis
-      - Xanthomonas cassavae
-      - Xanthomonas cissicola
-      - Xanthomonas codiaei
-      - Xanthomonas cucurbitae
-      - Xanthomonas cynarae
-      - Xanthomonas dyei
-      - Xanthomonas euroxanthea
-      - Xanthomonas euvesicatoria
-      - Xanthomonas floridensis
-      - Xanthomonas fragariae
-      - Xanthomonas fuscans
-      - Xanthomonas gardneri
-      - Xanthomonas hortorum
-      - Xanthomonas hyacinthi
-      - Xanthomonas juglandis
-      - Xanthomonas maliensis
-      - Xanthomonas melonis
-      - Xanthomonas nasturtii
-      - Xanthomonas oryzae
-      - Xanthomonas perforans
-      - Xanthomonas phaseoli
-      - Xanthomonas pisi
-      - Xanthomonas populi
-      - Xanthomonas pruni
-      - Xanthomonas prunicola
-      - Xanthomonas sacchari
-      - Xanthomonas spec.
-      - Xanthomonas theicola
-      - Xanthomonas translucens
-      - Xanthomonas vasicola
-      - Xanthomonas vesicatoria
     - id: country_state
       type: state
       value: NA
@@ -860,47 +778,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Xanthomonas albilineans
-      - Xanthomonas alfalfae
-      - Xanthomonas arboricola
-      - Xanthomonas axonopodis
-      - Xanthomonas bromi
-      - Xanthomonas campestris
-      - Xanthomonas cannabis
-      - Xanthomonas cassavae
-      - Xanthomonas cissicola
-      - Xanthomonas codiaei
-      - Xanthomonas cucurbitae
-      - Xanthomonas cynarae
-      - Xanthomonas dyei
-      - Xanthomonas euroxanthea
-      - Xanthomonas euvesicatoria
-      - Xanthomonas floridensis
-      - Xanthomonas fragariae
-      - Xanthomonas fuscans
-      - Xanthomonas gardneri
-      - Xanthomonas hortorum
-      - Xanthomonas hyacinthi
-      - Xanthomonas juglandis
-      - Xanthomonas maliensis
-      - Xanthomonas melonis
-      - Xanthomonas nasturtii
-      - Xanthomonas oryzae
-      - Xanthomonas perforans
-      - Xanthomonas phaseoli
-      - Xanthomonas pisi
-      - Xanthomonas populi
-      - Xanthomonas pruni
-      - Xanthomonas prunicola
-      - Xanthomonas sacchari
-      - Xanthomonas spec.
-      - Xanthomonas theicola
-      - Xanthomonas translucens
-      - Xanthomonas vasicola
-      - Xanthomonas vesicatoria
     - id: country_state
       type: state
       value: NA
@@ -910,47 +787,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Xanthomonas albilineans
-      - Xanthomonas alfalfae
-      - Xanthomonas arboricola
-      - Xanthomonas axonopodis
-      - Xanthomonas bromi
-      - Xanthomonas campestris
-      - Xanthomonas cannabis
-      - Xanthomonas cassavae
-      - Xanthomonas cissicola
-      - Xanthomonas codiaei
-      - Xanthomonas cucurbitae
-      - Xanthomonas cynarae
-      - Xanthomonas dyei
-      - Xanthomonas euroxanthea
-      - Xanthomonas euvesicatoria
-      - Xanthomonas floridensis
-      - Xanthomonas fragariae
-      - Xanthomonas fuscans
-      - Xanthomonas gardneri
-      - Xanthomonas hortorum
-      - Xanthomonas hyacinthi
-      - Xanthomonas juglandis
-      - Xanthomonas maliensis
-      - Xanthomonas melonis
-      - Xanthomonas nasturtii
-      - Xanthomonas oryzae
-      - Xanthomonas perforans
-      - Xanthomonas phaseoli
-      - Xanthomonas pisi
-      - Xanthomonas populi
-      - Xanthomonas pruni
-      - Xanthomonas prunicola
-      - Xanthomonas sacchari
-      - Xanthomonas spec.
-      - Xanthomonas theicola
-      - Xanthomonas translucens
-      - Xanthomonas vasicola
-      - Xanthomonas vesicatoria
     - id: country_state
       type: state
       value: NA

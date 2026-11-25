@@ -1565,48 +1565,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Prodenia laysanensis
-      - Spodoptera abyssinia
-      - Spodoptera albula
-      - Spodoptera androgea
-      - Spodoptera apertura
-      - Spodoptera cilium
-      - Spodoptera compta
-      - Spodoptera connexa
-      - Spodoptera cosmioides
-      - Spodoptera depravata
-      - Spodoptera deprivata
-      - Spodoptera descoinsi
-      - Spodoptera dolichos
-      - Spodoptera eridania
-      - Spodoptera evanida
-      - Spodoptera excelsa
-      - Spodoptera exempta
-      - Spodoptera exigua
-      - Spodoptera frugiperda
-      - Spodoptera hipparis
-      - Spodoptera latifascia
-      - Spodoptera littoralis
-      - Spodoptera litura
-      - Spodoptera malagasy
-      - Spodoptera marima
-      - Spodoptera mauritia
-      - Spodoptera obstans
-      - Spodoptera ochrea
-      - Spodoptera ornithogalli
-      - Spodoptera pecten
-      - Spodoptera pectinicornis
-      - Spodoptera picta
-      - Spodoptera praefica
-      - Spodoptera pulchella
-      - Spodoptera roseae
-      - Spodoptera teferii
-      - Spodoptera trajiciens
-      - Spodoptera triturata
-      - Spodoptera umbraculata
     - id: country_species
       type: membership
       value:
@@ -1624,48 +1582,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Prodenia laysanensis
-      - Spodoptera abyssinia
-      - Spodoptera albula
-      - Spodoptera androgea
-      - Spodoptera apertura
-      - Spodoptera cilium
-      - Spodoptera compta
-      - Spodoptera connexa
-      - Spodoptera cosmioides
-      - Spodoptera depravata
-      - Spodoptera deprivata
-      - Spodoptera descoinsi
-      - Spodoptera dolichos
-      - Spodoptera eridania
-      - Spodoptera evanida
-      - Spodoptera excelsa
-      - Spodoptera exempta
-      - Spodoptera exigua
-      - Spodoptera frugiperda
-      - Spodoptera hipparis
-      - Spodoptera latifascia
-      - Spodoptera littoralis
-      - Spodoptera litura
-      - Spodoptera malagasy
-      - Spodoptera marima
-      - Spodoptera mauritia
-      - Spodoptera obstans
-      - Spodoptera ochrea
-      - Spodoptera ornithogalli
-      - Spodoptera pecten
-      - Spodoptera pectinicornis
-      - Spodoptera picta
-      - Spodoptera praefica
-      - Spodoptera pulchella
-      - Spodoptera roseae
-      - Spodoptera teferii
-      - Spodoptera trajiciens
-      - Spodoptera triturata
-      - Spodoptera umbraculata
     - id: country_species
       type: membership
       value:
@@ -1684,48 +1600,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Prodenia laysanensis
-      - Spodoptera abyssinia
-      - Spodoptera albula
-      - Spodoptera androgea
-      - Spodoptera apertura
-      - Spodoptera cilium
-      - Spodoptera compta
-      - Spodoptera connexa
-      - Spodoptera cosmioides
-      - Spodoptera depravata
-      - Spodoptera deprivata
-      - Spodoptera descoinsi
-      - Spodoptera dolichos
-      - Spodoptera eridania
-      - Spodoptera evanida
-      - Spodoptera excelsa
-      - Spodoptera exempta
-      - Spodoptera exigua
-      - Spodoptera frugiperda
-      - Spodoptera hipparis
-      - Spodoptera latifascia
-      - Spodoptera littoralis
-      - Spodoptera litura
-      - Spodoptera malagasy
-      - Spodoptera marima
-      - Spodoptera mauritia
-      - Spodoptera obstans
-      - Spodoptera ochrea
-      - Spodoptera ornithogalli
-      - Spodoptera pecten
-      - Spodoptera pectinicornis
-      - Spodoptera picta
-      - Spodoptera praefica
-      - Spodoptera pulchella
-      - Spodoptera roseae
-      - Spodoptera teferii
-      - Spodoptera trajiciens
-      - Spodoptera triturata
-      - Spodoptera umbraculata
     - id: country_species
       type: membership
       value:
@@ -1744,48 +1618,6 @@ components:
     - id: target_state
       type: state
       value: assessed
-    - id: related_species
-      type: membership
-      value:
-      - Prodenia laysanensis
-      - Spodoptera abyssinia
-      - Spodoptera albula
-      - Spodoptera androgea
-      - Spodoptera apertura
-      - Spodoptera cilium
-      - Spodoptera compta
-      - Spodoptera connexa
-      - Spodoptera cosmioides
-      - Spodoptera depravata
-      - Spodoptera deprivata
-      - Spodoptera descoinsi
-      - Spodoptera dolichos
-      - Spodoptera eridania
-      - Spodoptera evanida
-      - Spodoptera excelsa
-      - Spodoptera exempta
-      - Spodoptera exigua
-      - Spodoptera frugiperda
-      - Spodoptera hipparis
-      - Spodoptera latifascia
-      - Spodoptera littoralis
-      - Spodoptera litura
-      - Spodoptera malagasy
-      - Spodoptera marima
-      - Spodoptera mauritia
-      - Spodoptera obstans
-      - Spodoptera ochrea
-      - Spodoptera ornithogalli
-      - Spodoptera pecten
-      - Spodoptera pectinicornis
-      - Spodoptera picta
-      - Spodoptera praefica
-      - Spodoptera pulchella
-      - Spodoptera roseae
-      - Spodoptera teferii
-      - Spodoptera trajiciens
-      - Spodoptera triturata
-      - Spodoptera umbraculata
     - id: country_species
       type: membership
       value:

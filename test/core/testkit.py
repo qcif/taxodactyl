@@ -448,15 +448,23 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f4f6;padding:.5rem
 
 VERDICT_TEXT = {
     'PASSED': 'Every core check passed.',
-    'FAILED': 'A workflow rule failed. Fix the cause; rule failures cannot be promoted.',
-    'DRIFT': 'Some stored values changed. Review them; promote the changes if they are expected.',
+    'FAILED': 'A rule check failed. This suggests a workflow bug: find the cause; rule failures cannot be promoted.',
+    'DRIFT': 'Some stored values differ from test/core/expected/. This is only a suggestion of drift: the tool cannot '
+             'tell why a value changed. Check each change; promote it only if it is expected.',
     'NEEDS BASELINE': 'Some samples or values have no stored expectations yet. Review them, then ingest.',
     'INCOMPLETE': 'The run or its evaluation did not complete; results are partial.',
     'INVALID EVIDENCE': 'The assertion evidence is missing or unreadable; nothing can be trusted as passed.',
 }
+# How a problem is labelled. The label comes only from the kind of check, never from why it broke.
+LABEL_NOTE = ('Labels are a suggestion, not a diagnosis. "Rule failed" means a rule check broke (structure, routing, '
+              'valid values): these must always hold, so a workflow bug is the likely cause. "Possible drift" means a '
+              'stored value differs from test/core/expected/: new reference data (GenBank, BOLD, GBIF) is a common cause, '
+              'but a regression looks the same. The tool cannot tell which; check each change before promoting.')
+BADGE = {'unbaselined': 'needs baseline', 'drift': 'possible drift', 'failed': 'rule failed'}
 HIDDEN = ('delegated', 'not_checked')   # owned by Selenium: shown in the Selenium review, not here
-DATA_NEXT = {'failed': 'The stored value no longer matches. Compare with the reference run or the linked file; '
-                       'if the change is expected (for example new reference data), promote it.',
+DATA_NEXT = {'failed': 'The stored value no longer matches (possible drift, not confirmed). Compare with the reference run '
+                       'or the linked file: promote only if the change is expected (for example new reference data), '
+                       'otherwise treat it as a regression.',
              'unbaselined': 'No stored value yet. Check the observed value, then ingest it.',
              'absent': 'The stored value is no longer produced. If that is expected, promote to remove it.'}
 
@@ -744,11 +752,12 @@ def _page(a, linker, assertions_arg):
     attention = a['attention']
     parts.append(f'<h2>Needs attention ({len(attention)})</h2>')
     if attention:
-        parts.append('<p class="hint">Most serious first: errors, rule failures (fix the cause), changed values (review, then promote), '
-                     'missing expectations (review, then ingest). Click a sample for the full explanation.</p>')
+        parts.append('<p class="hint">Most serious first: errors, rule failures (fix the cause), possible drift (review, then promote '
+                     'if expected), missing expectations (review, then ingest). Click a sample for the full explanation.</p>'
+                     f'<p class="hint"><b>How labels are chosen:</b> {_esc(LABEL_NOTE)}</p>')
         parts.append('<table><tr><th>Sample</th><th>Check</th><th>What went wrong</th></tr>')
         for _level, sid, title, _ident, label, message in attention:
-            badge = 'needs baseline' if label == 'unbaselined' else label
+            badge = BADGE.get(label, label)
             parts.append(f'<tr class="s-{label}"><td><a href="#{_slug(sid)}">{_esc(sid)}</a></td>'
                          f'<td><span class="badge b-{label}">{_esc(badge)}</span> {_esc(title)}</td><td>{_esc(message)}</td></tr>')
         parts.append('</table>')
@@ -762,7 +771,7 @@ def _page(a, linker, assertions_arg):
                      'rows above.</p>')
         parts.append('<table><tr><th>Problem</th><th>Samples</th><th>Checks involved</th><th>Example</th></tr>')
         for g in groups:
-            badge = 'needs baseline' if g['label'] == 'unbaselined' else g['label']
+            badge = BADGE.get(g['label'], g['label'])
             shown = ', '.join(f'<a href="#{_slug(s)}">{_esc(s)}</a>' for s in g['samples'][:20])
             more = f' … and {len(g["samples"]) - 20} more' if len(g['samples']) > 20 else ''
             checks = '<br>'.join(f'{_esc(t)} <small>×{n}</small>' for t, n in g['checks'].most_common(8))
@@ -813,7 +822,7 @@ def _page(a, linker, assertions_arg):
                 shown += r['status'] == 'unbaselined'
                 info = check_info(r)
                 status = 'drift' if r.get('kind') and r['status'] == 'failed' else r['status']
-                badge = 'needs baseline' if status == 'unbaselined' else status
+                badge = BADGE.get(status, status)
                 p = expected_actual(r)
                 actual = _esc(p['actual'])
                 if p['difference']:
@@ -880,12 +889,14 @@ def _summary(a, page_name):
     """Short Markdown for the GitHub Actions job summary."""
     cell = lambda t: str(t).replace('|', '\\|').replace('\n', ' ')
     lines = [f"## Core nf-test: {a['verdict']}", '', VERDICT_TEXT[a['verdict']], '']
+    if a['groups']:
+        lines += [f'> {LABEL_NOTE}', '']
     lines += [f"- **{t}:** {m}" for _s, t, m in a['health']]
     lines += ['', f"### Needs attention ({len(a['attention'])})", '']
     if a['attention']:
         lines += ['| Sample | Check | What went wrong |', '|---|---|---|']
         for _level, sid, title, _ident, label, message in a['attention'][:50]:
-            lines.append(f"| {cell(sid)} | {cell(label)}: {cell(title)} | {cell(_short(message, 240))} |")
+            lines.append(f"| {cell(sid)} | {cell(BADGE.get(label, label))}: {cell(title)} | {cell(_short(message, 240))} |")
         if len(a['attention']) > 50:
             lines.append(f"\n… and {len(a['attention']) - 50} more.")
     else:
@@ -894,7 +905,7 @@ def _summary(a, page_name):
         lines += ['', f"### Failure analysis ({len(a['groups'])})", '',
                   '| Problem | Samples | Checks involved |', '|---|---|---|']
         for g in a['groups']:
-            badge = 'needs baseline' if g['label'] == 'unbaselined' else g['label']
+            badge = BADGE.get(g['label'], g['label'])
             names = ', '.join(g['samples'][:10]) + (f" … and {len(g['samples']) - 10} more" if len(g['samples']) > 10 else '')
             checks = '; '.join(f'{t} ×{n}' for t, n in g['checks'].most_common(5))
             lines.append(f"| {cell(badge)}: {cell(g['area'])} ({g['count']}) | {cell(names)} | {cell(checks)} |")

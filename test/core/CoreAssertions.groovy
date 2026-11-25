@@ -625,7 +625,9 @@ class CoreAssertions {
                                 holds(n == null || n instanceof Number && n >= 0 && n == n.toInteger(), 'db_coverage.json',
                                       "${role}/${taxon}/${field}/${species} count", d('whole number or null'), n)
                             }
-                            // Species names must match; per-species counts are deliberately not compared (user decision 2026-11-23).
+                            // In-country species names must match; per-species counts are deliberately not compared (user decision 2026-11-23).
+                            // Related-species names are not compared for any role (user decision 2026-11-25).
+                            if (field == 'related') return
                             data(sid,'database_coverage',role,taxon,field+'_species',counts.keySet().sort(),where,[field:"D/coverage/${role}/${taxon}/${field}"])
                         } else data(sid,'database_coverage',role,taxon,field+'_state',counts == null ? 'null' : 'NA',where,[field:"D/coverage/${role}/${taxon}/${field}"])
                     }

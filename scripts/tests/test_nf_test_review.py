@@ -137,7 +137,10 @@ class ReviewTests(ToolkitCase):
         self.assertNotIn('Taxon', section)                               # grouped by check, not per taxon
         summary = kit._summary(kit._analyse(self.junit, self.sidecar), 'nf-test-review.html')
         self.assertIn('### Failure analysis (3)', summary)
-        self.assertIn('| drift: Coverage maps (2) | Scenario_01, Scenario_04 |', summary)
+        self.assertIn('| possible drift: Coverage maps (2) | Scenario_01, Scenario_04 |', summary)
+        self.assertIn('> Labels are a suggestion, not a diagnosis.', summary)
+        self.assertIn('How labels are chosen:', text)
+        self.assertIn('>possible drift</span>', text)
 
     def test_summary_markdown(self):
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='f.csv: rule\nExpected: "a|b"\nActual: "c". Expression: x'))
@@ -146,7 +149,7 @@ class ReviewTests(ToolkitCase):
         kit.render(self.junit, self.html, self.sidecar, summary=summary)
         text = summary.read_text()
         self.assertIn('## Core nf-test: FAILED', text)
-        self.assertIn('| Scenario_04 | failed: Preliminary-ID match table | rule — expected "a\\|b", actual "c" |', text)
+        self.assertIn('| Scenario_04 | rule failed: Preliminary-ID match table | rule — expected "a\\|b", actual "c" |', text)
         self.assertNotIn('known defect', text)
         self.assertNotIn('Expression', text)
 
