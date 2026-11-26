@@ -133,6 +133,16 @@ download, install and refresh it.
 - After the run, CI warns if any responses were added to the cache. These
   are cache misses: requests that weren't in the fixture and were fetched
   live, so the results may drift.
+- Each CI run saves a copy of its final cache with the run files on the
+  self-hosted runner (`/var/runner/<run_id>-<attempt>/api_cache/`). A live
+  run's copy is the starting point for a new fixture version.
+
+**Updating the fixture** is a deliberate, reviewed change: a live run, an
+inspection and secrets check of its saved cache, a new dated version
+uploaded to `daffstandard/test-data`, the version and SHA-256 pinned in
+`nf-test.yml`, two matching cached runs, and a re-baseline in the same PR.
+Never change a published version. The step-by-step process, with commands,
+is in [test/core/README.md](../test/core/README.md#refreshing-the-api-cache-fixture).
 
 ## Test Input Files
 
@@ -293,6 +303,13 @@ nf-test test test/scenario_01/taxodactyl.workflow.nf.test --update-snapshot
 ```
 
 This will regenerate the `.snap` file with new expected outputs.
+
+For the `core` scenario, regenerate the snapshot, flag baselines and
+Selenium expected reports from a **cached** run against the pinned
+API-cache fixture (see [API response cache](#api-response-cache)), never
+from a live run. Otherwise the baselines contain live API data and the
+next cached run drifts. A new fixture version always needs a re-baseline
+in the same PR.
 
 ## Running Different Scenarios
 
