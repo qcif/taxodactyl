@@ -96,9 +96,7 @@ cannot pass (P1B-D-001..003).
 
 ## 4a. Defects
 
-| ID | Severity | Defect |
-|---|---|---|
-| TST-D-001 | Medium (security, *to confirm*) | `nf-test.yml` (TST-024) injects the repository secret `NCBI_API_KEY` into `test/core/nextflow.config`. It then uploads the work directories of failed or drifting tasks as the `error_workdirs` artifact: `bin/collect_artifacts.py` copies each whole directory with `shutil.copytree`, hidden files included. Several files in those directories hold the key in plain text. Nextflow writes the task environment (from the `env` scope) into each task's wrapper files (`.command.run`/`.command.env`). A `REPORT` task directory also holds the rendered report and `report_context.json` (`P6-D-001`, `P6-D-003`). GitHub masks secrets in **logs**, but not inside artifacts, and the repository is public, so anyone signed in to GitHub can download an artifact while it is retained (no `retention-days` is set, so the repository default applies). The same applies to `USER_EMAIL`. Nothing is uploaded on a fully clean run. *To confirm* by inspecting a downloaded `error_workdirs` artifact for the key. |
+None open.
 
 ## 5. Test data provenance
 

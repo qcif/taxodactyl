@@ -104,7 +104,8 @@ jobs:
 
       # Copies work directories for process/samples with failed/aborted nf-test, 
       # diff flags or diff snapshots (may be large number!) to single dir with
-      # human readable PROCESS/SAMPLE file structure for uploading as artifact.
+      # human readable PROCESS/SAMPLE file structure. Not uploaded as an
+      # artifact: work dirs can hold the NCBI API key in plain text.
       # mock-test: does not include --nft_errors
       - name: Copy error workdirs
         id: copy-workdirs
@@ -125,13 +126,6 @@ jobs:
         run: |
           echo "##### tree -a $RUNNER_TEMP/nf-test/collected_errors/:"
           tree -a $RUNNER_TEMP/nf-test/collected_errors/
-
-      - name: Upload error workdirs
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: error_workdirs
-          path: ${{ runner.temp }}/nf-test/collected_errors
 
       # Selenium pytest test_reports.py requires all reports in a dir
       - name: Soft link reports for pytest

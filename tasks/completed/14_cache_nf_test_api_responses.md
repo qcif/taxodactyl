@@ -641,6 +641,13 @@ Step 8 (re-baseline) is **pending**, in PR #371 ("Still to do").
   the current triggers (weekly, PRs via `build-pr.yml`, dispatch), the
   self-hosted runner, the Singularity cache clean, what's uploaded as an
   artifact, and the saved run files.
+- Defect TST-D-001 removed from `spec/tests.md` §4a and `spec/defects.md`
+  (Medium count 68 → 67), by user decision. `nf-test.yml` stopped uploading
+  failed work directories in #330. The remaining `error_workdirs` upload,
+  in `mock-nf-test.yml`, was removed too, so neither workflow uploads work
+  directories, which can hold the NCBI API key. The `defects.md` summary
+  counts were already out of step with its rows (149 vs 139) before this
+  change, and were not recounted.
 - `.agents/skills/investigate-runner` and `selenium-report`: run folders are
   `/var/runner/<run_id>-<attempt>/` (since #370), and the run layout
   includes `collected_errors/`, `review.html`, `reports.zip` and
