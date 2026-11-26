@@ -611,14 +611,44 @@ filling Docker storage, since the test runs under Singularity. The user
 cleared about 25 GB, and #372 replaced the step with a Singularity cache
 clean.
 
-Steps 7–8 (live run D, re-baseline) are **pending**. Tracked in
-`tasks/todo.md`.
+7. Run D (2026-11-26, live, `use_cache=false`): dispatch run 45774487242
+   from merge commit `b2277ca`. `run_info.txt` shows `api_cache: live`; the
+   install step was skipped; the cache grew from 0 to 3,155 rows with no
+   miss warning. Its flags, nf-test errors and `review.html` matched run B.
+   Compared with the fixture, a day later: all 1,865 Entrez search results
+   differ (each carries per-request `WebEnv`/`QueryKey` tokens), 79 GBIF
+   responses changed, the 945 NCBI XML records are unchanged, and 1 GBIF
+   response was no longer returned. `run_info.txt` still prints the pinned
+   `api_cache_version` in live mode, as the brief specifies.
+   Run E (cached PR run 45774493680, after merging `main` with #372): 0
+   cache misses, results identical to B and C. Its new "Clear Singularity
+   cache" step ran (the cache was already empty after the user's cleanup),
+   and the root disk was at 30%.
+
+Step 8 (re-baseline) is **pending**, in PR #371 ("Still to do").
+
+### Follow-up changes (2026-11-27, user request)
+
+- `test/core/README.md`: "Refreshing the API-cache fixture" rewritten as
+  the step-by-step process used for `2026-11-26`, with commands: when to
+  refresh, live run, fetch and check the saved copy, inspect it without
+  unpickling (snippet tested on the fixture), secrets check, package,
+  upload, pin, two cached runs, re-baseline, clean up.
+- `docs/nf-tests.md`: links to that process; core baselines are
+  regenerated from cached runs only.
+- `spec/tests.md`: new TST-025 (fixture update rules); fixture version in
+  §5.1; §5.3 regeneration note. TST-024 and the suite table now describe
+  the current triggers (weekly, PRs via `build-pr.yml`, dispatch), the
+  self-hosted runner, the Singularity cache clean, what's uploaded as an
+  artifact, and the saved run files.
+- `.agents/skills/investigate-runner` and `selenium-report`: run folders are
+  `/var/runner/<run_id>-<attempt>/` (since #370), and the run layout
+  includes `collected_errors/`, `review.html`, `reports.zip` and
+  `api_cache/`.
 
 ### Spin-offs
 
-- TST-024's trigger and runner text in `spec/tests.md` is out of date
-  (it says manual-only on a GitHub-hosted runner; the workflow runs weekly,
-  on PRs via `build-pr.yml`, and on the self-hosted runner). Added to
-  `tasks/todo.md`.
-- The fixture creation, pinning and re-baseline above. Added to
-  `tasks/todo.md`.
+- TST-024's out-of-date trigger and runner text: fixed in this task
+  (follow-up changes above), and removed from `tasks/todo.md`.
+- The re-baseline against fixture `2026-11-26` is hand-off step 8 of this
+  task, not a spin-off. It's tracked in PR #371, not `tasks/todo.md`.

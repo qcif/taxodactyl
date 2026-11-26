@@ -15,7 +15,7 @@ Ask the user for anything missing:
 - **Scope**: all failures, or specific fixtures (by numeric prefix of
   `test/selenium/expected/N_*.yaml`). Ask which fixtures the user has
   already reviewed, and skip those.
-- **The nf-test run** (optional): the `/var/runner/<timestamp>/` run that
+- **The nf-test run** (optional): the `/var/runner/<run_id>-<attempt>/` run that
   produced the reports. Needed only when the HTML alone can't explain a diff
   (see [Runner](#runner-work-dirs)).
 
@@ -123,7 +123,10 @@ filename and in the fixture's `date:`.
 When the HTML doesn't explain a diff (unclear exception, a need to see the
 API requests made, or which parameters a task ran with), invoke the
 `investigate-runner` skill for the nf-test run that produced the reports.
-The report timestamp, e.g. `2026-11-17_01_27_54`, helps you pick the run.
+The report timestamp, e.g. `2026-11-17_01_27_54`, is a few minutes after
+that run started. `ls -lt /var/runner/` lists runs by when they finished,
+so pick the run that started just before the timestamp, and confirm with its
+`run_info.txt` (run URL).
 Grep the run for the sample ID or the error message to find the task's
 `.command.log` (it includes GBIF/Entrez request URLs) and `errors/*.json`.
 
