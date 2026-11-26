@@ -488,8 +488,10 @@ nf-test-core-assertions → Run workflow, choosing the branch) runs
   artifact. Browsers can block the zipped artifact on reputation alone (Firefox
   reported it as a virus); a plain `.html` is not checked. Its links to evidence
   files only work inside the zipped bundle;
-- on the self-hosted runner, keeps `/var/runner/<timestamp>/` and
-  `nf-test-run.tar.gz` there. Copy runs elsewhere with the tarball: zip archives
+- on the self-hosted runner, keeps `/var/runner/assertions-<run_number>-<run_attempt>/`
+  (the GitHub Actions run number and attempt, like `nf-test.yml` on `main`; the
+  `assertions-` prefix keeps it apart from that workflow's runs, e.g.
+  `/var/runner/assertions-42-1/`) and `nf-test-run.tar.gz` there. Copy runs elsewhere with the tarball: zip archives
   and artifact downloads can drop symlinks and files whose names differ only in
   case. A retained copy lost `map_Bulimulus_sporadicus.png` that way.
 
@@ -504,7 +506,7 @@ python test/core/testkit.py render --junit <run>/nf-test.xml \
 HTML and JSON/XML should stay together in the retained bundle. Links point only
 to existing files within that bundle, using relative paths. A standalone uploaded
 review still shows unavailable artifact links explicitly. Self-hosted retention
-continues under `/var/runner/<timestamp>/`.
+continues under `/var/runner/assertions-<run_number>-<run_attempt>/`.
 
 ### Focused validation
 
