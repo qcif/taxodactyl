@@ -14,8 +14,10 @@ Actions can only return either success or failure. This workflow is designed to 
 - It is currently set to run:
 	- scheduled weekly, 
 	- on push for selected branches, 
-	- on pull requests for `main`, or;
+	- on pull requests for `main`, when the `nf-test` label is added to the PR (see below), or;
 	- on manual trigger.
+
+- **Running nf-test on a pull request:** add the `nf-test` label to the PR. Pushing to a PR doesn't run nf-test. The `build-pr` workflow builds the PR's image if needed, runs nf-test, and removes the label when the run passes or fails, so adding the label again starts a new run. Removing and re-adding the label while a run is going cancels it and starts a new one. Pushes and other labels don't cancel a running nf-test, and nor does closing or merging the PR. Only people with triage or write access can add labels. The result shows in the PR's checks.
 
 - All runs are intended to be ephemeral, but output and work files for runs on the self-hosted runner are archived to allow for easy error investigation.
 

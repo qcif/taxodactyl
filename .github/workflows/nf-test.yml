@@ -5,8 +5,9 @@ on:
     schedule:
       # Runs at 00:00 UTC, only on Sunday
       - cron: '0 0 * * 0'
-    # Called by build-pr.yml on pull request to main, after building the
-    # PR's taxodactyl image (if the PR changes the Python scripts)
+    # Called by build-pr.yml when the "nf-test" label is added to a pull
+    # request to main, after building the PR's taxodactyl image (if the PR
+    # changes the Python scripts)
     workflow_call:
       inputs:
         image:

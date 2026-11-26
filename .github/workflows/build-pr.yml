@@ -1,17 +1,22 @@
 name: build-pr
 # Builds a neoformit/taxodactyl:<branch> image when a PR changes the Python
-# scripts, then runs nf-test against that image (or :main if unchanged).
+# scripts. nf-test runs against that image (or :main if unchanged) only when
+# the "nf-test" label is added to the PR; the label is removed when the run
+# finishes, so adding it again starts a new run.
 # The branch tag is deleted from Docker Hub when the PR is closed.
 
 on:
   pull_request:
     branches:
       - main
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened, closed, labeled]
 
-# Cancel a run if a newer one is started for the same PR (incl. on close)
+# Pushes, reopen and close share one group, so a newer push cancels an older
+# build. An nf-test label run has its own group: a push or another label
+# doesn't cancel it, and adding the label again restarts it. Other labels
+# get a unique group (nothing runs for them)
 concurrency:
-  group: build-pr-${{ github.event.pull_request.number }}
+  group: build-pr-${{ github.event.pull_request.number }}-${{ github.event.action != 'labeled' && 'build' || github.event.label.name == 'nf-test' && 'nf-test' || github.run_id }}
   cancel-in-progress: true
 
 env:
@@ -19,7 +24,9 @@ env:
 
 jobs:
   build:
-    if: github.event.action != 'closed'
+    if: >-
+      github.event.action != 'closed'
+      && (github.event.action != 'labeled' || github.event.label.name == 'nf-test')
     runs-on: ubuntu-latest
     # Output the tag only: the repo name contains DOCKER_USERNAME, and GitHub
     # silently drops job outputs that contain a secret value
@@ -84,11 +91,31 @@ jobs:
 
   nf-test:
     needs: build
+    if: github.event.action == 'labeled' && github.event.label.name == 'nf-test'
     uses: ./.github/workflows/nf-test.yml
     with:
       # env context isn't available here, so the repo is spelled out
       image: docker.io/neoformit/taxodactyl:${{ needs.build.outputs.tag }}
     secrets: inherit
+
+  # Remove the label when nf-test passes or fails, so adding it again re-runs
+  # nf-test. Not when cancelled: a re-added label cancels the previous run,
+  # and that run must not remove the label the new run was started by.
+  # Removing a label doesn't trigger this workflow (no "unlabeled" type)
+  remove-label:
+    needs: nf-test
+    if: ${{ !cancelled() && github.event.action == 'labeled' && github.event.label.name == 'nf-test' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove nf-test label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        # 404 if someone already removed it
+        run: gh api -X DELETE "repos/$REPO/issues/$PR/labels/nf-test" || true
 
   cleanup:
     if: github.event.action == 'closed'
