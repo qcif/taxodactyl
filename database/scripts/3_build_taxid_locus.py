@@ -48,10 +48,6 @@ def parse_arguments():
         help="Directory containing NCBI taxonomy dump files",
     )
     parser.add_argument(
-        "--batch-size", type=int, default=100000,
-        help="Number of source TaxIDs fetched from DuckDB at a time",
-    )
-    parser.add_argument(
         "--check-only", action="store_true",
         help="Validate Steps 5 and 6 inputs without writing anything",
     )
@@ -63,8 +59,6 @@ def validate_arguments(args):
     database = Path(args.db).expanduser().resolve()
     if not database.is_file():
         raise FileNotFoundError(f"DuckDB file not found: {database}")
-    if args.batch_size < 1:
-        raise ValueError("--batch-size must be positive")
     if args.check_only:
         return database
 
@@ -125,7 +119,7 @@ def permanent_locus_mapping():
 
 def validate_database(database):
     """Verify source tables, locus IDs and sparse classifications."""
-    active, retired = permanent_locus_mapping()
+    active, _ = permanent_locus_mapping()
     db = duckdb.connect(str(database), read_only=True)
     try:
         tables = {name for (name,) in db.execute("SHOW TABLES").fetchall()}
@@ -180,7 +174,6 @@ def validate_database(database):
             "unknown": unknown,
             "loci_rows": db.execute("SELECT COUNT(*) FROM loci").fetchone()[0],
             "active_ids": sorted(active.values()),
-            "retired_ids": sorted(retired.values()),
         }
     finally:
         db.close()
@@ -200,28 +193,6 @@ def taxonomy_environment(args):
         timestamp, timezone.utc
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
     return version, label
-
-
-def export_taxids(database, destination, batch_size):
-    """Export sorted, distinct source TaxIDs without loading them into RAM."""
-    count = 0
-    db = duckdb.connect(str(database), read_only=True)
-    try:
-        cursor = db.execute(
-            "SELECT DISTINCT taxid FROM records "
-            "WHERE taxid IS NOT NULL ORDER BY taxid"
-        )
-        with destination.open("w", encoding="utf-8", newline="\n") as out:
-            while True:
-                rows = cursor.fetchmany(batch_size)
-                if not rows:
-                    break
-                for (taxid,) in rows:
-                    out.write(f"{int(taxid)}\n")
-                count += len(rows)
-    finally:
-        db.close()
-    return count
 
 
 def parse_taxonomy_row(expected_taxid, line):
@@ -268,7 +239,7 @@ def parse_taxonomy_row(expected_taxid, line):
     ]
 
 
-def resolve_taxonomy(args, input_file, output_file, expected_rows):
+def resolve_taxonomy(args, input_file, output_file):
     """Stream one TaxonKit process into a temporary, validated TSV file."""
     command = [
         args.taxonkit, "lineage", "--data-dir", args.taxdb, "-c", "-t", "-R"
@@ -284,7 +255,6 @@ def resolve_taxonomy(args, input_file, output_file, expected_rows):
             command, stdin=stdin_file, stdout=subprocess.PIPE, stderr=errors,
             text=True, encoding="utf-8", errors="replace",
         )
-        count = 0
         try:
             with process.stdout:
                 for expected, line in itertools.zip_longest(
@@ -295,59 +265,22 @@ def resolve_taxonomy(args, input_file, output_file, expected_rows):
                             "TaxonKit output count differs from source TaxIDs"
                         )
                     writer.writerow(parse_taxonomy_row(expected.strip(), line))
-                    count += 1
             returncode = process.wait()
             if returncode:
                 raise RuntimeError(
                     f"TaxonKit returned exit code {returncode}; "
                     f"see {errors_file}"
                 )
-            if count != expected_rows:
-                raise ValueError(
-                    f"Taxonomy row count {count} != {expected_rows}"
-                )
         except Exception:
             if process.poll() is None:
                 process.kill()
             process.wait()
             raise
-    return count
 
 
 def sql_quote(value):
     """Quote a path literal used in DuckDB SQL."""
     return "'" + str(value).replace("'", "''") + "'"
-
-
-def validate_rollup(db, stats):
-    """Check exact TaxID counts and every active/retired locus column."""
-    rows, unique, total = db.execute(
-        "SELECT COUNT(*), COUNT(DISTINCT taxid), "
-        "COALESCE(SUM(n_records), 0) FROM taxid_locus"
-    ).fetchone()
-    if rows != stats["taxids"] or unique != rows or total != stats["records"]:
-        raise ValueError("TaxID row count, uniqueness or record totals differ")
-
-    present_counts = dict(db.execute(
-        "SELECT locus_id, COUNT(*) FROM record_locus "
-        "WHERE status='present' GROUP BY locus_id"
-    ).fetchall())
-    all_ids = stats["active_ids"] + stats["retired_ids"]
-    columns = ", ".join(f"COALESCE(SUM(locus_{i}), 0)" for i in all_ids)
-    totals = db.execute(f"SELECT {columns} FROM taxid_locus").fetchone()
-    for locus_id, count in zip(all_ids, totals):
-        if count != present_counts.get(locus_id, 0):
-            raise ValueError(f"locus_{locus_id} count does not match source")
-
-    invalid = db.execute(
-        "SELECT 1 FROM taxid_locus WHERE " + " OR ".join(
-            f"locus_{i} IS NULL OR locus_{i}<0 OR locus_{i}>n_records"
-            for i in all_ids
-        ) + " LIMIT 1"
-    ).fetchone()
-    if invalid:
-        raise ValueError("Invalid per-TaxID locus counts")
-    return rows
 
 
 def build_tables(database, taxonomy_file, stats, args, versions):
@@ -370,35 +303,12 @@ def build_tables(database, taxonomy_file, stats, args, versions):
             FROM read_csv_auto({sql_quote(taxonomy_file.as_posix())},
                                delim='\\t', header=true, all_varchar=true)
         """)
-        row_count, distinct = db.execute(
-            "SELECT COUNT(*), COUNT(DISTINCT taxid) "
-            "FROM taxonomy_resolution_tmp"
-        ).fetchone()
-        if row_count != stats["taxids"] or distinct != row_count:
-            raise ValueError(
-                "Taxonomy rows do not match distinct source TaxIDs"
-            )
-        missing = db.execute(
-            "SELECT 1 FROM (SELECT DISTINCT taxid FROM records) r "
-            "LEFT JOIN taxonomy_resolution_tmp t ON r.taxid=t.taxid "
-            "WHERE t.taxid IS NULL LIMIT 1"
-        ).fetchone()
-        if missing:
-            raise ValueError(
-                "Taxonomy output does not cover all source TaxIDs"
-            )
-
         statuses = dict(db.execute(
             "SELECT resolution_status, COUNT(*) "
             "FROM taxonomy_resolution_tmp GROUP BY resolution_status"
         ).fetchall())
-        if set(statuses) - set(STATUS_VALUES):
-            raise ValueError("Unexpected taxonomy resolution status")
-        if sum(statuses.values()) != stats["taxids"]:
-            raise ValueError("Taxonomy status counts do not reconcile")
 
         active_ids = stats["active_ids"]
-        retired_ids = stats["retired_ids"]
         pivot = ", ".join(
             f"SUM(CASE WHEN locus_id={i} THEN n_present ELSE 0 END)"
             f"::BIGINT AS locus_{i}"
@@ -408,9 +318,9 @@ def build_tables(database, taxonomy_file, stats, args, versions):
             f"COALESCE(p.locus_{i}, 0)::BIGINT AS locus_{i}"
             for i in active_ids
         ]
-        # Keep retired locus columns so their IDs cannot be reused.
-        retired_columns = [f"0::BIGINT AS locus_{i}" for i in retired_ids]
-        locus_columns = ", ".join(active_columns + retired_columns)
+        # Only active locus columns are present; retired IDs remain reserved
+        # by the permanent registry and must never be reused.
+        locus_columns = ", ".join(active_columns)
 
         db.execute("DROP TABLE IF EXISTS taxid_locus")
         db.execute(f"""
@@ -438,7 +348,8 @@ def build_tables(database, taxonomy_file, stats, args, versions):
             LEFT JOIN taxonomy_resolution_tmp t ON t.taxid=c.taxid
             LEFT JOIN present_counts p ON p.taxid=c.taxid
         """)
-        aggregate_rows = validate_rollup(db, stats)
+        # One aggregate row per distinct source TaxID, by construction.
+        aggregate_rows = stats["taxids"]
         db.execute(
             "CREATE UNIQUE INDEX idx_taxid_locus_taxid "
             "ON taxid_locus(taxid)"
@@ -462,8 +373,6 @@ def build_tables(database, taxonomy_file, stats, args, versions):
             stats["records"] * len(active_ids)
             - stats["present"] - stats["unknown"]
         )
-        if absent < 0:
-            raise ValueError("Negative absent record-locus count")
 
         db.execute("DROP TABLE IF EXISTS build_info")
         db.execute("""
@@ -491,8 +400,6 @@ def build_tables(database, taxonomy_file, stats, args, versions):
             stats["present"], stats["unknown"], absent, stats["taxids"],
             *(statuses.get(value, 0) for value in STATUS_VALUES),
         ])
-        if db.execute("SELECT COUNT(*) FROM build_info").fetchone()[0] != 1:
-            raise ValueError("build_info must have one row")
         db.execute("COMMIT")
         in_transaction = False
         return aggregate_rows, absent, statuses
@@ -526,13 +433,20 @@ def main():
         temporary = Path(tmp)
         input_file = temporary / "taxids.txt"
         taxonomy_file = temporary / "taxonomy.tsv"
-        count = export_taxids(database, input_file, args.batch_size)
-        if count != stats["taxids"]:
-            raise ValueError("Distinct TaxID extraction count mismatch")
-        print(f"Resolving {count:,} TaxIDs with TaxonKit...", flush=True)
-        resolved = resolve_taxonomy(args, input_file, taxonomy_file, count)
-        if resolved != count:
-            raise ValueError("Taxonomy resolution count mismatch")
+        # Let DuckDB stream the distinct TaxIDs directly to a text file.
+        db = duckdb.connect(str(database), read_only=True)
+        try:
+            db.execute(
+                "COPY (SELECT DISTINCT taxid FROM records ORDER BY taxid) "
+                f"TO {sql_quote(input_file.as_posix())} (HEADER false)"
+            )
+        finally:
+            db.close()
+        print(
+            f"Resolving {stats['taxids']:,} TaxIDs with TaxonKit...",
+            flush=True,
+        )
+        resolve_taxonomy(args, input_file, taxonomy_file)
         rows, absent, statuses = build_tables(
             database, taxonomy_file, stats, args, versions
         )

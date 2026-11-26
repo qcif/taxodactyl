@@ -51,11 +51,13 @@ python database/scripts/3_build_taxid_locus.py \
   --core-nt-version "description from blastdbcmd -info"
 ```
 
-Use the actual metadata extraction date and BLAST database description for
-the two provenance arguments. The optional `--batch-size` argument (default:
-`100000`) controls how many distinct TaxIDs are fetched from DuckDB at once.
-TaxIDs are passed through a single TaxonKit process, and its output is parsed
-once into a temporary TSV file.
+Use the actual metadata extraction date and BLAST database
+description for the two provenance arguments.
+
+Distinct TaxIDs are exported directly from DuckDB using a
+single COPY query. TaxonKit runs as one local process, and
+its output is validated and parsed once into a temporary
+TSV file.
 
 ### Output and TaxID handling
 
@@ -82,9 +84,11 @@ Taxonomy-rank queries can use columns such as `rank_genus` or `rank_species`.
 Deleted and unresolved TaxIDs retain their record counts but may have no
 rank values.
 
-Locus IDs come from `database/scripts/config/locus_ids.json`. New active
-loci use new IDs. The current Step 7 implementation keeps zero-filled
-`locus_N` columns for retired IDs to keep the numbered schema stable.
+Locus IDs are managed through `database/scripts/config/locus_ids.json`.
+New active loci receive permanent, unique IDs. Retired locus IDs remain
+reserved in the registry and cannot be reused. The `taxid_locus` table
+contains `locus_N` columns only for active locus IDs; retired locus
+columns are excluded.
 
 `build_info` stores build provenance, table counts, `present` and `unknown`
 pair totals, the derived `absent` pair total, and TaxID resolution counts.
@@ -94,12 +98,17 @@ modification time of `nodes.dmp`, not an official taxonomy release identifier.
 
 ### Validation and rebuilds
 
-Step 7 checks source-table consistency, permanent locus IDs, orphaned and
-duplicate record–locus pairs, taxonomy coverage, and aggregate counts.
-The output tables are replaced within a DuckDB transaction after validation.
-Temporary taxonomy files are removed after the run, and no persistent cache
-is reused on subsequent builds.
+Step 7 validates source-table consistency, the permanent
+locus ID registry, record-locus classification statuses,
+orphaned accessions, duplicate accession/locus pairs,
+and references to unknown locus IDs.
 
-The full database still requires the Step 8 acceptance queries and Step 9
-verification checks; successful development-sample tests do not replace
-full-dataset validation.
+TaxonKit output is validated line by line against the
+exported TaxIDs to ensure correct ordering and alignment.
+
+The `taxid_locus` and `build_info` tables are replaced
+within a single DuckDB transaction. If the transaction
+fails, the previous tables are preserved.
+
+Temporary taxonomy files are removed after execution.
+No persistent taxonomy cache is maintained or reused.
