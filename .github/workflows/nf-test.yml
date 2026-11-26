@@ -42,7 +42,7 @@ env:
   NFT_VER: "0.9.5"
   MOCK_BLAST: false
   # Frozen GBIF/NCBI API responses (SQLite cache) used as a test fixture so
-  # runs don't drift with live API data (#369). Empty = no fixture yet: run
+  # runs don't drift with live API data. Empty = no fixture: run
   # against live APIs. Bump both together; see test/core/README.md
   API_CACHE_VERSION: "2026-11-26"
   API_CACHE_SHA256: "1084071d621cc8c46a7a5cbda6f43c2e921a3fa1c8e7bc20c2cd717c91947df9"
@@ -66,9 +66,6 @@ jobs:
         runner: [self-hosted]
 
     steps:
-      # Singularity (rootfs-*) and Chrome/Selenium (com.google.*) leave dirs
-      # behind in /tmp. Remove any older than an hour so concurrent runs
-      # aren't affected. sudo is needed as rootfs contents may be read-only.
       - name: Clean up stale /tmp dirs
         if: always()
         continue-on-error: true
@@ -76,7 +73,7 @@ jobs:
           # Trailing slash: /tmp may be a symlink (e.g. -> /mnt/data/tmp)
           sudo find /tmp/ -maxdepth 1 -type d \
             \( -name 'rootfs*' -o -name 'com.google*' \) \
-            -mmin +60 \
+            -mmin +90 \
             -print \
             -exec rm -rf {} +
 
@@ -89,10 +86,11 @@ jobs:
       # Fetch the repo so nf-test.config, test/, and workflows/ are on disk
       - uses: actions/checkout@v7
 
-      # cached: install the pinned API-cache fixture before the run.
-      # live: start from an empty cache (use_cache=false, or no fixture pinned)
       - name: Select API cache mode
         env:
+          # cached: install the pinned API-cache fixture before the run.
+          # live: start from an empty cache (use_cache=false, or no fixture
+          # pinned)
           USE_CACHE: ${{ inputs.use_cache }}
         run: |
           if [[ "$USE_CACHE" == "false" ]]; then
@@ -106,10 +104,6 @@ jobs:
           echo "API_CACHE_MODE=$mode" >> "$GITHUB_ENV"
           echo "API cache mode: $mode"
 
-      # Record which code was tested, saved with the run files on the
-      # self-hosted runner. On pull_request events the checked-out commit is a
-      # temporary merge commit, so the PR head commit is recorded too.
-      # Values are passed via env (not inlined) as branch names are untrusted.
       - name: Record run info
         env:
           HEAD_REF: ${{ github.head_ref || github.ref_name }}
@@ -143,12 +137,6 @@ jobs:
         with:
           singularity-version: 3.8.7
 
-      # Processes run under Singularity, which pulls docker:// images from the
-      # registry (not the Docker daemon). Clear the persistent default cache
-      # ($HOME/.singularity/cache) so the image under test is pulled fresh
-      # rather than reused from an earlier run. This run's own caches
-      # (SINGULARITY_CACHEDIR, Nextflow cacheDir) are set under $RUNNER_TEMP
-      # in a later step and start empty
       - name: Clear Singularity cache
         run: |
           du -sh "$HOME/.singularity/cache" 2>/dev/null || true
