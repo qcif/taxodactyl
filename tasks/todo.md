@@ -51,13 +51,13 @@ One bullet per item: what needs doing and why, its origin
   (P3-D-008). Task 12's core check `C.pmi` deliberately fails, labelled as a
   known defect, until this is fixed (user decision). Add a Python unit test.
   Origin: task 12_core_nf_test_assertions, 2026-11-23.
-- Create, check and upload the first nf-test API-cache fixture, pin
-  `API_CACHE_VERSION`/`API_CACHE_SHA256` in `.github/workflows/nf-test.yml`
-  and `api-cache:` in `test/core/README.md`, confirm two cached runs agree,
-  and re-baseline the core snapshot, flags and Selenium expected reports in
-  the same PR. Until then every run is live and drifts. Steps are in
-  `test/core/README.md` ("Refreshing the API-cache fixture") and the
-  task's hand-off. Origin: task 14_cache_nf_test_api_responses, #369,
+- Finish validating nf-test API-cache fixture `2026-11-26` (pinned in
+  PR #371): confirm two cached runs agree apart from reported cache
+  misses, do one `use_cache=false` run, and re-baseline the core snapshot,
+  flags and Selenium expected reports against the fixture in the same PR.
+  Until the re-baseline, cached runs still fail against the 2026-08-04
+  live-data baselines. Steps are in `test/core/README.md` ("Refreshing the
+  API-cache fixture") and the task's hand-off. Origin: task 14_cache_nf_test_api_responses, #369,
   2026-11-25.
 - Update TST-024's trigger and runner description in `spec/tests.md`: it
   says the workflow runs only when dispatched by hand, on a GitHub-hosted

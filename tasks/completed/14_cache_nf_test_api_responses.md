@@ -563,10 +563,31 @@ Implemented 2026-11-25 on branch `task-14-cache-nf-test-api-responses`.
 
 ### Manual validation (user-owned): pending
 
-Hand-off steps 1–8 (fixture run A, secrets check, upload, pin, runs B/C/D,
-re-baseline) are **pending** until the user provides evidence. Until a
-version is pinned, every run is in live mode with a warning, so CI behaves
-as it does today. Tracked in `tasks/todo.md`.
+Hand-off steps 1–4 are done (2026-11-26):
+
+1. Run A: build-pr run 45719123995 on PR #371 (live mode). Its saved
+   `cache_db.sqlite` was downloaded for review.
+2. Checked without unpickling: `integrity_check` ok; only the `cache`
+   table (plus its primary-key index); `journal_mode` `delete`, no
+   free pages, no sidecar files; 3,156 rows, all 64-hex keys and
+   non-empty pickles, created 2026-11-25 23:28 → 2026-11-26 00:00 UTC.
+   Values: 1,865 Biopython Entrez results (the only pickle imports are
+   `Bio.Entrez.Parser.{List,Dictionary,String}Element`), 945 NCBI XML
+   payloads, 346 GBIF dicts/lists. The local `NCBI_API_KEY`/`USER_EMAIL`
+   and the git email: 0 occurrences in rows and in the raw file; no
+   36-hex key-shaped tokens; no `api_key`/`token`/`password`. Emails and
+   "secret" hits are public record data. 8 rows are empty lists, which
+   are frozen until the next version (CCH-D-003). Not checked: the CI
+   repository secrets, if they differ from the local values.
+3. Packaged as `2026-11-26/cache_db.sqlite` → `2026-11-26.zip` (18 MB;
+   zip SHA-256 `ef8d183c…31de6e`) and uploaded by the user. The anonymous
+   download was verified: the zip hash and the database hash both match.
+4. Pinned: `API_CACHE_VERSION: "2026-11-26"`, `API_CACHE_SHA256:
+   1084071d621cc8c46a7a5cbda6f43c2e921a3fa1c8e7bc20c2cd717c91947df9`,
+   `api-cache: 2026-11-26` in `test/core/README.md`.
+
+Steps 5–8 (cached runs B and C, live run D, re-baseline) are **pending**
+until the user provides evidence. Tracked in `tasks/todo.md`.
 
 ### Spin-offs
 

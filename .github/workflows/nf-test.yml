@@ -44,8 +44,8 @@ env:
   # Frozen GBIF/NCBI API responses (SQLite cache) used as a test fixture so
   # runs don't drift with live API data (#369). Empty = no fixture yet: run
   # against live APIs. Bump both together; see test/core/README.md
-  API_CACHE_VERSION: ""
-  API_CACHE_SHA256: ""
+  API_CACHE_VERSION: "2026-11-26"
+  API_CACHE_SHA256: "1084071d621cc8c46a7a5cbda6f43c2e921a3fa1c8e7bc20c2cd717c91947df9"
 
 jobs:
   nf-test:

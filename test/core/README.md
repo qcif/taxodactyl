@@ -4,7 +4,7 @@ version: 1.0
 date: 2026-08-04
 taxonkit: 2026-05-08
 blastdb: 2026-07-29/subset_core_nt
-api-cache: none (pending first fixture)
+api-cache: 2026-11-26
 
 This test scenario consists of a diverse set of samples as described by `metadata.csv`.
 
