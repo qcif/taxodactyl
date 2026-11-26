@@ -586,8 +586,33 @@ Hand-off steps 1–4 are done (2026-11-26):
    1084071d621cc8c46a7a5cbda6f43c2e921a3fa1c8e7bc20c2cd717c91947df9`,
    `api-cache: 2026-11-26` in `test/core/README.md`.
 
-Steps 5–8 (cached runs B and C, live run D, re-baseline) are **pending**
-until the user provides evidence. Tracked in `tasks/todo.md`.
+5. Runs B and C (2026-11-26, cached, default inputs): build-pr run
+   45751226207 attempt 1 (B, 55 min) and attempt 2 (C, re-run on the same
+   commit `fdc9c1d`, 39 min). In each: the install step's hash check passed
+   and logged "Fixture 2026-11-26: 3156 cached responses"; `run_info.txt`
+   shows `api_cache: cached` and `api_cache_version: 2026-11-26`; "Report
+   API cache" showed 3156 → 3156, i.e. **0 cache misses**. Each saved cache
+   has the same contents as the fixture (all 3,156 keys, values and
+   `created_at` equal). Its file hash `29d7f150…` differs from the
+   fixture's only because SQLite rewrote the file when compacting it.
+6. B vs C: `flags_results.txt`, `flags_errors.txt`,
+   `nf-test_errors.csv`, `nf-test_errors_summary.csv` and
+   `flags/evaluated/` are byte-identical. nf-test fails the same assertion
+   in both (`ch_db_coverage_maps` size 41, baseline expects 34), which stops
+   nf-test before the snapshot comparison. Selenium: 20 passed in both, and
+   `review.html` is identical apart from timestamps and durations. No class
+   (a), (b) or (c) differences, so no new issues. B was also
+   byte-identical to live run A on flags and nf-test output, as expected
+   since the fixture is run A's data.
+
+Also seen during run B: `daff-runner`'s root filesystem was 100% full (0
+bytes free). The cause was the old "Force pull latest Docker image" step
+filling Docker storage, since the test runs under Singularity. The user
+cleared about 25 GB, and #372 replaced the step with a Singularity cache
+clean.
+
+Steps 7–8 (live run D, re-baseline) are **pending**. Tracked in
+`tasks/todo.md`.
 
 ### Spin-offs
 

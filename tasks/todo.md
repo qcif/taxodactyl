@@ -52,11 +52,11 @@ One bullet per item: what needs doing and why, its origin
   known defect, until this is fixed (user decision). Add a Python unit test.
   Origin: task 12_core_nf_test_assertions, 2026-11-23.
 - Finish validating nf-test API-cache fixture `2026-11-26` (pinned in
-  PR #371): confirm two cached runs agree apart from reported cache
-  misses, do one `use_cache=false` run, and re-baseline the core snapshot,
-  flags and Selenium expected reports against the fixture in the same PR.
-  Until the re-baseline, cached runs still fail against the 2026-08-04
-  live-data baselines. Steps are in `test/core/README.md` ("Refreshing the
+  PR #371; cached runs B and C agree, 0 cache misses): do one
+  `use_cache=false` run, and re-baseline the core snapshot (including the
+  `ch_db_coverage_maps` count, now 41 vs 34), flags and Selenium expected
+  reports against the fixture in the same PR. Until the re-baseline,
+  cached runs still fail against the 2026-08-04 live-data baselines. Steps are in `test/core/README.md` ("Refreshing the
   API-cache fixture") and the task's hand-off. Origin: task 14_cache_nf_test_api_responses, #369,
   2026-11-25.
 - Update TST-024's trigger and runner description in `spec/tests.md`: it
