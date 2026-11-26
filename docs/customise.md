@@ -32,7 +32,7 @@ TAXODACTYL_IMAGE=docker.io/neoformit/taxodactyl:ds87dyc nextflow run main.nf -pr
 
 This works for local, HPC and Azure Batch (`-profile azure`) runs. Give the image without a scheme. A leading `docker://` is accepted and removed. To check which image will be used, run `nextflow config -profile <profile> . | grep -A1 daff_tax_assign`.
 
-In CI, the `build-pr` workflow does this for every pull request to `main`. If the PR changes the Python scripts, it builds and pushes `neoformit/taxodactyl:<branch-name>` (with `/` and other invalid characters replaced by `-`), and nf-test runs against that image. Otherwise nf-test uses `:main`. The branch tag is deleted from Docker Hub when the PR is closed. To run nf-test by hand against any image, trigger the `nf-test` workflow from the Actions tab and set the `image` input.
+In CI, the `build-pr` workflow does this for pull requests to `main`. If the PR changes the Python scripts, it builds and pushes `neoformit/taxodactyl:<branch-name>` (with `/` and other invalid characters replaced by `-`) on every push. When the `nf-test` label is added to the PR, nf-test runs against that image, or against `:main` if the PR doesn't change the Python scripts. The branch tag is deleted from Docker Hub when the PR is closed. To run nf-test by hand against any image, trigger the `nf-test` workflow from the Actions tab and set the `image` input.
 
 ### Customising resources for a process
 
