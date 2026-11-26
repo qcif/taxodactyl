@@ -435,7 +435,8 @@ in this phase still apply unchanged.
 - Review `.github/workflows/mock-nf-test.yml`: its frozen artifact predates the
   new XML and may only support legacy post-processing. Explicitly report missing
   new evidence; do not claim it validates assertions or manufacture passing XML.
-- Keep self-hosted retention under `/var/runner/<timestamp>/` and existing
+- Keep self-hosted retention under `/var/runner/<timestamp>/` (renamed to
+  `/var/runner/assertions-<run_number>-<run_attempt>/` on 2026-11-25, Phase 11) and existing
   Selenium artifacts working. Provide a copyable targeted rerun command using
   supported nf-test selection and current config. Verify any cache/reexecution
   option against 0.9.5 before documenting it; do not promise assertion-only replay.
@@ -744,7 +745,7 @@ contents.
   not checked, as with Selenium's `review.html`. Its evidence links only work
   inside the bundle.
 - **Lossless retention:** keep `cp -a` to `/var/runner/<timestamp>/` and also
-  write `/var/runner/<timestamp>/nf-test-run.tar.gz` with `tar`, which keeps
+  write `/var/runner/<timestamp>/nf-test-run.tar.gz` (directory renamed in Phase 11) with `tar`, which keeps
   symlinks and case. Document using that tarball when copying a run elsewhere.
 - **Retire legacy gates (approved 2026-11-23):** remove the "Test flags"
   step and `--flags_results` from "Copy error workdirs", and delete
@@ -1238,6 +1239,21 @@ User requests (2026-11-25):
    - drift next step: "promote only if expected, otherwise treat it as a
      regression"; the shared `rule_fail` text in `schema.yaml` says "likely cause".
 
+### Phase 11 — Revision 2026-11-25: name retained runs by run number
+
+User request (2026-11-25): in `.github/workflows/nf-test-core-assertions.yml`,
+step "Save run files on self-hosted runner", name the retained directory
+`dir_name="${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"` instead of
+`timestamp=$(date "+%F_%H%M%S")`, following `.github/workflows/nf-test.yml` on
+`main` (commit `f7fbfd8`). `cp -a`, `reports.zip`, `nf-test-run.tar.gz` and the
+printed `scp` hint all use the new directory. Update `test/core/README.md` and
+`spec/tests.md` (TST-029).
+
+`GITHUB_RUN_NUMBER` is counted per workflow, so run *N* of `nf-test.yml` and
+run *N* of `nf-test-core-assertions.yml` would share `/var/runner/N-1/` and
+`cp -a` would mix them. **Decision (user, 2026-11-26):** prefix the directory:
+`dir_name="assertions-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"`.
+
 ## Open decisions and risks
 
 - Phase 6 decisions recorded and implementation authorized 2026-11-23 (6.6).
@@ -1635,3 +1651,16 @@ Implemented in the task worktree. **Not committed.**
 - **Validation:** 27 Groovy contract scenarios passed; 43 Python tests passed;
   all expected YAML files still load. **Not run:** the full core nf-test or
   GitHub Actions.
+
+### Phase 11 implementation — 2026-11-25
+
+Implemented in the task worktree. **Not committed.**
+
+- `.github/workflows/nf-test-core-assertions.yml`: retained directory is
+  `/var/runner/assertions-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}/`, like
+  `nf-test.yml` on `main` but prefixed so the two workflows never collide. The branch's own `nf-test.yml` still uses a
+  timestamp until it is merged with `main`.
+- Docs: `test/core/README.md` (CI list, bundle note), `spec/tests.md` (TST-029,
+  provenance).
+- **Not run:** GitHub Actions. `.agents/skills/investigate-runner` and
+  `selenium-report` still describe `/var/runner/<timestamp>/`.
