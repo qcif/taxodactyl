@@ -236,6 +236,13 @@ when the repository has a top-level `tasks/` directory.
    - Check that implemented features match the original specification
    - Validate that tests pass and coverage meets requirements
    - Confirm the implementation follows the technical plan
+   - If a change in the workflow report is expected, you should render a new
+     workflow report for the user to view, and tell them the path to it. You
+     should do this by running the changed code to create the required outputs,
+     followed by the `scripts/p6_report.py` script. The integration tests are
+     a great way to run the full suite of Python scripts and produce a report
+     without running the Nextflow workflow (this is a common use-case; see
+     .vscode/launch.config).
 
 Note: If the numbered task brief is missing or materially underspecified,
 stop and report the missing information. Suggest `$speckit-tasks` only when a

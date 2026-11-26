@@ -128,11 +128,6 @@ jobs:
             echo "api_cache_version: ${API_CACHE_VERSION:-none}"
           } | tee "$RUNNER_TEMP/nf-test/run_info.txt"
 
-      # Ensure the latest build of the image under test is pulled
-      - name: Force pull latest Docker image
-        run: docker pull "$TAXODACTYL_IMAGE"
-        continue-on-error: true
-
       # nf-test shells out to a real `nextflow` binary - it doesn't bundle one
       # Version installed on testing VM, 25.04.6, rather than latest-everything
       # (later versions use stricter syntax parsing)
@@ -147,6 +142,18 @@ jobs:
         uses: eWaterCycle/setup-singularity@v7
         with:
           singularity-version: 3.8.7
+
+      # Processes run under Singularity, which pulls docker:// images from the
+      # registry (not the Docker daemon). Clear the persistent default cache
+      # ($HOME/.singularity/cache) so the image under test is pulled fresh
+      # rather than reused from an earlier run. This run's own caches
+      # (SINGULARITY_CACHEDIR, Nextflow cacheDir) are set under $RUNNER_TEMP
+      # in a later step and start empty
+      - name: Clear Singularity cache
+        run: |
+          du -sh "$HOME/.singularity/cache" 2>/dev/null || true
+          singularity cache clean --force
+          df -h /
 
       # nf-test is the test runner itself; pin NFT_VER above if reproducibility
       # across CI runs matters more than always testing the latest release
