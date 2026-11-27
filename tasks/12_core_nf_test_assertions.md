@@ -443,7 +443,8 @@ in this phase still apply unchanged.
   new XML and may only support legacy post-processing. Explicitly report missing
   new evidence; do not claim it validates assertions or manufacture passing XML.
 - Keep self-hosted retention under `/var/runner/<timestamp>/` (renamed to
-  `/var/runner/assertions-<run_number>-<run_attempt>/` on 2026-11-25, Phase 11) and existing
+  `/var/runner/assertions-<run_number>-<run_attempt>/` on 2026-11-25, Phase 11, then
+  `/var/runner/assertions-<run_id>-<run_attempt>/` on 2026-11-27, Phase 13) and existing
   Selenium artifacts working. Provide a copyable targeted rerun command using
   supported nf-test selection and current config. Verify any cache/reexecution
   option against 0.9.5 before documenting it; do not promise assertion-only replay.
@@ -1303,6 +1304,20 @@ for flag 5.3 (`flag_text3`), flag 4 and source accessions in the publication
 modal, every in-country bar, coverage-state messages and tree `leafNames`;
 confirm that a Selenium pytest failure fails the CI job (`set +e` step).
 
+### Phase 13 — Revision 2026-11-27: name retained runs by run ID
+
+User request (2026-11-27): in `.github/workflows/nf-test-core-assertions.yml`,
+step "Save run files on self-hosted runner", use `GITHUB_RUN_ID` instead of
+`GITHUB_RUN_NUMBER`:
+`dir_name="assertions-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"`. Review spec,
+docs and skills.
+
+`GITHUB_RUN_ID` is unique across all workflows in the repository, so the
+directory can no longer collide with `nf-test.yml`'s
+`<run_number>-<run_attempt>` directories even without the prefix. The
+`assertions-` prefix is kept so the directory shows which workflow wrote it.
+Update `test/core/README.md` and `spec/tests.md` (TST-029, provenance).
+
 ## Open decisions and risks
 
 - Phase 6 decisions recorded and implementation authorized 2026-11-23 (6.6).
@@ -1744,3 +1759,20 @@ Implemented in the task worktree. **Not committed.**
 - **Validation:** 23 Groovy contract scenarios passed; 42 Python tests passed.
   **Not run:** the full core nf-test or GitHub Actions; the real expected files
   have not been re-evaluated against a run.
+
+### Phase 13 implementation — 2026-11-27
+
+Implemented in the task worktree. **Not committed.**
+
+- `.github/workflows/nf-test-core-assertions.yml`: retained directory is
+  `/var/runner/assertions-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}/`; comment
+  explains the run ID is unique across workflows and the prefix names the
+  workflow. `cp -a`, `reports.zip`, `nf-test-run.tar.gz` and the `scp` hint use
+  `$dir_name` and needed no change.
+- Docs: `test/core/README.md` (CI list with example
+  `assertions-12345678901-1`, bundle note), `spec/tests.md` (TST-029,
+  provenance). `docs/` has no reference to the directory name.
+- Skills: `.agents/skills/investigate-runner` and `selenium-report` (and their
+  `.claude/skills` copies) still describe `/var/runner/<timestamp>/`; not
+  changed by this phase (already stale since Phase 11).
+- **Not run:** GitHub Actions.
