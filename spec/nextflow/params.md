@@ -14,15 +14,16 @@ determined from code, not from schema descriptions.
 
 | Param | Type / default | Constraint | Consumer |
 |---|---|---|---|
-| `metadata` | path, none (required) | `.csv`, exists | `PREPARE_INPUTS` |
-| `sequences` | path, none | fasta ext, exists | `PREPARE_INPUTS` (absent ⇒ P0 reads `sequence` column) |
+| `metadata` | path, none (required unless `coverage_taxa`; NF-WF-013) | `.csv`, exists | `PREPARE_INPUTS` |
+| `sequences` | path, none | fasta ext, exists; not with `coverage_taxa` | `PREPARE_INPUTS` (absent ⇒ P0 reads `sequence` column) |
+| `coverage_taxa` | path, none | `.csv`, exists; not with `metadata` or `sequences` | selects database coverage mode (NF-WF-001); `VALIDATE_COVERAGE_TAXA` |
 | `outdir` | dir, `output` | — | publishDir everywhere; bind mounts; trace/report paths |
 | `db_type` | enum, `blast_core_nt` | `blast_core_nt`\|`bold` | branch (NF-WF-030); `--bold` on P0/P3/P5/P6 |
-| `blastdb` | path, none | required if `blast_core_nt` (NF-WF-013) | `BLAST_BLASTN`, `BLAST_BLASTDBCMD` |
+| `blastdb` | path, none | required if `blast_core_nt`, except in database coverage mode (NF-WF-013) | `BLAST_BLASTN`, `BLAST_BLASTDBCMD` |
 | `taxdb` | dir, none (schema-required) | — | bind; P0 `--taxdb-dir`; env `TAXONKIT_DATA` |
 | `blast_xml` | path, none | `.xml`, exists | `MOCK_BLASTN` only (with `mock_blast`) |
 | `mock_blast` | bool, `false` | hidden | workflow branch (NF-WF-031) |
-| `allowed_loci_file` | path, `${projectDir}/scripts/config/loci.json` | `.json`, exists | `VALIDATE_INPUT`, `EVALUATE_DATABASE_COVERAGE`, `REPORT` (bind parent dir + `--allowed-loci-file` to P0) |
+| `allowed_loci_file` | path, `${projectDir}/scripts/config/loci.json` | `.json`, exists | `VALIDATE_INPUT`/`VALIDATE_COVERAGE_TAXA`, `EVALUATE_DATABASE_COVERAGE`, `REPORT`/`REPORT_COVERAGE` (bind parent dir + `--allowed-loci-file` to P0) |
 | `analyst_name` | string, none | — | `REPORT --analyst-name` |
 | `facility_name` | string, none | — | `REPORT --facility-name` |
 

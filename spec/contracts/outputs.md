@@ -30,11 +30,24 @@ in the Nextflow work directory.
     └── report_[BOLD_]<sample_id>_<timestamp>.html
 ```
 
+In database coverage mode (NF-WF-001, §6 of [workflow.md](../nextflow/workflow.md))
+the tree is smaller: no `blast_result.xml` and **no query directories**.
+Everything per taxon stays in the work directory.
+
+```
+<outdir>/
+├── report_[BOLD_]coverage_<timestamp>.html   one report for every taxon (P6-052)
+├── run.log
+├── pipeline_info/                    as above
+└── errors/<PROCESS>/<tag>.{out,err,log}     only if a task failed/aborted
+```
+
 | ID | Requirement |
 |---|---|
 | OUT-001 | A query directory exists in `<outdir>` iff at least one of its listed files was produced (created lazily by `publishDir`). A query that failed early has **no** directory. |
 | OUT-002 | The HTML report is the only place flags, source diversity, database coverage, maps and non-fatal errors are presented. |
 | OUT-003 | Report file name uses the sample id with `.` replaced by `_` and every character outside `[\w\-_.]` replaced by `_`; the timestamp is the workflow start (`YYYY-MM-DD_HH:MM:SS` sanitised) or `DEBUG`. |
+| OUT-005 | In database coverage mode exactly one report is published, unless every `EVALUATE_DATABASE_COVERAGE` task failed, in which case there is none (NF-WF-084). |
 | OUT-004 | The output directory MUST NOT contain secrets. **Violated** by `params_<ts>.json` and the report (P6-D-001). |
 
 ## Gaps
@@ -49,7 +62,7 @@ in the Nextflow work directory.
 
 ## Provenance
 
-**Initially derived from:** every `publishDir` directive (all `mode: 'copy'`), `conf/misc.config`, `main.nf`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** every `publishDir` directive (all `mode: 'copy'`), `conf/misc.config`, `main.nf`. Database coverage mode added from `ef96c8f` (#323). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

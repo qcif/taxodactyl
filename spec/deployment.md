@@ -21,14 +21,14 @@ for the `nf-core/modules`-sourced tools.
 
 | Image | Built from | Contents | Tag |
 |---|---|---|---|
-| `neoformit/taxodactyl` | `scripts/Dockerfile` | `python:3.12` + taxonkit + `scripts/` **source and requirements** at `/app/scripts` | `v<VERSION>` and `latest` |
+| `neoformit/taxodactyl` | `scripts/Dockerfile` | `python:3.12` + taxonkit + `scripts/` **source and requirements** at `/app/scripts` | `v<VERSION>` and `latest` (release, DEP-021); `main` (DEP-024); `<branch>` while a PR is open (DEP-025) |
 | `ncbi/blast` | upstream | BLAST+ | `2.16.0` |
 | MAFFT mulled image, `fastme` biocontainer | upstream | — | pinned in `conf/process.config` |
 
 | ID | Requirement |
 |---|---|
 | DEP-010 | The analysis image MUST contain every executable the Python layer invokes: `taxonkit` (present), `hmmsearch` (**absent**, P1B-D-001). |
-| DEP-011 | The pipeline MUST reference the analysis image by an explicit version tag in `conf/process.config` and `conf/azure.config`; it MUST NOT use `latest`. (Satisfied: both say `v1.5.0`. But the tag no longer matches the code version, `1.5.1` — `DEP-D-013`.) |
+| DEP-011 | A release MUST reference the analysis image by its version tag, `v<VERSION>`, in `conf/process.config` and `conf/azure.config`; it MUST NOT use `latest`. Between releases both configs reference `neoformit/taxodactyl:main` (since `48dc4e8`), and the release checklist (`.github/release_template.md`) re-pins them; a run from `main` is therefore not reproducible from the commit (`DEP-D-014`). Either can be overridden per run with `TAXODACTYL_IMAGE` (DEP-026). |
 | DEP-012 | `scripts/Dockerfile.update` builds `FROM neoformit/taxodactyl:latest` and copies the current `scripts/` over it (`docker_build.sh -u`): a code-only rebuild that inherits whatever `latest` currently is. It MUST NOT be used for releases (DEP-D-002). |
 | DEP-013 | `scripts/docker_build.sh` builds `<image>:<tag>`, tags it `latest`, and with `-p` pushes both. |
 
@@ -36,10 +36,13 @@ for the `nf-core/modules`-sourced tools.
 
 | ID | Requirement |
 |---|---|
-| DEP-020 | A release MUST update the version in **five** places: `conf/manifest.config` (`version`), `scripts/VERSION`, `scripts/pyproject.toml` (`version`), the `daff_tax_assign` image tag in `conf/process.config` and in `conf/azure.config`. (`scripts/README.md` lists four, including `cloudgene.yml`, and omits the two image tags. `cloudgene.yml` is no longer in this repository — removed in `3339050`; the Cloudgene workflow file lives in the `daff-cloudgene` repo.) The `1.5.1` bump in `3339050` updated the first three and not the two image tags (`DEP-D-013`). |
+| DEP-020 | A release MUST update the version in **five** places: `conf/manifest.config` (`version`), `scripts/VERSION`, `scripts/pyproject.toml` (`version`), the `daff_tax_assign` image tag in `conf/process.config` and in `conf/azure.config`. (`cloudgene.yml` is no longer in this repository — removed in `3339050`; the Cloudgene workflow file lives in the `daff-cloudgene` repo.) Between releases the two image tags read `main` (DEP-011). |
 | DEP-021 | Publishing a GitHub release triggers `.github/workflows/build.yml`: it MUST fail unless `v$(cat scripts/VERSION)` equals the release tag, then run `docker_build.sh -p -t <tag>` (pushing `<tag>` and `latest` to Docker Hub with repository secrets). |
 | DEP-022 | The build workflow does not verify that `manifest.version`, `pyproject.toml` or the config image tags match the release tag (DEP-D-001). |
 | DEP-023 | Before release, surfaces 2–4 of [tests.md](tests.md) SHOULD be run and the reference-data versions recorded. |
+| DEP-024 | A push to `main` that changes `scripts/**.py`, `scripts/Dockerfile`, `scripts/requirements.txt` or `scripts/config/**` (or a manual dispatch) triggers `.github/workflows/build-main.yml`, which builds `scripts/Dockerfile` and pushes `neoformit/taxodactyl:main`. It does not use `docker_build.sh`, so `latest` is not moved. |
+| DEP-025 | A pull request to `main` triggers `.github/workflows/build-pr.yml`. If the PR changes the same paths as DEP-024 (diffed against the base branch), it builds and pushes `neoformit/taxodactyl:<branch>` (branch name with characters outside `[A-Za-z0-9_.-]` replaced by `-`, at most 128 characters) and checks the tag exists remotely; otherwise the tag is `main`. It then calls `nf-test.yml` with that image ([tests.md](tests.md) TST-024). When the PR is closed, it deletes the branch tag from Docker Hub, refusing to delete `main`, `latest` or any `v…` tag. |
+| DEP-026 | The `daff_tax_assign` container MUST be `$TAXODACTYL_IMAGE` when that variable is set in the environment that launches Nextflow (a leading `docker://` is stripped; NF-CF-011, NF-CF-021), so a run can test any image without editing config. `deployment/azure/run-taxodactyl*.sh` pass it through. |
 
 ## 4. Reference data
 
@@ -75,7 +78,7 @@ moving these values out of the repo.
 | Batch account | `daffbatch`, `australiaeast` |
 | Secrets | Key Vault via pool managed identity (`AZURE_KEY_VAULT_URL`); Batch and storage keys via `.env.azure` (not committed; `.env.sample` documents it) |
 | Redis | dedicated VM (`redis-vm-setup.sh`) or on-demand |
-| Entry script | `deployment/azure/run-taxodactyl.sh`: sources `.env.azure`, asks for confirmation, runs `nextflow run main.nf -profile azure …` |
+| Entry scripts | `deployment/azure/run-taxodactyl.sh`: sources `.env.azure`, asks for confirmation, runs `nextflow run main.nf -profile azure …`. `run-taxodactyl-coverage.sh` does the same in database coverage mode (`--coverage-taxa <csv>` instead of `--metadata`/`--sequences`/`--blastdb`). |
 | Docs | `docs/azure/01…07*.md` (setup, pool management, reference data, start tasks, troubleshooting, maintenance, Key Vault, Redis) |
 
 The two items below *are* general requirements — they'd apply to any
@@ -90,21 +93,20 @@ Azure Batch deployment of this pipeline, not just DAFF's:
 
 | ID | Severity | Defect |
 |---|---|---|
-| DEP-D-001 | Medium | Release consistency is checked only for `scripts/VERSION` vs the tag; the other four version locations can drift silently (e.g. image tag ≠ code). |
+| DEP-D-001 | Medium | Release consistency is checked only for `scripts/VERSION` vs the tag; the other four version locations can drift silently (e.g. image tag ≠ code). Re-pinning the image tags from `main` is a manual checklist item; if it's missed, the release runs whatever `:main` is (`DEP-D-014`). |
 | DEP-D-002 | Medium | `docker_build.sh` always re-tags `latest` locally and, with `-p` (every CI release), pushes it to Docker Hub, and `Dockerfile.update` derives from `latest`, so a code-only update can be layered on a different base than the versioned tag intended. |
 | DEP-D-003 | Medium | `Dockerfile` is not reproducible: floating `python:3.12` base and taxonkit from `releases/latest` (IMG-D-001); `apt install nano less` in production. |
 | DEP-D-005 | Low | `run-taxodactyl.sh` uses `set -e` before `exit_code=$?`, so a failed run exits before the failure message. |
 | DEP-D-006 | Low | Azure account names, pool, region and `/mnt/nvme/refdata` are hard-coded in `conf/azure.config`; a second tenant needs a fork or edit. |
-| DEP-D-007 | Low | `scripts/README.md`'s release section is out of date (`cloudgene.yml`, four locations); `scripts/dev/render_docs.py` is referenced for docs but docs rendering is not part of release automation. |
+| DEP-D-007 | Low | `scripts/dev/render_docs.py` is referenced for docs but docs rendering is not part of release automation. |
 | DEP-D-008 | Medium | `.env.sample` sets `NODE_AGENT_SKU="batch.node.ubuntu 24.04"` / `IMAGE_TAG=canonical:ubuntu-24_04-lts:server`, but the committed `deployment/azure/pool-setup.json.template` and every `docs/azure/*.md` walkthrough (01, 02, 04) consistently use Ubuntu **20.04** (`batch.node.ubuntu 20.04`, `ubuntu-server-container:20-04-lts`, container image `ubuntu:20.04`), with 02 explicitly stating "We use Ubuntu 20.04 for Docker container compatibility". An operator who copies `.env.sample` to `.env.azure` as instructed and runs `az batch pool create --image $IMAGE_TAG --node-agent-sku-id "$NODE_AGENT_SKU"` creates a pool on a different OS than the one every doc and template assumes, risking the exact container-compatibility problem the docs say 20.04 was chosen to avoid. Either `.env.sample` is stale relative to the template/docs, or the template/docs were never updated after a 24.04 migration — *to confirm which*. |
-| DEP-D-010 | Low | `docs/detailed_tech.md` lists the analysis image as `taxodactyl:v1.0.0`; the actual pinned tag, here and in `conf/azure.config`, is `v1.5.0` (`DEP-011`). |
-| DEP-D-013 | High | **Version `1.5.1` runs the `1.5.0` container, so the 1.5.1 Python fixes never run in the pipeline.** `3339050` set `1.5.1` in `conf/manifest.config`, `scripts/VERSION` and `scripts/pyproject.toml`, but `conf/process.config` and `conf/azure.config` still pin `neoformit/taxodactyl:v1.5.0`, and Docker Hub has no `v1.5.1` tag (only `1.5.1-dev`). Every `p0`–`p6` script runs from `/app/scripts` inside that image (`COPY . /app/scripts` in the Dockerfile), not from the checkout. Example: a user runs 1.5.1 with a cp1252 metadata CSV. The Nextflow side is new, so nf-schema no longer reads the CSV. The P0 that then runs is the 1.5.0 one, which has no encoding repair and opens the file with the default encoding (UTF-8 in the `python:3.12` base image), so `VALIDATE_INPUT` fails with a Python `UnicodeDecodeError` traceback instead of either the old nf-schema message or the new repair. The `ß` → `β` fix and the `.xlsx` check don't run either. Meanwhile the report's software-versions table says `qcif/taxodactyl v1.5.1`, because that row comes from `workflow.manifest`, not from the image, so the report claims a version whose Python code did not run. Publishing a `v1.5.1` GitHub release would build and push a `v1.5.1` image (`DEP-021`), but the configs would still pull `v1.5.0`. The validation web service is unaffected: it imports `scripts/` from its own checkout. Release checks don't catch this (`DEP-D-001`). |
+| DEP-D-014 | Medium | Between releases, `conf/process.config` and `conf/azure.config` reference the moving `neoformit/taxodactyl:main` tag (since `48dc4e8`), rebuilt by `build-main.yml` (DEP-024) whenever the Python scripts change on `main`. A run from `main` uses whatever image `:main` was when Singularity or Azure pulled it (or a cached older copy), not one the commit determines, while the report's versions table names `manifest.version`. CONSTITUTION rule 11 forbids only `latest`, but `main` moves the same way. Mitigated for CI, which clears the Singularity cache and can pass an explicit image (TST-024). |
 
 ---
 
 ## Provenance
 
-**Initially derived from:** `scripts/Dockerfile`, `scripts/Dockerfile.update`, `scripts/docker_build.sh`, `.github/workflows/build.yml`, `conf/process.config`, `conf/azure.config`, `conf/manifest.config`, `deployment/azure/**`, `.env.sample`. DEP-D-013 and the `cloudgene.yml` removal added from `3339050`, with the Docker Hub tag list for `neoformit/taxodactyl` checked on 2026-10-21. See [README.md Version](README.md#version) for the exact commit.
+**Initially derived from:** `scripts/Dockerfile`, `scripts/Dockerfile.update`, `scripts/docker_build.sh`, `.github/workflows/build.yml`, `conf/process.config`, `conf/azure.config`, `conf/manifest.config`, `deployment/azure/**`, `.env.sample`. The `cloudgene.yml` removal added from `3339050`. DEP-011, DEP-024..026 and DEP-D-014 updated from `48dc4e8`, `9da958a`, `91fe43e` and `fe65a14` (image `main` tag, `build-main.yml`, `build-pr.yml`, `TAXODACTYL_IMAGE`); `run-taxodactyl-coverage.sh` from `ef96c8f`. See [README.md Version](README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

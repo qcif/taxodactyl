@@ -242,7 +242,7 @@ when the repository has a top-level `tasks/` directory.
      followed by the `scripts/p6_report.py` script. The integration tests are
      a great way to run the full suite of Python scripts and produce a report
      without running the Nextflow workflow (this is a common use-case; see
-     .vscode/launch.config).
+     .vscode/launch.json).
 
 Note: If the numbered task brief is missing or materially underspecified,
 stop and report the missing information. Suggest `$speckit-tasks` only when a

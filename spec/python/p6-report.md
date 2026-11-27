@@ -1,7 +1,8 @@
 # Spec: P6 report (`scripts/p6_report.py`, `src/report/`)
 
 **Called by:** Nextflow `REPORT`, once per query that survives the report
-join (NF-WF-060/061).
+join (NF-WF-060/061); in database coverage mode, `REPORT_COVERAGE`, once
+per run (NF-WF-084, §1a).
 **Depends on:** outputs of P1/P2 (or BOLD), P3, P4 (optional), P5,
 MAFFT/FastME tree, `software_versions.yml`, `params_<ts>.json`,
 `timestamp.txt`; [modules/config.md](modules/config.md), `modules/errors.md`.
@@ -14,8 +15,8 @@ suite (`test/selenium`); it is not restated here.
 
 | Arg | Required | Notes |
 |---|---|---|
-| `query_dir` (positional) | yes | |
-| `--query-fasta`, `--metadata-csv` | yes | (Nextflow also exports `INPUT_FASTA_FILEPATH`, `INPUT_METADATA_CSV_FILEPATH`) |
+| `query_dir` (positional) | yes, unless `--coverage-taxa` | |
+| `--query-fasta`, `--metadata-csv` | yes, unless `--coverage-taxa` | (Nextflow also exports `INPUT_FASTA_FILEPATH`, `INPUT_METADATA_CSV_FILEPATH`) |
 | `--output-dir` | no (default `config.output_dir`) | |
 | `--bold` | no | BOLD wording and taxonomy source |
 | `--params_json` | no | path; rendered as "Workflow parameters" |
@@ -23,6 +24,7 @@ suite (`test/selenium`); it is not restated here.
 | `--report-debug` | no | filename timestamp → `DEBUG` |
 | `--database-name`, `--facility-name`, `--analyst-name` | no | header fields (facility also vault-resolved, CFG-036) |
 | `--flag-details-csv` | no | override `config/flags.csv` |
+| `--coverage-taxa` | no | database coverage mode (§1a); not with `query_dir`, `--query-fasta` or `--metadata-csv` |
 
 **Reads** (in `query_dir` unless stated): `query_title.txt`,
 `all_hits.json`, `candidates.json`, `candidates.fasta`,
@@ -36,6 +38,23 @@ suite (`test/selenium`); it is not restated here.
 **Writes:** `<query_dir>/report_[BOLD_]<sample_id>_<timestamp>.html`
 (CFG-030); `<output_dir>/report_context.json` (full render context,
 debugging aid; not published by Nextflow).
+
+## 1a. Database coverage mode
+
+`p6_report.py --coverage-taxa <coverage.csv>` renders one report for every
+taxon of a database coverage run, from `templates/coverage/` instead of
+the per-query templates. It reads, for each row `i` of the coverage CSV,
+the query folder `query_<i+1>_<coverage sample id>` (CFG-024, CFG-038)
+under the output dir: `db_coverage.json`, `*.flag`, `map_*.png` and
+`errors/*`. The rules of §4.1–4.3 (taxonomic result, PMI, TOIs) do not
+apply; only database coverage is shown.
+
+| ID | Requirement |
+|---|---|
+| P6-050 | The report MUST have one row per coverage CSV row, in file order. A taxon whose folder has no `db_coverage.json` (its task failed or was killed) MUST still have a row, marked as not completed, showing its error messages or, if none were recorded, a message that the task was probably stopped before finishing and should be re-run. This is the coverage-mode counterpart of CONSTITUTION rule 8: no partial result is shown, but the failure is visible. |
+| P6-051 | Each completed taxon MUST get a summary Flag 5 badge (FLG-013) and a database coverage modal like the per-query report's PMI modal. |
+| P6-052 | The report MUST be written to `<output_dir>/report_[BOLD_]coverage_<timestamp>.html` (CFG-039), titled "Database Coverage Report" (prefixed `BOLD - ` in BOLD mode), with BOLD wording applied as P6-003. |
+| P6-053 | It MUST show workflow parameters, facility, analyst, start/end/wall time and flag definitions as the per-query report does; there are no software versions (no `--versions_yml` is passed, NF-PR-125). |
 
 ## 2. Output requirements
 
@@ -163,9 +182,15 @@ missing tree file, missing `assigned_taxonomy.csv` with Flag 1A, missing
 
 ## 7. Test mapping
 
-No Python unit tests for `src/report`. `test/selenium/test_reports.py`
-checks rendered reports in a browser (manual; see `../tests.md`).
-nf-test asserts the number of HTML files produced.
+Per-query report: no Python unit tests for `src/report`.
+`test/selenium/test_reports.py` checks rendered reports in a browser (see
+`../tests.md`). nf-test asserts the number of HTML files produced.
+
+Database coverage report: `tests/test_report_coverage.py` (one row per
+taxon in order, badges, incomplete-taxon row, per-row locus and country,
+modals; P6-050..053) and `tests/test_coverage_failure.py` (P6-050).
+`test/coverage` asserts that exactly one report is produced. No Selenium
+fixture covers it.
 
 ## 8. Open questions
 
@@ -181,7 +206,7 @@ nf-test asserts the number of HTML files produced.
 
 ## Provenance
 
-**Initially derived from:** `p6_report.py` (93), `src/report/report.py` (476), `src/report/outcomes.py`, `src/report/filters/css_hash.py`, `src/utils/flags.py` (`Flag.read`), `src/report/templates/**` (1,552 lines of Jinja2), `src/report/static/**`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `p6_report.py` (93), `src/report/report.py` (476), `src/report/outcomes.py`, `src/report/filters/css_hash.py`, `src/utils/flags.py` (`Flag.read`), `src/report/templates/**` (1,552 lines of Jinja2), `src/report/static/**`. §1a added from `ef96c8f` (#323, `render_coverage`, `templates/coverage/`). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

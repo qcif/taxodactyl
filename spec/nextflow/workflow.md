@@ -1,6 +1,6 @@
-# Spec: Nextflow workflow (`TAXODACTYL`)
+# Spec: Nextflow workflows (`TAXODACTYL`, `TAXODACTYL_COVERAGE`)
 
-**Scope:** `main.nf`, `workflows/taxodactyl.nf`,
+**Scope:** `main.nf`, `workflows/taxodactyl.nf`, `workflows/coverage.nf`,
 `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. Line
 references are to the tree described in
 [README.md § Version](../README.md#version).
@@ -20,15 +20,17 @@ they are inputs to the backlog, not permission to rely on the behaviour.
 Orchestrate the per-query taxonomic-assignment analysis: validate inputs,
 search a reference database, extract candidate species, build a
 phylogenetic tree, evaluate publication diversity and database coverage,
-and render one HTML report per query. The workflow contains **no analysis
-logic**; every analytical decision is made inside the Python entrypoints
+and render one HTML report per query. A second mode, database coverage
+mode (§6), evaluates only the database coverage of a list of target taxa,
+with no input sequences, and renders one report for the whole run. The
+workflows contain **no analysis logic**; every analytical decision is made inside the Python entrypoints
 ([../python/](../python/)) or inside BLAST/MAFFT/FastME.
 
 ## 2. Entry point (`main.nf`)
 
 | ID | Requirement |
 |---|---|
-| NF-WF-001 | `main.nf` MUST run, in order: `PIPELINE_INITIALISATION`, `TAXODACTYL`, `PIPELINE_COMPLETION`. |
+| NF-WF-001 | `main.nf` MUST run, in order: `PIPELINE_INITIALISATION`, then `TAXODACTYL_COVERAGE` if `params.coverage_taxa` is truthy (database coverage mode, §6) or else `TAXODACTYL`, then `PIPELINE_COMPLETION`. |
 | NF-WF-002 | `PIPELINE_INITIALISATION` receives `params.version, validate_params, monochrome_logs, args, outdir, metadata`. |
 | NF-WF-003 | `PIPELINE_COMPLETION` receives `email, email_on_fail, plaintext_email, outdir, monochrome_logs`. |
 | NF-WF-004 | On `workflow.onComplete`, the workflow MUST parse the Nextflow trace file (`params.trace_file`) and, for every row whose `status` is not `COMPLETED` or `CACHED`, copy that task's `.command.out`, `.command.err`, `.command.log` to `<outdir>/errors/<PROCESS>/<tag>.<out\|err\|log>`. |
@@ -38,14 +40,17 @@ logic**; every analytical decision is made inside the Python entrypoints
 | NF-WF-008 | If `params.trace_file` is empty or the file is missing, log collection MUST be skipped with a warning; it MUST NOT fail the run. |
 | NF-WF-009 | If no failed/aborted tasks exist, `<outdir>/errors/` MUST NOT be created. (`mkdirs` is called only inside the per-row loop after the status filter.) |
 
-## 3. Start-up (`TAXODACTYL`, before any process)
+## 3. Start-up (before any process)
+
+NF-WF-010 is done by each workflow, and NF-WF-011/012 by the shared
+function `prepareTaskBinds()` that each workflow calls.
 
 | ID | Requirement |
 |---|---|
 | NF-WF-010 | The workflow MUST write `timestamp.txt` containing `workflow.start` formatted `yyyyMMdd HHmmss` in the JVM default time zone, and expose it as a value channel (`ch_workflow_timestamp`). |
 | NF-WF-011 | The workflow MUST attempt to create `params.app_data_dir`. If it exists as a directory afterwards, it MUST set JVM property `taxodactyl.bind_app_data` to `" --bind <dir>:/var/lib/taxodactyl"`; otherwise it MUST set it to `""` and warn. Failure MUST NOT abort the run. |
 | NF-WF-012 | The workflow MUST attempt to create `params.temp_root_dir`; failure MUST warn only. |
-| NF-WF-013 | `PIPELINE_INITIALISATION` MUST fail the run (before any process) if: `db_type == blast_core_nt` and `blastdb` is unset/empty; `db_cov_min_a <= db_cov_min_b`; or `db_cov_related_min_a <= db_cov_related_min_b`. |
+| NF-WF-013 | `PIPELINE_INITIALISATION` MUST fail the run (before any process) if: both `metadata` and `coverage_taxa` are set; neither is set; `coverage_taxa` and `sequences` are both set; `db_type == blast_core_nt`, `blastdb` is unset/empty and `coverage_taxa` is unset (no BLAST search runs in database coverage mode); `db_cov_min_a <= db_cov_min_b`; or `db_cov_related_min_a <= db_cov_related_min_b`. |
 | NF-WF-014 | `PIPELINE_INITIALISATION` MUST honour `--version` (print `<name> v<version>[-g<sha7>]` and exit 0), validate params against `nextflow_schema.json` when `validate_params` is true, and, under `conda`/`mamba` profiles, warn on missing `conda-forge`/`bioconda` channel ordering. |
 
 Note: `metadata` is passed to `PIPELINE_INITIALISATION` but not used inside
@@ -219,19 +224,50 @@ beyond ordinary dead code.
 - `ch_source_diversity_for_report` = independent-sources files, each file
   list sorted by file name.
 
-## 5. Non-goals
+## 6. Database coverage mode (`TAXODACTYL_COVERAGE`)
+
+Run when `params.coverage_taxa` is set (NF-WF-001). Each row of the
+coverage taxa CSV ([contracts/inputs.md §4](../contracts/inputs.md)) is a
+pseudo-sample with its own query folder; the taxon is its PMI.
+
+```
+params.coverage_taxa ─► VALIDATE_COVERAGE_TAXA ─► coverage.csv (.first()), query_*/query_title.txt
+params.allowed_loci_file ─► ch_allowed_loci ┘              │
+                                                  one [query_folder, [query_title.txt]] per taxon
+                                                           ▼
+            assets/optional_input/NO_SEQUENCES ─► EVALUATE_DATABASE_COVERAGE (per taxon)
+                                                           │ query_NNN_<sample_id>.tar.gz
+                                                           ▼ .collect()
+                                     REPORT_COVERAGE (once) ─► report_[BOLD_]coverage_<ts>.html
+      all process logs ─► run.log ─► PREPARE_LOG (publishes <outdir>/run.log)
+```
+
+| ID | Requirement |
+|---|---|
+| NF-WF-080 | The workflow MUST write `timestamp.txt` (NF-WF-010) and call `prepareTaskBinds()` (NF-WF-011, NF-WF-012) before any process. |
+| NF-WF-081 | `VALIDATE_COVERAGE_TAXA` MUST receive `file(params.coverage_taxa)` and the loci-file channel (built as NF-WF-022). Its validated `coverage_csv` output MUST be made a value channel with `.first()` and passed downstream in place of the user's file. |
+| NF-WF-082 | Its `query_titles` output MUST be `flatten()`ed and mapped to `[file.parent.name, [file]]`, one tuple per taxon, the same shape as `ch_candidates_files` in `TAXODACTYL`. |
+| NF-WF-083 | `EVALUATE_DATABASE_COVERAGE` MUST run once per taxon tuple with `assets/optional_input/NO_SEQUENCES` as its sequences input (a file that must exist; the process ignores it) and the validated coverage CSV as its metadata input. |
+| NF-WF-084 | `REPORT_COVERAGE` MUST run **once**, on `EVALUATE_DATABASE_COVERAGE.out.query_archive.collect()`, the validated coverage CSV, the params JSON (NF-WF-070) and the timestamp. A taxon whose `EVALUATE_DATABASE_COVERAGE` task failed (ignored, NF-PR-007) has no archive; the report still lists it, as not completed (P6-050). If every task failed, `collect()` emits nothing and **no report is produced**. |
+| NF-WF-085 | No BLAST, BOLD search, candidate extraction, phylogeny or source-diversity process runs, and no `software_versions.yml` is collected. |
+| NF-WF-086 | `run.log` MUST be the concatenation (as NF-WF-073) of the `VALIDATE_COVERAGE_TAXA`, `EVALUATE_DATABASE_COVERAGE` and `REPORT_COVERAGE` logs, published by `PREPARE_LOG`. |
+| NF-WF-087 | The workflow MUST emit `ch_db_coverage_json`, `ch_db_coverage_flags`, `ch_db_coverage_maps` and `ch_html_report` (relied on by `test/coverage`, [../tests.md](../tests.md) TST-025). |
+
+## 7. Non-goals
 
 - No analysis in Groovy: thresholds and rules live in Python.
 - No sample-sheet parsing or validation in Nextflow. The metadata CSV's
   content is checked only by P0
   ([contracts/inputs.md](../contracts/inputs.md)): since `3339050`
   nf-schema validates just the `--metadata` path.
-- No cross-query aggregation, and no run-level summary report.
+- No cross-query aggregation, and no run-level summary report, in the
+  sequence workflow. Database coverage mode's single report (§6) lists
+  every taxon, but it does not compare or aggregate them.
 - No `stub:` blocks exist in any process; `-stub-run` is not a supported
   test path — tracked as an open enhancement, not a defect:
   [decisions.md `D-41`](../decisions.md).
 
-## 6. Open questions
+## 8. Open questions
 
 1. Should the workflow publish a run-level summary of per-query outcome
    (ok / failed / no report), so an analyst can see which queries need
@@ -246,7 +282,7 @@ beyond ordinary dead code.
 
 ## Provenance
 
-**Initially derived from:** source code (not docs) — `main.nf`, `workflows/taxodactyl.nf`, `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** source code (not docs) — `main.nf`, `workflows/taxodactyl.nf`, `subworkflows/local/utils_nfcore_taxodactyl_pipeline/main.nf`. §6 and the mode checks in NF-WF-001/013 added from `ef96c8f` (#323, database coverage mode). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict
