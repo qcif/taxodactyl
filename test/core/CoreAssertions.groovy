@@ -7,32 +7,55 @@ import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-/** Core contracts. Both diagnostics and promotable observations originate here. */
+/**
+ * Every core check of the workflow's output files, in one place.
+ *
+ * Called by taxodactyl.assertions.nf.test after one workflow run:
+ *   new CoreAssertions(root, destination, run)  reads schema.yaml
+ *   prepare(channels, success)                  queues the checks (nothing runs yet)
+ *   evaluate()                                  runs them in order, writes nf-test-assertions.json
+ *                                               and returns one closure per check for assertAll.
+ *
+ * Two kinds of result ("rows" in the JSON):
+ *   - rule checks, check(): things that must always hold (files present, well formed,
+ *     consistent with each other). A failure is a bug and can never be accepted.
+ *   - stored values, data(): values compared with test/core/expected/<N>_<sample>.yaml.
+ *     A difference may be legitimate drift and can be accepted with `testkit.py promote`.
+ * Every check and value must be declared in schema.yaml. No sample IDs appear here.
+ *
+ * Sections: messages, readers, checks and values, expectation files, run checks,
+ * per-sample checks (hits, candidates, sources, tree, coverage, maps).
+ */
 class CoreAssertions {
-    File root
-    File destination
-    Closure resolve
-    File expectedDir
+    File root                   // repository root
+    File destination            // where nf-test-assertions.json is written
+    Closure resolve             // channel path -> File (tests substitute their own)
+    File expectedDir            // test/core/expected, or $CORE_EXPECTED_DIR
     Map expected = [:]          // sample_id -> [file, sha256, entries: key -> [value, type, component, group, name, assertion]]
     Map observedKeys = [:]      // sample_id -> keys of data rows emitted this run
     Map components = [:]        // schema component id -> definition
     Map checkComponent = [:]    // invariant check id -> component id
-    Map evidence
-    List<Closure> checks = []
-    Set rowKeys = new HashSet()
-    Map files = [:]
-    Map candidates = [:]
-    Map hitSequences = [:]
-    Map treeSequences = [:]
-    Map metadata = [:]
-    Map parameters = [:]
-    int maxCandidates = -1
+    Map evidence                // the JSON written by flush(): run info, expectation digests, rows
+    List<Closure> checks = []   // queued checks; evaluate() runs them (a check may queue more)
+    Set rowKeys = new HashSet() // [sample, id] already recorded, so nothing is recorded twice
+    // Read by earlier checks and reused by later ones (a later check says so if they are missing):
+    Map files = [:]             // channel letter -> folder name (query_NNN_<sample>) -> output files
+    Map candidates = [:]        // folder -> candidates.json
+    Map hitSequences = [:]      // folder -> accession -> sequence from all_hits.fasta
+    Map treeSequences = [:]     // folder -> sequences in candidates_phylogeny.fasta
+    Map metadata = [:]          // folder -> row of test/core/metadata.csv
+    Map parameters = [:]        // params.json
+    int maxCandidates = -1      // params max_candidates_for_analysis
+    // Output channels checked, by the letter used in check IDs (H.files, C.pmi, ...).
     static final CHANNELS = [H:'ch_hits_for_report', C:'ch_candidates_for_report',
         S:'ch_source_diversity_for_report', T:'ch_homology_trees',
         D:'ch_db_coverage_json', F:'ch_db_coverage_flags', M:'ch_db_coverage_maps']
+    // Allowed values of each flag file (<id>.flag).
     static final FLAG_VALUES = ['1':['A','B','C','D','E'], '2':['A','B','NA'], '7':['A','B','NA'],
                                 '4':['A','B'], '5.1':['A','B','C','NA','ERR'],
                                 '5.2':['A','B','C','NA','ERR'], '5.3':['A','B','C','NA','ERR']]
+    // One or more nucleotide letters (IUPAC codes, gaps).
+    static final String NUCLEOTIDES = /[ACGTURYSWKMBDHVNacgturyswkmbdhvn.\-]+/
 
     // ------------------------------------------------------------------ messages
     // Every failure reads "<where>: <rule>\nExpected: <value>\nActual: <value>".
@@ -72,6 +95,7 @@ class CoreAssertions {
     static Desc count(int n, String noun) { d("${n} ${noun}${n == 1 ? '' : 's'}") }
 
     // ------------------------------------------------------------------- readers
+    // Read output files strictly: each reader fails with a plain message if the file is malformed.
 
     static String digest(File file) {
         file.exists() ? MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex().toString() : null
@@ -98,7 +122,7 @@ class CoreAssertions {
                 result[id] = ''
             } else if (line.trim()) {
                 holds(id != null, file.name, "sequence lines follow a '>' name line", d('name line first'), line.trim())
-                holds(line.trim() ==~ /[ACGTURYSWKMBDHVNacgturyswkmbdhvn.\-]+/, file.name, "sequence ${id} contains only nucleotide letters",
+                holds(line.trim() ==~ NUCLEOTIDES, file.name, "sequence ${id} contains only nucleotide letters",
                       d('nucleotide letters'), line.trim())
                 result[id] += line.trim().toUpperCase()
             }
@@ -127,27 +151,34 @@ class CoreAssertions {
         def image = ImageIO.read(file)
         holds(image != null && image.width > 0 && image.height > 0, file.name, 'is a readable PNG image', d('readable image'), d('unreadable or empty'))
     }
+    /** A channel path as a File. */
     File file(Object path) { resolve(path.toString()) as File }
+    /** The one output file `name` of a sample in a channel; fails if missing or listed twice. */
     File artifact(String sample, String channel, String name) {
         def found = files[channel]?.get(sample)?.findAll { it.name == name }
         same(name, "listed once in ${CHANNELS[channel]}", count(1, 'file'), count(found?.size() ?: 0, 'file'))
         holds(found[0].isFile(), name, 'listed output file exists', d('file present'), d("missing: ${found[0]}"))
         found[0]
     }
+    /** Paths of a sample's files in a channel (optionally only `names`), linked from the review page. */
     List paths(String sample, String channel, List names = null) {
         (files[channel]?.get(sample) ?: []).findAll { names == null || it.name in names }.collect { it.toString() }
     }
+    /** First 16 hex characters of the sequence's SHA-256: short, but changes if the sequence does. */
     static String fingerprint(String sequence) {
         MessageDigest.getInstance('SHA-256').digest(sequence.getBytes('UTF-8')).encodeHex().toString().take(16)
     }
+    /** Id of a stored value, e.g. maps/filenames (same rule as key() in testkit.py). */
     static String key(String component, String group, String name, String assertion) {
         group ? "${component}/${group}/${name}/${assertion}".toString() : "${component}/${assertion}".toString()
     }
+    /** schema.yaml definition of a stored value; fails if it is not declared. */
     Map assertionDef(String component, String assertion) {
         def found = components[component]?.assertions?.get(assertion)
         holds(found != null, 'test/core/schema.yaml', 'data value is declared', d("${component}/${assertion} declared"), d('not declared'))
         found as Map
     }
+    /** Is `value` a valid stored value of this type (same rule as value_valid() in testkit.py)? */
     static boolean valid(String type, Object value) {
         switch (type) {
             case 'membership': return value instanceof List && value.every { it instanceof String && it } && value.unique(false).size() == value.size()
@@ -155,14 +186,20 @@ class CoreAssertions {
             default: return false
         }
     }
+    /** Lists (membership) are compared ignoring order; everything else exactly. */
     static boolean equalValue(String type, Object expected, Object observed) {
         if (type == 'membership') return expected instanceof List && observed instanceof List && expected.sort(false) == observed.sort(false)
         expected == observed
     }
-    static String brief(Object value) { show(value) }
 
     // -------------------------------------------------------- checks and values
 
+    /**
+     * Queue one rule check. When it runs, it records a row (passed / failed with the
+     * message / error if it could not run at all). An error marks the evaluation
+     * incomplete, so nothing from this run can be ingested or promoted.
+     * `paths` are the files the review page links for this check.
+     */
     void check(String sample, String id, String field, List paths, Closure body) {
         String component = checkComponent[id]
         holds(component != null, 'test/core/schema.yaml', 'check is declared', d("${id} declared"), d('not declared'))
@@ -182,7 +219,11 @@ class CoreAssertions {
             }
         }
     }
-    /** One data value. Stored values come from the sample's expected/*.yaml; others are informational. */
+    /**
+     * Record one stored value now and queue its comparison. Status: passed (same as the
+     * sample's expected/*.yaml), failed (different) or unbaselined (nothing stored yet).
+     * `opts.field` labels it; `opts.detail` keeps full data (e.g. sequences) for review.
+     */
     void data(String sample, String component, String group, String name, String assertion, Object observed, List paths, Map opts = [:]) {
         def definition = assertionDef(component, assertion)
         String id = key(component, group, name, assertion)
@@ -201,7 +242,7 @@ class CoreAssertions {
                   row.absent ? d('not produced') : row.observed)
         }
     }
-    /** Expected entries with no observation this run are failures that promote can remove. */
+    /** Stored values that this run did not produce fail as "stale"; promote can remove them. */
     void staleEntries() {
         def ids = metadata.values()*.sample_id as Set
         expected.each { sid, file ->
@@ -219,6 +260,15 @@ class CoreAssertions {
             }
         }
     }
+    // ---------------------------------------------------------- expectation files
+
+    /**
+     * Read every test/core/expected/*.yaml. All problems are collected and reported in
+     * one failure of the expected.files check: invalid YAML, missing or duplicate
+     * sample_id, a sample not in metadata.csv, unknown components or values, wrong
+     * types, invalid or repeated values. Also records each file's SHA-256 so testkit
+     * can tell whether a file changed after this evaluation.
+     */
     void loadExpected(Set ids) {
         def problems = []
         def yamlFiles = expectedDir.listFiles()?.findAll { it.isFile() && it.name.endsWith('.yaml') }?.sort { it.name } ?: []
@@ -265,6 +315,7 @@ class CoreAssertions {
         evidence.expectations = ids.collectEntries { sid -> [(sid): expected[sid] ? [file:expected[sid].file,sha256:expected[sid].sha256] : null] }
         holds(!problems, 'test/core/expected', 'valid per-sample expectation files', d('no problems'), d(problems.join('; ')))
     }
+    /** Reads schema.yaml and starts the evidence; records digests of the schema and this file. */
     CoreAssertions(File root, File destination, Map run, Closure resolve = { new File(it) }) {
         this.root=root; this.destination=destination; this.resolve=resolve
         expectedDir = new File(System.getenv('CORE_EXPECTED_DIR') ?: new File(root,'test/core/expected').path)
@@ -282,6 +333,10 @@ class CoreAssertions {
                     expectations:[:],schema_sha256:digest(schemaFile),
                     contract_sha256:digest(new File(root,'test/core/CoreAssertions.groovy')),rows:[]]
     }
+    /**
+     * Run every queued check (checks may queue more while running), always write the
+     * evidence, and return one closure per check that replays its outcome for assertAll.
+     */
     List<Closure> evaluate() {
         def outcomes = []
         int index = 0
@@ -298,6 +353,7 @@ class CoreAssertions {
         } finally { flush() }
         outcomes
     }
+    /** Write nf-test-assertions.json; file paths inside the run folder become relative. */
     void flush() {
         destination.parentFile.mkdirs()
         def base = destination.parentFile.toPath().toAbsolutePath()
@@ -309,6 +365,9 @@ class CoreAssertions {
     }
 
     // ------------------------------------------------------------- run checks
+    // Checks for the whole run (sample '_run'): workflow success, metadata.csv,
+    // expectation files, channel routing, versions/params/timestamp, HTML reports.
+    // A failure here blocks ingest/promote for every sample.
 
     void prepare(Map channels, boolean success) {
         check('_run','workflow.success','workflow',[]) {
@@ -335,7 +394,7 @@ class CoreAssertions {
                     keys << tuple[0]
                     def values = tuple[1] instanceof List ? tuple[1] : [tuple[1]]
                     def resolved = values.collect { file(it) }
-                    if (shortName in ['H','C','S','D','F','M']) {
+                    if (shortName != 'T') {   // folder check applies to every channel except trees (T)
                         def folders = resolved*.parentFile*.name.unique()
                         holds(folders.every { it == tuple[0] }, name, "files of ${tuple[0]} are in its folder", [tuple[0]], folders)
                     }
@@ -394,8 +453,12 @@ class CoreAssertions {
             checks << { staleEntries() }
         }
     }
+    // ---------------------------------------------------------- per-sample checks
+    // `sample` is the workflow's folder name (query_NNN_<sample_id>); `sid` the sample_id.
+
     void sampleChecks(String sample, Map input) {
         String sid = input.sample_id
+        // Hits (H): all_hits.json/.fasta agree; stores sequence fingerprints.
         check(sid,'H.files','H',paths(sample,'H')) {
             sameSet('hits output', 'file names', ['all_hits.fasta','all_hits.json','query_title.txt'], files.H[sample]*.name)
             same('query_title.txt', 'sample ID', sid, artifact(sample,'H','query_title.txt').text.trim())
@@ -419,11 +482,12 @@ class CoreAssertions {
                 def alignment = h.hsps[-1].alignment
                 holds(alignment instanceof String, 'all_hits.json', "hit ${h.accession} last HSP has alignment text", d('text'), alignment)
                 def subject = alignment.readLines().findAll { it.startsWith('Sbjct') }.collect { line ->
-                    line.trim().tokenize().findAll { it ==~ /[ACGTURYSWKMBDHVNacgturyswkmbdhvn.\-]+/ }.join('')
+                    line.trim().tokenize().findAll { it ==~ NUCLEOTIDES }.join('')
                 }.join('').toUpperCase()
                 same('all_hits.fasta', "sequence ${h.accession} equals the subject of its last HSP in all_hits.json", subject, seq[h.accession])
             }
         }
+        // Candidates (C): the hit files are byte-identical copies.
         ['all_hits.fasta','all_hits.json','query_title.txt'].each { name ->
             check(sid,"C.copy.${name}",'C/'+name,paths(sample,'C',[name])+paths(sample,'H',[name])) {
                 def copy = artifact(sample,'C',name), original = artifact(sample,'H',name)
@@ -431,6 +495,8 @@ class CoreAssertions {
                       d("${copy.size()} bytes, different content"))
             }
         }
+        // Candidates (C): candidates.json/.csv/.fasta agree with each other and with the hits;
+        // optional files (box plot, assigned_taxonomy.csv) are present exactly when they should be.
         check(sid,'C.content','C/candidates',paths(sample,'C',['candidates.json','candidates_count.txt','candidates.csv','candidates.fasta',
                 'candidates_phylogeny.fasta','assigned_taxonomy.csv','candidates_identity_boxplot.png','1.flag'])) {
             def c = json(artifact(sample,'C','candidates.json')); candidates[sample]=c
@@ -480,6 +546,7 @@ class CoreAssertions {
                 flagValue(file, id, rows[0])
             }
         }
+        // Taxa of interest table: present only when the input lists taxa of interest.
         check(sid,'C.toi','C/taxa_of_concern_detected.csv',paths(sample,'C',['taxa_of_concern_detected.csv'])) {
             def expectedTaxa = input.taxa_of_interest.tokenize('|')*.trim()
             boolean exists = files.C[sample]*.name.contains('taxa_of_concern_detected.csv')
@@ -495,6 +562,7 @@ class CoreAssertions {
                 }
             }
         }
+        // Preliminary-ID match table: present only for flag 7A; exactly "rank,taxon" + one row.
         check(sid,'C.pmi','C/preliminary_id_match.csv',paths(sample,'C',['preliminary_id_match.csv','7.flag'])) {
             def rows = flag(artifact(sample,'C','7.flag'),'7')
             boolean exists = files.C[sample]*.name.contains('preliminary_id_match.csv')
@@ -509,6 +577,7 @@ class CoreAssertions {
                 holds(table[1][0].taxon.equalsIgnoreCase(pmi), 'preliminary_id_match.csv', 'taxon is the input preliminary ID', pmi, table[1][0].taxon)
             }
         }
+        // Source diversity (S): output only for 1..max candidate species; one entry and flag 4 per species.
         check(sid,'S.routing-content','S',paths(sample,'S')) {
             holds(candidates.containsKey(sample) && maxCandidates > 0, 'source diversity', 'candidate count available', d('candidate files and parameters valid'), d('an earlier check failed first'))
             def c = candidates[sample]
@@ -535,6 +604,7 @@ class CoreAssertions {
                 }
             }
         }
+        // Tree (T): a valid Newick tree whose leaves are the selected sequences plus QUERY.
         check(sid,'T.labels','T/candidates_phylogeny.nwk',paths(sample,'T')) {
             same('tree output', 'files', count(1, 'file'), count(files.T[sample]?.size() ?: 0, 'file'))
             def tree = artifact(sample,'T','candidates_phylogeny.nwk').text.trim()
@@ -547,6 +617,7 @@ class CoreAssertions {
     }
     void coverageChecks(String sample, Map input) {
         def sid = input.sample_id
+        // Database coverage (D): structure of db_coverage.json and whole-number counts.
         check(sid,'D.content','D/db_coverage.json',paths(sample,'D',['db_coverage.json'])) {
             same('coverage output', 'files', count(1, 'file'), count(files.D[sample]?.size() ?: 0, 'file'))
             def coverage = json(artifact(sample,'D','db_coverage.json')).coverage
@@ -572,6 +643,7 @@ class CoreAssertions {
                 }
             }
         }
+        // Coverage flags (F): one valid 5.x record per taxon in db_coverage.json.
         ['5.1','5.2','5.3'].each { id ->
             check(sid,"F.${id}.records",'F/'+id+'.flag',paths(sample,'F',[id+'.flag'])+paths(sample,'D',['db_coverage.json'])) {
                 sameSet('coverage flags', 'file names', ['5.1.flag','5.2.flag','5.3.flag'], files.F[sample]*.name)
@@ -584,6 +656,7 @@ class CoreAssertions {
                 rows.each { f -> flagValue(file, id, f) }
             }
         }
+        // Maps (M): readable map*.png files; stores the list of file names.
         check(sid,'M.files','M/maps',paths(sample,'M')) {
             def maps = files.M[sample] ?: []
             data(sid,'maps',null,null,'filenames',maps*.name.sort(),paths(sample,'M'),[field:'M/map filenames'])

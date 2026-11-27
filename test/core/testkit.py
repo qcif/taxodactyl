@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
-"""Offline core nf-test review. Only explicit ingest/promote can write expectations.
+"""Review tool for the core nf-test. It never runs the workflow or the checks.
 
-Expected values live in test/core/expected/<N>_<sample_id>.yaml (one file per
-sample, matched by sample_id). Check titles and value types come from
-test/core/schema.yaml. Workflow outputs are evaluated only by
-CoreAssertions.groovy; this tool reads its JSON evidence.
+How the pieces fit together:
+
+  taxodactyl.assertions.nf.test   runs the workflow once, then hands its outputs to
+  CoreAssertions.groovy           which runs every check and writes the results
+                                  ("evidence") to nf-test-assertions.json.
+  testkit.py (this file)          reads that JSON and either
+     render   -> writes the HTML review page (and a CI summary), or
+     ingest   -> saves values that have no stored expectation yet, or
+     promote  -> saves reviewed changes to stored expectations.
+
+Stored expectations live in test/core/expected/<N>_<sample_id>.yaml (one file
+per sample, matched by its sample_id: key). Titles, rules and value types come
+from test/core/schema.yaml. Only ingest/promote write those files, and only
+after a person accepts each value and gives a reason.
+
+Sections below: shared helpers, per-sample files, ingest/promote, render, CLI.
 """
 import argparse
 from collections import Counter, defaultdict
@@ -31,13 +43,18 @@ STATUSES = {'passed', 'failed', 'error', 'unbaselined'}
 
 
 # ---------------------------------------------------------------- shared data
+# Helpers used by every command: reading JSON/YAML strictly, the schema, and
+# checking that the evidence file is complete and well formed.
 
 def digest(path):
+    """SHA-256 of a file, or None if it does not exist. Used to spot files that
+    changed after the evidence was written (stale code, schema or expectations)."""
     path = Path(path)
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
 
 
 def unique_object(pairs):
+    """json.loads hook: refuse a JSON object that repeats a key."""
     result = {}
     for key, value in pairs:
         if key in result:
@@ -47,11 +64,13 @@ def unique_object(pairs):
 
 
 def read_json(path):
+    """Read JSON, refusing repeated keys and NaN/Infinity."""
     return json.loads(Path(path).read_text(), object_pairs_hook=unique_object,
                       parse_constant=lambda x: (_ for _ in ()).throw(ValueError(x)))
 
 
 def load_schema(path=ROOT / 'schema.yaml'):
+    """schema.yaml plus two lookups: component id -> component, check id -> component id."""
     schema = yaml.safe_load(Path(path).read_text())
     if not isinstance(schema, dict) or schema.get('schema_version') != 2:
         raise ValueError('Unsupported test/core/schema.yaml')
@@ -64,10 +83,13 @@ SCHEMA = load_schema()
 
 
 def key(component, group, name, assertion):
+    """The id of a stored value, e.g. 'maps/filenames' (the same rule as key() in CoreAssertions.groovy)."""
     return f'{component}/{group}/{name}/{assertion}' if group else f'{component}/{assertion}'
 
 
 def value_valid(kind, value):
+    """Is `value` a valid stored value of this type? 'membership' is a list of
+    unique names; 'fingerprints' maps accession -> 16 hex characters."""
     if kind == 'membership':
         return (isinstance(value, list) and all(isinstance(x, str) and x for x in value)
                 and len(value) == len(set(value)))
@@ -78,20 +100,14 @@ def value_valid(kind, value):
     return False
 
 
-def check_title(row):
-    """Plain-language label and rule for a row (invariant or data value)."""
-    component = SCHEMA['by_id'].get(row.get('component'), {})
-    if row.get('kind') is None:
-        check = (component.get('checks') or {}).get(row['id'], {})
-        return check.get('title', row['id']), check.get('rule', row.get('rule', ''))
-    definition = (component.get('assertions') or {}).get(row.get('assertion'), {})
-    title = definition.get('title', row.get('assertion', row['id']))
-    if row.get('group'):
-        title = f"{title} — {row['group']} {row['name']}"
-    return title, SCHEMA['types'].get(row.get('kind'), '')
-
-
 def evidence(path):
+    """Read nf-test-assertions.json and refuse anything malformed or incomplete.
+
+    Each row is one result. A *rule check* row has no `kind` (its status is
+    passed/failed/error). A *stored value* row has a `kind` (membership or
+    fingerprints), is `promotable`, and its status is passed (matches the
+    stored value), failed (differs, or `absent`: stored but no longer
+    produced) or unbaselined (nothing stored yet)."""
     data = read_json(path)
     if not isinstance(data, dict) or data.get('schema_version') != 2:
         raise ValueError('Unsupported assertion evidence schema (expected version 2; re-evaluate older runs)')
@@ -143,6 +159,7 @@ def evidence(path):
 
 
 # ---------------------------------------------------------- per-sample files
+# Finding, naming and editing test/core/expected/<N>_<sample_id>.yaml.
 
 def sample_files(expected_dir):
     """sample_id -> path for every YAML file in expected_dir."""
@@ -216,6 +233,7 @@ def set_value(doc, row):
 
 
 def remove_value(doc, row):
+    """Delete one stored value; drop groups and components left empty."""
     for comp in doc.get('components', []):
         if comp.get('id') != row['component']:
             continue
@@ -234,7 +252,7 @@ def remove_value(doc, row):
 
 
 class _Dumper(yaml.SafeDumper):
-    pass
+    """YAML writer that quotes strings the Groovy side would misread (see below)."""
 
 
 # SnakeYAML (Groovy side) reads e.g. 12345e678 as a float even where PyYAML would not.
@@ -250,10 +268,22 @@ _Dumper.add_representer(str, _represent_str)
 
 
 def dump(doc):
+    """YAML text for one expectation file, keys in the order given."""
     return yaml.dump(doc, Dumper=_Dumper, sort_keys=False, allow_unicode=True, width=4096, default_flow_style=False)
 
 
 # ------------------------------------------------------------ ingest/promote
+# `ingest` saves values that have no stored expectation yet; `promote` changes
+# or removes stored values. Both run the same steps (see update()):
+#   1. refuse evidence that cannot be trusted (_check_trustworthy),
+#   2. pick the values to review (_select),
+#   3. ask the person about each one (_review),
+#   4. write the accepted values with backups (_write).
+
+def _preview(names, limit=20):
+    """'a, b, c …' — at most `limit` names."""
+    return ', '.join(names[:limit]) + (' …' if len(names) > limit else '')
+
 
 def describe_change(row):
     """Short old -> new description used by prompts and the review page."""
@@ -262,83 +292,85 @@ def describe_change(row):
         return 'expected entry no longer observed → remove it'
     if old is None:
         if kind == 'membership':
-            return f'new list of {len(new)}: {", ".join(new[:20])}{" …" if len(new) > 20 else ""}'
+            return f'new list of {len(new)}: {_preview(new)}'
         if kind == 'fingerprints':
             return f'new fingerprints for {len(new)} sequences'
         return f'new value {new!r}'
+    added, removed = sorted(set(new) - set(old)), sorted(set(old) - set(new))
     if kind == 'membership':
-        added, removed = sorted(set(new) - set(old)), sorted(set(old) - set(new))
-        return '; '.join(p for p in (
-            f'+{len(added)} added: {", ".join(added[:20])}{" …" if len(added) > 20 else ""}' if added else '',
-            f'−{len(removed)} removed: {", ".join(removed[:20])}{" …" if len(removed) > 20 else ""}' if removed else '') if p)
+        return '; '.join(p for p in (f'+{len(added)} added: {_preview(added)}' if added else '',
+                                     f'−{len(removed)} removed: {_preview(removed)}' if removed else '') if p)
     if kind == 'fingerprints':
         changed = sorted(k for k in set(old) & set(new) if old[k] != new[k])
-        added, removed = sorted(set(new) - set(old)), sorted(set(old) - set(new))
-        parts = [f'{len(changed)} sequences changed: {", ".join(changed[:20])}' if changed else '',
-                 f'+{len(added)} added' if added else '', f'−{len(removed)} removed' if removed else '']
-        return '; '.join(p for p in parts if p)
+        return '; '.join(p for p in (f'{len(changed)} sequences changed: {", ".join(changed[:20])}' if changed else '',
+                                     f'+{len(added)} added' if added else '',
+                                     f'−{len(removed)} removed' if removed else '') if p)
     return f'{old!r} → {new!r}'
 
 
-def _sample_blockers(rows, sample):
-    return [r for r in rows if r['sample'] in (sample, '_run') and r.get('kind') is None
-            and r['status'] in ('failed', 'error')]
+def _blocking_checks(rows, sample, row):
+    """Failed rule checks that stop `row` being saved.
+
+    A rule failure means the files themselves are wrong, so values read from
+    them cannot be trusted. It blocks only values in the same component of the
+    same sample (e.g. C.pmi blocks candidates values, not maps/filenames). A
+    run-level failure (sample '_run', e.g. expected.files) blocks everything."""
+    return [r for r in rows if r.get('kind') is None and r['status'] in ('failed', 'error')
+            and (r['sample'] == '_run' or r['sample'] == sample and r['component'] == row['component'])]
 
 
-def _blockers_for(blockers, row):
-    """Rule failures that stop `row` being accepted: any run-level failure,
-    or a failure in the row's own component. A rule failure elsewhere in the
-    sample (e.g. C.pmi) does not block an unrelated value (e.g. maps)."""
-    return [b for b in blockers if b['sample'] == '_run' or b.get('component') == row['component']]
-
-
-def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=False, sample=None,
-           component=None, assertion=None, dry_run=False, reason=None, ask=input):
-    expected_dir = Path(expected_dir)
-    data = evidence(assertions)
-    rows = data['rows']
-    if not data['run']['complete'] or not data['run']['execution_success'] or any(r['status'] == 'error' for r in rows):
+def _check_trustworthy(data):
+    """Step 1: the evidence must come from a complete run evaluated by the
+    current CoreAssertions.groovy and schema.yaml."""
+    if (not data['run']['complete'] or not data['run']['execution_success']
+            or any(r['status'] == 'error' for r in data['rows'])):
         raise ValueError('Execution failure or incomplete evaluation cannot supply expectations')
     if data['contract_sha256'] != digest(ROOT / 'CoreAssertions.groovy'):
         raise ValueError('Stale assertion code; evaluate again before accepting data')
     if data['schema_sha256'] != digest(ROOT / 'schema.yaml'):
         raise ValueError('Stale schema; evaluate again before accepting data')
 
-    files = sample_files(expected_dir) if expected_dir.exists() else {}
-    if mode == 'promote':
-        samples = sorted(files) if all_samples else [resolve_target(target, expected_dir)]
-    else:
-        samples = [s for s in data['expectations']] if all_samples else [sample]
-    explicit = not all_samples
+
+def _select(mode, data, files, samples, explicit, component, assertion):
+    """Step 2: sample_id -> rows to review.
+
+    ingest offers 'unbaselined' rows, promote offers 'failed' (changed or
+    absent) rows, optionally narrowed to one component or assertion. Rows
+    blocked by a rule failure are skipped and named. A named sample (not
+    --all) is an error if nothing is left, or if its file changed after the
+    evidence was written."""
+    rows = data['rows']
+    wanted_status = 'unbaselined' if mode == 'ingest' else 'failed'
     selected = {}
     for sid in samples:
         if sid not in data['expectations']:
             raise ValueError(f'Sample {sid} was not evaluated in this run')
-        blockers = _sample_blockers(rows, sid)
         matching = [r for r in rows if r['sample'] == sid and r['promotable']
                     and (component is None or r['component'] == component)
                     and (assertion is None or assertion in (r['id'], r['assertion']))]
-        wanted = [r for r in matching if r['status'] == ('unbaselined' if mode == 'ingest' else 'failed')]
-        # A rule failure blocks only values in its own component (or every value, for a run-level failure).
-        blocked = {}
+        wanted = [r for r in matching if r['status'] == wanted_status]
+
+        blocked = defaultdict(set)     # rule check id -> value ids it blocks
         for r in wanted:
-            for b in _blockers_for(blockers, r):
-                blocked.setdefault(b['id'], []).append(r['id'])
+            for b in _blocking_checks(rows, sid, r):
+                blocked[b['id']].add(r['id'])
         if blocked:
             message = (f'Invariant failures for {sid} cannot supply an accepted baseline for '
-                       + '; '.join(f'{", ".join(sorted(set(v)))} ({k})' for k, v in sorted(blocked.items()))
+                       + '; '.join(f'{", ".join(sorted(v))} ({k})' for k, v in sorted(blocked.items()))
                        + '; resolve them and evaluate again')
-            wanted = [r for r in wanted if not _blockers_for(blockers, r)]
-            if not wanted:
-                if explicit:
-                    raise ValueError(message)
-                print('Skipping: ' + message)
-                continue
+            wanted = [r for r in wanted if not _blocking_checks(rows, sid, r)]
+            if not wanted and explicit:
+                raise ValueError(message)
             print('Skipping: ' + message)
+            if not wanted:
+                continue
+
+        # The evidence records the SHA-256 of each sample file it compared against.
         recorded = (data['expectations'][sid] or {}).get('sha256')
         current = digest(files[sid]) if sid in files else None
         if current != recorded:
             raise ValueError(f'Stale expectations for {sid}: its file changed since evaluation; evaluate again')
+        # Point the person to the other command when a named value is in the wrong state.
         if assertion is not None and explicit:
             if mode == 'ingest' and any(r['status'] != 'unbaselined' for r in matching):
                 raise ValueError('Existing key: use promote instead of ingest')
@@ -348,14 +380,18 @@ def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=Fal
             selected[sid] = wanted
     if not selected:
         raise ValueError('No matching promotable core observations')
+    return selected
 
+
+def _review(selected, run, dry_run, ask):
+    """Step 3: show each change and ask y / n / a (rest of this sample) / q (stop).
+    Returns sample_id -> accepted rows. A dry run only prints."""
     accepted = defaultdict(list)
     quit_all = False
     for sid, candidates in selected.items():
         accept_rest = False
         for row in candidates:
-            title, _ = check_title(row)
-            print(f"{sid} / {row['id']}  ({title})\n  {describe_change(row)}")
+            print(f"{sid} / {row['id']}  ({check_info(row)['title']})\n  {describe_change(row)}")
             if dry_run:
                 continue
             if quit_all:
@@ -368,29 +404,31 @@ def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=Fal
                 break
             if choice == 'y':
                 accepted[sid].append(row)
-        print(f"  source run: {data['run']['id']} evaluated: {data['run']['evaluated_at']}")
-    if dry_run or not accepted:
-        return 0
-    reason = (reason or ask('Reason for accepting these changes: ')).strip()
-    if not reason:
-        raise ValueError('A review reason is required; nothing written')
+        print(f"  source run: {run['id']} evaluated: {run['evaluated_at']}")
+    return accepted
 
+
+def _write(accepted, data, files, expected_dir, reason):
+    """Step 4: update each sample file, all or nothing.
+
+    Every file is checked again just before writing; if any changed during
+    the review, nothing is written. Each write goes to a temporary file first,
+    the old file is copied to expected/.backups/ (last 3 kept per file), then
+    the new file replaces it in one step."""
     expected_dir.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc)
-    writes = []
+    run = data['run']
+    writes = []                         # (path, digest recorded in the evidence, new YAML text)
     for sid, changes in accepted.items():
         path = files.get(sid) or expected_dir / new_file_name(sid, expected_dir)
         doc = yaml.safe_load(path.read_text()) if path.exists() else {'sample_id': sid}
         for row in changes:
             (remove_value if row.get('absent') else set_value)(doc, row)
-        doc['date'] = data['run']['evaluated_at']
-        doc['provenance'] = {'source_run': data['run']['id'], 'source_test': data['run']['source_test'],
-                             'evaluated_at': data['run']['evaluated_at'], 'accepted_at': now.isoformat(),
-                             'reason': reason}
-        ordered = {'sample_id': sid, 'date': doc['date'], 'provenance': doc['provenance'],
+        provenance = {'source_run': run['id'], 'source_test': run['source_test'],
+                      'evaluated_at': run['evaluated_at'], 'accepted_at': now.isoformat(), 'reason': reason}
+        ordered = {'sample_id': sid, 'date': run['evaluated_at'], 'provenance': provenance,
                    'components': doc.get('components', [])}
         writes.append((path, (data['expectations'][sid] or {}).get('sha256'), dump(ordered)))
-    # Check freshness of every file immediately before replacing any of them.
     for path, original, _ in writes:
         if digest(path) != original:
             raise ValueError('Expectations changed during review; nothing written')
@@ -412,10 +450,41 @@ def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=Fal
         for old in sorted(backups.glob(f'{path.stem}.*.yaml'))[:-3]:
             old.unlink()
         print(f'Wrote {path}')
+
+
+def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=False, sample=None,
+           component=None, assertion=None, dry_run=False, reason=None, ask=input):
+    """Run `ingest` or `promote`. Returns the number of values written.
+
+    promote targets an existing file (`target`: number, stem or sample_id) or
+    every file (--all); ingest targets a sample_id or every evaluated sample."""
+    expected_dir = Path(expected_dir)
+    data = evidence(assertions)
+    _check_trustworthy(data)
+
+    files = sample_files(expected_dir) if expected_dir.exists() else {}
+    if mode == 'promote':
+        samples = sorted(files) if all_samples else [resolve_target(target, expected_dir)]
+    else:
+        samples = list(data['expectations']) if all_samples else [sample]
+    selected = _select(mode, data, files, samples, not all_samples, component, assertion)
+
+    accepted = _review(selected, data['run'], dry_run, ask)
+    if dry_run or not accepted:
+        return 0
+    reason = (reason or ask('Reason for accepting these changes: ')).strip()
+    if not reason:
+        raise ValueError('A review reason is required; nothing written')
+    _write(accepted, data, files, expected_dir, reason)
     return sum(len(v) for v in accepted.values())
 
 
 # -------------------------------------------------------------------- render
+# `render` turns the evidence (plus nf-test's JUnit XML) into the review page:
+#   _analyse()  works out the verdict, run health and what needs attention;
+#   _page()     writes the HTML; _summary() the short CI Markdown;
+#   _bundle()   a self-contained copy with the files behind each failure.
+# Wording shown to people lives in the constants below and in schema.yaml.
 
 CSS = """
 *{box-sizing:border-box}body{font-family:-apple-system,system-ui,sans-serif;margin:0;color:#1f2937;background:#f9fafb;line-height:1.45}
@@ -470,14 +539,17 @@ DATA_NEXT = {'failed': 'The stored value no longer matches (possible drift, not 
 
 
 def _esc(value):
+    """HTML-escape any value."""
     return html.escape(str(value), quote=True)
 
 
 def _slug(text):
+    """Anchor id for a sample's details card."""
     return 'sample-' + re.sub(r'[^A-Za-z0-9_-]+', '-', text)
 
 
 def _short(value, limit=160):
+    """Text or JSON of `value`, cut at `limit` characters."""
     text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
     return text if len(text) <= limit else text[:limit] + '…'
 
@@ -561,6 +633,7 @@ def expected_actual(row):
 
 
 def one_line(row):
+    """'<rule> — expected …, actual …' for the summary tables."""
     p = expected_actual(row)
     text = f"expected {p['expected']}, actual {p['actual']}" if p['expected'] is not None else p['actual']
     if p['difference']:
@@ -624,6 +697,7 @@ def _analyse(junit, assertions):
             rows = data['rows']
         except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             evidence_error = f'Missing/invalid assertion evidence: {exc}'
+    # Verdict: the most serious state wins (invalid evidence > incomplete > failed > drift > needs baseline > passed).
     statuses = Counter(r['status'] for r in rows)
     invariant_failed = any(r.get('kind') is None and r['status'] == 'failed' for r in rows)
     drift = any(r.get('kind') and r['status'] == 'failed' for r in rows)
@@ -655,6 +729,8 @@ def _analyse(junit, assertions):
     samples = (['_run'] + list(run.get('samples') or [])) if rows else []
     samples += sorted({r['sample'] for r in rows} - set(samples))
 
+    # Needs-attention rows, most serious first:
+    # 0 errors, 1 rule failures, 2 possible drift (grouped per sample and component), 3 missing baselines.
     attention = []   # (level, sample, title, id, label, message)
     for r in rows:
         if r['status'] == 'error' or r['status'] == 'failed' and r.get('kind') is None:
@@ -736,6 +812,10 @@ def _what_is_checked():
 
 
 def _page(a, linker, assertions_arg):
+    """The review page, top to bottom: header and verdict, run health, needs
+    attention, failure analysis, sample × check matrix, one card per sample
+    with problems, then static reference sections. `linker(sample, path)`
+    returns a link to a file, or None if it cannot be shown."""
     run, rows, samples, statuses = a['run'], a['rows'], a['samples'], a['statuses']
     components = [c['id'] for c in SCHEMA['components']]
     verdict = a['verdict']
@@ -871,6 +951,8 @@ def _page(a, linker, assertions_arg):
 
 
 def _local_linker(base, output):
+    """Linker for the page written next to the run: relative links to files
+    inside the run folder only; parameter files are never linked."""
     def link(_sample, artifact):
         path = Path(artifact)
         path = path if path.is_absolute() else base / path
@@ -959,6 +1041,8 @@ def render(junit, output, assertions=None, summary=None, bundle_dir=None, includ
 
 
 # ----------------------------------------------------------------------- CLI
+# Exit codes: 0 success; 2 for refused input (bad evidence, stale files, nothing
+# to accept) or, for render, evidence that is missing or invalid.
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)

@@ -357,7 +357,7 @@ and see `test/coverage/README.md`. It needs the taxdump but no BLAST database.
 
 Core now uses named workflow/file contracts and a structured assertion sidecar.
 Use the explicit core configuration and `--ci --junitxml` invocation in
-[test/core/README.md](../test/core/README.md#run-review-ingest-rerun); the root
+[test/core/README.md](../test/core/README.md#run-the-test-and-open-the-review-page); the root
 configuration currently selects scenario_04 and has unresolved placeholders.
 Other scenarios retain their existing snapshots and legacy post-processing.
 
@@ -412,5 +412,7 @@ a short summary; the `nf-test-review-<runner>` artifact holds the full page with
 copies of the files behind each failure, and the `nf-test-review.html` artifact
 holds the page alone, unzipped (browsers may block the zip on reputation alone). The page explains each check in plain
 words. Ordinary tests, rendering and CI never accept data. Read the core
-README for exact commands, what core compares and unresolved migration review; do not
-regenerate the core snapshot to accept drift.
+README for exact commands, what core compares, why `ingest`/`promote` may refuse
+(including after any edit to `CoreAssertions.groovy` or `schema.yaml`, which
+needs a new run) and the run history; do not regenerate the core snapshot to
+accept drift.
