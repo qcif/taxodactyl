@@ -18,3 +18,8 @@ node_modules/
 venv/
 __pycache__/
 *.ignore
+
+# Local core review backups and isolated task worktrees
+test/core/expected/.backups/
+.worktrees/
+.nf-test*

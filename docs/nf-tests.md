@@ -130,6 +130,8 @@ download, install and refresh it.
   the job's temp root before nf-test runs. Untick the dispatch input
   "Use cached API responses" (`use_cache`) to query the live APIs instead.
   The run also uses the live APIs while no fixture version is pinned.
+  The core assertion workflow (`nf-test-core-assertions.yml`) does not
+  install the fixture yet, so it always queries the live APIs.
 - After the run, CI warns if any responses were added to the cache. These
   are cache misses: requests that weren't in the fixture and were fetched
   live, so the results may drift.
@@ -347,10 +349,77 @@ To run a different test scenario (e.g., scenario_02):
 - Snapshot assertions: https://www.nf-test.com/docs/assertions/snapshots/
 - Taxodactyl documentation: See `docs/` directory in the workflow
 
-
-
 ## Database coverage mode scenario
 
 `test/coverage` tests database coverage mode (`--coverage_taxa`) with `workflows/coverage.nf`.
 Point `nf-test.config` at it (`testsDir "test/coverage"`, `configFile "test/coverage/nextflow.config"`)
 and see `test/coverage/README.md`. It needs the taxdump but no BLAST database.
+
+## Core assertion review (task 12)
+
+Core now uses named workflow/file contracts and a structured assertion sidecar.
+Use the explicit core configuration and `--ci --junitxml` invocation in
+[test/core/README.md](../test/core/README.md#run-the-test-and-open-the-review-page); the root
+configuration currently selects scenario_04 and has unresolved placeholders.
+Other scenarios retain their existing snapshots and legacy post-processing.
+
+`python test/core/testkit.py render --junit <run>/nf-test.xml --assertions
+<run>/nf-test-assertions.json --output <run>/nf-test-review.html` renders an offline
+review from retained evidence. Use a single shell line or explicit backslash
+continuations. Missing XML/sidecar is reported as missing, not a successful test.
+The self-hosted job retains native XML, JSON, HTML and logs even after failure.
+`bin/collect_artifacts.py --assertions <sidecar>` routes core P5 and other failed
+checks to their producing tasks; `--nft_errors` remains for legacy scenarios.
+The frozen mock workflow predates this evidence and only validates legacy
+post-processing when it is missing.
+
+Expected values are stored per sample in `test/core/expected/<N>_<sample_id>.yaml`
+(matched by `sample_id`; `<N>` reuses the Selenium fixture number), like
+`test/selenium/expected/`. Check titles, rules and value types are declared in
+`test/core/schema.yaml`. The review page opens with a verdict and a "Needs
+attention" table, a failure-analysis table grouping the same problems across
+samples by kind and area (e.g. possible drift in Database coverage), then a sample × check
+matrix and cards only for samples with problems. Each "Needs attention" row has
+a comment box next to "What went wrong"; comments are saved in your browser for
+that run, and "Export comments" / "Import comments" keep them as a JSON file (for
+example to carry notes to the next run). An "All checks" section lists every
+check of the run per sample, passed ones included, in the same table as the
+sample cards.
+
+"Rule failed" and "possible drift" are suggestions, not diagnoses. A failed rule
+check (structure, routing, valid values) is labelled a rule failure and probably
+means a workflow bug; a stored value that differs from `test/core/expected/` is
+labelled possible drift and may be new reference data or a regression. The tool
+only knows which kind of check broke, so review every change before promoting it.
+Core compares only values the HTML report does not show: hit sequence
+fingerprints and coverage map filenames. Values the report shows (flags, coverage
+taxa, states and species, source accessions, tree sequences) are left to Selenium
+(user decision 2026-11-26). Core still checks that every flag value is valid and
+that the files agree with each other, in every sample. Until the Selenium
+fixtures cover every sample, some of these values are not compared by either
+suite; see `spec/tests.md` TST-G-011.
+
+To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
+`python test/core/testkit.py ingest --sample <sample_id> --assertions <run>/nf-test-assertions.json`
+and rerun. Accept reviewed changes later with
+`python test/core/testkit.py promote <N|sample_id> --assertions <run>/nf-test-assertions.json`.
+Both support `--dry-run`, `--component`/`--assertion` selection and explicit
+review reasons. A failed rule check blocks only values in its own component
+(e.g. a `C.pmi` failure does not block `maps/filenames`); a run-level failure
+blocks everything.
+
+Two core pipelines run side by side for now. The original snapshot test,
+`test/core/taxodactyl.workflow.nf.test`, runs in `.github/workflows/nf-test.yml`
+with its flag check (weekly and by hand). The assertion test,
+`test/core/taxodactyl.assertions.nf.test`, runs in
+`.github/workflows/nf-test-core-assertions.yml`: on pull requests to main
+(called by `build-pr.yml`, with the PR's image), weekly, and from Actions →
+nf-test-core-assertions → Run workflow. Its run page shows
+a short summary; the `nf-test-review-<runner>` artifact holds the full page with
+copies of the files behind each failure, and the `nf-test-review.html` artifact
+holds the page alone, unzipped (browsers may block the zip on reputation alone). The page explains each check in plain
+words. Ordinary tests, rendering and CI never accept data. Read the core
+README for exact commands, what core compares, why `ingest`/`promote` may refuse
+(including after any edit to `CoreAssertions.groovy` or `schema.yaml`, which
+needs a new run) and the run history; do not regenerate the core snapshot to
+accept drift.

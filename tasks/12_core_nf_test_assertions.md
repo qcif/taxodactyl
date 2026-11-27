@@ -52,6 +52,13 @@ fingerprints and map filenames as stored values. Delete Selenium ownership
 (`coverage-ownership.tsv`, ownership code). Phase 12 supersedes the ownership
 rules of Phases 1, 5.2, 6.2 and 8 and the related completion criteria.
 
+**Revision 2026-11-27 (Phase 16):** on the review page, a reviewer can write and
+save a comment next to "What went wrong" in every "Needs attention" row, and a
+new "All checks" section lists every check of the run, passed ones included,
+per sample in the same Check / Expected / Actual / Next step table as "Sample
+details". Phase 16 supersedes "no individual passing rows" in 5.5 item 6 and
+the matching completion criterion.
+
 ## Overview
 
 Core currently compares four whole output channels to a snapshot, including
@@ -614,6 +621,8 @@ inexpensive look of `test/selenium/lib/static/review.css` inline). Page order:
 6. **Collapsed appendix:** passed-check counts per sample/component (no
    individual passing rows), Selenium-owned checks (count, fixture path,
    observed value), channel legend H/C/S/T/D/F/M, and run-wide commands.
+   **Superseded 2026-11-27, Phase 16:** passing checks are listed one by one
+   in a separate "All checks" section.
 
 Every check family in the sidecar must have a title and rule text in
 `schema.yaml` (enforced by a test). For the accepted 20-sample run the page
@@ -1225,6 +1234,13 @@ checks honestly. Automated passes do not complete manual acceptance.
 - The review page opens with a verdict and a needs-attention table, shows a
   sample × component matrix, and lists no individual passing checks; the page
   for the accepted run is under 1 MB and the user agrees it is usable.
+  (**Superseded 2026-11-27, Phase 16:** "lists no individual passing checks" is
+  replaced by the Phase 16 criteria below; the 1 MB limit and user acceptance
+  stay.)
+- (Phase 16) Every "Needs attention" row has a comment box next to "What went
+  wrong"; comments survive a reload of the same page and can be exported and
+  imported as a JSON file. An "All checks" section lists every check of the run,
+  passed ones included, per sample in the "Sample details" table format.
 
 ### Phase 10 — Revision 2026-11-25: drop related-species names; drift is a suggestion
 
@@ -1353,6 +1369,99 @@ rewrite `test/core/README.md` so a lay person can read it, review docs and spec.
   (run, read the page, promote, ingest, what each refusal means), then what is
   checked, known problems, CI, developer notes, and history/provenance last.
 
+### Phase 16 — Revision 2026-11-27: comments in "Needs attention"; "All checks" section
+
+User request (2026-11-27): "I want to be able to save comments next to What
+went wrong in Needs attention and I want to see all the assertions that are
+being tested even if they passed in a separate section just as clearly stated
+as in current sample details."
+
+Only `render()` in `test/core/testkit.py` and the page's inline CSS/JS change.
+Checks, evidence, statuses, verdicts, `ingest`/`promote`, the CI summary
+(`--summary`) and `CoreAssertions.groovy` stay unchanged, so existing evidence
+can be re-rendered and `contract_sha256` does not change.
+
+#### 16.1 Comments in "Needs attention"
+
+- Add a fourth column, **Comment**, to the right of "What went wrong". Each
+  cell holds a multi-line text box with the placeholder "Add a comment…".
+- **Saving:** a comment is saved in the browser as it is typed (debounced) and
+  on leaving the box, with a small "Saved" note. Storage is the browser's
+  `localStorage` under the key `core-nf-test-review:<run id>`, so reopening or
+  reloading the same page in the same browser shows the comments again. A page
+  without a run id uses its evaluated time and file name instead.
+- **Row key:** each row has a stable `data-key`: `<sample>|<check id>`, or
+  `<sample>|<component>|drift` and `<sample>|needs-baseline` for the collapsed
+  rows. The same key is used for every run, so comments can move between runs.
+- **Keeping and sharing comments:** buttons above the table:
+  - **Export comments** downloads `nf-test-review-comments-<run id>.json`:
+    `{"run": <run id>, "exported_at": <time>, "comments": {<key>: {"text": …,
+    "updated": …}}}`. This is the durable copy; browser storage can be cleared
+    and is not shared between people or machines.
+  - **Import comments** reads such a file. Comments whose key matches a row on
+    this page are filled in (an existing non-empty comment is kept and the
+    imported text appended below a line `— imported from run <id>`); the others
+    are counted and reported ("3 comments did not match a row on this page").
+    Importing the previous run's file carries notes forward to problems that are
+    still present.
+  - The count of commented rows is shown, e.g. "4 of 7 rows have a comment".
+- **Safety:** comment text is only ever set as a text box value or text node,
+  never as HTML. An imported file is parsed as JSON; anything that is not a
+  string comment under a known key shape is ignored. Size limit for import:
+  1 MB. No network requests; the script is inline in the page.
+- **Without JavaScript or storage** (e.g. a strict browser on `file://`): the
+  page still renders fully; the Comment column says "Comments need JavaScript and
+  browser storage" and nothing else changes.
+- Comments never change test results, `expected/` or the evidence. `render`
+  does not read comment files (embedding them is out of scope; possible later
+  as `render --comments <file>`). The CI summary has no comment column.
+
+#### 16.2 "All checks" section
+
+- New section **All checks**, after "Sample details" and before "Reference".
+  Hint: "Every check in this run, passed ones included. Open a sample to see
+  them." Then one collapsed `<details>` per sample in `metadata.csv` order,
+  `_run` (run-level checks) first. Summary line: `<sample> — <n> checks:
+  <n> passed, <n> failed, <n> need a baseline` (zero counts omitted); the
+  `id` attribute is `all-<slug>`, so the matrix and cards are not affected.
+- Each sample uses **the same table as "Sample details"**: Check (status badge,
+  plain title from `schema.yaml`, check ID or headline as secondary text) ·
+  Expected · Actual · Next step. Rows are ordered by component in schema order,
+  then check ID. Passed checks get a green **passed** badge; problem rows keep
+  their badges and link to the sample's card in "Sample details".
+- **What each column says for a passed check:**
+  - Rule check: Expected = the rule in plain words (`explain`, else `rule`, from
+    `schema.yaml`); Actual = "As expected: the rule held." The evidence records
+    only `observed: "satisfied"` for a passed rule check, so there is no actual
+    value to show. Recording actual values for passed rule checks would need a
+    Groovy change and a new run, and is **not** part of this phase.
+  - Stored value: Expected = the stored value, Actual = the produced value,
+    printed as in "Sample details" (same `_value` quoting and truncation).
+  - Next step: "—".
+- Failed, error and needs-baseline rows are shown with exactly the same
+  Expected / Actual / Difference / Next step text as in "Sample details"
+  (shared code, not a copy). Unlike "Sample details", needs-baseline rows are not
+  capped at 40; long values are truncated as elsewhere.
+- No per-row artifact links or commands here; they stay in "Sample details".
+- When the evidence is missing or invalid, "All checks" is replaced by "No
+  checks to list: the evidence is missing or invalid." It never shows a check as
+  passed that the evidence does not record as passed.
+- "What this test checks" in "Reference" (definitions without per-run results,
+  Phase 8) stays; "All checks" is the per-run result list.
+
+#### 16.3 Tests and docs
+
+- Python tests (`test_nf_test_*.py`): a passed rule check and a passed stored
+  value appear in "All checks" with the passed badge and the texts above; every
+  evidence row appears exactly once in "All checks"; missing evidence shows no
+  passed rows; each "Needs attention" row has a comment box with the expected
+  `data-key`; a row text containing `<script>` is escaped; the page contains no
+  external `src`/`href` to scripts or styles. Existing tests must still pass.
+- Re-render the latest retained evidence and check the page stays under 1 MB.
+  Manual browser check: type, reload, export, clear storage, import.
+- Docs: `test/core/README.md` ("Read the review page"), `docs/nf-tests.md`,
+  `spec/tests.md` TST-038 (TST-028 before the rebase; done with this revision).
+
 ### Merge with main after #369 (API-cache fixture) — noted 2026-11-27
 
 Main gained task 14 (`376ab43`, versioned API-cache fixture). The task branch
@@ -1382,6 +1491,40 @@ Main gained task 14 (`376ab43`, versioned API-cache fixture). The task branch
    `#refreshing-the-api-cache-fixture`, so keep that heading.
 5. `docs/nf-tests.md` and `spec/tests.md` (TST-024 text, row 12 summary) also
    conflict; take main's wording and add this task's sections on top.
+
+**Status after the rebase onto main (2026-11-27).** The branch was rebased onto
+`628f31c` (with #369). The conflicted files were then tidied up from main's
+wording plus this task's text, and checked against `origin/main` `175848e`
+(with #374), which the branch does not contain yet:
+
+1. **Done.** Task 12's IDs are now `TST-035`–`TST-039` (025→035, 026→036,
+   027→037, 028→038, 029→039) in `spec/tests.md` (incl. `TST-G-011`,
+   §5.3, provenance) and in the comments of `nf-test-core-assertions.yml`.
+   `docs/nf-tests.md` and `test/core/README.md` cite no IDs. Earlier sections
+   of this brief keep the old numbers as history.
+2. **Still open (user decision).** `build-pr.yml` calls
+   `nf-test-core-assertions.yml` on pull requests. `spec/tests.md` (intro,
+   surface table, TST-024, TST-D-002) and the README say so as a
+   comparison-period choice.
+3. **Still open.** The assertion workflow has no API-cache steps. TST-039, the
+   surface table, TST-G-005, the README ("Two core tests", "API-cache
+   fixture") and `docs/nf-tests.md` ("API response cache") now say that it
+   queries the live APIs. The README's refresh step 8 says to re-baseline
+   `test/core/expected/` only once the fixture is ported.
+4. **Done.** README = the Phase 15/16 text, plus the `api-cache:` line, the
+   fixture download step and `CACHE_TIMEOUT_HOURS` under "Setting up", and
+   main's two sections under a new "API-cache fixture" heading, unchanged apart
+   from step 8. The pre-Phase-15 "Task 12 assertion migration" text, which the
+   merge had brought back, is removed (its facts are in "History and
+   provenance" and "What the test checks"). `nf-test.yml` folders are
+   `<run_id>-<attempt>`.
+5. **Done.** `spec/tests.md` is built on `origin/main`'s text (TST-014, TST-034,
+   TST-D-002, the 19-module list, coverage-mode rows), so rebasing onto
+   `origin/main` again should only need "keep ours" there. Duplicate rows
+   (surface table, TST-010–013, three TST-024s, TST-G-005–009, §3, §5.1 `core`
+   row, §5.3) and a stray paragraph from the brief were removed. In
+   `docs/nf-tests.md`, the merge had changed the flag scripts' location back
+   from `bin` to `test`; this is now `bin` again.
 
 ## Open decisions and risks
 

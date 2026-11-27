@@ -1,0 +1,30 @@
+nextflow_workflow {
+    name "Test Workflow TAXODACTYL core assertions"
+    script "workflows/taxodactyl.nf"
+    workflow "TAXODACTYL"
+
+    test("core") {
+        when {
+            workflow { }
+        }
+        then {
+            def root = new File(System.getenv('CORE_REPO_ROOT') ?: System.getProperty('user.dir'))
+            def destination = new File(System.getenv('CORE_ASSERTIONS_OUTPUT') ?: new File(root, '.nf-test/nf-test-assertions.json').path)
+            def loader = new GroovyClassLoader(this.class.classLoader)
+            def contracts = loader.parseClass(new File(root, 'test/core/CoreAssertions.groovy'))
+            def run = [id:System.getenv('GITHUB_RUN_ID') ?: UUID.randomUUID().toString(),
+                       source_test:'test/core/taxodactyl.assertions.nf.test',
+                       revision:System.getenv('GITHUB_SHA') ?: ['git','-C',root.path,'rev-parse','HEAD'].execute().text.trim(),
+                       execution_success:workflow.success]
+            def core = contracts.newInstance(root, destination, run)
+            def channels = [:]
+            ['ch_hits_for_report','ch_candidates_for_report','ch_source_diversity_for_report',
+             'ch_homology_trees','ch_db_coverage_json','ch_db_coverage_flags','ch_db_coverage_maps',
+             'ch_html_report','ch_collated_versions','ch_params_json','ch_workflow_timestamp'].each {
+                try { channels[it] = workflow.out[it] } catch (Exception ignored) { channels[it] = null }
+            }
+            core.prepare(channels, workflow.success)
+            assertAll(core.evaluate() as Closure[])
+        }
+    }
+}

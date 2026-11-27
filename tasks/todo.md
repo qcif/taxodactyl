@@ -48,6 +48,6 @@ One bullet per item: what needs doing and why, its origin
   2026-11-23.
 - Fix `_write_pmi_match` in `scripts/p3_assign_taxonomy.py`: it writes
   `preliminary_id_match.csv` without a line break between header and row
-  (P3-D-008). Task 12's core check `C.pmi` deliberately fails, labelled as a
-  known defect, until this is fixed (user decision). Add a Python unit test.
-  Origin: task 12_core_nf_test_assertions, 2026-11-23.
+  (P3-D-008). Task 12's core check `C.pmi` deliberately fails until this is
+  fixed (user decision). Add a Python unit test. Origin: task
+  12_core_nf_test_assertions, 2026-11-23.

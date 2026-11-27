@@ -1,0 +1,258 @@
+# Core nf-test check catalogue. Read by CoreAssertions.groovy (which refuses to
+# emit an undeclared check or data value) and by testkit.py (page text, YAML layout).
+# Per-sample expected values live in expected/<N>_<sample_id>.yaml.
+#
+# components: page/YAML sections, in display order.
+#   description  plain-language summary shown under "What this test checks"
+#   files        files read; producer = Nextflow process (and script) writing them
+#   groups       optional keys whose entries are lists of {name, assertions}
+#   checks       rule (invariant) check IDs; never stored per sample, never promotable
+#                title / rule (one line) / explain (plain words) / on_fail (cause, next step)
+#   assertions   data values that can be stored per sample (ingest/promote).
+#                Values shown in the HTML report are left to Selenium (user decision 2026-11-26).
+schema_version: 2
+
+channels:
+  H: ch_hits_for_report — BLAST hits per sample
+  C: ch_candidates_for_report — candidate output folder per sample
+  S: ch_source_diversity_for_report — independent sources (only for 1..max candidates)
+  T: ch_homology_trees — phylogeny tree per sample
+  D: ch_db_coverage_json — db_coverage.json per sample
+  F: ch_db_coverage_flags — 5.1/5.2/5.3 flag files per sample
+  M: ch_db_coverage_maps — coverage map images per sample
+
+types:
+  membership: Exact list of names (order ignored, no duplicates)
+  fingerprints: Accession → first 16 hex characters of SHA-256 of its sequence
+
+rule_fail: &rule_fail A workflow output broke a rule. The likely cause is a bug in the step that wrote the file, but this is a suggestion; a damaged copy of the run or an unexpected answer from an external service can look the same. Rule failures are never treated as drift and cannot be promoted. Open the linked file, find the cause and rerun.
+
+components:
+- id: run
+  title: Workflow run
+  channel: all
+  description: Checks that the workflow finished, that every input sample appears exactly once in every output channel with its files in its own folder, and that the run-level files (versions, parameters, timestamp) are present and readable.
+  files: metadata.csv, all output channels, software_versions.yml, parameters JSON, workflow timestamp
+  producer: whole workflow (workflows/taxodactyl.nf)
+  checks:
+    workflow.success:
+      title: Workflow succeeded
+      rule: The workflow run must finish successfully.
+      explain: Nextflow reported that the whole run finished without a failed task.
+      on_fail: The workflow itself failed. Read the nf-test output and the .command.err of the failed task; every other result in this run is partial.
+    inputs:
+      title: Input metadata
+      rule: test/core/metadata.csv must parse with unique sample IDs.
+      explain: The test's input sample sheet can be read and every sample ID is unique.
+      on_fail: Fix test/core/metadata.csv (empty or repeated sample_id).
+    expected.files:
+      title: Expectation files
+      rule: Each test/core/expected/*.yaml must have a unique sample_id that is in metadata.csv, and only declared components and assertions.
+      explain: Each stored-expectation file belongs to exactly one sample in metadata.csv and only contains values this test knows about.
+      on_fail: Delete or rename the file named in the message (orphan or duplicate), or re-ingest it. Do not hand-edit values.
+    H.routing:
+      title: Hits channel routing
+      rule: Exactly one tuple per input sample; files belong to that sample.
+      explain: Every sample has exactly one set of BLAST hit files, stored in its own folder.
+      on_fail: *rule_fail
+    C.routing:
+      title: Candidates channel routing
+      rule: Exactly one tuple per input sample; files belong to that sample.
+      explain: Every sample has exactly one candidate folder, stored in its own folder.
+      on_fail: *rule_fail
+    S.routing:
+      title: Source-diversity channel routing
+      rule: Exactly one tuple per input sample; files belong to that sample.
+      explain: Every sample has exactly one (possibly empty) source-diversity result.
+      on_fail: *rule_fail
+    T.routing:
+      title: Tree channel routing
+      rule: Exactly one tuple per input sample.
+      explain: Every sample has exactly one tree result.
+      on_fail: *rule_fail
+    D.routing:
+      title: Coverage JSON channel routing
+      rule: Exactly one tuple per input sample; files belong to that sample.
+      explain: Every sample has exactly one db_coverage.json in its own folder.
+      on_fail: *rule_fail
+    F.routing:
+      title: Coverage flags channel routing
+      rule: Exactly one tuple per input sample; files belong to that sample.
+      explain: Every sample has exactly one set of 5.x coverage flags in its own folder.
+      on_fail: *rule_fail
+    M.routing:
+      title: Coverage maps channel routing
+      rule: At most one tuple per input sample; files belong to that sample.
+      explain: Coverage maps (optional) belong to known samples only.
+      on_fail: *rule_fail
+    reports.routing:
+      title: HTML report routing
+      rule: No unknown, duplicate or misassociated HTML reports.
+      explain: Each HTML report is named after the sample whose folder it is in, and none is repeated.
+      on_fail: *rule_fail
+    ch_collated_versions:
+      title: Software versions file
+      rule: One readable versions YAML listing blast, mafft and fastme.
+      explain: The run recorded the versions of the tools it used.
+      on_fail: *rule_fail
+    ch_params_json:
+      title: Parameters file
+      rule: One readable parameters JSON with max_candidates_for_analysis and db_type blast_core_nt.
+      explain: The run recorded its settings, and they are the core test settings (BLAST core database, a positive candidate limit).
+      on_fail: Check test/core/nextflow.config and the CI step that writes nf-test.config; the run did not use the core settings.
+    ch_workflow_timestamp:
+      title: Workflow timestamp
+      rule: One timestamp in yyyyMMdd HHmmss form.
+      explain: The run recorded when it started.
+      on_fail: *rule_fail
+
+- id: blast_hits
+  title: BLAST hits
+  channel: H
+  description: Reads each sample's BLAST hits. Checks that the hit list (JSON) and hit sequences (FASTA) describe the same hits, belong to the right sample and are well formed, and compares the stored sequence fingerprints (keyed by accession, so a changed hit list shows here too).
+  files: all_hits.json, all_hits.fasta, query_title.txt
+  producer: EXTRACT_HITS (scripts/p1_parse_blast.py)
+  checks:
+    H.files:
+      title: Hit files
+      rule: all_hits.fasta, all_hits.json and query_title.txt exist; the title is the sample ID; every hit has the required fields; FASTA accessions equal JSON accessions; each FASTA sequence equals the last subject HSP.
+      explain: The three hit files exist and belong to this sample; every hit has its required fields; the FASTA and JSON list the same hits, and each FASTA sequence is the aligned part of that hit.
+      on_fail: *rule_fail
+  assertions:
+    sequence_fingerprints:
+      type: fingerprints
+      title: Hit sequence fingerprints
+      explain: A short fingerprint of each hit sequence, so any change to a sequence is detected without storing it.
+
+- id: candidates
+  title: Candidates
+  channel: C
+  description: Reads each sample's candidate folder. Checks that the candidate list, table, sequences and count agree with each other and with the BLAST hits; that optional files appear only when they should; and that each flag file has one valid value. Flag values are not compared (left to Selenium).
+  files: candidates.json, candidates.csv, candidates.fasta, candidates_count.txt, candidates_phylogeny.fasta, 1.flag, 2.flag, 7.flag, assigned_taxonomy.csv, taxa_of_concern_detected.csv, preliminary_id_match.csv, candidates_identity_boxplot.png, copies of the hit files
+  producer: EXTRACT_CANDIDATES (scripts/p3_assign_taxonomy.py)
+  checks:
+    C.copy.all_hits.fasta:
+      title: Copied all_hits.fasta
+      rule: The candidate folder copy is byte-identical to the hits channel file.
+      explain: The copy of all_hits.fasta in the candidate folder is identical to the original.
+      on_fail: *rule_fail
+    C.copy.all_hits.json:
+      title: Copied all_hits.json
+      rule: The candidate folder copy is byte-identical to the hits channel file.
+      explain: The copy of all_hits.json in the candidate folder is identical to the original.
+      on_fail: *rule_fail
+    C.copy.query_title.txt:
+      title: Copied query_title.txt
+      rule: The candidate folder copy is byte-identical to the hits channel file.
+      explain: The copy of query_title.txt in the candidate folder is identical to the original.
+      on_fail: *rule_fail
+    C.content:
+      title: Candidate files
+      rule: candidates.json/.csv/.fasta/_count.txt agree with each other and with the hits; boxplot present only above the candidate limit; assigned_taxonomy.csv present only for flag 1A; no unknown files.
+      explain: The candidate list, table, sequences and count all describe the same candidates, taken unchanged from the BLAST hits; the boxplot exists only when there are more candidates than the limit; assigned_taxonomy.csv exists only when flag 1 is A; there are no unexpected files.
+      on_fail: *rule_fail
+    C.flag.1:
+      title: Flag 1 file
+      rule: One record with a valid value and no target.
+      explain: 1.flag (candidate outcome) holds exactly one valid value.
+      on_fail: *rule_fail
+    C.flag.2:
+      title: Flag 2 file
+      rule: One record with a valid value and no target.
+      explain: 2.flag (taxa of interest) holds exactly one valid value.
+      on_fail: *rule_fail
+    C.flag.7:
+      title: Flag 7 file
+      rule: One record with a valid value and no target.
+      explain: 7.flag (preliminary ID) holds exactly one valid value.
+      on_fail: *rule_fail
+    C.toi:
+      title: Taxa of interest table
+      rule: Present only when the input has taxa of interest; header, one row per input TOI in order, match accessions belong to candidates.
+      explain: taxa_of_concern_detected.csv exists only when the sample lists taxa of interest, has one row per taxon of interest in input order, and any matching accession is one of the candidates.
+      on_fail: *rule_fail
+    C.pmi:
+      title: Preliminary-ID match table
+      rule: 'Present only for flag 7A; header rank,taxon and exactly one row naming the input preliminary ID.'
+      explain: 'preliminary_id_match.csv exists only when the preliminary ID matched (flag 7 is A). It should be two lines: the header rank,taxon and one row such as genus,Bruchophagus naming the input preliminary ID.'
+      on_fail: *rule_fail
+
+- id: phylogeny
+  title: Phylogeny
+  channel: C/T
+  description: Reads the sequences selected for the tree and the tree itself. Checks that the tree can be read and its leaves are exactly the selected sequences plus the query.
+  files: candidates_phylogeny.fasta, candidates_phylogeny.nwk
+  producer: EXTRACT_CANDIDATES (selection), MAFFT and FASTME (tree)
+  checks:
+    T.labels:
+      title: Tree leaves
+      rule: The tree parses; its leaves are the selected sequences plus QUERY; empty only when no sequences were selected.
+      explain: The tree file is valid, its leaves are exactly the selected sequences plus QUERY, and it is empty only when nothing was selected.
+      on_fail: *rule_fail
+
+- id: source_diversity
+  title: Source diversity
+  channel: S
+  description: Reads the independent-source results, which exist only for samples with 1 up to the candidate limit of candidate species. Checks they appear exactly when they should and cover every candidate, with valid flag 4 values. Source accessions and flag 4 values are not compared (left to Selenium).
+  files: aggregated_sources.json, 4.flag
+  producer: EVALUATE_SOURCE_DIVERSITY (scripts/p4_source_diversity.py)
+  checks:
+    S.routing-content:
+      title: Source-diversity files
+      rule: Assessed (4.flag + aggregated_sources.json) exactly when 1..max candidates; sources cover each candidate; accessions belong to candidates.
+      explain: Source results exist exactly when the sample has between 1 and the limit of candidate species; there is one entry and one flag per candidate; every listed source accession is a candidate hit.
+      on_fail: *rule_fail
+
+- id: database_coverage
+  title: Database coverage
+  channel: D
+  description: Reads db_coverage.json. Checks its structure and that counts are whole numbers. Taxa, states, species names and record counts are not compared (left to Selenium).
+  files: db_coverage.json
+  producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
+  checks:
+    D.content:
+      title: db_coverage.json structure
+      rule: Roles candidate/toi/pmi; each taxon has target/related/country; counts are whole numbers or null; country may be NA.
+      explain: db_coverage.json has candidate, taxon-of-interest and preliminary-ID sections; each taxon has target, related and country results; every count is a whole number or empty.
+      on_fail: *rule_fail
+
+- id: coverage_flags
+  title: Coverage flags
+  channel: F
+  description: Reads the 5.1, 5.2 and 5.3 flag files. Checks there is exactly one valid record per assessed taxon, matching db_coverage.json. Flag values are not compared (left to Selenium).
+  files: 5.1.flag, 5.2.flag, 5.3.flag (with db_coverage.json)
+  producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
+  checks:
+    F.5.1.records:
+      title: 5.1.flag records
+      rule: One record per coverage role/taxon, valid values, no duplicates.
+      explain: 5.1.flag (target coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
+      on_fail: *rule_fail
+    F.5.2.records:
+      title: 5.2.flag records
+      rule: One record per coverage role/taxon, valid values, no duplicates.
+      explain: 5.2.flag (related-species coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
+      on_fail: *rule_fail
+    F.5.3.records:
+      title: 5.3.flag records
+      rule: One record per coverage role/taxon, valid values, no duplicates.
+      explain: 5.3.flag (in-country coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
+      on_fail: *rule_fail
+
+- id: maps
+  title: Coverage maps
+  channel: M
+  description: Reads the occurrence map images. Checks each listed map exists and is a readable PNG, and compares the stored list of map filenames.
+  files: map*.png
+  producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
+  checks:
+    M.files:
+      title: Map images
+      rule: Every emitted map is a readable PNG named map*.png.
+      explain: Every map the workflow lists exists and opens as an image.
+      on_fail: A listed map is missing or unreadable. If the run was copied from the runner, check the copy first (archives can drop files whose names differ only in case); otherwise it is a bug in the coverage step.
+  assertions:
+    filenames:
+      type: membership
+      title: Map filenames
+      explain: Which map images were produced.

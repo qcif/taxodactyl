@@ -32,6 +32,7 @@ Arguments:
 """
 import argparse
 import csv
+import json
 import os
 from pathlib import Path
 import shutil
@@ -124,6 +125,37 @@ def get_nft_errors(nft_errors: str | Path) -> dict:
             return list(errors)
     except FileNotFoundError:
         print(f"Error: Input file {nft_errors} not found.")
+
+
+def get_assertion_errors(assertions: Path, trace_file: Path) -> list:
+    """Route core sidecar failures by sample and producer; retain legacy readers."""
+    with open(assertions, encoding="utf-8") as stream:
+        evidence = json.load(stream)
+    if evidence.get("schema_version") != 2 or not isinstance(evidence.get("rows"), list):
+        raise ValueError("Invalid core assertion evidence")
+    producers = {
+        "H": "EXTRACT_HITS", "C": "EXTRACT_CANDIDATES",
+        "S": "EVALUATE_SOURCE_DIVERSITY", "T": "FASTME",
+        "D": "EVALUATE_DATABASE_COVERAGE", "F": "EVALUATE_DATABASE_COVERAGE",
+        "M": "EVALUATE_DATABASE_COVERAGE",
+    }
+    errors = set()
+    with open(trace_file, encoding="utf-8") as stream:
+        tasks = list(csv.DictReader(stream, delimiter="\t"))
+    for row in evidence["rows"]:
+        if row.get("status") not in {"failed", "error", "unbaselined"}:
+            continue
+        producer = producers.get(row.get("field", "").split("/")[0])
+        sample = row.get("sample")
+        for task_row in tasks:
+            name = task_row["name"]
+            task, _, tag = name.partition(" (")
+            task = task.removeprefix("TAXODACTYL:")
+            tag = tag.removesuffix(")")
+            # EXTRACT_HITS is one batched task, not one task per sample.
+            if task == producer and (producer == "EXTRACT_HITS" or tag == sample or tag.endswith("_" + sample)):
+                errors.add((task, tag))
+    return sorted(errors)
 
 
 def get_workdir(trace_file: str | Path,
@@ -266,6 +298,8 @@ def main():
         help="Choose to copy (cp) or link (ln -s) files to outdir (default: copy)."
     )
 
+    parser.add_argument("--assertions", type=Path, help="Core structured assertion evidence")
+
     args = parser.parse_args()
 
     trace_file = Path(args.trace_file)
@@ -284,6 +318,9 @@ def main():
         collected_errors.extend(get_errored_flags(flags_results))
     if nft_errors is not None:
         collected_errors.extend(get_nft_errors(nft_errors))
+
+    if args.assertions is not None:
+        collected_errors.extend(get_assertion_errors(args.assertions, trace_file))
 
     error_workdirs = get_workdir(trace_file, collected_errors)
     if mode == "copy":
