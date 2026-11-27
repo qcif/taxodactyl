@@ -130,6 +130,8 @@ download, install and refresh it.
   the job's temp root before nf-test runs. Untick the dispatch input
   "Use cached API responses" (`use_cache`) to query the live APIs instead.
   The run also uses the live APIs while no fixture version is pinned.
+  The core assertion workflow (`nf-test-core-assertions.yml`) does not
+  install the fixture yet, so it always queries the live APIs.
 - After the run, CI warns if any responses were added to the cache. These
   are cache misses: requests that weren't in the fixture and were fetched
   live, so the results may drift.
@@ -237,7 +239,7 @@ The test validates:
 ## Flag Comparison Test (baseline vs evaluated)
 
 In addition to nf-test assertions, a post-run flag comparison can be performed using
-`collect_flags.sh` and `test_flags.py`. These scripts can be found in `/path/to/taxodactyl_github_repo_dir/test`.
+`collect_flags.sh` and `test_flags.py`. These scripts can be found in `/path/to/taxodactyl_github_repo_dir/bin`.
 
 This compares:
 - baseline flags in `test/<scenario>/flags`

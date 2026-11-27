@@ -2,7 +2,7 @@
 # with structured evidence, per-sample expectations and a review page.
 # Runs alongside the original snapshot workflow (nf-test.yml) while both are
 # compared; kept in step with nf-test.yml apart from the marked differences.
-# See test/core/README.md and spec/tests.md (TST-029).
+# See test/core/README.md and spec/tests.md (TST-039).
 name: nf-test-core-assertions
 
 on:
@@ -251,7 +251,7 @@ jobs:
       # Review page (full HTML), a self-contained bundle to download, and a short
       # summary on the Actions run page. Render errors fail this step; a failed
       # core test stays failed in the step above. (Replaces nf-test.yml's
-      # snapshot-error CSV; there is no flag-baseline step, see TST-026.)
+      # snapshot-error CSV; there is no flag-baseline step, see TST-036.)
       - name: Render core assertion review
         if: always()
         run: |
