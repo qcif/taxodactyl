@@ -571,6 +571,8 @@ interaction pattern: `test/selenium/` in the same checkout. Do not modify it.
   used (or `null`); a write is refused only when *that* file changed since the
   evaluation. Contract/ownership digest checks and every other Phase 3 rule
   (no invariant failures, no incomplete or errored evidence) remain.
+  **Narrowed 2026-11-27, Phase 14:** an invariant failure blocks only values in
+  its own component of that sample; a run-level (`_run`) failure blocks all.
 
 #### 5.5 Review page (`render`) redesign
 
@@ -1318,6 +1320,39 @@ directory can no longer collide with `nf-test.yml`'s
 `assertions-` prefix is kept so the directory shows which workflow wrote it.
 Update `test/core/README.md` and `spec/tests.md` (TST-029, provenance).
 
+### Phase 14 — Revision 2026-11-27: rule failures block only their component
+
+User request (2026-11-27): `promote barcode_83_P59_Potyviridae_cluster_0_RC205
+--assertion maps/filenames` was refused with "Invariant failures ... (C.pmi)".
+"C.pmi is not promotable but maps should be." Review spec and docs.
+
+- `test/core/testkit.py update`: a failed rule check in a sample blocks only
+  promotable values in the same component (`candidates` for `C.pmi`); a `_run`
+  failure still blocks every value. Blocked values are skipped and named
+  (`<value ids> (<check id>)`); an explicit target errors only when nothing
+  promotable is left, and `--all` skips fully blocked samples as before.
+  Blockers are still checked before per-sample freshness. Invariant failures
+  themselves stay non-promotable and visible.
+- Docs: `spec/tests.md` TST-027, `docs/nf-tests.md`, `test/core/README.md`.
+- C.pmi on that sample is P3-D-008 (`_write_pmi_match` in
+  `scripts/p3_assign_taxonomy.py` writes header and row without a newline);
+  still a separate fix (`tasks/todo.md`).
+
+### Phase 15 — Revision 2026-11-27: simplify, comment, plain-language README
+
+User request (2026-11-27): in `test/core`, simplify `CoreAssertions.groovy` and
+`testkit.py` where possible, add comments explaining which part is for what,
+rewrite `test/core/README.md` so a lay person can read it, review docs and spec.
+
+- No behaviour change: every check, message, status and refusal stays the same;
+  the 23 Groovy scenarios and the Python tests must pass unchanged.
+- Any edit to `CoreAssertions.groovy` (comments included) changes
+  `contract_sha256`, so evidence written before it is refused by
+  `ingest`/`promote` as "Stale assertion code" until a new core run.
+- README: lead with what the test is for, the two kinds of check, everyday tasks
+  (run, read the page, promote, ingest, what each refusal means), then what is
+  checked, known problems, CI, developer notes, and history/provenance last.
+
 ## Open decisions and risks
 
 - Phase 6 decisions recorded and implementation authorized 2026-11-23 (6.6).
@@ -1776,3 +1811,53 @@ Implemented in the task worktree. **Not committed.**
   `.claude/skills` copies) still describe `/var/runner/<timestamp>/`; not
   changed by this phase (already stale since Phase 11).
 - **Not run:** GitHub Actions.
+
+### Phase 14 implementation — 2026-11-27
+
+Implemented in the task worktree. **Not committed.**
+
+- `test/core/testkit.py`: new `_blockers_for(blockers, row)`; `update` builds
+  the selected values first, drops those blocked by their own component or a
+  `_run` failure, prints `Skipping: Invariant failures for <sid> cannot supply
+  an accepted baseline for <ids> (<check>)`, and raises only if an explicit
+  target has nothing left.
+- Tests (`scripts/tests/test_nf_test_ingest.py`):
+  `test_rule_failure_blocks_only_its_sample_and_component` (C.pmi does not block
+  maps; M.files does; `_run` blocks all) and
+  `test_rule_failure_skips_only_its_component_within_a_sample` (M.files skips
+  maps, blast fingerprints still written).
+- Docs: `spec/tests.md` TST-027, `docs/nf-tests.md`, `test/core/README.md`
+  (blocking rule, test count 43).
+- **Validation:** 43 Python tests passed (`test_nf_test_*.py`). Dry run of the
+  user's command offered only `maps/filenames` (+`map_Potyvirus_batataplumei.png`).
+  **Not run:** Groovy contract scenarios (no Groovy change), full core nf-test,
+  GitHub Actions.
+
+### Phase 15 implementation — 2026-11-27
+
+Implemented in the task worktree. **Not committed.**
+
+- `CoreAssertions.groovy`: class overview (call sequence, rule checks vs stored
+  values, sections), comments on every field and helper, a comment per
+  per-sample check, section headers (expectation files, run checks, per-sample
+  checks). Simplified: one `NUCLEOTIDES` pattern (was repeated 3×); removed the
+  unused `brief()`; `shortName in ['H','C','S','D','F','M']` → `shortName != 'T'`.
+- `testkit.py`: module docstring explains nf-test → Groovy → evidence JSON →
+  render/ingest/promote; section comments; docstrings on helpers. `update()`
+  split into `_check_trustworthy`, `_select`, `_review` and `_write`; the two
+  blocker helpers merged into `_blocking_checks(rows, sample, row)`; duplicate
+  `check_title()` removed (uses `check_info()`); `_preview()` replaces repeated
+  list truncation in `describe_change()`. CLI exit codes documented.
+- `test/core/README.md` rewritten for lay readers (order as in the revision),
+  with a table of refusal messages and what to do. Facts kept, including
+  history and provenance (moved to the end).
+- `docs/nf-tests.md`: README anchor updated
+  (`#run-the-test-and-open-the-review-page`); pointer mentions refusals and that
+  editing the Groovy or schema needs a new run. `spec/tests.md` TST-027: the
+  evidence records digests of the Groovy, schema and sample files; any change,
+  comments included, needs a new evaluation.
+- **Validation:** 23 Groovy contract scenarios passed (nf-test 0.9.5 jar);
+  43 Python tests passed (`test_nf_test_*.py`).
+  **Not run:** the full core nf-test or GitHub Actions. Evidence written before
+  this change (e.g. the 2026-11-27 run's `nf-test-assertions.json`) is now
+  stale for ingest/promote; render still works.
