@@ -45,6 +45,13 @@ review page and CI summary that "rule failed" vs "possible drift" is only a
 suggestion based on the kind of check. Phase 10 supersedes the related-species
 membership in 5.2 and the badge wording in 5.5.
 
+**Revision 2026-11-26 (Phase 12):** delete from core every stored value the
+HTML report shows; leave them to Selenium for every sample, but do not add
+Selenium checks yet. Keep all rule checks. Core keeps only hit sequence
+fingerprints and map filenames as stored values. Delete Selenium ownership
+(`coverage-ownership.tsv`, ownership code). Phase 12 supersedes the ownership
+rules of Phases 1, 5.2, 6.2 and 8 and the related completion criteria.
+
 ## Overview
 
 Core currently compares four whole output channels to a snapshot, including
@@ -1198,18 +1205,20 @@ checks honestly. Automated passes do not complete manual acceptance.
 - No separate core flag-comparison gate remains after the combined coverage map
   is verified. Required 5.1/5.2/5.3 records, values and associated D counts are
   checked by unchanged Selenium or core, not both. Only core-owned expectations
-  are ingested/promoted by core testkit.
+  are ingested/promoted by core testkit. (Superseded by Phase 12: 5.x records and
+  validity in core, values left to Selenium.)
 - Automated validation results and user manual acceptance are recorded separately;
   all required user review is complete before marking the task complete.
 - Documentation describes exact commands, paths, provenance and approved updates.
 - Core expectations are one YAML file per sample under `test/core/expected/`;
   adding a sample needs only a `metadata.csv` row, a run and a reviewed
   `ingest`; orphan/duplicate files fail clearly; no sample ID in Groovy.
-- No `db_coverage.json` record count (target, related or country) is a core
-  expectation, nor are related-species names (any role); in-country species-name
-  membership and section state are.
+- (Phase 12) Core stores and compares only hit sequence fingerprints and map
+  filenames; no value the HTML report shows is a core expectation. Every rule
+  check stays, and flag values are checked for validity in every sample. No
+  Selenium ownership index or ownership logic remains.
 - The review page and CI summary label problems "rule failed" / "possible drift"
-  and say the label is a suggestion, not a diagnosis. Hit sequences are checked by accession list and fingerprint.
+  and say the label is a suggestion, not a diagnosis.
 - The review page opens with a verdict and a needs-attention table, shows a
   sample × component matrix, and lists no individual passing checks; the page
   for the accepted run is under 1 MB and the user agrees it is usable.
@@ -1253,6 +1262,46 @@ printed `scp` hint all use the new directory. Update `test/core/README.md` and
 run *N* of `nf-test-core-assertions.yml` would share `/var/runner/N-1/` and
 `cp -a` would mix them. **Decision (user, 2026-11-26):** prefix the directory:
 `dir_name="assertions-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"`.
+
+### Phase 12 — Revision 2026-11-26: delete report-visible values from core
+
+User decision (2026-11-26), after a review proposing to move every stored value
+the HTML report shows to Selenium: **delete those assertions from core now; do
+not add Selenium tests yet.**
+
+Reasons (from the review): core's checks depended on Selenium fixture contents
+(`coverage-ownership.tsv`, per-sample `owned()`), so blanking a fixture value
+silently moved or dropped a check; a drifted flag was promoted in Selenium for
+some samples and in core for others. Splitting by kind needs no ownership index.
+
+**Delete (stored values the report shows):**
+
+| Core value | Shown in report as |
+|---|---|
+| `blast_hits/accessions` | Hits modal (fingerprints, keyed by accession, still catch a changed list) |
+| `candidates/flag_1`, `flag_2`, `flag_7` | Flag badges |
+| `phylogeny/selected_sequences` | Tree leaf labels |
+| `source_diversity/source_accessions`, `flag_4` | Publication modal, button colour |
+| `database_coverage/candidate_taxa`, `toi_taxa`, `pmi_taxa`, `target_state`, `related_state`, `country_species`, `country_state`, `target_record_count` (placeholder) | Coverage tables, messages and charts |
+| `coverage_flags/flag_5_1`, `flag_5_2`, `flag_5_3` | Coverage tables and modals |
+
+**Keep:** `blast_hits/sequence_fingerprints` and `maps/filenames` (not shown in
+the report); every rule check. `C.flag.1/2/7` and `F.5.x.records` check value
+validity for every sample, with no Selenium exception. `C.pmi` unchanged.
+
+**Remove ownership:** `test/core/coverage-ownership.tsv`; `owned()`, fixture
+loading, `ownershipDigest`, `owner`/`delegated`/`not_checked`/`stored: false`
+in `CoreAssertions.groovy`; `ownership_digest`, the ownership freshness check
+and hidden statuses in `testkit.py`; `flag`, `state` and `count` value types.
+Strip the deleted entries from `test/core/expected/*.yaml`.
+
+**Coverage gap (accepted for now):** until Selenium compares these values for
+every sample, some are compared by neither suite (spec TST-G-011). Follow-up
+work for Selenium, not started: fill fixtures for all 20 samples (flags 1/2/7,
+5.1/5.2); exact-list comparisons for coverage taxa and hit accessions; extractors
+for flag 5.3 (`flag_text3`), flag 4 and source accessions in the publication
+modal, every in-country bar, coverage-state messages and tree `leafNames`;
+confirm that a Selenium pytest failure fails the CI job (`set +e` step).
 
 ## Open decisions and risks
 
@@ -1664,3 +1713,34 @@ Implemented in the task worktree. **Not committed.**
   provenance).
 - **Not run:** GitHub Actions. `.agents/skills/investigate-runner` and
   `selenium-report` still describe `/var/runner/<timestamp>/`.
+
+### Phase 12 implementation — 2026-11-26
+
+Implemented in the task worktree. **Not committed.**
+
+- `test/core/CoreAssertions.groovy`: deleted the report-visible `data()` values
+  and all ownership code (`owned()`, fixture loading, `ownershipDigest`, `owner`,
+  `delegated`/`not_checked`/`stored`). `C.flag.1/2/7` always run; 5.x values are
+  always validated. `flag`/`state` value types removed.
+- `test/core/schema.yaml`: only `blast_hits.sequence_fingerprints` and
+  `maps.filenames` remain as assertions; groups removed; descriptions and rule
+  explanations say values are left to Selenium.
+- `test/core/expected/*.yaml`: 419 stored entries → 40 (fingerprints and map
+  filenames per sample); provenance unchanged.
+- `test/core/coverage-ownership.tsv` deleted.
+- `test/core/testkit.py`: removed `ownership_digest`, the ownership staleness
+  check, `owner` requirement, hidden statuses and `flag`/`state` types; "What
+  this test checks" intro reworded.
+- Tests: contract scenarios rewritten for ownership removal (27 → 23: changed
+  flag/coverage values not compared; invalid flags fail in every sample whatever
+  the Selenium fixture; a stored value core no longer compares fails as unknown).
+  Python fixtures switched from `flag_5_1` to `sequence_fingerprints`; the
+  Selenium-owned rendering test removed (43 → 42).
+- Docs: `test/core/README.md` ("What core compares" replaces "Coverage
+  ownership"), `docs/nf-tests.md`, `spec/tests.md` (TST-026, TST-028, TST-G-011,
+  provenance); workflow comment in `nf-test-core-assertions.yml`.
+- Group support (`groups` in schema, grouped YAML entries) is kept in the code
+  but unused.
+- **Validation:** 23 Groovy contract scenarios passed; 42 Python tests passed.
+  **Not run:** the full core nf-test or GitHub Actions; the real expected files
+  have not been re-evaluated against a run.
