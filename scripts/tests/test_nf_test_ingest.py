@@ -11,7 +11,7 @@ class IngestTests(ToolkitCase):
         self.assertEqual(doc['provenance']['source_run'], 'synthetic-test')
         self.assertEqual(doc['provenance']['reason'], 'reviewed synthetic evidence')
         self.assertEqual(self.values(SAMPLE_A), {'maps/filenames': ['map_a.png', 'map_b.png'],
-                                                 'coverage_flags/pmi/Taxon/flag_5_1': 'B'})
+                                                 'blast_hits/sequence_fingerprints': {'ACC1': '0123456789abcdef'}})
         self.assertFalse((self.expected/'.backups').exists())
         self.assertNotIn(SAMPLE_B, kit.sample_files(self.expected))
 
@@ -77,8 +77,7 @@ class IngestTests(ToolkitCase):
             self.accept()
 
     def test_only_declared_core_values_are_promotable(self):
-        for mutate in (lambda r: r.update(owner='test/selenium/fixture.yaml#count'),
-                       lambda r: r.update(assertion='target_record_count', component='database_coverage', kind='count', observed=3),
+        for mutate in (lambda r: r.update(assertion='flag_5_1', component='coverage_flags', kind='flag', observed='B'),
                        lambda r: r.update(id='arbitrary.output'),
                        lambda r: r.update(group='pmi', name=None)):
             self.setUp()
@@ -101,8 +100,6 @@ class IngestTests(ToolkitCase):
 
     def test_freshness_is_per_sample(self):
         self.seed(SAMPLE_A)
-        self.data['rows'].append(row(SAMPLE_A, 'phylogeny', 'selected_sequences', ['X1']))
-        self.save()
         other = self.file(SAMPLE_A)
         other.write_text(other.read_text() + '# reviewer note\n')   # edited after evaluation
         self.assertEqual(self.accept(sample=SAMPLE_B), 1)           # another sample is unaffected
@@ -116,7 +113,7 @@ class IngestTests(ToolkitCase):
             self.accept(sample=SAMPLE_B)
 
     def test_fingerprints_written_quoted_for_groovy(self):
-        self.data['rows'].append(row(SAMPLE_A, 'blast_hits', 'sequence_fingerprints', {'ACC1': '1234567890123e45', 'ACC2': '00000000000000ab'}))
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints').update(observed={'ACC1': '1234567890123e45', 'ACC2': '00000000000000ab'})
         self.save()
         self.accept()
         text = self.file(SAMPLE_A).read_text()

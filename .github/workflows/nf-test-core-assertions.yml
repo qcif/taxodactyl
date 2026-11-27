@@ -204,8 +204,8 @@ jobs:
       - name: Run core nf-test
         id: nf-test
         run: |
-          # Core assertions read test/core/{schema.yaml,expected/} and the Selenium
-          # fixtures from the checkout, and write structured evidence for review.
+          # Core assertions read test/core/{schema.yaml,expected/} from the
+          # checkout, and write structured evidence for review.
           export CORE_REPO_ROOT="$GITHUB_WORKSPACE"
           export CORE_ASSERTIONS_OUTPUT="$RUNNER_TEMP/nf-test/nf-test-assertions.json"
           rm -f "$CORE_ASSERTIONS_OUTPUT" "$RUNNER_TEMP/nf-test/nf-test.xml"

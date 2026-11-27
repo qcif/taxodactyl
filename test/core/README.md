@@ -228,7 +228,7 @@ The core test now runs `CoreAssertions.groovy` once over the emitted channels.
 Each independent invariant records a diagnostic before aggregation with native
 `assertAll`. Native nf-test **0.9.5** JUnit retains the aggregate failure count,
 not individual power assertions (verified with two deliberate failures). The
-JSON sidecar therefore retains every check's sample, stable ID, field, owner,
+JSON sidecar therefore retains every check's sample, stable ID, field,
 expected/observed values, diagnostic and artifact paths. No Python code evaluates
 workflow contracts.
 
@@ -238,9 +238,10 @@ on 2026-11-23. Its core-owned values are stored per sample in
 authorization. On the same day they were moved there from the former single
 `expectations.json` (task 12 Phase 5). Following the user's decisions, the
 12,390 per-species related/in-country record counts were dropped, and the 8,190
-full hit sequences became one fingerprint map per sample. The 208 Selenium-owned
-fields are excluded. This approval accepts the data,
-not failed integrity checks or changed Selenium fixtures.
+full hit sequences became one fingerprint map per sample. On 2026-11-26 (user
+decision) every stored value the HTML report shows was deleted, leaving only the
+hit sequence fingerprints and map filenames (see "What core compares"). This
+approval accepts the data, not failed integrity checks or changed Selenium fixtures.
 
 **Two core pipelines run side by side for now (user decision 2026-11-23):**
 
@@ -249,7 +250,7 @@ not failed integrity checks or changed Selenium fixtures.
 | Test file | `taxodactyl.workflow.nf.test` + `.snap` | `taxodactyl.assertions.nf.test` + `expected/`, `schema.yaml` |
 | CI workflow | `.github/workflows/nf-test.yml` | `.github/workflows/nf-test-core-assertions.yml` |
 | Triggers | Sunday 00:00 UTC, manual (callable from `build-pr.yml`, currently not used) | PRs to main via `build-pr.yml` (PR's image, else `:main`), Sunday 12:00 UTC, manual |
-| Flag check | "Test flags" against `flags/` | none (core/Selenium own 5.x values) |
+| Flag check | "Test flags" against `flags/` | none (core checks 5.x validity; values left to Selenium) |
 | Review | snapshot error CSV, Selenium `review.html` | `nf-test-review` artifact and standalone `nf-test-review.html`, run-page summary, Selenium `review.html` |
 
 The original files are byte-identical to commit `0f715e7`. Retiring them is a
@@ -264,33 +265,50 @@ writes `preliminary_id_match.csv` without a line break between header and row
 separate task fixes the writer; core CI is red for that reason alone. The page
 does not label it; tracking stays in the task brief and `tasks/todo.md`.
 
-### Coverage ownership
+### What core compares
 
-| Artifact | Core checks | Existing Selenium owner / limits |
-|---|---|---|
-| H `all_hits.fasta`, `all_hits.json` | Unique accession membership, essential hit/HSP schema, input sample identity, FASTA validity, last subject-HSP sequence agreement; reviewed accession list and per-accession sequence fingerprints (first 16 hex characters of SHA-256) | Selected BLAST modal values; no duplicate core statistics expectations |
-| H/C `query_title.txt`, copied hit files | Input identity and byte-preserving copy through emitted C paths | Input popup identity is a presentation check |
-| C `candidates.json`, `.csv`, `.fasta`, `_count.txt` | Schema, species/accession uniqueness, CSV/JSON/FASTA membership agreement, sequence agreement with H, integer count agrees with species | Candidate table owns displayed species/statistics; core does not baseline those statistics |
-| C `1.flag`, `2.flag`, `7.flag` | One raw record, required fields, configured value domains; uncovered values only | Populated `overview_tab.conclusion_flag`, `toi_flag`, `preliminary_flag`; blank expectations are not owners |
-| C `assigned_taxonomy.csv` | Required iff 1A; header and records agree with candidate CSV | Displayed identified candidate |
-| C `preliminary_id_match.csv` | Required iff 7A; rank/taxon header and single matching input PMI | Raw file is unused by Selenium/P6; known P3-D-008 produces malformed CSV and remains a visible invariant failure |
-| C `taxa_of_concern_detected.csv` | Required iff input TOIs; header, input-order membership and match accessions belong to candidates | Existing TOI table owns displayed match values |
-| C `candidates_phylogeny.fasta` | Valid records, sequences agree with H, reviewed selected accession membership | Tree minimum-node check is only a lower bound |
-| C `candidates_identity_boxplot.png` | Presence iff candidate count exceeds run limit; decoded PNG, positive dimensions | No pixel baseline |
-| S `4.flag`, `aggregated_sources.json` | Exact assessed/skipped channel shape from 1..max candidate rule; candidate/flag/source relationships, publication record structure, reviewed raw source accessions and flag values | Publication modal owns displayed titles/source/count fields; core does not baseline publication text |
-| T `candidates_phylogeny.nwk` | Valid Newick grammar, unique leaves equal selected FASTA plus QUERY; empty only for empty selected FASTA | Tree title/minimum nodes; branching/lengths are deliberately not frozen |
-| D `db_coverage.json` | Per-role taxon membership; in-country **species names**; assessed/not-assessed/null/NA states; count structure (whole numbers or null). **No record count is a core expectation** (user decision 2026-11-23): target counts not owned by Selenium appear on the review page as "not checked". **Related-species names are not compared for any role** (user decision 2026-11-25); the related list is still checked for structure and its state (NA/null) is still compared | Populated database-coverage `record_count`, species count/total and bars. Existing substring/list comparison and ±10% tolerance remain authoritative |
-| F `5.1.flag`, `5.2.flag`, `5.3.flag` | Three filenames per sample; unique `(flag,role,target)` records agree with D membership; uncovered values only | Populated `flag_text1/2` for the exact role and taxon. Country `final_text` is explanatory text, not an assertion of raw 5.3 value |
-| M `map*.png` | Per-sample reviewed map filenames; unique names; decoded PNG dimensions | Country messages do not cover raw images |
-| HTML | Reject unknown/duplicate/misassociated emitted paths | Per-sample report presence and browser contents remain exclusively Selenium |
-| Versions, parameters, timestamp | Singleton/readable; required tools, database/analysis limit, valid emitted `yyyyMMdd HHmmss` time | No exact version/time baseline. Parameters are never embedded in review output |
-| Workflow / all tuple channels | Success, tuple shape, complete keyed membership (except optional maps), multiplicity, path/sample association | Independent workflow integrity |
+**User decision 2026-11-26:** values the HTML report shows are left to Selenium.
+Core deletes them; it does not add Selenium checks to replace them, so until the
+Selenium fixtures cover every sample, a value only core compared before is not
+compared by either suite. Core keeps every rule check, including those on data
+the report shows (e.g. the FASTA and JSON list the same hits; exactly one valid
+5.1 record per taxon), because those point to the step that broke. Selenium
+fixtures no longer change what core checks: there is no ownership index.
 
-`coverage-ownership.tsv` records concrete populated Selenium owners from the
-supplied run, by sample/role/taxon/field. It contains **ownership**, not accepted
-expected data. All other promotable fields shown in the sidecar belong to core.
-Delegated fields cannot be ingested or promoted. Changing Selenium fixtures can
-change ownership and requires rerunning the coverage audit.
+Stored values (compared with `expected/`, promotable):
+
+| Value | Why it stays in core |
+|---|---|
+| `blast_hits/sequence_fingerprints` | Not shown in the report (only the selected hit's alignment). Keyed by accession, so a changed hit list also shows here |
+| `maps/filenames` | The report embeds images without filenames; the case-sensitivity problem is in the files |
+
+Rule checks (never stored, never promotable):
+
+| Artifact | Core checks |
+|---|---|
+| H `all_hits.fasta`, `all_hits.json` | Unique accessions, essential hit/HSP schema, input sample identity, FASTA validity, last subject-HSP sequence agreement |
+| H/C `query_title.txt`, copied hit files | Input identity and byte-preserving copy through emitted C paths |
+| C `candidates.json`, `.csv`, `.fasta`, `_count.txt` | Schema, species/accession uniqueness, CSV/JSON/FASTA membership agreement, sequence agreement with H, integer count agrees with species |
+| C `1.flag`, `2.flag`, `7.flag` | One record, no target, valid value, for every sample |
+| C `assigned_taxonomy.csv` | Required iff 1A; header and records agree with candidate CSV |
+| C `preliminary_id_match.csv` | Required iff 7A; rank/taxon header and single matching input PMI. Nothing reads this file; known P3-D-008 produces a malformed CSV and remains a visible failure |
+| C `taxa_of_concern_detected.csv` | Required iff input TOIs; header, input-order membership and match accessions belong to candidates |
+| C `candidates_phylogeny.fasta` | Valid records, sequences agree with H |
+| C `candidates_identity_boxplot.png` | Presence iff candidate count exceeds run limit; decoded PNG, positive dimensions |
+| S `4.flag`, `aggregated_sources.json` | Assessed exactly for 1..max candidates; one source entry and one valid flag per candidate; source accessions are candidate hits; publication record structure |
+| T `candidates_phylogeny.nwk` | Valid Newick grammar, unique leaves equal selected FASTA plus QUERY; empty only for empty selected FASTA |
+| D `db_coverage.json` | Roles candidate/toi/pmi; each taxon has target/related/country; every count is a whole number or null; country may be NA |
+| F `5.1.flag`, `5.2.flag`, `5.3.flag` | Three files per sample; one record per role/taxon in `db_coverage.json`, none missing, extra or repeated; every value valid, for every sample |
+| M `map*.png` | Unique `map*.png` names; every listed map is a decodable PNG |
+| HTML | Reject unknown/duplicate/misassociated emitted paths. Report contents remain Selenium's |
+| Versions, parameters, timestamp | Singleton/readable; required tools, database/analysis limit, valid emitted `yyyyMMdd HHmmss` time |
+| Workflow / all tuple channels | Success, tuple shape, complete keyed membership (except optional maps), multiplicity, path/sample association |
+
+Deleted from core on 2026-11-26 (stored values the report shows): hit accession
+list; flags 1, 2, 7, 4, 5.1, 5.2, 5.3; selected tree sequences; source
+accessions; coverage taxa per role, target/related/country states and in-country
+species names. Record counts and related-species names were already not
+compared. Moving these to Selenium is a separate step (see task 12, Phase 12).
 
 Every candidate directory's emitted filenames are checked against an explicit
 allowlist; unknown additions fail for review. Copied H files are checked for
@@ -374,7 +392,7 @@ all observations and running every rule check.
 
 `expected/<N>_<sample_id>.yaml` holds one sample's reviewed values, laid out like
 the Selenium fixtures (`components` → `assertions` with `id`, `type`, `value`;
-grouped components list `{name, assertions}` per role or candidate). The file is
+and optional grouped `{name, assertions}` lists, unused at present). The file is
 matched by its `sample_id:` key; `<N>` reuses the number of the Selenium fixture
 for the same sample (`test/selenium/expected/<N>_<sample_id>.yaml`), otherwise
 the next unused number. Components, value types, titles and the rule text shown
@@ -384,8 +402,8 @@ sample IDs. Only `ingest`/`promote` write these files; do not hand-edit values.
 
 The `expected.files` check fails, naming the file, for an orphan file (sample not
 in `metadata.csv`), two files with the same `sample_id`, an unknown component or
-assertion, or an invalid value. A stored value that is no longer observed (a
-taxon vanished, or Selenium now owns it) fails as **stale**; `promote` offers to
+assertion (including a value core no longer compares), or an invalid value. A
+stored value that is no longer observed fails as **stale**; `promote` offers to
 remove it. Stale reporting is suppressed for a component whose rule check
 already failed, so one broken file does not cascade into many failures.
 
@@ -412,14 +430,14 @@ already failed, so one broken file does not cascade into many failures.
 python test/core/testkit.py promote 16 \
   --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
 # Target by number (16), file stem (16_Scenario_04) or sample_id; or --all.
-# Narrow with --component database_coverage or --assertion <id or name>.
+# Narrow with --component maps or --assertion <id or name>.
 ```
 
 Ingest adds missing values and never overwrites an existing one; promote changes
 or removes existing values and never invents one. Both preview each value (lists
 as `+added / −removed`, fingerprints by accession), require acceptance and a
-reason, and refuse: incomplete or errored evaluations; stale assertion code,
-schema or Selenium ownership; a sample file edited since the evaluation; and
+reason, and refuse: incomplete or errored evaluations; stale assertion code or
+schema; a sample file edited since the evaluation; and
 samples with rule failures (with `--all` such samples are skipped and named).
 Writes are atomic and update `date:`/`provenance:`. The previous file is kept
 in ignored `expected/.backups/<stem>.<timestamp>.yaml` (last three per file).
@@ -464,15 +482,9 @@ no replay is promised. Original failure records stay unchanged.
   value in one line (from `schema.yaml`, no per-run results); channel legend;
   native nf-test diagnostics.
 
-Values owned by Selenium (208 in the baseline) are not shown on this page. They
-stay in the evidence JSON and `coverage-ownership.tsv`; the Selenium review shows
-their results. A value is Selenium's for a sample when that sample's fixture has a
-non-empty expected value for it. Core then also skips re-checking that the value
-exists and is valid: `C.flag.1/2/7` run only for unowned flags (baseline: flag 2
-of FungusB_Btub), and 5.x record values are validated only where unowned. The
-5.x record structure (one record per taxon in `db_coverage.json`, none missing,
-extra or repeated) is always checked. A test enforces that every assertion goes
-through the Expected/Actual helpers.
+Values the report shows are not compared by core, so they never appear on this
+page; the Selenium review shows them where its fixtures have them. A test
+enforces that every assertion goes through the Expected/Actual helpers.
 
 ### In CI
 
@@ -517,23 +529,25 @@ PYTHONPATH=scripts python -m unittest discover -s scripts/tests -p 'test_nf_test
 java -cp "$NFT_JAR" groovy.ui.GroovyMain test/core/contracts.test.groovy "$PWD"
 ```
 
-The Groovy scenarios (27) use disposable synthetic files. They cover:
+The Groovy scenarios (23) use disposable synthetic files. They cover:
 - valid empty and skipped cases, and a new sample without a file (needs baseline);
 - accepted synthetic data;
 - missing, duplicate or wrongly associated samples, and malformed outputs;
-- missing, extra or duplicated P5 records, and changed flag values;
-- record-count and related-species-name changes that must not fail core;
+- missing, extra or duplicated P5 records, and invalid flag values in every
+  sample, whatever the Selenium fixtures contain;
+- changed flag values and coverage content (taxa, states, species, counts) that
+  must not fail core;
 - a changed hit sequence failing only its fingerprint;
-- Selenium-owned values, including a stored core value that Selenium now owns;
-- stale entries, orphan or duplicate files, unknown assertions, and independent failures.
+- a stored value core no longer compares failing as unknown;
+- orphan or duplicate files, unknown assertions, and independent failures.
 
-The Python tests (37) cover:
-- verdicts, the needs-attention order and rule text;
+The Python tests (42) cover:
+- verdicts, the needs-attention order and rule text, possible-drift labels;
 - list and fingerprint change descriptions, a large passing run staying small,
   escaping, and portable links;
 - schema labels, and that no sample ID appears in `CoreAssertions.groovy`;
 - per-sample ingest/promote: numbering, target resolution, `a`/`q` answers,
-  per-sample freshness, blocking by rule failures, removal of stale entries,
+  per-sample freshness, blocking by rule failures, removal of absent entries,
   unchanged other files, backups, and quoting of fingerprints for SnakeYAML.
 The real baseline was accepted through explicit user validation, independently
 of these synthetic tests. Baseline data acceptance does not relabel failed
@@ -546,7 +560,8 @@ All values come from the user-validated run (provenance in each file's
 `provenance:` block). After the Phase 5 move into per-sample files, re-evaluating
 the retained run (disposable reconstructed staging view) gives 1,021 rows:
 810 passed, 208 owned by Selenium, 0 needing a baseline, 0 stale, and three rule
-failures. Those are the two malformed PMI CSVs (P3-D-008) and the missing
+failures. (Superseded on 2026-11-26: core no longer stores or delegates values
+the report shows; the counts above are historical.) Those are the two malformed PMI CSVs (P3-D-008) and the missing
 lowercase map `map_Bulimulus_sporadicus.png`, now a failure rather than an
 evaluation error. Evidence: `.nf-test/task12-review/phase5-assertions.json`
 and `phase5-review.html` (62 KB; the former page was 17 MB). The PMI CSV and map

@@ -28,7 +28,7 @@ class ReviewTests(ToolkitCase):
         self.assertEqual(code, 0)
         self.assertEqual(self.verdict(text), 'PASSED')
         self.assertIn('Needs attention (0)', text)
-        self.assertNotIn('coverage_flags/pmi/Taxon/flag_5_1', text)   # passing values only counted
+        self.assertNotIn('0123456789abcdef', text)   # passing values only counted
         self.assertFalse(self.expected.exists())
 
     def test_verdict_precedence(self):
@@ -56,8 +56,8 @@ class ReviewTests(ToolkitCase):
         self.assertIn(kit._esc('Difference: missing ["map_c.png"]; unexpected ["map_d.png"]'), text)
 
     def test_fingerprint_drift_shows_sequences(self):
-        self.data['rows'].append(row(SAMPLE_A, 'blast_hits', 'sequence_fingerprints', {'ACC1': 'bbbbbbbbbbbbbbbb'},
-                                     status='failed', expected={'ACC1': 'aaaaaaaaaaaaaaaa'}, detail={'ACC1': 'ACGTN'}))
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints').update(observed={'ACC1': 'bbbbbbbbbbbbbbbb'},
+                                     status='failed', expected={'ACC1': 'aaaaaaaaaaaaaaaa'}, detail={'ACC1': 'ACGTN'})
         _, text = self.render()
         self.assertIn(kit._esc('changed ["ACC1"]'), text)
         self.assertIn('ACC1: aaaaaaaaaaaaaaaa → bbbbbbbbbbbbbbbb  (observed length 5: ACGTN)', text)
@@ -72,25 +72,11 @@ class ReviewTests(ToolkitCase):
 
     def test_large_passing_run_stays_small(self):
         self.all_passed()
-        for i in range(3000):
-            self.data['rows'].append(row(SAMPLE_A, 'source_diversity', 'flag_4', 'A', group='candidates',
-                                         name=f'Taxon {i}', status='passed', expected='A'))
+        many = {f'ACC{i}': f'{i:016x}' for i in range(3000)}
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints').update(observed=many, expected=many)
         _, text = self.render()
         self.assertLess(len(text), 60_000)
-        self.assertNotIn('Taxon 2999', text)
-
-    def test_selenium_owned_values_are_not_shown(self):
-        self.data['rows'].append(row(SAMPLE_A, 'database_coverage', 'target_record_count', 4471, group='pmi', name='Taxon',
-                                     status='delegated', promotable=False, owner='test/selenium/expected/13_Scenario_01.yaml#x'))
-        self.data['rows'].append(row(SAMPLE_B, 'database_coverage', 'target_record_count', 12, group='pmi', name='Other',
-                                     status='not_checked', promotable=False))
-        self.all_passed()
-        _, text = self.render()
-        self.assertNotIn('4471', text)
-        self.assertNotIn('13_Scenario_01.yaml#x', text)
-        self.assertNotIn('Target record count', text)
-        self.assertNotIn('→', text)
-        self.assertEqual(self.verdict(text), 'PASSED')
+        self.assertNotIn('ACC2999', text)
 
     def test_what_this_test_checks_is_a_static_reference_at_the_end(self):
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='x: y\nExpected: 1\nActual: 2'))
@@ -103,7 +89,7 @@ class ReviewTests(ToolkitCase):
             self.assertIn(component['title'], section)
             self.assertIn(kit._esc(component['producer']), section)
         self.assertNotRegex(section, r'passed|this run|not applicable|need a baseline')
-        self.assertIn('fixture has a toi_flag value', section)
+        self.assertIn('left to Selenium', section)
         self.assertNotIn('<details open', text[start - 20:start + 40])
 
     def test_expected_actual_columns_and_collapsed_expression(self):
@@ -124,17 +110,16 @@ class ReviewTests(ToolkitCase):
         self.all_passed()
         self.find(SAMPLE_A, 'maps/filenames').update(status='failed', observed=['new.png'])
         self.find(SAMPLE_B, 'maps/filenames').update(status='failed', observed=['new.png'])
-        self.find(SAMPLE_A, 'coverage_flags/pmi/Taxon/flag_5_1').update(status='failed', observed='C')
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints').update(status='failed', observed={'ACC1': 'fedcba9876543210'})
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='Malformed'))
         _, text = self.render()
         section = text[text.index('Failure analysis (3)'):text.index('Samples × checks')]
-        rule, maps, flags = (section.index(s) for s in ('b-failed', 'Coverage maps', 'Coverage flags'))
+        rule, maps, hits = (section.index(s) for s in ('b-failed', 'Coverage maps', 'BLAST hits'))
         self.assertLess(rule, maps)                                       # rule failures first
-        self.assertLess(maps, flags)                                      # then drift shared by more samples
+        self.assertLess(maps, hits)                                       # then drift shared by more samples
         self.assertIn('2 result(s) in 2 sample(s)', section)
         self.assertIn('href="#sample-Scenario_01"', section)
         self.assertIn('href="#sample-Scenario_04"', section)
-        self.assertNotIn('Taxon', section)                               # grouped by check, not per taxon
         summary = kit._summary(kit._analyse(self.junit, self.sidecar), 'nf-test-review.html')
         self.assertIn('### Failure analysis (3)', summary)
         self.assertIn('| possible drift: Coverage maps (2) | Scenario_01, Scenario_04 |', summary)
@@ -209,7 +194,7 @@ class ReviewTests(ToolkitCase):
         (self.root/'result.txt').write_text('data')
         (self.root/'params.json').write_text('{"secret":"do not show"}')
         self.find(SAMPLE_A, 'maps/filenames')['artifacts'] = ['result.txt', 'missing.txt', 'params.json', '/etc/passwd']
-        self.find(SAMPLE_A, 'coverage_flags/pmi/Taxon/flag_5_1')['artifacts'] = ['result.txt']
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints')['artifacts'] = ['result.txt']
         _, text = self.render()
         self.assertEqual(text.count('href="result.txt"'), 1)
         self.assertNotIn('href="params.json"', text)
@@ -231,7 +216,7 @@ class SchemaTests(ToolkitCase):
                     self.assertTrue(definition.get(field), (check, field))
                 self.assertTrue(definition['explain'].endswith('.'), check)
             for name, definition in (component.get('assertions') or {}).items():
-                self.assertLessEqual(set(definition), {'type', 'title', 'explain', 'stored'}, name)
+                self.assertLessEqual(set(definition), {'type', 'title', 'explain'}, name)
                 self.assertTrue(definition.get('title') and definition.get('explain'), name)
                 self.assertIn(definition['type'], types, name)
 

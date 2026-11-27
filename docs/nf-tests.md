@@ -384,8 +384,13 @@ check (structure, routing, valid values) is labelled a rule failure and probably
 means a workflow bug; a stored value that differs from `test/core/expected/` is
 labelled possible drift and may be new reference data or a regression. The tool
 only knows which kind of check broke, so review every change before promoting it.
-Related-species names in `db_coverage.json` are not compared for any role
-(candidate, taxon of interest, preliminary ID).
+Core compares only values the HTML report does not show: hit sequence
+fingerprints and coverage map filenames. Values the report shows (flags, coverage
+taxa, states and species, source accessions, tree sequences) are left to Selenium
+(user decision 2026-11-26). Core still checks that every flag value is valid and
+that the files agree with each other, in every sample. Until the Selenium
+fixtures cover every sample, some of these values are not compared by either
+suite; see `spec/tests.md` TST-G-011.
 
 To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
 `python test/core/testkit.py ingest --sample <sample_id> --assertions <run>/nf-test-assertions.json`
@@ -404,6 +409,6 @@ nf-test-core-assertions → Run workflow. Its run page shows
 a short summary; the `nf-test-review-<runner>` artifact holds the full page with
 copies of the files behind each failure, and the `nf-test-review.html` artifact
 holds the page alone, unzipped (browsers may block the zip on reputation alone). The page explains each check in plain
-words and omits values Selenium owns. Ordinary tests, rendering and CI never accept data. Read the core
-README for exact commands, ownership and unresolved migration review; do not
+words. Ordinary tests, rendering and CI never accept data. Read the core
+README for exact commands, what core compares and unresolved migration review; do not
 regenerate the core snapshot to accept drift.

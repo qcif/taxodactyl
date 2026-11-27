@@ -20,7 +20,7 @@ class PromoteTests(ToolkitCase):
         evidence = self.sidecar.read_bytes()
         self.assertEqual(self.accept('promote', target='13'), 1)
         self.assertEqual(self.values(SAMPLE_A)['maps/filenames'], ['map_a.png', 'map_z.png'])
-        self.assertEqual(self.values(SAMPLE_A)['coverage_flags/pmi/Taxon/flag_5_1'], 'B')
+        self.assertEqual(self.values(SAMPLE_A)['blast_hits/sequence_fingerprints'], {'ACC1': '0123456789abcdef'})
         self.assertEqual(self.file(SAMPLE_B).read_bytes(), untouched)
         self.assertEqual(self.sidecar.read_bytes(), evidence)
         with self.assertRaisesRegex(ValueError, 'Stale'):
@@ -34,18 +34,18 @@ class PromoteTests(ToolkitCase):
 
     def test_all_in_this_sample(self):
         self.drift()
-        self.find(SAMPLE_A, 'coverage_flags/pmi/Taxon/flag_5_1').update(observed='C', status='failed')
+        self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints').update(observed={'ACC1': 'fedcba9876543210'}, status='failed')
         self.save()
         self.assertEqual(self.accept('promote', answer='a', target=SAMPLE_A), 2)
 
     def test_absent_entry_is_removed(self):
         self.seed()
-        flag = self.find(SAMPLE_A, 'coverage_flags/pmi/Taxon/flag_5_1')
+        flag = self.find(SAMPLE_A, 'blast_hits/sequence_fingerprints')
         flag.update(observed=None, status='failed', absent=True)
         self.save()
         self.assertEqual(self.accept('promote', target=SAMPLE_A), 1)
         self.assertEqual(set(self.values(SAMPLE_A)), {'maps/filenames'})
-        self.assertNotIn('coverage_flags', self.file(SAMPLE_A).read_text())
+        self.assertNotIn('blast_hits', self.file(SAMPLE_A).read_text())
 
     def test_no_change_dry_run_and_rejection(self):
         self.seed(); before = self.file(SAMPLE_A).read_bytes()
@@ -66,10 +66,9 @@ class PromoteTests(ToolkitCase):
         self.assertFalse(list(self.expected.glob('.expected-*')))
 
     def test_stale_code_schema_and_missing_entry(self):
-        self.seed(SAMPLE_A)
-        self.data['rows'].append(row(SAMPLE_A, 'phylogeny', 'selected_sequences', ['X1'])); self.save()
+        self.accept(sample=SAMPLE_A, assertion='filenames'); self.refresh()
         with self.assertRaisesRegex(ValueError, 'Missing key'):
-            self.accept('promote', target=SAMPLE_A, assertion='phylogeny/selected_sequences')
+            self.accept('promote', target=SAMPLE_A, assertion='blast_hits/sequence_fingerprints')
         for name, message in (('contract_sha256', 'Stale assertion code'), ('schema_sha256', 'Stale schema')):
             original = self.data[name]
             self.data[name] = '0'*64; self.save()

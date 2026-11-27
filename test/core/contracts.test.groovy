@@ -105,12 +105,15 @@ try {
     def row=rowOf(result,'blast_hits/sequence_fingerprints')
     assert row.status=='failed' && row.detail.ACC1=='ACGA'
     assert invariantFails(result[0]).isEmpty()
-    assert rowOf(result,'blast_hits/accessions').status=='passed'
  }
  rewriteHits('ACGT')
  def flagFile=new File(f[0]);def originalFlags=flagFile.text
  def values=new JsonSlurper().parse(flagFile);values[0].value='C';flagFile.text=JsonOutput.toJson(values)
- expect('changed 5.1 value with unchanged record count') { assert rowOf(run(),'coverage_flags/pmi/Taxon/flag_5_1').status=='failed' }
+ expect('changed valid 5.1 value is not compared by core (left to Selenium)') {
+    def result=run()
+    assert result[1].isEmpty() : result[1]*.message
+    assert !result[0].rows.any { it.component=='coverage_flags' && it.kind }
+ }
  flagFile.text=originalFlags
  values=new JsonSlurper().parse(flagFile);values[1]=values[0];flagFile.text=JsonOutput.toJson(values)
  expect('duplicate target replacing another role') { assert rowOf(run(),'F.5.1.records').status=='failed' }
@@ -119,64 +122,25 @@ try {
  flagFile.text=JsonOutput.toJson(flags('5.1')+[[flag_id:'5.1',value:'B',target:'Extra',target_type:'pmi']])
  expect('extra flag record') { assert rowOf(run(),'F.5.1.records').status=='failed' }
  flagFile.text=originalFlags
- coverage.coverage.pmi.Taxon.target=11;coverage.coverage.pmi.Taxon.related=[Sp1:30,Sp2:40];new File(d).text=JsonOutput.toJson(coverage)
- expect('record counts are not core expectations (target and per-species)') {
+ coverage.coverage.pmi.Taxon.target=11;coverage.coverage.pmi.Taxon.related=[Sp1:30,Sp3:40];coverage.coverage.toi.Taxon.country=null
+ coverage.coverage.candidate=[Taxon:[target:10,related:[Sp9:4],country:null]];new File(d).text=JsonOutput.toJson(coverage)
+ expect('coverage content (taxa, states, species, counts) is not compared by core') {
     def result=run()
-    assert result[1].isEmpty() : result[1]*.message
-    assert rowOf(result,'database_coverage/pmi/Taxon/target_record_count').status=='not_checked'
-    assert !result[0].rows.any { it.id.contains('Sp1') }
+    assert !result[0].rows.any { it.component=='database_coverage' && it.kind }
+    assert rowOf(result,'D.content').status=='passed'
  }
- coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp3:4];coverage.coverage.candidate=[Taxon:[target:10,related:[Sp9:4],country:null]]
- new File(d).text=JsonOutput.toJson(coverage)
- expect('related species names are not compared for any role') {
-    def result=run()
-    assert !result[0].rows.any { it.assertion=='related_species' }
-    assert rowOf(result,'database_coverage/candidate/Taxon/target_state') != null
- }
- coverage.coverage.candidate=[:]
+ coverage.coverage.candidate=[:];coverage.coverage.toi.Taxon.country='NA'
  coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp2:'x'];new File(d).text=JsonOutput.toJson(coverage)
  expect('count structure is still an invariant') { assert rowOf(run(),'D.content').status=='failed' }
  coverage.coverage.pmi.Taxon.related=[Sp1:3,Sp2:4];coverage.coverage.pmi.Taxon.target=10;new File(d).text=JsonOutput.toJson(coverage)
- hitsFile.text='{broken';flagFile.text=JsonOutput.toJson(flags('5.1').collect { it + [value:'C'] })
+ hitsFile.text='{broken';flagFile.text=JsonOutput.toJson(flags('5.1').collect { it + [value:'Z'] })
  expect('multiple independent failures survive') {
     def result=run()
-    assert rowOf(result,'coverage_flags/pmi/Taxon/flag_5_1').status=='failed'
+    assert rowOf(result,'F.5.1.records').status=='failed'
     assert rowOf(result,'H.files').status=='error'
  }
  hitsFile.text=hitsText;flagFile.text=originalFlags
- def fixture = new File(root,'test/selenium/expected/synthetic.yaml')
- fixture.text = """sample_id: Synthetic
-components:
-- id: database_coverage
-  pmi:
-  - assertions:
-    - id: title
-      value: ['Database coverage of Preliminary Morphology ID Taxon']
-    - id: record_count
-      value: ['10']
-    - id: flag_text1
-      value: ['5.1B']
-"""
- expect('Selenium-owned value is delegated; a still-stored core entry must be removed') {
-    def result=run()
-    assert rowOf(result,'database_coverage/pmi/Taxon/target_record_count').status=='delegated'
-    def row=rowOf(result,'coverage_flags/pmi/Taxon/flag_5_1')
-    assert row.absent && row.status=='failed' && row.promotable && row.diagnostic.contains('synthetic.yaml')
- }
- fixture.text=fixture.text.replace("value: ['10']", "value: ['']")
- expect('empty Selenium expectation is not ownership; count stays unchecked, not failed') {
-    assert rowOf(run(),'database_coverage/pmi/Taxon/target_record_count').status=='not_checked'
- }
- fixture.delete()
- def doc=new Yaml().load(baseline)
- doc.components.find { it.id=='database_coverage' }.pmi << [name:'Gone',assertions:[[id:'target_state',type:'state',value:'assessed']]]
- expectedFile.text=new Yaml().dump(doc)
- expect('stored entry with no observation is reported (stale), not ignored') {
-    def result=run()
-    def stale=rowOf(result,'database_coverage/pmi/Gone/target_state')
-    assert stale?.absent && stale.status=='failed' && stale.promotable && rowOf(result,'expected.files').status=='passed' : result[0].rows.findAll { it.status!='passed' }
- }
- expectedFile.text=baseline
+ // A Selenium fixture no longer changes what core checks.
  def overview = new File(root,'test/selenium/expected/synthetic.yaml')
  overview.text = '''sample_id: Synthetic
 components:
@@ -193,24 +157,24 @@ components:
       value: ['5.1B']
 '''
  def flag1=new File(c.find { it.endsWith('1.flag') }); def flag1Text=flag1.text
+ flag1.text=JsonOutput.toJson([[flag_id:'1',value:'Z',target:null,target_type:null]])
  values=new JsonSlurper().parse(flagFile); values.each { it.value='Z' }; flagFile.text=JsonOutput.toJson(values)
- expect('Selenium-owned flags get no extra core validity check; unowned ones do') {
+ expect('flag values are checked for validity in every sample, Selenium fixture or not') {
     def result=run()
-    assert !result[0].rows.any { it.id=='C.flag.1' }
+    assert rowOf(result,'C.flag.1').status=='failed'
     assert rowOf(result,'C.flag.2').status=='passed'
-    assert rowOf(result,'candidates/flag_1').status in ['delegated','failed']
+    assert !result[0].rows.any { it.component=='candidates' && it.kind }
     def records=rowOf(result,'F.5.1.records')
-    assert records.status=='failed' && records.diagnostic.startsWith('5.1.flag: flag 5.1 value for toi/Taxon\nExpected: one of A/B/C/NA/ERR\nActual: "Z"')
-    assert !records.diagnostic.contains('pmi/Taxon')
- }
- values=new JsonSlurper().parse(flagFile); values.find { it.target_type=='toi' }.value='B'; values.find { it.target_type=='pmi' }.value='Z'; flagFile.text=JsonOutput.toJson(values)
- expect('an invalid value Selenium checks is left to Selenium; structure still checked') {
-    def result=run()
-    assert rowOf(result,'F.5.1.records').status=='passed'
-    flagFile.text=JsonOutput.toJson(values.take(1))
-    assert rowOf(run(),'F.5.1.records').diagnostic.startsWith('5.1.flag: one record per taxon in db_coverage.json')
+    assert records.status=='failed' && records.diagnostic.startsWith('5.1.flag: flag 5.1 value for pmi/Taxon\nExpected: one of A/B/C/NA/ERR\nActual: "Z"')
  }
  flagFile.text=originalFlags; flag1.text=flag1Text; overview.delete()
+ def doc=new Yaml().load(baseline)
+ doc.components << [id:'candidates',assertions:[[id:'flag_1',type:'flag',value:'E']]]
+ expectedFile.text=new Yaml().dump(doc)
+ expect('a stored value core no longer compares fails as unknown') {
+    assert rowOf(run(),'expected.files').diagnostic.contains('unknown assertion flag_1')
+ }
+ expectedFile.text=baseline
  def orphan=new File(root,'test/core/expected/2_Other.yaml'); orphan.text='sample_id: Other\ncomponents: []\n'
  expect('orphan file fails with its name') {
     def row=rowOf(run(),'expected.files'); assert row.status=='failed' && row.diagnostic.contains('2_Other.yaml') && row.diagnostic.contains('orphan')
@@ -219,7 +183,7 @@ components:
  expect('duplicate sample_id fails') { assert rowOf(run(),'expected.files').diagnostic.contains('duplicate sample_id') }
  orphan.delete()
  expectedFile.text=baseline+'- id: maps\n  assertions:\n  - id: pixels\n    value: 1\n'
- expect('unknown assertion fails') { assert rowOf(run(),'expected.files').diagnostic.contains('unknown or unstorable assertion pixels') }
+ expect('unknown assertion fails') { assert rowOf(run(),'expected.files').diagnostic.contains('unknown assertion pixels') }
  expectedFile.text=baseline
  def flag7=new File(c.find { it.endsWith('7.flag') }); def flag7Text=flag7.text
  flag7.text=JsonOutput.toJson([[flag_id:'7',value:'A',target:null,target_type:null]])

@@ -9,65 +9,11 @@ provenance:
 components:
 - id: blast_hits
   assertions:
-  - id: accessions
-    type: membership
-    value:
-    - XM_070154973
-    - XM_070160998
   - id: sequence_fingerprints
     type: fingerprints
     value:
       XM_070154973: '08769af36a0c2082'
       XM_070160998: 'c723c383f68a22b2'
-- id: phylogeny
-  assertions:
-  - id: selected_sequences
-    type: membership
-    value: []
-- id: database_coverage
-  assertions:
-  - id: candidate_taxa
-    type: membership
-    value: []
-  - id: toi_taxa
-    type: membership
-    value:
-    - Tospovirus
-  - id: pmi_taxa
-    type: membership
-    value:
-    - Tospovirus
-  toi:
-  - name: Tospovirus
-    assertions:
-    - id: target_state
-      type: state
-      value: assessed
-    - id: country_state
-      type: state
-      value: NA
-  pmi:
-  - name: Tospovirus
-    assertions:
-    - id: target_state
-      type: state
-      value: assessed
-    - id: country_state
-      type: state
-      value: NA
-- id: coverage_flags
-  toi:
-  - name: Tospovirus
-    assertions:
-    - id: flag_5_3
-      type: flag
-      value: NA
-  pmi:
-  - name: Tospovirus
-    assertions:
-    - id: flag_5_3
-      type: flag
-      value: NA
 - id: maps
   assertions:
   - id: filenames

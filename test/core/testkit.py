@@ -27,9 +27,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
 EXPECTED = ROOT / 'expected'
 SELENIUM = ROOT.parent / 'selenium/expected'
-STATUSES = {'passed', 'failed', 'error', 'unbaselined', 'delegated', 'not_checked'}
-FLAGS = ('A', 'B', 'C', 'D', 'E', 'NA', 'ERR')
-STATES = ('assessed', 'not_assessed', 'null', 'NA')
+STATUSES = {'passed', 'failed', 'error', 'unbaselined'}
 
 
 # ---------------------------------------------------------------- shared data
@@ -37,14 +35,6 @@ STATES = ('assessed', 'not_assessed', 'null', 'NA')
 def digest(path):
     path = Path(path)
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
-
-
-def ownership_digest():
-    value = hashlib.sha256()
-    for path in sorted(SELENIUM.glob('*.yaml')):
-        value.update(path.name.encode())
-        value.update(path.read_bytes())
-    return value.hexdigest()
 
 
 def unique_object(pairs):
@@ -85,10 +75,6 @@ def value_valid(kind, value):
         return isinstance(value, dict) and all(
             isinstance(k, str) and k and isinstance(v, str) and re.fullmatch(r'[0-9a-f]{16}', v)
             for k, v in value.items())
-    if kind == 'flag':
-        return value in FLAGS
-    if kind == 'state':
-        return value in STATES
     return False
 
 
@@ -114,7 +100,7 @@ def evidence(path):
         raise ValueError('Missing run identity/provenance')
     if type(run.get('execution_success')) is not bool or type(run.get('complete')) is not bool:
         raise ValueError('Missing execution/completeness state')
-    for name in ('contract_sha256', 'schema_sha256', 'ownership_sha256'):
+    for name in ('contract_sha256', 'schema_sha256'):
         val = data.get(name)
         if name not in data or (val is not None and (not isinstance(val, str) or len(val) != 64)):
             raise ValueError(f'Invalid {name}')
@@ -127,8 +113,8 @@ def evidence(path):
         raise ValueError('No assertion rows: evaluation is incomplete')
     seen = set()
     for row in rows:
-        if not isinstance(row, dict) or not all(isinstance(row.get(k), str) and row[k] for k in ('sample', 'id', 'field', 'owner', 'component')):
-            raise ValueError('Missing sample/assertion/field/owner/component')
+        if not isinstance(row, dict) or not all(isinstance(row.get(k), str) and row[k] for k in ('sample', 'id', 'field', 'component')):
+            raise ValueError('Missing sample/assertion/field/component')
         ident = (row['sample'], row['id'])
         if ident in seen:
             raise ValueError(f'Duplicate assertion key: {ident}')
@@ -142,7 +128,7 @@ def evidence(path):
             definition = (component.get('assertions') or {}).get(row.get('assertion'))
             group = row.get('group')
             group_ok = (group in (component.get('groups') or []) and bool(row.get('name'))) if group else not row.get('name')
-            if (row['owner'] != 'core' or not definition or definition.get('stored') is False
+            if (not definition
                     or definition['type'] != row.get('kind') or not group_ok
                     or row['id'] != key(row['component'], row.get('group'), row.get('name'), row['assertion'])):
                 raise ValueError(f'Only defined core data expectations are promotable: {ident}')
@@ -310,8 +296,6 @@ def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=Fal
         raise ValueError('Stale assertion code; evaluate again before accepting data')
     if data['schema_sha256'] != digest(ROOT / 'schema.yaml'):
         raise ValueError('Stale schema; evaluate again before accepting data')
-    if data['ownership_sha256'] != ownership_digest():
-        raise ValueError('Stale Selenium ownership; evaluate again before accepting data')
 
     files = sample_files(expected_dir) if expected_dir.exists() else {}
     if mode == 'promote':
@@ -461,7 +445,6 @@ LABEL_NOTE = ('Labels are a suggestion, not a diagnosis. "Rule failed" means a r
               'stored value differs from test/core/expected/: new reference data (GenBank, BOLD, GBIF) is a common cause, '
               'but a regression looks the same. The tool cannot tell which; check each change before promoting.')
 BADGE = {'unbaselined': 'needs baseline', 'drift': 'possible drift', 'failed': 'rule failed'}
-HIDDEN = ('delegated', 'not_checked')   # owned by Selenium: shown in the Selenium review, not here
 DATA_NEXT = {'failed': 'The stored value no longer matches (possible drift, not confirmed). Compare with the reference run '
                        'or the linked file: promote only if the change is expected (for example new reference data), '
                        'otherwise treat it as a regression.',
@@ -621,7 +604,7 @@ def _analyse(junit, assertions):
         try:
             data = evidence(assertions)
             run = data['run']
-            rows = [r for r in data['rows'] if r['status'] not in HIDDEN]
+            rows = data['rows']
         except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
             evidence_error = f'Missing/invalid assertion evidence: {exc}'
     statuses = Counter(r['status'] for r in rows)
@@ -715,9 +698,9 @@ def _what_is_checked():
     parts = ['<details><summary>What this test checks</summary>',
              '<p class="hint">One core workflow run over the samples in test/core/metadata.csv. <b>Rule checks</b> must always '
              'hold; a failure is a bug and cannot be promoted. <b>Stored values</b> are compared with '
-             'test/core/expected/&lt;N&gt;_&lt;sample&gt;.yaml and can be promoted after review. A value belongs to Selenium for a '
-             'sample when that sample\'s Selenium fixture (test/selenium/expected/) has a non-empty expected value for it; core '
-             'then neither compares it nor re-checks that it exists and is valid.</p>']
+             'test/core/expected/&lt;N&gt;_&lt;sample&gt;.yaml and can be promoted after review. Core stores only values the HTML '
+             'report does not show (hit sequence fingerprints and map filenames); values shown in the report are left to '
+             'Selenium.</p>']
     for comp in SCHEMA['components']:
         parts.append(f'<div class="area"><h3>{_esc(comp["title"])} <small class="id">{_esc(comp["channel"])}</small></h3>'
                      f'<div>{_esc(comp.get("description", ""))}</div>'
@@ -726,7 +709,7 @@ def _what_is_checked():
         if checks:
             parts.append('<b style="font-size:.85rem">Rule checks</b><ul>' + ''.join(
                 f'<li><b>{_esc(c["title"])}</b>: {_esc(c.get("explain", c.get("rule", "")))}</li>' for c in checks.values()) + '</ul>')
-        stored = [a for a in (comp.get('assertions') or {}).values() if a.get('stored') is not False]
+        stored = list((comp.get('assertions') or {}).values())
         if stored:
             parts.append('<b style="font-size:.85rem">Stored values compared</b><ul>' + ''.join(
                 f'<li><b>{_esc(a["title"])}</b>: {_esc(a.get("explain", ""))}</li>' for a in stored) + '</ul>')

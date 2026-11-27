@@ -20,7 +20,6 @@ class CoreAssertions {
     Map evidence
     List<Closure> checks = []
     Set rowKeys = new HashSet()
-    Map fixtures = [:]
     Map files = [:]
     Map candidates = [:]
     Map hitSequences = [:]
@@ -76,12 +75,6 @@ class CoreAssertions {
 
     static String digest(File file) {
         file.exists() ? MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex().toString() : null
-    }
-    static String ownershipDigest(File root) {
-        def hash = MessageDigest.getInstance('SHA-256')
-        def fixtures = new File(root,'test/selenium/expected').listFiles()?.findAll { it.name.endsWith('.yaml') } ?: []
-        fixtures.sort { it.name }.each { f -> hash.update(f.name.getBytes('UTF-8'));hash.update(f.bytes) }
-        hash.digest().encodeHex().toString()
     }
     static Object json(File file) { new JsonSlurper().parse(file) }
     static List csv(File file) {
@@ -159,8 +152,6 @@ class CoreAssertions {
         switch (type) {
             case 'membership': return value instanceof List && value.every { it instanceof String && it } && value.unique(false).size() == value.size()
             case 'fingerprints': return value instanceof Map && value.every { k, v -> k instanceof String && k && v instanceof String && v ==~ /[0-9a-f]{16}/ }
-            case 'flag': return value in ['A','B','C','D','E','NA','ERR']
-            case 'state': return value in ['assessed','not_assessed','null','NA']
             default: return false
         }
     }
@@ -177,7 +168,7 @@ class CoreAssertions {
         holds(component != null, 'test/core/schema.yaml', 'check is declared', d("${id} declared"), d('not declared'))
         checks << {
             def row = [sample:sample,id:id,component:component,field:field,rule:components[component].checks[id].rule,
-                       observed:null,status:'passed',promotable:false,owner:'core',artifacts:paths]
+                       observed:null,status:'passed',promotable:false,artifacts:paths]
             holds(rowKeys.add([sample,id]), "${sample}/${id}", 'check runs once', d('once'), d('twice'))
             evidence.rows << row
             try { body.call(); row.observed = 'satisfied' }
@@ -197,23 +188,15 @@ class CoreAssertions {
         String id = key(component, group, name, assertion)
         holds(rowKeys.add([sample,id]), "${sample}/${id}", 'value recorded once', d('once'), d('twice'))
         observedKeys.computeIfAbsent(sample) { new HashSet() } << id
-        String owner = opts.owner
-        boolean stored = definition.stored != false
         def entry = expected[sample]?.entries?.get(id)
-        String status = owner ? 'delegated' : !stored ? 'not_checked' : entry == null ? 'unbaselined'
-            : equalValue(definition.type, entry.value, observed) ? 'passed' : 'failed'
+        String status = entry == null ? 'unbaselined' : equalValue(definition.type, entry.value, observed) ? 'passed' : 'failed'
         def row = [sample:sample,id:id,component:component,group:group,name:name,assertion:assertion,
                    field:opts.field ?: id,kind:definition.type,observed:observed,expected:entry?.value,
-                   owner:owner ?: 'core',promotable:!owner && stored,status:status,artifacts:paths]
-        if (owner && entry != null) {
-            // Selenium now owns a value core still stores: the core entry must be removed (promote).
-            row += [observed:null,owner:'core',promotable:true,status:'failed',absent:true,
-                    diagnostic:msg("${sample}/${id}", 'stored core value', entry.value, d("now checked by Selenium (${owner})"))]
-        }
+                   promotable:true,status:status,artifacts:paths]
         // Full values (e.g. sequences behind fingerprints) are kept only where a reviewer needs them.
         if (opts.detail != null && status != 'passed') row.detail = opts.detail
         evidence.rows << row
-        if (row.promotable) checks << {
+        checks << {
             holds(row.status == 'passed', "${sample}/${id}", 'stored value', entry == null ? d('no stored value') : entry.value,
                   row.absent ? d('not produced') : row.observed)
         }
@@ -229,7 +212,7 @@ class CoreAssertions {
                 if (id in (observedKeys[sid] ?: []) || entry.component in blocked) return
                 def message = msg("${sid}/${id}", 'stored value', entry.value, d('not produced'))
                 def row = [sample:sid,id:id,component:entry.component,group:entry.group,name:entry.name,assertion:entry.assertion,
-                           field:id,kind:entry.type,observed:null,expected:entry.value,absent:true,owner:'core',
+                           field:id,kind:entry.type,observed:null,expected:entry.value,absent:true,
                            promotable:true,status:'failed',artifacts:[],diagnostic:message]
                 evidence.rows << row
                 checks << { assert false : message }
@@ -252,7 +235,7 @@ class CoreAssertions {
                 if (!(list instanceof List)) { problems << "${f.name}: ${component}${group ? '/'+group+'/'+name : ''}: assertions must be a list"; return }
                 list.each { a ->
                     def definition = a instanceof Map ? components[component].assertions?.get(a.id) : null
-                    if (definition == null || definition.stored == false) { problems << "${f.name}: ${component}: unknown or unstorable assertion ${a instanceof Map ? a.id : a}"; return }
+                    if (definition == null) { problems << "${f.name}: ${component}: unknown assertion ${a instanceof Map ? a.id : a}"; return }
                     if (a.type != null && a.type != definition.type) { problems << "${f.name}: ${component}/${a.id}: type ${a.type} should be ${definition.type}"; return }
                     if (!valid(definition.type, a.value)) { problems << "${f.name}: ${component}/${a.id}: invalid ${definition.type} value ${show(a.value)}"; return }
                     String id = key(component, group, name, a.id)
@@ -282,23 +265,6 @@ class CoreAssertions {
         evidence.expectations = ids.collectEntries { sid -> [(sid): expected[sid] ? [file:expected[sid].file,sha256:expected[sid].sha256] : null] }
         holds(!problems, 'test/core/expected', 'valid per-sample expectation files', d('no problems'), d(problems.join('; ')))
     }
-    /** Selenium fixture field that checks this value (populated expectation), or null. */
-    String owned(String sample, String component, String field, String role=null, String taxon=null) {
-        def fixture = fixtures[sample]
-        def comp = fixture?.data?.components?.find { it.id == component }
-        def rows = role ? comp?.get(role) : [comp]
-        def matches = []
-        (rows ?: []).eachWithIndex { row, index ->
-            def assertions = row?.assertions ?: []
-            def title = assertions.find { it.id == 'title' }?.value
-            if (role && !(title instanceof List && title.size() == 1 && title[0].toString() == 'Database coverage of ' + ['candidate':'Candidate','toi':'Taxon of Interest','pmi':'Preliminary Morphology ID'][role] + ' ' + taxon)) return
-            def value = assertions.find { it.id == field }?.value
-            boolean populated = value instanceof List ? value.any { it != null && it.toString().trim() } : value != null && value.toString().trim()
-            if (populated) matches << "${fixture.path}#${component}.${role ?: ''}[${index}].${field}"
-        }
-        holds(matches.size() <= 1, "${sample}/${role}/${taxon}/${field}", 'at most one Selenium fixture field', count(1, 'field'), count(matches.size(), 'field'))
-        matches ? matches[0] : null
-    }
     CoreAssertions(File root, File destination, Map run, Closure resolve = { new File(it) }) {
         this.root=root; this.destination=destination; this.resolve=resolve
         expectedDir = new File(System.getenv('CORE_EXPECTED_DIR') ?: new File(root,'test/core/expected').path)
@@ -313,7 +279,7 @@ class CoreAssertions {
             }
         }
         evidence = [schema_version:2,run:run + [complete:true,evaluated_at:java.time.Instant.now().toString()],
-                    expectations:[:],ownership_sha256:ownershipDigest(root),schema_sha256:digest(schemaFile),
+                    expectations:[:],schema_sha256:digest(schemaFile),
                     contract_sha256:digest(new File(root,'test/core/CoreAssertions.groovy')),rows:[]]
     }
     List<Closure> evaluate() {
@@ -354,11 +320,6 @@ class CoreAssertions {
                 holds(row.sample_id as boolean, 'metadata.csv', "row ${index + 2} has a sample_id", d('sample_id'), row.sample_id)
                 holds(!metadata.values().any { it.sample_id == row.sample_id }, 'metadata.csv', 'sample_id is unique', d('unique'), d("repeated ${show(row.sample_id)}"))
                 metadata[String.format('query_%03d_%s',index+1,row.sample_id)] = row
-            }
-            new File(root,'test/selenium/expected').eachFileMatch(~/.*\.yaml/) { f ->
-                def fixture = new Yaml().load(f.text)
-                holds(!fixtures.containsKey(fixture.sample_id), 'test/selenium/expected', 'one fixture per sample_id', d('one'), d("${f.name} repeats ${fixture.sample_id}"))
-                fixtures[fixture.sample_id] = [data:fixture,path:'test/selenium/expected/'+f.name]
             }
             evidence.run.metadata_sha256 = digest(new File(root,'test/core/metadata.csv'))
             evidence.run.samples = metadata.values()*.sample_id
@@ -451,7 +412,6 @@ class CoreAssertions {
             unique('all_hits.json', 'each accession appears once', hits.hits*.accession)
             def seq = fasta(artifact(sample,'H','all_hits.fasta')); hitSequences[sample]=seq
             sameSet('all_hits.fasta', 'same accessions as all_hits.json', hits.hits*.accession, seq.keySet())
-            data(sid,'blast_hits',null,null,'accessions',seq.keySet().sort(),paths(sample,'H',['all_hits.json','all_hits.fasta']),[field:'H/all_hits.json/accession'])
             data(sid,'blast_hits',null,null,'sequence_fingerprints',seq.collectEntries { id, sequence -> [id, fingerprint(sequence)] }.sort(),
                  paths(sample,'H',['all_hits.fasta']),[field:'H/all_hits.fasta',detail:seq])
             // Last subject HSP is the documented P1 contract (including gaps).
@@ -493,7 +453,6 @@ class CoreAssertions {
             seq.each { id, sequence -> same('candidates.fasta', "sequence ${id} equals all_hits.fasta", hitSequences[sample][id], sequence) }
             def phylo = fasta(artifact(sample,'C','candidates_phylogeny.fasta')); treeSequences[sample]=phylo
             phylo.each { id, sequence -> same('candidates_phylogeny.fasta', "sequence ${id} equals all_hits.fasta", hitSequences[sample][id], sequence) }
-            data(sid,'phylogeny',null,null,'selected_sequences',phylo.keySet().sort(),paths(sample,'C',['candidates_phylogeny.fasta']),[field:'C/candidates_phylogeny.fasta'])
             holds(maxCandidates > 0, 'parameters', 'candidate limit available', d('limit'), d('parameters check failed first'))
             boolean plot = c.species.size() > maxCandidates
             def names = files.C[sample]*.name
@@ -511,20 +470,14 @@ class CoreAssertions {
                 same('assigned_taxonomy.csv', 'rows equal candidates.csv', table[1], assigned[1])
             }
         }
-        ['1':'conclusion_flag','2':'toi_flag','7':'preliminary_flag'].each { id, field ->
-            String owner = owned(sid,'overview_tab',field)
-            if (owner) {
-                // Selenium checks this flag value: no extra core check that it exists and is valid.
-                data(sid,'candidates',null,null,'flag_'+id,null,paths(sample,'C',[id+'.flag']),[field:'C/'+id+'.flag/value',owner:owner])
-                return
-            }
+        // Flag values shown in the report are left to Selenium (user decision 2026-11-26); core checks only validity.
+        ['1','2','7'].each { id ->
             check(sid,"C.flag.${id}",'C/'+id+'.flag',paths(sample,'C',[id+'.flag'])) {
                 def file = artifact(sample,'C',id+'.flag')
                 def rows = flag(file,id)
                 same(file.name, 'number of records', count(1, 'record'), count(rows.size(), 'record'))
                 same(file.name, 'target', d('no target'), rows[0].target == null && rows[0].target_type == null ? d('no target') : d("${rows[0].target_type}/${rows[0].target}"))
                 flagValue(file, id, rows[0])
-                data(sid,'candidates',null,null,'flag_'+id,rows[0].value,paths(sample,'C',[id+'.flag']),[field:'C/'+id+'.flag/value'])
             }
         }
         check(sid,'C.toi','C/taxa_of_concern_detected.csv',paths(sample,'C',['taxa_of_concern_detected.csv'])) {
@@ -575,14 +528,11 @@ class CoreAssertions {
                     holds(groups instanceof List && groups.every { it instanceof List }, 'aggregated_sources.json', "${taxon} is a list of source groups", d('list of lists'), groups)
                     def accessions = groups.flatten()*.accession
                     holds(c.hits*.accession.containsAll(accessions), 'aggregated_sources.json', "sources of ${taxon} are candidate hits", d('candidate accessions'), accessions - c.hits*.accession)
-                    data(sid,'source_diversity','candidates',taxon,'source_accessions',accessions.unique(false).sort(),
-                         paths(sample,'S',['aggregated_sources.json']),[field:'S/aggregated_sources.json/'+taxon])
                     groups.flatten().each { source ->
                         holds(source.accession && source.publications instanceof List && source.is_automated instanceof Boolean, 'aggregated_sources.json',
                               "every source of ${taxon} has accession, publications and is_automated", d('all three'), source)
                     }
                 }
-                flags.each { f -> data(sid,'source_diversity','candidates',f.target,'flag_4',f.value,paths(sample,'S',['4.flag']),[field:'S/4.flag/'+f.target]) }
             }
         }
         check(sid,'T.labels','T/candidates_phylogeny.nwk',paths(sample,'T')) {
@@ -602,34 +552,22 @@ class CoreAssertions {
             def coverage = json(artifact(sample,'D','db_coverage.json')).coverage
             holds(coverage instanceof Map, 'db_coverage.json', 'has a coverage section', d('map'), coverage)
             sameSet('db_coverage.json', 'coverage roles', ['candidate','pmi','toi'], coverage.keySet())
-            def where = paths(sample,'D',['db_coverage.json'])
+            // Coverage content shown in the report (taxa, states, species, counts) is left to Selenium (user decision 2026-11-26).
             coverage.each { role, taxa ->
                 holds(taxa instanceof Map, 'db_coverage.json', "${role} maps taxa to results", d('map'), taxa)
-                data(sid,'database_coverage',null,null,role+'_taxa',taxa.keySet().sort(),where,[field:"D/coverage/${role}"])
                 taxa.each { taxon, values ->
                     holds(values instanceof Map && values.keySet().containsAll(['target','related','country']), 'db_coverage.json',
                           "${role}/${taxon} has target, related and country", ['target','related','country'], values instanceof Map ? values.keySet() : values)
                     holds(values.target == null || values.target instanceof Number && values.target >= 0 && values.target == values.target.toInteger(),
                           'db_coverage.json', "${role}/${taxon} target count", d('whole number or null'), values.target)
-                    data(sid,'database_coverage',role,taxon,'target_state',values.containsKey('not_assessed') ? 'not_assessed' : values.target == null ? 'null' : 'assessed',
-                         where,[field:"D/coverage/${role}/${taxon}/target"])
-                    // Record counts are live GenBank/BOLD numbers: Selenium owns them (±10%); core only reports them.
-                    data(sid,'database_coverage',role,taxon,'target_record_count',values.target,where,
-                         [field:"D/coverage/${role}/${taxon}/target",owner:owned(sid,'database_coverage','record_count',role,taxon)])
                     ['related','country'].each { field ->
                         def counts = values[field]
                         holds(counts == null || counts instanceof Map || field == 'country' && counts == 'NA', 'db_coverage.json',
                               "${role}/${taxon}/${field}", d(field == 'country' ? 'species list, NA or null' : 'species list or null'), counts)
-                        if (counts instanceof Map) {
-                            counts.each { species, n ->
-                                holds(n == null || n instanceof Number && n >= 0 && n == n.toInteger(), 'db_coverage.json',
-                                      "${role}/${taxon}/${field}/${species} count", d('whole number or null'), n)
-                            }
-                            // In-country species names must match; per-species counts are deliberately not compared (user decision 2026-11-23).
-                            // Related-species names are not compared for any role (user decision 2026-11-25).
-                            if (field == 'related') return
-                            data(sid,'database_coverage',role,taxon,field+'_species',counts.keySet().sort(),where,[field:"D/coverage/${role}/${taxon}/${field}"])
-                        } else data(sid,'database_coverage',role,taxon,field+'_state',counts == null ? 'null' : 'NA',where,[field:"D/coverage/${role}/${taxon}/${field}"])
+                        if (counts instanceof Map) counts.each { species, n ->
+                            holds(n == null || n instanceof Number && n >= 0 && n == n.toInteger(), 'db_coverage.json',
+                                  "${role}/${taxon}/${field}/${species} count", d('whole number or null'), n)
+                        }
                     }
                 }
             }
@@ -640,16 +578,10 @@ class CoreAssertions {
                 def file = artifact(sample,'F',id+'.flag')
                 def rows = flag(file,id)
                 def coverage = json(artifact(sample,'D','db_coverage.json')).coverage
-                // Structure is always checked: Selenium reads only the taxa it shows, not missing/extra/duplicate records.
                 sameSet(file.name, 'one record per taxon in db_coverage.json', coverage.collectMany { role, taxa -> taxa.keySet().collect { role+'/'+it } },
                         rows.collect { it.target_type+'/'+it.target })
-                rows.each { f ->
-                    def owner = id == '5.3' ? null : owned(sid,'database_coverage',id == '5.1' ? 'flag_text1':'flag_text2',f.target_type,f.target)
-                    // The value itself is checked here only where Selenium does not check it.
-                    if (!owner) flagValue(file, id, f)
-                    data(sid,'coverage_flags',f.target_type,f.target,'flag_'+id.replace('.','_'),f.value,paths(sample,'F',[id+'.flag']),
-                         [field:"F/${id}/${f.target_type}/${f.target}",owner:owner])
-                }
+                // Every value must be valid; comparing the value is left to Selenium.
+                rows.each { f -> flagValue(file, id, f) }
             }
         }
         check(sid,'M.files','M/maps',paths(sample,'M')) {

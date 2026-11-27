@@ -17,7 +17,7 @@ def row(sample, component, assertion, observed, group=None, name=None, status='u
     kind = kit.SCHEMA['by_id'][component]['assertions'][assertion]['type']
     result = {'sample': sample, 'id': kit.key(component, group, name, assertion), 'component': component,
               'group': group, 'name': name, 'assertion': assertion, 'field': f'{component}/{assertion}',
-              'kind': kind, 'owner': 'core', 'expected': expected, 'observed': observed,
+              'kind': kind, 'expected': expected, 'observed': observed,
               'status': status, 'promotable': True, 'artifacts': []}
     result.update(extra)
     return result
@@ -25,7 +25,7 @@ def row(sample, component, assertion, observed, group=None, name=None, status='u
 
 def invariant(sample, check, status='passed', **extra):
     result = {'sample': sample, 'id': check, 'component': kit.SCHEMA['check_component'][check],
-              'field': check, 'owner': 'core', 'observed': 'satisfied' if status == 'passed' else None,
+              'field': check, 'observed': 'satisfied' if status == 'passed' else None,
               'status': status, 'promotable': False, 'artifacts': []}
     result.update(extra)
     return result
@@ -43,12 +43,11 @@ class ToolkitCase(unittest.TestCase):
                              'evaluated_at': '2026-11-23T00:00:00Z', 'execution_success': True, 'complete': True,
                              'samples': [SAMPLE_A, SAMPLE_B]},
                      'expectations': {SAMPLE_A: None, SAMPLE_B: None},
-                     'ownership_sha256': kit.ownership_digest(),
                      'schema_sha256': kit.digest(kit.ROOT/'schema.yaml'),
                      'contract_sha256': kit.digest(kit.ROOT/'CoreAssertions.groovy'),
                      'rows': [invariant('_run', 'workflow.success'),
                               row(SAMPLE_A, 'maps', 'filenames', ['map_a.png', 'map_b.png']),
-                              row(SAMPLE_A, 'coverage_flags', 'flag_5_1', 'B', group='pmi', name='Taxon'),
+                              row(SAMPLE_A, 'blast_hits', 'sequence_fingerprints', {'ACC1': '0123456789abcdef'}),
                               row(SAMPLE_B, 'maps', 'filenames', ['map_c.png'])]}
         self.save()
 

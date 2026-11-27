@@ -8,8 +8,8 @@
 #   groups       optional keys whose entries are lists of {name, assertions}
 #   checks       rule (invariant) check IDs; never stored per sample, never promotable
 #                title / rule (one line) / explain (plain words) / on_fail (cause, next step)
-#            #   assertions   data values that can be stored per sample (ingest/promote);
-#                `stored: false` values are owned by Selenium and never shown
+#   assertions   data values that can be stored per sample (ingest/promote).
+#                Values shown in the HTML report are left to Selenium (user decision 2026-11-26).
 schema_version: 2
 
 channels:
@@ -24,9 +24,6 @@ channels:
 types:
   membership: Exact list of names (order ignored, no duplicates)
   fingerprints: Accession → first 16 hex characters of SHA-256 of its sequence
-  flag: Flag value (A–E, NA or ERR)
-  state: Section state (assessed, not_assessed, null or NA)
-  count: Whole number (owned by Selenium; never stored or shown by core)
 
 rule_fail: &rule_fail A workflow output broke a rule. The likely cause is a bug in the step that wrote the file, but this is a suggestion; a damaged copy of the run or an unexpected answer from an external service can look the same. Rule failures are never treated as drift and cannot be promoted. Open the linked file, find the cause and rerun.
 
@@ -112,7 +109,7 @@ components:
 - id: blast_hits
   title: BLAST hits
   channel: H
-  description: Reads each sample's BLAST hits. Checks that the hit list (JSON) and hit sequences (FASTA) describe the same hits, belong to the right sample and are well formed, and compares the stored accession list and sequence fingerprints.
+  description: Reads each sample's BLAST hits. Checks that the hit list (JSON) and hit sequences (FASTA) describe the same hits, belong to the right sample and are well formed, and compares the stored sequence fingerprints (keyed by accession, so a changed hit list shows here too).
   files: all_hits.json, all_hits.fasta, query_title.txt
   producer: EXTRACT_HITS (scripts/p1_parse_blast.py)
   checks:
@@ -122,10 +119,6 @@ components:
       explain: The three hit files exist and belong to this sample; every hit has its required fields; the FASTA and JSON list the same hits, and each FASTA sequence is the aligned part of that hit.
       on_fail: *rule_fail
   assertions:
-    accessions:
-      type: membership
-      title: Hit accessions
-      explain: Which reference sequences BLAST returned for this sample.
     sequence_fingerprints:
       type: fingerprints
       title: Hit sequence fingerprints
@@ -134,7 +127,7 @@ components:
 - id: candidates
   title: Candidates
   channel: C
-  description: Reads each sample's candidate folder. Checks that the candidate list, table, sequences and count agree with each other and with the BLAST hits; that optional files appear only when they should; and that each flag file has one valid value. Compares stored flag values that Selenium does not check.
+  description: Reads each sample's candidate folder. Checks that the candidate list, table, sequences and count agree with each other and with the BLAST hits; that optional files appear only when they should; and that each flag file has one valid value. Flag values are not compared (left to Selenium).
   files: candidates.json, candidates.csv, candidates.fasta, candidates_count.txt, candidates_phylogeny.fasta, 1.flag, 2.flag, 7.flag, assigned_taxonomy.csv, taxa_of_concern_detected.csv, preliminary_id_match.csv, candidates_identity_boxplot.png, copies of the hit files
   producer: EXTRACT_CANDIDATES (scripts/p3_assign_taxonomy.py)
   checks:
@@ -161,17 +154,17 @@ components:
     C.flag.1:
       title: Flag 1 file
       rule: One record with a valid value and no target.
-      explain: "1.flag (candidate outcome) holds exactly one valid value. Runs only for samples where Selenium does not check flag 1."
+      explain: 1.flag (candidate outcome) holds exactly one valid value.
       on_fail: *rule_fail
     C.flag.2:
       title: Flag 2 file
       rule: One record with a valid value and no target.
-      explain: "2.flag (taxa of interest) holds exactly one valid value. Runs only for samples where Selenium does not check flag 2."
+      explain: 2.flag (taxa of interest) holds exactly one valid value.
       on_fail: *rule_fail
     C.flag.7:
       title: Flag 7 file
       rule: One record with a valid value and no target.
-      explain: "7.flag (preliminary ID) holds exactly one valid value. Runs only for samples where Selenium does not check flag 7."
+      explain: 7.flag (preliminary ID) holds exactly one valid value.
       on_fail: *rule_fail
     C.toi:
       title: Taxa of interest table
@@ -183,24 +176,11 @@ components:
       rule: 'Present only for flag 7A; header rank,taxon and exactly one row naming the input preliminary ID.'
       explain: 'preliminary_id_match.csv exists only when the preliminary ID matched (flag 7 is A). It should be two lines: the header rank,taxon and one row such as genus,Bruchophagus naming the input preliminary ID.'
       on_fail: *rule_fail
-  assertions:
-    flag_1:
-      type: flag
-      title: Flag 1 (candidate outcome)
-      explain: "Overall outcome (A–E). Selenium checks it for every sample whose fixture has a conclusion_flag value; core compares it only for the others."
-    flag_2:
-      type: flag
-      title: Flag 2 (taxa of interest)
-      explain: "Taxa-of-interest outcome. Selenium checks it for every sample whose fixture has a toi_flag value; core compares it only for the others."
-    flag_7:
-      type: flag
-      title: Flag 7 (preliminary ID)
-      explain: "Preliminary-ID outcome. Selenium checks it for every sample whose fixture has a preliminary_flag value; core compares it only for the others."
 
 - id: phylogeny
   title: Phylogeny
   channel: C/T
-  description: Reads the sequences selected for the tree and the tree itself. Checks that the tree can be read and its leaves are exactly the selected sequences plus the query, and compares the stored list of selected sequences.
+  description: Reads the sequences selected for the tree and the tree itself. Checks that the tree can be read and its leaves are exactly the selected sequences plus the query.
   files: candidates_phylogeny.fasta, candidates_phylogeny.nwk
   producer: EXTRACT_CANDIDATES (selection), MAFFT and FASTME (tree)
   checks:
@@ -209,16 +189,11 @@ components:
       rule: The tree parses; its leaves are the selected sequences plus QUERY; empty only when no sequences were selected.
       explain: The tree file is valid, its leaves are exactly the selected sequences plus QUERY, and it is empty only when nothing was selected.
       on_fail: *rule_fail
-  assertions:
-    selected_sequences:
-      type: membership
-      title: Sequences selected for the tree
-      explain: Which hit sequences were chosen to build the tree.
 
 - id: source_diversity
   title: Source diversity
   channel: S
-  description: Reads the independent-source results, which exist only for samples with 1 up to the candidate limit of candidate species. Checks they appear exactly when they should and cover every candidate, and compares the stored source accessions and flag 4 values.
+  description: Reads the independent-source results, which exist only for samples with 1 up to the candidate limit of candidate species. Checks they appear exactly when they should and cover every candidate, with valid flag 4 values. Source accessions and flag 4 values are not compared (left to Selenium).
   files: aggregated_sources.json, 4.flag
   producer: EVALUATE_SOURCE_DIVERSITY (scripts/p4_source_diversity.py)
   checks:
@@ -227,21 +202,11 @@ components:
       rule: Assessed (4.flag + aggregated_sources.json) exactly when 1..max candidates; sources cover each candidate; accessions belong to candidates.
       explain: Source results exist exactly when the sample has between 1 and the limit of candidate species; there is one entry and one flag per candidate; every listed source accession is a candidate hit.
       on_fail: *rule_fail
-  groups: [candidates]
-  assertions:
-    source_accessions:
-      type: membership
-      title: Source accessions
-      explain: Which reference records count as sources for this candidate.
-    flag_4:
-      type: flag
-      title: Flag 4 (independent sources)
-      explain: Independent-sources outcome per candidate. Not checked by Selenium; core compares every value.
 
 - id: database_coverage
   title: Database coverage
   channel: D
-  description: 'Reads db_coverage.json. Checks its structure and that counts are whole numbers, and compares which taxa were assessed, whether each section was assessed, and the names of the in-country species listed. Related-species names and record counts are not compared; record counts are checked by Selenium.'
+  description: Reads db_coverage.json. Checks its structure and that counts are whole numbers. Taxa, states, species names and record counts are not compared (left to Selenium).
   files: db_coverage.json
   producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
   checks:
@@ -250,78 +215,29 @@ components:
       rule: Roles candidate/toi/pmi; each taxon has target/related/country; counts are whole numbers or null; country may be NA.
       explain: db_coverage.json has candidate, taxon-of-interest and preliminary-ID sections; each taxon has target, related and country results; every count is a whole number or empty.
       on_fail: *rule_fail
-  groups: [candidate, toi, pmi]
-  assertions:
-    candidate_taxa:
-      type: membership
-      title: Candidate taxa assessed
-      explain: Which candidate taxa were assessed for database coverage.
-    toi_taxa:
-      type: membership
-      title: Taxa of interest assessed
-      explain: Which taxa of interest were assessed.
-    pmi_taxa:
-      type: membership
-      title: Preliminary IDs assessed
-      explain: Which preliminary IDs were assessed.
-    target_state:
-      type: state
-      title: Target assessment state
-      explain: Whether the taxon itself was assessed, not assessed, or had no result.
-    related_state:
-      type: state
-      title: Related species state
-      explain: Why no related species are listed (not assessed or no result).
-    country_species:
-      type: membership
-      title: In-country species listed
-      explain: Names of the species recorded in the sample's country (their counts are not compared).
-    country_state:
-      type: state
-      title: In-country state
-      explain: Why no in-country species are listed (NA or no result).
-    target_record_count:
-      type: count
-      title: Target record count
-      stored: false
-      explain: Owned by Selenium.
 
 - id: coverage_flags
   title: Coverage flags
   channel: F
-  description: Reads the 5.1, 5.2 and 5.3 flag files. Checks there is exactly one valid record per assessed taxon, matching db_coverage.json, and compares stored flag values that Selenium does not check.
+  description: Reads the 5.1, 5.2 and 5.3 flag files. Checks there is exactly one valid record per assessed taxon, matching db_coverage.json. Flag values are not compared (left to Selenium).
   files: 5.1.flag, 5.2.flag, 5.3.flag (with db_coverage.json)
   producer: EVALUATE_DATABASE_COVERAGE (scripts/p5_db_coverage.py)
   checks:
     F.5.1.records:
       title: 5.1.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.1.flag (target coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
+      explain: 5.1.flag (target coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
       on_fail: *rule_fail
     F.5.2.records:
       title: 5.2.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.2.flag (related-species coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
+      explain: 5.2.flag (related-species coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
       on_fail: *rule_fail
     F.5.3.records:
       title: 5.3.flag records
       rule: One record per coverage role/taxon, valid values, no duplicates.
-      explain: 5.3.flag (in-country coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Each value is also checked to be valid unless Selenium checks it.
+      explain: 5.3.flag (in-country coverage) has exactly one record for every taxon in db_coverage.json, none missing, extra or repeated. Every value is valid.
       on_fail: *rule_fail
-  groups: [candidate, toi, pmi]
-  assertions:
-    flag_5_1:
-      type: flag
-      title: Flag 5.1 (target coverage)
-      explain: "Target coverage per taxon. Selenium checks it where the fixture's database_coverage row for that taxon has a flag_text1 value; core compares the rest."
-    flag_5_2:
-      type: flag
-      title: Flag 5.2 (related species coverage)
-      explain: "Related-species coverage per taxon. Selenium checks it where the fixture's row for that taxon has a flag_text2 value; core compares the rest."
-    flag_5_3:
-      type: flag
-      title: Flag 5.3 (in-country coverage)
-      explain: In-country coverage per taxon. Not checked by Selenium (it reads only the explanatory text); core compares every value.
 
 - id: maps
   title: Coverage maps
