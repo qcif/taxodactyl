@@ -6,7 +6,6 @@
     "28s": 2,
     "act": 3,
     "alt-a1": 4,
-    "\u00df-tub": 5,
     "cmda": 6,
     "co2": 7,
     "coi": 8,
@@ -32,7 +31,8 @@
     "rpb2": 28,
     "atpB": 29,
     "trnL": 30,
-    "ache": 31
+    "ache": 31,
+    "β-tub": 5
   },
   "retired": {}
 }
