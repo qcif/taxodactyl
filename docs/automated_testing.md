@@ -11,10 +11,12 @@ Actions can only return either success or failure. This workflow is designed to 
 - It is currently set to run:
 	- scheduled weekly (Sunday 00:00 UTC), against `main`;
 	- on pull requests to `main`: the `build-pr.yml` workflow calls it after building a `neoformit/taxodactyl:<branch>` image if the PR changes the Python scripts (`scripts/**.py`, `scripts/Dockerfile`, `scripts/requirements.txt`, `scripts/config/**`), and the test runs against that image (otherwise against `:main`);
-	- on manual trigger from the Actions tab, with an optional `image` input.
+	- on manual trigger from the Actions tab, with optional `image` and `use_cache` inputs.
 	- A push trigger for selected branches is present but commented out.
 
 - The workflow sets `TAXODACTYL_IMAGE` to the image under test (see [customise.md](customise.md)), and clears the runner's Singularity cache first so the image is pulled fresh.
+
+- GBIF and NCBI API responses come from a pinned, versioned API-cache fixture, so results don't drift with live data. Untick `use_cache` on a manual run to query the live APIs instead. After the run, a warning reports any cache misses (requests fetched live). See [nf-tests.md](nf-tests.md#api-response-cache) and `test/core/README.md`.
 
 - All runs are intended to be ephemeral, but output and work files for runs on the self-hosted runner are archived to `/var/runner/<run_id>-<run_attempt>/` to allow for easy error investigation. `run_info.txt` there records the branch, commits, image and run URL, and `reports.zip` holds the HTML reports (`scp ubuntu@daff-runner:/var/runner/<run_id>-<run_attempt>/reports.zip .`).
 

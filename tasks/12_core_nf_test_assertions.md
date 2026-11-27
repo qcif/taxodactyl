@@ -1353,6 +1353,36 @@ rewrite `test/core/README.md` so a lay person can read it, review docs and spec.
   (run, read the page, promote, ingest, what each refusal means), then what is
   checked, known problems, CI, developer notes, and history/provenance last.
 
+### Merge with main after #369 (API-cache fixture) — noted 2026-11-27
+
+Main gained task 14 (`376ab43`, versioned API-cache fixture). The task branch
+(`nf-test-sh-runner` worktree) does not contain it yet. Before merging:
+
+1. **Requirement IDs collide.** On main, `TST-025` is "Updating the core
+   API-cache fixture", and `TST-034` is the `test/coverage` scenario (restored
+   2026-11-27; it was `TST-025` on `sync-skills-spec-docs`). This task's
+   `TST-025`–`TST-029` need new IDs, proposed `TST-035`–`TST-039`. Update
+   `spec/tests.md`, `docs/nf-tests.md`, `test/core/README.md`, this brief and
+   `TST-G-011` references.
+2. **PR trigger.** Main's `build-pr.yml` calls `nf-test.yml` on pull requests
+   (TST-024); this branch calls `nf-test-core-assertions.yml` instead. Decide
+   whether pull requests run one core test or both. **User decision needed.**
+3. **API cache in the assertion workflow.** `nf-test-core-assertions.yml`
+   "mirrors TST-024's workflow" but has none of the fixture steps (download and
+   hash check, `use_cache` input, `api_cache: cached|live` in `run_info.txt`,
+   the cache-miss warning, the saved `api_cache/`). Port them, or TST-029 is no
+   longer true and core runs against live APIs. Stored values (hit fingerprints,
+   map filenames) were baselined from a live run; check them against a cached
+   run before relying on them.
+4. **`test/core/README.md`.** Main added the `api-cache:` header line and the
+   sections "API-cache fixture in CI" and "Refreshing the API-cache fixture";
+   this branch rewrote the README (Phase 15). Merge by keeping main's sections
+   (TST-025 requires the `api-cache:` line to change with the workflow) and
+   linking them from "Setting up". `docs/nf-tests.md` links
+   `#refreshing-the-api-cache-fixture`, so keep that heading.
+5. `docs/nf-tests.md` and `spec/tests.md` (TST-024 text, row 12 summary) also
+   conflict; take main's wording and add this task's sections on top.
+
 ## Open decisions and risks
 
 - Phase 6 decisions recorded and implementation authorized 2026-11-23 (6.6).

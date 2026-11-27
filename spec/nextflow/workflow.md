@@ -251,7 +251,7 @@ params.allowed_loci_file ─► ch_allowed_loci ┘              │
 | NF-WF-084 | `REPORT_COVERAGE` MUST run **once**, on `EVALUATE_DATABASE_COVERAGE.out.query_archive.collect()`, the validated coverage CSV, the params JSON (NF-WF-070) and the timestamp. A taxon whose `EVALUATE_DATABASE_COVERAGE` task failed (ignored, NF-PR-007) has no archive; the report still lists it, as not completed (P6-050). If every task failed, `collect()` emits nothing and **no report is produced**. |
 | NF-WF-085 | No BLAST, BOLD search, candidate extraction, phylogeny or source-diversity process runs, and no `software_versions.yml` is collected. |
 | NF-WF-086 | `run.log` MUST be the concatenation (as NF-WF-073) of the `VALIDATE_COVERAGE_TAXA`, `EVALUATE_DATABASE_COVERAGE` and `REPORT_COVERAGE` logs, published by `PREPARE_LOG`. |
-| NF-WF-087 | The workflow MUST emit `ch_db_coverage_json`, `ch_db_coverage_flags`, `ch_db_coverage_maps` and `ch_html_report` (relied on by `test/coverage`, [../tests.md](../tests.md) TST-025). |
+| NF-WF-087 | The workflow MUST emit `ch_db_coverage_json`, `ch_db_coverage_flags`, `ch_db_coverage_maps` and `ch_html_report` (relied on by `test/coverage`, [../tests.md](../tests.md) TST-034). |
 
 ## 7. Non-goals
 

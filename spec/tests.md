@@ -53,7 +53,7 @@ directory exist; the BOLD case cannot pass (P1B-D-001..003).
 
 | ID | Requirement |
 |---|---|
-| TST-020 | `nf-test.config` selects one scenario (`testsDir`, `configFile`, `profile singularity`, `workDir`); scenarios 01/03 use FASTA+CSV, 02/04 sequences in CSV (02 = viral, locus `NA`, classification `viruses`); scenarios 01–04 set `mock_blast=true` with a stored `blast_result.xml`; `core` runs real BLAST against a subset DB (`mock_blast=false`); `coverage` runs database coverage mode (TST-025). |
+| TST-020 | `nf-test.config` selects one scenario (`testsDir`, `configFile`, `profile singularity`, `workDir`); scenarios 01/03 use FASTA+CSV, 02/04 sequences in CSV (02 = viral, locus `NA`, classification `viruses`); scenarios 01–04 set `mock_blast=true` with a stored `blast_result.xml`; `core` runs real BLAST against a subset DB (`mock_blast=false`); `coverage` runs database coverage mode (TST-034). |
 | TST-021 | Assertions (scenario_01): snapshot of `ch_hits_for_report`, `ch_candidates_for_report`, `ch_source_diversity_for_report`, `ch_homology_trees`; 6 HTML reports; 1 versions file; 1 params JSON; 1 timestamp; 6 db-coverage map groups (11 map files); 6 coverage JSON; 6 flag groups each with 3 files (18). |
 | TST-022 | Database-coverage flag regression check (post-run): `bin/collect_flags.sh` gathers only the P5 flags `5.1.flag`, `5.2.flag` and `5.3.flag` from the run; `bin/test_flags.py` compares them with `test/<scenario>/flags` (which holds only those three per query) using normalised JSON (sorted keys; lists sorted by `(flag_id, target, target_type)`) and prints per-path differences. Not part of the nf-test assertions themselves; the CI workflow (TST-024) runs it after nf-test and fails the job on any difference. The P3 flags (`1.flag`, `2.flag`, `7.flag`) and P4's `4.flag` are **not** in this check: they are covered only as file hashes inside the channel snapshots of TST-021 (`test/<scenario>/taxodactyl.workflow.nf.test.snap`). |
 | TST-023 | Placeholders `CUSTOMISE` in each scenario's `nextflow.config` (`blastdb`, `taxdb`, `temp_root_dir`) and in `nf-test.config` (`workDir`) MUST be edited by the tester; the tests do not run out of the box. (The CI workflow fills them in with `sed`.) |
@@ -68,6 +68,7 @@ directory exist; the BOLD case cannot pass (P1B-D-001..003).
 | TST-031 | `test/selenium/testkit.py render` builds a review page of differences. Drift rows for `database_coverage` and `publication_modal` name the target taxon, taken from the coverage modal title or the candidate row name respectively; `promote` accepts drift into fixtures, backing up the previous YAML in `expected/.backups/` (last 3 kept). |
 | TST-032 | `--dir` is required so a run states whether it validates new output or the checked-in reference reports (`expected/reports`). |
 | TST-033 | Fields that come from live GenBank counts (`record_count`, `species_count`, `species_total`, `first_bar_count` in database coverage) carry a `flex` tolerance of ±10% (`GENBANK_FLEX_FIELDS`, `lib/database_coverage.py`). `pytest` passes a value within tolerance. `promote` still offers every difference, including ones within tolerance, so fixtures never silently drift. `flex` is set in code and stamped onto fixtures on ingest/promote; it is not edited by hand. |
+| TST-034 | `test/coverage` runs `TAXODACTYL_COVERAGE` on a five-row `coverage.csv` (a species, a genus, a family, an unresolvable name, and a duplicate of the genus row that P0 drops) and asserts success, 1 report, 4 coverage JSONs, 4 flag groups of 3 files each and at least 3 map groups. Outputs are not snapshotted, because they come from live APIs. It is not run by CI. (Numbered TST-025 on the `sync-skills-spec-docs` branch before #369 took that ID.) |
 
 ## 3. Which requirements are exercised
 
@@ -81,7 +82,7 @@ directory exist; the BOLD case cannot pass (P1B-D-001..003).
 | P4 | partial (`fetch_sources`) | yes (no asserts) | yes (channel snapshot hash of `4.flag`) | partial |
 | P5 | GBIF only | yes + `db_coverage.json` fixture | yes (flag baseline, TST-022, plus counts) | yes |
 | P6 | coverage report only | yes (no asserts) | report count | yes (per-query report only) |
-| Database coverage mode (P0 coverage, P5, coverage report) | yes (`test_validation_coverage`, `test_coverage_failure`, `test_report_coverage`, `test_config`) | yes (TST-014) | counts only (TST-025, not in CI) | – |
+| Database coverage mode (P0 coverage, P5, coverage report) | yes (`test_validation_coverage`, `test_coverage_failure`, `test_report_coverage`, `test_config`) | yes (TST-014) | counts only (TST-034, not in CI) | – |
 | Shared throttle/cache/secrets/config | yes (cache, coalesce, secrets, config) | – | – | – |
 
 ## 4. Gaps (tests the spec implies but that do not exist)
