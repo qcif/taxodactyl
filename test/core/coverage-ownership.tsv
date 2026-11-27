@@ -1,0 +1,246 @@
+sample	assertion_id	field	existing_selenium_owner
+512503_1_Andrew	C.flag.1.value	C/1.flag/value	test/selenium/expected/1_512503_1_Andrew.yaml#overview_tab.[0].conclusion_flag
+512503_1_Andrew	C.flag.2.value	C/2.flag/value	test/selenium/expected/1_512503_1_Andrew.yaml#overview_tab.[0].toi_flag
+512503_1_Andrew	C.flag.7.value	C/7.flag/value	test/selenium/expected/1_512503_1_Andrew.yaml#overview_tab.[0].preliminary_flag
+512503_1_Andrew	D.count/candidate/Bulimulus aff. sporadicus ASHB-2015/target	D/coverage/candidate/Bulimulus aff. sporadicus ASHB-2015/target	test/selenium/expected/1_512503_1_Andrew.yaml#database_coverage.candidate[0].record_count
+512503_1_Andrew	D.count/pmi/Bulimulus Sporadicus/related/Bulimulus guadalupensis	D/coverage/pmi/Bulimulus Sporadicus/related/Bulimulus guadalupensis	test/selenium/expected/1_512503_1_Andrew.yaml#database_coverage.pmi[0].first_bar_count
+512503_1_Andrew	D.count/pmi/Bulimulus Sporadicus/target	D/coverage/pmi/Bulimulus Sporadicus/target	test/selenium/expected/1_512503_1_Andrew.yaml#database_coverage.pmi[0].record_count
+512503_1_Andrew	D.count/toi/Bulimulus sporadicus/related/Bulimulus guadalupensis	D/coverage/toi/Bulimulus sporadicus/related/Bulimulus guadalupensis	test/selenium/expected/1_512503_1_Andrew.yaml#database_coverage.toi[0].first_bar_count
+512503_1_Andrew	D.count/toi/Bulimulus sporadicus/target	D/coverage/toi/Bulimulus sporadicus/target	test/selenium/expected/1_512503_1_Andrew.yaml#database_coverage.toi[0].record_count
+FungusB_Btub	C.flag.1.value	C/1.flag/value	test/selenium/expected/10_FungusB_Btub.yaml#overview_tab.[0].conclusion_flag
+FungusB_Btub	C.flag.7.value	C/7.flag/value	test/selenium/expected/10_FungusB_Btub.yaml#overview_tab.[0].preliminary_flag
+FungusB_Btub	D.count/pmi/Fungi/target	D/coverage/pmi/Fungi/target	test/selenium/expected/10_FungusB_Btub.yaml#database_coverage.pmi[0].record_count
+FungusB_Btub	F.value/5.1/pmi/Fungi	F/5.1/pmi/Fungi	test/selenium/expected/10_FungusB_Btub.yaml#database_coverage.pmi[0].flag_text1
+FungusB_Btub	F.value/5.2/pmi/Fungi	F/5.2/pmi/Fungi	test/selenium/expected/10_FungusB_Btub.yaml#database_coverage.pmi[0].flag_text2
+MG220521_3	C.flag.1.value	C/1.flag/value	test/selenium/expected/11_MG220521_3.yaml#overview_tab.[0].conclusion_flag
+MG220521_3	C.flag.2.value	C/2.flag/value	test/selenium/expected/11_MG220521_3.yaml#overview_tab.[0].toi_flag
+MG220521_3	C.flag.7.value	C/7.flag/value	test/selenium/expected/11_MG220521_3.yaml#overview_tab.[0].preliminary_flag
+MG220521_3	D.count/pmi/Pseudococcus/related/Pseudococcus comstocki	D/coverage/pmi/Pseudococcus/related/Pseudococcus comstocki	test/selenium/expected/11_MG220521_3.yaml#database_coverage.pmi[0].first_bar_count
+MG220521_3	D.count/pmi/Pseudococcus/target	D/coverage/pmi/Pseudococcus/target	test/selenium/expected/11_MG220521_3.yaml#database_coverage.pmi[0].record_count
+MG220521_3	D.count/toi/Pseudococcus/related/Pseudococcus comstocki	D/coverage/toi/Pseudococcus/related/Pseudococcus comstocki	test/selenium/expected/11_MG220521_3.yaml#database_coverage.toi[0].first_bar_count
+MG220521_3	D.count/toi/Pseudococcus/target	D/coverage/toi/Pseudococcus/target	test/selenium/expected/11_MG220521_3.yaml#database_coverage.toi[0].record_count
+MG220521_3	F.value/5.1/pmi/Pseudococcus	F/5.1/pmi/Pseudococcus	test/selenium/expected/11_MG220521_3.yaml#database_coverage.pmi[0].flag_text1
+MG220521_3	F.value/5.1/toi/Pseudococcus	F/5.1/toi/Pseudococcus	test/selenium/expected/11_MG220521_3.yaml#database_coverage.toi[0].flag_text1
+MG220521_3	F.value/5.2/pmi/Pseudococcus	F/5.2/pmi/Pseudococcus	test/selenium/expected/11_MG220521_3.yaml#database_coverage.pmi[0].flag_text2
+MG220521_3	F.value/5.2/toi/Pseudococcus	F/5.2/toi/Pseudococcus	test/selenium/expected/11_MG220521_3.yaml#database_coverage.toi[0].flag_text2
+MP23-0432_matK	C.flag.1.value	C/1.flag/value	test/selenium/expected/12_MP23-0432_matK.yaml#overview_tab.[0].conclusion_flag
+MP23-0432_matK	C.flag.2.value	C/2.flag/value	test/selenium/expected/12_MP23-0432_matK.yaml#overview_tab.[0].toi_flag
+MP23-0432_matK	C.flag.7.value	C/7.flag/value	test/selenium/expected/12_MP23-0432_matK.yaml#overview_tab.[0].preliminary_flag
+MP23-0432_matK	D.count/pmi/Planta/related/Plantago major	D/coverage/pmi/Planta/related/Plantago major	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.pmi[0].first_bar_count
+MP23-0432_matK	D.count/pmi/Planta/target	D/coverage/pmi/Planta/target	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.pmi[0].record_count
+MP23-0432_matK	D.count/toi/Nicotiana tabacum/related/Nicotiana benthamiana	D/coverage/toi/Nicotiana tabacum/related/Nicotiana benthamiana	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.toi[0].first_bar_count
+MP23-0432_matK	D.count/toi/Nicotiana tabacum/target	D/coverage/toi/Nicotiana tabacum/target	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.toi[0].record_count
+MP23-0432_matK	F.value/5.1/pmi/Planta	F/5.1/pmi/Planta	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.pmi[0].flag_text1
+MP23-0432_matK	F.value/5.1/toi/Nicotiana tabacum	F/5.1/toi/Nicotiana tabacum	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.toi[0].flag_text1
+MP23-0432_matK	F.value/5.2/pmi/Planta	F/5.2/pmi/Planta	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.pmi[0].flag_text2
+MP23-0432_matK	F.value/5.2/toi/Nicotiana tabacum	F/5.2/toi/Nicotiana tabacum	test/selenium/expected/12_MP23-0432_matK.yaml#database_coverage.toi[0].flag_text2
+SME25-218	C.flag.1.value	C/1.flag/value	test/selenium/expected/18_SME25-218.yaml#overview_tab.[0].conclusion_flag
+SME25-218	C.flag.2.value	C/2.flag/value	test/selenium/expected/18_SME25-218.yaml#overview_tab.[0].toi_flag
+SME25-218	C.flag.7.value	C/7.flag/value	test/selenium/expected/18_SME25-218.yaml#overview_tab.[0].preliminary_flag
+SME25-218	D.count/candidate/Drosophila mauritiana/related/Drosophila affinis	D/coverage/candidate/Drosophila mauritiana/related/Drosophila affinis	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[1].first_bar_count
+SME25-218	D.count/candidate/Drosophila mauritiana/target	D/coverage/candidate/Drosophila mauritiana/target	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[1].record_count
+SME25-218	D.count/candidate/Drosophila simulans/related/Drosophila affinis	D/coverage/candidate/Drosophila simulans/related/Drosophila affinis	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[0].first_bar_count
+SME25-218	D.count/candidate/Drosophila simulans/target	D/coverage/candidate/Drosophila simulans/target	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[0].record_count
+SME25-218	D.count/pmi/Drosophila/related/Drosophila affinis	D/coverage/pmi/Drosophila/related/Drosophila affinis	test/selenium/expected/18_SME25-218.yaml#database_coverage.pmi[0].first_bar_count
+SME25-218	D.count/pmi/Drosophila/target	D/coverage/pmi/Drosophila/target	test/selenium/expected/18_SME25-218.yaml#database_coverage.pmi[0].record_count
+SME25-218	D.count/toi/Drosophila simulans/related/Drosophila affinis	D/coverage/toi/Drosophila simulans/related/Drosophila affinis	test/selenium/expected/18_SME25-218.yaml#database_coverage.toi[0].first_bar_count
+SME25-218	D.count/toi/Drosophila simulans/target	D/coverage/toi/Drosophila simulans/target	test/selenium/expected/18_SME25-218.yaml#database_coverage.toi[0].record_count
+SME25-218	F.value/5.1/candidate/Drosophila mauritiana	F/5.1/candidate/Drosophila mauritiana	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[1].flag_text1
+SME25-218	F.value/5.1/candidate/Drosophila simulans	F/5.1/candidate/Drosophila simulans	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[0].flag_text1
+SME25-218	F.value/5.1/pmi/Drosophila	F/5.1/pmi/Drosophila	test/selenium/expected/18_SME25-218.yaml#database_coverage.pmi[0].flag_text1
+SME25-218	F.value/5.1/toi/Drosophila simulans	F/5.1/toi/Drosophila simulans	test/selenium/expected/18_SME25-218.yaml#database_coverage.toi[0].flag_text1
+SME25-218	F.value/5.2/candidate/Drosophila mauritiana	F/5.2/candidate/Drosophila mauritiana	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[1].flag_text2
+SME25-218	F.value/5.2/candidate/Drosophila simulans	F/5.2/candidate/Drosophila simulans	test/selenium/expected/18_SME25-218.yaml#database_coverage.candidate[0].flag_text2
+SME25-218	F.value/5.2/pmi/Drosophila	F/5.2/pmi/Drosophila	test/selenium/expected/18_SME25-218.yaml#database_coverage.pmi[0].flag_text2
+SME25-218	F.value/5.2/toi/Drosophila simulans	F/5.2/toi/Drosophila simulans	test/selenium/expected/18_SME25-218.yaml#database_coverage.toi[0].flag_text2
+SME25-221	C.flag.1.value	C/1.flag/value	test/selenium/expected/19_SME25-221.yaml#overview_tab.[0].conclusion_flag
+SME25-221	C.flag.2.value	C/2.flag/value	test/selenium/expected/19_SME25-221.yaml#overview_tab.[0].toi_flag
+SME25-221	C.flag.7.value	C/7.flag/value	test/selenium/expected/19_SME25-221.yaml#overview_tab.[0].preliminary_flag
+SME25-221	D.count/pmi/Eupodidae/target	D/coverage/pmi/Eupodidae/target	test/selenium/expected/19_SME25-221.yaml#database_coverage.pmi[0].record_count
+SME25-221	D.count/toi/Eupodidae/target	D/coverage/toi/Eupodidae/target	test/selenium/expected/19_SME25-221.yaml#database_coverage.toi[0].record_count
+SME25-221	F.value/5.1/pmi/Eupodidae	F/5.1/pmi/Eupodidae	test/selenium/expected/19_SME25-221.yaml#database_coverage.pmi[0].flag_text1
+SME25-221	F.value/5.1/toi/Eupodidae	F/5.1/toi/Eupodidae	test/selenium/expected/19_SME25-221.yaml#database_coverage.toi[0].flag_text1
+SME25-221	F.value/5.2/pmi/Eupodidae	F/5.2/pmi/Eupodidae	test/selenium/expected/19_SME25-221.yaml#database_coverage.pmi[0].flag_text2
+SME25-221	F.value/5.2/toi/Eupodidae	F/5.2/toi/Eupodidae	test/selenium/expected/19_SME25-221.yaml#database_coverage.toi[0].flag_text2
+Scenario_01	C.flag.1.value	C/1.flag/value	test/selenium/expected/13_Scenario_01.yaml#overview_tab.[0].conclusion_flag
+Scenario_01	C.flag.2.value	C/2.flag/value	test/selenium/expected/13_Scenario_01.yaml#overview_tab.[0].toi_flag
+Scenario_01	C.flag.7.value	C/7.flag/value	test/selenium/expected/13_Scenario_01.yaml#overview_tab.[0].preliminary_flag
+Scenario_01	D.count/candidate/Spodoptera exigua/related/Spodoptera frugiperda	D/coverage/candidate/Spodoptera exigua/related/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[1].first_bar_count
+Scenario_01	D.count/candidate/Spodoptera exigua/target	D/coverage/candidate/Spodoptera exigua/target	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[1].record_count
+Scenario_01	D.count/candidate/Spodoptera frugiperda/related/Spodoptera frugiperda	D/coverage/candidate/Spodoptera frugiperda/related/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[0].first_bar_count
+Scenario_01	D.count/candidate/Spodoptera frugiperda/target	D/coverage/candidate/Spodoptera frugiperda/target	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[0].record_count
+Scenario_01	D.count/pmi/Spodoptera frugiperda/related/Spodoptera frugiperda	D/coverage/pmi/Spodoptera frugiperda/related/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.pmi[0].first_bar_count
+Scenario_01	D.count/pmi/Spodoptera frugiperda/target	D/coverage/pmi/Spodoptera frugiperda/target	test/selenium/expected/13_Scenario_01.yaml#database_coverage.pmi[0].record_count
+Scenario_01	D.count/toi/Spodoptera frugiperda/related/Spodoptera frugiperda	D/coverage/toi/Spodoptera frugiperda/related/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.toi[0].first_bar_count
+Scenario_01	D.count/toi/Spodoptera frugiperda/target	D/coverage/toi/Spodoptera frugiperda/target	test/selenium/expected/13_Scenario_01.yaml#database_coverage.toi[0].record_count
+Scenario_01	F.value/5.1/candidate/Spodoptera exigua	F/5.1/candidate/Spodoptera exigua	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[1].flag_text1
+Scenario_01	F.value/5.1/candidate/Spodoptera frugiperda	F/5.1/candidate/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[0].flag_text1
+Scenario_01	F.value/5.1/pmi/Spodoptera frugiperda	F/5.1/pmi/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.pmi[0].flag_text1
+Scenario_01	F.value/5.1/toi/Spodoptera frugiperda	F/5.1/toi/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.toi[0].flag_text1
+Scenario_01	F.value/5.2/candidate/Spodoptera exigua	F/5.2/candidate/Spodoptera exigua	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[1].flag_text2
+Scenario_01	F.value/5.2/candidate/Spodoptera frugiperda	F/5.2/candidate/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.candidate[0].flag_text2
+Scenario_01	F.value/5.2/pmi/Spodoptera frugiperda	F/5.2/pmi/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.pmi[0].flag_text2
+Scenario_01	F.value/5.2/toi/Spodoptera frugiperda	F/5.2/toi/Spodoptera frugiperda	test/selenium/expected/13_Scenario_01.yaml#database_coverage.toi[0].flag_text2
+Scenario_02	C.flag.1.value	C/1.flag/value	test/selenium/expected/14_Scenario_02.yaml#overview_tab.[0].conclusion_flag
+Scenario_02	C.flag.2.value	C/2.flag/value	test/selenium/expected/14_Scenario_02.yaml#overview_tab.[0].toi_flag
+Scenario_02	C.flag.7.value	C/7.flag/value	test/selenium/expected/14_Scenario_02.yaml#overview_tab.[0].preliminary_flag
+Scenario_02	D.count/candidate/Phyllocnistinae sp. BOLD:ABZ3983/target	D/coverage/candidate/Phyllocnistinae sp. BOLD:ABZ3983/target	test/selenium/expected/14_Scenario_02.yaml#database_coverage.candidate[0].record_count
+Scenario_02	D.count/pmi/Diptera/target	D/coverage/pmi/Diptera/target	test/selenium/expected/14_Scenario_02.yaml#database_coverage.pmi[0].record_count
+Scenario_02	D.count/toi/Liriomyza trifolii/related/Liriomyza sativae	D/coverage/toi/Liriomyza trifolii/related/Liriomyza sativae	test/selenium/expected/14_Scenario_02.yaml#database_coverage.toi[0].first_bar_count
+Scenario_02	D.count/toi/Liriomyza trifolii/target	D/coverage/toi/Liriomyza trifolii/target	test/selenium/expected/14_Scenario_02.yaml#database_coverage.toi[0].record_count
+Scenario_02	F.value/5.1/pmi/Diptera	F/5.1/pmi/Diptera	test/selenium/expected/14_Scenario_02.yaml#database_coverage.pmi[0].flag_text1
+Scenario_02	F.value/5.1/toi/Liriomyza trifolii	F/5.1/toi/Liriomyza trifolii	test/selenium/expected/14_Scenario_02.yaml#database_coverage.toi[0].flag_text1
+Scenario_02	F.value/5.2/pmi/Diptera	F/5.2/pmi/Diptera	test/selenium/expected/14_Scenario_02.yaml#database_coverage.pmi[0].flag_text2
+Scenario_03	C.flag.1.value	C/1.flag/value	test/selenium/expected/15_Scenario_03.yaml#overview_tab.[0].conclusion_flag
+Scenario_03	C.flag.2.value	C/2.flag/value	test/selenium/expected/15_Scenario_03.yaml#overview_tab.[0].toi_flag
+Scenario_03	C.flag.7.value	C/7.flag/value	test/selenium/expected/15_Scenario_03.yaml#overview_tab.[0].preliminary_flag
+Scenario_03	D.count/pmi/Lepidoptera/target	D/coverage/pmi/Lepidoptera/target	test/selenium/expected/15_Scenario_03.yaml#database_coverage.pmi[0].record_count
+Scenario_03	D.count/toi/Lepidoptera/target	D/coverage/toi/Lepidoptera/target	test/selenium/expected/15_Scenario_03.yaml#database_coverage.toi[0].record_count
+Scenario_03	F.value/5.1/pmi/Lepidoptera	F/5.1/pmi/Lepidoptera	test/selenium/expected/15_Scenario_03.yaml#database_coverage.pmi[0].flag_text1
+Scenario_03	F.value/5.1/toi/Lepidoptera	F/5.1/toi/Lepidoptera	test/selenium/expected/15_Scenario_03.yaml#database_coverage.toi[0].flag_text1
+Scenario_03	F.value/5.2/pmi/Lepidoptera	F/5.2/pmi/Lepidoptera	test/selenium/expected/15_Scenario_03.yaml#database_coverage.pmi[0].flag_text2
+Scenario_03	F.value/5.2/toi/Lepidoptera	F/5.2/toi/Lepidoptera	test/selenium/expected/15_Scenario_03.yaml#database_coverage.toi[0].flag_text2
+Scenario_04	C.flag.1.value	C/1.flag/value	test/selenium/expected/16_Scenario_04.yaml#overview_tab.[0].conclusion_flag
+Scenario_04	C.flag.2.value	C/2.flag/value	test/selenium/expected/16_Scenario_04.yaml#overview_tab.[0].toi_flag
+Scenario_04	C.flag.7.value	C/7.flag/value	test/selenium/expected/16_Scenario_04.yaml#overview_tab.[0].preliminary_flag
+Scenario_04	D.count/candidate/Bruchophagus muli/related/Bruchophagus roddi	D/coverage/candidate/Bruchophagus muli/related/Bruchophagus roddi	test/selenium/expected/16_Scenario_04.yaml#database_coverage.candidate[0].first_bar_count
+Scenario_04	D.count/candidate/Bruchophagus muli/target	D/coverage/candidate/Bruchophagus muli/target	test/selenium/expected/16_Scenario_04.yaml#database_coverage.candidate[0].record_count
+Scenario_04	D.count/pmi/Bruchophagus/related/Bruchophagus roddi	D/coverage/pmi/Bruchophagus/related/Bruchophagus roddi	test/selenium/expected/16_Scenario_04.yaml#database_coverage.pmi[0].first_bar_count
+Scenario_04	D.count/pmi/Bruchophagus/target	D/coverage/pmi/Bruchophagus/target	test/selenium/expected/16_Scenario_04.yaml#database_coverage.pmi[0].record_count
+Scenario_04	D.count/toi/Bruchophagus abnormis/related/Bruchophagus roddi	D/coverage/toi/Bruchophagus abnormis/related/Bruchophagus roddi	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[0].first_bar_count
+Scenario_04	D.count/toi/Bruchophagus abnormis/target	D/coverage/toi/Bruchophagus abnormis/target	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[0].record_count
+Scenario_04	D.count/toi/Bruchophagus abscedus/related/Bruchophagus roddi	D/coverage/toi/Bruchophagus abscedus/related/Bruchophagus roddi	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[1].first_bar_count
+Scenario_04	D.count/toi/Bruchophagus abscedus/target	D/coverage/toi/Bruchophagus abscedus/target	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[1].record_count
+Scenario_04	D.count/toi/Bruchophagus muli/related/Bruchophagus roddi	D/coverage/toi/Bruchophagus muli/related/Bruchophagus roddi	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[2].first_bar_count
+Scenario_04	D.count/toi/Bruchophagus muli/target	D/coverage/toi/Bruchophagus muli/target	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[2].record_count
+Scenario_04	F.value/5.1/pmi/Bruchophagus	F/5.1/pmi/Bruchophagus	test/selenium/expected/16_Scenario_04.yaml#database_coverage.pmi[0].flag_text1
+Scenario_04	F.value/5.2/candidate/Bruchophagus muli	F/5.2/candidate/Bruchophagus muli	test/selenium/expected/16_Scenario_04.yaml#database_coverage.candidate[0].flag_text2
+Scenario_04	F.value/5.2/pmi/Bruchophagus	F/5.2/pmi/Bruchophagus	test/selenium/expected/16_Scenario_04.yaml#database_coverage.pmi[0].flag_text2
+Scenario_04	F.value/5.2/toi/Bruchophagus abnormis	F/5.2/toi/Bruchophagus abnormis	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[0].flag_text2
+Scenario_04	F.value/5.2/toi/Bruchophagus abscedus	F/5.2/toi/Bruchophagus abscedus	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[1].flag_text2
+Scenario_04	F.value/5.2/toi/Bruchophagus muli	F/5.2/toi/Bruchophagus muli	test/selenium/expected/16_Scenario_04.yaml#database_coverage.toi[2].flag_text2
+Scenario_05	C.flag.1.value	C/1.flag/value	test/selenium/expected/17_Scenario_05.yaml#overview_tab.[0].conclusion_flag
+Scenario_05	C.flag.2.value	C/2.flag/value	test/selenium/expected/17_Scenario_05.yaml#overview_tab.[0].toi_flag
+Scenario_05	C.flag.7.value	C/7.flag/value	test/selenium/expected/17_Scenario_05.yaml#overview_tab.[0].preliminary_flag
+Scenario_05	D.count/pmi/Aedes scutellaris/related/Aedes albopictus	D/coverage/pmi/Aedes scutellaris/related/Aedes albopictus	test/selenium/expected/17_Scenario_05.yaml#database_coverage.pmi[0].first_bar_count
+Scenario_05	D.count/pmi/Aedes scutellaris/target	D/coverage/pmi/Aedes scutellaris/target	test/selenium/expected/17_Scenario_05.yaml#database_coverage.pmi[0].record_count
+Scenario_05	D.count/toi/Aedes scutellaris/related/Aedes albopictus	D/coverage/toi/Aedes scutellaris/related/Aedes albopictus	test/selenium/expected/17_Scenario_05.yaml#database_coverage.toi[0].first_bar_count
+Scenario_05	D.count/toi/Aedes scutellaris/target	D/coverage/toi/Aedes scutellaris/target	test/selenium/expected/17_Scenario_05.yaml#database_coverage.toi[0].record_count
+Scenario_05	F.value/5.1/pmi/Aedes scutellaris	F/5.1/pmi/Aedes scutellaris	test/selenium/expected/17_Scenario_05.yaml#database_coverage.pmi[0].flag_text1
+Scenario_05	F.value/5.1/toi/Aedes scutellaris	F/5.1/toi/Aedes scutellaris	test/selenium/expected/17_Scenario_05.yaml#database_coverage.toi[0].flag_text1
+Scenario_05	F.value/5.2/pmi/Aedes scutellaris	F/5.2/pmi/Aedes scutellaris	test/selenium/expected/17_Scenario_05.yaml#database_coverage.pmi[0].flag_text2
+Scenario_05	F.value/5.2/toi/Aedes scutellaris	F/5.2/toi/Aedes scutellaris	test/selenium/expected/17_Scenario_05.yaml#database_coverage.toi[0].flag_text2
+VE24-1351_COI	C.flag.1.value	C/1.flag/value	test/selenium/expected/20_VE24-1351_COI.yaml#overview_tab.[0].conclusion_flag
+VE24-1351_COI	C.flag.2.value	C/2.flag/value	test/selenium/expected/20_VE24-1351_COI.yaml#overview_tab.[0].toi_flag
+VE24-1351_COI	C.flag.7.value	C/7.flag/value	test/selenium/expected/20_VE24-1351_COI.yaml#overview_tab.[0].preliminary_flag
+VE24-1351_COI	D.count/candidate/Bradysia impatiens/related/Bradysia placida	D/coverage/candidate/Bradysia impatiens/related/Bradysia placida	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[1].first_bar_count
+VE24-1351_COI	D.count/candidate/Bradysia impatiens/target	D/coverage/candidate/Bradysia impatiens/target	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[1].record_count
+VE24-1351_COI	D.count/candidate/Lycoriella ingenua/related/Lycoriella sativae	D/coverage/candidate/Lycoriella ingenua/related/Lycoriella sativae	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[0].first_bar_count
+VE24-1351_COI	D.count/candidate/Lycoriella ingenua/target	D/coverage/candidate/Lycoriella ingenua/target	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[0].record_count
+VE24-1351_COI	D.count/candidate/Lycoriella mali/related/Lycoriella sativae	D/coverage/candidate/Lycoriella mali/related/Lycoriella sativae	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[2].first_bar_count
+VE24-1351_COI	D.count/candidate/Lycoriella mali/target	D/coverage/candidate/Lycoriella mali/target	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[2].record_count
+VE24-1351_COI	D.count/pmi/Sciaridae/target	D/coverage/pmi/Sciaridae/target	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.pmi[0].record_count
+VE24-1351_COI	D.count/toi/Lycoriella ingenua/related/Lycoriella sativae	D/coverage/toi/Lycoriella ingenua/related/Lycoriella sativae	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.toi[0].first_bar_count
+VE24-1351_COI	D.count/toi/Lycoriella ingenua/target	D/coverage/toi/Lycoriella ingenua/target	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.toi[0].record_count
+VE24-1351_COI	F.value/5.1/candidate/Bradysia impatiens	F/5.1/candidate/Bradysia impatiens	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[1].flag_text1
+VE24-1351_COI	F.value/5.1/candidate/Lycoriella ingenua	F/5.1/candidate/Lycoriella ingenua	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[0].flag_text1
+VE24-1351_COI	F.value/5.1/candidate/Lycoriella mali	F/5.1/candidate/Lycoriella mali	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[2].flag_text1
+VE24-1351_COI	F.value/5.1/pmi/Sciaridae	F/5.1/pmi/Sciaridae	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.pmi[0].flag_text1
+VE24-1351_COI	F.value/5.1/toi/Lycoriella ingenua	F/5.1/toi/Lycoriella ingenua	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.toi[0].flag_text1
+VE24-1351_COI	F.value/5.2/candidate/Bradysia impatiens	F/5.2/candidate/Bradysia impatiens	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[1].flag_text2
+VE24-1351_COI	F.value/5.2/candidate/Lycoriella ingenua	F/5.2/candidate/Lycoriella ingenua	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[0].flag_text2
+VE24-1351_COI	F.value/5.2/candidate/Lycoriella mali	F/5.2/candidate/Lycoriella mali	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.candidate[2].flag_text2
+VE24-1351_COI	F.value/5.2/pmi/Sciaridae	F/5.2/pmi/Sciaridae	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.pmi[0].flag_text2
+VE24-1351_COI	F.value/5.2/toi/Lycoriella ingenua	F/5.2/toi/Lycoriella ingenua	test/selenium/expected/20_VE24-1351_COI.yaml#database_coverage.toi[0].flag_text2
+barcode84_contig1_PE250203-B_REP1_KAPA	C.flag.1.value	C/1.flag/value	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#overview_tab.[0].conclusion_flag
+barcode84_contig1_PE250203-B_REP1_KAPA	C.flag.2.value	C/2.flag/value	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#overview_tab.[0].toi_flag
+barcode84_contig1_PE250203-B_REP1_KAPA	C.flag.7.value	C/7.flag/value	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#overview_tab.[0].preliminary_flag
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/candidate/Euchrysops cnejus/related/Euchrysops cnejus	D/coverage/candidate/Euchrysops cnejus/related/Euchrysops cnejus	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.candidate[0].first_bar_count
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/candidate/Euchrysops cnejus/target	D/coverage/candidate/Euchrysops cnejus/target	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.candidate[0].record_count
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/candidate/Lycaenidae sp. SSG-2014a/target	D/coverage/candidate/Lycaenidae sp. SSG-2014a/target	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.candidate[1].record_count
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/pmi/Lycaenidae/target	D/coverage/pmi/Lycaenidae/target	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.pmi[0].record_count
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/toi/Chilades pandava/related/Edales pandava	D/coverage/toi/Chilades pandava/related/Edales pandava	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.toi[0].first_bar_count
+barcode84_contig1_PE250203-B_REP1_KAPA	D.count/toi/Chilades pandava/target	D/coverage/toi/Chilades pandava/target	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.toi[0].record_count
+barcode84_contig1_PE250203-B_REP1_KAPA	F.value/5.1/candidate/Euchrysops cnejus	F/5.1/candidate/Euchrysops cnejus	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.candidate[0].flag_text1
+barcode84_contig1_PE250203-B_REP1_KAPA	F.value/5.1/pmi/Lycaenidae	F/5.1/pmi/Lycaenidae	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.pmi[0].flag_text1
+barcode84_contig1_PE250203-B_REP1_KAPA	F.value/5.1/toi/Chilades pandava	F/5.1/toi/Chilades pandava	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.toi[0].flag_text1
+barcode84_contig1_PE250203-B_REP1_KAPA	F.value/5.2/candidate/Euchrysops cnejus	F/5.2/candidate/Euchrysops cnejus	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.candidate[0].flag_text2
+barcode84_contig1_PE250203-B_REP1_KAPA	F.value/5.2/pmi/Lycaenidae	F/5.2/pmi/Lycaenidae	test/selenium/expected/7_barcode84_contig1_PE250203-B_REP1_KAPA.yaml#database_coverage.pmi[0].flag_text2
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	C.flag.1.value	C/1.flag/value	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#overview_tab.[0].conclusion_flag
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	C.flag.2.value	C/2.flag/value	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#overview_tab.[0].toi_flag
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	C.flag.7.value	C/7.flag/value	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#overview_tab.[0].preliminary_flag
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/candidate/Vitivirus GVL/related/Grapevine virus A	D/coverage/candidate/Vitivirus GVL/related/Grapevine virus A	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.candidate[1].first_bar_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/candidate/Vitivirus GVL/target	D/coverage/candidate/Vitivirus GVL/target	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.candidate[1].record_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/candidate/Vitivirus epsilonvitis/target	D/coverage/candidate/Vitivirus epsilonvitis/target	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.candidate[0].record_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/pmi/Grapevine virus/related/Grapevine virus A	D/coverage/pmi/Grapevine virus/related/Grapevine virus A	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.pmi[0].first_bar_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/pmi/Grapevine virus/target	D/coverage/pmi/Grapevine virus/target	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.pmi[0].record_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/toi/Grapevine virus/related/Grapevine virus A	D/coverage/toi/Grapevine virus/related/Grapevine virus A	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.toi[0].first_bar_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	D.count/toi/Grapevine virus/target	D/coverage/toi/Grapevine virus/target	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.toi[0].record_count
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	F.value/5.1/candidate/Vitivirus GVL	F/5.1/candidate/Vitivirus GVL	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.candidate[1].flag_text1
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	F.value/5.1/pmi/Grapevine virus	F/5.1/pmi/Grapevine virus	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.pmi[0].flag_text1
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	F.value/5.1/toi/Grapevine virus	F/5.1/toi/Grapevine virus	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.toi[0].flag_text1
+barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300	F.value/5.2/candidate/Vitivirus epsilonvitis	F/5.2/candidate/Vitivirus epsilonvitis	test/selenium/expected/2_barcode_57_1916-01_Grapevine_virus_E_cluster_0_RC2300.yaml#database_coverage.candidate[0].flag_text2
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	C.flag.1.value	C/1.flag/value	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#overview_tab.[0].conclusion_flag
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	C.flag.2.value	C/2.flag/value	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#overview_tab.[0].toi_flag
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	C.flag.7.value	C/7.flag/value	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#overview_tab.[0].preliminary_flag
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	D.count/candidate/Pelamoviroid malleusmali/target	D/coverage/candidate/Pelamoviroid malleusmali/target	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.candidate[0].record_count
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	D.count/pmi/Apple hammerhead viroid/related/Peach latent mosaic viroid	D/coverage/pmi/Apple hammerhead viroid/related/Peach latent mosaic viroid	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.pmi[0].first_bar_count
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	D.count/pmi/Apple hammerhead viroid/target	D/coverage/pmi/Apple hammerhead viroid/target	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.pmi[0].record_count
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	D.count/toi/Apple hammerhead viroid/related/Peach latent mosaic viroid	D/coverage/toi/Apple hammerhead viroid/related/Peach latent mosaic viroid	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.toi[0].first_bar_count
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	D.count/toi/Apple hammerhead viroid/target	D/coverage/toi/Apple hammerhead viroid/target	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.toi[0].record_count
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	F.value/5.1/pmi/Apple hammerhead viroid	F/5.1/pmi/Apple hammerhead viroid	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.pmi[0].flag_text1
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	F.value/5.1/toi/Apple hammerhead viroid	F/5.1/toi/Apple hammerhead viroid	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.toi[0].flag_text1
+barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653	F.value/5.2/candidate/Pelamoviroid malleusmali	F/5.2/candidate/Pelamoviroid malleusmali	test/selenium/expected/3_barcode_59_1906-01_AB_Apple_hammerhead_viroid_cluster_0_RC3653.yaml#database_coverage.candidate[0].flag_text2
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	C.flag.1.value	C/1.flag/value	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#overview_tab.[0].conclusion_flag
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	C.flag.2.value	C/2.flag/value	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#overview_tab.[0].toi_flag
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	C.flag.7.value	C/7.flag/value	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#overview_tab.[0].preliminary_flag
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	D.count/pmi/Tospovirus/target	D/coverage/pmi/Tospovirus/target	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.pmi[0].record_count
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	D.count/toi/Tospovirus/target	D/coverage/toi/Tospovirus/target	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.toi[0].record_count
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	F.value/5.1/pmi/Tospovirus	F/5.1/pmi/Tospovirus	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.pmi[0].flag_text1
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	F.value/5.1/toi/Tospovirus	F/5.1/toi/Tospovirus	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.toi[0].flag_text1
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	F.value/5.2/pmi/Tospovirus	F/5.2/pmi/Tospovirus	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.pmi[0].flag_text2
+barcode_71_RID8937-1_MOL-016_cluster_14_RC424	F.value/5.2/toi/Tospovirus	F/5.2/toi/Tospovirus	test/selenium/expected/4_barcode_71_RID8937-1_MOL-016_cluster_14_RC424.yaml#database_coverage.toi[0].flag_text2
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	C.flag.1.value	C/1.flag/value	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#overview_tab.[0].conclusion_flag
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	C.flag.2.value	C/2.flag/value	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#overview_tab.[0].toi_flag
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	C.flag.7.value	C/7.flag/value	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#overview_tab.[0].preliminary_flag
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	D.count/pmi/Xanthomonas gyrase B/target	D/coverage/pmi/Xanthomonas gyrase B/target	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#database_coverage.pmi[0].record_count
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	D.count/toi/Xanthomonas gyrase B/target	D/coverage/toi/Xanthomonas gyrase B/target	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#database_coverage.toi[0].record_count
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	F.value/5.2/pmi/Xanthomonas gyrase B	F/5.2/pmi/Xanthomonas gyrase B	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#database_coverage.pmi[0].flag_text2
+barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62	F.value/5.2/toi/Xanthomonas gyrase B	F/5.2/toi/Xanthomonas gyrase B	test/selenium/expected/5_barcode_73_rid8934-1-1_MOL-025_cluster_7_RC62.yaml#database_coverage.toi[0].flag_text2
+barcode_83_P59_Potyviridae_cluster_0_RC205	C.flag.1.value	C/1.flag/value	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#overview_tab.[0].conclusion_flag
+barcode_83_P59_Potyviridae_cluster_0_RC205	C.flag.2.value	C/2.flag/value	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#overview_tab.[0].toi_flag
+barcode_83_P59_Potyviridae_cluster_0_RC205	C.flag.7.value	C/7.flag/value	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#overview_tab.[0].preliminary_flag
+barcode_83_P59_Potyviridae_cluster_0_RC205	D.count/candidate/Potyvirus batataplumei/target	D/coverage/candidate/Potyvirus batataplumei/target	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.candidate[0].record_count
+barcode_83_P59_Potyviridae_cluster_0_RC205	D.count/pmi/Potyviridae/target	D/coverage/pmi/Potyviridae/target	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.pmi[0].record_count
+barcode_83_P59_Potyviridae_cluster_0_RC205	D.count/toi/Potyviridae/target	D/coverage/toi/Potyviridae/target	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.toi[0].record_count
+barcode_83_P59_Potyviridae_cluster_0_RC205	F.value/5.1/pmi/Potyviridae	F/5.1/pmi/Potyviridae	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.pmi[0].flag_text1
+barcode_83_P59_Potyviridae_cluster_0_RC205	F.value/5.1/toi/Potyviridae	F/5.1/toi/Potyviridae	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.toi[0].flag_text1
+barcode_83_P59_Potyviridae_cluster_0_RC205	F.value/5.2/candidate/Potyvirus batataplumei	F/5.2/candidate/Potyvirus batataplumei	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.candidate[0].flag_text2
+barcode_83_P59_Potyviridae_cluster_0_RC205	F.value/5.2/pmi/Potyviridae	F/5.2/pmi/Potyviridae	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.pmi[0].flag_text2
+barcode_83_P59_Potyviridae_cluster_0_RC205	F.value/5.2/toi/Potyviridae	F/5.2/toi/Potyviridae	test/selenium/expected/6_barcode_83_P59_Potyviridae_cluster_0_RC205.yaml#database_coverage.toi[0].flag_text2
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	C.flag.1.value	C/1.flag/value	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#overview_tab.[0].conclusion_flag
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	C.flag.2.value	C/2.flag/value	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#overview_tab.[0].toi_flag
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	C.flag.7.value	C/7.flag/value	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#overview_tab.[0].preliminary_flag
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/candidate/Xanthomonas axonopodis/related/Xanthomonas oryzae	D/coverage/candidate/Xanthomonas axonopodis/related/Xanthomonas oryzae	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[2].first_bar_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/candidate/Xanthomonas axonopodis/target	D/coverage/candidate/Xanthomonas axonopodis/target	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[2].record_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/candidate/Xanthomonas citri/related/Xanthomonas oryzae	D/coverage/candidate/Xanthomonas citri/related/Xanthomonas oryzae	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[0].first_bar_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/candidate/Xanthomonas citri/target	D/coverage/candidate/Xanthomonas citri/target	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[0].record_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/candidate/Xanthomonas sp. WG16/target	D/coverage/candidate/Xanthomonas sp. WG16/target	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[1].record_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/pmi/Xanthomonas citri/related/Xanthomonas oryzae	D/coverage/pmi/Xanthomonas citri/related/Xanthomonas oryzae	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.pmi[0].first_bar_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/pmi/Xanthomonas citri/target	D/coverage/pmi/Xanthomonas citri/target	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.pmi[0].record_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/toi/Xanthomonas citri/related/Xanthomonas oryzae	D/coverage/toi/Xanthomonas citri/related/Xanthomonas oryzae	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.toi[0].first_bar_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	D.count/toi/Xanthomonas citri/target	D/coverage/toi/Xanthomonas citri/target	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.toi[0].record_count
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	F.value/5.1/candidate/Xanthomonas axonopodis	F/5.1/candidate/Xanthomonas axonopodis	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[2].flag_text1
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	F.value/5.1/candidate/Xanthomonas citri	F/5.1/candidate/Xanthomonas citri	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[0].flag_text1
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	F.value/5.1/pmi/Xanthomonas citri	F/5.1/pmi/Xanthomonas citri	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.pmi[0].flag_text1
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	F.value/5.1/toi/Xanthomonas citri	F/5.1/toi/Xanthomonas citri	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.toi[0].flag_text1
+barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199	F.value/5.2/candidate/Xanthomonas sp. WG16	F/5.2/candidate/Xanthomonas sp. WG16	test/selenium/expected/8_barcode_86_BMP24-003_QA240001575_X_citri_cluster_0_RC199.yaml#database_coverage.candidate[1].flag_text2
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	C.flag.1.value	C/1.flag/value	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#overview_tab.[0].conclusion_flag
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	C.flag.2.value	C/2.flag/value	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#overview_tab.[0].toi_flag
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	C.flag.7.value	C/7.flag/value	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#overview_tab.[0].preliminary_flag
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	D.count/candidate/Vitivirus etavitis/target	D/coverage/candidate/Vitivirus etavitis/target	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.candidate[0].record_count
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	D.count/pmi/Grapevine vitivirus/target	D/coverage/pmi/Grapevine vitivirus/target	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.pmi[0].record_count
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	D.count/toi/Grapevine vitivirus/target	D/coverage/toi/Grapevine vitivirus/target	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.toi[0].record_count
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	F.value/5.2/candidate/Vitivirus etavitis	F/5.2/candidate/Vitivirus etavitis	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.candidate[0].flag_text2
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	F.value/5.2/pmi/Grapevine vitivirus	F/5.2/pmi/Grapevine vitivirus	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.pmi[0].flag_text2
+barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263	F.value/5.2/toi/Grapevine vitivirus	F/5.2/toi/Grapevine vitivirus	test/selenium/expected/9_barcode_90_Bljuzgavac_Grapevine_vitivirus_cluster_4_RC263.yaml#database_coverage.toi[0].flag_text2

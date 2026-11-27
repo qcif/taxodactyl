@@ -1,8 +1,9 @@
-# Spec: Testing
+# Testing contracts on the nf-test-sh-runner branch
 
-There are four test surfaces. Only the first runs automatically; 3 and 4
-also have a GitHub Actions workflow, but it runs only when triggered by
-hand.
+This branch's task 12 migration uses the repository-level brief in
+`tasks/12_core_nf_test_assertions.md`. The broader specification in the separate
+`/mnt/data/sdd` checkout was consulted for raw file contracts; that checkout's
+older description of manual-only GitHub-hosted nf-test is stale for this branch.
 
 | # | Surface | Location | Runs | Automatic | Hermetic |
 |---|---|---|---|---|---|
@@ -10,30 +11,42 @@ hand.
 | 2 | Python integration | `scripts/tests/integration/` | `run_tests.sh [--bold] [--keep] [--continue] [--test_case X]` | no | no — live NCBI/GBIF/BOLD |
 | 3 | Nextflow end-to-end (`nf-test`) | `test/{scenario_01..04,core}` | `nf-test test <file>` (scenario chosen in `nf-test.config`) | `nf-test.yml` (`core` scenario, self-hosted runner; TST-024): weekly, on pull requests to `main` via `build-pr.yml`, and by hand | no — needs BLAST/taxdump; P4/P5 use live APIs unless an API-cache fixture is pinned (TST-024) |
 | 4 | Report UI (Selenium) | `test/selenium/` | `pytest test_reports.py --dir <reports>` | manual only: run by `nf-test.yml` on the reports it just produced | needs generated reports |
+## Execution and ownership
 
-## 1. Requirements
+`.github/workflows/nf-test.yml` runs core on a self-hosted runner, on pull requests
+to main, weekly schedule and manual dispatch. It pins nf-test 0.9.5 and Nextflow
+25.04.6. The core configuration must be selected explicitly. One workflow run
+supplies all contract checks; checks must not launch separate sample workflows.
 
-| ID | Requirement |
-|---|---|
-| TST-001 | Every requirement ID in this spec SHOULD be traceable to at least one test. Modules with no unit tests today are listed in §4. |
-| TST-002 | A change to any threshold, filename, flag rule or report rule MUST be accompanied by a change to the test that pins it (or by a new test). |
-| TST-003 | CI MUST run surface 1 on every push and pull request to `main`. It MUST NOT depend on secrets other than `USER_EMAIL`. |
-| TST-004 | Surfaces 2–4 SHOULD be run before every release; the release checklist (`deployment.md` §3) records the versions of the reference data used. |
-| TST-005 | Fixtures that embed reference-data-derived values (snapshots, flags, `db_coverage.json`, HTML) MUST record the reference-data versions they were generated with (as `test/core/README.md` does: BLAST DB, taxdump date). |
+Core owns success, routing/multiplicity, raw-file integrity and cross-file
+relationships. Existing populated Selenium scientific/presentation assertions
+retain ownership and their current comparisons/tolerances. A blank YAML value or
+an uncollected field is not an assertion. Concrete delegation is by sample,
+role, taxon and field, never by whole filename alone. See the artifact matrix and
+concrete ownership index in [core README](../test/core/README.md).
 
-## 2. Surface details
+Core expected data are distinct from invariant code. Missing expectations produce
+unbaselined failures with observed evidence. Only explicit reviewed `ingest` and
+`promote` commands may change expected data. They cannot update Selenium,
+production code or historical flag files, accept invariant failures, or use
+incomplete/stale evidence. Ingest adds selected missing entries; promote updates
+selected existing entries; both preserve unrelated entries and retain backups.
 
-### 2.1 Unit tests
+Native JUnit is the test-status authority. Because pinned nf-test collapses
+assertAll failures, the Groovy checks also flush structured JSON evidence. Python
+renders that evidence; it does not reimplement the workflow assertions. Rendering
+can be repeated offline and cannot change the historical test result. Missing,
+unexecuted and malformed evidence must never look like a pass. Render failure
+is a separate failing CI step; successful rendering cannot clear nf-test failure.
 
-14 modules: `test_blast_parser`, `test_cache`, `test_cache_azure`,
-`test_coalesce`, `test_config`, `test_coverage_assert`, `test_gbif`,
-`test_genbank`, `test_orient`, `test_phylogeny_sampling`, `test_secrets`,
-`test_taxonkit`, `test_utils`, `test_validation`. Fixtures in
-`scripts/tests/test-data/`. `test_coverage_assert` tests the integration
-comparison logic, not production code. `test_orient` needs `hmmsearch`,
-which CI does not install (§4).
+## Migration status
 
-### 2.2 Integration tests
+Replacement assertions are implemented, but real expectations, snapshot-file
+retirement and removal of the legacy flag gate still require the review mandated
+by task 12. The retained successful run does not prove new contracts pass:
+missing retained symlinks, an absent map and known malformed PMI CSVs are reported
+explicitly. No successful full core rerun or user acceptance is claimed. Other
+scenario snapshots and all Selenium assertions/fixtures stay unchanged.
 
 | ID | Requirement |
 |---|---|
@@ -171,3 +184,6 @@ This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict
 with existing code, it must explain the concern to the user and agree on a
 resolution before changing the affected code or spec.
+Focused testkit and Groovy negative tests use disposable synthetic data. Live
+validation and manual acceptance must be recorded separately before task closure.
+Existing unit/integration suites retain their commands in `.vscode/launch.json`.

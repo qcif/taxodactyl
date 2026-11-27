@@ -242,7 +242,10 @@ jobs:
       - name: Run core nf-test
         id: nf-test
         run: |
-          nf-test test test/core/taxodactyl.workflow.nf.test \
+          export CORE_ASSERTIONS_OUTPUT="$RUNNER_TEMP/nf-test/nf-test-assertions.json"
+          rm -f "$CORE_ASSERTIONS_OUTPUT" "$RUNNER_TEMP/nf-test/nf-test.xml"
+          nf-test test test/core/taxodactyl.workflow.nf.test --ci \
+            --junitxml "$RUNNER_TEMP/nf-test/nf-test.xml" \
             > >(tee $RUNNER_TEMP/nf-test/nf-test_results.txt) \
             2> >(tee $RUNNER_TEMP/nf-test/nf-test_errors.txt)
 
@@ -320,17 +323,27 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       
-      # Convert nf-test JSON snapshot errors into a CSV review file
-      - name: Summarise nf-test errors
+      - name: Render core assertion review
         if: always()
         run: |
-          python $GITHUB_WORKSPACE/bin/diff_json_snapshot_to_csv.py \
-            $RUNNER_TEMP/nf-test/nf-test_errors.txt
-          echo "#### $RUNNER_TEMP/nf-test/nf-test_errors.txt"
-          cat $RUNNER_TEMP/nf-test/nf-test_errors.txt
-          echo "#### $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv"
-          cat $RUNNER_TEMP/nf-test/nf-test_errors_summary.csv
+          python test/core/testkit.py render \
+            --junit "$RUNNER_TEMP/nf-test/nf-test.xml" \
+            --assertions "$RUNNER_TEMP/nf-test/nf-test-assertions.json" \
+            --output "$RUNNER_TEMP/nf-test/nf-test-review.html"
 
+      - name: Upload core assertion evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nf-test-review-${{ matrix.runner }}
+          path: |
+            ${{ runner.temp }}/nf-test/nf-test.xml
+            ${{ runner.temp }}/nf-test/nf-test-assertions.json
+            ${{ runner.temp }}/nf-test/nf-test-review.html
+            ${{ runner.temp }}/nf-test/nf-test_results.txt
+            ${{ runner.temp }}/nf-test/nf-test_errors.txt
+
+      # Migration evidence: retain this gate until task 12 coverage is reviewed.
       # Compare the evaluated flags against the baseline test flags.
       - name: Test flags
         id: test-flags
@@ -387,7 +400,7 @@ jobs:
               $TEST_DIR/meta/trace.csv \
               --outdir=$RUNNER_TEMP/nf-test/collected_errors \
               --flags_results=$RUNNER_TEMP/nf-test/flags_results.txt \
-              --nft_errors=$RUNNER_TEMP/nf-test/nf-test_errors_summary.csv \
+              --assertions=$RUNNER_TEMP/nf-test/nf-test-assertions.json \
               --mode=$MODE
 
       - name: Debug copy error workdirs

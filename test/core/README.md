@@ -221,3 +221,166 @@ Review the diff before accepting it (`spec/tests.md` §5.3), and update
 
 **9. Clean up.** Delete your local copies of `cache_db.sqlite`,
 `<version>/` and `<version>.zip`. They aren't git-ignored.
+## Task 12 assertion migration (awaiting review)
+
+The core test now runs `CoreAssertions.groovy` once over the emitted channels.
+Each independent invariant records a diagnostic before aggregation with native
+`assertAll`. Native nf-test **0.9.5** JUnit retains the aggregate failure count,
+not individual power assertions (verified with two deliberate failures). The
+JSON sidecar therefore retains every check's sample, stable ID, field, owner,
+expected/observed values, diagnostic and artifact paths. No Python code evaluates
+workflow contracts.
+
+**Review status:** initial expectations have not been accepted. The historical
+`.snap` file is retained for coverage review, but is no longer called by core.
+The separate CI flag gate remains migration evidence pending that review. Do not
+remove these historical protections or mark task 12 done until the ownership
+matrix and required live validation are accepted. Other scenarios and Selenium
+code/fixtures/tolerances are unchanged.
+
+### Coverage ownership
+
+| Artifact | Core checks | Existing Selenium owner / limits |
+|---|---|---|
+| H `all_hits.fasta`, `all_hits.json` | Unique accession membership, essential hit/HSP schema, input sample identity, FASTA validity, last subject-HSP sequence agreement, reviewed exact sequences and accession membership | Selected BLAST modal values; no duplicate core statistics expectations |
+| H/C `query_title.txt`, copied hit files | Input identity and byte-preserving copy through emitted C paths | Input popup identity is a presentation check |
+| C `candidates.json`, `.csv`, `.fasta`, `_count.txt` | Schema, species/accession uniqueness, CSV/JSON/FASTA membership agreement, sequence agreement with H, integer count agrees with species | Candidate table owns displayed species/statistics; core does not baseline those statistics |
+| C `1.flag`, `2.flag`, `7.flag` | One raw record, required fields, configured value domains; uncovered values only | Populated `overview_tab.conclusion_flag`, `toi_flag`, `preliminary_flag`; blank expectations are not owners |
+| C `assigned_taxonomy.csv` | Required iff 1A; header and records agree with candidate CSV | Displayed identified candidate |
+| C `preliminary_id_match.csv` | Required iff 7A; rank/taxon header and single matching input PMI | Raw file is unused by Selenium/P6; known P3-D-008 produces malformed CSV and remains a visible invariant failure |
+| C `taxa_of_concern_detected.csv` | Required iff input TOIs; header, input-order membership and match accessions belong to candidates | Existing TOI table owns displayed match values |
+| C `candidates_phylogeny.fasta` | Valid records, sequences agree with H, reviewed selected accession membership | Tree minimum-node check is only a lower bound |
+| C `candidates_identity_boxplot.png` | Presence iff candidate count exceeds run limit; decoded PNG, positive dimensions | No pixel baseline |
+| S `4.flag`, `aggregated_sources.json` | Exact assessed/skipped channel shape from 1..max candidate rule; candidate/flag/source relationships, publication record structure, reviewed raw source accessions and flag values | Publication modal owns displayed titles/source/count fields; core does not baseline publication text |
+| T `candidates_phylogeny.nwk` | Valid Newick grammar, unique leaves equal selected FASTA plus QUERY; empty only for empty selected FASTA | Tree title/minimum nodes; branching/lengths are deliberately not frozen |
+| D `db_coverage.json` | Per-role target membership; exact uncovered target, per-species related/country counts, and null/NA/empty states | Populated database-coverage target `record_count`; related summary counts; first-bar count when its named species is populated. Existing substring/list comparison and ±10% tolerance remain authoritative |
+| F `5.1.flag`, `5.2.flag`, `5.3.flag` | Three filenames per sample; unique `(flag,role,target)` records agree with D membership; uncovered values only | Populated `flag_text1/2` for the exact role and taxon. Country `final_text` is explanatory text, not an assertion of raw 5.3 value |
+| M `map*.png` | Per-sample reviewed map filenames; unique names; decoded PNG dimensions | Country messages do not cover raw images |
+| HTML | Reject unknown/duplicate/misassociated emitted paths | Per-sample report presence and browser contents remain exclusively Selenium |
+| Versions, parameters, timestamp | Singleton/readable; required tools, database/analysis limit, valid emitted `yyyyMMdd HHmmss` time | No exact version/time baseline. Parameters are never embedded in review output |
+| Workflow / all tuple channels | Success, tuple shape, complete keyed membership (except optional maps), multiplicity, path/sample association | Independent workflow integrity |
+
+`coverage-ownership.tsv` records concrete populated Selenium owners from the
+supplied run, by sample/role/taxon/field. It contains **ownership**, not accepted
+expected data. All other promotable fields shown in the sidecar belong to core.
+Delegated fields cannot be ingested or promoted. Changing Selenium fixtures can
+change ownership and requires rerunning the coverage audit.
+
+Every candidate directory's emitted filenames are checked against an explicit
+allowlist; unknown additions fail for review. Copied H files are checked for
+preservation rather than given second independent baselines. Intermediate BLAST,
+taxonomy, alignment and accession-list files outside the emitted channels remain
+outside this test. Precise BLAST calculations/records remain covered by `scripts/tests/test_blast_parser.py` (including exact identities, scores, alignment fields and sequence output); selection boundaries remain in `scripts/tests/test_phylogeny_sampling.py`.
+
+### Supplied run provenance and limitations
+
+Evidence source:
+`/mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834`.
+The parent `nf-test_results.txt` records nf-test 0.9.5 core **PASSED** in
+2434.281 seconds. `meta/workflow.json` records success/exit 0; workflow timestamp
+is `20261123 043225`. The implementation branch starts at `nf-test-sh-runner`
+commit `0f715e7`; the historical run's exact checkout revision is not recorded in
+that metadata and must not be inferred from today's branch. Input/reference and
+version hashes gathered from retained evidence are in `evidence-provenance.json`.
+BLAST/taxdump labels documented above are not content digests of those databases.
+
+The retained channel paths use the original runner prefix. An explicit prefix
+mapping was used for diagnostics, without searching for substitute files. The
+H originals under `work/54/6614…` are present. Candidate `.command.run` stages them
+as symlinks under `hits_files/`; `.command.sh` moves those links into the candidate
+folder. The retained copy has **none of those 60 C symlinks**. Content validation
+of H is possible; preservation at C's emitted paths is not established by this
+copy. Do not silently substitute H for C to obtain a pass.
+
+Two PMI-match files expose existing P3-D-008 (missing newline between header and
+record), for Scenario_04 and barcode_83_P59_Potyviridae_cluster_0_RC205. The emitted
+map `query_020_512503_1_Andrew/map_Bulimulus_sporadicus.png` is absent; the folder
+contains only `map_Bulimulus_Sporadicus.png`. No production code or expected values
+have been changed to hide these findings.
+
+A diagnostic evaluation of retained channels is **not a new workflow execution**
+and does not create native JUnit. Old runs without the sidecar need a new core
+execution/evaluation before manual acceptance. Missing XML is shown as missing,
+never replaced by synthetic passing XML. Initial ingestion is blocked while
+invariant failures or incomplete evaluation remain.
+
+### Run, review, ingest, rerun
+
+Keep core reference paths and credentials configured as described above. The
+root `nf-test.config` selects scenario_04 by default and has placeholders; a core
+filename alone does not select core configuration. Create an explicit config:
+
+```groovy
+// /absolute/run/core.nf-test.config
+config {
+    workDir '/absolute/run/nf-test'
+    testsDir 'test/core'
+    configFile 'test/core/nextflow.config'
+    profile 'singularity'
+}
+```
+
+Run from the repository root, after resolving `test/core/nextflow.config` paths:
+
+```bash
+mkdir -p /absolute/run/nf-test
+export CORE_ASSERTIONS_OUTPUT=/absolute/run/nf-test/nf-test-assertions.json
+nf-test test -c /absolute/run/core.nf-test.config \
+  test/core/taxodactyl.workflow.nf.test --ci \
+  --junitxml /absolute/run/nf-test/nf-test.xml
+source scripts/venv/bin/activate
+python test/core/testkit.py render \
+  --junit /absolute/run/nf-test/nf-test.xml \
+  --assertions /absolute/run/nf-test/nf-test-assertions.json \
+  --output /absolute/run/nf-test/nf-test-review.html
+```
+
+A new unbaselined run **fails** while still collecting all observations. Review
+invariants, ownership and values before manually adding selected missing entries:
+
+```bash
+python test/core/testkit.py ingest --sample Scenario_04 \
+  --assertion 'D.count/pmi/Bruchophagus/related/Bruchophagus lecomtei' \
+  --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
+# Remove --dry-run to review each entry interactively; provide a reason.
+```
+
+For later changes to existing entries:
+
+```bash
+python test/core/testkit.py promote Scenario_04 \
+  --assertion 'D.count/pmi/Bruchophagus/related/Bruchophagus lecomtei' \
+  --assertions /absolute/run/nf-test/nf-test-assertions.json --dry-run
+```
+
+Only manual commands write `expectations.json`. Ingest never overwrites an
+existing key; promote never invents a missing one. Both preview changes, require
+per-entry acceptance and a reason, reject stale expectation/code/ownership digests and
+incomplete/invalid/invariant-failing evidence, write atomically, and retain three
+previous files in ignored `.backups/`. Only defined core data fields are eligible.
+Selenium fixtures, flag files and assertion code are never written. Rendering and
+CI are read-only. After any acceptance, rerun the core invocation above. nf-test
+0.9.5 has no documented assertion-only replay flag in its CLI; no replay is
+promised. Original failure records stay unchanged.
+
+HTML and JSON/XML should stay together in the retained bundle. Links point only
+to existing files within that bundle, using relative paths. A standalone uploaded
+review still shows unavailable artifact links explicitly. Self-hosted retention
+continues under `/var/runner/<timestamp>/`.
+
+### Focused validation
+
+```bash
+source scripts/venv/bin/activate
+PYTHONPATH=scripts python -m unittest discover -s scripts/tests -p 'test_nf_test_*.py' -b
+# NFT_JAR is the jar shipped with nf-test 0.9.5:
+java -cp "$NFT_JAR" groovy.ui.GroovyMain test/core/contracts.test.groovy "$PWD"
+```
+
+The Groovy scenarios use disposable synthetic files and demonstrate valid empty
+and skipped cases, initial unbaselined evaluation, accepted synthetic data,
+missing/duplicate/wrongly associated samples, malformed outputs, missing/extra or
+duplicated P5 records, value-only and count-only drift, and independent failures.
+Python tests cover render failures/escaping/portable links, explicit scoped
+updates, stale evidence, rejected input, unchanged unrelated fields and backups.
+Real expectations remain unaccepted regardless of these tests passing.

@@ -66,37 +66,7 @@ Use nf-test's existing Groovy assertions, assertAll, and JUnit XML reporting.
 Add only the reporting glue necessary for useful differences. The user's recent
 successful run is still to be supplied; do not invent sample-specific expectations.
 
-**Revision overview (2026-11-23).** The first implementation works, but the
-review page is hard to use: it is 17 MB, shows all ~21,600 checks, hides the
-three real failures inside collapsed sample sections, labels checks with
-channel codes (`C.copy.all_hits.fasta`, `D.count/...`) and prints
-"Expected: contract invariant / Observed: satisfied" for rule checks. All
-expected values also live in one 106k-line `test/core/expectations.json`. The
-fix: (1) one readable YAML file per sample, matched by `sample_id`, created by
-`ingest` and updated by `promote`, exactly like Selenium fixtures; (2) a review
-page that opens with "what needs attention", then a sample × channel matrix,
-then per-sample cards with Selenium-style expected/observed tables; (3) fewer,
-meaningful data checks — related/in-country species lists are compared by
-name only, and hit sequences by fingerprint. Open: confirm fingerprint length
-and Selenium-aligned file numbering (see Open decisions).
-
-**Phase 6 overview (2026-11-23).** The user reviewed the new page. Three problems
-remain. It still lists 208 values that Selenium owns, which belong in the Selenium
-review instead. It never says, in plain words, what was checked. And its failure
-messages are raw Groovy expressions such as
-`Expression: ((table[0] == [rank, taxon]) && (table[1].size() == 1))`, which do
-not say what is wrong or what to do. The fix: drop Selenium-owned values from the
-page, add a "What this test checks" section written from `test/core/schema.yaml`,
-and give every check a plain explanation. CI also gets the changes needed to run
-core from GitHub and read the result there. The baseline evaluation's three
-failures are real findings, not test faults (6.1). Open: how to handle the known
-CSV bug (P3-D-008), and whether to retire the legacy flag gate and snapshot now.
-
 **Implementation authorization: granted by explicit user request, 2026-11-23**
-for the original scope. **Phase 6 implementation authorization: granted by explicit
-user request ("Feel free to implement"), 2026-11-23.**
-**Revision (Phase 5) implementation authorization:
-granted by explicit user request ("implement all the changes you made to the task including phase 5"), 2026-11-23.**
 
 **Source material:** User request and testing allocation, 2026-11-23;
 `test/core/taxodactyl.workflow.nf.test`, its `.snap` file,
@@ -108,14 +78,6 @@ granted by explicit user request ("implement all the changes you made to the tas
 `spec/tests.md`, `spec/contracts/outputs.md`, `spec/contracts/query-folder.md`,
 `spec/contracts/hits.md`, `spec/contracts/candidates.md`, and `CONSTITUTION.md`.
 Read `tasks/todo.md`; none of its spin-offs are absorbed by this task.
-Revision sources (2026-11-23): user review of the rendered page
-`.nf-test/task12-review/nf-test-review.html` / `accepted-review.html` and
-`accepted-assertions.json` in the task worktree; Selenium reference layout
-`test/selenium/README.md`, `test/selenium/testkit.py`, `test/selenium/lib/schema.py`,
-`test/selenium/lib/promote.py`, `test/selenium/lib/render.py`,
-`test/selenium/lib/templates/review.html.j2`, `test/selenium/lib/static/review.css`,
-`test/selenium/lib/database_coverage.py` and `test/selenium/expected/*.yaml`
-(paths relative to the `nf-test-sh-runner` checkout).
 
 **Planning context:** Inspected branch `main`. Next unused prefix is 12 across
 active, planned, completed and shelved tasks. No configured feature directory:
@@ -146,10 +108,6 @@ One core run yields meaningful failures naming the sample, channel and failed
 contract, with expected and observed evidence available in a portable HTML report.
 Changing a check requires a small reviewed code/data edit, not whole-channel
 snapshot regeneration. Report rendering can be repeated without a workflow run.
-Each sample's expectations live in their own file; adding a sample needs a
-`test/core/metadata.csv` row, a run and a reviewed `ingest`, and no code edit.
-A reviewer can see from the top of the HTML page which samples and checks need
-attention and why, without expanding anything.
 
 ## Coverage by artifact and workflow function — plain-language explanation
 
@@ -194,7 +152,7 @@ files must be considered explicitly, rather than silently left out of the tests.
 
 | File / workflow function | How it is checked today | What Selenium already checks — unchanged | What the new core check means in practice |
 |---|---|---|---|
-| `all_hits.fasta` — hit sequences (H and C) | Saved file fingerprints | Some alignment details in the BLAST popup | Read the sequence records. Check their names and sequence contents, whether an empty file is valid for this sample, and that the records correspond to the hit JSON. Check that copying the file into the candidate directory did not change it. **Revision:** per-sample expectations store the accession list and one short sequence fingerprint per accession, not full sequences (Phase 5). |
+| `all_hits.fasta` — hit sequences (H and C) | Saved file fingerprints | Some alignment details in the BLAST popup | Read the sequence records. Check their names and sequence contents, whether an empty file is valid for this sample, and that the records correspond to the hit JSON. Check that copying the file into the candidate directory did not change it. |
 | `all_hits.json` — hit information (H and C) | Saved file fingerprints | Selected hit statistics and taxonomy | Check that each hit has the required information in the right format. Check the expected hits/counts and that references to sequence records make sense. Check that the candidate-directory copy is unchanged. Do not repeat statistics Selenium already checks. |
 | `query_title.txt` — sample identity (H and C) | Saved file fingerprints | Sample ID in the input popup | Check that the title belongs to the correct input sample and is preserved in the copied file. This catches files accidentally assigned to another sample. |
 | `1.flag` — candidate outcome (C) | Saved file fingerprint | Candidate/conclusion flag shown in the report | Check that the flag file has the expected number of entries, required fields and correct connection to candidate results. If an important flag result is not actually tested by Selenium, add a core check for its expected value. |
@@ -212,7 +170,7 @@ files must be considered explicitly, rather than silently left out of the tests.
 | `4.flag` — independent-source outcome (S) | Saved file fingerprint for assessed samples | Publication display covers only part of this information | Check that assessed samples have the required flag entries and correct candidate associations. Check important flag values not already tested by Selenium. Intentionally skipped samples should have no S files; an assessed sample missing its output is a failure. |
 | `aggregated_sources.json` — combined source information (S) | Saved file fingerprint for assessed samples | Publication names, sources and counts where expectations exist | Check required fields, which candidates and sources are represented, and agreement with `4.flag`. Distinguish “assessment ran and found no sources” from “assessment was skipped” and “output is missing”. |
 | `candidates_phylogeny.nwk` — resulting tree (T) | Saved file fingerprint, including empty files | Tree title and minimum nodes | Check that a nonempty file can be read as a tree and that its leaf labels correspond to the selected sequences. Check allowed empty cases explicitly. Do not freeze every branch length or branching arrangement unless there is a reviewed reason those must remain exact. |
-| `db_coverage.json` — reference database counts (D) | Only the number of files: 20 | Displayed counts/charts; some count fields allow ±10% | For each sample, taxon and role, identify which count values Selenium already checks and leave those checks there. Core checks only remaining target, related-species and in-country counts against reviewed values, plus distinct file/format requirements. Distinguish zero, unavailable and not-assessed results. Do not duplicate Selenium-owned counts or override their existing tolerance. **Revision (user decision 2026-11-23):** core does not store or compare per-species `related`/`country` counts — the original core nf-test only counted these files. Core checks that the related and in-country *species names* match the accepted lists, plus structure and assessed/null/`NA`/not-assessed state. |
+| `db_coverage.json` — reference database counts (D) | Only the number of files: 20 | Displayed counts/charts; some count fields allow ±10% | For each sample, taxon and role, identify which count values Selenium already checks and leave those checks there. Core checks only remaining target, related-species and in-country counts against reviewed values, plus distinct file/format requirements. Distinguish zero, unavailable and not-assessed results. Do not duplicate Selenium-owned counts or override their existing tolerance. |
 | `5.1.flag` — target coverage result (F) | Core counts files; a separate script compares all saved flag entries | Displayed coverage flag and record count | List the required flag entries, target identities, flag values and corresponding D reference counts. Keep any existing checks of those results in Selenium. Core checks only what is missing, including file/record integrity requirements not already covered. Remove the overlapping separate flag-baseline comparisons. |
 | `5.2.flag` — related-species coverage result (F) | Core counts files; separate saved-entry comparison | Related-species coverage display | Keep Selenium checks of related-species flags/counts. Add core checks only for remaining sample/role/taxon values, counts and record/file requirements. Every required result needs an owner, but must not receive a duplicate core expectation. |
 | `5.3.flag` — in-country coverage result (F) | Core counts files; separate saved-entry comparison | Country coverage display where expectations exist | Keep existing Selenium country-coverage checks. Core checks only uncovered flag entries/values and country-specific counts or states. Distinguish not assessed from assessed with zero results. Remove duplicate flag/core expectations. |
@@ -223,7 +181,7 @@ files must be considered explicitly, rather than silently left out of the tests.
 | Workflow timestamp — run date/time | One channel entry | No dedicated check of the raw timestamp | Check there is exactly one valid timestamp in the form the workflow actually emits. Do not compare it with the date of the old run. |
 | Workflow completion and sample routing | Snapshot sample/file pairs and total counts; no explicit success assertion | Missing report detected for each expected sample | Check that the workflow succeeded, each file belongs to the right sample, and samples were not lost or duplicated when outputs were combined. Check which samples should receive source-diversity assessment and which should be skipped. |
 | Intermediate files not exposed to core | No direct snapshot check for BLAST XML, accession/taxonomy files, alignment/PHYLIP files, label mappings, FastME statistics/matrices, logs or optional error files | Some of their later results appear in reports | Clearly record that these files are not directly checked by the current channels. Use logs and trace information to investigate failures. This task does not automatically add new workflow channels to check every intermediate file. |
-| HTML failure review, ingest and promote | Snapshot error summary, separate flag differences, Selenium review page | Existing Selenium tools stay unchanged | Core review shows the file, sample, taxon, field, expected value and actual value, with problems listed first (Phase 5.5). `ingest` lets you review and save initial expectations; `promote` lets you review selected changes to existing expectations. Keep backups. Remove the separate core flag-checking step after confirming every required result is checked by unchanged Selenium or core, without duplicate checks. |
+| HTML failure review, ingest and promote | Snapshot error summary, separate flag differences, Selenium review page | Existing Selenium tools stay unchanged | Core review shows the file, sample, taxon, field, expected value and actual value. `ingest` lets you review and save initial expectations; `promote` lets you review selected changes to existing expectations. Keep backups. Remove the separate core flag-checking step after confirming every required result is checked by unchanged Selenium or core, without duplicate checks. |
 
 For precise implementation of D counts, the current JSON stores the target count
 at `coverage.<role>.<taxon>.target`, with per-species counts under `related` and
@@ -232,13 +190,6 @@ is the taxon name. Check these values and their meaning, not just the presence o
 these field names. There are two different “record counts” to check: how many
 entries a flag file contains, and how many reference database records support a
 taxon. Both must be checked across Selenium and core, with Selenium retaining any checks it already performs.
-**Revision 2026-11-23:** no `db_coverage.json` count is a core expectation —
-not `target`, nor the per-species values under `related` and `country`. Core
-compares only which taxa and species are listed (membership) and the state of
-each section; database record counts are owned by Selenium alone. Selenium keeps its summary
-coverage checks (record count, species count/total, first/minimum bar, country
-text) with its ±10% tolerance. Record this deliberate removal in
-`test/core/README.md` and `test/core/coverage-ownership.tsv`.
 
 The inventory was checked against `workflows/taxodactyl.nf`, the producing modules,
 `conf/filenames.config` and the core snapshot on 2026-11-23. Intermediate filenames
@@ -345,14 +296,8 @@ Store reviewed, promotable sample-specific expected values in
 provenance and reasons. Keep invariant rules (success, uniqueness, required files,
 schema and relationships) in assertion code. Promotion changes selected data
 values only; it must not rewrite assertion logic or create a whole-output baseline.
-**Superseded by Phase 5.1:** the store is `test/core/expected/<N>_<sample_id>.yaml`,
-one file per sample; `test/core/expectations.json` is migrated and removed.
 
 ### Phase 3 — Core testkit: render, ingest and promote
-
-Phase 5 supersedes the page layout in items 2–3, the CLI shapes in items 6 and
-8, and the single-file digest/backup paths in items 4 and 7. All safety rules
-in this phase still apply unchanged.
 
 1. Enable native `--junitxml` output. First inspect an intentionally failing check
    under version 0.9.5: determine whether each assertAll closure's diagnostics reach
@@ -937,10 +882,6 @@ migration and renderer work can proceed independently. No delegation is required
 MVP: core-only contract migration, native XML plus structured assertion evidence,
 HTML review, manual selective ingest and promotion with backups, and CI artifact integration.
 Other-scenario migrations are not required.
-Revision: Phase 5.1–5.2 (schema, per-sample loading, changed data checks) ->
-5.6 (migration) and 5.4 (ingest/promote); 5.5 (render) can proceed in parallel
-with 5.1 once the sidecar fields (`component`, narrowed `artifacts`, full
-sequence detail, per-sample file digests) are agreed. 5.3 documentation last.
 
 ## Documentation and configuration
 
@@ -952,15 +893,6 @@ Preserve instructions needed for other scenarios. `nf-test.config`
 currently selects scenario_04 with a placeholder workDir; commands must explicitly
 use a core-configured invocation, following the CI setup, rather than assuming
 that passing the core test filename changes its configFile automatically.
-
-Revision: document in `test/core/README.md` the per-sample file layout,
-`test/core/schema.yaml`, the "Adding a sample" steps (Phase 5.3), the
-`ingest`/`promote` commands with examples, how to read the review page, and the
-two 2026-11-23 granularity decisions (coverage counts removed, hit sequences
-fingerprinted). Mirror the short version in `docs/nf-tests.md`. Update path
-references to `test/core/expectations.json` in `.github/workflows/nf-test.yml`,
-`.gitignore` (`test/core/expected/.backups/`), `.prettierignore`,
-`spec/tests.md` and `bin/collect_artifacts.py` if it reads the old path.
 
 ## Testing decision
 
@@ -1008,44 +940,7 @@ to retain P5 overlap. The agreed mixed testing allocation remains unchanged;
 Selenium code, fixtures and tolerances remain unchanged. This narrows duplicated
 checks, not the requirement to test counts and flag values across the suites.
 
-**Revision testing decision 2026-11-23, scope: Phase 5.** Same mixed approach.
-Agent writes and runs the updated renderer/ingest/promote/migration tests and the
-synthetic Groovy contract scenarios. The user stated the values in the
-2026-11-23 run were validated and may be used as the baseline: the agent may
-carry them into per-sample YAML (Phase 5.6) without further approval, applying
-only the user-decided changes (drop per-species related/country counts;
-convert sequences to fingerprints; omit Selenium-owned fields). After that,
-any drift is reviewed and promoted manually by the user with `testkit.py promote`.
-The agent must not run real `ingest`/`promote` against `test/core/expected/`.
-Granularity decisions by the user, 2026-11-23: coverage counts not included,
-species names must match; hit sequences stored as accession plus fingerprint.
-
-**Phase 6 testing decision, agreed 2026-11-23** (same split as before): the agent writes and runs the renderer, message and schema tests,
-the Groovy scenarios and CI syntax checks; the user runs GitHub Actions and
-reviews the page and any drift. No expectation changes are planned. No
-P3-D-008 production fix is made in this task (decision 6.6.1).
-
 ## Validation
-
-Phase 6 validation:
-- **Python (`scripts/tests/test_nf_test_review.py`):** Selenium-owned and
-  not-checked rows never appear on the page. The "What this test checks" section
-  lists every component with counts. Each card shows plain expected/found/
-  next-step text. `Expression:` appears only inside technical detail.
-  `--summary` writes the verdict and attention table. `--bundle-dir` copies the
-  referenced files and rewrites links, holds no symlinks, and still works after
-  copying the directory elsewhere.
-- **Schema test:** every component has `description`, `files` and `producer`.
-  Every check has `title`, `rule`, `explain` and `on_fail`. Every stored value
-  has `explain`.
-- **Static test:** every `assert` in `CoreAssertions.groovy` has a message.
-- **Groovy scenarios (`test/core/contracts.test.groovy`):** extend with
-  assertions on the plain messages for the PMI CSV, missing file and
-  membership cases.
-- **Retained-run re-render:** the three cards match 6.1, and no Selenium values
-  are listed.
-- **CI:** YAML parses; `actionlint` runs if available. A real Actions run is
-  user-owned. Record its result separately.
 
 After authorization, configure core references according to `test/core/README.md`
 (current documented subset BLAST 2026-07-29 and taxdump 2026-05-08; record actual
@@ -1086,14 +981,12 @@ settings; no integration run is implied by planning.
   Compare the agreed coverage matrix against every retired snapshot field.
 - Include targeted negative cases changing a 5.x value without changing its
   record count, a duplicate replacing a target, a missing/extra flag record,
-  and a reference count in D without changing its flag (revision: the D count
-  change must *not* fail core; verify instead that Selenium's existing
-  `record_count`/bar checks catch it where populated). Choose core-owned fields
+  and a reference count in D without changing its flag. Choose core-owned fields
   for core negative cases and require failure with clear evidence in core HTML.
   For Selenium-owned results, verify the existing assertion covers the intended
   failure using its existing comparison/tolerance; do not add a duplicate core
   check merely because it would fail on a smaller change.
-  Confirm a reviewed list-only drift (e.g. species names) can be selectively promoted without
+  Confirm a reviewed count-only drift can be selectively promoted without
   changing flag values or accepting an unrelated failure.
 - During migration, use the legacy flag comparison on the same retained run as
   evidence for the coverage map before removing its core CI gate. Assign required
@@ -1110,36 +1003,6 @@ settings; no integration run is implied by planning.
   needs modification, apply the repository's `nexflow lint <file>` instruction
   and report tool availability. Do not change production code merely to pass.
 
-Revision (Phase 5) validation:
-
-- Update `scripts/tests/test_nf_test_review.py` for the new page: verdict
-  precedence; needs-attention ordering and collapsing; matrix counts; passing
-  rows not individually rendered; rule checks show rule text/diagnostic;
-  list added/removed and fingerprint diff rendering; artifact links once per
-  card; every sidecar check family has a `schema.yaml` title (test fails on a
-  missing label); escaping; missing/invalid evidence never passes.
-- Update `scripts/tests/test_nf_test_ingest.py` and `test_nf_test_promote.py`
-  for per-sample files: new sample creates `<N>_<sample_id>.yaml` with
-  Selenium-aligned or next prefix; adding missing keys to an existing file;
-  refusing overwrite; target resolution by number/stem/sample_id; `[a]ll in this sample`;
-  per-sample freshness (editing another sample's file does not block); per-file
-  backups capped at 3; unrelated sample files byte-identical after a write.
-- Extend `test/core/contracts.test.groovy` synthetic scenarios: orphan YAML,
-  duplicate `sample_id`, unknown assertion ID, new metadata row without file
-  (unbaselined, invariants still run, test fails), species-name change in
-  `related`/`country` fails while a count-only change passes, fingerprint
-  mismatch fails, no sample ID literal in `CoreAssertions.groovy`
-  (`grep` check recorded).
-- Demonstrate on disposable copies: add a synthetic sample row → run evaluation
-  → render shows Needs baseline → `ingest --expectations`-style disposable path
-  → rerun passes; then mutate one hit sequence → render shows fingerprint
-  drift with position diff → `promote --dry-run` previews it.
-- Re-evaluate the retained run after migration (Phase 5.6) and record:
-  per-status counts before/after, the removed-row count by family, the
-  same three integrity failures, and the rendered page size (< 1 MB).
-- Run `PYTHONPATH=scripts python -m unittest discover -s scripts/tests -p 'test_nf_test_*.py'`
-  after `source scripts/venv/bin/activate`.
-
 Expected values must come from agreed contracts and independently understood
 inputs, never production logic or blind copies of actual output. Preserve
 meaningful content, membership, boundaries, ordering where meaningful, and error
@@ -1152,15 +1015,9 @@ checks honestly. Automated passes do not complete manual acceptance.
 - `test/core/taxodactyl.workflow.nf.test` and
   `test/core/taxodactyl.workflow.nf.test.snap`: intentional assertion migration
   and reviewed snapshot retirement; new exact values await supplied evidence.
-- `test/core/expectations.json`: **removed by Phase 5.6**, replaced by
-  `test/core/expected/<N>_<sample_id>.yaml` (one per sample) and
-  `test/core/schema.yaml`. Values carried over from the user-validated
-  2026-11-23 baseline; expected differences: no per-species related/country
-  counts, fingerprints instead of sequences, no Selenium-owned fields. Updated
-  afterwards only by explicit manual ingest or selective promotion.
-  `test/core/expected/.backups/` holds local prior versions and must be excluded from commits.
-- `test/core/coverage-ownership.tsv`: record the two deliberate granularity
-  removals; delegated rows unchanged.
+- `test/core/expectations.json`: small reviewed contract data, updated only by
+  explicit manual ingest or selective promotion; not a captured whole-output snapshot.
+  `test/core/.backups/` holds local prior versions and must be excluded from commits.
 - `test/core/flags/*.flag`: historical expected-value evidence, not automatically
   promoted or rewritten. Selenium retains existing checks; core expectations cover the remaining P5 results;
   retire the separate core execution gate after combined coverage is verified.
@@ -1176,16 +1033,6 @@ checks honestly. Automated passes do not complete manual acceptance.
   Manual validation status is pending until the user provides acceptance evidence.
 
 ## Completion criteria
-
-- (Phase 6) The legacy flag gate is gone from `.github/workflows/nf-test.yml` and
-  the core `.snap` file is deleted. The P3-D-008 card is labelled as a known defect.
-- (Phase 6) The core page lists no Selenium-owned or unchecked values. It explains
-  what was checked, in plain words, from `schema.yaml`. Every failure states what
-  should be true, what was found, and the likely cause or next step; raw
-  expressions appear only as technical detail. CI shows a summary on the Actions
-  page, uploads a self-contained review bundle, and keeps a lossless tarball of
-  the run. The P3-D-008 decision and the legacy gate decision are recorded and
-  applied.
 
 - No whole-channel snapshot remains in core; every retired protection has a
   documented owner and meaningful replacement or explicitly agreed disposition.
@@ -1355,11 +1202,6 @@ rewrite `test/core/README.md` so a lay person can read it, review docs and spec.
 
 ## Open decisions and risks
 
-- Phase 6 decisions recorded and implementation authorized 2026-11-23 (6.6).
-- P3-D-008 stays a visible core failure for Scenario_04 and the Potyviridae
-  sample until a separate task fixes `_write_pmi_match`, so CI core stays red
-  for that reason alone. The page labels it as a known defect.
-
 - Successful run location and evidence are pending from the user. Sample-specific
   assertions cannot be finalized until inspected and reviewed.
 - JUnit fidelity under pinned nf-test 0.9.5 determines how much native diagnostic
@@ -1371,14 +1213,6 @@ rewrite `test/core/README.md` so a lay person can read it, review docs and spec.
 - This brief proposes a dedicated `test/core/testkit.py` because the existing
   Selenium toolkit is browser/fixture specific and the integration toolkit manages
   Python fixtures. Reuse small presentation pieces only where it reduces work.
-- Confirmed 2026-11-23: 16-hex-character fingerprints; core files reuse the
-  Selenium fixture number for the same `sample_id`. Decided 2026-11-23: core never checks a taxon's own record count
-  (`coverage.<role>.<taxon>.target`); Selenium owns it (all 61 in the accepted
-  run), and samples without a Selenium fixture have no check on it.
-- Related/country species-name lists come from live GBIF/COL lookups and may
-  still drift; such drift appears as list changes and is promoted manually.
-- Fingerprints make drift detection exact but unreadable on their own; the page
-  depends on the sidecar's full sequences to show what changed.
 
 
 ## Outcomes

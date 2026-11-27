@@ -349,8 +349,26 @@ To run a different test scenario (e.g., scenario_02):
 
 
 
-## Database coverage mode scenario
+## Core assertion review (task 12)
 
-`test/coverage` tests database coverage mode (`--coverage_taxa`) with `workflows/coverage.nf`.
-Point `nf-test.config` at it (`testsDir "test/coverage"`, `configFile "test/coverage/nextflow.config"`)
-and see `test/coverage/README.md`. It needs the taxdump but no BLAST database.
+Core now uses named workflow/file contracts and a structured assertion sidecar.
+Use the explicit core configuration and `--ci --junitxml` invocation in
+[test/core/README.md](../test/core/README.md#run-review-ingest-rerun); the root
+configuration currently selects scenario_04 and has unresolved placeholders.
+Other scenarios retain their existing snapshots and legacy post-processing.
+
+`python test/core/testkit.py render --junit <run>/nf-test.xml --assertions
+<run>/nf-test-assertions.json --output <run>/nf-test-review.html` renders an offline
+review from retained evidence. Use a single shell line or explicit backslash
+continuations. Missing XML/sidecar is reported as missing, not a successful test.
+The self-hosted job retains native XML, JSON, HTML and logs even after failure.
+`bin/collect_artifacts.py --assertions <sidecar>` routes core P5 and other failed
+checks to their producing tasks; `--nft_errors` remains for legacy scenarios.
+The frozen mock workflow predates this evidence and only validates legacy
+post-processing when it is missing.
+
+Initial expectations are added manually with `testkit.py ingest`; later selected
+changes use `testkit.py promote`. Both support `--dry-run`, sample/assertion
+selection and explicit review reasons. Ordinary tests, rendering and CI never
+accept data. Read the core README for exact commands, ownership and unresolved
+migration review; do not regenerate the core snapshot to accept drift.
