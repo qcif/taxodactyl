@@ -285,6 +285,13 @@ def _sample_blockers(rows, sample):
             and r['status'] in ('failed', 'error')]
 
 
+def _blockers_for(blockers, row):
+    """Rule failures that stop `row` being accepted: any run-level failure,
+    or a failure in the row's own component. A rule failure elsewhere in the
+    sample (e.g. C.pmi) does not block an unrelated value (e.g. maps)."""
+    return [b for b in blockers if b['sample'] == '_run' or b.get('component') == row['component']]
+
+
 def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=False, sample=None,
            component=None, assertion=None, dry_run=False, reason=None, ask=input):
     expected_dir = Path(expected_dir)
@@ -308,27 +315,37 @@ def update(mode, assertions, expected_dir=EXPECTED, target=None, all_samples=Fal
         if sid not in data['expectations']:
             raise ValueError(f'Sample {sid} was not evaluated in this run')
         blockers = _sample_blockers(rows, sid)
-        if blockers:
-            message = (f'Invariant failures for {sid} cannot supply an accepted baseline '
-                       f'({", ".join(sorted({b["id"] for b in blockers}))}); resolve them and evaluate again')
-            if explicit:
-                raise ValueError(message)
+        matching = [r for r in rows if r['sample'] == sid and r['promotable']
+                    and (component is None or r['component'] == component)
+                    and (assertion is None or assertion in (r['id'], r['assertion']))]
+        wanted = [r for r in matching if r['status'] == ('unbaselined' if mode == 'ingest' else 'failed')]
+        # A rule failure blocks only values in its own component (or every value, for a run-level failure).
+        blocked = {}
+        for r in wanted:
+            for b in _blockers_for(blockers, r):
+                blocked.setdefault(b['id'], []).append(r['id'])
+        if blocked:
+            message = (f'Invariant failures for {sid} cannot supply an accepted baseline for '
+                       + '; '.join(f'{", ".join(sorted(set(v)))} ({k})' for k, v in sorted(blocked.items()))
+                       + '; resolve them and evaluate again')
+            wanted = [r for r in wanted if not _blockers_for(blockers, r)]
+            if not wanted:
+                if explicit:
+                    raise ValueError(message)
+                print('Skipping: ' + message)
+                continue
             print('Skipping: ' + message)
-            continue
         recorded = (data['expectations'][sid] or {}).get('sha256')
         current = digest(files[sid]) if sid in files else None
         if current != recorded:
             raise ValueError(f'Stale expectations for {sid}: its file changed since evaluation; evaluate again')
-        matching = [r for r in rows if r['sample'] == sid and r['promotable']
-                    and (component is None or r['component'] == component)
-                    and (assertion is None or assertion in (r['id'], r['assertion']))]
         if assertion is not None and explicit:
             if mode == 'ingest' and any(r['status'] != 'unbaselined' for r in matching):
                 raise ValueError('Existing key: use promote instead of ingest')
             if mode == 'promote' and any(r['status'] == 'unbaselined' for r in matching):
                 raise ValueError('Missing key: use ingest instead of promote')
         if matching:
-            selected[sid] = [r for r in matching if r['status'] == ('unbaselined' if mode == 'ingest' else 'failed')]
+            selected[sid] = wanted
     if not selected:
         raise ValueError('No matching promotable core observations')
 

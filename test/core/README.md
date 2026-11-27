@@ -348,8 +348,8 @@ have been changed to hide these findings.
 A diagnostic evaluation of retained channels is **not a new workflow execution**
 and does not create native JUnit. Old runs without the sidecar need a new core
 execution/evaluation before manual acceptance. Missing XML is shown as missing,
-never replaced by synthetic passing XML. Ordinary toolkit ingestion remains blocked while invariant failures or incomplete
-evaluation remain. The initial baseline was authored explicitly under the user’s
+never replaced by synthetic passing XML. Ordinary toolkit ingestion of a value remains blocked while its component has an
+invariant failure, while a run-level invariant fails, or while evaluation is incomplete. The initial baseline was authored explicitly under the user’s
 validated-data authorization, retaining the original failed evidence and recording
 its integrity findings in the baseline provenance. No ingest safety checks were
 relaxed.
@@ -438,7 +438,9 @@ or removes existing values and never invents one. Both preview each value (lists
 as `+added / −removed`, fingerprints by accession), require acceptance and a
 reason, and refuse: incomplete or errored evaluations; stale assertion code or
 schema; a sample file edited since the evaluation; and
-samples with rule failures (with `--all` such samples are skipped and named).
+values whose component has a rule failure, or every value after a run-level
+rule failure (blocked values are skipped and named; it errors only when nothing
+else is left).
 Writes are atomic and update `date:`/`provenance:`. The previous file is kept
 in ignored `expected/.backups/<stem>.<timestamp>.yaml` (last three per file).
 Selenium fixtures, flag files, assertion code and the schema are never written.
@@ -541,13 +543,13 @@ The Groovy scenarios (23) use disposable synthetic files. They cover:
 - a stored value core no longer compares failing as unknown;
 - orphan or duplicate files, unknown assertions, and independent failures.
 
-The Python tests (42) cover:
+The Python tests (43) cover:
 - verdicts, the needs-attention order and rule text, possible-drift labels;
 - list and fingerprint change descriptions, a large passing run staying small,
   escaping, and portable links;
 - schema labels, and that no sample ID appears in `CoreAssertions.groovy`;
 - per-sample ingest/promote: numbering, target resolution, `a`/`q` answers,
-  per-sample freshness, blocking by rule failures, removal of absent entries,
+  per-sample freshness, blocking by rule failures (per sample and component), removal of absent entries,
   unchanged other files, backups, and quoting of fingerprints for SnakeYAML.
 The real baseline was accepted through explicit user validation, independently
 of these synthetic tests. Baseline data acceptance does not relabel failed

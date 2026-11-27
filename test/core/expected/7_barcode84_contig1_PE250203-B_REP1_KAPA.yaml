@@ -1,11 +1,11 @@
 sample_id: barcode84_contig1_PE250203-B_REP1_KAPA
-date: '2026-11-23T06:31:55.109129714Z'
+date: '2026-11-27T02:55:10.860221365Z'
 provenance:
-  source_run: /mnt/data/tests-wf-2/tests/2026-11-23_052042/tests/a6b58f1ab761dd04d3bfb3044ca4834
-  source_test: test/core/taxodactyl.workflow.nf.test
-  evaluated_at: '2026-11-23T06:31:55.109129714Z'
-  accepted_at: '2026-11-23'
-  reason: 'User explicitly instructed: I want you to use these values as baseline. These have been validated (migrated from test/core/expectations.json, task 12 Phase 5: record counts dropped, sequences fingerprinted)'
+  source_run: '45923708625'
+  source_test: test/core/taxodactyl.assertions.nf.test
+  evaluated_at: '2026-11-27T02:55:10.860221365Z'
+  accepted_at: '2026-11-27T05:21:17.182280+00:00'
+  reason: change of behavior, species assessed
 components:
 - id: blast_hits
   assertions:
@@ -520,3 +520,4 @@ components:
     - map_Chilades_pandava.png
     - map_Euchrysops_cnejus.png
     - map_Lycaenidae.png
+    - map_Lycaenidae_sp._SSG-2014a.png

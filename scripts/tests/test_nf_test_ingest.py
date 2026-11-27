@@ -86,10 +86,15 @@ class IngestTests(ToolkitCase):
                 self.accept()
             self.assertFalse(self.expected.exists())
 
-    def test_rule_failure_blocks_only_its_sample(self):
+    def test_rule_failure_blocks_only_its_sample_and_component(self):
+        # A rule failure in another component (candidates) does not block maps values.
         self.data['rows'].append(invariant(SAMPLE_B, 'C.pmi', status='failed', diagnostic='Malformed'))
         self.save()
-        with self.assertRaisesRegex(ValueError, 'Invariant failures for Scenario_04'):
+        self.assertEqual(self.accept(sample=SAMPLE_B, dry_run=True), 0)  # not refused
+        # A rule failure in the value's own component does block it.
+        self.data['rows'].append(invariant(SAMPLE_B, 'M.files', status='failed', diagnostic='Malformed'))
+        self.save()
+        with self.assertRaisesRegex(ValueError, r'Invariant failures for Scenario_04 .*maps/filenames \(M\.files\)'):
             self.accept(sample=SAMPLE_B)
         self.assertEqual(self.accept(all_samples=True), 2)   # Scenario_04 skipped, Scenario_01 written
         self.assertEqual(set(kit.sample_files(self.expected)), {SAMPLE_A})
@@ -97,6 +102,12 @@ class IngestTests(ToolkitCase):
         self.save()
         with self.assertRaisesRegex(ValueError, 'Invariant failures'):
             self.accept(sample=SAMPLE_A)
+
+    def test_rule_failure_skips_only_its_component_within_a_sample(self):
+        self.data['rows'].append(invariant(SAMPLE_A, 'M.files', status='failed'))
+        self.save()
+        self.assertEqual(self.accept(sample=SAMPLE_A), 1)    # blast_hits written, maps skipped
+        self.assertEqual(set(self.values(SAMPLE_A)), {'blast_hits/sequence_fingerprints'})
 
     def test_freshness_is_per_sample(self):
         self.seed(SAMPLE_A)

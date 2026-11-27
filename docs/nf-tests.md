@@ -397,7 +397,9 @@ To add a sample: add its row to `test/core/metadata.csv`, run core, render, then
 and rerun. Accept reviewed changes later with
 `python test/core/testkit.py promote <N|sample_id> --assertions <run>/nf-test-assertions.json`.
 Both support `--dry-run`, `--component`/`--assertion` selection and explicit
-review reasons.
+review reasons. A failed rule check blocks only values in its own component
+(e.g. a `C.pmi` failure does not block `maps/filenames`); a run-level failure
+blocks everything.
 
 Two core pipelines run side by side for now. The original snapshot test,
 `test/core/taxodactyl.workflow.nf.test`, runs in `.github/workflows/nf-test.yml`
