@@ -44,7 +44,10 @@ mutually-exclusive search branches selected whole-run by `--db_type`
 (rule 3, [CONSTITUTION.md](../CONSTITUTION.md)) — BLAST (`BLAST_BLASTN` →
 `EXTRACT_HITS` → `BLAST_BLASTDBCMD` → `EXTRACT_TAXONOMY`, 4 processes) or
 BOLD (`BOLD_SEARCH`, 1 process doing search + taxonomy together) — plus
-REPORT-side value channels. Every point where the two branches diverge is
+REPORT-side value channels. Database coverage mode has the same shape
+with fewer steps: `VALIDATE_COVERAGE_TAXA` once, `EVALUATE_DATABASE_COVERAGE`
+per taxon, then `REPORT_COVERAGE` once over all taxa
+([nextflow/workflow.md §6](nextflow/workflow.md)). Every point where the two branches diverge is
 consolidated in [python/blast-vs-bold.md](python/blast-vs-bold.md); as of
 this spec the BOLD branch cannot currently complete a run (`NF-D-002`).
 

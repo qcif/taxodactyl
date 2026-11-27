@@ -14,20 +14,19 @@ non-negotiable principles this spec and every future change are held to.
 
 ## Version
 
-This spec describes `main` at commit **`3339050`** (2026-10-21) — **not**
-a clean checkout of the `v1.5.0` tag (`640df66`, 2026-07-10). That commit
-is `v1.5.0` plus 27 further commits already merged to `main`. Its version
+This spec describes `main` at commit **`59d0e12`** (2026-11-26) — **not**
+a clean checkout of the `v1.5.0` tag (`640df66`, 2026-07-10). Its version
 files read `1.5.1`, but no `v1.5.1` git tag or `v1.5.1` container image
-exists yet (`DEP-D-013`):
+exists yet; between releases the pipeline runs the moving
+`neoformit/taxodactyl:main` image (`DEP-011`, `DEP-D-014`).
 
 ```
-git log --oneline v1.5.0..3339050
+git log --oneline v1.5.0..59d0e12
 ```
 
 It was derived in steps. The bulk was derived from `edaacae`
-(2026-09-01, `v1.5.0` + 20 commits). It was then brought forward to
-`3339050` by reviewing the seven commits in between and updating every
-spec file they touch:
+(2026-09-01, `v1.5.0` + 20 commits) and brought forward to `3339050`
+(2026-10-21) by reviewing the seven commits in between:
 
 | Commit | Change | Spec updated |
 |---|---|---|
@@ -39,14 +38,24 @@ spec file they touch:
 | `2e024f6` | `ß-tub` locus key corrected to `β-tub` | [contracts/loci.md](contracts/loci.md) |
 | `3339050` | Metadata CSV encoding repair and `ß` auto-correction (#326, #327); nf-schema no longer reads the CSV; `cloudgene.yml` removed; version bumped to `1.5.1` | [python/p0-validation.md](python/p0-validation.md), [contracts/inputs.md](contracts/inputs.md), [services/input-validation.md](services/input-validation.md), [deployment.md](deployment.md), [nextflow/workflow.md](nextflow/workflow.md) |
 
-Where this spec quotes `v1.5.0` as a **container tag**, that is what
-`conf/process.config` and `conf/azure.config` still pin at `3339050`.
+The spec was committed at `7aedd0b` (2026-11-13). Since then, task PRs
+have updated the spec in the same commit as the code (spec-driven
+development). The commits below changed behaviour without updating the
+spec at the time; the spec was brought forward to `59d0e12` for them in
+one pass, by reviewing every non-task commit in `7aedd0b..59d0e12`:
+
+| Commit | Change | Spec updated |
+|---|---|---|
+| `48dc4e8`, `954d470` | `build-main.yml` pushes `neoformit/taxodactyl:main`; configs reference `:main` between releases | [deployment.md](deployment.md) DEP-011, DEP-024, `DEP-D-014`; [containers.md](containers.md); `DEP-D-013` removed |
+| `ef96c8f` | Database coverage mode, `--coverage_taxa` (#323); locus `' gene'` suffix resolved | [nextflow/workflow.md §6](nextflow/workflow.md), [nextflow/processes.md §2a, §13, §14a](nextflow/processes.md), [nextflow/params.md](nextflow/params.md), [nextflow/config-profiles.md](nextflow/config-profiles.md), [python/p0-validation.md §5a](python/p0-validation.md), [python/p5-db-coverage.md §2.1](python/p5-db-coverage.md), [python/p6-report.md §1a](python/p6-report.md), [python/modules/config.md](python/modules/config.md), [python/modules/flags.md](python/modules/flags.md), [contracts/inputs.md §4](contracts/inputs.md), [contracts/outputs.md](contracts/outputs.md), [contracts/query-folder.md](contracts/query-folder.md), [overview.md](overview.md), [architecture.md](architecture.md), [tests.md](tests.md); `P5-D-006`, `CFG-D-003` removed; `NF-D-021` added |
+| `39777ff` … `f778535` | nf-test CI moved to the self-hosted runner, called by `build-pr.yml` for every PR (with a PR-built image), weekly; run files kept on the runner | [tests.md](tests.md) TST-024, `TST-D-001` rewritten, `TST-D-002` added; [deployment.md](deployment.md) DEP-025; [decisions.md](decisions.md) D-41 |
+| `9da958a` | `TAXODACTYL_IMAGE` overrides the analysis image | already in [nextflow/config-profiles.md](nextflow/config-profiles.md); [deployment.md](deployment.md) DEP-026 |
+| `fa8ad21` | Root `testkit.py` symlink removed | [tests.md](tests.md) |
+
 Where it says "the spec version" or quotes footer provenance, it means
-**this commit**, not the `v1.5.0` tag. If you check out the `v1.5.0` tag
-itself to verify a requirement against source, expect it to be missing
-the 27 commits above — that is not a spec error. `main` will advance further; re-verify
-against current `main` before trusting this spec on anything newer
-commits may have touched.
+**this commit**, not the `v1.5.0` tag. `main` will advance further;
+re-verify against current `main` before trusting this spec on anything
+newer commits may have touched.
 
 Use this spec for spec-driven development: change the spec first, then
 the code; cite requirement IDs (e.g. `NF-WF-061`) in tasks, commits and

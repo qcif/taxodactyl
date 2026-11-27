@@ -13,7 +13,7 @@ example workflow report
 [here](https://qcif.github.io/taxodactyl/example_report.html).
 
 A user guide for each module is listed below. Examples of running
-each script can be found in the [.vscode/launch.json](.vscode/launch.json) file,
+each script can be found in the [.vscode/launch.json](../.vscode/launch.json) file,
 which shows CLI arguments and environment variables for each script.
 
 # Table of Contents
@@ -101,7 +101,7 @@ it was more painful to get going.
 # Building a Docker image
 
 > [!NOTE]
-> The GitHub repo [qcif/taxodactyl](https://github.com/qcif/taxodactyl) has a GitHub workflow that automates the build/push of Docker images when a [release](https://github.com/qcif/taxodactyl/releases) is made. This is the preferred method of generating images as it removes human error.
+> The GitHub repo [qcif/taxodactyl](https://github.com/qcif/taxodactyl) has GitHub workflows that build and push Docker images: `build.yml` pushes `v<version>` and `latest` when a [release](https://github.com/qcif/taxodactyl/releases) is made, `build-main.yml` pushes `main` when the Python scripts change on `main`, and `build-pr.yml` pushes `<branch>` for a pull request that changes them (deleted when the PR closes). This is the preferred method of generating images as it removes human error.
 
 > [!NOTE]
 > Make sure you update the VERSION file before publishing a new version!
@@ -267,7 +267,7 @@ have erroneous content, this will raise an exception with an error message that
 should be sufficient for the user to understand what's wrong with their input
 data.
 
-See [config.INPUTS](./src/utils/config.py#L113)
+See `InputsConfig` in [schema.py](./src/utils/config/schema.py)
 for some parameters which are used for validation, such as permitted FASTA
 sequence lengths and required metadata.csv fields.
 
@@ -688,12 +688,9 @@ This will prompt the github.io docs pages to rebuild, which takes 2-3 minutes.
 
 # Version release
 
-There (annoyingly) are 4 places where the version must be updated:
+There (annoyingly) are 5 places where the version must be updated:
 
 ```
-# cloudgene.yml
-version: 1.3.3
-
 # conf/manifest.config
     version         = '1.3.3'
 
@@ -702,7 +699,15 @@ version: 1.3.3
 
 # scripts/pyproject.toml
 version = "1.3.3"
+
+# conf/process.config and conf/azure.config: the neoformit/taxodactyl image
+# tag, which is `main` between releases
+?: 'docker.io/neoformit/taxodactyl:v1.3.3'
 ```
+
+The Cloudgene workflow file (`cloudgene.yml`) lives in the `daff-cloudgene`
+repository, not here. See `.github/release_template.md` for the full release
+checklist.
 
 Then you can create a branch like `release_1.3.3`, and create GitHub release v1.3.3 with `release_1.3.3` as the target.
 The docker image (for python scripts) will be built on version release. If you need to make a pre-release to obtain a build, you should make a pre-release version like `1.3.3-dev` before releasing `1.3.3`.
@@ -713,7 +718,7 @@ The docker image (for python scripts) will be built on version release. If you n
 
 ## Application configuration
 
-The application uses a flexible YAML-based configuration system with Pydantic validation. Configuration is defined in [config_schema.py](./src/utils/config_schema.py) and loaded via the [config.py](./src/utils/config.py) module, which provides a singleton Config object for runtime access.
+The application uses a flexible YAML-based configuration system with Pydantic validation. Configuration is defined in [schema.py](./src/utils/config/schema.py) and loaded via the [config.py](./src/utils/config/config.py) module, which provides a singleton Config object for runtime access.
 
 ```py
 from src.utils.config import Config
@@ -732,7 +737,7 @@ When modifying the Pydantic configuration schema, you **must** regenerate the de
 python dev/generate_default_config.py
 ```
 
-This ensures `config/default.yml` stays synchronized with the schema defined in `config_schema.py`. This step is critical for maintaining consistency between the code and configuration files.
+This ensures `config/default.yml` stays synchronized with the schema defined in `src/utils/config/schema.py`. This step is critical for maintaining consistency between the code and configuration files.
 
 
 ## Handling errors

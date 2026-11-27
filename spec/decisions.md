@@ -60,8 +60,8 @@ spec in the same change.
 | # | Question | Affects | Status | GitHub issue | Origin |
 |---|---|---|---|---|---|
 | D-40 | Make `default.yml` the single source and generate the schema (or vice versa); remove hard-coded names from Nextflow. | CFG-D-001, FN-002 | open | — | v1 |
-| D-41 | Add `stub:` blocks and a stub-run CI job; add nf-test with a mocked API layer to CI. Partly started: `nf-test.yml` (TST-024) now runs the `core` scenario plus flag and Selenium checks on a GitHub runner, but only on manual dispatch and against live APIs. Open: whether to enable its push/PR triggers, and whether to mock the APIs so it can. | NF-PR-008, TST-G-005, TST-003, TST-024 | open | — | v1 |
-| D-42 | Image: pin base/taxonkit, drop `latest`, add HMMER (or not), single release-consistency check for all five version locations (the `1.5.1` bump already drifted, `DEP-D-013`). | IMG-D-001, DEP-D-001..003, DEP-D-013 | open | — | v1 |
+| D-41 | Add `stub:` blocks and a stub-run CI job; add nf-test with a mocked API layer to CI. Partly done: `nf-test.yml` (TST-024) runs the `core` scenario plus flag and Selenium checks on the self-hosted runner for every PR to `main`, weekly and on demand, against live APIs. Open: whether to mock or cache the APIs so results stop drifting (task 14 plans a response cache), and whether to add `stub:` blocks and the `test/coverage` scenario to CI. | NF-PR-008, TST-G-005, TST-003, TST-024, TST-025 | open | — | v1 |
+| D-42 | Image: pin base/taxonkit, drop `latest`, add HMMER (or not), single release-consistency check for all five version locations, and whether `main` should keep running the moving `:main` image (`DEP-D-014`). | IMG-D-001, DEP-D-001..003, DEP-D-014 | open | — | v1 |
 | D-43 | Replace placeholder `1MB` memory defaults with real limits. | NF-D-011 | open | — | v1 |
 | D-44 | Move Azure tenancy values out of the repo (overlay config). | DEP-D-006 | open | — | v1 |
 | D-45 | Guard/replace the `429` string test in the retry policy. | THR-D-002 | open | — | v1 |

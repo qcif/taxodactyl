@@ -38,7 +38,7 @@ Level → Bootstrap class: 0 secondary, 1 success, 2 warning, ≥3 danger.
 | FLG-010 | Merge all `*.flag` files in the query dir into `{flag_id: Flag}` (no target) or `{flag_id: {target_type: {target: Flag}}}` (target with type) or `{flag_id: {target: Flag}}` (target, no type). Malformed files are skipped with a warning. |
 | FLG-011 | Every `5.x` entry MUST have all three target types present (empty dicts added). |
 | FLG-012 | If no Flag 4 was written, `flags['4'] = None` ("P4 not run"). |
-| FLG-013 | Summary Flag 5 per `(target_type, target)`: among 5.1/5.2/5.3 take the highest level, or the lowest if any is level 0; if the chosen level is < 2 and the query has no locus, use `5B` instead. A `5NA` "null" fallback is always present per target type. |
+| FLG-013 | Summary Flag 5 per `(target_type, target)`: among 5.1/5.2/5.3 take the highest level, or the lowest if any is level 0; if the chosen level is < 2 and the query has no locus, use `5B` instead, unless the chosen flag is `ERR` (coverage was not assessed) or all three are `NA` (not assessed by design, P5-015). A `5NA` "null" fallback is always present per target type. |
 | FLG-014 | `explanation`/`outcome` text comes from `flags.csv`; if the query has no locus, the phrases " given locus for this", " at the given locus", " for this locus" are removed. |
 
 ## 5. Defects

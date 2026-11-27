@@ -50,9 +50,18 @@ step 4–8 affects only that one query's report
 ([architecture.md §3](architecture.md),
 [nextflow/error-handling.md](nextflow/error-handling.md)).
 
+**Database coverage mode** (`--coverage_taxa`, since `ef96c8f`) skips the
+sequence analysis entirely. Given a CSV of target taxa (each with a locus
+and optionally a country and classification) instead of sequences, it
+validates the list, runs step 7 for each taxon in parallel, and renders one
+report for the whole run
+([nextflow/workflow.md §6](nextflow/workflow.md)). It answers "how well is
+this taxon represented in the reference database?" before any sample
+arrives.
+
 ## 3. Scope
 
-**In scope:** the eight steps above; deployment on local, HPC (shared
+**In scope:** the eight steps above, and database coverage mode; deployment on local, HPC (shared
 filesystem) and Azure Batch; an optional web validator for input files.
 
 **Out of scope:** sequence generation/assembly; automatic final

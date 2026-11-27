@@ -142,13 +142,21 @@ Grep the run for the sample ID or the error message to find the task's
 - Things a merged fix changed on purpose. Name the commit or PR.
 
 **Known issue** (cite the issue, don't re-raise it). Check what's still
-open with `gh issue list --search "<keyword>"` and `gh issue view <n>`.
-Examples from Nov 2026:
-- #353: targets missing from COL (unclassified-virus placeholders, and also
-  virus common names such as "Apple hammerhead viroid") are dropped, so
-  5.1–5.3 have no data.
-- #351: ties between duplicate COL genus records (e.g. *Drosophila*) give
-  intermittent 5.2 ERR.
+open with `gh issue list --search "<keyword>"` and `gh issue view <n>`, and
+the out-of-scope items in `tasks/todo.md`.
+
+**Fixed issues that cause expected drift** when a fixture predates the fix
+(classify as an improvement, citing the fix):
+- #353 (task 09): targets missing from COL (unclassified-virus placeholders,
+  virus common names such as "Apple hammerhead viroid") are now assessed
+  through their NCBI taxid instead of being dropped.
+- #351 (task 08): ties between duplicate COL records with the same name
+  (e.g. *Drosophila*) are broken deterministically, so the intermittent 5.2
+  ERR is gone.
+- #354 (task 07): kingdom- or domain-level targets report 5.1–5.3 as NA
+  (not assessed) instead of ERR.
+- Task 11: near-miss COL names and duplicate genera (e.g. *Vitivirus*) now
+  resolve to the right genus, changing related-species sets.
 
 **Rig/fixture problem**: `[CONTROL]` drifts and collector exceptions. Give
 the file and line in `test/selenium/lib/` and a suggested fix.
