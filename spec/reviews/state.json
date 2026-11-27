@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "bootstrap_base_commit": "33390508f7d3f27d88b3c7decc481cedb65fc127",
+  "bootstrap_source": "spec/README.md Version: declared specification baseline; not a completed incremental review",
+  "last_reviewed_commit": null,
+  "last_completed_report": null,
+  "last_completed_at": null,
+  "last_attempt_report": "spec/reviews/2026-11-23-7b7f33037804.md",
+  "pending_reports": [
+    "spec/reviews/2026-11-23-7b7f33037804.md"
+  ]
+}
