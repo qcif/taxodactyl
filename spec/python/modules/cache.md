@@ -39,7 +39,7 @@ processes, queries and runs.
 |---|---|---|
 | CCH-D-001 | Low | CCH-002 keys objects by class only; two calls differing only in an object argument share a cache entry. Current callers pass strings/dicts, so latent. |
 | CCH-D-002 | Low (security) | Values are unpickled from shared storage (Azure container, shared temp dir): anyone able to write there can execute code in analysis tasks. |
-| CCH-D-003 | Low | Transient empty API responses are cached for 7 days. |
+| CCH-D-003 | Low | Transient empty API responses are cached for 7 days. In the nf-test API-cache fixture (TST-024), a cached transient empty response stays until the next fixture version. |
 | CCH-D-004 | Low | `fcntl` makes the package Linux/macOS-only. |
 
 ---

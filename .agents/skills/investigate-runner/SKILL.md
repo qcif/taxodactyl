@@ -1,6 +1,6 @@
 ---
 name: "investigate-runner"
-description: "Investigate nf-test failures on the self-hosted runner (`ssh daff-runner`, `/var/runner/<timestamp>/`): find the failing sample or task, read its logs and error files, and trace the cause in the local codebase."
+description: "Investigate nf-test failures on the self-hosted runner (`ssh daff-runner`, `/var/runner/<run_id>-<attempt>/`): find the failing sample or task, read its logs and error files, and trace the cause in the local codebase."
 metadata:
   author: "neoformit"
 ---
@@ -10,13 +10,17 @@ metadata:
 
 We run NF-test as a GitHub action on a self-hosted runner. It can be reached
 with `ssh daff-runner`. Each run writes its output to
-`/var/runner/yyyy-mm-dd_HHMMSS/`.
+`/var/runner/<run_id>-<attempt>/`: the GitHub Actions run ID (the number in
+the run's URL) and attempt. For a PR run, the ID is that of the calling
+`build-pr` run. Older runs are named `yyyy-mm-dd_HHMMSS` or
+`<run_number>-<attempt>`.
 
 Before starting, test `ssh daff-runner`. If it doesn't work - let the user know
 they need to create an SSH config for this in order to use this skill.
 
-If the user doesn't give a run path, list `/var/runner/` and confirm with the
-user which run they mean (usually the latest).
+If the user doesn't give a run path, list `/var/runner/` newest first
+(`ls -lt /var/runner/`), check `run_info.txt` (branch, run URL), and confirm
+with the user which run they mean (usually the latest).
 
 ## Read-only access
 
@@ -27,11 +31,19 @@ change permissions, or run Nextflow, nf-test or pipeline scripts there.
 ## Run directory layout
 
 - Run root - start here for an overview of failures:
-  - `run_info.txt` - branch, commit SHAs and GitHub Actions run URL
+  - `run_info.txt` - event, branch, commit SHAs, GitHub Actions run URL,
+    image, and API-cache mode (`api_cache: cached|live`) and fixture version
   - `nf-test_errors_summary.csv`, `nf-test_errors.txt`,
     `nf-test_errors.csv`, `nf-test_results.txt`
-  - `flags_errors.txt`, `flags_results.txt`
-  - `reports/` - final HTML reports per sample
+  - `flags_errors.txt`, `flags_results.txt`; `flags/evaluated/` holds the
+    flags collected from the run
+  - `collected_errors/` - links to the work dirs of failed or drifting tasks
+  - `review.html` - the Selenium review page
+  - `reports.zip` - final HTML reports per sample
+  - `api_cache/cache_db.sqlite` - the GBIF/NCBI API cache at the end of the
+    run. Its values are Python pickles: inspect it with `sqlite3` only and
+    never unpickle it. In a cached run, rows added beyond the fixture are
+    cache misses (also reported by the "Report API cache" step).
 - `tests/<hash>/output/query_NNN_<sample>/` - published output for each query.
 - `tests/<hash>/work/xx/<task-hash>/` - Nextflow work directories. A failing
   task's work dir contains:

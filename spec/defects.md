@@ -37,7 +37,7 @@ linked issue keep the record.
 | Severity | Count |
 |---|---|
 | High | 17 |
-| Medium | 68 |
+| Medium | 67 |
 | Low | 64 |
 
 ## High
@@ -133,7 +133,6 @@ linked issue keep the record.
 | TST-G-008 | testing | The input-validation web service (`services/`) has no tests of its own. | [tests.md](tests.md) | — | v1 |
 | TST-G-009 | testing | `nf-test` snapshots embed file hashes of content derived from live GBIF/NCBI data, so they drift whenever that upstream data changes, and nothing tells real drift apart from a genuine regression. Selenium now tolerates ±10% on GenBank counts (TST-033) and the manual CI workflow runs the flag comparison (`bin/test_flags.py`) automatically, but neither helps the snapshots. | [tests.md](tests.md) | — | v1 |
 | TST-G-010 | testing | `bin/test_flags.py` is documented (`docs/nf-tests.md`) as living in `test/`; it actually lives in `bin/`, which Nextflow auto-adds to every task's `PATH` — a location mismatch with a real side effect, not just stale docs. The other CI-only helpers kept there (`collect_artifacts.py`, `diff_json_snapshot_to_csv.py`, `collect_flags.sh`) are on every task's `PATH` too. | [tests.md](tests.md) | — | v1 |
-| TST-D-001 | testing / security (*to confirm*) | The manual nf-test CI workflow (`nf-test.yml`) injects the `NCBI_API_KEY` secret into the run, then uploads whole work directories of failed or drifting tasks as the public `error_workdirs` artifact (`bin/collect_artifacts.py`, `shutil.copytree`, hidden files included). Those directories hold the key in plain text — in the task wrapper files Nextflow writes the `env` scope into, and, for `REPORT`, in the report and `report_context.json` (`P6-D-001`, `P6-D-003`). GitHub masks secrets only in logs, not in artifacts, and the repo is public. *To confirm* by inspecting a downloaded artifact. | [tests.md §4a](tests.md) | [`#339`](https://github.com/qcif/taxodactyl/issues/339) | `a24581f` |
 
 ## Low
 
