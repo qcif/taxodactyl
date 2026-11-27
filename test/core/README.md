@@ -442,13 +442,24 @@ From top to bottom:
 - **Run health:** status of the workflow, the evaluation, the JUnit XML and the
   expectation files.
 - **Needs attention:** one row per problem, most serious first, each linked to
-  its sample. Changed values are grouped per sample and area.
+  its sample. Changed values are grouped per sample and area. The **Comment**
+  box next to "What went wrong" is for your notes (cause, ticket, "promote after
+  checking GenBank"). It saves as you type, in this browser, for this run only.
+  Use **Export comments** to keep them as a JSON file or share them, and
+  **Import comments** to load a file, for example last run's notes into this
+  run's page (they attach to the same sample and check). Comments never change
+  results or stored values.
 - **Failure analysis:** the same problems grouped across samples, such as
   "possible drift in Maps". This helps spot one cause behind many rows.
 - **Samples × checks:** a grid of ✔ passed, ✖ failed and ? needs baseline.
 - **Sample details:** for problem samples only. Each row has Check, Expected,
   Actual and Next step, links to the files that were read, and a ready-to-copy
   `promote` or `ingest` command.
+- **All checks:** every check in the run, passed ones included, one collapsed
+  block per sample, in the same Check / Expected / Actual / Next step table as
+  "Sample details". For a passed rule check, Expected is the rule in plain words
+  and Actual says the rule held (the evidence keeps no value for passed rules).
+  For a stored value, both the stored and the produced value are shown.
 - **Reference (collapsed):** commands; "What this test checks" (every check in
   plain words, from `schema.yaml`); a legend of channel letters; nf-test's own
   messages.

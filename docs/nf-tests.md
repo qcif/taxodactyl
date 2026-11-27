@@ -377,7 +377,12 @@ Expected values are stored per sample in `test/core/expected/<N>_<sample_id>.yam
 `test/core/schema.yaml`. The review page opens with a verdict and a "Needs
 attention" table, a failure-analysis table grouping the same problems across
 samples by kind and area (e.g. possible drift in Database coverage), then a sample × check
-matrix and cards only for samples with problems.
+matrix and cards only for samples with problems. Each "Needs attention" row has
+a comment box next to "What went wrong"; comments are saved in your browser for
+that run, and "Export comments" / "Import comments" keep them as a JSON file (for
+example to carry notes to the next run). An "All checks" section lists every
+check of the run per sample, passed ones included, in the same table as the
+sample cards.
 
 "Rule failed" and "possible drift" are suggestions, not diagnoses. A failed rule
 check (structure, routing, valid values) is labelled a rule failure and probably
