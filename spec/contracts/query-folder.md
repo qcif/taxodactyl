@@ -2,7 +2,11 @@
 
 The unit of work in Taxodactyl is the **query folder**
 `query_<NNN>_<sample_id>` (NNN = 1-based position in `sequences.fasta`,
-zero-padded to 3; CFG-024). Nextflow keys every channel by this name; the
+zero-padded to 3; CFG-024). In database coverage mode NNN is the row's
+position in the validated `coverage.csv` and the sample id is the coverage
+sample id, `<taxon>_<8-hex hash>` (CFG-038); P0 creates the folder with
+only `query_title.txt` (P0-064), P5 adds its files, and the folder travels
+to `REPORT_COVERAGE` as a `.tar.gz` (NF-PR-112). Nextflow keys every channel by this name; the
 Python entrypoints read and write files inside it. This file is the
 producer/consumer matrix; formats are in the sibling contracts.
 

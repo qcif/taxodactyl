@@ -65,11 +65,31 @@ readers (`Config.metadata`, P0 itself) open the file explicitly as UTF-8.
 
 See [../nextflow/params.md](../nextflow/params.md).
 
+## 4. Coverage taxa CSV (database coverage mode)
+
+Given with `--coverage_taxa` instead of `--metadata`/`--sequences`
+(NF-WF-013). One row per target taxon; validated by
+[P0 §5a](../python/p0-validation.md). Header names come from
+`inputs.coverage_csv_header` (CFG §3.3).
+
+| Column | Required | Rule |
+|---|---|---|
+| `taxon` | yes, non-blank | one taxonomic name; letters and spaces (as `taxa_of_interest`, P0-023), no `\|` |
+| `locus` | yes, non-blank unless BOLD | an allowed locus or synonym (P0-021); `NA` counts all records with no locus restriction (P5-032) |
+| `country` | no | as `metadata.csv` (P0-024) |
+| `classification` | no | as `metadata.csv` (P0-027) |
+
+Other columns are ignored and not carried to `coverage.csv`. The file must
+be UTF-8 (BOM allowed); unlike `metadata.csv`, other encodings are
+rejected, not repaired (P0-060). Duplicate rows, by analysis inputs rather
+than spelling (CFG-038), are dropped (P0-062). At most 100 rows after
+de-duplication (P0-063). A worked example is `test/coverage_example.csv`.
+
 ---
 
 ## Provenance
 
-**Initially derived from:** `assets/schema_input.json`, `nextflow_schema.json`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source. §1 rewritten for `3339050` (nf-schema no longer reads the CSV; encoding repair). See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `assets/schema_input.json`, `nextflow_schema.json`, [p0-validation.md](../python/p0-validation.md) §4, [services/input-validation.md](../services/input-validation.md) — each already derived from source. §1 rewritten for `3339050` (nf-schema no longer reads the CSV; encoding repair). §4 added from `ef96c8f` (#323). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

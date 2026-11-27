@@ -28,7 +28,8 @@ occurrence map per target.
 | Arg | Maps to (default) |
 |---|---|
 | `query_dir` (positional, required) | |
-| `--query-fasta`, `--metadata-csv` (required) | config |
+| `--query-fasta`, `--metadata-csv` (both required unless `--coverage-taxa`) | config |
+| `--coverage-taxa` (database coverage mode; not with the two above) | `inputs.coverage_taxa_csv` (CFG-037) |
 | `--output-dir` | no (default `config.output_dir`) |
 | `--temp-root`, `--temp-dir-name` | config |
 | `--bold` | use BOLD record counts instead of GenBank |
@@ -53,6 +54,15 @@ through `pygbif` — plus NCBI Entrez esearch, BOLD stats API (BOLD mode),
 `taxonkit name2taxid`.
 **Exit:** 0 even when some targets failed; a summary line is written to
 stderr when any lower-rank target has a missing result.
+
+### 2.1 Database coverage mode
+
+| ID | Requirement |
+|---|---|
+| P5-080 | Exactly one of `--coverage-taxa`, or both `--metadata-csv` and `--query-fasta`, MUST be given; any other combination is an argparse error. |
+| P5-081 | In database coverage mode the only target is the PMI, which is the row's taxon (CFG-037): there are no candidates (no `candidates.json` is read) and no TOIs. Locus, country and classification come from the same row. |
+| P5-082 | In database coverage mode an exception escaping `assess_coverage` MUST NOT fail the task: `failed_coverage` writes a `DB_COVERAGE` error naming the taxon and the exception (`context.target` = taxon), sets 5.1–5.3 to `ERR` for the PMI and writes a `db_coverage.json` whose PMI entry has `target`, `related` and `country` all `null`; the stderr summary line is written. In sequence mode such an exception still fails the task. |
+| P5-083 | `ncbi_urls.<target>.blast` MUST be `null` in database coverage mode: there is no query sequence to build a BLAST link from. |
 
 ## 3. Targets
 
@@ -223,7 +233,6 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 | P5-D-003 | Medium | `db_cov_country_missing_a` is accepted everywhere (Nextflow, CLI, config) but never used: 5.3 becomes `B` as soon as one in-country species is unrepresented. |
 | P5-D-004 | Medium | In-country paging advances the *occurrence* `offset` instead of the facet offset, so the facet list never shrinks; for a genus with ≥ `gbif_limit_records` (500) species in one country (e.g. *Eucalyptus* in AU) the loop never ends until the task times out. |
 | P5-D-005 | Medium | A failed per-species count in 5.2 is recorded as 0 (unrepresented), lowering the 5.2/5.3 grade instead of yielding `ERR`. |
-| P5-D-006 | Medium | A locus value ending in ` gene` (accepted by P0) makes `get_locus_for_query` return a `str` (CFG-D-003); `fetch_gb_records` then fails for every target ⇒ every 5.x flag is `ERR`. |
 | P5-D-008 | Low | TOI truncation message computes excluded TOIs after truncating, so it always lists none. |
 | P5-D-009 | Low | Ranks such as subspecies, subgenus, tribe, subfamily are rejected (`RANK` has no entry), so such targets always hit P5-012; COL adds more such ranks, still mapped to `NONE`. |
 | P5-D-014 | Low (*to confirm*) | Classification filtering now relies on `higherTaxonKey` on the suggest call (P5-010), but a `SYNONYM` suggestion is then replaced by its accepted record through a `name_usage` lookup that has no classification restriction. If the accepted name sits outside the classification, it is used anyway. The refactor's own task note (`scripts/tasks/01-gbif-api-refactor.md`, task B.3) flags this as possible "in theory" and leaves it open. |
@@ -243,6 +252,8 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 - `tests/test_gbif.py::TestBreakTie` / `TestDuplicateNameTieBreak`: most descendants wins a same-name tie ahead of the other signals; enrichment copies `numDescendants`; the tie-break message gives descendant counts (P5-011, P5-013).
 - `tests/test_gbif.py::test_not_found_message_mentions_col`: the `GBIFRecordNotFound` wording (P5-012).
 - `tests/test_flags_coverage.py`: summary Flag 5 roll-up, including all-`NA` targets staying `NA` without a locus (§5.4).
+- `tests/test_coverage_failure.py`: an unexpected failure is logged with ERR outputs and shown in the report, and a task killed before any output still gets a report row (P5-082, P6-050).
+- `tests/integration/test_integration_coverage.py`: database coverage mode end to end from a coverage CSV (live, manual).
 - `tests/test_report_coverage.py::ReportRootTaxonTestCase`: the coverage-mode report shows the `not_assessed` message and an NA badge, without the generic error text (P5-015).
 - `tests/test_genbank.py`: `fetch_gb_records` count/ids (P5-030).
 - `tests/integration/` + `testkit.py`: live end-to-end comparison of `db_coverage.json` against reviewed fixtures (manual).
@@ -260,7 +271,7 @@ failures), `DB_COVERAGE_NO_GBIF_RECORD`, `DB_COVERAGE_TAXONKIT_ERROR`,
 
 ## Provenance
 
-**Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. Brought forward to `2e024f6` from the diffs of `2decc0c` (`src/gbif/api.py` new; `relatives.py`, `maps.py`, `taxonomy.py`, `coverage/assess.py`, `config.py`; `tests/test_gbif.py`; `scripts/tasks/01-gbif-api-refactor.md`) and `cd6e10d`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `p5_db_coverage.py` (153), `src/coverage/assess.py` (429), `targets.py` (215), `threads.py` (186), `fetch.py` (169), `src/gbif/relatives.py` (378), `src/gbif/maps.py` (139), `src/entrez/genbank.py` (`fetch_gb_records`), `src/bold/stats.py`, `src/taxonomy/extract.py` (`taxids`), `src/utils/flags.py`. Brought forward to `2e024f6` from the diffs of `2decc0c` (`src/gbif/api.py` new; `relatives.py`, `maps.py`, `taxonomy.py`, `coverage/assess.py`, `config.py`; `tests/test_gbif.py`; `scripts/tasks/01-gbif-api-refactor.md`) and `cd6e10d`. §2.1 added from `ef96c8f` (#323, database coverage mode). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

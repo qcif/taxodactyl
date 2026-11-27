@@ -10,4 +10,4 @@ When I ask you to run integration tests, you can find instructions for doing so 
 
 For interacting with Azure, please `source deployment/azure/batch-helpers.sh` and reference the docs in docs/azure.
 
-If you edit nextflow code (*.nf) you should lint it with `nexflow lint <file>`.
+If you edit nextflow code (*.nf) you should lint it with `nextflow lint <file>`.

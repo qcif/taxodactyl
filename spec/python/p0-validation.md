@@ -1,7 +1,9 @@
-# Spec: P0 input validation (`scripts/p0_validation.py`)
+# Spec: P0 input validation (`scripts/p0_validation.py`, `scripts/p0_validation_coverage.py`)
 
 **Called by:** Nextflow `VALIDATE_INPUT` ([../nextflow/processes.md §2](../nextflow/processes.md));
-`services/input_validation/api` (programmatic `validate_inputs()`).
+`services/input_validation/api` (programmatic `validate_inputs()`). In
+database coverage mode, `VALIDATE_COVERAGE_TAXA` runs
+`p0_validation_coverage.py` instead (§5a).
 **Depends on:** [modules/config.md](modules/config.md).
 
 ---
@@ -185,6 +187,23 @@ then `>S1` (ITS sequence) become `S1_COI` and `S1_ITS` in both files. Rows
 `S1,COI,…` and `S1,COX1,…` are rejected: "Sample ID "S1" is repeated at the
 same locus ("COI" and "COX1" are synonyms) in rows 1 and 2 …".
 
+## 5a. Database coverage mode (`p0_validation_coverage.py`)
+
+Validates the coverage taxa CSV ([../contracts/inputs.md §4](../contracts/inputs.md))
+and creates one query folder per taxon. CLI: `--output-dir`,
+`--coverage-taxa` (required), `--taxdb-dir` (required), `--bold`,
+`--allowed-loci-file`. It reuses the field validators of §4.3 and the
+taxdb check of §4.4.
+
+| ID | Requirement |
+|---|---|
+| P0-060 | The CSV MUST be read as UTF-8 (a BOM is allowed). A file that is not valid UTF-8 or not parsable CSV MUST raise `MetadataFormatError("could not read CSV file …")`; the encoding repair of §5.1 does not run. The `taxon` and `locus` columns MUST be present, and there MUST be at least one data row. Values are stripped. |
+| P0-061 | Each row MUST pass, else `MetadataFormatError("Error in row <n> (taxon: <taxon>): …")` with the 1-based data row number: `taxon` non-blank, without `\|` (one taxon per row) and matching the `taxa_of_interest` rule (P0-023); `locus` non-blank unless `--bold` (the message tells the user to enter `NA` for whole-genome records) and valid per P0-021; `country` per P0-024; `classification` per P0-027. |
+| P0-062 | Rows with the same coverage sample id (CFG-038) are duplicates: the first is kept, and each later one is dropped with a warning naming both row numbers, logged and written as a run-level `DB_COVERAGE` error file. (That error file does not reach the report: `NF-D-021`.) Rows for the same taxon that differ in locus, country or classification are kept. |
+| P0-063 | After de-duplication, more than `coverage_taxa_max` (100) rows MUST raise `MetadataFormatError("too many taxa provided …")`. |
+| P0-064 | On success MUST write `<output_dir>/coverage.csv` with header `taxon,locus,country,classification` and the kept rows' stripped values, then create `query_<i+1>_<coverage sample id>/query_title.txt` containing the taxon for each kept row `i`, indexed by its row in the validated CSV. |
+| P0-065 | It MUST check the taxdb (P0-030, P0-031) before reading the CSV. |
+
 ## 6. Errors and exit
 
 All failures are Python exceptions (`FASTAFormatError`,
@@ -241,6 +260,13 @@ through `_autofix_metadata_encoding` directly), every defect above. The unused f
 `metadata_sequences_max_length.csv` suggests P0-D-002 was intended to be
 tested.
 
+`tests/test_validation_coverage.py` covers §5a: valid fixture, outputs
+and query folders (P0-064), duplicates dropped with an error file and
+different-locus rows kept (P0-062), empty CSV, missing and optional
+columns, blank taxon, bad characters, bad locus/country/classification,
+blank locus (P0-060, P0-061), row number in messages, and the limit
+applied after de-duplication (P0-063).
+
 ## 9. Open questions
 
 1. Should `preliminary_id` / `taxa_of_interest` allow `sp.`, digits and
@@ -254,7 +280,7 @@ tested.
 
 ## Provenance
 
-**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the removal of nf-schema's metadata CSV validation added from `3339050` (`src/utils/encoding.py`, 120 lines). See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** `p0_validation.py` (561 lines), `src/utils/config/*`, `src/utils/locus.py`, `src/utils/countries.py`, `src/utils/utils.py`, `tests/test_validation.py`. §5.1, P0-D-013..015 and the removal of nf-schema's metadata CSV validation added from `3339050` (`src/utils/encoding.py`, 120 lines). §5a added from `ef96c8f` (#323, `p0_validation_coverage.py`). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

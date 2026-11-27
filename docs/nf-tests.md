@@ -237,7 +237,7 @@ The test validates:
 ## Flag Comparison Test (baseline vs evaluated)
 
 In addition to nf-test assertions, a post-run flag comparison can be performed using
-`collect_flags.sh` and `test_flags.py`. These scripts can be found in `/path/to/taxodactyl_github_repo_dir/test`.
+`collect_flags.sh` and `test_flags.py`. These scripts can be found in `/path/to/taxodactyl_github_repo_dir/bin`.
 
 This compares:
 - baseline flags in `test/<scenario>/flags`

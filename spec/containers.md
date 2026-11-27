@@ -98,16 +98,30 @@ This is the *entire* release-consistency check (`DEP-021`): it verifies
 `manifest.version`, not `pyproject.toml`, not either config's image tag
 (`DEP-D-001`, the other four of the five version locations in `DEP-020`).
 
+Two more CI workflows build the image outside releases, with a plain
+`docker build -f Dockerfile .` in `scripts/` (not `docker_build.sh`, so
+they never move `:latest`):
+
+- `.github/workflows/build-main.yml` (`DEP-024`): on a push to `main` that
+  changes `scripts/**.py`, `scripts/Dockerfile`,
+  `scripts/requirements.txt` or `scripts/config/**`, or a manual dispatch,
+  builds and pushes `:main`.
+- `.github/workflows/build-pr.yml` (`DEP-025`): for a pull request that
+  changes those paths, builds and pushes `:<branch>` and runs nf-test
+  against it; deletes that tag when the PR closes.
+
 **Code-only rebuild** (`scripts/Dockerfile.update`, `docker_build.sh -u`):
 builds `FROM neoformit/taxodactyl:latest` and copies the current
 `scripts/` over it — a layer on top of whatever `:latest` currently is,
 not a from-scratch build. `DEP-012` says this MUST NOT be used for a
 release; nothing technical stops someone from doing it anyway.
 
-**Currently pinned** (both `conf/process.config` and `conf/azure.config`,
-label `daff_tax_assign`): `v1.5.0` — matching `DEP-011`'s "no `latest`
-tags" requirement at the point of use, even though the image's own
-*contents* aren't reproducible from that tag alone (`IMG-D-001`).
+**Currently referenced** (both `conf/process.config` and
+`conf/azure.config`, label `daff_tax_assign`): `$TAXODACTYL_IMAGE` if set,
+else `neoformit/taxodactyl:main` — the moving tag `build-main.yml`
+updates, re-pinned to `v<VERSION>` only at release (`DEP-011`,
+`DEP-D-014`). Even a versioned tag's *contents* aren't reproducible from
+the Dockerfile alone (`IMG-D-001`).
 
 ## 2. Off-the-shelf tools
 
@@ -163,7 +177,8 @@ spec's derivation commit ([README.md § Version](README.md#version)).
 
 All already registered in [defects.md](defects.md) — not repeated here
 with new IDs, just the pointer: `IMG-D-001` (floating base + taxonkit),
-`DEP-D-001` (only one of five version locations checked), `DEP-D-002`
+`DEP-D-001` (only one of five version locations checked), `DEP-D-014`
+(`:main` between releases), `DEP-D-002`
 (unconditional `:latest`), `DEP-D-003` (dev tools in prod image),
 `NF-D-014` (no module has `meta.yml`/`environment.yml`/`tests/`),
 `NF-D-019` (`modules.json` still lists the four removed nf-core modules),
@@ -175,6 +190,7 @@ with new IDs, just the pointer: `IMG-D-001` (floating base + taxonkit),
 
 **Initially derived from:** `scripts/Dockerfile`, `scripts/Dockerfile.update`,
 `scripts/docker_build.sh`, `.github/workflows/build.yml`,
+`.github/workflows/build-main.yml`, `.github/workflows/build-pr.yml`,
 `conf/process.config`, `conf/azure.config`, `modules/blast/blastn/main.nf`,
 `modules/blast/blastdbcmd/main.nf`, `modules/mafft/align/main.nf`,
 `modules/fastme/main.nf`. See [README.md § Version](README.md#version)

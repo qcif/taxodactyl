@@ -1,8 +1,9 @@
 # Spec: Testing
 
-There are four test surfaces. Only the first runs automatically; 3 and 4
-also have a GitHub Actions workflow, but it runs only when triggered by
-hand.
+There are four test surfaces. Surface 1 runs on pushes and pull requests
+to `main` (TST-003); surfaces 3 and 4 run together in one GitHub Actions
+workflow on every pull request to `main`, weekly, and by hand (TST-024).
+Surface 2 is manual.
 
 | # | Surface | Location | Runs | Automatic | Hermetic |
 |---|---|---|---|---|---|
@@ -25,10 +26,12 @@ hand.
 
 ### 2.1 Unit tests
 
-14 modules: `test_blast_parser`, `test_cache`, `test_cache_azure`,
-`test_coalesce`, `test_config`, `test_coverage_assert`, `test_gbif`,
-`test_genbank`, `test_orient`, `test_phylogeny_sampling`, `test_secrets`,
-`test_taxonkit`, `test_utils`, `test_validation`. Fixtures in
+19 modules: `test_blast_parser`, `test_cache`, `test_cache_azure`,
+`test_coalesce`, `test_config`, `test_coverage_assert`,
+`test_coverage_failure`, `test_coverage_targets`, `test_flags_coverage`,
+`test_gbif`, `test_genbank`, `test_orient`, `test_phylogeny_sampling`,
+`test_report_coverage`, `test_secrets`, `test_taxonkit`, `test_utils`,
+`test_validation`, `test_validation_coverage`. Fixtures in
 `scripts/tests/test-data/`. `test_coverage_assert` tests the integration
 comparison logic, not production code. `test_orient` needs `hmmsearch`,
 which CI does not install (§4).
@@ -40,16 +43,17 @@ which CI does not install (§4).
 | TST-010 | Each case directory under `tests/test-data/integration/{blast,bold}/<case>/` MUST contain `blast_result.xml`, `candidates.nwk`, `metadata.csv`, `query.fasta`, `taxids.csv`, `taxonomy.csv` (BLAST cases). The runner executes P0, P1, P2, P3, P4, P5, P6 in-process per case. |
 | TST-011 | Env `USER_EMAIL`, `NCBI_API_KEY`, `TAXONKIT_DATA` MUST be set, else setup fails. |
 | TST-012 | Default assertion: no exception. Optional `expected/db_coverage.json` fixtures are compared by `coverage_assert` with tiered rules: exact key sets at the target layer, type-only leaves, non-null propagation (truthy expected ⇒ truthy actual); sub-keys below the target layer tolerated. |
-| TST-013 | `testkit.py harvest/promote/seed` manage fixtures (scaffold from a Nextflow run, update after semantic-diff review, first-time write). It is deliberately not part of `run_tests.sh`. |
+| TST-014 | `test_integration_coverage.py` runs database coverage mode (P0 coverage validation, P5 and the coverage report, each run as a subprocess through its command-line entry point; P5 runs concurrently, one process per taxon) on `tests/test-data/integration/coverage/coverage.csv`, one taxon per major classification. |
+| TST-013 | `scripts/tests/integration/testkit.py harvest/promote/seed` manage fixtures (scaffold from a Nextflow run, update after semantic-diff review, first-time write). It is deliberately not part of `run_tests.sh`. |
 
-21 BLAST case directories and 1 BOLD case directory exist; the BOLD case
-cannot pass (P1B-D-001..003).
+21 BLAST case directories, 1 BOLD case directory and 1 coverage case
+directory exist; the BOLD case cannot pass (P1B-D-001..003).
 
 ### 2.3 `nf-test`
 
 | ID | Requirement |
 |---|---|
-| TST-020 | `nf-test.config` selects one scenario (`testsDir`, `configFile`, `profile singularity`, `workDir`); scenarios 01/03 use FASTA+CSV, 02/04 sequences in CSV (02 = viral, locus `NA`, classification `viruses`); scenarios 01–04 set `mock_blast=true` with a stored `blast_result.xml`; `core` runs real BLAST against a subset DB (`mock_blast=false`). |
+| TST-020 | `nf-test.config` selects one scenario (`testsDir`, `configFile`, `profile singularity`, `workDir`); scenarios 01/03 use FASTA+CSV, 02/04 sequences in CSV (02 = viral, locus `NA`, classification `viruses`); scenarios 01–04 set `mock_blast=true` with a stored `blast_result.xml`; `core` runs real BLAST against a subset DB (`mock_blast=false`); `coverage` runs database coverage mode (TST-034). |
 | TST-021 | Assertions (scenario_01): snapshot of `ch_hits_for_report`, `ch_candidates_for_report`, `ch_source_diversity_for_report`, `ch_homology_trees`; 6 HTML reports; 1 versions file; 1 params JSON; 1 timestamp; 6 db-coverage map groups (11 map files); 6 coverage JSON; 6 flag groups each with 3 files (18). |
 | TST-022 | Database-coverage flag regression check (post-run): `bin/collect_flags.sh` gathers only the P5 flags `5.1.flag`, `5.2.flag` and `5.3.flag` from the run; `bin/test_flags.py` compares them with `test/<scenario>/flags` (which holds only those three per query) using normalised JSON (sorted keys; lists sorted by `(flag_id, target, target_type)`) and prints per-path differences. Not part of the nf-test assertions themselves; the CI workflow (TST-024) runs it after nf-test and fails the job on any difference. The P3 flags (`1.flag`, `2.flag`, `7.flag`) and P4's `4.flag` are **not** in this check: they are covered only as file hashes inside the channel snapshots of TST-021 (`test/<scenario>/taxodactyl.workflow.nf.test.snap`). |
 | TST-023 | Placeholders `CUSTOMISE` in each scenario's `nextflow.config` (`blastdb`, `taxdb`, `temp_root_dir`) and in `nf-test.config` (`workDir`) MUST be edited by the tester; the tests do not run out of the box. (The CI workflow fills them in with `sed`.) |
@@ -64,6 +68,7 @@ cannot pass (P1B-D-001..003).
 | TST-031 | `test/selenium/testkit.py render` builds a review page of differences. Drift rows for `database_coverage` and `publication_modal` name the target taxon, taken from the coverage modal title or the candidate row name respectively; `promote` accepts drift into fixtures, backing up the previous YAML in `expected/.backups/` (last 3 kept). |
 | TST-032 | `--dir` is required so a run states whether it validates new output or the checked-in reference reports (`expected/reports`). |
 | TST-033 | Fields that come from live GenBank counts (`record_count`, `species_count`, `species_total`, `first_bar_count` in database coverage) carry a `flex` tolerance of ±10% (`GENBANK_FLEX_FIELDS`, `lib/database_coverage.py`). `pytest` passes a value within tolerance. `promote` still offers every difference, including ones within tolerance, so fixtures never silently drift. `flex` is set in code and stamped onto fixtures on ingest/promote; it is not edited by hand. |
+| TST-034 | `test/coverage` runs `TAXODACTYL_COVERAGE` on a five-row `coverage.csv` (a species, a genus, a family, an unresolvable name, and a duplicate of the genus row that P0 drops) and asserts success, 1 report, 4 coverage JSONs, 4 flag groups of 3 files each and at least 3 map groups. Outputs are not snapshotted, because they come from live APIs. It is not run by CI. (Numbered TST-025 on the `sync-skills-spec-docs` branch before #369 took that ID.) |
 
 ## 3. Which requirements are exercised
 
@@ -76,7 +81,8 @@ cannot pass (P1B-D-001..003).
 | P3 flags/candidates | phylogeny sampling only | yes (no asserts) | yes (channel snapshot hashes of `1/2/7.flag` and candidate files) | yes (overview) |
 | P4 | partial (`fetch_sources`) | yes (no asserts) | yes (channel snapshot hash of `4.flag`) | partial |
 | P5 | GBIF only | yes + `db_coverage.json` fixture | yes (flag baseline, TST-022, plus counts) | yes |
-| P6 | – | yes (no asserts) | report count | yes |
+| P6 | coverage report only | yes (no asserts) | report count | yes (per-query report only) |
+| Database coverage mode (P0 coverage, P5, coverage report) | yes (`test_validation_coverage`, `test_coverage_failure`, `test_report_coverage`, `test_config`) | yes (TST-014) | counts only (TST-034, not in CI) | – |
 | Shared throttle/cache/secrets/config | yes (cache, coalesce, secrets, config) | – | – | – |
 
 ## 4. Gaps (tests the spec implies but that do not exist)
@@ -96,7 +102,10 @@ cannot pass (P1B-D-001..003).
 
 ## 4a. Defects
 
-None open.
+| ID | Severity | Defect |
+|---|---|---|
+| TST-D-001 | Medium (security, *to confirm*) | `mock-nf-test.yml` (manual) downloads a frozen work directory, `mock_test_20260804.tar.gz`, from the public `daffstandard/test-data` blob container and uploads the work directories of failed or drifting tasks from it as the `error_workdirs` artifact (`bin/collect_artifacts.py`, copy mode, `shutil.copytree`, hidden files included). The tarball was made from a real run. If that run's `NCBI_API_KEY` is in it — Nextflow writes the task environment (the `env` scope) into each task's `.command.run`, and a `REPORT` dir also holds `report_context.json` (`P6-D-003`) — the key is public in the blob container and in the artifact, which anyone signed in to GitHub can download while it is retained. `nf-test.yml` no longer uploads work directories (since `39777ff` it keeps them on the self-hosted runner, TST-024). *To confirm* by inspecting the tarball for the key. |
+| TST-D-002 | Medium (security, *to confirm*) | **Pull-request code runs on the self-hosted runner.** `build-pr.yml` runs on `pull_request` and calls `nf-test.yml` with `secrets: inherit`; its only runner is `self-hosted`. The repository is public, so a pull request from a fork runs its own version of those workflows and of the pipeline on that VM, which keeps every run's files under `/var/runner/` and runs `sudo` in its steps. GitHub withholds secrets from fork PRs, but not the runner, and advises against self-hosted runners on public repositories. Whether a fork PR actually reaches the runner depends on repository settings outside the code (approval for outside contributors, the `testing` environment's protection rules) — *to confirm*. |
 
 ## 5. Test data provenance
 
@@ -165,7 +174,7 @@ before accepting it.
 
 ## Provenance
 
-**Initially derived from:** `.github/workflows/*.yml`, `scripts/tests/**`, `test/**`, `nf-test.config`, `bin/test_flags.py`, `bin/collect_flags.sh`, `testkit.py` (root — a git symlink to `scripts/tests/integration/testkit.py`). Brought forward to `2e024f6` from `a24581f` (`nf-test.yml`, `mock-nf-test.yml`, `bin/collect_artifacts.py`) and `b0be80b` (`test/selenium/lib/*`, fixtures). See [README.md Version](README.md#version) for the exact commit.
+**Initially derived from:** `.github/workflows/*.yml`, `scripts/tests/**`, `test/**`, `nf-test.config`, `bin/test_flags.py`, `bin/collect_flags.sh`, `scripts/tests/integration/testkit.py` (the root `testkit.py` symlink to it was removed in `fa8ad21`). Brought forward to `2e024f6` from `a24581f` (`nf-test.yml`, `mock-nf-test.yml`, `bin/collect_artifacts.py`) and `b0be80b` (`test/selenium/lib/*`, fixtures). TST-024, TST-D-001/002 updated from the `nf-test.yml`/`build-pr.yml` changes in `39777ff`..`f778535` (self-hosted runner, PR trigger, image input, run files); TST-014, TST-025 and the unit-test list from `ef96c8f` (#323) and the task 07–11 PRs. See [README.md Version](README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

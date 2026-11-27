@@ -1,6 +1,8 @@
 # Spec: Nextflow processes
 
-**Scope:** every `process` in `modules/**/main.nf` (15). Wiring between
+**Scope:** every `process` in `modules/**/main.nf` (17, two of them,
+`VALIDATE_COVERAGE_TAXA` and `REPORT_COVERAGE`, only for database coverage
+mode). Wiring between
 them is in [workflow.md](workflow.md); parameters in
 [params.md](params.md); resources/containers in
 [config-profiles.md](config-profiles.md).
@@ -10,7 +12,7 @@ them is in [workflow.md](workflow.md); parameters in
 | ID | Requirement |
 |---|---|
 | NF-PR-001 | Process names are the config selectors used by `conf/process.config` and `conf/azure.config`; renaming a process MUST update both. |
-| NF-PR-002 | Internal file names MUST be read from `task.ext.*` (defined in `conf/filenames.config`, which loads Python-side names from `scripts/config/default.yml`), never hard-coded, for every file that crosses the Nextflow/Python boundary. Exceptions (hard-coded today, see defects): `sequences.fasta`, `metadata.csv`, `taxids.csv`, `id_mapping.tsv`, `4.flag`, `db_coverage.json`, `5*flag`, `map*png`, `errors/*`, `*_stat.txt`, `*.matrix.phy`, `query_*`. |
+| NF-PR-002 | Internal file names MUST be read from `task.ext.*` (defined in `conf/filenames.config`, which loads Python-side names from `scripts/config/default.yml`), never hard-coded, for every file that crosses the Nextflow/Python boundary. Exceptions (hard-coded today, see defects): `sequences.fasta`, `metadata.csv`, `taxids.csv`, `id_mapping.tsv`, `4.flag`, `db_coverage.json`, `5*flag`, `map*png`, `errors/*`, `*_stat.txt`, `*.matrix.phy`, `query_*`, and in database coverage mode `query_*.tar.gz`. `coverage.csv` comes from `task.ext.coverage_csv`, but that is set in `conf/filenames.config` itself, not loaded from `default.yml`, and `p0_validation_coverage.py` hard-codes the same name (`OUTPUT_CSV_FILENAME`). |
 | NF-PR-003 | Python processes are invoked as `python /app/scripts/<pN_*.py>` — i.e. the script path is inside the container image, not staged from `bin/`. Changing a script therefore requires a new image (see [../deployment.md](../deployment.md)). |
 | NF-PR-004 | A process's optional CLI option MUST be emitted only when its parameter is truthy (`params.x ? "--option ${params.x}" : ''`). A parameter set to `0`, `false`, empty string or `null` is therefore **indistinguishable from unset** and the Python default applies. |
 | NF-PR-005 | Every process using `containerOptions` with `--bind` assumes Singularity/Apptainer syntax. Running under `-profile docker` is unsupported. |
@@ -45,6 +47,20 @@ them is in [workflow.md](workflow.md); parameters in
 | NF-PR-020 | `--query-fasta` MUST be passed only if the staged sequences file has non-zero size. |
 | NF-PR-021 | The process MUST always produce `sequences.fasta` and `metadata.csv` (both non-optional outputs); a P0 run that does not is a process failure. See `python/p0-validation.md` for who writes them when sequences come from the metadata `sequence` column. |
 | NF-PR-022 | `ready` MUST be emitted only on successful completion, so search processes cannot start before validation passes. |
+
+## 2a. `VALIDATE_COVERAGE_TAXA` (P0, database coverage mode)
+
+- **Label:** `daff_tax_assign`. `stageInMode 'copy'`.
+- **Bind:** `params.taxdb`, parent dir of `params.allowed_loci_file`, `params.outdir`, plus app-data bind.
+- **Input:** `coverage_csv` (staged as `input_coverage.csv`, so it cannot clash with the output name), `allowed_loci_file` (staged as `loci.json`).
+- **Output:** `ready` (value `true`), `coverage.csv` (`ext.coverage_csv`, `emit: coverage_csv`), `query_*/query_title.txt` (`emit: query_titles`), log.
+- **Command:** `python /app/scripts/p0_validation_coverage.py --output-dir ./ --taxdb-dir <taxdb> --coverage-taxa input_coverage.csv [--bold] [--allowed-loci-file loci.json]`.
+
+| ID | Requirement |
+|---|---|
+| NF-PR-025 | The process MUST always produce `coverage.csv` and at least one `query_*/query_title.txt`; a P0 run that does not is a process failure, which under `ignore` (NF-PR-007) leaves nothing to evaluate. |
+| NF-PR-026 | The user's file name MUST NOT be interpolated into the task script; the input is staged under a fixed name (as NF-PR-012). |
+| NF-PR-027 | `errors/` is **not** an output, so a non-fatal error P0 writes here (the duplicate-row warning, P0-062) never reaches the report (`NF-D-021`). |
 
 ## 3. `BLAST_BLASTN`
 
@@ -196,14 +212,15 @@ wired successfully in the current workflow.
 ## 13. `EVALUATE_DATABASE_COVERAGE` (P5)
 
 - **Label:** `daff_tax_assign`. **Tag:** folder. **Bind:** taxdb, parent of loci file, outdir, app-data, temp root; **`--writable-tmpfs`**.
-- **Input:** `[folder, staged 'db_coverage_input/*']`, sequences, metadata.
-- **Output:** `[folder, db_coverage.json]`, `[folder, 5*flag]`, optional `[folder, map*png]`, optional `[folder, errors/*]`, log.
-- **Command:** `python /app/scripts/p5_db_coverage.py <folder> --output-dir ./ --query-fasta … --metadata-csv … [--bold] [--db-coverage-toi-limit] [--db-coverage-max-candidates] [--gbif-limit-records] [--gbif-max-occurrence-records] [--gbif-accepted-status] [--db-cov-target-min-a←params.db_cov_min_a] [--db-cov-target-min-b←db_cov_min_b] [--db-cov-related-min-a] [--db-cov-related-min-b] [--db-cov-country-missing-a] [--temp-root] [--temp-dir-name]`.
+- **Input:** `[folder, staged 'db_coverage_input/*']`, sequences, metadata. In database coverage mode the sequences input is the `NO_SEQUENCES` placeholder and the metadata input is the validated `coverage.csv` (NF-WF-083).
+- **Output:** `[folder, db_coverage.json]`, `[folder, 5*flag]`, optional `[folder, map*png]`, optional `query_*.tar.gz` (`emit: query_archive`, database coverage mode only), optional `[folder, errors/*]`, log.
+- **Command:** `python /app/scripts/p5_db_coverage.py <folder> --output-dir ./ <inputs> [--bold] [--db-coverage-toi-limit] [--db-coverage-max-candidates] [--gbif-limit-records] [--gbif-max-occurrence-records] [--gbif-accepted-status] [--db-cov-target-min-a←params.db_cov_min_a] [--db-cov-target-min-b←db_cov_min_b] [--db-cov-related-min-a] [--db-cov-related-min-b] [--db-cov-country-missing-a] [--temp-root] [--temp-dir-name]`, where `<inputs>` is `--query-fasta … --metadata-csv …`, or `--coverage-taxa <coverage.csv>` when `params.coverage_taxa` is set. In database coverage mode the script is followed by `tar -chzf <folder>.tar.gz <folder>`.
 
 | ID | Requirement |
 |---|---|
 | NF-PR-110 | Parameter names differ from CLI names for `db_cov_min_a/b` → `--db-cov-target-min-a/b`. |
 | NF-PR-111 | A successful run MUST produce `db_coverage.json` and at least one file matching `5*flag`. |
+| NF-PR-112 | In database coverage mode the whole query folder MUST be archived as `<folder>.tar.gz` with `-h`, so the staged (symlinked) `query_title.txt` is stored as a real file and the archive can move between executors. In sequence mode no archive is made. |
 
 ## 14. `REPORT` (P6)
 
@@ -218,6 +235,19 @@ wired successfully in the current workflow.
 | NF-PR-121 | `--database-name/--facility-name/--analyst-name` values MUST be single-quoted in the command; a value containing a single quote breaks the command (**defect NF-D-006**, latent). |
 | NF-PR-122 | Timestamp passed to the report is the file produced by NF-WF-010. |
 
+## 14a. `REPORT_COVERAGE` (P6, database coverage mode)
+
+- **Label:** `daff_tax_assign`. **Bind:** parent of loci file, outdir, app-data.
+- **Input:** `query_archives` (every taxon's `query_*.tar.gz`), `coverage_csv` (validated), `params_file`, `timestamp_file`.
+- **Output:** `report_*.html` (`html_report`, published to `<outdir>` itself, not to a query folder), log.
+- **Behaviour:** unpacks every `*.tar.gz` into the work dir, then runs `python /app/scripts/p6_report.py --coverage-taxa <coverage.csv> --output-dir ./ --params_json … [--bold] [--report-debug] [--database-name '<name>'] [--facility-name '<name>'] [--analyst-name '<name>']`. No `--versions_yml` is passed: no versioned tool runs in this mode.
+
+| ID | Requirement |
+|---|---|
+| NF-PR-125 | MUST run once per run, over all taxa (NF-WF-084). |
+| NF-PR-126 | The report start time comes from the staged `timestamp.txt`, which P6 reads from its output directory (CFG-031); it is not passed on the command line. |
+| NF-PR-127 | NF-PR-120 and NF-PR-121 (and `NF-D-006`) apply unchanged. |
+
 ## 15. `PREPARE_LOG`
 
 - **Input/Output:** `combined_file`, republished unchanged as `<outdir>/<file>` (`publishDir mode copy`). Empty script.
@@ -230,13 +260,14 @@ wired successfully in the current workflow.
 | NF-D-004 | `phylogeny_min_hit_identity` not forwarded to P3. |
 | NF-D-005 | Report shows `blast_max_target_seqs_for_report` (default 2000) while BLAST is hard-coded to 500. |
 | NF-D-006 | Single-quoted CLI args in `REPORT` break on embedded `'`. |
+| NF-D-021 | `VALIDATE_COVERAGE_TAXA` does not emit `errors/`, so the warning P0 writes for each dropped duplicate row of the coverage CSV (P0-062) appears only in `run.log`, never in the report. A user who submits two rows that differ only in, e.g., locus synonym or case sees one taxon reported and no explanation for the missing row. *To confirm* with `test/coverage` (whose duplicate row exercises this). |
 | NF-D-020 | `PREPARE_INPUTS` and `PREPARE_LOG` declare no container and no label, and `conf/process.config` sets no default, so on local/HPC profiles they run in the host shell rather than a container (CONSTITUTION rule 11). Their work is trivial (`cp`, `wc`, an empty script), so the practical risk is low: the run depends on the host having `bash` and coreutils, and those two steps are not reproducible from the pinned images. Under `-profile azure` they get the pinned default `docker.io/library/ubuntu:22.04`. |
 
 ---
 
 ## Provenance
 
-**Initially derived from:** source code — every `process` in `modules/**/main.nf`. See [README.md Version](../README.md#version) for the exact commit.
+**Initially derived from:** source code — every `process` in `modules/**/main.nf`. §2a, §14a and the database-coverage-mode parts of §13 added from `ef96c8f` (#323). See [README.md Version](../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict

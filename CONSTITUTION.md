@@ -102,7 +102,7 @@ Every analytical claim rendered in the report traces to a **flag**: a
 `{flag_id, value, target, target_type}` record whose explanation text and
 severity level come from the versioned `scripts/config/flags.csv`, never
 from a hardcoded string
-([spec/python/shared/flags.md](spec/python/shared/flags.md)). A flag
+([spec/python/modules/flags.md](spec/python/modules/flags.md)). A flag
 value of `NA` or `ERR` is itself a reportable outcome; "not assessed" must
 never be rendered the same way as "assessed and negative". `flags.csv`
 text that hard-codes a threshold instead of reading it from config
@@ -127,7 +127,7 @@ A single external-API failure (one candidate's database-coverage lookup,
 one publication fetch) must not fail the whole query's analysis. It is
 written via the `errors` module, keyed to a report location, and rendered
 inline at the section it affects
-([spec/python/shared/errors.md](spec/python/shared/errors.md)). A
+([spec/python/modules/errors.md](spec/python/modules/errors.md)). A
 non-fatal error that never reaches the report (`ERR-D-001`) is a defect
 against this rule.
 
@@ -220,7 +220,7 @@ hand, not on push or PR. That gap is tracked, not accepted as permanent
 
 No code may call NCBI Entrez, GBIF, or BOLD directly; every call goes
 through `Throttle(...).with_retry(...)`, optionally with caching
-([spec/python/shared/throttle.md](spec/python/shared/throttle.md)). This
+([spec/python/modules/throttle.md](spec/python/modules/throttle.md)). This
 is not a style preference — bypassing it risks a rate-limit ban on a
 shared resource for every concurrent query in the run.
 

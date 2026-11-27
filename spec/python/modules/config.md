@@ -55,6 +55,7 @@ loaded), with schema defaults noted where they differ.
 | `query_dir` | `QUERY_DIR` | positional/`query_dir` | none |
 | `inputs.query_fasta` | `INPUT_FASTA_FILEPATH` | `--query-fasta` | none |
 | `inputs.metadata_csv` | `INPUT_METADATA_CSV_FILEPATH` | `--metadata-csv` | none |
+| `inputs.coverage_taxa_csv` | `COVERAGE_TAXA_CSV` | `--coverage-taxa` | none (set ⇒ database coverage mode, CFG-037) |
 | `taxdb_dir` | `TAXONKIT_DATA` | `--taxdb-dir` | `~/.taxonkit` |
 | `allowed_loci_file` | `ALLOWED_LOCI_FILE` | `--allowed-loci-file` | `config/loci.json` (resolved relative to `scripts/`) |
 | `flag_details_csv_path` | `FLAG_DETAILS_CSV_PATH` | `--flag-details-csv` | `config/flags.csv` |
@@ -84,7 +85,11 @@ loaded), with schema defaults noted where they differ.
 `fasta_max_sequences` (150), `fasta_min_length` (20), `fasta_max_length`
 (3000), `facility_name` / `analyst_name` (`"Not provided"`; env
 `FACILITY_NAME`/`ANALYST_NAME`; CLI `--facility-name/--analyst-name`),
-`metadata_csv_header` (logical→CSV column map), `metadata_csv_required_fields`.
+`metadata_csv_header` (logical→CSV column map), `metadata_csv_required_fields`,
+and for database coverage mode `coverage_csv_header` (`taxon`, `locus`,
+`country`, `classification`, each mapped to the same column name) and
+`coverage_csv_required_fields` (`taxon`, `locus`). The top-level
+`coverage_taxa_max` (100) caps the taxa in a coverage CSV (P0-063).
 
 ### 3.4 Services
 
@@ -159,14 +164,17 @@ reads `default.yml`, so Nextflow and Python agree.
 | CFG-021 | Logging MUST be configured on init to console + `<output_dir>/<log_filename>` (append), level DEBUG if `LOGGING_DEBUG` env is set to **any non-empty value** (including `"0"`), else INFO; messages containing `.lock` are filtered out. |
 | CFG-022 | `is_bold` is true iff file `<output_dir>/BOLD` exists. `update_from_args` writes it when `args.bold` is true. BOLD mode therefore depends on the working dir, not on a setting. |
 | CFG-023 | `database_name` is `'BOLD'` in BOLD mode, else `report.database_name`. |
-| CFG-024 | Query directory for 0-based index `i` MUST be `<output_dir>/query_<i+1 zero-padded to 3>_<sample_id>`, where `sample_id` is the id of FASTA record `i` of `inputs.query_fasta`; created on access. Passing a string containing `query_` or a `Path` returns it unchanged. |
+| CFG-024 | Query directory for 0-based index `i` MUST be `<output_dir>/query_<i+1 zero-padded to 3>_<sample_id>`, where `sample_id` is the id of FASTA record `i` of `inputs.query_fasta` (in database coverage mode, the coverage sample id of row `i`, CFG-038); created on access. Passing a string containing `query_` or a `Path` returns it unchanged. |
 | CFG-025 | `get_query_ix(dir)` MUST parse the index as `int(name.split('_')[1]) - 1`. More than 999 queries would give a 4-digit prefix; still parsable. |
 | CFG-026 | `metadata` (cached): dict `sample_id → {logical_key: value}` over **all** CSV columns except `sample_id` and `sequence`; values stripped; missing columns → `None`; any key containing `interest` is split on `\|` into a list (empty → `[]`). Duplicate sample ids: last row wins (unreachable after P0, which renames or rejects them — P0-018, P0-048). |
-| CFG-027 | `get_locus_for_query(q)`: BOLD mode ⇒ `'COI'`; value ending `' gene'` ⇒ returns the **string** with the suffix removed (not a `Locus`; CFG-D-003); `na` (any case) ⇒ `Locus('NA', {})` (falsy); otherwise the first loci-file entry containing the value as a synonym, renamed to the user's spelling; else `ValueError`. |
+| CFG-027 | `get_locus_for_query(q)`: BOLD mode ⇒ `'COI'`; `None` or `na` (any case, stripped) ⇒ `Locus('NA', {})` (falsy); otherwise strip the value and a trailing `' gene'` (any case, after whitespace), and return the first loci-file entry containing the rest as a synonym (`_resolve_locus`), renamed to that spelling; else `ValueError`. |
 | CFG-028 | `get_country_for_query(q, code=True)` returns the pycountry alpha-2 code or `None`. |
 | CFG-029 | `get_classification_for_query(q)` returns the `HIGHER_CLASSIFICATIONS` entry (`{'gbif_col': <COL taxonID>, 'ncbi': {'rank', 'taxon'}}`) or `None`. Mapping (COL taxonID / NCBI filter): animalia→`N`/kingdom metazoa, plantae→`P`/kingdom viridiplantae, fungi→`F`/kingdom fungi, chromista→`C`/clade sar, bacteria→`CRRY6`/domain bacteria, archaea→`CRLT8`/domain archaea, viruses→`92e52ff4-2dc6-4b35-9339-2e92035b8daf`/`acellular root` viruses. The aliases `animal`, `animals`, `plant`, `plants`, `virus` are separate keys with identical entries. |
 | CFG-030 | `get_report_path(q, bold)`: `<query_dir>/report_[BOLD_]<sample_id with . → _>_<timestamp>.html`, then every char outside `[\w\d\-_.]` replaced by `_`. `<timestamp>` is `DEBUG` if `report.debug`, else `YYYY-MM-DD HH:MM:SS` from `timestamp.txt` (so spaces/colons become `_`), or `Unknown` if the file is absent/invalid. |
 | CFG-031 | `start_time` parses `<output_dir>/timestamp.txt` with format `%Y%m%d %H%M%S` (written by NF-WF-010). |
+| CFG-037 | `coverage_mode` is true iff `inputs.coverage_taxa_csv` is set. In that mode `coverage_rows` (cached) reads that CSV through `coverage_csv_header`, stripping values and turning blanks into `None`, and `metadata` is built from it instead of the metadata CSV: each row becomes `{locus, country, classification, preliminary_id: <taxon>, taxa_of_interest: []}` under its coverage sample id, so the taxon is the query's PMI. |
+| CFG-038 | `coverage_sample_id(row)` MUST be `<path-safe taxon>_<first 8 hex of sha256>`, hashing the tab-joined taxon (whitespace collapsed, case-folded), canonical locus name (`na` in BOLD mode or when blank/unrecognised), country alpha-2 code (or empty) and lowercased classification. Rows with the same analysis inputs, however spelt (locus synonym, `' gene'` suffix, country name vs code, case), MUST get the same id; it is the only source of coverage sample ids. |
+| CFG-039 | `get_coverage_report_path(bold)`: `<output_dir>/report_[BOLD_]coverage_<timestamp>.html`, made path-safe as CFG-030. |
 | CFG-032 | `read_flag_details_csv()` groups `flags.csv` rows by `id` → `{name, explanation[value], outcome[value], level[value]:int}`; a non-integer `level` MUST raise `ValueError`. |
 | CFG-033 | Temp dirs: `tempdir = (temp_root or OS temp)/temp_dir_name`; `user_tempdir = tempdir/(user_email or 'ANONYMOUS')`; both created on access. `throttle_sqlite_path = user_tempdir/throttle_db.sqlite`, `throttle_sqlite_global_path = tempdir/throttle_db.sqlite`, `cache_sqlite_path = tempdir/cache_db.sqlite`. |
 | CFG-034 | `user_secrets_dir`: first writable of `/var/lib/taxodactyl/<email or ANONYMOUS>`, `~/.local/share/taxodactyl/<…>`; else `OSError`. |
@@ -189,25 +197,24 @@ Loci file schema: see `../../contracts/loci.md`.
 |---|---|
 | CFG-D-001 | `default.yml` is out of sync with `schema.py` (filenames in §3.5, `taxdb_dir`, `report.database_name`); the documented regeneration step would **change runtime filenames** and break Nextflow. `default.yml` is the de-facto spec; the schema defaults should be aligned to it. |
 | CFG-D-002 | `-c` replaces rather than extends `default.yml` (CFG-002, CFG-011). |
-| CFG-D-003 | `get_locus_for_query` returns `str` for values ending in ` gene`, and calls `.endswith` before its `None` check. |
 | CFG-D-005 | `conf/env.config` always exports `LOGGING_DEBUG="${params.logging_debug}"`, i.e. `"0"` by default; `os.getenv` returns the non-empty string `"0"`, so **every pipeline run logs at DEBUG**. `--logging_debug` has no effect. |
 | CFG-D-006 | Case-sensitive synonym matching (see P0-D-001). |
 | CFG-D-007 | `schema.throttle_backend` description mentions `local`/`azure`; valid values are `sqlite`/`redis`. `model_config.env_prefix="BIOSEC_"` has no effect on a plain `BaseModel`. |
-| CFG-D-008 | `scripts/README.md` links to `src/utils/config_schema.py` and `src/utils/config.py` — neither exists; the config module is the `src/utils/config/` package. |
 | CFG-D-009 | `scripts/config/README.md` documents a cascading multi-file config workflow (`base.yml`, `high_confidence.yml`, `lab_environment.yml`, `test.yml`, `example_custom.yml`) with worked `-c` examples. None of those files exist — deleted per git history ("Remove redundant example config.yml files"); only `default.yml` remains, and every example command in that README fails as written. The doc also no longer demonstrates the one real risk it should: `CFG-D-002`, a bare `-c custom.yml` dropping `default.yml`'s filenames entirely. |
 
 ## 7. Test mapping
 
 `tests/test_config.py`: singleton behaviour (CFG-001), cascade and
 override order (CFG-002, CFG-004/005), invalid type in YAML (CFG-003),
-`None` CLI values ignored (CFG-005). Not covered: CFG-020..036 helpers,
-loci matching, filename contract.
+`None` CLI values ignored (CFG-005). `TestConfigCoverageMode`: CFG-037..039, including the
+blank and `' gene'` locus cases of CFG-027. Not covered: the other
+CFG-020..036 helpers, loci matching, filename contract.
 
 ---
 
 ## Provenance
 
-**Initially derived from:** `config/config.py` (721), `config/schema.py` (361), `config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`, `src/utils/locus.py`, `tests/test_config.py`. See [README.md Version](../../README.md#version) for the exact commit.
+**Initially derived from:** `config/config.py` (721), `config/schema.py` (361), `config/mappings.py` (539), `config/default.yml`, `src/utils/log.py`, `src/utils/locus.py`, `tests/test_config.py`. CFG-027 and CFG-037..039 updated from `ef96c8f` (#323). See [README.md Version](../../README.md#version) for the exact commit.
 
 This spec describes the intended behaviour. If the agent identifies a
 suspected error, ambiguity, or inconsistency in the spec, including a conflict
