@@ -1,9 +1,9 @@
 # Spec: Testing
 
-There are four test surfaces. Surface 1 runs on every push and pull
-request; surfaces 3 and 4 run together in one GitHub Actions workflow on
-every pull request to `main`, weekly, and by hand (TST-024). Surface 2 is
-manual.
+There are four test surfaces. Surface 1 runs on pushes and pull requests
+to `main` (TST-003); surfaces 3 and 4 run together in one GitHub Actions
+workflow on every pull request to `main`, weekly, and by hand (TST-024).
+Surface 2 is manual.
 
 | # | Surface | Location | Runs | Automatic | Hermetic |
 |---|---|---|---|---|---|
@@ -43,7 +43,7 @@ which CI does not install (§4).
 | TST-010 | Each case directory under `tests/test-data/integration/{blast,bold}/<case>/` MUST contain `blast_result.xml`, `candidates.nwk`, `metadata.csv`, `query.fasta`, `taxids.csv`, `taxonomy.csv` (BLAST cases). The runner executes P0, P1, P2, P3, P4, P5, P6 in-process per case. |
 | TST-011 | Env `USER_EMAIL`, `NCBI_API_KEY`, `TAXONKIT_DATA` MUST be set, else setup fails. |
 | TST-012 | Default assertion: no exception. Optional `expected/db_coverage.json` fixtures are compared by `coverage_assert` with tiered rules: exact key sets at the target layer, type-only leaves, non-null propagation (truthy expected ⇒ truthy actual); sub-keys below the target layer tolerated. |
-| TST-014 | `test_integration_coverage.py` runs database coverage mode (P0 coverage validation, P5 and the coverage report, in-process) on `tests/test-data/integration/coverage/coverage.csv`, one taxon per major classification. |
+| TST-014 | `test_integration_coverage.py` runs database coverage mode (P0 coverage validation, P5 and the coverage report, each run as a subprocess through its command-line entry point; P5 runs concurrently, one process per taxon) on `tests/test-data/integration/coverage/coverage.csv`, one taxon per major classification. |
 | TST-013 | `scripts/tests/integration/testkit.py harvest/promote/seed` manage fixtures (scaffold from a Nextflow run, update after semantic-diff review, first-time write). It is deliberately not part of `run_tests.sh`. |
 
 21 BLAST case directories, 1 BOLD case directory and 1 coverage case
