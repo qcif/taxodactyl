@@ -420,9 +420,9 @@ jobs:
       # Only runs on self-hosted runner
         if: always() && runner.environment == 'self-hosted'
         run: |
-          # Run files saved using key of run number and run attempt; the prefix keeps
-          # them apart from nf-test.yml, whose run numbers are counted separately
-          dir_name="assertions-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          # Run files saved using key of run ID and run attempt; run IDs are unique
+          # across workflows, the prefix marks which workflow wrote the directory
+          dir_name="assertions-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
           mkdir -p "/var/runner/$dir_name"
 
